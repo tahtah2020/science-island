@@ -297,18 +297,19 @@ html[dir=rtl] .bubble::before{left:auto;right:-12px;border-left:0;border-bottom:
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261011d"></script>
-<script src="chapters.js?v=20261011d"></script>
-<script src="common.js?v=20261011d"></script>
-<script src="ch3_art.js?v=20261011d"></script>
+<script src="firebase-config.js?v=20261011e"></script>
+<script src="chapters.js?v=20261011e"></script>
+<script src="common.js?v=20261011e"></script>
+<script src="ch3_art.js?v=20261011e"></script>
 <script>
 (() => {
 'use strict';
 /* Seed Lab · Chapter 3's game.
    Stage 1 (Warm Up): open a kidney bean (soak, peel, split), find the embryo and the cotyledon, test for starch with iodine.
    Stage 2 (Missions): three experiments. Cup A has water, air and warmth. The player sets cup B and may change ONE condition only.
-   Stage 3 (Speed Round): will it germinate? Text is English for now: the chapter opens for the Arabic track once its Arabic
-   questions exist; then give every T('…') here its Arabic second argument. */
+   Stage 3 (Speed Round): will it germinate?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 28-42):
+   the cups are (أ) and (ب), and in Arabic cup (أ) is drawn on the right, as in the book. */
 const $ = (s, r = document) => r.querySelector(s);
 const el = id => document.getElementById(id);
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -337,7 +338,8 @@ function render() {
     else if (sc.soak !== 1) s += (sc.coat < 1 ? skin(1 - sc.coat) : '') + `<g transform="translate(214 186) scale(${sc.soak === 2 ? 1.08 : 1})">${A.beanWhole(sc.coat, sc.soak === 2 ? 1 : 0)}</g>`;
     if (sc.drop > -1) s += `<g transform="translate(${sc.dropX} ${sc.dropY})">${A.dropper(sc.drop)}</g>`;
   } else if (sc.mode === 'lab') {
-    s += `<g transform="translate(108 228) scale(1.22)">${A.station(Object.assign({ label: 'A', g: sc.gA }, sc.a))}</g><g transform="translate(312 228) scale(1.22)">${A.station(Object.assign({ label: 'B', g: sc.gB }, sc.b))}</g>`;
+    const xa = AR ? 312 : 108, xb = AR ? 108 : 312;   // Arabic reads from the right: cup (أ) on the right, like the school book
+    s += `<g transform="translate(${xa} 228) scale(1.22)">${A.station(Object.assign({ label: 'A', g: sc.gA }, sc.a))}</g><g transform="translate(${xb} 228) scale(1.22)">${A.station(Object.assign({ label: 'B', g: sc.gB }, sc.b))}</g>`;
     if (sc.day) s += `<g transform="translate(210 258)"><rect x="-44" y="-15" width="88" height="30" rx="15" fill="#1f3d57"/><text x="0" y="6" text-anchor="middle" font-size="16" font-weight="900" fill="#fff" font-family="Nunito,Cairo,Arial,sans-serif">${T('Day', 'اليوم')} ${sc.day}</text></g>`;
   } else {
     s += `<g transform="translate(210 230) scale(1.25)">${A.station(Object.assign({ g: sc.gOne }, sc.one))}</g>`;
@@ -478,67 +480,67 @@ async function dropIodine(x, y, stain) {
 async function stage1() {
   setStage(1, T('Warm Up', 'إحماء'));
   sc.mode = 'seed'; setUI({}); render();
-  say(T(`This is a <b>kidney bean seed</b>. What is inside it, and where is the nutrition for growth? Its seed coat is hard, so first we soak it in water <b>overnight</b>.`), 'point');
-  await act(T('💧 Soak it overnight'));
+  say(T(`This is a <b>kidney bean seed</b>. What is inside it, and where is the nutrition for growth? Its seed coat is hard, so first we soak it in water <b>overnight</b>.`, `دي <b>بذرة فاصوليا</b>. يا ترى إيه الموجود جواها، وفين الغذاء اللازم للنمو؟ غلافها الخارجي ناشف، فالأول هنغمرها في الماء <b>طوال الليل</b>.`), 'point');
+  await act(T('💧 Soak it overnight', G(`💧 اغمرها في الماء طوال الليل`, `💧 اغمريها في الماء طوال الليل`)));
   sc.soak = 1; render();
   await tween(1000, k => { sc.night = k; }); await sleep(600); await tween(1000, k => { sc.night = 1 - k; });
   sc.soak = 2; render(); addScore(10); sfx.ok();
-  say(T(`Good morning! After a night in water, the ${kw('seed coat')} is <b>soft</b>. Now we can peel it.`), 'thumbs');
-  await act(T('Peel the seed coat'));
+  say(T(`Good morning! After a night in water, the ${kw('seed coat')} is <b>soft</b>. Now we can peel it.`, `صباح الخير! بعد ليلة في الماء بقى ${kw('الغلاف الخارجي')} <b>ليّن</b>. دلوقتي نقدر ننزعه برفق.`), 'thumbs');
+  await act(T('Peel the seed coat', G(`انزع الغلاف الخارجي`, `انزعي الغلاف الخارجي`)));
   await tween(900, k => { sc.coat = 1 - k; });
   addScore(10); sfx.tick();
-  say(T(`The seed coat is off. Now <b>split the seed in half</b> and look closely inside.`), 'point');
-  await act(T('Split it in half'));
+  say(T(`The seed coat is off. Now <b>split the seed in half</b> and look closely inside.`, G(`الغلاف اتنزع. دلوقتي <b>اشطر البذرة إلى نصفين</b> وبص كويس جواها.`, `الغلاف اتنزع. دلوقتي <b>اشطري البذرة إلى نصفين</b> وبصي كويس جواها.`)), 'point');
+  await act(T('Split it in half', G(`اشطرها إلى نصفين`, `اشطريها إلى نصفين`)));
   sc.split = true; sc.open = 0; render();
   await tween(900, k => { sc.open = k; });
   addScore(10); sfx.ok();
-  say(T(`Look closely! Inside the seed there is a part that will become a <b>new plant</b>, and a part that <b>stores the nutrients</b>. <b>Tap the part that will become the leaves, stems and roots.</b>`), 'think');
+  say(T(`Look closely! Inside the seed there is a part that will become a <b>new plant</b>, and a part that <b>stores the nutrients</b>. <b>Tap the part that will become the leaves, stems and roots.</b>`, G(`بص كويس! البذرة جواها جزء سيصبح <b>نباتًا جديدًا</b>، وجزء آخر <b>يخزّن العناصر الغذائية</b>. <b>اضغط على الجزء الذي سيتطور ليصبح أوراقًا وساقًا وجذورًا.</b>`, `بصي كويس! البذرة جواها جزء سيصبح <b>نباتًا جديدًا</b>، وجزء آخر <b>يخزّن العناصر الغذائية</b>. <b>اضغطي على الجزء الذي سيتطور ليصبح أوراقًا وساقًا وجذورًا.</b>`)), 'think');
   actions.innerHTML = '';
   await askSpot('embryo', {
-    hint: T(`Not that one. Look for the tiny part that looks like a little sprout. Try again!`),
-    ok: T(`That is the ${kw('embryo')}. It will become the leaves, stems and roots of the new plant.`)
+    hint: T(`Not that one. Look for the tiny part that looks like a little sprout. Try again!`, G(`مش ده. دوّر على الجزء الصغير جدًّا اللي يشبه نبتة صغيرة. جرّب تاني!`, `مش ده. دوّري على الجزء الصغير جدًّا اللي يشبه نبتة صغيرة. جرّبي تاني!`)),
+    ok: T(`That is the ${kw('embryo')}. It will become the leaves, stems and roots of the new plant.`, `ده ${kw('الجنين')}. هو الجزء الذي سيتطور ليصبح أوراقًا وساقًا وجذورًا.`)
   });
-  say(T(`Now <b>tap the part that makes up most of the seed</b>.`), 'think');
+  say(T(`Now <b>tap the part that makes up most of the seed</b>.`, G(`دلوقتي <b>اضغط على الجزء الذي يشكّل معظم البذرة</b>.`, `دلوقتي <b>اضغطي على الجزء الذي يشكّل معظم البذرة</b>.`)), 'think');
   await askSpot('cotyledon', {
-    hint: T(`Not that one. Which part is the biggest? Try again!`),
-    ok: T(`This is a ${kw('cotyledon')}. It makes up most of the seed. What is packed inside it? Let’s test it!`)
+    hint: T(`Not that one. Which part is the biggest? Try again!`, G(`مش ده. أنهي جزء هو الأكبر؟ جرّب تاني!`, `مش ده. أنهي جزء هو الأكبر؟ جرّبي تاني!`)),
+    ok: T(`This is a ${kw('cotyledon')}. It makes up most of the seed. What is packed inside it? Let’s test it!`, `دي ${kw('الفلقة')}. هي الجزء الذي يشكّل معظم البذرة. يا ترى فيها إيه؟ يلّا نختبرها!`)
   });
-  say(T(`We use ${kw('iodine solution')} to check if there is starch. Add a drop on the cotyledon and watch the colour.`), 'point');
-  await act(T('Add a drop of iodine solution'));
+  say(T(`We use ${kw('iodine solution')} to check if there is starch. Add a drop on the cotyledon and watch the colour.`, G(`بنستخدم ${kw('محلول اليود')} للكشف عن النشا. أضف قطرة واحدة على السطح الداخلي للفلقة، ولاحظ تغيّر اللون.`, `بنستخدم ${kw('محلول اليود')} للكشف عن النشا. أضيفي قطرة واحدة على السطح الداخلي للفلقة، ولاحظي تغيّر اللون.`)), 'point');
+  await act(T('Add a drop of iodine solution', G(`أضف قطرة من محلول اليود`, `أضيفي قطرة من محلول اليود`)));
   await dropIodine(247, 112, 1);
-  say(T(`What colour did the cotyledon change to?`), 'think');
-  await askChoice({ options: [T('Blue-black'), T('Red'), T('Green')], correct: T('Blue-black'),
-    hint: T(`Look at the cotyledon again. Try once more!`),
-    ok: T(`When you put iodine solution on ${kw('starch')}, the colour changes to ${kw('blue-black')}. So the cotyledon is packed with starch, the nutrient for germination.`) });
+  say(T(`What colour did the cotyledon change to?`, `لون الفلقة اتحول إلى أي لون؟`), 'think');
+  await askChoice({ options: [T('Blue-black', 'أزرق داكن'), T('Red', 'أحمر'), T('Green', 'أخضر')], correct: T('Blue-black', 'أزرق داكن'),
+    hint: T(`Look at the cotyledon again. Try once more!`, G(`بص على الفلقة تاني. جرّب مرة كمان!`, `بصي على الفلقة تاني. جرّبي مرة كمان!`)),
+    ok: T(`When you put iodine solution on ${kw('starch')}, the colour changes to ${kw('blue-black')}. So the cotyledon is packed with starch, the nutrient for germination.`, `عند وضع محلول اليود على مادة تحتوي على ${kw('نشا')} يتحول لونه إلى ${kw('الأزرق الداكن')}. يعني الفلقة غنية بالنشا، وهو غذاء مخزَّن داخل البذرة ولازم للإنبات.`) });
 
   sc.split = false; sc.germ = true; sc.stain = 0; render();
-  say(T(`<b>Discovery!</b> This is the cotyledon of a seed that germinated and grew for a few days. Add a drop of iodine solution on it too.`), 'point');
-  await act(T('Add a drop of iodine solution'));
+  say(T(`<b>Discovery!</b> This is the cotyledon of a seed that germinated and grew for a few days. Add a drop of iodine solution on it too.`, G(`<b>اكتشف!</b> دي فلقة من بذرة فاصوليا أخرى منبتة نمت لمدة أيام. أضف عليها هي كمان قطرة من محلول اليود.`, `<b>اكتشفي!</b> دي فلقة من بذرة فاصوليا أخرى منبتة نمت لمدة أيام. أضيفي عليها هي كمان قطرة من محلول اليود.`)), 'point');
+  await act(T('Add a drop of iodine solution', G(`أضف قطرة من محلول اليود`, `أضيفي قطرة من محلول اليود`)));
   await dropIodine(236, 132, .2);
-  say(T(`This time the colour is very faint. Why?`), 'think');
-  const used = T('The seed used its starch to germinate and grow');
-  await askChoice({ options: [used, T('Iodine does not work on this seed'), T('The seed made extra starch')], correct: used,
-    hint: T(`Think: what is the starch for? Try again!`),
-    ok: T(`Starch is the ${kw('nutrient for germination')}. The growing seed used most of it, so only a little starch is left.`) });
+  say(T(`This time the colour is very faint. Why?`, `المرة دي اللون خافت جدًّا. ليه؟`), 'think');
+  const used = T('The seed used its starch to germinate and grow', 'البذرة استخدمت النشا لكي تنبت وتنمو');
+  await askChoice({ options: [used, T('Iodine does not work on this seed', 'محلول اليود لا يعمل مع هذه البذرة'), T('The seed made extra starch', 'البذرة صنعت نشا أكثر')], correct: used,
+    hint: T(`Think: what is the starch for? Try again!`, G(`فكّر: النشا فايدته إيه للبذرة؟ جرّب تاني!`, `فكّري: النشا فايدته إيه للبذرة؟ جرّبي تاني!`)),
+    ok: T(`Starch is the ${kw('nutrient for germination')}. The growing seed used most of it, so only a little starch is left.`, `النشا هو ${kw('الغذاء اللازم للإنبات')}. البذرة وهي بتنمو استخدمت معظمه، فلم يبقَ منه إلا القليل.`) });
   sfx.win(); confetti();
-  say(T(`Stage 1 complete! You know what is inside a seed. Next: what does a seed need to germinate?`), 'celebrate');
+  say(T(`Stage 1 complete! You know what is inside a seed. Next: what does a seed need to germinate?`, G(`خلّصت المرحلة ١! عرفت إيه الموجود داخل البذرة. اللي جاي: البذرة محتاجة إيه علشان تنبت؟`, `خلّصتي المرحلة ١! عرفتي إيه الموجود داخل البذرة. اللي جاي: البذرة محتاجة إيه علشان تنبت؟`)), 'celebrate');
   await nextBtn(T('Go to Stage 2 ▸', 'على المرحلة ٢ ◂'));
 }
 
 /* ---------- Stage 2: the three experiments ---------- */
 const ROWS = [
-  { k: 'water', icon: '💧', name: T('Water', 'الماء'), on: T('Yes', 'يوجد'), off: T('No water', 'لا يوجد') },
-  { k: 'air', icon: '🌬️', name: T('Air', 'الهواء'), on: T('Exposed', 'معرّضة'), off: T('Not exposed', 'غير معرّضة') },
-  { k: 'warm', icon: '🌡️', name: T('Temperature', 'الحرارة'), on: T('Warm', 'دافئة'), off: T('Cold', 'باردة') }
+  { k: 'water', icon: '💧', name: T('Water', 'الماء'), on: T('Yes', 'يوجد ماء'), off: T('No water', 'لا يوجد ماء') },
+  { k: 'air', icon: '🌬️', name: T('Air', 'الهواء'), on: T('Exposed', 'معرَّض للهواء'), off: T('Not exposed', 'غير معرَّض') },
+  { k: 'warm', icon: '🌡️', name: T('Temperature', 'درجة الحرارة'), on: T('Warm', 'مكان دافئ'), off: T('Cold', 'الثلاجة') }
 ];
-const COND = { water: T('water'), air: T('air'), warm: T('temperature') };
+const COND = { water: T('water', 'الماء'), air: T('air', 'الهواء'), warm: T('temperature', 'درجة الحرارة') };
 let labLocked = true, light = false;
 const diff = () => ROWS.map(r => r.k).filter(k => sc.b[k] !== FULL[k]);
 function paintLab() {
   const lab = el('lab');
-  lab.innerHTML = `<span></span><b class="lh">${T('Cup A', 'الكوب أ')}</b><b class="lh">${T('Cup B', 'الكوب ب')}</b>` + ROWS.map(r =>
+  lab.innerHTML = `<span></span><b class="lh">${T('Cup A', 'الكوب (أ)')}</b><b class="lh">${T('Cup B', 'الكوب (ب)')}</b>` + ROWS.map(r =>
     `<span class="lk">${r.icon} ${r.name}</span><span class="lv a">${r.on}</span>
-     <button class="lv b${sc.b[r.k] !== FULL[r.k] ? ' diff' : ''}" type="button" data-k="${r.k}"${labLocked ? ' disabled' : ''} aria-label="${T('Cup B', 'الكوب ب')}: ${r.name}: ${sc.b[r.k] ? r.on : r.off}">${sc.b[r.k] ? r.on : r.off}</button>`).join('')
+     <button class="lv b${sc.b[r.k] !== FULL[r.k] ? ' diff' : ''}" type="button" data-k="${r.k}"${labLocked ? ' disabled' : ''} aria-label="${T('Cup B', 'الكوب (ب)')}: ${r.name}: ${sc.b[r.k] ? r.on : r.off}">${sc.b[r.k] ? r.on : r.off}</button>`).join('')
     + (light ? `<span class="lk">💡 ${T('Light', 'الضوء')}</span><span class="lv a${sc.a.dark ? '' : ' diff'}">${sc.a.dark ? T('Dark box', 'صندوق مظلم') : T('Bright', 'مضيء')}</span><span class="lv a">${T('Dark', 'مظلم')}</span>` : '')
     + `<button class="btn primary run" type="button" id="btnRun"${labLocked ? ' disabled' : ''}>▶ ${T('Start the experiment', 'ابدأ التجربة')}</button>`;
   lab.querySelectorAll('button.lv').forEach(b => { b.onclick = () => { if (labLocked) return; const k = b.dataset.k; sc.b[k] = !sc.b[k]; sfx.tick(); paintLab(); render(); lab.querySelector(`button[data-k="${k}"]`).focus({ preventScroll: true }); }; });
@@ -553,10 +555,10 @@ function waitRun(key) {
       sfx.bad();
       if (tries >= 3) {       // show the right set-up
         sc.b = Object.assign({}, FULL, { [key]: false }); paintLab(); render();
-        say(T(`Let me show you: only the <b>${COND[key]}</b> is different in cup B now. Press <b>Start</b>.`), 'think');
-      } else if (!d.length) say(T(`Cup B is exactly the same as cup A, so we will learn nothing. Change the condition we are investigating: the <b>${COND[key]}</b>.`), 'think');
-      else if (d.length > 1) { mistakes++; say(T(`You changed <b>${d.length} conditions</b>. If you change two conditions, you won’t know which one is necessary! Change only the <b>${COND[key]}</b>.`), 'sad'); }
-      else { mistakes++; say(T(`That would investigate the <b>${COND[d[0]]}</b>. This mission is about the <b>${COND[key]}</b>. Put the ${COND[d[0]]} back, and change only the ${COND[key]}.`), 'sad'); }
+        say(T(`Let me show you: only the <b>${COND[key]}</b> is different in cup B now. Press <b>Start</b>.`, G(`هوريك أنا: دلوقتي الشرط الوحيد المختلف في الكوب (ب) هو <b>${COND[key]}</b>. اضغط <b>ابدأ التجربة</b>.`, `هوريكي أنا: دلوقتي الشرط الوحيد المختلف في الكوب (ب) هو <b>${COND[key]}</b>. اضغطي <b>ابدأ التجربة</b>.`)), 'think');
+      } else if (!d.length) say(T(`Cup B is exactly the same as cup A, so we will learn nothing. Change the condition we are investigating: the <b>${COND[key]}</b>.`, G(`الكوب (ب) زي الكوب (أ) بالظبط، كده مش هنعرف حاجة. غيّر الشرط الذي نتحقق منه: <b>${COND[key]}</b>.`, `الكوب (ب) زي الكوب (أ) بالظبط، كده مش هنعرف حاجة. غيّري الشرط الذي نتحقق منه: <b>${COND[key]}</b>.`)), 'think');
+      else if (d.length > 1) { mistakes++; say(T(`You changed <b>${d.length} conditions</b>. If you change two conditions, you won’t know which one is necessary! Change only the <b>${COND[key]}</b>.`, G(`إنت غيّرت <b>أكتر من شرط</b>. إذا غيّرت شرطين، فلن تعرف أيهما ضروري! غيّر <b>${COND[key]}</b> فقط.`, `إنتي غيّرتي <b>أكتر من شرط</b>. إذا غيّرتِ شرطين، فلن تعرفي أيهما ضروري! غيّري <b>${COND[key]}</b> فقط.`)), 'sad'); }
+      else { mistakes++; say(T(`That would investigate the <b>${COND[d[0]]}</b>. This mission is about the <b>${COND[key]}</b>. Put the ${COND[d[0]]} back, and change only the ${COND[key]}.`, G(`كده هنتحقق من <b>${COND[d[0]]}</b>. المهمة دي عن <b>${COND[key]}</b>. رجّع ${COND[d[0]]} زي الكوب (أ)، وغيّر ${COND[key]} فقط.`, `كده هنتحقق من <b>${COND[d[0]]}</b>. المهمة دي عن <b>${COND[key]}</b>. رجّعي ${COND[d[0]]} زي الكوب (أ)، وغيّري ${COND[key]} فقط.`)), 'sad'); }
     };
     lab.addEventListener('click', onClick);
   });
@@ -568,63 +570,63 @@ async function runDays() {
 async function mission(n, key, text) {
   sc.a = Object.assign({}, FULL); sc.b = Object.assign({}, FULL); sc.gA = sc.gB = 0; sc.day = 0; light = false; labLocked = false;
   paintLab(); render(); actions.innerHTML = '';
-  say(T(`<b>Mission ${n}:</b> ${text.ask} Cup A has everything it needs. <b>Change only ONE condition in cup B</b>, then press <b>Start</b>.`), 'point');
+  say(T(`<b>Mission ${n}:</b> ${text.ask} Cup A has everything it needs. <b>Change only ONE condition in cup B</b>, then press <b>Start</b>.`, G(`<b>المهمة ${n}:</b> ${text.ask} الكوب (أ) فيه كل ما تحتاج إليه البذور. <b>غيّر شرطًا واحدًا فقط في الكوب (ب)</b>، وبعدين اضغط <b>ابدأ التجربة</b>.`, `<b>المهمة ${n}:</b> ${text.ask} الكوب (أ) فيه كل ما تحتاج إليه البذور. <b>غيّري شرطًا واحدًا فقط في الكوب (ب)</b>، وبعدين اضغطي <b>ابدأ التجربة</b>.`)), 'point');
   const tries = await waitRun(key);
   labLocked = true; paintLab(); addScore(tries === 1 ? 20 : 5); sfx.ok();
   if (key === 'warm') {
     light = true; paintLab();
-    say(T(`Wait! It is <b>dark</b> inside the refrigerator, but cup A is in the light. Now two things are different. What should we do?`), 'think');
-    const cover = T('Cover cup A with a cardboard box');
-    await askChoice({ options: [cover, T('Give cup A more water'), T('Put cup A in the refrigerator too')], correct: cover,
-      hint: T(`We want the <b>light</b> to be the same for both cups, and the temperature to stay different. Try again!`),
-      ok: T(`Now it is dark for both cups, so ${kw('only the temperature')} is different.`) });
+    say(T(`Wait! It is <b>dark</b> inside the refrigerator, but cup A is in the light. Now two things are different. What should we do?`, G(`استنى! داخل الثلاجة <b>مظلم</b>، لكن الكوب (أ) في الضوء. كده فيه شرطين مختلفين. نعمل إيه؟`, `استني! داخل الثلاجة <b>مظلم</b>، لكن الكوب (أ) في الضوء. كده فيه شرطين مختلفين. نعمل إيه؟`)), 'think');
+    const cover = T('Cover cup A with a cardboard box', 'نغطي الكوب (أ) بصندوق كرتون');
+    await askChoice({ options: [cover, T('Give cup A more water', 'نضيف ماءً أكثر إلى الكوب (أ)'), T('Put cup A in the refrigerator too', 'نضع الكوب (أ) في الثلاجة أيضًا')], correct: cover,
+      hint: T(`We want the <b>light</b> to be the same for both cups, and the temperature to stay different. Try again!`, G(`عايزين <b>الإضاءة</b> تبقى متشابهة في الكوبين، ودرجة الحرارة تفضل مختلفة. جرّب تاني!`, `عايزين <b>الإضاءة</b> تبقى متشابهة في الكوبين، ودرجة الحرارة تفضل مختلفة. جرّبي تاني!`)),
+      ok: T(`Now it is dark for both cups, so ${kw('only the temperature')} is different.`, `دلوقتي المكان مظلم للكوبين، حتى لا يكون للضوء تأثير، و${kw('درجة الحرارة فقط')} هي المختلفة.`) });
     sc.a.dark = true; paintLab(); render();
-    say(T(`We also put small wooden blocks under the box. Why?`), 'think');
-    const gap = T('To make a gap for air to enter');
-    await askChoice({ options: [gap, T('To make the box warmer'), T('To make the box darker')], correct: gap,
-      hint: T(`Think about what the seeds in cup A still need. Try again!`),
-      ok: T(`The gap lets ${kw('air')} enter, so both cups have air.`) });
+    say(T(`We also put small wooden blocks under the box. Why?`, `وكمان بنضع قطعًا خشبية صغيرة أسفل الصندوق. ليه؟`), 'think');
+    const gap = T('To make a gap for air to enter', 'لتترك فجوة تسمح بدخول الهواء');
+    await askChoice({ options: [gap, T('To make the box warmer', 'لتجعل الصندوق أكثر دفئًا'), T('To make the box darker', 'لتجعل الصندوق أكثر ظلامًا')], correct: gap,
+      hint: T(`Think about what the seeds in cup A still need. Try again!`, G(`فكّر: البذور في الكوب (أ) لسه محتاجة إيه؟ جرّب تاني!`, `فكّري: البذور في الكوب (أ) لسه محتاجة إيه؟ جرّبي تاني!`)),
+      ok: T(`The gap lets ${kw('air')} enter, so both cups have air.`, `الفجوة تسمح بدخول ${kw('الهواء')}، فيبقى الكوبان معرَّضين للهواء.`) });
   }
-  say(T(`${text.same} Now we wait a few days and observe the seeds every day…`), 'point');
+  say(T(`${text.same} Now we wait a few days and observe the seeds every day…`, `${text.same} دلوقتي نستنى بضعة أيام ونراقب البذور كل يوم…`), 'point');
   actions.innerHTML = '';
   await runDays();
-  say(T(`Five days have passed. Which cup sprouted?`), 'think');
-  await askChoice({ options: [text.a, text.b, T('Both cups')], correct: text.a,
-    hint: T(`Look at the two cups again. Which one has green sprouts? Try again!`), ok: text.ok });
+  say(T(`Five days have passed. Which cup sprouted?`, `عدّت خمسة أيام. أنهي كوب نبتت فيه البذور؟`), 'think');
+  await askChoice({ options: [text.a, text.b, T('Both cups', 'الكوبان معًا')], correct: text.a,
+    hint: T(`Look at the two cups again. Which one has green sprouts? Try again!`, G(`بص على الكوبين تاني. أنهي كوب فيه نبتات خضراء؟ جرّب تاني!`, `بصي على الكوبين تاني. أنهي كوب فيه نبتات خضراء؟ جرّبي تاني!`)), ok: text.ok });
 }
 async function stage2() {
   setStage(2, T('Missions', 'المهمات'));
   await banner(T('Stage 2', 'المرحلة ٢'), T('Missions', 'المهمات'));
   sc.mode = 'lab'; setUI({ lab: true });
   await mission(1, 'water', {
-    ask: T(`Do seeds need ${kw('water')} to germinate?`), same: T(`Only the water is different. The temperature, the air and the brightness are the same.`),
-    a: T('Cup A: moist cotton'), b: T('Cup B: dry cotton'),
-    ok: T(`The seeds on the cotton moistened with water sprouted. The seeds on the dry cotton did not. Seeds ${kw('need water')} to germinate.`) });
+    ask: T(`Do seeds need ${kw('water')} to germinate?`, `هل تحتاج البذور إلى ${kw('الماء')} لكي تنبت؟`), same: T(`Only the water is different. The temperature, the air and the brightness are the same.`, `الماء فقط هو المختلف. أما درجة الحرارة والهواء والإضاءة فكما هي.`),
+    a: T('Cup A: moist cotton', 'الكوب (أ): قطن مبلل'), b: T('Cup B: dry cotton', 'الكوب (ب): قطن جاف'),
+    ok: T(`The seeds on the cotton moistened with water sprouted. The seeds on the dry cotton did not. Seeds ${kw('need water')} to germinate.`, `البذور على القطن المبلل بالماء نبتت، والبذور على القطن الجاف لم تنبت. البذور ${kw('تحتاج إلى الماء')} لكي تنبت.`) });
   await mission(2, 'air', {
-    ask: T(`Do seeds need ${kw('air')} to germinate?`), same: T(`In cup B the seeds are completely submerged in water, so they are not exposed to air. Water and temperature are the same.`),
-    a: T('Cup A: exposed to air'), b: T('Cup B: under water'),
-    ok: T(`The submerged seeds did not germinate, because they were not exposed to air. Seeds are alive just like us, and they ${kw('need air')}.`) });
+    ask: T(`Do seeds need ${kw('air')} to germinate?`, `هل تحتاج البذور إلى ${kw('الهواء')} لكي تنبت؟`), same: T(`In cup B the seeds are completely submerged in water, so they are not exposed to air. Water and temperature are the same.`, `في الكوب (ب) البذور مغمورة تمامًا في الماء، بحيث لا تتعرَّض للهواء. أما الماء ودرجة الحرارة فكما هما.`),
+    a: T('Cup A: exposed to air', 'الكوب (أ): معرَّض للهواء'), b: T('Cup B: under water', 'الكوب (ب): مغمور في الماء'),
+    ok: T(`The submerged seeds did not germinate, because they were not exposed to air. Seeds are alive just like us, and they ${kw('need air')}.`, `البذور المغمورة في الماء لم تنبت لأنها لم تتعرَّض للهواء. البذور كائنات حية تمامًا مثل الإنسان، و${kw('تحتاج إلى الهواء')} لكي تنبت.`) });
   await mission(3, 'warm', {
-    ask: T(`Is there a proper ${kw('temperature')} for seeds to sprout?`), same: T(`Water, air and light are the same. Only the temperature is different.`),
-    a: T('Cup A: in the warm place'), b: T('Cup B: in the refrigerator'),
-    ok: T(`The seeds in the refrigerator did not germinate, because the temperature was too low. Seeds need an ${kw('appropriate temperature')}. And cup A sprouted in the dark: light is not needed for germination!`) });
+    ask: T(`Is there a proper ${kw('temperature')} for seeds to sprout?`, `هل توجد ${kw('درجة حرارة')} مناسبة لإنبات البذور؟`), same: T(`Water, air and light are the same. Only the temperature is different.`, `الماء والهواء والإضاءة كما هي. درجة الحرارة فقط هي المختلفة.`),
+    a: T('Cup A: in the warm place', 'الكوب (أ): في المكان الدافئ'), b: T('Cup B: in the refrigerator', 'الكوب (ب): في الثلاجة'),
+    ok: T(`The seeds in the refrigerator did not germinate, because the temperature was too low. Seeds need an ${kw('appropriate temperature')}. And cup A sprouted in the dark: light is not needed for germination!`, `البذور في الثلاجة لم تنبت لأن درجة الحرارة كانت منخفضة جدًّا. البذور تحتاج إلى ${kw('درجة حرارة مناسبة')} لكي تنبت. والبذور في الكوب (أ) نبتت في الظلام: يعني الضوء ليس ضروريًّا للإنبات!`) });
   sfx.win(); confetti();
-  say(T(`You found the <b>3 conditions</b> necessary for germination: ${kw('water')}, ${kw('air')} and an ${kw('appropriate temperature')}. If even one of them is missing, the seeds will not germinate.`), 'celebrate');
+  say(T(`You found the <b>3 conditions</b> necessary for germination: ${kw('water')}, ${kw('air')} and an ${kw('appropriate temperature')}. If even one of them is missing, the seeds will not germinate.`, G(`اكتشفت <b>الشروط الثلاثة</b> الضرورية لإنبات البذور: ${kw('الماء')}، و${kw('الهواء')}، و${kw('درجة حرارة مناسبة')}. إذا فُقد أحد هذه الشروط فلن تنبت البذور.`, `اكتشفتي <b>الشروط الثلاثة</b> الضرورية لإنبات البذور: ${kw('الماء')}، و${kw('الهواء')}، و${kw('درجة حرارة مناسبة')}. إذا فُقد أحد هذه الشروط فلن تنبت البذور.`)), 'celebrate');
   await nextBtn(T('Go to Stage 3 ▸', 'على المرحلة ٣ ◂'));
 }
 
 /* ---------- Stage 3: will it germinate? ---------- */
 const SETUPS = [
-  { t: T('Moist cotton, in a warm room'), c: {}, why: T('It has water, air and an appropriate temperature: all three conditions.') },
-  { t: T('Moist cotton, in a warm room, inside a dark box'), c: { dark: true }, why: T('It has all three conditions. Sunlight is not needed for germination.') },
-  { t: T('Moist cotton, in a warm room, with no fertilizer'), c: {}, why: T('It has all three conditions. Fertilizer is not needed for germination.') },
-  { t: T('Moist cotton, on a warm sunny window'), c: {}, why: T('It has water, air and an appropriate temperature.') },
-  { t: T('Dry cotton, in a warm room'), c: { water: false }, why: T('There is no water.') },
-  { t: T('Seeds completely under water, in a warm room'), c: { air: false }, why: T('The seeds are not exposed to air.') },
-  { t: T('Moist cotton, in the refrigerator'), c: { warm: false }, why: T('The temperature is too low.') },
-  { t: T('Dry cotton, on a warm sunny window'), c: { water: false }, why: T('There is no water. Sunlight does not help a seed to germinate.') },
-  { t: T('Seeds under water, with fertilizer added'), c: { air: false }, why: T('The seeds are not exposed to air. Fertilizer does not help a seed to germinate.') },
-  { t: T('Dry cotton, in the refrigerator'), c: { water: false, warm: false }, why: T('Two conditions are missing: water and an appropriate temperature.') }
+  { t: T('Moist cotton, in a warm room', 'قطن مبلل، في غرفة دافئة'), c: {}, why: T('It has water, air and an appropriate temperature: all three conditions.', 'يتوفر لها الماء والهواء ودرجة حرارة مناسبة: الشروط الثلاثة كلها.') },
+  { t: T('Moist cotton, in a warm room, inside a dark box', 'قطن مبلل، في غرفة دافئة، داخل صندوق مظلم'), c: { dark: true }, why: T('It has all three conditions. Sunlight is not needed for germination.', 'تتوفر لها الشروط الثلاثة. ضوء الشمس ليس ضروريًّا للإنبات.') },
+  { t: T('Moist cotton, in a warm room, with no fertilizer', 'قطن مبلل، في غرفة دافئة، بدون سماد'), c: {}, why: T('It has all three conditions. Fertilizer is not needed for germination.', 'تتوفر لها الشروط الثلاثة. السماد ليس ضروريًّا للإنبات.') },
+  { t: T('Moist cotton, on a warm sunny window', 'قطن مبلل، على نافذة دافئة مشمسة'), c: {}, why: T('It has water, air and an appropriate temperature.', 'يتوفر لها الماء والهواء ودرجة حرارة مناسبة.') },
+  { t: T('Dry cotton, in a warm room', 'قطن جاف، في غرفة دافئة'), c: { water: false }, why: T('There is no water.', 'لا يوجد ماء.') },
+  { t: T('Seeds completely under water, in a warm room', 'بذور مغمورة تمامًا في الماء، في غرفة دافئة'), c: { air: false }, why: T('The seeds are not exposed to air.', 'البذور لا تتعرَّض للهواء.') },
+  { t: T('Moist cotton, in the refrigerator', 'قطن مبلل، في الثلاجة'), c: { warm: false }, why: T('The temperature is too low.', 'درجة الحرارة منخفضة جدًّا.') },
+  { t: T('Dry cotton, on a warm sunny window', 'قطن جاف، على نافذة دافئة مشمسة'), c: { water: false }, why: T('There is no water. Sunlight does not help a seed to germinate.', 'لا يوجد ماء. وضوء الشمس ليس من شروط الإنبات.') },
+  { t: T('Seeds under water, with fertilizer added', 'بذور مغمورة في الماء، مع إضافة سماد'), c: { air: false }, why: T('The seeds are not exposed to air. Fertilizer does not help a seed to germinate.', 'البذور لا تتعرَّض للهواء. والسماد ليس من شروط الإنبات.') },
+  { t: T('Dry cotton, in the refrigerator', 'قطن جاف، في الثلاجة'), c: { water: false, warm: false }, why: T('Two conditions are missing: water and an appropriate temperature.', 'شرطان مفقودان: الماء ودرجة الحرارة المناسبة.') }
 ];
 function timedPick(ms) {
   return new Promise(res => {
@@ -649,7 +651,7 @@ async function stage3() {
   const ROUNDS = 8;
   sc.mode = 'one'; sc.one = Object.assign({}, FULL); sc.gOne = 0; setUI({ yesno: true }); render();
   el('btnYes').disabled = el('btnNo').disabled = true;
-  say(T(`Speed Round! I will describe a cup of seeds. Will the seeds <b>germinate</b> or not? Press the right button before time runs out. ${ROUNDS} rounds!`), 'point');
+  say(T(`Speed Round! I will describe a cup of seeds. Will the seeds <b>germinate</b> or not? Press the right button before time runs out. ${ROUNDS} rounds!`, G(`جولة السرعة! هوصف لك كوب فيه بذور. هل البذور <b>تنبت</b> ولا لأ؟ اضغط على الزرار الصح قبل ما الوقت يخلص. ${ROUNDS} جولات!`, `جولة السرعة! هوصف لك كوب فيه بذور. هل البذور <b>تنبت</b> ولا لأ؟ اضغطي على الزرار الصح قبل ما الوقت يخلص. ${ROUNDS} جولات!`)), 'point');
   await nextBtn(T('Go! ▸', 'يلّا! ◂'));
   const yes = shuffle(SETUPS.filter(s => A.germinates(Object.assign({}, FULL, s.c)))).slice(0, 4), no = shuffle(SETUPS.filter(s => !A.germinates(Object.assign({}, FULL, s.c)))).slice(0, 4);
   const list = shuffle(yes.concat(no));
@@ -658,18 +660,18 @@ async function stage3() {
     const S = list[i - 1], c = Object.assign({}, FULL, S.c), ans = A.germinates(c);
     sc.one = c; sc.gOne = 0; render();
     veil(`<small>${T(`Round ${i} of ${ROUNDS}`, `الجولة ${i} من ${ROUNDS}`)}</small><strong>${S.t}</strong><span>${T('Will these seeds germinate?', 'هل تنبت هذه البذور؟')}</span>`);
-    say(T(`Think of the three conditions!`), 'think');
+    say(T(`Think of the three conditions!`, G(`افتكر الشروط الثلاثة!`, `افتكري الشروط الثلاثة!`)), 'think');
     const r = await timedPick(12000);
     veil(null);
     if (ans) tween(900, k => { sc.gOne = k; });
-    const verdict = ans ? T('The seeds <b>germinate</b>.') : T('The seeds <b>do not germinate</b>.');
+    const verdict = ans ? T('The seeds <b>germinate</b>.', 'البذور <b>تنبت</b>.') : T('The seeds <b>do not germinate</b>.', 'البذور <b>لا تنبت</b>.');
     if (r.pick === ans) {
       streak++;
       addScore(10 + Math.round(r.left * 10) + (streak >= 3 ? 5 : 0)); sfx.ok();
-      say(T(`Correct! ${streak >= 3 ? `<b class="kw">Streak ×${streak}</b> ` : ''}${verdict} ${S.why}`), 'thumbs');
+      say(T(`Correct! ${streak >= 3 ? `<b class="kw">Streak ×${streak}</b> ` : ''}${verdict} ${S.why}`, `صح! ${streak >= 3 ? `<b class="kw">سلسلة ×${streak}</b> ` : ''}${verdict} ${S.why}`), 'thumbs');
     } else {
       streak = 0; mistakes++; sfx.bad();
-      say(T(`${r.timeout ? 'Time’s up!' : 'Not quite.'} ${verdict} ${S.why}`), 'sad');
+      say(T(`${r.timeout ? 'Time’s up!' : 'Not quite.'} ${verdict} ${S.why}`, `${r.timeout ? 'الوقت خلص!' : G('قرّبت!', 'قرّبتي!')} ${verdict} ${S.why}`), 'sad');
     }
     await sleep(2600);
   }
@@ -688,7 +690,7 @@ function results() {
     <h2>${T('Seed Lab done!', G('خلّصت معمل البذور!', 'خلّصتي معمل البذور!'))}</h2>
     <div class="stars" aria-label="${T(`${stars} of 3 stars`, `${stars} من ٣ نجوم`)}">${'★'.repeat(stars)}<span class="off">${'★'.repeat(3 - stars)}</span></div>
     <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Best', 'أعلى نتيجة')}: ${best}</span><span>+${gain.gained} XP · ${T('Level', 'المستوى')} ${gain.after.n}</span></div>
-    <p>${T('The cotyledon is packed with <b>starch</b>, the nutrient for germination. Seeds germinate only with <b>water</b>, <b>air</b> and an <b>appropriate temperature</b>. If even one is missing, they will not germinate.')}</p>
+    <p>${T('The cotyledon is packed with <b>starch</b>, the nutrient for germination. Seeds germinate only with <b>water</b>, <b>air</b> and an <b>appropriate temperature</b>. If even one is missing, they will not germinate.', 'الفلقة غنية <b>بالنشا</b>، وهو الغذاء اللازم للإنبات. وتنبت البذور فقط عندما يتوفر لها <b>الماء</b> و<b>الهواء</b> و<b>درجة حرارة مناسبة</b>. إذا فُقد أحد هذه الشروط فلن تنبت البذور.')}</p>
     <div class="acts">
       <a class="btn primary" href="quiz.html#quest">${T('Chapter Quest ▸', 'تحدي الفصل ◂')}</a>
       <a class="btn" href="map.html">${T('Map', 'الخريطة')}</a>
@@ -707,7 +709,7 @@ function intro() {
     o.innerHTML = `<div class="panel">
       <img class="hero" src="assets/parrot_wave.png" alt="">
       <h2>${T('Seed Lab', 'معمل البذور')}</h2>
-      <p>${T(`Hi, <b>${SI.esc(SI.player().name)}</b>! Welcome to my lab. First we open a <b>seed</b> to see what is inside. Then we do three experiments to find out what seeds need to <b>germinate</b>.`)}</p>
+      <p>${T(`Hi, <b>${SI.esc(SI.player().name)}</b>! Welcome to my lab. First we open a <b>seed</b> to see what is inside. Then we do three experiments to find out what seeds need to <b>germinate</b>.`, G(`أهلًا يا <b>${SI.esc(SI.player().name)}</b>! نوّرت معملي. الأول هنفتح <b>بذرة</b> ونشوف إيه الموجود جواها. وبعدين هنعمل ثلاث تجارب علشان نعرف البذور محتاجة إيه لكي <b>تنبت</b>.`, `أهلًا يا <b>${SI.esc(SI.player().name)}</b>! نوّرتي معملي. الأول هنفتح <b>بذرة</b> ونشوف إيه الموجود جواها. وبعدين هنعمل ثلاث تجارب علشان نعرف البذور محتاجة إيه لكي <b>تنبت</b>.`))}</p>
       ${s.best ? `<div class="stats"><span>${T('Best score', 'أعلى نتيجة')}: ${s.best}</span><span>${T('Stars', 'النجوم')}: ${'★'.repeat(s.stars || 0)}${'☆'.repeat(3 - (s.stars || 0))}</span></div>` : ''}
       <div class="acts"><button class="btn primary big" id="start" type="button">${T('Start', 'ابدأ')}</button></div>
     </div>`;

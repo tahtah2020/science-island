@@ -114,7 +114,7 @@
 
   /* ---------- a plastic cup. Origin: bottom middle; 80 wide at the top, 96 tall ----------
      water: true/false, air: true/false (false + water = seeds under water; false without water = sealed, dry)
-     g: 0 … 1 how far the seeds germinated, label: 'A' | 'B' */
+     g: 0 … 1 how far the seeds germinated, label: 'A' | 'B' (shown as أ / ب for an Arabic player) */
   const SEEDS = [-17, 0, 17];
   function miniBean(x, y, r, split) {
     return `<g transform="translate(${x} ${y}) rotate(${r}) scale(.17)"><path d="${KIDNEY}" fill="#a3463a" stroke="#6f2c26" stroke-width="7"/>${split ? '<path d="M-30 -4C-10 6 14 4 36 -8" fill="none" stroke="#f6e8c6" stroke-width="9" stroke-linecap="round"/>' : ''}</g>`;
@@ -150,7 +150,7 @@
       <path d="${OUT}" fill="none" stroke="#8fb6cb" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
       <ellipse cx="0" cy="-96" rx="40" ry="5.4" fill="none" stroke="#8fb6cb" stroke-width="2.2"/>
       <path d="M-32 -84L-26 -22" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>${lid}
-      ${o.label ? `<g transform="translate(22 -62) rotate(-4)"><rect x="-11" y="-10" width="22" height="20" rx="3" fill="#fff7c9" stroke="#e2cf8a" stroke-width="1.4"/><text x="0" y="6" text-anchor="middle" font-size="15" font-weight="900" fill="#1f3d57" font-family="Nunito,Arial,sans-serif">${o.label}</text></g>` : ''}`;
+      ${o.label ? `<g transform="translate(22 -62) rotate(-4)"><rect x="-11" y="-10" width="22" height="20" rx="3" fill="#fff7c9" stroke="#e2cf8a" stroke-width="1.4"/><text x="0" y="6" text-anchor="middle" font-size="15" font-weight="900" fill="#1f3d57" font-family="Nunito,Cairo,Arial,sans-serif">${o.label === 'A' ? T('A', 'أ') : o.label === 'B' ? T('B', 'ب') : o.label}</text></g>` : ''}`;
   }
 
   /* ---------- a cup in its place. Origin: on the bench under the cup ----------
@@ -222,18 +222,19 @@
       ${hot('germinated', T('The seed that has germinated', 'البذرة التي نبتت'), '<rect class="ring" x="182" y="16" width="136" height="172" rx="16"/>')}</svg>`;
   }
   function cups(a, b, label) {
+    const ar = T(false, true), xa = ar ? 248 : 92, xb = ar ? 92 : 248;   // Arabic reads from the right: cup (أ) on the right, like the school book
     return `<svg class="diagram" viewBox="0 0 340 250" role="img" aria-label="${label}">
       ${bench(340, 250, 212)}
-      <g transform="translate(92 218)">${station(Object.assign({ label: 'A' }, a))}</g><g transform="translate(248 218)">${station(Object.assign({ label: 'B' }, b))}</g>
-      ${hot('A', T('Cup A', 'الكوب أ'), '<rect class="ring" x="14" y="12" width="156" height="226" rx="16"/>')}
-      ${hot('B', T('Cup B', 'الكوب ب'), '<rect class="ring" x="170" y="12" width="156" height="226" rx="16"/>')}</svg>`;
+      <g transform="translate(${xa} 218)">${station(Object.assign({ label: 'A' }, a))}</g><g transform="translate(${xb} 218)">${station(Object.assign({ label: 'B' }, b))}</g>
+      ${hot('A', T('Cup A', 'الكوب (أ)'), `<rect class="ring" x="${xa - 78}" y="12" width="156" height="226" rx="16"/>`)}
+      ${hot('B', T('Cup B', 'الكوب (ب)'), `<rect class="ring" x="${xb - 78}" y="12" width="156" height="226" rx="16"/>`)}</svg>`;
   }
   const ALL = { water: true, air: true, warm: true };
   window.CH3ART = { bean, beanWhole, beanSplit, half, halfGerminated, coatSkin, embryo, dish, iodineBottle, dropper, thermo, cup, station, labBack, glass, germinates, mix, blob };
   window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, {
     seedParts, iodineSeeds,
-    cupsWater: () => cups(ALL, { water: false, air: true, warm: true }, T('Cup A has cotton moistened with water. Cup B has dry cotton. Both are in the same warm place.', 'الكوب أ فيه قطن مبلل بالماء، والكوب ب فيه قطن جاف، والاثنان في نفس المكان الدافئ.')),
-    cupsAir: () => cups(ALL, { water: true, air: false, warm: true }, T('Cup A has seeds on moist cotton. In cup B the seeds are completely under water.', 'الكوب أ فيه بذور على قطن مبلل، والكوب ب فيه بذور مغمورة تمامًا في الماء.')),
-    cupsTemp: () => cups({ water: true, air: true, warm: true, dark: true }, { water: true, air: true, warm: false }, T('Cup A is in a warm place under a cardboard box. Cup B is inside the refrigerator.', 'الكوب أ في مكان دافئ تحت صندوق كرتون، والكوب ب داخل الثلاجة.'))
+    cupsWater: () => cups(ALL, { water: false, air: true, warm: true }, T('Cup A has cotton moistened with water. Cup B has dry cotton. Both are in the same warm place.', 'في الكوب (أ) قطن مبلل بالماء، وفي الكوب (ب) قطن جاف، والاثنان في نفس المكان الدافئ.')),
+    cupsAir: () => cups(ALL, { water: true, air: false, warm: true }, T('Cup A has seeds on moist cotton. In cup B the seeds are completely under water.', 'في الكوب (أ) بذور على قطن مبلل، وفي الكوب (ب) بذور مغمورة تمامًا في الماء.')),
+    cupsTemp: () => cups({ water: true, air: true, warm: true, dark: true }, { water: true, air: true, warm: false }, T('Cup A is in a warm place under a cardboard box. Cup B is inside the refrigerator.', 'الكوب (أ) في مكان دافئ تحت صندوق كرتون، والكوب (ب) داخل الثلاجة.'))
   });
 })();

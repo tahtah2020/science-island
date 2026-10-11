@@ -32,7 +32,8 @@ window.CHAPTERS = [
 
   { id: 'ch3', n: 3, title: 'Conditions for Germination', titleAr: 'شروط الإنبات', icon: '🌱', tint: '#e2f4dc', ready: true,
     lessons: ['Inside the Seed', 'Water and Germination', 'Air and Germination', 'Temperature and Germination', 'Summary of Germination'],
-    questions: 'questions_ch3.js', art: 'ch3_art.js',   // no questionsAr yet: the chapter opens for the Languages track only
+    lessonsAr: ['ما بداخل البذرة', 'الماء والإنبات', 'الهواء والإنبات', 'درجة الحرارة والإنبات', 'ملخص الإنبات'],
+    questions: 'questions_ch3.js', questionsAr: 'questions_ch3_ar.js', art: 'ch3_art.js',
     game: { href: 'seedlab.html', name: 'Seed Lab', nameAr: 'معمل البذور', icon: '🧪', hint: 'Open a seed, then find out what seeds need to germinate!', hintAr: 'افتح البذرة واكتشف البذور محتاجة إيه علشان تنبت!' },
     map: { img: 'assets/map_ch3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'assets/map_ch3.svg', quizBg: 'assets/bg_ch3.svg' },
