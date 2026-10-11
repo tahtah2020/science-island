@@ -154,7 +154,7 @@ window.IDEAS = [
       { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'The ribs protect the heart and the ___.', options: ['lungs', 'stomach', 'brain'], answer: 0 },
       { type: 'tap', diagram: 'skeleton', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap the bones that protect the heart and lungs.', answer: 'ribs' },
       { type: 'mc', style: 'story', mode: 'normal', level: 'medium', q: 'Kareem takes a deep breath and touches his chest. What does he feel?', options: ['Many thin bones lined up sideways', 'One big flat bone', 'Bumpy bones lined up from top to bottom', 'No bones at all'], answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'medium', q: 'Which TWO important organs do the ribs protect in a cage-like shape?', options: ['The heart and the lungs', 'The brain and the heart', 'The lungs and the stomach', 'The brain and the stomach'], answer: 0 },
+      { type: 'multi', mode: 'normal', level: 'medium', q: 'Which important organs do the ribs protect in a cage-like shape? Choose the two correct answers.', options: ['The brain', 'The heart', 'The lungs', 'The stomach'], answer: [1, 2] },
       { type: 'fix', mode: 'normal', level: 'medium', q: 'The ribs are located in the abdominal area.', wrong: 'abdominal', answer: 'chest', explain: 'The ribs are in the chest. They protect the heart and lungs in a cage-like shape.' }
     ] },
   { id: 'S5', lesson: 3, concept: 'Backbone supports the body',

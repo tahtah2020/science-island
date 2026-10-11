@@ -41,7 +41,7 @@ for (const f of fs.readdirSync(ROOT).filter(f => /^questions.*\.js$/.test(f))) {
   console.log(`${f}: ${w.IDEAS.length} ideas (${core} core), ${nv} phrasings`);
 }
 // EN/AR parity
-for (const [en, ar] of [['questions.js', 'questions_ar.js'], ['questions_ch2.js', 'questions_ch2_ar.js']]) {
+for (const [en, ar] of [['questions.js', 'questions_ar.js'], ['questions_ch2.js', 'questions_ch2_ar.js'], ['questions_ch3.js', 'questions_ch3_ar.js']]) {
   const L = f => { const w = {}; new Function('window', fs.readFileSync(path.join(ROOT, f), 'utf8'))(w); return w.IDEAS; };
   const E = L(en), A = L(ar);
   E.forEach((I, k) => { const J = A[k]; if (!J || J.id !== I.id) { bad++; return console.log('parity id', en, I.id); }
