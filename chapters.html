@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261011c">
+<link rel="stylesheet" href="common.css?v=20261011d">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -15,6 +15,7 @@
 .intro .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .lvl{display:flex;flex-direction:column;gap:5px}
 .lvl .t{display:flex;justify-content:space-between;gap:8px;font-weight:900;font-size:14.5px}
+.lvl .t span:last-child{flex:none;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
 .lvl small{font-weight:800;color:var(--ink);font-size:12.5px}
 .sect{margin:4px 2px 0;font-size:15px;font-weight:900;color:var(--ink);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
 .sect .ar{direction:rtl;unicode-bidi:isolate;font-size:14px}
@@ -85,8 +86,8 @@ a.ch:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261011c"></script>
-<script src="common.js?v=20261011c"></script>
+<script src="chapters.js?v=20261011d"></script>
+<script src="common.js?v=20261011d"></script>
 <script>
 (() => {
   'use strict';
@@ -99,7 +100,7 @@ a.ch:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
   $('#lvlTitle').textContent = `${T('Level', 'المستوى')} ${lv.n} · ${lv.title}`;
   $('#lvlXp').textContent = `${lv.xp} XP`;
   $('#lvlBar').style.width = Math.round(lv.pct * 100) + '%';
-  $('#lvlNext').textContent = lv.to ? T(`${lv.to - lv.xp} XP to ${lv.next}`, `باقي ${lv.to - lv.xp} XP للوصول إلى ${lv.next}`) : T('Top level reached!', 'وصلت لأعلى مستوى!');
+  $('#lvlNext').textContent = lv.to ? T(`${lv.to - lv.xp} XP to ${lv.next}`, `باقي ${lv.to - lv.xp} XP للوصول إلى مستوى «${lv.next}»`) : T('Top level reached!', 'وصلت لأعلى مستوى!');
   $('#streak').textContent = SI.dailyState().streak;
 
   $('#bye').onclick = () => { SI.sfx.tick(); SI.bye(); };

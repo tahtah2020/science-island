@@ -202,7 +202,7 @@ body{
 
 .lvlbox{background:#fff;border-radius:16px;padding:10px 14px;margin:4px 0 10px;text-align:left}
 .lvlrow{display:flex;justify-content:space-between;gap:8px;font-weight:900;font-size:15px;margin-bottom:6px}
-.lvlrow span{color:#b7791f}
+.lvlrow span{color:#b7791f;flex:none;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
 .lvlbox small{display:block;margin-top:4px;font-weight:800;color:var(--ink);font-size:13px}
 .xpbar{height:10px;border-radius:99px;background:#dbe9f0;overflow:hidden}
 .xpbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f7c948,#f2994a)}
@@ -367,9 +367,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261011c"></script>
-<script src="chapters.js?v=20261011c"></script>
-<script src="common.js?v=20261011c"></script>
+<script src="firebase-config.js?v=20261011d"></script>
+<script src="chapters.js?v=20261011d"></script>
+<script src="common.js?v=20261011d"></script>
 <script>
 (() => {
 'use strict';
@@ -1036,7 +1036,7 @@ function levelBlock(gain) {
   const L = gain.after;
   return `<div class="lvlbox"><div class="lvlrow"><b>${T('Level', 'المستوى')} ${L.n} · ${L.title}</b><span>+${gain.gained} XP</span></div>
     <div class="xpbar"><i style="width:${Math.round(L.pct * 100)}%"></i></div>
-    <small>${L.to ? T(`${L.to - L.xp} XP to ${L.next}`, `باقي ${L.to - L.xp} XP للوصول إلى ${L.next}`) : T('Top level reached!', 'وصلت لأعلى مستوى!')}</small></div>`;
+    <small>${L.to ? T(`${L.to - L.xp} XP to ${L.next}`, `باقي ${L.to - L.xp} XP للوصول إلى مستوى «${L.next}»`) : T('Top level reached!', 'وصلت لأعلى مستوى!')}</small></div>`;
 }
 
 async function results(kind, res, total, extraXP = 0) {
