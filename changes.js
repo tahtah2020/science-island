@@ -3,6 +3,14 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-12', title: 'دعوة خفيفة لمتابعة قناة «متفوّق» على تليجرام',
+    items: [
+      { text: 'الفصول اللي لسه «قريبًا» بقت بتتضغط: ريشو بيقول إن الفصل جاي قريب، وإن الإعلان عنه هيكون في قناة تليجرام (t.me/motafawek). الكلام للطفل، والدعوة لبابا أو ماما.', links: [{ label: 'فصول الصف السادس', href: 'chapters.html', ch: 'g6c1' }] },
+      { text: 'بعد ما الطفل يقيّم الفصل تقييم كويس (٣ وشوش فأكتر) ريشو بيعرض القناة مرة واحدة. التقييم الضعيف مابيظهرش بعده حاجة.' },
+      { text: 'القواعد: الدعوة ماتظهرش أكتر من مرة في الأسبوع، ولو الطفل ضغط «مش دلوقتي» تختفي ٣٠ يوم، ولو ضغط «افتح القناة» ماتظهرش تاني على الجهاز ده. مفيش نقط ولا نجوم مقابل الاشتراك، ومابتظهرش وسط اللعب.' },
+      { text: 'زرار ثابت للقناة أسفل الصفحة الرئيسية، وكارت «تابعوا الجديد على تليجرام» في صفحة «تواصل معنا».', links: [{ label: 'الرئيسية', href: 'index.html' }, { label: 'تواصل معنا', href: 'contact.html' }] },
+      { text: 'الإحصاءات (Google Analytics): telegram_shown (الدعوة ظهرت)، telegram_click (ضغط على القناة)، telegram_later (مش دلوقتي)، ومع كل واحد المكان: soon أو rating أو home أو contact.' },
+    ] },
   { date: '2026-10-12', title: 'الصف السادس: الفصل الأول «شروط الاحتراق» عربي وإنجليزي',
     items: [
       { text: 'زرار «الصف السادس» في الصفحة الرئيسية اتفتح، وقائمة فصوله العشرة ظاهرة (الفصل الأول مفتوح والباقي «قريبًا»).', links: [{ label: 'الرئيسية', href: 'index.html' }] },

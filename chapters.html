@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261012a">
+<link rel="stylesheet" href="common.css?v=20261012b">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -23,7 +23,10 @@
 .ch{display:flex;align-items:center;gap:12px;width:100%;height:100%;text-align:left;font:inherit;color:var(--navy);text-decoration:none;
   background:var(--card);border:3px solid transparent;border-radius:var(--radius);padding:10px 12px 10px 10px;box-shadow:0 6px 20px rgba(31,61,87,.13);transition:transform .12s,border-color .12s}
 a.ch:hover{transform:translateY(-2px);border-color:var(--primary)}
-a.ch:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+a.ch:focus-visible,button.ch:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+button.ch{cursor:pointer;-webkit-appearance:none;appearance:none}
+button.ch:hover{border-color:#d9cdb4}
+html[dir=rtl] button.ch{text-align:right}
 .ch.cur{border-color:var(--ok)}
 .ch.off{box-shadow:none;background:rgba(255,250,240,.72)}
 .ch .tile{flex:none;width:78px;height:78px;border-radius:18px;display:grid;place-items:center;font-size:38px;background-size:cover;background-position:center;position:relative}
@@ -86,8 +89,8 @@ a.ch:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261012a"></script>
-<script src="common.js?v=20261012a"></script>
+<script src="chapters.js?v=20261012b"></script>
+<script src="common.js?v=20261012b"></script>
 <script>
 (() => {
   'use strict';
@@ -126,8 +129,9 @@ a.ch:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
       a.onclick = () => { SI.setChapter(c.id); SI.sfx.tick(); };
       li.appendChild(a);
     } else {
-      li.innerHTML = `<div class="ch off" aria-label="${chN}: ${esc(title)}, ${T('coming soon', 'قريبًا')}">${tile}<span class="tx"><span class="k">${chN}</span><b>${esc(title)}</b>
-        <span class="meta"><span>${lessons}</span><span class="soon">${T('Soon · قريبًا', 'قريبًا')}</span></span></span></div>`;
+      li.innerHTML = `<button type="button" class="ch off" aria-label="${chN}: ${esc(title)}, ${T('coming soon', 'قريبًا')}">${tile}<span class="tx"><span class="k">${chN}</span><b>${esc(title)}</b>
+        <span class="meta"><span>${lessons}</span><span class="soon">${T('Soon · قريبًا', 'قريبًا')}</span></span></span></button>`;
+      li.firstElementChild.onclick = () => { SI.sfx.tick(); SI.tg.soon(title); };   // not open yet: Reesho says it is coming, and that the news is on the Telegram channel
     }
     box.appendChild(li);
   });

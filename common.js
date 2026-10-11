@@ -732,7 +732,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
         document.removeEventListener('keydown', onKey, true);
         o.remove(); rateOpen = null;
         try { if (back && back.focus && document.contains(back)) back.focus({ preventScroll: true }); } catch (e) {}
-        res(sent);
+        if (sent && pick && pick.v >= 3 && tgDue()) tgAsk('rating').then(() => res(sent));   // after a good rating: a light invitation to the Telegram channel
+        else res(sent);
       };
       const bub = (en, ar) => { q('#rt-bub').innerHTML = `${en}<span class="rt-ar">${ar}</span>`; };
       faces.forEach(b => b.onclick = () => {
@@ -795,11 +796,91 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     }, true);
   }
   window.addEventListener('load', () => setTimeout(rateFlush, 2500));
+
+  /* ---------- the Telegram channel: a light invitation to follow what is new on the site ----------
+     The players are children, so Reesho talks to the child but the invitation is for a parent ("ask Mum or Dad").
+     Kept for the whole device in store.tg: seen = the last day the pop-up was shown, no = the last "not now", go = the channel button was tapped.
+     The pop-up comes at most once in 7 days, not for 30 days after "not now", and never again after the button was tapped.
+     It never appears during play: only after a good rating, or when a child taps a chapter that is still closed (tgSoon).
+     Any link with data-tg="place" counts as tapping the channel button; the place goes to the statistics (telegram_click). */
+  const TG_URL = 'https://t.me/motafawek';
+  const TG_ICON = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.6c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.5-.6-.2L6.2 13.3l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>';
+  const TG_CSS = `
+.tg-p{max-width:430px}
+.tg-p .rt-head{align-items:center}
+.tg-p[dir=rtl] .rt-head{text-align:right}
+.tg-p .rt-bub{font-size:17px;line-height:1.5}
+.tg-go{background:#229ed9!important;box-shadow:0 4px 0 #1b7fb0!important;text-decoration:none}
+.tg-go:active{box-shadow:0 2px 0 #1b7fb0!important}
+.tg-note{margin:10px 2px 0;font-size:13px;font-weight:700;color:#5d7a8f;line-height:1.4}`;
+  const tgState = () => store.load().tg || {};
+  const tgMark = k => store.update(s => { s.tg = s.tg || {}; s.tg[k] = today(); });
+  const tgEvent = (name, from) => { try { if (window.gtag) window.gtag('event', name, { from: from || '' }); } catch (e) {} };
+  const tgJoined = () => !!tgState().go;
+  function tgDue() { const t = tgState(), d = today(); return !t.go && !(t.seen && dayDiff(t.seen, d) < 7) && !(t.no && dayDiff(t.no, d) < 30); }
+  document.addEventListener('click', e => {
+    const a = e.target && e.target.closest ? e.target.closest('a[data-tg]') : null;
+    if (a) { tgMark('go'); tgEvent('telegram_click', a.dataset.tg); }
+  }, true);
+  let tgOpen = null;
+  /* the pop-up. o.html: Reesho's words (otherwise the usual invitation); o.asked: the child asked for it (tgSoon), so closing it is not a "not now" */
+  function tgAsk(from, o) {
+    if (tgOpen) return tgOpen;
+    o = o || {};
+    [['rt-css', RATE_CSS], ['tg-css', TG_CSS]].forEach(([id, css]) => { if (!document.getElementById(id)) { const st = document.createElement('style'); st.id = id; st.textContent = css; document.head.appendChild(st); } });
+    const joined = tgJoined();
+    tgMark('seen'); tgEvent('telegram_shown', from);
+    return (tgOpen = new Promise(res => {
+      const back = document.activeElement, ov = document.createElement('div'); ov.className = 'rt-ov';
+      const words = o.html || T('Want to know when a new chapter or game arrives? Ask Mum or Dad to follow the <b>Motafawek</b> channel on Telegram.',
+        G('عايز تعرف أول ما ينزل فصل جديد أو لعبة جديدة؟ خلّي بابا أو ماما يتابعوا قناة <b>متفوّق</b> على تليجرام.', 'عايزة تعرفي أول ما ينزل فصل جديد أو لعبة جديدة؟ خلّي بابا أو ماما يتابعوا قناة <b>متفوّق</b> على تليجرام.'));
+      ov.innerHTML = `<div class="rt-p tg-p" role="dialog" aria-modal="true" aria-labelledby="tg-bub"${isAr() ? ' dir="rtl"' : ''}>
+        <div class="rt-head"><img src="assets/parrot_point.png" alt=""><div class="rt-bub" id="tg-bub">${words}</div></div>
+        ${joined ? '' : `<p class="tg-note">${T('The channel is for parents: only news about the site, no chat.', 'القناة لأولياء الأمور: أخبار الموقع فقط، بدون محادثات.')}</p>`}
+        <div class="rt-acts">
+          ${joined ? '' : `<a class="rt-btn tg-go" id="tg-go" href="${TG_URL}" target="_blank" rel="noopener" data-tg="${esc(from || '')}">${TG_ICON}<span>${T('Open the channel', 'افتح القناة')}</span></a>`}
+          <button type="button" class="${joined ? 'rt-btn' : 'rt-skip'}" id="tg-no">${joined || o.asked ? T('OK', 'تمام') : T('Not now', 'مش دلوقتي')}</button>
+        </div></div>`;
+      document.body.appendChild(ov);
+      let closed = false;
+      const close = how => {
+        if (closed) return; closed = true;
+        document.removeEventListener('keydown', onKey, true);
+        if (how === 'no' && !o.asked && !joined) { tgMark('no'); tgEvent('telegram_later', from); }
+        ov.remove(); tgOpen = null;
+        try { if (back && back.focus && document.contains(back)) back.focus({ preventScroll: true }); } catch (e) {}
+        res(how === 'go');
+      };
+      const go = ov.querySelector('#tg-go'), no = ov.querySelector('#tg-no');
+      if (go) go.addEventListener('click', () => setTimeout(() => close('go'), 0));   // the link opens in a new tab; the click is counted by the [data-tg] listener
+      no.onclick = () => { sfx.tick(); close('no'); };
+      function onKey(e) {
+        if (closed) return;
+        if (e.key === 'Escape') { e.preventDefault(); close('no'); return; }
+        if (e.key !== 'Tab') return;                                 // keep the keyboard inside the pop-up
+        const f = [go, no].filter(Boolean), first = f[0], last = f[f.length - 1];
+        if (!ov.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+        else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+      document.addEventListener('keydown', onKey, true);
+      try { (go || no).focus({ preventScroll: true }); } catch (e) {}
+    }));
+  }
+  /* a child tapped a chapter that is not open yet: Reesho says it is coming, and where the news will be */
+  function tgSoon(title) {
+    const t = `<b>${esc(title || '')}</b>`;
+    return tgAsk('soon', { asked: true, html: tgJoined()
+      ? T(`${t} is coming soon! I will announce it on the Telegram channel.`, `${t} جاي قريب! هنعلن عنه في قناة تليجرام.`)
+      : T(`${t} is coming soon! Want to know as soon as it opens? Ask Mum or Dad to follow the <b>Motafawek</b> channel on Telegram.`,
+        G(`${t} جاي قريب! عايز تعرف أول ما يتفتح؟ خلّي بابا أو ماما يتابعوا قناة <b>متفوّق</b> على تليجرام.`, `${t} جاي قريب! عايزة تعرفي أول ما يتفتح؟ خلّي بابا أو ماما يتابعوا قناة <b>متفوّق</b> على تليجرام.`)) });
+  }
+  const tg = { URL: TG_URL, ICON: TG_ICON, due: tgDue, ask: tgAsk, soon: tgSoon, joined: tgJoined };
   const rate = { due: rateDue, ask: rateAsk, guard: rateGuard, flush: rateFlush, CHOICES: RATE_CHOICES, WANTS: RATE_WANTS };
 
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     grade, gradeName, chGrade, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
-    weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, rate, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
+    weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT };
   applyLang();
 })();
