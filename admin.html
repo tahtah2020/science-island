@@ -167,7 +167,7 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
 
   /* preview links need a player and the chapter; the owner gets a player called Admin if this device has none */
   document.addEventListener('click', e => {
-    const a = e.target.closest('a[href^="quiz.html"], a[href^="arm.html"], a[href^="seasons.html"], a[href^="seedlab.html"], a[href^="map.html"]'); if (!a) return;
+    const a = e.target.closest('a[href]'); if (!a || !/^(?!index|admin|reviews|contact|champions)[a-z0-9_]+\.html/.test(a.getAttribute('href'))) return;   // quiz, map and every game page
     if (!SI.player()) SI.addPlayer({ name: 'Admin', grade: 'g5', track: 'lang' });
     SI.setChapter(a.dataset.ch || $('#ch').value || 'ch1');   // a link in "آخر التعديلات" can name its chapter (ch: 'ch2' in changes.js)
     const k = a.dataset.seen; if (k) { const s = loadSeen(); s[k] = a.dataset.h; saveSeen(s); }
@@ -198,9 +198,9 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     if (v.type === 'build') return v.parts.join(' ') + (v.extra && v.extra.length ? `   ✗ ${v.extra.join(' / ')}` : '');
     return '';
   }
-  let data = { en: [], ar: [] }, onlyNew = true;
+  let data = { en: [], ar: [] }, onlyNew = true, keyPre = '';
   function status(lang, id, vi, v) {
-    const s = loadSeen(), k = `${lang}:${id}.${vi + 1}`, h = hash(v);
+    const s = loadSeen(), k = `${lang}:${keyPre}${id}.${vi + 1}`, h = hash(v);   // idea ids repeat between grades: other grades carry the chapter id
     return { k, h, st: !(k in s) ? 'new' : s[k] !== h ? 'chg' : '' };
   }
   function cell(lang, I, v, vi) {
@@ -236,19 +236,21 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
   }
   async function loadChapter(id) {
     const c = SI.chapterById(id) || {};
+    keyPre = SI.chGrade(c) === 'g5' ? '' : c.id + ':';
     $('#list').innerHTML = '<p class="empty">جاري التحميل…</p>';
     data.en = c.questions ? await load(c.questions) : [];
     data.ar = c.questionsAr ? await load(c.questionsAr) : [];
     render();
   }
   const sel = $('#ch');
-  SI.chapters().filter(c => c.questions).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `الفصل ${c.n} · ${c.titleAr || c.title}${c.ready ? '' : ' (لسه مقفول)'}`; sel.appendChild(o); });   // a chapter still being written can be reviewed here before it opens
+  const GR = { g4: 'الصف الرابع', g5: 'الصف الخامس', g6: 'الصف السادس' };
+  SI.allChapters().filter(c => c.questions).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `${GR[SI.chGrade(c)] || ''} · الفصل ${c.n} · ${c.titleAr || c.title}${c.ready ? '' : ' (لسه مقفول)'}`; sel.appendChild(o); });   // a chapter still being written can be reviewed here before it opens
   sel.onchange = () => loadChapter(sel.value);
   const setF = v => { onlyNew = v; $('#fNew').setAttribute('aria-pressed', v); $('#fAll').setAttribute('aria-pressed', !v); render(); };
   $('#fNew').onclick = () => setF(true); $('#fAll').onclick = () => setF(false);
   $('#seen').onclick = () => {
     const s = loadSeen();
-    ['en', 'ar'].forEach(l => data[l].forEach(I => I.variants.forEach((v, vi) => { s[`${l}:${I.id}.${vi + 1}`] = hash(v); })));
+    ['en', 'ar'].forEach(l => data[l].forEach(I => I.variants.forEach((v, vi) => { s[`${l}:${keyPre}${I.id}.${vi + 1}`] = hash(v); })));
     saveSeen(s); render();
   };
   window.addEventListener('pageshow', e => { if (e.persisted) render(); });   // coming back from a preview: refresh the badges

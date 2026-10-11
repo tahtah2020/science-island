@@ -98,7 +98,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <section class="step" id="stepGrade" hidden>
     <h2>Choose your grade <span class="ar">اختر صفك الدراسي</span></h2>
     <div class="choices">
-      <button class="choice" type="button" disabled><span class="ic">4</span><span class="tx"><b>Grade 4</b><span class="ar">الصف الرابع</span></span><span class="soon">Soon · قريبًا</span></button>
+      <button class="choice" type="button" data-grade="g4"><span class="ic">4</span><span class="tx"><b>Grade 4</b><span class="ar">الصف الرابع</span></span><span class="go">›</span></button>
       <button class="choice" type="button" data-grade="g5"><span class="ic">5</span><span class="tx"><b>Grade 5</b><span class="ar">الصف الخامس</span></span><span class="go">›</span></button>
       <button class="choice" type="button" disabled><span class="ic">6</span><span class="tx"><b>Grade 6</b><span class="ar">الصف السادس</span></span><span class="soon">Soon · قريبًا</span></button>
     </div>
@@ -107,7 +107,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <!-- step 2: track -->
   <section class="step" id="stepTrack" hidden>
     <h2>Which school? <span class="ar">نظام الدراسة</span></h2>
-    <p class="hint">Grade 5 · الصف الخامس</p>
+    <p class="hint" id="gradeHint">Grade 5 · الصف الخامس</p>
     <div class="choices">
       <button class="choice" type="button" data-track="lang"><span class="ic">🇬🇧</span><span class="tx"><b>Languages</b><span class="ar">لغات · Science in English</span></span><span class="go">›</span></button>
       <button class="choice" type="button" data-track="ar"><span class="ic">ع</span><span class="tx"><b>Arabic</b><span class="ar">عربي · العلوم بالعربي</span></span><span class="go">›</span></button>
@@ -160,11 +160,14 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   const enter = () => SI.greet().then(() => { location.href = MAP; });
 
   const list = Object.entries(SI.players());
+  const GRADE_TAG = { g4: ['Grade 4', 'الصف ٤'], g5: ['Grade 5', 'الصف ٥'], g6: ['Grade 6', 'الصف ٦'] }, GRADE_HINT = { g4: 'Grade 4 · الصف الرابع', g5: 'Grade 5 · الصف الخامس', g6: 'Grade 6 · الصف السادس' };
+  const manyGrades = new Set(list.map(([, p]) => p.grade || 'g5')).size > 1;
   if (list.length) {
     const box = $('#playerList');
     list.forEach(([id, p]) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'who';
-      b.innerHTML = `<span class="av">${SI.esc(p.name.charAt(0).toUpperCase())}</span>${SI.esc(p.name)}${p.track === 'ar' ? ' <small>(عربي)</small>' : ''}`;
+      const tag = [p.grade && p.grade !== 'g5' || manyGrades ? (GRADE_TAG[p.grade || 'g5'] || '')[p.track === 'ar' ? 1 : 0] : '', p.track === 'ar' ? 'عربي' : ''].filter(Boolean).join(' · ');   // the grade shows when the device has players of different grades
+      b.innerHTML = `<span class="av">${SI.esc(p.name.charAt(0).toUpperCase())}</span>${SI.esc(p.name)}${tag ? ` <small>(${tag})</small>` : ''}`;
       b.onclick = () => { SI.usePlayer(id); SI.sfx.tick(); if (!p.g) { fixId = id; $('#genderBack').hidden = true; show('stepGender'); } else enter(); };
       box.appendChild(b);
     });
@@ -172,7 +175,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   } else show('stepGrade');
 
   $('#newPlayer').onclick = () => { SI.sfx.tick(); show('stepGrade'); };
-  document.querySelectorAll('[data-grade]').forEach(b => b.onclick = () => { choice.grade = b.dataset.grade; SI.sfx.tick(); show('stepTrack'); });
+  document.querySelectorAll('[data-grade]').forEach(b => b.onclick = () => { choice.grade = b.dataset.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade] || ''; SI.sfx.tick(); show('stepTrack'); });
   document.querySelectorAll('[data-track]').forEach(b => b.onclick = () => { choice.track = b.dataset.track; SI.sfx.tick(); show('stepGender'); });
   document.querySelectorAll('[data-g]').forEach(b => b.onclick = () => {
     SI.sfx.tick();

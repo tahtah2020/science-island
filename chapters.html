@@ -58,7 +58,7 @@ a.ch:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
   <header class="top">
     <a class="brand" href="index.html" title="Change player" data-ar-label="تغيير اللاعب">
       <div class="logo" aria-hidden="true">🏝️</div>
-      <div><h1 data-ar="جزيرة العلوم">Science Island</h1><p id="sub" data-ar="الصف الخامس · عربي · الفصل الدراسي الأول">Grade 5 · Languages · First term</p></div>
+      <div><h1 data-ar="جزيرة العلوم">Science Island</h1><p id="sub">Grade 5 · Languages · First term</p></div>
     </a>
     <div class="hud">
       <span class="pill" title="Daily streak" data-ar-label="أيام متتالية">🔥 <b id="streak">0</b></span>
@@ -95,6 +95,7 @@ a.ch:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
   const $ = s => document.querySelector(s);
   if (SI.isAr()) document.title = 'جزيرة العلوم · الفصول';
   const esc = SI.esc, T = SI.T, list = SI.chapters(), cur = SI.chapterId();
+  $('#sub').textContent = T(`${SI.gradeName()} · Languages · First term`, `${SI.gradeName()} · عربي · الفصل الدراسي الأول`);
 
   const lv = SI.levelInfo(SI.xp());
   $('#lvlTitle').textContent = `${T('Level', 'المستوى')} ${lv.n} · ${lv.title}`;

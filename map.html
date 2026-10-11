@@ -107,7 +107,7 @@
   const arm = P.game || {}, quest = P.quest || {}, daily = SI.dailyState();   // "arm" = this chapter's own game
   document.title = `${TITLE} · ${T('Science Island', 'جزيرة العلوم')}`;
   $('#chTitle').textContent = TITLE;
-  $('#chSub').textContent = T(`Grade 5 · Languages · Chapter ${CH.n}`, `الصف الخامس · عربي · الفصل ${CH.n}`);
+  $('#chSub').textContent = T(`${SI.gradeName(SI.chGrade(CH))} · Languages · Chapter ${CH.n}`, `${SI.gradeName(SI.chGrade(CH))} · عربي · الفصل ${CH.n}`);
   if (CH.icon) $('#logo').textContent = CH.icon;
   if (CH.map && CH.map.img) $('#map').style.backgroundImage = `url(${CH.map.img})`;
   const due = Object.values(P.cards || {}).filter(c => c.due <= now).length;

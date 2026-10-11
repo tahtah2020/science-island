@@ -1,29 +1,39 @@
 /* Owner tool (not part of the game): checks every questions*.js file before a release.
    Run from the site folder:  node tools/check_questions.js
-   It checks: ids (one capital letter + number, never used twice in a language), answers inside their lists, tap targets that
+   It checks: ids (one capital letter + number, never used twice in a grade and language), answers inside their lists, tap targets that
    exist in the drawings, table columns that are all used, cards of a "build" answer that are all different, the underlined
    word of a "fix" question, and that each Arabic file mirrors its English file (same ideas, same phrasings, same answers).
-   When a chapter adds tap pictures, add their targets to TAPS below. */
+   The files and their grades are read from chapters.js. When a chapter adds tap pictures, add their targets to TAPS below. */
 const fs = require('fs'), path = require('path'), ROOT = process.argv[2] || path.join(__dirname, '..');
 const TAPS = { armBent: ['in', 'out'], armStraight: ['in', 'out'], armJoints: ['shoulder', 'elbow', 'wrist'], skeleton: ['skull', 'ribs', 'backbone'], plantYear: ['sprout', 'flower', 'fruit', 'wither'], lizardSummer: ['rock', 'crevice', 'sand'], lizardWinter: ['rock', 'crevice', 'sand'],
-  seedParts: ['coat', 'embryo', 'cotyledon'], iodineSeeds: ['ungerminated', 'germinated'], cupsWater: ['A', 'B'], cupsAir: ['A', 'B'], cupsTemp: ['A', 'B'] };
+  seedParts: ['coat', 'embryo', 'cotyledon'], iodineSeeds: ['ungerminated', 'germinated'], cupsWater: ['A', 'B'], cupsAir: ['A', 'B'], cupsTemp: ['A', 'B'],
+  /* Grade 4 (g4_art.js) */
+  hidePlaces: ['grass', 'stone', 'rock', 'sand'], nileDesert: ['nile', 'desert'], fennec: ['ears', 'feet', 'tail'], desertDay: ['hole', 'sand', 'dune'],
+  butterflyStages: ['egg', 'larva', 'pupa', 'adult'], insectBody: ['head', 'thorax', 'abdomen'], insectSide: ['antennae', 'wings', 'legs'], whoIsInsect: ['grasshopper', 'spider', 'pillbug'],
+  seedKinds: ['sunflower', 'chickpea', 'fava'], sowDepth: ['heap', 'right', 'deep'], seedlingLeaves: ['seedleaf', 'trueleaf'], flowerFruit: ['bud', 'flower', 'fruit'], plantBody: ['leaves', 'stem', 'roots'] };
+const load = f => { const w = {}; new Function('window', fs.readFileSync(path.join(ROOT, f), 'utf8'))(w); return w; };
+const CH = load('chapters.js').CHAPTERS, gradeOf = {}, pairs = [];
+CH.forEach(c => { [c.questions, c.questionsAr].forEach(f => { if (f) gradeOf[f] = c.grade || 'g5'; }); if (c.questions && c.questionsAr) pairs.push([c.questions, c.questionsAr]); });
 let bad = 0; const allIds = {};
 for (const f of fs.readdirSync(ROOT).filter(f => /^questions.*\.js$/.test(f))) {
-  const w = {}; new Function('window', fs.readFileSync(path.join(ROOT, f), 'utf8'))(w);
+  const w = load(f);
   const err = m => { bad++; console.log(f + ': ' + m); };
+  if (!gradeOf[f]) err('not listed in chapters.js');
   const lang = /_ar\.js$/.test(f) ? 'ar' : 'en', ids = new Set();
   let nv = 0, core = 0;
   w.IDEAS.forEach(I => {
     if (!/^[A-Z]\d+$/.test(I.id)) err('bad id ' + I.id);
     if (ids.has(I.id)) err('duplicate id ' + I.id); ids.add(I.id);
-    const k = lang + ':' + I.id; if (allIds[k]) err(`id ${I.id} also in ${allIds[k]}`); allIds[k] = f;
+    const k = (gradeOf[f] || 'g5') + ':' + lang + ':' + I.id; if (allIds[k]) err(`id ${I.id} also in ${allIds[k]}`); allIds[k] = f;
     if (!I.bonus) core++;
     if (!I.explain || !I.concept) err(I.id + ' no explain/concept');
+    if (!I.lesson) err(I.id + ' no lesson');
     I.variants.forEach((v, i) => {
       nv++; const at = `${I.id}.${i + 1}`;
       if (!v.q) err(at + ' no q'); if (!v.level) err(at + ' no level');
       if (v.mode === 'timed' && !v.seconds) err(at + ' timed without seconds');
       if (I.boss && v.mode !== 'boss') err(at + ' boss idea, variant not boss');
+      if (!I.boss && v.mode === 'boss') err(at + ' boss variant in a normal idea');
       const idx = (a, n) => Number.isInteger(a) && a >= 0 && a < n;
       if (v.type === 'tf') { if (![0, 1].includes(v.answer)) err(at + ' tf answer'); }
       else if (v.type === 'mc' || v.type === 'fill') { if (!idx(v.answer, v.options.length)) err(at + ' answer range'); if (new Set(v.options).size !== v.options.length) err(at + ' duplicate options'); if (v.type === 'fill' && !v.q.includes('___')) err(at + ' fill without gap'); }
@@ -41,12 +51,14 @@ for (const f of fs.readdirSync(ROOT).filter(f => /^questions.*\.js$/.test(f))) {
   console.log(`${f}: ${w.IDEAS.length} ideas (${core} core), ${nv} phrasings`);
 }
 // EN/AR parity
-for (const [en, ar] of [['questions.js', 'questions_ar.js'], ['questions_ch2.js', 'questions_ch2_ar.js'], ['questions_ch3.js', 'questions_ch3_ar.js']]) {
-  const L = f => { const w = {}; new Function('window', fs.readFileSync(path.join(ROOT, f), 'utf8'))(w); return w.IDEAS; };
-  const E = L(en), A = L(ar);
+for (const [en, ar] of pairs) {
+  const L = f => (fs.existsSync(path.join(ROOT, f)) ? load(f).IDEAS : null);
+  const E = L(en), A = L(ar); if (!E || !A) { bad++; console.log('missing file', E ? ar : en); continue; }
+  if (E.length !== A.length) { bad++; console.log('parity ideas', en, E.length, A.length); }
   E.forEach((I, k) => { const J = A[k]; if (!J || J.id !== I.id) { bad++; return console.log('parity id', en, I.id); }
     if (J.variants.length !== I.variants.length) { bad++; console.log('parity count', I.id); }
-    I.variants.forEach((v, i) => { const u = J.variants[i]; if (u && (u.type !== v.type || JSON.stringify(u.answer) !== JSON.stringify(v.answer)) && !['term', 'fix'].includes(v.type)) { bad++; console.log('parity', I.id + '.' + (i + 1), v.type, u.type); } }); });
+    ['lesson', 'boss', 'bonus', 'guide'].forEach(key => { if ((I[key] || 0) !== (J[key] || 0)) { bad++; console.log('parity', key, en, I.id); } });
+    I.variants.forEach((v, i) => { const u = J.variants[i]; if (u && (u.type !== v.type || u.mode !== v.mode || u.level !== v.level || (JSON.stringify(u.answer) !== JSON.stringify(v.answer) && !['term', 'fix'].includes(v.type)))) { bad++; console.log('parity', en, I.id + '.' + (i + 1), v.type, u.type); } }); });
 }
 console.log(bad ? bad + ' PROBLEMS' : 'all good');
 process.exit(bad ? 1 : 0);
