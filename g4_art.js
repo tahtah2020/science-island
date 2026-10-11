@@ -369,10 +369,11 @@
       <path d="M-26 -36C-52 -40 -52 -8 -26 -10" fill="none" stroke="#5aa9cd" stroke-width="6" stroke-linecap="round"/><path d="M-18 -34v26" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/>
       ${o.pour ? '<g fill="#6cbde8"><path d="M66 -42c2 3 3 4 3 6a3 3 0 0 1-6 0c0-2 1-3 3-6z"/><path d="M74 -30c2 3 3 4 3 6a3 3 0 0 1-6 0c0-2 1-3 3-6z"/><path d="M64 -24c2 3 3 4 3 6a3 3 0 0 1-6 0c0-2 1-3 3-6z"/><path d="M72 -12c2 3 3 4 3 6a3 3 0 0 1-6 0c0-2 1-3 3-6z"/></g>' : ''}`;
   }
-  /* ruler standing on the ground. Origin: its bottom-left corner. h = its height in drawing units, each `unit` is one mark; labels every 5 marks */
+  /* ruler standing on the ground. Origin: its bottom-left corner. h = its height in drawing units, each `unit` is one mark; labels every 5 marks
+     (Arabic numerals for Arabic-track players; the numbers are centred so that they sit in the same place in a right-to-left page) */
   function ruler(h = 120, unit = 8) {
     let ticks = '';
-    for (let i = 0; i * unit <= h - 4; i++) ticks += `<path d="M0 ${-i * unit}h${i % 5 === 0 ? 9 : 5}" stroke="#7a5a2a" stroke-width="1.2"/>${i % 5 === 0 && i ? `<text x="11" y="${-i * unit + 3}" font-size="7" font-weight="800" fill="#7a5a2a" font-family="Nunito,Arial,sans-serif">${i}</text>` : ''}`;
+    for (let i = 0; i * unit <= h - 4; i++) ticks += `<path d="M0 ${-i * unit}h${i % 5 === 0 ? 9 : 5}" stroke="#7a5a2a" stroke-width="1.2"/>${i % 5 === 0 && i ? `<text x="14.5" y="${-i * unit + 2.6}" text-anchor="middle" font-size="7" font-weight="800" fill="#7a5a2a" font-family="Nunito,Cairo,Arial,sans-serif">${T(String(i), String(i).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]))}</text>` : ''}`;
     return `<rect x="0" y="${-h}" width="20" height="${h}" rx="2" fill="#ffe9a8" stroke="#c9a23c" stroke-width="1.6"/>${ticks}`;
   }
 

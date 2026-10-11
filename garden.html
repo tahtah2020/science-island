@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Little Garden · How Plants Grow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="g4_game.css?v=20261011e">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play My Little Garden.</noscript>
+<script src="firebase-config.js?v=20261011e"></script>
+<script src="chapters.js?v=20261011e"></script>
+<script src="common.js?v=20261011e"></script>
+<script src="g4_art.js?v=20261011e"></script>
+<script src="g4_game.js?v=20261011e"></script>
+<script>
+(() => {
+'use strict';
+/* My Little Garden · the game of Grade 4, Chapter 3 "How Plants Grow".
+   Stage 1 (Warm Up): sow a sunflower seed (the right seed, the right time, a hole about 1 cm deep, cover gently, plenty of water),
+                      then watch the seed leaves and the true leaves come out.
+   Stage 2 (Missions): 1) measure the plant height; 2) from bud to flower to fruit to new seeds; 3) the plant body: roots, stem, leaves.
+   Stage 3 (Speed Round): roots, stem or leaves?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 36-49). */
+const A = window.G4ART, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+const SKY = '#e6f3f8';
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'seeds', hole: 0, seedIn: false, cover: 0, water: 0, can: false, stage: 0, line: false, fallen: false, next: false, hi: null };
+
+function seeds() {
+  const tile = (x, inner) => `<g transform="translate(${x} 140)"><rect x="-56" y="-62" width="112" height="124" rx="16" fill="#fff8ea" stroke="#eadbb8" stroke-width="3"/>${inner}</g>`;
+  return `<rect width="420" height="280" fill="#f6e7cf"/><path d="M0 232h420v48H0z" fill="#e9d3ab"/>
+    ${tile(80, at(0, 0, 2.2, A.seed('fava')))}${tile(210, at(0, 0, 2.2, A.seed('sunflower'), -20))}${tile(340, at(0, 0, 2.6, A.seed('chickpea')))}`;
+}
+function pot() {
+  const gy = 150, d = sc.hole * 34, w = sc.water;   // while sowing, 1 cm is drawn 34 units deep so that the hole is easy to see
+  return `<rect width="420" height="280" fill="${SKY}"/>${at(366, 46, 1, A.sun(22))}${at(210, gy, 1, A.soil(420, 130))}
+    <ellipse cx="210" cy="${gy + 8}" rx="${90 * w}" ry="${12 * w}" fill="#4f351d" opacity="${.45 * w}"/>
+    ${sc.hole > 0 ? `<path d="M186 ${gy}v${d}a24 10 0 0 0 48 0v${-d}z" fill="#5d3f22"/><path d="M186 ${gy}v${d}a24 10 0 0 0 48 0v${-d}z" fill="#8a5f38" opacity="${sc.cover}"/>` : ''}
+    ${sc.hole >= 1 && sc.stage === 0 ? `<path d="M250 ${gy}v34M245 ${gy}h10M245 ${gy + 34}h10" stroke="#fff" stroke-width="2.4"/><text x="282" y="${gy + 23}" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">${T('1 cm', '١ سم')}</text>` : ''}
+    ${sc.seedIn && sc.stage === 0 ? at(210, gy + d - 2, .8, A.seed('sunflower')) : ''}
+    ${sc.stage ? at(210, gy, 1.8, A.sunflower({ stage: sc.stage, roots: true })) : ''}
+    ${sc.can ? at(120, 116, 1, A.wateringCan({ pour: true }), 18) : ''}`;
+}
+function measure() {
+  const gy = 232, k = 2.5;
+  return `<rect width="420" height="280" fill="${SKY}"/><path d="M0 ${gy}h420v48H0z" fill="#8a5f38"/><path d="M0 ${gy}h420v8H0z" fill="#74502e"/>
+    ${at(170, gy, k, A.sunflower({ stage: 3 }))}${at(284, gy, 2, A.ruler(80, 7))}
+    ${sc.line ? `<path d="M170 ${gy - 140}H284" stroke="#e2603f" stroke-width="3" stroke-dasharray="7 5"/><path d="M128 ${gy}V${gy - 140}" stroke="#e2603f" stroke-width="3"/><path d="M122 ${gy}h12M122 ${gy - 140}h12" stroke="#e2603f" stroke-width="3" stroke-linecap="round"/>` : ''}`;
+}
+function bloom() {
+  const gy = 258, lit = (x, k, r) => at(x, gy + 6, k, A.seed('sunflower'), r);
+  return `<rect width="420" height="280" fill="${SKY}"/>${at(60, 46, 1, A.sun(22))}<path d="M0 ${gy}h420v22H0z" fill="#8a5f38"/><path d="M0 ${gy}h420v6H0z" fill="#74502e"/>
+    ${at(210, gy, 1.32, A.sunflower({ stage: sc.stage }))}
+    ${sc.fallen && !sc.next ? lit(292, .42, 20) + lit(322, .42, -30) + lit(120, .42, 10) + lit(90, .42, -14) : ''}
+    ${sc.next ? at(300, gy, 1.2, A.sunflower({ stage: 2, coat: false })) + at(106, gy, 1.2, A.sunflower({ stage: 2, coat: false })) + at(344, gy, 1, A.sunflower({ stage: 1 })) : ''}`;
+}
+const PART = { leaves: [210, 58, 106, 44], stem: [210, 135, 26, 33], roots: [210, 226, 102, 46] };
+function body() {
+  let lv = '';
+  [[.56, 48, -166], [.64, 50, -16], [.76, 42, -158], [.84, 40, -24], [.94, 30, -150], [.98, 26, -34]].forEach(([t, len, rot]) => { lv += A.trueLeaf(0, -128 * t, len, rot); });
+  const h = PART[sc.hi];
+  return `<rect width="420" height="280" fill="${SKY}"/>${at(210, 172, 1, A.soil(420, 108))}
+    ${at(210, 172, 1.1, `${A.roots(78, 1.9)}<path d="M0 0C-3 -50 3 -90 0 -128" fill="none" stroke="#5fae58" stroke-width="7" stroke-linecap="round"/>${lv}`)}
+    ${h ? `<ellipse cx="${h[0]}" cy="${h[1]}" rx="${h[2]}" ry="${h[3]}" fill="rgba(46,158,107,.22)" stroke="#2e9e6b" stroke-width="5"/>` : ''}`;
+}
+const render = () => ({ seeds, pot, measure, bloom, body })[sc.mode]();
+
+const g = G4Game({ ch: 'g4c3', logo: '🌻', title: ['My Little Garden', 'حديقتي الصغيرة'], sub: ['Chapter 3 · How Plants Grow', 'الفصل ٣ · كيف تنمو النباتات؟'],
+  bg: 'assets/bg_g4c3.svg', bgc: '#e3f3d0', label: ['Reesho’s little garden', 'حديقة ريشو الصغيرة'], render });
+const kw = g.kw;
+
+/* ---------- Stage 1 · Warm Up: sow a sunflower seed ---------- */
+const SEEDS = [
+  { id: 'fava', name: T('The flat seed with a dark line', 'البذرة المسطحة التي بها خط داكن'), ring: ring(80, 140, 62, 68) },
+  { id: 'sunflower', name: T('The seed with black and white stripes', 'البذرة التي بها خطوط سوداء وبيضاء'), ring: ring(210, 140, 62, 68) },
+  { id: 'chickpea', name: T('The small light yellow seed', 'البذرة الصغيرة ذات اللون الأصفر الفاتح'), ring: ring(340, 140, 62, 68) }
+];
+const LEAVES = [
+  { id: 'trueleaf', name: T('The leaves with jagged edges, at the top', 'الأوراق ذات الحواف المسننة، في الأعلى'), ring: ring(210, 50, 88, 30) },
+  { id: 'seedleaf', name: T('The two round leaves, lower down', 'الورقتان المستديرتان، في الأسفل'), ring: ring(210, 101, 58, 18) }
+];
+async function stage1() {
+  Object.assign(sc, { mode: 'seeds', hole: 0, seedIn: false, cover: 0, water: 0, can: false, stage: 0 }); g.paint();
+  g.say(T(`Most plants start growing from ${kw('seeds')}. Seeds come in many different shapes, colors and sizes. Tap the <b>sunflower</b> seed: it is large and has black and white stripes.`, P(`تبدأ معظم النباتات نموها من ${kw('البذور')}. وتأتي البذور بأشكال وألوان وأحجام مختلفة. اضغط على بذرة <b>عبَّاد الشمس</b>: كبيرة وبها خطوط سوداء وبيضاء.`, `تبدأ معظم النباتات نموها من ${kw('البذور')}. وتأتي البذور بأشكال وألوان وأحجام مختلفة. اضغطي على بذرة <b>عبَّاد الشمس</b>: كبيرة وبها خطوط سوداء وبيضاء.`)), 'point');
+  await g.spot(SEEDS, 'sunflower', {
+    hint: T('Look for the stripes!', P('دوّر على الخطوط!', 'دوّري على الخطوط!')),
+    ok: T('This is the sunflower seed. The small light yellow one is a chickpea, and the flat one is a fava bean.', 'دي بذرة عبَّاد الشمس. والبذرة الصغيرة ذات اللون الأصفر الفاتح حمص، والبذرة المسطحة فول.') });
+  g.say(T('When is the best time to sow sunflower seeds?', 'ما أفضل وقت لزراعة بذور عبَّاد الشمس؟'), 'think');
+  await g.choice({
+    options: [T('March - April', 'مارس - أبريل'), T('October - November', 'أكتوبر - نوفمبر'), T('July - August', 'يوليو - أغسطس')], correct: T('March - April', 'مارس - أبريل'),
+    hint: T('October - November is the time for the fava bean.', 'أكتوبر - نوفمبر وقت زراعة الفول.'),
+    ok: T(`The best time to sow seeds depends on the plant. Sunflower: ${kw('March - April')}. Fava bean: October - November.`, `يعتمد أفضل وقت لزراعة البذور على نوع النبات. عبَّاد الشمس: ${kw('مارس - أبريل')}. الفول: أكتوبر - نوفمبر.`) });
+  sc.mode = 'pot'; g.paint();
+  g.say(T('Let’s sow it! How do we start?', 'يلّا نزرعها! نبدأ إزاي؟'), 'think');
+  await g.choice({
+    options: [T('Make a hole about 1 cm deep in the soil with a finger', 'نصنع حفرة في التربة بعمق حوالي ١ سم باستخدام الإصبع'), T('Make a hole about 10 cm deep', 'نصنع حفرة بعمق حوالي ١٠ سم'), T('Pile up the soil very high like a mountain over the seed', 'نجمِّع التربة على شكل جبل مرتفع جدًّا فوق البذرة')],
+    correct: T('Make a hole about 1 cm deep in the soil with a finger', 'نصنع حفرة في التربة بعمق حوالي ١ سم باستخدام الإصبع'),
+    hint: T('The seed must not be too deep, and not under a mountain of soil.', 'البذرة ماينفعش تبقى عميقة قوي، ولا تحت جبل من التربة.'),
+    ok: T(`Make a hole about ${kw('1 cm')} deep in the soil with your finger, and put the seed in it.`, `اصنع حفرة في التربة بعمق حوالي ${kw('١ سم')} باستخدام إصبعك، وضع البذرة داخل الحفرة.`),
+    reveal: async () => { await g.tween(700, k => { sc.hole = k; }); sc.seedIn = true; g.paint(); } });
+  g.say(T('Now cover the seed.', P('دلوقتي غطِّ البذرة.', 'دلوقتي غطّي البذرة.')), 'point');
+  await g.next(T('Cover it gently with soil ▸', P('غطِّها بالتربة برفق ◂', 'غطّيها بالتربة برفق ◂')));
+  await g.tween(700, k => { sc.cover = k; });
+  g.say(T('What is the first important thing to do after you cover the seed with soil?', 'ما أول شيء مهم يجب القيام به بعد تغطية البذور بالتربة؟'), 'think');
+  await g.choice({
+    options: [T('Give it plenty of water', 'أسقيها بكمية كافية من الماء'), T('Take it out to look at it', 'أخرجها لأنظر إليها'), T('Leave it dry for a month', 'أتركها جافة مدة شهر')], correct: T('Give it plenty of water', 'أسقيها بكمية كافية من الماء'),
+    hint: T('What does a seed need to start growing?', 'البذرة محتاجة إيه علشان تبدأ تنمو؟'),
+    ok: T(`After that, give it plenty of ${kw('water')}.`, `بعد ذلك، اسقِها بكمية كافية من ${kw('الماء')}.`),
+    reveal: () => { sc.can = true; g.tween(1200, k => { sc.water = k; }); } });
+  sc.can = false; g.paint();
+  g.say(T('Now we wait for a while…', 'دلوقتي نستنى فترة…'), 'point');
+  await g.next(T('Wait ▸', P('استنى ◂', 'استني ◂')));
+  sc.stage = 1; g.paint(); await g.sleep(g.reduceMotion ? 300 : 1100); sc.stage = 2; g.paint();
+  g.say(T('A sprout came out, with two round leaves! What are the first leaves called?', 'نبتت البذرة وظهرت نبتة صغيرة، لها ورقتان مستديرتان! ماذا تُسمَّى الأوراق الأولى؟'), 'think');
+  await g.choice({
+    options: [T('Seed leaves', 'الأوراق البذرية'), T('True leaves', 'الأوراق الحقيقية'), T('Buds', 'البراعم')], correct: T('Seed leaves', 'الأوراق البذرية'),
+    hint: T('True leaves come out later.', 'الأوراق الحقيقية تظهر بعد كده.'),
+    ok: T(`${kw('Seed leaves')} are the first leaves you see after the sprout comes out. The sunflower has two seed leaves.`, `${kw('الأوراق البذرية')} هي أول أوراق تظهر على النبتة. ولعبَّاد الشمس ورقتان بذريتان.`) });
+  await g.next(T('Wait ▸', P('استنى ◂', 'استني ◂')));
+  sc.stage = 3; g.paint();
+  g.say(T('New leaves came out! Tap a <b>true leaf</b>.', P('ظهرت أوراق جديدة! اضغط على <b>ورقة حقيقية</b>.', 'ظهرت أوراق جديدة! اضغطي على <b>ورقة حقيقية</b>.')), 'think');
+  await g.spot(LEAVES, 'trueleaf', {
+    hint: T('True leaves come out after the seed leaves, above them.', 'الأوراق الحقيقية تظهر بعد الأوراق البذرية، فوقها.'),
+    ok: T(`${kw('True leaves')} come out after the seed leaves. In the sunflower, the seed leaves are round, but the true leaves have jagged edges.`, `${kw('الأوراق الحقيقية')} هي التي تظهر بعد الأوراق البذرية. في عبَّاد الشمس: الأوراق البذرية مستديرة، لكن الأوراق الحقيقية لها حواف مُسننة.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Measure the plant', 'قياس ارتفاع النبات'));
+  sc.mode = 'measure'; sc.line = false; g.paint();
+  g.say(T(`Let’s measure the ${kw('plant height')} with a ruler. Where do we measure from and to?`, `يلّا نقيس ${kw('ارتفاع النبات')} بالمسطرة. من أين يبدأ القياس؟ وإلى أين ينتهي؟`), 'think');
+  await g.choice({
+    options: [T('From the ground to the base of the top leaf', 'من سطح التربة إلى قاعدة أعلى ورقة'), T('The width of the leaf', 'عرض الورقة'), T('From the tip of the root to where the seed was', 'من طرف الجذر إلى مكان البذرة')],
+    correct: T('From the ground to the base of the top leaf', 'من سطح التربة إلى قاعدة أعلى ورقة'),
+    hint: T('Height goes up, starting from the ground.', 'الارتفاع بيبدأ من سطح التربة ويطلع لفوق.'),
+    ok: T('Use a ruler or paper tape to measure from the ground to the base of the top leaf.', 'استخدم مسطرة أو شريطًا ورقيًّا للقياس من سطح التربة حتى قاعدة أعلى ورقة.'),
+    reveal: () => { sc.line = true; g.paint(); } });
+  g.say(T('Read the ruler along the red line. How tall is the plant?', P('اقرأ المسطرة عند الخط الأحمر. ارتفاع النبات كام؟', 'اقرئي المسطرة عند الخط الأحمر. ارتفاع النبات كام؟')), 'think');
+  await g.choice({
+    options: [T('10 cm', '١٠ سم'), T('5 cm', '٥ سم'), T('8 cm', '٨ سم')], correct: T('10 cm', '١٠ سم'),
+    hint: T('Follow the red line to the ruler and read the number.', P('تابع الخط الأحمر لحد المسطرة واقرأ الرقم.', 'تابعي الخط الأحمر لحد المسطرة واقرئي الرقم.')),
+    ok: T('The plant is 10 cm tall. Write it on your record card with the date!', P('ارتفاع النبات ١٠ سم. اكتبه في بطاقة تسجيل الملاحظات مع التاريخ!', 'ارتفاع النبات ١٠ سم. اكتبيه في بطاقة تسجيل الملاحظات مع التاريخ!')) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('From flower to seed', 'من الزهرة إلى البذرة'));
+  Object.assign(sc, { mode: 'bloom', stage: 4, fallen: false, next: false }); g.paint();
+  g.say(T(`The plant grew big and made a ${kw('bud')}. What comes after the bud?`, `اكتمل نمو النبات وكوَّن ${kw('برعمًا')}. ماذا يأتي بعد البرعم؟`), 'think');
+  await g.choice({
+    options: [T('The flower blooms', 'تتفتح الزهرة'), T('The fruit is made', 'تتكوَّن الثمرة'), T('New seeds fall', 'تسقط بذور جديدة')], correct: T('The flower blooms', 'تتفتح الزهرة'),
+    hint: T('Buds, then …, then fruits.', 'براعم، ثم …، ثم ثمار.'),
+    ok: T(`When plants grow big, they make ${kw('buds')}, bloom ${kw('flowers')}, and then make ${kw('fruits')}.`, `عندما يكتمل نمو النبات يُكوِّن ${kw('براعم')}، ثم تتفتح لتصبح ${kw('أزهارًا')}، وبعد ذلك تُنتج ${kw('ثمارًا')}.`),
+    reveal: () => { sc.stage = 5; g.paint(); } });
+  g.say(T('What a beautiful flower! What happens after the flower blooms?', 'زهرة جميلة! ماذا يحدث بعد تفتُّح الزهرة؟'), 'think');
+  await g.choice({
+    options: [T('The base swells up and a fruit is made', 'ينتفخ الجزء القاعدي، وتتكوَّن ثمرة'), T('It just withers and nothing remains', 'تذبل فقط، ولا يتبقى أي شيء'), T('The fruit is already inside the bud before the flower blooms', 'تكون الثمرة موجودة بالفعل داخل البرعم قبل تفتُّح الزهرة')],
+    correct: T('The base swells up and a fruit is made', 'ينتفخ الجزء القاعدي، وتتكوَّن ثمرة'),
+    hint: T('Something stays after the flower withers.', 'فيه حاجة بتفضل بعد ما الزهرة تذبل.'),
+    ok: T(`After the flower withers (dries up), the base part swells up and becomes a ${kw('fruit')}.`, `بعد أن تذبل الزهرة (تجف)، ينتفخ الجزء السفلي منها ويتحوَّل إلى ${kw('ثمرة')}.`),
+    reveal: () => { sc.stage = 6; g.paint(); } });
+  g.say(T('The fruit is ripe and dry. What is made inside it?', 'الثمرة نضجت وجفَّت. ماذا يتكوَّن بداخلها؟'), 'think');
+  await g.choice({
+    options: [T('New seeds', 'بذور جديدة'), T('New roots', 'جذور جديدة'), T('New buds', 'براعم جديدة')], correct: T('New seeds', 'بذور جديدة'),
+    hint: T('The plant started from one of them!', 'النبات بدأ من واحدة منها!'),
+    ok: T(`When the fruit ripens, ${kw('new seeds')} are made inside it. A single sunflower produces many, many seeds!`, `عندما تنضج الثمرة تتكوَّن بداخلها ${kw('بذور جديدة')}. زهرة عبَّاد الشمس الواحدة تُنتج عددًا كبيرًا جدًّا من البذور!`),
+    reveal: () => { sc.fallen = true; g.paint(); } });
+  g.say(T('The new seeds fell to the ground. Let’s wait…', 'البذور الجديدة سقطت على التربة. يلّا نستنى…'), 'point');
+  await g.next(T('Wait for next year ▸', P('استنى السنة الجاية ◂', 'استني السنة الجاية ◂')));
+  sc.next = true; g.paint();
+  g.say(T(`Sprouts come out again and grow. This is how plants connect life to the ${kw('next generation')}!`, `تنبت البذور من جديد، وتنمو لتكوِّن نباتات جديدة. وهكذا تستمر دورة حياة النباتات ${kw('من جيل إلى جيل')}!`), 'celebrate');
+  await g.next();
+}
+const PARTS = Object.keys(PART).map(id => ({ id, name: { leaves: T('The wide flat green parts', 'الأجزاء الخضراء العريضة المسطحة'), stem: T('The long part that stands up', 'الجزء الطويل القائم'), roots: T('The parts under the ground', 'الأجزاء التي تحت الأرض') }[id], ring: ring(...PART[id]) }));
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('The plant body', 'أجزاء النبات'));
+  sc.mode = 'body'; sc.hi = null; g.paint();
+  g.say(T(`A plant’s body is made up of three main parts: ${kw('roots')}, ${kw('stem')} and ${kw('leaves')}. Tap the part that holds the plant firmly in the soil and sucks up water.`, P(`يتكوَّن النبات من ثلاثة أجزاء رئيسية: ${kw('الجذور')}، و${kw('الساق')}، و${kw('الأوراق')}. اضغط على الجزء اللي يُثبِّت النبات في التربة ويمتص الماء.`, `يتكوَّن النبات من ثلاثة أجزاء رئيسية: ${kw('الجذور')}، و${kw('الساق')}، و${kw('الأوراق')}. اضغطي على الجزء اللي يُثبِّت النبات في التربة ويمتص الماء.`)), 'point');
+  await g.spot(PARTS, 'roots', {
+    hint: T('It is under the ground.', 'هو تحت سطح الأرض.'),
+    ok: T(`The ${kw('roots')} spread under the ground and hold the plant firmly in the soil. They also suck up water from the soil.`, `${kw('الجذور')} تمتد تحت سطح التربة وتُثبِّت النبات بإحكام فيها، كما تقوم بامتصاص الماء من التربة.`) });
+  g.say(T('Now tap the part that supports the plant’s body and is a <b>pathway</b> for water.', P('دلوقتي اضغط على الجزء اللي يدعم النبات ويعمل <b>كممرٍّ</b> لنقل الماء.', 'دلوقتي اضغطي على الجزء اللي يدعم النبات ويعمل <b>كممرٍّ</b> لنقل الماء.')), 'think');
+  await g.spot(PARTS, 'stem', {
+    hint: T('The water goes up through it to the leaves.', 'الماء بيطلع فيه لحد الأوراق.'),
+    ok: T(`The ${kw('stem')} supports the plant’s body. It is a “pathway” to carry the water sucked up by the roots to the leaves and flowers.`, `${kw('الساق')} يدعم النبات، ويعمل «كممرٍّ» لنقل الماء الذي تمتصه الجذور إلى الأوراق والأزهار.`) });
+  g.say(T('Last one: tap the part with a wide, flat shape that catches sunlight.', P('آخر واحد: اضغط على الجزء اللي له شكل عريض ومسطح ويلتقط ضوء الشمس.', 'آخر واحد: اضغطي على الجزء اللي له شكل عريض ومسطح ويلتقط ضوء الشمس.')), 'think');
+  await g.spot(PARTS, 'leaves', {
+    hint: T('They are green and flat.', 'هي خضراء ومسطحة.'),
+    ok: T(`The ${kw('leaves')} have a wide and flat shape to catch lots of sunlight.`, `${kw('الأوراق')} لها شكل عريض ومسطح يساعدها على التقاط أكبر قدر ممكن من ضوء الشمس.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: roots, stem or leaves? ---------- */
+const SPEED = [
+  { t: T('Suck up water from the soil', 'تمتص الماء من التربة'), ans: 'roots' },
+  { t: T('Hold the plant firmly in the soil', 'تُثبِّت النبات بإحكام في التربة'), ans: 'roots' },
+  { t: T('Spread under the ground', 'تمتد تحت سطح التربة'), ans: 'roots' },
+  { t: T('Supports the plant’s body', 'يدعم جسم النبات'), ans: 'stem' },
+  { t: T('A pathway for water to the leaves and flowers', 'ممر لنقل الماء إلى الأوراق والأزهار'), ans: 'stem' },
+  { t: T('Carries the water sucked up by the roots', 'ينقل الماء الذي تمتصه الجذور'), ans: 'stem' },
+  { t: T('A wide and flat shape', 'شكل عريض ومسطح'), ans: 'leaves' },
+  { t: T('Catch lots of sunlight', 'تلتقط أكبر قدر ممكن من ضوء الشمس'), ans: 'leaves' }
+];
+async function stage3() {
+  sc.mode = 'body'; sc.hi = null; g.paint();
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Roots', 'الجذور'), value: 'roots', c: 1 }, { label: T('Stem', 'الساق'), value: 'stem', c: 0 }, { label: T('Leaves', 'الأوراق'), value: 'leaves', c: 2 }],
+    ask: T('Roots, stem or leaves?', 'الجذور، الساق، أم الأوراق؟'),
+    intro: T('Speed Round! I will say the job of one part of the plant. Is it the <b>roots</b>, the <b>stem</b> or the <b>leaves</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هقول وظيفة جزء من أجزاء النبات. هل هو <b>الجذور</b> ولا <b>الساق</b> ولا <b>الأوراق</b>؟ اضغط على الزرار الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هقول وظيفة جزء من أجزاء النبات. هل هو <b>الجذور</b> ولا <b>الساق</b> ولا <b>الأوراق</b>؟ اضغطي على الزرار الصح قبل ما الوقت يخلص. ٨ جولات!')),
+    think: T('Which part does this job?', 'أي جزء يقوم بهذه الوظيفة؟'),
+    show: () => { sc.hi = null; g.paint(); }, reveal: it => { sc.hi = it.ans; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my little garden. First we sow a <b>sunflower seed</b> and watch it grow. Then we follow it until it makes <b>flowers</b>, <b>fruits</b> and new seeds.`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت حديقتي الصغيرة. الأول هنزرع <b>بذرة عبَّاد شمس</b> ونشوفها وهي بتنمو. وبعدين نتابعها لحد ما تكوِّن <b>أزهارًا</b> و<b>ثمارًا</b> وبذورًا جديدة.`, `أهلًا يا <b>${g.name()}</b>! نوّرتي حديقتي الصغيرة. الأول هنزرع <b>بذرة عبَّاد شمس</b> ونشوفها وهي بتنمو. وبعدين نتابعها لحد ما تكوِّن <b>أزهارًا</b> و<b>ثمارًا</b> وبذورًا جديدة.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Great gardener!', P('بقيت بستاني شاطر!', 'بقيتي بستانية شاطرة!')),
+    text: T('Plants grow from <b>seeds</b>: seed leaves, true leaves, buds, <b>flowers</b>, <b>fruits</b>, then new seeds for the next generation. A plant’s body has <b>roots</b>, a <b>stem</b> and <b>leaves</b>.', 'تنمو النباتات من <b>البذور</b>: أوراق بذرية، ثم أوراق حقيقية، ثم براعم و<b>أزهار</b> و<b>ثمار</b>، ثم بذور جديدة للجيل التالي. ويتكوَّن النبات من <b>الجذور</b> و<b>الساق</b> و<b>الأوراق</b>.') }
+}).catch(err => console.error(err));
+window.__garden = { sc, render };
+})();
+</script>
+</body>
+</html>
