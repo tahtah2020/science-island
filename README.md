@@ -37,7 +37,7 @@ Besides `mc`, `tf`, `fill`, `order`, `match` and `tap`, there are five exam-styl
 { type:'fix',   q:'The ribs are in the abdominal area.', wrong:'abdominal', answer:'chest' }   // correct the underlined word (letter tiles)
 { type:'build', style:'why'|'whatif'|'function'|'define', q, parts:[the answer, in order], extra:[cards that do not belong] }
 ```
-`term`, `fix` and `build` give two tries (green letters stay; Reesho says whether a card is wrong, missing or out of order). Keep a `term`/`fix` answer to 18 letters or fewer, and make sure the `extra` cards of a `build` cannot make a second correct sentence.
+In a `table` one card at a time is "in hand" above the table: one tap on a column places it and the next card comes up; when all are placed, tapping a card takes it out again. `term`, `fix` and `build` give two tries (green letters stay; Reesho says whether a card is wrong, missing or out of order). Keep a `term`/`fix` answer to 18 letters or fewer, and make sure the `extra` cards of a `build` cannot make a second correct sentence.
 
 ## Outside-guide ideas
 Core and Boss ideas come from the school book only. An idea taken from the outside guide carries `bonus: true, guide: true`: like the enrichment ideas it never counts for the Quest's stars and is not in Daily 5, but the Exam Hall asks it like any other idea (enrichment ideas without `guide` are left out of the exam).

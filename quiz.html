@@ -256,6 +256,18 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
 .tcol .th{background:#fdf0cf;font-weight:900;font-size:16px;padding:8px 6px;text-align:center;line-height:1.2}
 .tcol .drop{display:flex;flex-direction:column;gap:6px;padding:8px;flex:1}
 .pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:52px;align-items:flex-start}
+.tnow{background:#eaf6fb;border:3px dashed #9fc3d6;border-radius:16px;padding:8px 10px 6px;margin-bottom:8px;text-align:center}
+.tnow .helpline{margin:0 0 6px;color:var(--primary-d)}
+.tnow .slot1{display:flex;justify-content:center;min-height:50px}
+.tnow .chipb{font-size:18px;text-align:center;border-color:var(--primary);background:#fff;box-shadow:0 4px 0 var(--primary-d);cursor:default;animation:pop .35s}
+.tnow .tgo{font-size:14px;font-weight:900;color:var(--primary-d);margin-top:6px}
+.tnow.done{background:var(--ok-bg);border-color:var(--ok)}
+.tnow.done .slot1,.tnow.done .tgo{display:none}
+.tnow.done .helpline{margin:4px 0;color:#1d6b49;text-transform:none;letter-spacing:0;font-size:14.5px}
+.tcol.ready .drop:empty::before{content:"＋";display:grid;place-items:center;flex:1;min-height:44px;border:2px dashed #9fc3d6;border-radius:12px;color:#7d99ab;font-size:22px;font-weight:900}
+.helpline.wait{margin:10px 0 0}
+.helpline.wait + .pool{margin-top:6px;min-height:0}
+.helpline.wait + .pool .chipb{font-size:14.5px;padding:6px 10px;min-height:38px;opacity:.8}
 .chipb{font:inherit;font-weight:800;font-size:16px;line-height:1.25;color:var(--navy);background:#fff;border:3px solid #cfe3ee;border-radius:14px;padding:8px 12px;min-height:44px;cursor:pointer;text-align:start}
 .chipb:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .chipb.sel{border-color:var(--primary);background:#eaf6fb;box-shadow:0 0 0 3px #bfe3f2}
@@ -355,9 +367,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261011b"></script>
-<script src="chapters.js?v=20261011b"></script>
-<script src="common.js?v=20261011b"></script>
+<script src="firebase-config.js?v=20261011c"></script>
+<script src="chapters.js?v=20261011c"></script>
+<script src="common.js?v=20261011c"></script>
 <script>
 (() => {
 'use strict';
@@ -757,21 +769,26 @@ function ask(q) {
       tools.appendChild(check); area.append(wrap, tools);
     }
 
-    /* comparison table: put every card in its column */
+    /* comparison table: one card at a time. The card on top is "the card now"; one tap on a column puts it there
+       and the next card comes up by itself. When all the cards are placed, a card in the table can be tapped to take it out
+       and place it again (while a card is in hand, tapping anywhere in a column, even on a card, drops it there). */
     else if (q.type === 'table') {
-      const place = q.items.map(() => -1); let sel = null;
+      const place = q.items.map(() => -1), order = shuffle(q.items.map((_, i) => i));
+      let sel = order[0];
       if (q.poc) area.appendChild(mk('div', 'poc', `${T('Point of comparison', 'وجه المقارنة')}: <b>${esc(q.poc)}</b>`));
-      area.appendChild(mk('div', 'helpline', T('Tap a card, then tap its column', 'اضغط على البطاقة ثم على العمود المناسب')));
+      const now = mk('div', 'tnow', `<div class="helpline"></div><div class="slot1"></div><div class="tgo" aria-hidden="true">👇 ${T('Tap its column', G('اضغط على العمود بتاعها', 'اضغطي على العمود بتاعها'))}</div>`);
+      const nowLab = now.firstElementChild, nowSlot = now.children[1];
       const tbl = mk('div', 'tbl'); tbl.style.setProperty('--n', q.cols.length);
+      const waitLab = mk('div', 'helpline wait', T('Next cards', 'البطاقات الجاية'));
       const pool = mk('div', 'pool');
       const tools = mk('div', 'tools');
       const check = mk('button', 'btn primary', T('Check ✓', 'تحقق ✓')); check.type = 'button'; check.disabled = true;
-      const chips = shuffle(q.items.map((_, i) => i)).map(ii => {
+      const chips = order.map(ii => {
         const b = mk('button', 'chipb', esc(q.items[ii])); b.type = 'button'; b.dataset.ii = ii;
         b.onclick = e => {
-          e.stopPropagation(); if (finished) return;
-          if (place[ii] >= 0) { place[ii] = -1; sel = ii; } else sel = sel === ii ? null : ii;
-          sfx.tick(); paint();
+          if (place[ii] >= 0 && sel !== null) return;              // a card is in hand: a tap on a card in the table counts as a tap on its column
+          e.stopPropagation(); if (finished || sel === ii) return;
+          place[ii] = -1; sel = ii; sfx.tick(); paint();          // take this card in hand (a waiting card, or a card in the table once all are placed)
         };
         return b;
       });
@@ -779,20 +796,26 @@ function ask(q) {
         const d = mk('div', 'tcol', `<div class="th">${esc(c)}</div><div class="drop"></div>`); d.dataset.ci = ci; d.setAttribute('role', 'button'); d.tabIndex = 0; d.setAttribute('aria-label', c);
         const put = () => {
           if (finished) return;
-          if (sel === null) { say(T('First tap one of the cards below.', 'اضغط الأول على بطاقة من البطاقات اللي تحت.'), 'point'); return; }
-          place[sel] = ci; sel = null; sfx.tick(); paint();
+          if (sel === null) { say(T('All the cards are in the table. Press <b>Check</b>, or tap a card to move it.', G('كل البطاقات في الجدول. اضغط <b>تحقق</b>، أو اضغط على بطاقة علشان تنقلها.', 'كل البطاقات في الجدول. اضغطي <b>تحقق</b>، أو اضغطي على بطاقة علشان تنقليها.')), 'point'); return; }
+          place[sel] = ci; const next = order.find(ii => place[ii] < 0);
+          sel = next === undefined ? null : next; sfx.tick(); paint();
         };
         d.addEventListener('click', put);
         d.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === d) { e.preventDefault(); put(); } });
         tbl.appendChild(d); return d;
       });
       const paint = () => {
-        chips.forEach(b => { const ii = +b.dataset.ii, home = place[ii] >= 0 ? cols[place[ii]].querySelector('.drop') : pool; if (b.parentNode !== home) home.appendChild(b); b.classList.toggle('sel', sel === ii); });
+        chips.forEach(b => { const ii = +b.dataset.ii, home = ii === sel ? nowSlot : place[ii] >= 0 ? cols[place[ii]].querySelector('.drop') : pool; if (b.parentNode !== home) home.appendChild(b); b.classList.toggle('sel', sel === ii); });
+        const left = place.filter(v => v < 0).length;
         cols.forEach(c => c.classList.toggle('ready', sel !== null));
-        check.disabled = place.some(v => v < 0);
+        now.classList.toggle('done', sel === null);
+        nowLab.textContent = sel !== null ? T(`Where does this card go? (${q.items.length - left + 1} of ${q.items.length})`, `البطاقة دي مكانها فين؟ (${q.items.length - left + 1} من ${q.items.length})`)
+          : T('All done! Press Check. To change a card, tap it.', G('خلصت! اضغط تحقق. ولو عايز تغيّر بطاقة اضغط عليها.', 'خلصتي! اضغطي تحقق. ولو عايزة تغيّري بطاقة اضغطي عليها.'));
+        waitLab.hidden = pool.hidden = !pool.children.length;
+        check.disabled = left > 0;
       };
       const mark = () => {
-        let ok = true; tools.hidden = true; pool.hidden = true;
+        let ok = true; tools.hidden = true; pool.hidden = waitLab.hidden = now.hidden = true;
         chips.forEach(b => { const ii = +b.dataset.ii, good = place[ii] === q.answer[ii]; ok = ok && good; b.disabled = true; b.classList.remove('sel'); b.classList.add(good ? 'good' : 'bad'); });
         cols.forEach(c => { c.classList.remove('ready'); c.tabIndex = -1; });
         return ok;
@@ -800,7 +823,7 @@ function ask(q) {
       const showRight = () => area.appendChild(mk('div', 'explain no', q.cols.map((c, ci) => `<b>${esc(c)}:</b> ${q.items.filter((_, i) => q.answer[i] === ci).map(esc).join(' · ')}`).join('<br>')));
       check.onclick = () => { if (finished) return; const ok = mark(); if (!ok) showRight(); finish(ok, ok); };
       reveal = () => { mark(); showRight(); };
-      tools.appendChild(check); area.append(tbl, pool, tools); paint();
+      tools.appendChild(check); area.append(now, tbl, waitLab, pool, tools); paint();
     }
 
     /* write the word with letter tiles: the scientific term, or the right word instead of the underlined one */

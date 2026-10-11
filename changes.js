@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-11', title: 'جدول المقارنة بقى أسهل',
+    items: [
+      { text: 'سؤال «قارن بين» كان بيلخبط (اضغط على البطاقة ثم على العمود). دلوقتي بطاقة واحدة بتظهر فوق الجدول، والطالب يضغط على العمود مرة واحدة فتنزل فيه وتيجي اللي بعدها لوحدها. وبعد ما يخلّص يقدر يضغط على أي بطاقة علشان ينقلها.', links: [{ label: 'عربي', href: 'quiz.html#preview=T3.4&lang=ar', ch: 'ch2' }, { label: 'English', href: 'quiz.html#preview=B6.4&lang=en', ch: 'ch1' }] }
+    ] },
   { date: '2026-10-11', title: 'لجنة ريشو (امتحان الشهر) + الفصل الثالث + أسئلة على طريقة الامتحان',
     items: [
       { text: '«لجنة ريشو»: بطاقة جديدة في صفحة الفصول. امتحان من ٢٠ درجة على الفصول ١ و٢ و٣ بنفس شكل امتحان الشهر (٤ أسئلة × ٥ درجات)، وكل مرة ورقة جديدة. الأخطاء بتروح مراجعة الفصل بتاعها.', links: [{ label: 'افتح اللجنة', href: 'quiz.html#exam=oct' }] },
