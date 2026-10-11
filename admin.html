@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261011a">
+<link rel="stylesheet" href="common.css?v=20261011b">
 <style>
 /* Owner's page: what changed, and every question in English and Arabic side by side.
    "New" and "changed" are worked out on this device: each phrasing's content is remembered once you have seen it. */
@@ -105,10 +105,10 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     </div>
   </main>
 </div>
-<script src="firebase-config.js?v=20261011a"></script>
-<script src="chapters.js?v=20261011a"></script>
-<script src="changes.js?v=20261011a"></script>
-<script src="common.js?v=20261011a"></script>
+<script src="firebase-config.js?v=20261011b"></script>
+<script src="chapters.js?v=20261011b"></script>
+<script src="changes.js?v=20261011b"></script>
+<script src="common.js?v=20261011b"></script>
 <script>
 (async () => {
   'use strict';
@@ -167,7 +167,7 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
 
   /* preview links need a player and the chapter; the owner gets a player called Admin if this device has none */
   document.addEventListener('click', e => {
-    const a = e.target.closest('a[href^="quiz.html"], a[href^="arm.html"], a[href^="seasons.html"], a[href^="map.html"]'); if (!a) return;
+    const a = e.target.closest('a[href^="quiz.html"], a[href^="arm.html"], a[href^="seasons.html"], a[href^="seedlab.html"], a[href^="map.html"]'); if (!a) return;
     if (!SI.player()) SI.addPlayer({ name: 'Admin', grade: 'g5', track: 'lang' });
     SI.setChapter(a.dataset.ch || $('#ch').value || 'ch1');   // a link in "آخر التعديلات" can name its chapter (ch: 'ch2' in changes.js)
     const k = a.dataset.seen; if (k) { const s = loadSeen(); s[k] = a.dataset.h; saveSeen(s); }
@@ -180,8 +180,10 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     el.onload = () => res(window.IDEAS || []); el.onerror = () => res([]);
     document.head.appendChild(el);
   });
-  const TYPES = { tf: 'صح أم خطأ', fill: 'أكمل', order: 'رتّب', match: 'صِل', tap: 'اضغط على الصورة', mc: 'اختر', odd: 'الشاذ', spot: 'اكتشف الخطأ', story: 'قصة' };
+  const TYPES = { tf: 'صح أم خطأ', fill: 'أكمل', order: 'رتّب', match: 'صِل', tap: 'اضغط على الصورة', mc: 'اختر', odd: 'الشاذ', spot: 'اكتشف الخطأ', story: 'قصة',
+    multi: 'اختر كل الصحيح', table: 'جدول مقارنة', fix: 'صوّب ما تحته خط', term: 'المصطلح العلمي', build: 'كوّن الإجابة', why: 'علّل', whatif: 'ماذا يحدث', function: 'ما وظيفة', define: 'ما المقصود' };
   const TAP = { in: 'العضلة الأمامية', out: 'العضلة الخلفية', shoulder: 'الكتف', elbow: 'الكوع', wrist: 'المعصم', skull: 'الجمجمة', ribs: 'الضلوع', backbone: 'العمود الفقري',
+    coat: 'غلاف البذرة', embryo: 'الجنين (الجزء الصغير في الأعلى)', cotyledon: 'الفلقة (النصف الكبير)', ungerminated: 'البذرة التي لم تنبت', germinated: 'البذرة التي نبتت', A: 'الكوب A', B: 'الكوب B',
     sprout: 'صورة النبات الصغير الجديد', flower: 'صورة النبات وعليه أزهار', fruit: 'صورة النبات وعليه ثمار', wither: 'صورة النبات الذابل والبذور', rock: 'فوق الصخرة تحت الشمس', crevice: 'داخل شق الصخرة', sand: 'على الرمال المكشوفة' };
   function answer(v, ar) {
     if (v.type === 'tf') return v.answer === 0 ? (ar ? 'صح' : 'True') : (ar ? 'خطأ' : 'False');
@@ -189,6 +191,11 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     if (v.type === 'order') return v.answer.map(i => v.items[i]).join(ar ? ' ← ' : ' → ');
     if (v.type === 'match') return v.left.map((l, i) => `${l} ${ar ? '←' : '→'} ${v.right[v.answer[i]]}`).join(' · ');
     if (v.type === 'tap') return (ar ? '' : '') + (TAP[v.answer] || v.answer);
+    if (v.type === 'multi') return v.answer.map(i => v.options[i]).join(' + ');
+    if (v.type === 'table') return v.cols.map((c, ci) => `${c}: ${v.items.filter((_, i) => v.answer[i] === ci).join('، ')}`).join(' · ');
+    if (v.type === 'fix') return `${v.wrong} ${ar ? '←' : '→'} ${v.answer}`;
+    if (v.type === 'term') return v.answer;
+    if (v.type === 'build') return v.parts.join(' ') + (v.extra && v.extra.length ? `   ✗ ${v.extra.join(' / ')}` : '');
     return '';
   }
   let data = { en: [], ar: [] }, onlyNew = true;
@@ -235,7 +242,7 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     render();
   }
   const sel = $('#ch');
-  SI.chapters().filter(c => c.ready).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `الفصل ${c.n} · ${c.titleAr || c.title}`; sel.appendChild(o); });
+  SI.chapters().filter(c => c.questions).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `الفصل ${c.n} · ${c.titleAr || c.title}${c.ready ? '' : ' (لسه مقفول)'}`; sel.appendChild(o); });   // a chapter still being written can be reviewed here before it opens
   sel.onchange = () => loadChapter(sel.value);
   const setF = v => { onlyNew = v; $('#fNew').setAttribute('aria-pressed', v); $('#fAll').setAttribute('aria-pressed', !v); render(); };
   $('#fNew').onclick = () => setF(true); $('#fAll').onclick = () => setF(false);

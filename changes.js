@@ -3,6 +3,15 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-11', title: 'لجنة ريشو (امتحان الشهر) + الفصل الثالث + أسئلة على طريقة الامتحان',
+    items: [
+      { text: '«لجنة ريشو»: بطاقة جديدة في صفحة الفصول. امتحان من ٢٠ درجة على الفصول ١ و٢ و٣ بنفس شكل امتحان الشهر (٤ أسئلة × ٥ درجات)، وكل مرة ورقة جديدة. الأخطاء بتروح مراجعة الفصل بتاعها.', links: [{ label: 'افتح اللجنة', href: 'quiz.html#exam=oct' }] },
+      { text: '٥ أنواع أسئلة جديدة بتدرّب على الكتابة: جدول المقارنة، علّل وماذا يحدث (تكوين الإجابة من بطاقات)، المصطلح العلمي وصوّب ما تحته خط (بحروف)، واختر كل الإجابات الصحيحة.', links: [{ label: 'جدول', href: 'quiz.html#preview=B6.4&lang=en', ch: 'ch1' }, { label: 'علّل', href: 'quiz.html#preview=M4.4&lang=en', ch: 'ch1' }, { label: 'مصطلح', href: 'quiz.html#preview=B4.4&lang=en', ch: 'ch1' }, { label: 'صوّب', href: 'quiz.html#preview=S4.5&lang=en', ch: 'ch1' }, { label: 'اختر الكل', href: 'quiz.html#preview=X1.1&lang=en', ch: 'ch1' }, { label: 'علّل بالعربي', href: 'quiz.html#preview=M4.4&lang=ar', ch: 'ch1' }] },
+      { text: 'الفصل الثالث «شروط الإنبات» اتفتح لمسار اللغات: ٢٢ فكرة من كتاب الوزارة (الدروس ٣-١ إلى ٣-٥) بـ ٩٤ صياغة، و٣ أفكار إثرائية، و٣ أفكار إضافية للامتحان من الكتاب الخارجي.', links: [{ label: 'الخريطة', href: 'map.html', ch: 'ch3' }, { label: 'كل الأسئلة', href: 'quiz.html#preview&lang=en', ch: 'ch3' }] },
+      { text: 'لعبة الفصل «معمل البذور»: فتح البذرة وكشف النشا باليود، ثم ٣ تجارب (الماء والهواء والحرارة) الطالب بيغيّر فيها شرط واحد بس، ثم جولة سرعة «تنبت ولا لأ؟».', links: [{ label: 'اللعبة', href: 'seedlab.html' }, { label: 'المرحلة ٢', href: 'seedlab.html#stage2' }, { label: 'المرحلة ٣', href: 'seedlab.html#stage3' }] },
+      { text: 'الفصل الأول والثاني: ٣٧ صياغة جديدة على طريقة الامتحان (عربي وإنجليزي)، منها ٤ أفكار إضافية من الكتاب الخارجي: مفاصل الاتجاه الواحد، الهجرة، مقارنة الطيور والسحالي، وسبب تسمية الدورة السنوية.', links: [{ label: 'الهجرة', href: 'quiz.html#preview=Y1.1&lang=en', ch: 'ch2' }, { label: 'المفاصل', href: 'quiz.html#preview=X1.2&lang=en', ch: 'ch1' }, { label: 'ماذا يحدث', href: 'quiz.html#preview=T7.4&lang=en', ch: 'ch2' }] },
+      { text: 'بداية الفصل الرابع «شروط النمو»: ٧ أفكار من كتاب الوزارة جاهزة للمراجعة هنا. الفصل لسه مقفول للاعبين (ناقصه اللعبة والخريطة)، وسؤال منه بيظهر أحيانًا في اللجنة.', links: [{ label: 'أسئلة الفصل الرابع', href: 'quiz.html#preview&lang=en', ch: 'ch4' }] }
+    ] },
   { date: '2026-10-11', title: 'الفصل الثاني: التغيرات في الفصول (عربي وإنجليزي)',
     items: [
       { text: 'الفصل الثاني اتفتح للمسارين: ١٥ فكرة من كتاب الوزارة (درس ٢-١ ودرس ٢-٢) بـ ٥٠ صياغة، و٣ أفكار إضافية من العمود الإثرائي «حكمة الصحراء».', links: [{ label: 'كل الأسئلة بالعربي', href: 'quiz.html#preview&lang=ar', ch: 'ch2' }, { label: 'English', href: 'quiz.html#preview&lang=en', ch: 'ch2' }] },

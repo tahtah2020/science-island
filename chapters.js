@@ -30,11 +30,16 @@ window.CHAPTERS = [
     map: { img: 'assets/map_ch2.svg', stops: [[30, 82, 'right'], [63, 68, 'left'], [36, 51, 'right'], [65, 37, 'left'], [44, 14, 'below']] },
     cover: 'assets/map_ch2.svg', quizBg: 'assets/bg_ch2.svg' },
 
-  { id: 'ch3', n: 3, title: 'Conditions for Germination', titleAr: 'شروط الإنبات', icon: '🌱', tint: '#e2f4dc', ready: false,
-    lessons: ['Inside the Seed', 'Water and Germination', 'Air and Germination', 'Temperature and Germination', 'Summary of Germination'] },
+  { id: 'ch3', n: 3, title: 'Conditions for Germination', titleAr: 'شروط الإنبات', icon: '🌱', tint: '#e2f4dc', ready: true,
+    lessons: ['Inside the Seed', 'Water and Germination', 'Air and Germination', 'Temperature and Germination', 'Summary of Germination'],
+    questions: 'questions_ch3.js', art: 'ch3_art.js',   // no questionsAr yet: the chapter opens for the Languages track only
+    game: { href: 'seedlab.html', name: 'Seed Lab', nameAr: 'معمل البذور', icon: '🧪', hint: 'Open a seed, then find out what seeds need to germinate!', hintAr: 'افتح البذرة واكتشف البذور محتاجة إيه علشان تنبت!' },
+    map: { img: 'assets/map_ch3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'assets/map_ch3.svg', quizBg: 'assets/bg_ch3.svg' },
 
   { id: 'ch4', n: 4, title: 'Conditions for Growth', titleAr: 'شروط النمو', icon: '🌿', tint: '#d9f2e4', ready: false,
-    lessons: ['Sunlight and Growth', 'Fertilizer and Growth'] },
+    lessons: ['Sunlight and Growth', 'Fertilizer and Growth'],
+    questions: 'questions_ch4.js' },   // first part only: used by the Exam Hall until the chapter opens (it still needs its game and map)
 
   { id: 'ch5', n: 5, title: 'From Flower to Fruit', titleAr: 'من الزهرة إلى الثمرة', icon: '🌼', tint: '#fdf3c9', ready: false,
     lessons: ['Structure of a Luffa Flower', 'How to Use a Microscope', 'Pollination and How Fruits Grow'] },
@@ -50,4 +55,14 @@ window.CHAPTERS = [
 
   { id: 'ch9', n: 9, title: 'Water Cycle', titleAr: 'دورة الماء', icon: '💧', tint: '#d8eefb', ready: false,
     lessons: ['Water Evaporation', 'Water in the Air', 'Where Does Water Go?'] }
+];
+
+/* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.
+     parts   : the chapters the test covers. lessons: only these lessons of the chapter. max: at most this many questions
+               from the chapter, chance: how often the chapter is in a paper (both for a chapter the test only touches).
+               A chapter is asked in the player's language only when it has a questions file for that language.
+   Enrichment ideas (bonus) are left out of a test; exam extras from the outside guide (bonus + guide) are included. */
+window.EXAMS = [
+  { id: 'oct', title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'ch1' }, { ch: 'ch2' }, { ch: 'ch3' }, { ch: 'ch4', lessons: [1], max: 1, chance: .5 }] }
 ];
