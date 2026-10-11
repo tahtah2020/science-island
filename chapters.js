@@ -1,7 +1,7 @@
-/* Science Island · chapter list: Science, first term, Grade 5 and Grade 4 (Languages and Arabic tracks).
+/* Science Island · chapter list: Science, first term, Grades 4, 5 and 6 (Languages and Arabic tracks).
    A chapter opens for players when `ready` is true. To publish a new chapter, fill in:
      grade     : 'g4' | 'g5' | 'g6'. A chapter without it belongs to Grade 5. A player sees the chapters of their own grade only.
-                 Chapter ids are unique on the whole site: Grade 5 uses ch1…, Grade 4 uses g4c1…
+                 Chapter ids are unique on the whole site: Grade 5 uses ch1…, Grade 4 uses g4c1…, Grade 6 uses g6c1…
      titleAr   : the chapter title in the Arabic school book (Arabic track)
      questions : file with that chapter's window.IDEAS (for example 'questions_ch2.js')
      questionsAr : the same questions in Arabic for the Arabic track (for example 'questions_ch2_ar.js')
@@ -97,7 +97,43 @@ window.CHAPTERS = [
     lessons: ['Rubber Band-Powered Cars', 'Power of Rubber Bands'] },
 
   { id: 'g4c8', grade: 'g4', n: 8, title: 'Soil, Water, and Life in Egypt', titleAr: 'التربة والماء والحياة في مصر', icon: '🏺', tint: '#f3e3c8', ready: false,
-    lessons: ['The Relationship Between the Ground and Water', 'Transporting Giant Stone Statues'] }
+    lessons: ['The Relationship Between the Ground and Water', 'Transporting Giant Stone Statues'] },
+
+  /* ---------- Grade 6 (school book 2026/2027, 10 chapters in the first term) ---------- */
+  { id: 'g6c1', grade: 'g6', n: 1, title: 'Conditions for Burning', titleAr: 'شروط الاحتراق', icon: '🕯️', tint: '#ffe9c9', ready: true,
+    lessons: ['How Things Burn and Air', 'The Role of Oxygen', 'Air After Burning'],
+    lessonsAr: ['الهواء واحتراق الأشياء', 'دور الأكسجين', 'الهواء بعد الاحتراق'],
+    questions: 'questions_g6c1.js', questionsAr: 'questions_g6c1_ar.js', art: 'g6_art.js',
+    game: { href: 'flame.html', name: 'Flame Lab', nameAr: 'معمل اللهب', icon: '🕯️', hint: 'Keep the candle burning, then find the gas that helps things burn!', hintAr: 'خلّي الشمعة تستمر في الاحتراق، واكتشف الغاز اللي بيساعد على الاحتراق!' },
+    map: { img: 'assets/map_g6c1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'assets/map_g6c1.svg', quizBg: 'assets/bg_g6c1.svg' },
+
+  { id: 'g6c2', grade: 'g6', n: 2, title: 'Respiration', titleAr: 'التنفس', icon: '🫁', tint: '#dff1f8', ready: false,
+    lessons: ['How Breathing Works', 'How Lungs Work'] },
+
+  { id: 'g6c3', grade: 'g6', n: 3, title: 'Digestion', titleAr: 'الهضم', icon: '🍎', tint: '#fde3dc', ready: false,
+    lessons: ['Where Food Goes', 'The Function of Saliva', 'How Absorption Works'] },
+
+  { id: 'g6c4', grade: 'g6', n: 4, title: 'Circulation and Excretion', titleAr: 'الدورة الدموية والإخراج', icon: '❤️', tint: '#fde3ea', ready: false,
+    lessons: ['Heart and Blood', 'How the Kidneys Work', 'Various Organs'] },
+
+  { id: 'g6c5', grade: 'g6', n: 5, title: 'Photosynthesis', titleAr: 'البناء الضوئي', icon: '🌿', tint: '#e3f3d0', ready: false,
+    lessons: ['Sunlight and Starch', 'Gas Exchange'] },
+
+  { id: 'g6c6', grade: 'g6', n: 6, title: 'Transportation of Water in Plants', titleAr: 'انتقال الماء في النبات', icon: '💧', tint: '#dff1f8', ready: false,
+    lessons: ['Transpiration', 'The Path of Water'] },
+
+  { id: 'g6c7', grade: 'g6', n: 7, title: 'Food Chain', titleAr: 'السلسلة الغذائية', icon: '🦅', tint: '#f6e7c4', ready: false,
+    lessons: ['Food Chain', 'Living Organisms, Air, and Water'] },
+
+  { id: 'g6c8', grade: 'g6', n: 8, title: 'Egypt Special Part 1', titleAr: 'السلاسل الغذائية في مصر', icon: '🏜️', tint: '#f3e3c8', ready: false,
+    lessons: ['Desert and Nile Food Chains'] },
+
+  { id: 'g6c9', grade: 'g6', n: 9, title: 'Properties of Solutions', titleAr: 'خصائص المحاليل', icon: '🧪', tint: '#e6e3fb', ready: false,
+    lessons: ['Grouping Solutions', 'What Is Dissolved in Solutions'] },
+
+  { id: 'g6c10', grade: 'g6', n: 10, title: 'Reaction between Solutions and Metals', titleAr: 'تفاعل المحاليل مع الفلزات', icon: '⚗️', tint: '#e9eef2', ready: false,
+    lessons: ['Aqueous Solutions and Metals', 'What Is Left After Evaporation'] }
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.
