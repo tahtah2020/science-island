@@ -160,11 +160,13 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
 
   /* ---------- XP and levels ---------- */
-  const LEVELS = [[0, 'Bone Rookie'], [300, 'Joint Explorer'], [800, 'Muscle Mover'], [1500, 'Skeleton Pro'], [2500, 'Science Hero'], [4000, 'Island Legend']];
-  const LEVELS_AR = ['مبتدئ العظام', 'مستكشف المفاصل', 'محرّك العضلات', 'محترف الهيكل', 'بطل العلوم', 'أسطورة الجزيرة'];
+  /* level names are general on purpose: XP is shared by every chapter (and later every subject), so a name must fit them all.
+     Arabic names come as [boy, girl]. */
+  const LEVELS = [[0, 'Rookie'], [300, 'Explorer'], [800, 'Thinker'], [1500, 'Star'], [2500, 'Champion'], [4000, 'Legend']];
+  const LEVELS_AR = [['مبتدئ', 'مبتدئة'], ['مستكشف', 'مستكشفة'], ['مفكّر', 'مفكّرة'], ['نجم', 'نجمة'], ['بطل', 'بطلة'], ['متفوّق', 'متفوّقة']];
   function levelInfo(xp) {
     let i = 0; LEVELS.forEach((l, k) => { if (xp >= l[0]) i = k; });
-    const nxt = LEVELS[i + 1], nm = k => T(LEVELS[k][1], LEVELS_AR[k]);
+    const nxt = LEVELS[i + 1], nm = k => T(LEVELS[k][1], G(LEVELS_AR[k][0], LEVELS_AR[k][1]));
     return { n: i + 1, title: nm(i), xp, from: LEVELS[i][0], to: nxt ? nxt[0] : null, pct: nxt ? (xp - LEVELS[i][0]) / (nxt[0] - LEVELS[i][0]) : 1, next: nxt ? nm(i + 1) : null };
   }
   const xp = () => prof().xp || 0;

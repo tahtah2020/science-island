@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261011c">
+<link rel="stylesheet" href="common.css?v=20261011d">
 <style>
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}
 .mapWrap{position:relative;width:100%;max-width:min(680px, calc((100vh - 120px) * 1224 / 1285));margin:0 auto;aspect-ratio:1224/1285;border-radius:26px;
@@ -35,6 +35,7 @@
 .coachCard .bubble{width:100%}
 .lvl{display:flex;flex-direction:column;gap:6px}
 .lvl .t{display:flex;justify-content:space-between;gap:8px;font-weight:900;font-size:15px}
+.lvl .t span:last-child{flex:none;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
 .lvl small{font-weight:800;color:var(--ink);font-size:13px}
 .hello{font-weight:900;font-size:15px;color:var(--ink)}
 @keyframes pulse{0%,100%{box-shadow:0 6px 14px rgba(31,61,87,.25),0 0 0 0 rgba(255,255,255,.9)}50%{box-shadow:0 6px 14px rgba(31,61,87,.25),0 0 0 12px rgba(255,255,255,0)}}
@@ -92,9 +93,9 @@
     </aside>
   </main>
 </div>
-<script src="firebase-config.js?v=20261011c"></script>
-<script src="chapters.js?v=20261011c"></script>
-<script src="common.js?v=20261011c"></script>
+<script src="firebase-config.js?v=20261011d"></script>
+<script src="chapters.js?v=20261011d"></script>
+<script src="common.js?v=20261011d"></script>
 <script>
 (async () => {
   'use strict';
@@ -116,7 +117,7 @@
   $('#lvlTitle').textContent = `${T('Level', 'المستوى')} ${lv.n} · ${lv.title}`;
   $('#lvlXp').textContent = `${lv.xp} XP`;
   $('#lvlBar').style.width = Math.round(lv.pct * 100) + '%';
-  $('#lvlNext').textContent = lv.to ? T(`${lv.to - lv.xp} XP to ${lv.next}`, `باقي ${lv.to - lv.xp} XP للوصول إلى ${lv.next}`) : T('Top level reached!', 'وصلت لأعلى مستوى!');
+  $('#lvlNext').textContent = lv.to ? T(`${lv.to - lv.xp} XP to ${lv.next}`, `باقي ${lv.to - lv.xp} XP للوصول إلى مستوى «${lv.next}»`) : T('Top level reached!', 'وصلت لأعلى مستوى!');
   $('#streak').textContent = daily.streak;
   const st = SI.chapterStars(CH.id);
   $('#stars').textContent = st.got; $('#starsOf').textContent = st.of;

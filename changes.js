@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-11', title: 'أسماء المستويات بقت عامة',
+    items: [
+      { text: 'أسماء المستويات كانت كلها من فصل العظام والعضلات (مستكشف المفاصل، محرّك العضلات…) وبتظهر في كل الفصول. دلوقتي الأسماء عامة تناسب أي فصل وأي مادة: مبتدئ، مستكشف، مفكّر، نجم، بطل، متفوّق (وللبنات: مبتدئة، مستكشفة…). النقاط والمستوى نفسه زي ما هم.', links: [{ label: 'صفحة الفصول', href: 'chapters.html' }] },
+      { text: 'رقم الـ XP مبقاش بيتقسم على سطرين في بطاقة المستوى.' }
+    ] },
   { date: '2026-10-11', title: 'جدول المقارنة بقى أسهل',
     items: [
       { text: 'سؤال «قارن بين» كان بيلخبط (اضغط على البطاقة ثم على العمود). دلوقتي بطاقة واحدة بتظهر فوق الجدول، والطالب يضغط على العمود مرة واحدة فتنزل فيه وتيجي اللي بعدها لوحدها. وبعد ما يخلّص يقدر يضغط على أي بطاقة علشان ينقلها.', links: [{ label: 'عربي', href: 'quiz.html#preview=T3.4&lang=ar', ch: 'ch2' }, { label: 'English', href: 'quiz.html#preview=B6.4&lang=en', ch: 'ch1' }] }
