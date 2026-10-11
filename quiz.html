@@ -243,6 +243,79 @@ body{
   .stats{margin:4px 0 8px}
   .panel p{font-size:15px;margin:4px 0 8px}
 }
+/* ---------- exam-style question types: choose all, table, build the answer, letter tiles ---------- */
+.opt .num.tick{border:3px solid #cfe3ee;border-radius:9px;color:transparent;font-size:17px}
+.opt.sel .num.tick{background:var(--primary)!important;border-color:var(--primary);color:#fff}
+.helpline{font-size:13px;font-weight:900;color:var(--ink);text-transform:uppercase;letter-spacing:.4px;margin:0 0 8px}
+html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
+.poc{background:#fdf0cf;border-radius:12px;padding:6px 12px;font-weight:800;font-size:15px;margin-bottom:8px;display:inline-block}
+.tbl{display:grid;gap:8px;grid-template-columns:repeat(var(--n,2),minmax(0,1fr))}
+.tcol{font:inherit;color:inherit;text-align:inherit;padding:0;border:3px solid #e6cf96;border-radius:16px;background:#fff;min-height:112px;display:flex;flex-direction:column;cursor:pointer;overflow:hidden}
+.tcol:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.tcol.ready{border-color:var(--primary);box-shadow:0 0 0 3px #bfe3f2}
+.tcol .th{background:#fdf0cf;font-weight:900;font-size:16px;padding:8px 6px;text-align:center;line-height:1.2}
+.tcol .drop{display:flex;flex-direction:column;gap:6px;padding:8px;flex:1}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:52px;align-items:flex-start}
+.chipb{font:inherit;font-weight:800;font-size:16px;line-height:1.25;color:var(--navy);background:#fff;border:3px solid #cfe3ee;border-radius:14px;padding:8px 12px;min-height:44px;cursor:pointer;text-align:start}
+.chipb:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.chipb.sel{border-color:var(--primary);background:#eaf6fb;box-shadow:0 0 0 3px #bfe3f2}
+.chipb.good{background:var(--ok-bg);border-color:var(--ok)}
+.chipb.bad{background:var(--bad-bg);border-color:var(--coral)}
+.chipb:disabled{cursor:default;color:var(--navy)}
+.tcol .chipb{font-size:15px;padding:6px 9px;min-height:38px;width:100%}
+.line{min-height:62px;border:3px dashed #9fc3d6;border-radius:16px;background:#fff;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.line:empty::before{content:attr(data-empty);color:#7d99ab;font-weight:800;font-size:15px;padding:0 6px}
+.line.good{border-style:solid;border-color:var(--ok);background:var(--ok-bg)}
+.line.bad{border-style:solid;border-color:var(--coral)}
+.qtext u.wrong{text-decoration:underline;text-decoration-color:var(--coral);text-decoration-thickness:4px;text-underline-offset:5px}
+.qtext u.fixed{text-decoration:none;color:var(--ok);background:var(--ok-bg);border-radius:8px;padding:0 6px}
+.slots{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;margin:2px 0 12px}
+.slots .word{display:flex;gap:4px}
+.slot{font:inherit;font-weight:900;font-size:clamp(16px,4.4vw,24px);width:clamp(21px,6.3vw,40px);height:clamp(34px,9vw,48px);padding:0;border:0;border-bottom:4px solid var(--primary);border-radius:8px 8px 0 0;background:#eef7fb;color:var(--navy);cursor:pointer;display:grid;place-items:center;text-transform:uppercase}
+.slot.fixed{background:transparent;border-color:transparent;cursor:default;width:auto;min-width:10px}
+.slot.lock{background:var(--ok-bg);border-color:var(--ok);cursor:default}
+.slot.bad{background:var(--bad-bg);border-color:var(--coral)}
+.slot:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.tiles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.tile{font:inherit;font-weight:900;font-size:clamp(18px,4.8vw,24px);width:clamp(36px,9.6vw,48px);height:clamp(40px,10.4vw,50px);padding:0;border:0;border-radius:12px;background:var(--mint);color:var(--navy);box-shadow:0 4px 0 var(--mint-d);cursor:pointer;text-transform:uppercase}
+.tile:active{transform:translateY(2px);box-shadow:0 2px 0 var(--mint-d)}
+.tile.used{visibility:hidden}
+.tile:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.badge.exam{background:#1f3d57;color:#fff}
+.opt.was .num.tick{background:var(--ink)!important;border-color:var(--ink);color:#fff}
+.qtext .lead{display:block;font-size:.68em;font-weight:900;color:var(--primary-d);margin-bottom:2px}
+/* exam result sheet */
+.sheet{max-width:560px;text-align:start}
+.sheet h2,.sheet .mark,.sheet .grade{text-align:center}
+.sheet .mark{font-size:64px;font-weight:900;line-height:1;margin:4px 0}
+.sheet .mark small{font-size:28px;color:var(--ink)}
+.sheet .grade{display:block;width:max-content;max-width:100%;margin:4px auto 10px;border:3px solid var(--coral);color:var(--coral);border-radius:12px;padding:2px 14px;font-weight:900;font-size:20px;transform:rotate(-3deg)}
+.sheet .grade.top{border-color:var(--ok);color:var(--ok)}
+.sheet .qm{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.sheet .qm span{background:#fff;border-radius:12px;padding:6px 4px;text-align:center;font-weight:900;font-size:15px}
+.sheet .qm small{display:block;font-size:11.5px;color:var(--ink);font-weight:800}
+.sheet h3{margin:12px 0 6px;font-size:16px;font-weight:900}
+.sheet .byc{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sheet .byc li{background:#fff;border-radius:12px;padding:7px 10px;font-weight:800;font-size:14.5px}
+.sheet .byc .r{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sheet .byc a{color:var(--primary-d);font-weight:900;white-space:nowrap}
+.sheet .byc .bar{height:8px;border-radius:99px;background:#dbe9f0;overflow:hidden;margin-top:5px}
+.sheet .byc .bar i{display:block;height:100%;border-radius:99px;background:var(--ok)}
+.sheet .miss{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sheet .miss li{background:#fff;border-radius:12px;padding:8px 10px;font-weight:700;font-size:14.5px;line-height:1.4}
+.sheet .miss b{display:block;color:var(--ok);font-weight:900}
+@media (max-width:820px){
+  .tcol .th{font-size:14.5px}
+  .chipb{font-size:15px;padding:7px 10px}
+  .tcol .chipb{font-size:14px}
+  .sheet .mark{font-size:52px}
+}
+@media (max-height:520px) and (orientation:landscape){
+  .tcol{min-height:74px}
+  .line{min-height:48px}
+  .slot{height:34px} .tile{height:38px}
+  .sheet .mark{font-size:40px}
+}
 </style>
 </head>
 <body>
@@ -282,9 +355,9 @@ body{
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261011a"></script>
-<script src="chapters.js?v=20261011a"></script>
-<script src="common.js?v=20261011a"></script>
+<script src="firebase-config.js?v=20261011b"></script>
+<script src="chapters.js?v=20261011b"></script>
+<script src="common.js?v=20261011b"></script>
 <script>
 (() => {
 'use strict';
@@ -301,7 +374,7 @@ const esc = SI.esc, T = SI.T, G = SI.G, AR = SI.isAr();
 const CH = SI.chapter() || {};                             // the chapter being played (questions come from CH.questions)
 const armSkin = (SI.chProf('ch1').game || {}).skin || 0;   // arm colour chosen in Arm Mechanic, used by the arm diagrams
 const DAY = 864e5, INTERVALS = [0, 1, 3, 7, 14];
-function recordCard(id, firstTry) {
+function recordCard(id, firstTry, chId) {
   SI.updateChProf(p => {
     p.cards = p.cards || {};
     const c = p.cards[id] || { box: 0 };
@@ -309,7 +382,7 @@ function recordCard(id, firstTry) {
     if (firstTry) { c.box = Math.min(c.box + 1, 4); c.due = Date.now() + INTERVALS[c.box] * DAY; }
     else { c.box = 0; c.due = Date.now(); }               // wrong or needed help: back in today's review
     p.cards[id] = c;
-  });
+  }, chId);
 }
 function dueCards() {
   const cards = SI.chProf().cards || {}, now = Date.now();
@@ -464,10 +537,15 @@ const DIAGRAMS = {
 
 /* ---------- one question ---------- */
 const TYPE_LABEL = AR
-  ? { tf: 'صح أم خطأ', fill: 'أكمل الفراغ', order: 'رتّب', match: 'صِل', tap: 'اضغط على الصورة', mc: 'اختر', odd: 'الكلمة الشاذة', spot: 'اكتشف الخطأ', story: 'قصة قصيرة' }
-  : { tf: 'True or false', fill: 'Fill the gap', order: 'Put in order', match: 'Match the pairs', tap: 'Tap the picture', mc: 'Choose', odd: 'Odd one out', spot: 'Spot the mistake', story: 'Mini story' };
+  ? { tf: 'صح أم خطأ', fill: 'أكمل الفراغ', order: 'رتّب', match: 'صِل', tap: 'اضغط على الصورة', mc: 'اختر', odd: 'الكلمة الشاذة', spot: 'اكتشف الخطأ', story: 'قصة قصيرة',
+      multi: 'اختر كل الإجابات الصحيحة', table: 'قارن بين', fix: 'صوّب ما تحته خط', term: 'اكتب المصطلح العلمي', build: 'كوّن الإجابة', why: 'علّل', whatif: 'ماذا يحدث؟', function: 'ما وظيفة؟', define: 'ما المقصود بـ؟' }
+  : { tf: 'True or false', fill: 'Fill the gap', order: 'Put in order', match: 'Match the pairs', tap: 'Tap the picture', mc: 'Choose', odd: 'Odd one out', spot: 'Spot the mistake', story: 'Mini story',
+      multi: 'Choose all the correct answers', table: 'Compare between', fix: 'Correct the underlined word', term: 'Write the scientific term', build: 'Build the answer', why: 'Give a reason', whatif: 'What happens?', function: 'What is the function?', define: 'What is meant by?' };
 const PTS = { easy: 10, medium: 15, hard: 25 };
 let timerStop = null;
+let keyHandler = null;                                     // typing on a keyboard fills the letter tiles
+document.addEventListener('keydown', e => { if (keyHandler) keyHandler(e); });
+const LEAD = AR ? { why: 'علّل:', fix: 'صوّب ما تحته خط:', term: 'اكتب المصطلح العلمي:' } : { why: 'Give a reason for:', fix: 'Correct the underlined word:', term: 'Write the scientific term:' };
 
 function header(q, idx, total, results) {
   const b = $('#badges'); b.innerHTML = '';
@@ -475,6 +553,7 @@ function header(q, idx, total, results) {
   if (q.mode === 'timed') b.appendChild(mk('span', 'badge timed', `⏱ ${q.seconds}${T('s', ' ث')}`));
   if (q.mode === 'boss') b.appendChild(mk('span', 'badge boss', T('★ Boss', '★ التحدي الكبير')));
   if (q.src === 'bonus') b.appendChild(mk('span', 'badge bonus', T('Bonus', 'إضافي')));
+  if (q.exam) b.appendChild(mk('span', 'badge exam', `${T('Q', 'س')}${q.exam.q} (${q.exam.part}) · ${q.exam.marks === 1 ? T('1 mark', 'درجة واحدة') : T(`${q.exam.marks} marks`, 'درجتان')}`));
   const p = $('#progress'); p.innerHTML = '';
   for (let i = 0; i < total; i++) p.appendChild(mk('i', results[i] === true ? 'ok' : results[i] === false ? 'no' : i === idx ? 'now' : ''));
   $('#countPill').textContent = `${idx + 1} / ${total}`;
@@ -506,7 +585,10 @@ function ask(q) {
   return new Promise(resolve => {
     const area = $('#area'); area.innerHTML = '';
     const qt = $('#qtext'); qt.className = 'qtext' + (q.style === 'story' ? ' story' : '');
-    qt.innerHTML = q.type === 'fill' ? esc(q.q).replace('___', '<span class="gap" id="gap">&nbsp;</span>') : esc(q.q);
+    keyHandler = null;
+    const lead = LEAD[q.type === 'build' ? q.style : q.type];
+    qt.innerHTML = (lead ? `<span class="lead">${lead}</span>` : '') + (q.type === 'fill' ? esc(q.q).replace('___', '<span class="gap" id="gap">&nbsp;</span>')
+      : q.type === 'fix' ? esc(q.q).replace(esc(q.wrong), `<u class="wrong">${esc(q.wrong)}</u>`) : esc(q.q));
     const ex = $('#explain'); ex.hidden = true; ex.className = 'explain';
     const timed = q.mode === 'timed';
     let finished = false, tries = 0, stopTimer = null;
@@ -525,7 +607,7 @@ function ask(q) {
       const opts = q.type === 'tf' ? [T('True', 'صح'), T('False', 'خطأ')] : q.options;
       const order = q.type === 'tf' ? [0, 1] : shuffle(opts.map((_, i) => i));
       const wrap = mk('div', 'choices' + (q.type === 'tf' ? ' two tf' : q.type === 'fill' ? ' two' : ''));
-      const maxTries = (!timed && q.type === 'mc' && opts.length > 2) ? 2 : 1;
+      const maxTries = (!timed && !q.oneTry && q.type === 'mc' && opts.length > 2) ? 2 : 1;   // the exam gives one try
       const btns = order.map((oi, k) => {
         const b = optBtn(q.type === 'tf' ? (oi === 0 ? T('✓ True', '✓ صح') : T('✗ False', '✗ خطأ')) : esc(opts[oi]), q.type === 'tf' ? '' : T('ABCD', 'أبجد')[k]);
         b.dataset.oi = oi;
@@ -650,6 +732,169 @@ function ask(q) {
       });
       reveal = () => hots.forEach(x => { if (x.dataset.id === q.answer) x.classList.add('good'); x.setAttribute('tabindex', '-1'); });
     }
+    /* choose ALL the correct answers */
+    else if (q.type === 'multi') {
+      const picked = new Set();
+      area.appendChild(mk('div', 'helpline', T('Tap every correct answer, then press Check', 'اضغط على كل الإجابات الصحيحة ثم اضغط تحقق')));
+      const wrap = mk('div', 'choices');
+      const btns = shuffle(q.options.map((_, i) => i)).map(oi => {
+        const b = optBtn(esc(q.options[oi]) + '</span><span class="num tick">✓'); b.dataset.oi = oi; b.setAttribute('aria-pressed', 'false');
+        b.onclick = () => {
+          if (finished) return;
+          if (picked.has(oi)) picked.delete(oi); else picked.add(oi);
+          b.classList.toggle('sel', picked.has(oi)); b.setAttribute('aria-pressed', picked.has(oi)); check.disabled = !picked.size; sfx.tick();
+        };
+        wrap.appendChild(b); return b;
+      });
+      const tools = mk('div', 'tools');
+      const check = mk('button', 'btn primary', T('Check ✓', 'تحقق ✓')); check.type = 'button'; check.disabled = true;
+      const mark = () => {
+        tools.hidden = true;
+        btns.forEach(b => { const oi = +b.dataset.oi, right = q.answer.includes(oi); b.disabled = true; b.classList.remove('sel'); if (picked.has(oi)) b.classList.add('was'); b.classList.add(right ? 'good' : picked.has(oi) ? 'bad' : 'dim'); });
+      };
+      check.onclick = () => { if (finished) return; const ok = picked.size === q.answer.length && q.answer.every(a => picked.has(a)); mark(); finish(ok, ok); };
+      reveal = mark;
+      tools.appendChild(check); area.append(wrap, tools);
+    }
+
+    /* comparison table: put every card in its column */
+    else if (q.type === 'table') {
+      const place = q.items.map(() => -1); let sel = null;
+      if (q.poc) area.appendChild(mk('div', 'poc', `${T('Point of comparison', 'وجه المقارنة')}: <b>${esc(q.poc)}</b>`));
+      area.appendChild(mk('div', 'helpline', T('Tap a card, then tap its column', 'اضغط على البطاقة ثم على العمود المناسب')));
+      const tbl = mk('div', 'tbl'); tbl.style.setProperty('--n', q.cols.length);
+      const pool = mk('div', 'pool');
+      const tools = mk('div', 'tools');
+      const check = mk('button', 'btn primary', T('Check ✓', 'تحقق ✓')); check.type = 'button'; check.disabled = true;
+      const chips = shuffle(q.items.map((_, i) => i)).map(ii => {
+        const b = mk('button', 'chipb', esc(q.items[ii])); b.type = 'button'; b.dataset.ii = ii;
+        b.onclick = e => {
+          e.stopPropagation(); if (finished) return;
+          if (place[ii] >= 0) { place[ii] = -1; sel = ii; } else sel = sel === ii ? null : ii;
+          sfx.tick(); paint();
+        };
+        return b;
+      });
+      const cols = q.cols.map((c, ci) => {
+        const d = mk('div', 'tcol', `<div class="th">${esc(c)}</div><div class="drop"></div>`); d.dataset.ci = ci; d.setAttribute('role', 'button'); d.tabIndex = 0; d.setAttribute('aria-label', c);
+        const put = () => {
+          if (finished) return;
+          if (sel === null) { say(T('First tap one of the cards below.', 'اضغط الأول على بطاقة من البطاقات اللي تحت.'), 'point'); return; }
+          place[sel] = ci; sel = null; sfx.tick(); paint();
+        };
+        d.addEventListener('click', put);
+        d.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === d) { e.preventDefault(); put(); } });
+        tbl.appendChild(d); return d;
+      });
+      const paint = () => {
+        chips.forEach(b => { const ii = +b.dataset.ii, home = place[ii] >= 0 ? cols[place[ii]].querySelector('.drop') : pool; if (b.parentNode !== home) home.appendChild(b); b.classList.toggle('sel', sel === ii); });
+        cols.forEach(c => c.classList.toggle('ready', sel !== null));
+        check.disabled = place.some(v => v < 0);
+      };
+      const mark = () => {
+        let ok = true; tools.hidden = true; pool.hidden = true;
+        chips.forEach(b => { const ii = +b.dataset.ii, good = place[ii] === q.answer[ii]; ok = ok && good; b.disabled = true; b.classList.remove('sel'); b.classList.add(good ? 'good' : 'bad'); });
+        cols.forEach(c => { c.classList.remove('ready'); c.tabIndex = -1; });
+        return ok;
+      };
+      const showRight = () => area.appendChild(mk('div', 'explain no', q.cols.map((c, ci) => `<b>${esc(c)}:</b> ${q.items.filter((_, i) => q.answer[i] === ci).map(esc).join(' · ')}`).join('<br>')));
+      check.onclick = () => { if (finished) return; const ok = mark(); if (!ok) showRight(); finish(ok, ok); };
+      reveal = () => { mark(); showRight(); };
+      tools.appendChild(check); area.append(tbl, pool, tools); paint();
+    }
+
+    /* write the word with letter tiles: the scientific term, or the right word instead of the underlined one */
+    else if (q.type === 'term' || q.type === 'fix') {
+      const ans = String(q.answer), maxTries = 2;
+      const isLetter = ch => /[\p{L}\p{N}]/u.test(ch), same = (a, b) => a.toLocaleLowerCase() === b.toLocaleLowerCase();
+      const slotsEl = mk('div', 'slots'), tilesEl = mk('div', 'tiles'), slots = [];
+      let word = mk('div', 'word'); slotsEl.appendChild(word);
+      [...ans].forEach(ch => {
+        if (ch === ' ') { word = mk('div', 'word'); slotsEl.appendChild(word); return; }
+        if (!isLetter(ch)) { word.appendChild(mk('span', 'slot fixed', esc(ch))); return; }
+        const b = mk('button', 'slot'); b.type = 'button'; b.setAttribute('aria-label', T('Letter box', 'خانة حرف'));
+        const S = { el: b, ch, tile: null, lock: false };
+        b.onclick = () => { if (finished || S.lock || !S.tile) return; S.tile.el.classList.remove('used'); S.tile = null; sfx.tick(); paint(); };
+        word.appendChild(b); slots.push(S);
+      });
+      const letters = slots.map(S => S.ch);
+      const spare = shuffle([...(AR ? 'بتجحدرسشصعفقكلمنهوي' : 'aeiourstlnmcdph')].filter(c => !letters.some(l => same(l, c)))).slice(0, letters.length >= 5 ? 2 : 1);
+      const tiles = shuffle(letters.concat(spare)).map(ch => {
+        const b = mk('button', 'tile', esc(ch)); b.type = 'button'; const t = { el: b, ch };
+        b.onclick = () => { if (finished) return; const S = slots.find(x => !x.tile); if (!S) return; S.tile = t; b.classList.add('used'); sfx.tick(); paint(); };
+        tilesEl.appendChild(b); return t;
+      });
+      const tools = mk('div', 'tools');
+      const clear = mk('button', 'btn', T('↺ Clear', '↺ امسح')); clear.type = 'button'; clear.disabled = true;
+      const check = mk('button', 'btn primary', T('Check ✓', 'تحقق ✓')); check.type = 'button'; check.disabled = true;
+      const paint = () => {
+        slots.forEach(S => { S.el.textContent = S.tile ? S.tile.ch : ''; S.el.classList.toggle('lock', S.lock); S.el.classList.remove('bad'); });
+        check.disabled = slots.some(S => !S.tile); clear.disabled = !slots.some(S => S.tile && !S.lock);
+      };
+      const empty = S => { S.tile.el.classList.remove('used'); S.tile = null; };
+      clear.onclick = () => { if (finished) return; slots.forEach(S => { if (S.tile && !S.lock) empty(S); }); sfx.tick(); paint(); };
+      const done = () => {
+        tools.hidden = true; tilesEl.hidden = true; slots.forEach(S => { S.el.disabled = true; });
+        const u = qt.querySelector('u.wrong'); if (u) { u.className = 'fixed'; u.textContent = ans; }
+      };
+      const showAnswer = () => slots.forEach(S => { const good = !!S.tile && same(S.tile.ch, S.ch); S.el.textContent = S.ch; S.el.classList.toggle('lock', good); S.el.classList.toggle('bad', !good); });
+      check.onclick = () => {
+        if (finished || check.disabled) return; tries++;
+        if (slots.every(S => same(S.tile.ch, S.ch))) { slots.forEach(S => { S.lock = true; }); paint(); done(); finish(true, tries === 1); return; }
+        if (tries >= maxTries) { showAnswer(); done(); finish(false, false); return; }
+        sfx.bad();
+        slots.forEach(S => { if (same(S.tile.ch, S.ch)) S.lock = true; else empty(S); });
+        paint();
+        say(T('The green letters are in the right place. Try the others again!', G('الحروف الخضراء في مكانها الصح. جرّب الباقي تاني!', 'الحروف الخضراء في مكانها الصح. جرّبي الباقي تاني!')), 'think');
+      };
+      reveal = () => { showAnswer(); done(); };
+      keyHandler = e => {
+        if (finished || e.ctrlKey || e.metaKey || e.altKey) return;
+        const onBtn = document.activeElement && document.activeElement.tagName === 'BUTTON';
+        if (e.key === 'Backspace') { const S = slots.slice().reverse().find(x => x.tile && !x.lock); if (S) { empty(S); paint(); } e.preventDefault(); return; }
+        if (e.key === 'Enter') { if (!onBtn && !check.disabled) { e.preventDefault(); check.click(); } return; }
+        if (e.key.length !== 1 || e.key === ' ') return;
+        const t = tiles.find(x => !x.el.classList.contains('used') && same(x.ch, e.key)); if (t) { e.preventDefault(); t.el.click(); }
+      };
+      area.appendChild(mk('div', 'helpline', T('Tap the letters to write the word', 'اضغط على الحروف لتكتب الكلمة')));
+      tools.append(clear, check); area.append(slotsEl, tilesEl, tools);
+    }
+
+    /* build the written answer from cards (give a reason, what happens, function, definition); some cards do not belong */
+    else if (q.type === 'build') {
+      const maxTries = 2, line = [];
+      const cards = shuffle(q.parts.map((t, i) => ({ t, i })).concat((q.extra || []).map(t => ({ t, i: -1 }))));
+      area.appendChild(mk('div', 'helpline', T('Tap the cards in order to build the answer', 'اضغط على البطاقات بالترتيب لتكوّن الإجابة')));
+      const lineEl = mk('div', 'line'); lineEl.dataset.empty = T('Your answer will appear here…', 'إجابتك هتظهر هنا…');
+      const pool = mk('div', 'pool');
+      const tools = mk('div', 'tools');
+      const clear = mk('button', 'btn', T('↺ Clear', '↺ امسح')); clear.type = 'button'; clear.disabled = true;
+      const check = mk('button', 'btn primary', T('Check ✓', 'تحقق ✓')); check.type = 'button'; check.disabled = true;
+      const paint = () => {
+        cards.forEach(c => { if (!line.includes(c) && c.el.parentNode !== pool) pool.appendChild(c.el); });
+        line.forEach(c => lineEl.appendChild(c.el));
+        lineEl.classList.remove('bad'); check.disabled = clear.disabled = !line.length;
+      };
+      cards.forEach(c => {
+        const b = mk('button', 'chipb', esc(c.t)); b.type = 'button'; c.el = b;
+        b.onclick = () => { if (finished) return; const k = line.indexOf(c); if (k >= 0) line.splice(k, 1); else line.push(c); sfx.tick(); paint(); };
+      });
+      clear.onclick = () => { if (finished) return; line.length = 0; sfx.tick(); paint(); };
+      const done = ok => { tools.hidden = true; pool.hidden = true; cards.forEach(c => { c.el.disabled = true; }); lineEl.classList.add(ok ? 'good' : 'bad'); };
+      const showModel = () => area.appendChild(mk('div', 'explain no', `<b>${T('Model answer:', 'الإجابة النموذجية:')}</b> ${q.parts.map(esc).join(' ')}`));
+      check.onclick = () => {
+        if (finished || check.disabled) return; tries++;
+        if (line.length === q.parts.length && line.every((c, k) => c.i === k)) { done(true); finish(true, tries === 1); return; }
+        if (tries >= maxTries) { done(false); showModel(); finish(false, false); return; }
+        sfx.bad(); lineEl.classList.add('bad');
+        const stray = line.some(c => c.i < 0), missing = q.parts.some((_, i) => !line.some(c => c.i === i));
+        say(stray ? T('One of your cards does not belong in the answer. Tap it to take it out, then check again.', G('فيه بطاقة مش من الإجابة. اضغط عليها علشان تشيلها وجرّب تاني.', 'فيه بطاقة مش من الإجابة. اضغطي عليها علشان تشيليها وجرّبي تاني.'))
+          : missing ? T('Something is missing. Add another card, then check again.', G('فيه حاجة ناقصة. ضيف بطاقة كمان وجرّب تاني.', 'فيه حاجة ناقصة. ضيفي بطاقة كمان وجرّبي تاني.'))
+          : T('Right cards! Now put them in the right order.', G('البطاقات صح! رتّبها صح بقى.', 'البطاقات صح! رتّبيها صح بقى.')), 'think');
+      };
+      reveal = () => { done(false); showModel(); };
+      tools.append(clear, check); area.append(lineEl, pool, tools); paint();
+    }
   });
 }
 
@@ -684,7 +929,7 @@ function variantOf(idea) {
   let pool = idea.variants.map((_, i) => i);
   if (pool.length > 1) pool = pool.filter(i => i !== last);
   const vi = pool[Math.floor(Math.random() * pool.length)], v = idea.variants[vi];
-  return Object.assign({ id: idea.id, lesson: idea.lesson, concept: idea.concept, explain: idea.explain, vi }, idea.bonus ? { src: 'bonus' } : {}, v, v.explain ? { explain: v.explain } : {});
+  return Object.assign({ id: idea.id, lesson: idea.lesson, concept: idea.concept, explain: idea.explain, vi }, idea.bonus ? { src: 'bonus' } : {}, idea.guide ? { guide: true } : {}, v, v.explain ? { explain: v.explain } : {});
 }
 function rememberVariants(list) { SI.updateChProf(p => { p.lastVar = p.lastVar || {}; list.forEach(q => { p.lastVar[q.id] = q.vi; }); }); }
 const ideaById = id => window.IDEAS.find(I => I.id === id);
@@ -696,7 +941,7 @@ async function playList(list, label) {
     const q = list[i];
     if (q.src === 'bonus' && list[i - 1] && list[i - 1].src !== 'bonus') {
       sfx.boss(); await banner(T('Bonus', 'إضافي'), T('Extra question!', 'سؤال إضافي!'));
-      say(T('A bonus question from the chapter’s extra reading. Extra points!', 'سؤال إضافي من الجزء الإثرائي في الكتاب. نقط زيادة!'), 'point');
+      say(q.guide ? T('A bonus question in the style of the monthly test. Extra points!', 'سؤال إضافي على طريقة امتحان الشهر. نقط زيادة!') : T('A bonus question from the chapter’s extra reading. Extra points!', 'سؤال إضافي من الجزء الإثرائي في الكتاب. نقط زيادة!'), 'point');
     } else if (q.mode === 'boss' && list[i - 1] && list[i - 1].mode !== 'boss') {
       sfx.boss(); SI.voice('boss'); await banner(T('Get ready', 'استعد'), T('Boss Round!', 'التحدي الكبير!'), 'boss');
       say(T('Boss questions mix two ideas. Take your time!', G('أسئلة التحدي الكبير بتجمع فكرتين. خد وقتك!', 'أسئلة التحدي الكبير بتجمع فكرتين. خدي وقتك!')), 'point');
@@ -845,6 +1090,7 @@ async function preview(set) {
   if (m) { const f = all.findIndex(q => q.id === m[1] && q.vi === +m[2] - 1); if (f >= 0) k = f; }
   async function show(i) {
     k = (i + all.length) % all.length; sel.value = k; const run = ++token, q = all[k];
+    window.__cur = q;
     if (timerStop) timerStop(); hideTimer(); $('#actions').innerHTML = '';
     history.replaceState(null, '', `#preview=${q.id}.${q.vi + 1}${langTag}`);
     header(q, 0, 0, []); $('#countPill').textContent = `${k + 1} / ${all.length}`;
@@ -857,6 +1103,145 @@ async function preview(set) {
   }
   prev.onclick = () => show(k - 1); next.onclick = () => show(k + 1); sel.onchange = () => show(+sel.value);
   show(k);
+}
+
+/* ---------- Reesho's Exam Hall (quiz.html#exam=oct) ----------
+   A monthly test on several chapters at once (chapters.js: window.EXAMS), shaped like the school's monthly test:
+   4 questions x 5 marks = 20. Each question is (A) one short item for 1 mark and (B) two longer items for 2 marks each.
+   A new paper is built every time. Nothing here goes on the Champions board; missed ideas go to their own chapter's Review. */
+const answerText = q => {
+  if (q.type === 'tf') return q.answer === 0 ? T('True ✓', 'صح ✓') : T('False ✗', 'خطأ ✗');
+  if (q.type === 'mc' || q.type === 'fill') return q.options[q.answer];
+  if (q.type === 'multi') return q.answer.map(i => q.options[i]).join(' + ');
+  if (q.type === 'order') return q.answer.map(i => q.items[i]).join(T(' → ', ' ← '));
+  if (q.type === 'match') return q.left.map((l, i) => `${l}: ${q.right[q.answer[i]]}`).join(' · ');
+  if (q.type === 'table') return q.cols.map((c, ci) => `${c}: ${q.items.filter((_, i) => q.answer[i] === ci).join(', ')}`).join(' · ');
+  if (q.type === 'term' || q.type === 'fix') return String(q.answer);
+  if (q.type === 'build') return q.parts.join(' ');
+  return q.explain || '';
+};
+const EXAM_A = v => (['tf', 'fill', 'fix', 'term', 'multi', 'order'].includes(v.type) || (v.type === 'mc' && v.style !== 'story')) ? v.type : null;
+const EXAM_B = v => v.type === 'build' ? (v.style === 'why' ? 'why' : v.style === 'whatif' ? 'whatif' : 'say') : (v.type === 'table' || v.type === 'match') ? 'compare' : v.type === 'tap' ? 'figure' : (v.type === 'mc' && v.style === 'story') ? 'story' : null;
+function buildPaper(pool, caps, last) {
+  const cands = [], used = new Set(), perCh = {};
+  pool.forEach(I => I.variants.forEach((v, vi) => { const a = EXAM_A(v), b = EXAM_B(v); if (a || b) cands.push({ I, v, vi, a, b }); }));
+  const take = test => {
+    const list = shuffle(cands.filter(c => !used.has(c.I.id) && test(c) && (perCh[c.I.ch] || 0) < (caps[c.I.ch] == null ? 99 : caps[c.I.ch])));
+    if (!list.length) return null;
+    list.sort((x, y) => ((perCh[x.I.ch] || 0) - (perCh[y.I.ch] || 0)) || ((last[x.I.id] === x.vi) - (last[y.I.id] === y.vi)));   // spread over the chapters, new phrasings first
+    const c = list[0]; used.add(c.I.id); perCh[c.I.ch] = (perCh[c.I.ch] || 0) + 1; return c;
+  };
+  const kinds = shuffle(['tf', 'mc', 'fill', 'fix', 'term', 'multi', 'order']), fams = shuffle(['say', 'why', 'whatif', 'compare', 'figure', 'story']);
+  const make = (c, n, part, marks) => c && Object.assign({ id: c.I.id, ch: c.I.ch, lesson: c.I.lesson, concept: c.I.concept, explain: c.I.explain, vi: c.vi }, c.v, c.v.explain ? { explain: c.v.explain } : {},
+    { mode: 'normal', oneTry: true, exam: { q: n, part, marks } });
+  const paper = [];
+  for (let n = 1; n <= 4; n++) {
+    const A = take(c => c.a === kinds[n - 1]) || take(c => c.a);
+    const B1 = take(c => c.b === fams[n - 1]) || take(c => c.b), B2 = take(c => c.b === fams[n - 1]) || take(c => c.b);
+    paper.push([make(A, n, 'A', 1), make(B1, n, 'B', 2), make(B2, n, 'B', 2)].filter(Boolean));
+  }
+  return paper;
+}
+async function playExam(paper) {
+  const flat = paper.flat(), dots = [], perQ = [0, 0, 0, 0], perCh = {}, wrong = [];
+  let marks = 0;
+  for (let i = 0; i < flat.length; i++) {
+    const q = flat[i], full = q.exam.marks;
+    if (q.exam.part === 'A') { sfx.tick(); await banner(T(`Question ${q.exam.q}`, `السؤال ${q.exam.q}`), T('5 marks', '٥ درجات')); }
+    say(i === 0 ? T('Read every question carefully. Good luck!', G('اقرأ كل سؤال كويس. بالتوفيق!', 'اقري كل سؤال كويس. بالتوفيق!'))
+      : q.exam.part === 'A' ? T(`Question ${q.exam.q}, part (A): one mark.`, `السؤال ${q.exam.q}، الجزء (أ): درجة واحدة.`)
+      : T('Part (B): two marks. Take your time.', G('الجزء (ب): درجتان. خد وقتك.', 'الجزء (ب): درجتان. خدي وقتك.')), i === 0 ? 'point' : 'think');
+    header(q, i, flat.length, dots); window.__cur = q;
+    const r = await ask(q);
+    hideTimer();
+    recordCard(q.id, r.firstTry, q.ch);
+    const got = r.firstTry ? full : (r.correct && full > 1 ? 1 : 0);
+    marks += got; perQ[q.exam.q - 1] += got; dots[i] = got === full;
+    const pc = perCh[q.ch] = perCh[q.ch] || { got: 0, of: 0 }; pc.got += got; pc.of += full;
+    const ex = $('#explain');
+    if (got === full) {
+      addScore(got); sfx.ok(); SI.voice('ok'); confetti(12);
+      say(T(full > 1 ? 'Full marks!' : 'Correct! One mark.', full > 1 ? 'الدرجة كاملة!' : 'صح! درجة واحدة.'), 'thumbs');
+      ex.className = 'explain ok'; ex.innerHTML = `✓ ${esc(q.explain)}`;
+    } else {
+      addScore(got); sfx.bad(); wrong.push(q);
+      say(got ? T('Right on the second try: 1 mark out of 2.', 'صح في المحاولة التانية: درجة من درجتين.') : T('No mark this time. Look at the right answer.', G('مفيش درجة المرة دي. بص على الإجابة الصح.', 'مفيش درجة المرة دي. بصّي على الإجابة الصح.')), got ? 'think' : 'sad');
+      ex.className = 'explain no'; ex.innerHTML = esc(q.explain);
+    }
+    ex.hidden = false;
+    header(q, i, flat.length, dots);
+    await nextBtn(i === flat.length - 1 ? T('Hand in the paper ▸', 'سلّم الورقة ◂') : T('Next ▸', 'التالي ◂'));
+  }
+  return { marks, perQ, perCh, wrong, flat };
+}
+function examResults(EX, res, total) {
+  const pct = total ? res.marks / total : 0;
+  const grade = pct >= .9 ? T('Excellent', 'ممتاز') : pct >= .75 ? T('Very good', 'جيد جدًا') : pct >= .5 ? T('Good', 'جيد') : T('Keep practising', 'محتاج تمرين');
+  let best = res.marks;
+  SI.updateProf(p => {
+    const E = (p.exams = p.exams || {})[EX.id] = p.exams[EX.id] || {};
+    E.best = best = Math.max(E.best || 0, res.marks); E.last = res.marks; E.of = total; E.plays = (E.plays || 0) + 1;
+    E.lastVar = E.lastVar || {}; res.flat.forEach(q => { E.lastVar[q.id] = q.vi; });
+  });
+  const gain = SI.addXP(res.marks * 15);
+  sfx.win(); SI.voice('finish'); if (pct >= .5) confetti(60);
+  const me = SI.player();
+  say(pct >= .9 ? T(`Wonderful, ${esc(me.name)}! You are ready for the test!`, G(`هايل يا ${esc(me.name)}! إنت جاهز للامتحان!`, `هايل يا ${esc(me.name)}! إنتي جاهزة للامتحان!`))
+    : T(`Well done, ${esc(me.name)}! Practise the tricky parts, then try a new paper.`, G(`برافو يا ${esc(me.name)}! راجع الأجزاء الصعبة وجرّب ورقة جديدة.`, `برافو يا ${esc(me.name)}! راجعي الأجزاء الصعبة وجرّبي ورقة جديدة.`)), 'celebrate');
+  const byCh = Object.keys(res.perCh).sort((x, y) => (SI.chapterById(x) || {}).n - (SI.chapterById(y) || {}).n).map(id => {
+    const c = SI.chapterById(id) || {}, m = res.perCh[id], weak = m.got < m.of && SI.chReady(c);
+    return `<li><div class="r"><span>${esc(SI.chTitle(c))}: <b>${m.got} / ${m.of}</b></span>${weak ? `<a href="map.html" data-ch="${id}">${T('Practise ▸', 'اتمرّن ◂')}</a>` : ''}</div><div class="bar"><i style="width:${Math.round(m.got / m.of * 100)}%"></i></div></li>`;
+  }).join('');
+  const miss = res.wrong.map(q => `<li>${esc(q.q)}<b>✓ ${esc(answerText(q))}</b></li>`).join('');
+  const o = mk('div', 'overlay', `<div class="panel sheet">
+    <h2>${esc(T(EX.title, EX.titleAr))}</h2>
+    <div class="mark" aria-label="${T(`${res.marks} out of ${total}`, `${res.marks} من ${total}`)}">${res.marks}<small> / ${total}</small></div>
+    <span class="grade${pct >= .75 ? ' top' : ''}">${grade}</span>
+    <div class="qm">${res.perQ.map((m, i) => `<span><small>${T('Question', 'السؤال')} ${i + 1}</small>${m} / 5</span>`).join('')}</div>
+    ${levelBlock(gain)}
+    <h3>${T('Marks by chapter', 'الدرجات حسب الفصل')}</h3><ul class="byc">${byCh}</ul>
+    ${miss ? `<h3>${T('Look again at these', 'راجع دول تاني')}</h3><ul class="miss">${miss}</ul>` : `<p style="text-align:center">${T('A perfect paper! 🎉', 'ورقة من غير ولا غلطة! 🎉')}</p>`}
+    <div class="row acts">
+      <button class="btn primary" type="button" id="again">${T('New paper', 'ورقة جديدة')}</button>
+      <a class="btn" href="chapters.html">${T('Chapters', 'الفصول')}</a>
+    </div></div>`);
+  document.body.appendChild(o);
+  o.querySelectorAll('a[data-ch]').forEach(a => { a.onclick = () => { SI.setChapter(a.dataset.ch); }; });
+  $('#again', o).onclick = () => location.reload();
+  if (gain.after.n > gain.before.n) setTimeout(() => { sfx.level(); SI.voice('level'); banner(T('Level up!', 'مستوى جديد!'), `${T('Level', 'المستوى')} ${gain.after.n} · ${gain.after.title}`); }, 900);
+  return best;
+}
+async function examMain() {
+  const me = SI.player();
+  const EX = SI.examById((/^#exam=([\w-]+)/.exec(location.hash) || [])[1]);
+  if (!EX) { location.href = SI.CHAPTERS_PAGE; return; }
+  document.querySelectorAll('a[href="map.html"]').forEach(a => { a.href = SI.CHAPTERS_PAGE; const l = T('Back to the chapters', 'رجوع للفصول'); a.title = l; if (a.hasAttribute('aria-label')) a.setAttribute('aria-label', l); });
+  $('.logo').textContent = EX.icon || '📝';
+  $('#scorePill').firstElementChild.textContent = T('Marks', 'الدرجات');
+  const title = T(EX.title, EX.titleAr), hall = T('Reesho’s Exam Hall', 'لجنة ريشو');
+  $('#title').textContent = hall; $('#subtitle').textContent = title; document.title = `${title} · ${hall}`;
+  say(T(`Hi, ${esc(me.name)}! Welcome to my exam hall.`, `أهلًا يا ${esc(me.name)}! نوّرت لجنة ريشو.`), 'wave');
+  const parts = SI.examParts(EX), pool = [], caps = {};
+  for (const part of parts) {
+    if (part.chance != null && Math.random() > part.chance) continue;   // a chapter the test only touches is not in every paper
+    const ideas = await SI.loadIdeas(part.c);
+    if (!ideas) continue;
+    if (part.max != null) caps[part.c.id] = part.max;
+    ideas.forEach(I => { if ((I.bonus && !I.guide) || (part.lessons && !part.lessons.includes(I.lesson))) return; pool.push(Object.assign({}, I, { ch: part.c.id })); });   // not the enrichment columns
+  }
+  window.IDEAS = pool;
+  const last = ((SI.prof().exams || {})[EX.id] || {}).lastVar || {};
+  const paper = buildPaper(pool, caps, last), total = paper.flat().reduce((n, q) => n + q.exam.marks, 0);
+  if (total < 20) throw new Error('Not enough questions for a full paper.');
+  const names = parts.filter(p => p.max == null).map(p => p.c.n).join(T(', ', '، '));
+  const prev = (SI.prof().exams || {})[EX.id];
+  await intro(hall, `${title} · ${T(`Chapters ${names}`, `الفصول ${names}`)}`,
+    T('4 questions, 5 marks each: <b>20 marks</b>. Part (A) is short and gets <b>one try</b>. Part (B) is worth 2 marks. Every time you come back, Reesho writes a new paper!',
+      G('٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', '٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!'))
+    + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || 20}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
+  SI.voice('boss');
+  const res = await playExam(paper);
+  examResults(EX, res, total);
 }
 
 async function main() {
@@ -915,7 +1300,13 @@ async function main() {
   }
 }
 window.addEventListener('hashchange', () => location.reload());
-if (SI.requirePlayer() && SI.requireChapter()) {
+const EXAM = /^#exam\b/.test(location.hash);
+const notReady = e => {
+  console.error(e);
+  notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل الأسئلة. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${T('Chapters', 'الفصول')}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
+};
+if (EXAM) { if (SI.requirePlayer()) examMain().catch(notReady); }
+else if (SI.requirePlayer() && ((/^#preview/.test(location.hash) && SI.isOwner() && (SI.chapter() || {}).questions) || SI.requireChapter())) {   // the owner can preview a chapter before it opens
   SI.applyTheme();
   if (CH.quizBg) document.body.style.backgroundImage = `linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)),url(${CH.quizBg})`;
   SI.loadQuestions().then(main).catch(e => {
@@ -923,7 +1314,7 @@ if (SI.requirePlayer() && SI.requireChapter()) {
     notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions for this chapter could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل أسئلة الفصل. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${T('Chapters', 'الفصول')}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
   });
 }
-window.__quiz = { ask: q => ask(q), DIAGRAMS, variantOf, mysteryBox, notice, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
+window.__quiz = { ask: q => ask(q), DIAGRAMS, variantOf, mysteryBox, notice, buildPaper, answerText, examResults, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
 })();
 </script>
 </body>

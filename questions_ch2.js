@@ -29,7 +29,8 @@ window.IDEAS = [
       { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'In summer, the temperature gets ___, so many plants spread their leaves wide.', options: ['higher', 'lower'], answer: 0 },
       { type: 'fill', mode: 'normal', level: 'medium', q: 'In summer, many plants spread their leaves wide and ___ their flowers.', options: ['produce', 'scatter'], answer: 0 },
       { type: 'mc', style: 'odd', mode: 'normal', level: 'medium', q: 'Which one does NOT happen to plants in summer, when the temperature is high?', options: ['Stems grow tall', 'Leaves spread wide', 'Flowers are produced', 'The plant withers'], answer: 3 },
-      { type: 'match', mode: 'normal', level: 'medium', q: 'It is summer and the temperature is high. Match each part of the plant to what happens to it.', left: ['Stems', 'Leaves', 'Flowers'], right: ['Grow tall', 'Spread wide', 'Are produced'], answer: [0, 1, 2] }
+      { type: 'match', mode: 'normal', level: 'medium', q: 'It is summer and the temperature is high. Match each part of the plant to what happens to it.', left: ['Stems', 'Leaves', 'Flowers'], right: ['Grow tall', 'Spread wide', 'Are produced'], answer: [0, 1, 2] },
+      { type: 'mc', mode: 'normal', level: 'easy', q: 'When do the flowers of the luffa plant appear?', options: ['In hot weather, in summer', 'In cold weather', 'In the winter season', 'After the plant withers'], answer: 0 }
     ] },
   { id: 'P4', lesson: 1, concept: 'Winter: plants start to wither',
     explain: 'In winter, when the temperature is low, plants start to wither.',
@@ -43,7 +44,8 @@ window.IDEAS = [
     variants: [
       { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'What is left behind after the luffa withers in the winter to produce the next generation?', options: ['Seeds', 'Flowers', 'Leaves', 'Stems'], answer: 0 },
       { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'In winter, plants start to wither, but they produce ___ for the next generation.', options: ['seeds', 'flowers', 'leaves'], answer: 0 },
-      { type: 'mc', style: 'story', mode: 'normal', level: 'medium', q: 'Salma opens a dry, brown luffa fruit. What does she find packed inside?', options: ['Lots of seeds that will sprout next year', 'Fresh yellow flowers', 'Wide green leaves', 'Nothing at all'], answer: 0 }
+      { type: 'mc', style: 'story', mode: 'normal', level: 'medium', q: 'Salma opens a dry, brown luffa fruit. What does she find packed inside?', options: ['Lots of seeds that will sprout next year', 'Fresh yellow flowers', 'Wide green leaves', 'Nothing at all'], answer: 0 },
+      { type: 'term', mode: 'normal', level: 'medium', q: 'The part of the luffa that grows after the flowers. It is green in summer, then turns brown in winter, with the seeds inside it.', answer: 'Fruit', explain: 'The luffa fruit is green in summer. In winter it dries and turns brown, and it is full of seeds for the next generation.' }
     ] },
   { id: 'P6', lesson: 1, concept: 'The order of a plant’s yearly cycle',
     explain: 'A plant’s yearly cycle: the seeds sprout, then the flowers bloom, then the fruit grows.',
@@ -51,7 +53,8 @@ window.IDEAS = [
       { type: 'order', mode: 'normal', level: 'medium', q: 'Put a plant’s yearly cycle in the correct order.', items: ['Flowers bloom', 'Seeds sprout', 'Fruit grows'], answer: [1, 0, 2] },
       { type: 'mc', mode: 'normal', level: 'medium', q: 'Which is the correct order for a plant’s yearly cycle?', options: ['Seeds sprout → Flowers bloom → Fruit grows', 'Fruit grows → Flowers bloom → Seeds sprout', 'Seeds sprout → Fruit grows → Flowers bloom'], answer: 0 },
       { type: 'order', mode: 'normal', level: 'medium', q: 'Put how a luffa changes over the year in order.', items: ['The fruit turns brown', 'The seeds are planted', 'The flowers bloom'], answer: [1, 2, 0] },
-      { type: 'tap', diagram: 'plantYear', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap what comes FIRST in a plant’s yearly cycle.', answer: 'sprout' }
+      { type: 'tap', diagram: 'plantYear', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap what comes FIRST in a plant’s yearly cycle.', answer: 'sprout' },
+      { type: 'order', mode: 'normal', level: 'medium', q: 'Put these stages of the luffa plant’s life in order.', items: ['Green fruits appear', 'Seeds sprout', 'Fruits dry out and turn brown'], answer: [1, 0, 2] }
     ] },
   { id: 'P7', lesson: 1, boss: true, concept: 'Plants do not just wither and die',
     explain: 'Plants don’t just “wither and die”. They produce seeds, which wait for the next warm season and continue the life cycle the following year.',
@@ -82,7 +85,8 @@ window.IDEAS = [
     variants: [
       { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'Lizards and other animals become slow when the temperature gets ___.', options: ['low', 'high'], answer: 0 },
       { type: 'tf', mode: 'timed', seconds: 10, level: 'easy', q: 'When the temperature is low, lizards move faster.', answer: 1 },
-      { type: 'match', mode: 'normal', level: 'medium', q: 'Match the temperature to how a lizard moves.', left: ['High temperature', 'Low temperature'], right: ['More active, moves quickly', 'Slow, does not move much'], answer: [0, 1] }
+      { type: 'match', mode: 'normal', level: 'medium', q: 'Match the temperature to how a lizard moves.', left: ['High temperature', 'Low temperature'], right: ['More active, moves quickly', 'Slow, does not move much'], answer: [0, 1] },
+      { type: 'table', mode: 'normal', level: 'medium', q: 'Compare between the behaviour of animals in warm weather and in cold weather.', cols: ['Warm weather', 'Cold weather'], items: ['Animals are active and move quickly', 'Animals grow and reproduce', 'Animals’ movements become slow', 'Lizards stay still to conserve energy'], answer: [0, 0, 1, 1], explain: 'In warm weather animals are active, grow and reproduce. In cold weather their movements become slow, and lizards stay still to conserve energy.' }
     ] },
   { id: 'T4', lesson: 2, concept: 'Where lizards spend the cold winter',
     explain: 'During cold winters, lizards and similar animals stay still in the soil or in rock crevices.',
@@ -97,7 +101,10 @@ window.IDEAS = [
       { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'What is it called when animals stay still to conserve energy during the cold winter?', options: ['Hibernation', 'Reproduction', 'Sprouting', 'Withering'], answer: 0 },
       { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'In cold winters, lizards stay still in the soil or in rock crevices. This is called ___.', options: ['hibernation', 'sprouting', 'withering'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'medium', q: 'Why do lizards stay still in the soil or in rock crevices during the cold winter?', options: ['To conserve energy', 'To find more food', 'To grow faster', 'To escape the hot sun'], answer: 0 },
-      { type: 'tf', mode: 'normal', level: 'medium', q: 'Hibernation means that an animal moves around more to keep warm in winter.', answer: 1 }
+      { type: 'tf', mode: 'normal', level: 'medium', q: 'Hibernation means that an animal moves around more to keep warm in winter.', answer: 1 },
+      { type: 'term', mode: 'normal', level: 'medium', q: 'When animals like lizards stay still in the soil or in rock crevices during the cold winter, to conserve energy.', answer: 'Hibernation' },
+      { type: 'build', style: 'define', mode: 'normal', level: 'hard', q: 'What is meant by hibernation?', parts: ['Some animals stay still', 'in the soil or in rock crevices', 'to conserve energy in the cold winter'], extra: ['on the sunny rocks', 'to find more food'] },
+      { type: 'mc', mode: 'normal', level: 'hard', q: 'What would happen if lizards could not find soil or rock crevices to hide in during the cold winter?', options: ['They could not hibernate to conserve their energy', 'They would become more active in the cold', 'They would produce seeds', 'They would grow faster'], answer: 0 }
     ] },
   { id: 'T6', lesson: 2, concept: 'Warm seasons, and surviving the winter',
     explain: 'Many animals are active, grow and reproduce during warm seasons. When it gets cold, they survive the winter in various ways. Birds like flamingos and ducks come to warm Egypt to spend the winter.',
@@ -112,14 +119,16 @@ window.IDEAS = [
     variants: [
       { type: 'mc', style: 'story', mode: 'boss', level: 'hard', q: 'It is a cold winter morning. Kareem can still run around the park, but the lizard he saw in summer is nowhere. Which sentence explains this?', options: ['Lizards are affected by the temperature, so in the cold they stay still and hibernate', 'Lizards run so fast in the cold that Kareem cannot see them', 'Lizards wither in winter, like plants', 'Kareem cannot really run when it is cold'], answer: 0 },
       { type: 'mc', mode: 'boss', level: 'hard', q: 'In summer a lizard basks on a sunny rock and moves quickly. In winter it stays still in a rock crevice. What changed its behaviour?', options: ['The temperature: high in summer and low in winter', 'The colour of the rock', 'The shape of the rock crevice', 'Nothing changed, it only looks different'], answer: 0 },
-      { type: 'mc', style: 'spot', mode: 'boss', level: 'hard', q: '“During cold winters, lizards become more active and move quickly to keep warm.” Choose the right fix.', options: ['During cold winters, lizards stay still in the soil or in rock crevices to conserve energy', 'During cold winters, lizards move quickly to find food', 'During cold winters, lizards produce seeds'], answer: 0 }
+      { type: 'mc', style: 'spot', mode: 'boss', level: 'hard', q: '“During cold winters, lizards become more active and move quickly to keep warm.” Choose the right fix.', options: ['During cold winters, lizards stay still in the soil or in rock crevices to conserve energy', 'During cold winters, lizards move quickly to find food', 'During cold winters, lizards produce seeds'], answer: 0 },
+      { type: 'build', style: 'whatif', mode: 'boss', level: 'hard', q: 'What happens to a lizard if the temperature suddenly rises on a winter day?', parts: ['The lizard', 'becomes more active', 'and moves quickly'], extra: ['stays still', 'and withers'] }
     ] },
   { id: 'T8', lesson: 2, boss: true, concept: 'Plants and animals both follow the temperature',
     explain: 'Plants and animals both change with the seasonal temperature. In the warm season plants sprout, grow and flower, and animals are active. In the cold winter plants wither and leave seeds, and animals like lizards hibernate.',
     variants: [
       { type: 'match', mode: 'boss', level: 'hard', q: 'Match each living thing to what it does in the cold winter.', left: ['Luffa plant', 'Lizard', 'Flamingo'], right: ['Withers and leaves seeds', 'Stays still in a rock crevice', 'Comes to warm Egypt'], answer: [0, 1, 2] },
       { type: 'mc', mode: 'boss', level: 'hard', q: 'What do a luffa plant and a lizard have in common?', options: ['Both change a lot when the seasonal temperature changes', 'Both hibernate in rock crevices', 'Both produce seeds in winter', 'Neither of them is affected by the temperature'], answer: 0 },
-      { type: 'mc', style: 'story', mode: 'boss', level: 'hard', q: 'Laila visits the same garden in summer and again in winter. Which note did she write in WINTER?', options: ['The luffa has withered and left seeds. I cannot find any lizards.', 'The luffa is full of flowers. The lizards are running fast.', 'The luffa seeds are sprouting. A lizard is basking on a sunny rock.', 'The luffa leaves are spreading wide. The lizards are looking for food.'], answer: 0 }
+      { type: 'mc', style: 'story', mode: 'boss', level: 'hard', q: 'Laila visits the same garden in summer and again in winter. Which note did she write in WINTER?', options: ['The luffa has withered and left seeds. I cannot find any lizards.', 'The luffa is full of flowers. The lizards are running fast.', 'The luffa seeds are sprouting. A lizard is basking on a sunny rock.', 'The luffa leaves are spreading wide. The lizards are looking for food.'], answer: 0 },
+      { type: 'mc', mode: 'boss', level: 'hard', q: 'Imagine the temperature stayed the same all year and never changed. What would happen?', options: ['Plants would not change with the seasons, and animals would have no reason to hibernate or travel', 'Plants would still sprout in one season and wither in another', 'Lizards would still hibernate every winter', 'Flamingos would still come to Egypt every winter'], answer: 0, explain: 'Plants and animals change because the temperature changes with the seasons. If it never changed, plants would look the same all year and animals would not need to hibernate or travel.' }
     ] },
 
   /* ---------- Bonus: Column "Desert Wisdom, the Fennec Fox and Traditional Clothes" (enrichment, not in the core 15) ---------- */
@@ -141,5 +150,29 @@ window.IDEAS = [
       { type: 'mc', mode: 'normal', level: 'medium', q: 'Why is the traditional Egyptian galabeya so loose and baggy?', options: ['Air moves between the cloth and the body and takes away body heat', 'To make the body heavier', 'To stop any air from reaching the skin', 'To keep sweat on the skin'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'medium', q: 'What does a WHITE galabeya do with the sunlight?', options: ['It reflects the sunlight to block the heat', 'It soaks up all the sunlight', 'It turns the sunlight into water', 'It does nothing'], answer: 0 },
       { type: 'tf', mode: 'normal', level: 'easy', q: 'Inside a loose galabeya, the warm air becomes lighter and floats up, and fresh air comes in from the bottom.', answer: 0 }
+    ] },
+
+  /* ---------- Exam extras from the outside guide (not in the school book's core) ----------
+     bonus: true + guide: true -> never part of the Quest's core questions or its stars, but the Exam Hall asks them like any other idea */
+  { id: 'Y1', lesson: 2, bonus: true, guide: true, concept: 'Migration',
+    explain: 'Migration is the movement of some birds, like flamingos, from cold places to warmer places where food and water are available.',
+    variants: [
+      { type: 'term', mode: 'normal', level: 'medium', q: 'The movement of some birds from cold places to warmer places, where food and water are available.', answer: 'Migration' },
+      { type: 'fix', mode: 'normal', level: 'medium', q: 'Hibernation is the movement of birds from cold regions to warmer regions.', wrong: 'Hibernation', answer: 'Migration' },
+      { type: 'build', style: 'why', mode: 'normal', level: 'hard', q: 'Flamingos migrate to Egypt in winter.', parts: ['Because Egypt is warm in winter,', 'and food and water', 'are available there'], extra: ['Because Egypt is very cold in winter,', 'and rock crevices'] },
+      { type: 'tf', mode: 'normal', level: 'easy', q: 'Migration and hibernation are two different ways for animals to survive the cold winter.', answer: 0 }
+    ] },
+  { id: 'Y2', lesson: 2, bonus: true, guide: true, concept: 'Birds migrate, lizards hibernate',
+    explain: 'To survive the cold winter, birds like flamingos migrate to warmer places, and lizards hibernate in the soil or in rock crevices.',
+    variants: [
+      { type: 'table', mode: 'normal', level: 'hard', q: 'Compare between flamingos and lizards.', poc: 'How they survive the cold winter', cols: ['Flamingos', 'Lizards'], items: ['Migration', 'Move to warmer places', 'Hibernation', 'Stay still in the soil or in rock crevices'], answer: [0, 0, 1, 1] },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'Which animal survives the cold winter by migration?', options: ['The flamingo', 'The lizard', 'The snake', 'The frog'], answer: 0 }
+    ] },
+  { id: 'Y3', lesson: 1, bonus: true, guide: true, concept: 'Why it is called a yearly cycle',
+    explain: 'A plant’s yearly cycle is its life cycle that is completed within one year, following the changes in temperature in the different seasons.',
+    variants: [
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'Why is the life cycle of the luffa called a “yearly cycle”?', options: ['Because it is completed within one year', 'Because it takes many years', 'Because it happens only in winter', 'Because the plant never withers'], answer: 0 },
+      { type: 'fill', mode: 'normal', level: 'easy', q: 'A plant’s yearly cycle is the life cycle that is completed within one ___.', options: ['year', 'week', 'day'], answer: 0 },
+      { type: 'build', style: 'define', mode: 'normal', level: 'hard', q: 'What is meant by a plant’s yearly cycle?', parts: ['The life cycle of the plant', 'that is completed within one year,', 'as the temperature changes with the seasons'], extra: ['that is completed within one week,', 'as the lizard hibernates'] }
     ] }
 ];

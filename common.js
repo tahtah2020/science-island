@@ -110,6 +110,23 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       else questions();
     });
   }
+  /* one chapter's ideas in the player's language (null when the chapter has no file for that language).
+     Used by the Exam Hall, which mixes several chapters; the chapter's own drawings are loaded first. */
+  const loaded = {};
+  const addScript = file => new Promise((res, rej) => { const el = document.createElement('script'); el.src = vq(file); el.onload = res; el.onerror = () => rej(new Error('Could not load ' + file)); document.head.appendChild(el); });
+  async function loadIdeas(c) {
+    const src = c && (isAr() ? c.questionsAr : c.questions);
+    if (!src) return null;
+    if (c.art && !loaded[c.art]) { await addScript(c.art); loaded[c.art] = true; }
+    window.IDEAS = undefined;
+    await addScript(src);
+    return Array.isArray(window.IDEAS) ? window.IDEAS : null;
+  }
+  /* monthly tests (chapters.js: window.EXAMS). examParts: the chapters of a test that this player can be asked about */
+  const exams = () => window.EXAMS || [];
+  const examById = id => exams().find(e => e.id === id) || (id ? null : exams()[0] || null);
+  const examParts = ex => ((ex && ex.parts) || []).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && (isAr() ? p.c.questionsAr : p.c.questions));
+
   /* saves made before the site had several chapters all belong to Chapter 1: move them into ch.ch1 */
   (function migrate() {
     const s = store.load(); let changed = false;
@@ -466,8 +483,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      Counts page views with approximate location only. No player names are sent, and the data
      is not used for advertising. Runs on the published site only, not on local copies. */
   const GA_ID = 'G-XP595P45PX';
-  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
-    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review' };
+  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
+    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
     return PAGE_NAMES[file + location.hash] || PAGE_NAMES[file] || document.title;
@@ -770,7 +787,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const rate = { due: rateDue, ask: rateAsk, guard: rateGuard, flush: rateFlush, CHOICES: RATE_CHOICES, WANTS: RATE_WANTS };
 
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
-    chapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
+    chapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
     weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, rate, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT };
   applyLang();
