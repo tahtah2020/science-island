@@ -83,6 +83,14 @@ To add a test (for example November): add an entry to `window.EXAMS` (with `grad
 - `SI.visit()` → intro (first time), hello (same day), back (yesterday), miss (2-6 days), missbig (7+ days); `SI.greet()` shows Reesho's welcome after the name is tapped.
 - `SI.bye()` (👋 button on chapters and map): browsers cannot talk when a tab closes, so goodbye is a button.
 
+## Telegram channel invitation
+The channel `https://t.me/motafawek` announces new chapters and games. The players are children, so Reesho talks to the child but the invitation is for a parent ("ask Mum or Dad"). The code is `SI.tg` in `common.js` (the address is `TG_URL`).
+- **A closed chapter** (`chapters.html`): tapping a "Soon" chapter opens `SI.tg.soon(title)`: "… is coming soon", plus the channel button.
+- **After a good rating** (3 faces or more): the rating pop-up is followed once by `SI.tg.ask('rating')`. Nothing appears after a low rating.
+- **Fixed links**: the footer of `index.html` and a card on `contact.html`. Any link with `data-tg="place"` counts as opening the channel.
+- Rules, saved for the whole device in `tg` inside `si.v2` (`seen`, `no`, `go` = days): at most once in 7 days, hidden for 30 days after "Not now", never again after the channel button was tapped. No XP or stars for joining, and never during play. A closed chapter always answers the tap (after joining it only says where the news will be).
+- Statistics (GA4 events, each with `from` = `soon` | `rating` | `home` | `contact`): `telegram_shown`, `telegram_click`, `telegram_later`.
+
 ## Releasing an update (cache stamp)
 Every page loads the shared files with a stamp, e.g. `common.js?v=20261010c`. On each release change the stamp in all pages
 (one search-and-replace of the old stamp). Without it, phones may keep an old cached `common.js` next to new pages and the site breaks.
