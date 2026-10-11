@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flame Lab · Conditions for Burning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="g4_game.css?v=20261012a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Flame Lab.</noscript>
+<script src="firebase-config.js?v=20261012a"></script>
+<script src="chapters.js?v=20261012a"></script>
+<script src="common.js?v=20261012a"></script>
+<script src="g6_art.js?v=20261012a"></script>
+<script src="g4_game.js?v=20261012a"></script>
+<script>
+(() => {
+'use strict';
+/* Flame Lab · the game of Grade 6, Chapter 1 "Conditions for Burning". Built on the shared game kit (g4_game.js).
+   Stage 1 (Warm Up): the candle in the bottomless jar: lid on, a gap at the bottom, gaps at the top and the bottom (book page 7).
+   Stage 2 (Missions): 1) the components of air; 2) a lit candle in jars of nitrogen, oxygen and carbon dioxide (page 9);
+                       3) the air after burning, checked with limewater (page 13).
+   Stage 3 (Speed Round): oxygen, nitrogen or carbon dioxide?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 6-14).
+   Only the teacher lights the candle, as the book says. */
+const A = window.G6ART, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const rr = (x, y, w, h) => `<rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="12"/>`;
+const WALL = '#eef6fb';
+const table = y => `<rect y="${y}" width="420" height="${280 - y}" fill="#d9b27c"/><rect y="${y}" width="420" height="6" fill="#a8834f" opacity=".55"/>`;
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'jar', lid: false, gap: false, lit: 1, smoke: 0, arrows: false,                 // Stage 1
+  lab: {}, hi: null,                                                                               // the bar of gases
+  g: {}, cur: null,                                                                                // three jars of gas: g[k] = 'bright' | 'out'
+  candleIn: false, burned: false, lids: false, limeLit: 1, milky: 0, shake: 0 };                   // limewater
+
+function jarScene() {
+  return `<rect width="420" height="280" fill="${WALL}"/>${table(252)}
+    ${at(210, 240, 1.5, A.base({ w: 150, gap: sc.gap }))}${at(210, 223.5, 1.5, A.candle({ h: 36, lit: sc.lit, smoke: sc.smoke }))}${at(210, 227, 1.42, A.jar({ lid: sc.lid ? 'on' : '' }))}
+    ${sc.lid ? '' : `<g transform="translate(346 250)"><rect x="-41" y="-8" width="82" height="8" rx="3" fill="#b9c4cf" stroke="#7d8a98" stroke-width="2.4"/></g>`}
+    ${sc.arrows ? A.airArrow(84, 176, 172, 231, -26) + A.airArrow(206, 62, 240, 16, -16, '#e58a3c') : ''}`;
+}
+const GASES = ['n2', 'o2', 'co2'];
+const NAME = { n2: T('Nitrogen', 'النيتروجين'), o2: T('Oxygen', 'الأكسجين'), co2: T('Carbon dioxide', 'ثاني أكسيد الكربون') };
+const PCT = { n2: T('(about 78%)', '(حوالي ٧٨٪)'), o2: T('(about 21%)', '(حوالي ٢١٪)') };
+const BAR = A.airBar(380, 76), BX = 20, BY = 112;
+const SEG = { n2: [BX, BAR.wn], o2: [BX + BAR.wn, BAR.wo], co2: [BX + BAR.wn + BAR.wo, BAR.wc] };
+function barScene() {
+  const L = sc.lab, B = A.airBar(380, 76, { labels: true, fs: 15, n2: L.n2 ? NAME.n2 : '', n2p: L.n2 ? PCT.n2 : '', o2: L.o2 ? NAME.o2 : '', o2p: L.o2 ? PCT.o2 : '' });
+  const h = sc.hi && SEG[sc.hi];
+  return `<rect width="420" height="280" fill="#fdf3dc"/><text x="210" y="46" text-anchor="middle" font-size="19" font-weight="900" fill="#1f3d57">${T('Components of Air', 'غازات الهواء الجوي')}</text>
+    ${at(BX, BY, 1, B.svg)}
+    ${L.co2 ? `<path d="M${BX + 380 - BAR.wc / 2} ${BY}v-16h-12" fill="none" stroke="#2a3a48" stroke-width="1.6"/><text x="${T(290, 258)}" y="${BY - 22}" text-anchor="middle" font-size="${T(13.5, 12.5)}" font-weight="900" fill="#1f3d57">${T('Carbon dioxide (about 0.04%), etc.', 'ثاني أكسيد الكربون (حوالي ٠٫٠٤٪) وغازات أخرى')}</text>` : ''}
+    ${h ? `<rect x="${h[0] - (sc.hi === 'co2' ? 5 : 0)}" y="${BY - 5}" width="${h[1] + (sc.hi === 'co2' ? 10 : 0)}" height="86" rx="6" fill="none" stroke="#2e9e6b" stroke-width="6"/>` : ''}`;
+}
+const JX = { n2: 84, o2: 210, co2: 336 };
+function gasScene() {
+  return `<rect width="420" height="280" fill="${WALL}"/>${table(240)}` + GASES.map(k => {
+    const st = sc.g[k], x = JX[k];
+    const inside = st ? at(x - 8, 206, 1.15, A.spoon({ wire: 118, lit: st === 'bright' ? 1.55 : 0, bright: st === 'bright', smoke: st === 'out' ? 1 : 0 })) : '';
+    return `${inside}${at(x, 240, 1.2, A.jar({ bottom: true, lid: 'on' }) + at(0, -28, 1, A.tag(NAME[k], k === 'co2' ? 100 : 72)))}${sc.cur === k && !st ? at(x - 8, 74, 1, A.spoon({ wire: 30, lit: 1 })) : ''}`;
+  }).join('');
+}
+function limeScene() {
+  const rot = Math.sin(sc.shake * Math.PI * 6) * 7, j = (x, milky, inner) => `<g transform="translate(${x} 240) rotate(${rot.toFixed(1)})">${inner}${at(0, 0, 1.25, A.liquid({ milky, level: 30 }) + A.jar({ bottom: true, lid: sc.lids ? 'on' : '' }))}</g>`;
+  return `<rect width="420" height="280" fill="${WALL}"/>${table(240)}
+    ${j(130, sc.milky, sc.candleIn ? at(-9, -52, 1.15, A.spoon({ wire: 112, lit: sc.limeLit, smoke: sc.limeLit <= .02 ? 1 : 0 })) : '')}${j(290, 0, '')}
+    ${sc.burned ? `<text x="130" y="266" text-anchor="middle" font-size="13.5" font-weight="900" fill="#5d452c">${T('A candle burned here', 'هنا احترقت شمعة')}</text><text x="290" y="266" text-anchor="middle" font-size="13.5" font-weight="900" fill="#5d452c">${T('No candle', 'بدون شمعة')}</text>` : ''}`;
+}
+const render = () => ({ jar: jarScene, bar: barScene, gas: gasScene, lime: limeScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c1', logo: '🕯️', title: ['Flame Lab', 'معمل اللهب'], sub: ['Chapter 1 · Conditions for Burning', 'الفصل ١ · شروط الاحتراق'],
+  bg: 'assets/bg_g6c1.svg', bgc: '#ffe9c9', label: ['Reesho’s flame lab', 'معمل اللهب بتاع ريشو'], render });
+const kw = g.kw;
+const burnOut = ms => g.tween(ms, k => { sc.lit = 1 - k; }).then(() => { sc.lit = 0; sc.smoke = 1; g.paint(); });
+
+/* ---------- Stage 1 · Warm Up: the candle in the jar ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'jar', lid: false, gap: false, lit: 1, smoke: 0, arrows: false }); g.paint();
+  g.say(T('The teacher lit a candle on the clay, and we covered it with a bottomless gas jar. What will happen to the flame if we put a <b>lid</b> on the jar?', 'أشعل المعلِّم شمعة فوق الصلصال، وغطَّيناها بوعاء زجاجي مفتوح الطرفين (بدون قاع). ماذا يحدث لِلهب الشمعة عند وضع <b>الغطاء</b> على الوعاء الزجاجي؟'), 'think');
+  await g.choice({
+    options: [T('The flame goes out', 'ينطفئ اللهب'), T('The flame keeps burning', 'يستمر اللهب في الاحتراق'), T('The flame burns brightly', 'يشتعل اللهب بقوة')], correct: T('The flame goes out', 'ينطفئ اللهب'),
+    hint: T('With the lid on, can fresh air still come in?', 'مع وجود الغطاء، هل الهواء المتجدد يقدر يدخل؟'),
+    ok: T(`When the jar is covered with a lid: once the air inside the jar is used up, the flame will ${kw('go out')}.`, `عند تغطية الوعاء بغطاء: يُستهلك الهواء الموجود داخل الوعاء، وبمجرد نفاده ${kw('ينطفئ')} اللهب.`),
+    reveal: () => { sc.lid = true; g.paint(); burnOut(1800); } });
+  g.say(T('Why did the flame go out inside the jar with the lid?', 'لماذا انطفأ اللهب داخل الزجاجة المُغطاة؟'), 'think');
+  await g.choice({
+    options: [T('Because fresh air stopped coming in', 'لأن الهواء داخل الزجاجة لم يتجدد'), T('Because there was no water vapor in the jar', 'لأنه لم يكن هناك بخار ماء داخل الزجاجة'), T('Because it got dark inside the jar', 'لأنه أصبح مُظلمًا داخل الزجاجة')],
+    correct: T('Because fresh air stopped coming in', 'لأن الهواء داخل الزجاجة لم يتجدد'),
+    hint: T('Think about what the lid stops.', P('فكّر: الغطاء بيمنع إيه؟', 'فكّري: الغطاء بيمنع إيه؟')),
+    ok: T(`In a place where the air is not replaced, things ${kw('cannot keep burning')}.`, `في الأماكن التي لا يتجدد فيها الهواء ${kw('لا يمكن للأشياء الاستمرار في الاحتراق')}.`) });
+  g.say(T('Let’s try again. The teacher lights the candle, and this time we cut the clay to create a <b>gap at the bottom</b>. The lid stays on.', 'يلّا نجرّب تاني. المعلِّم يشعل الشمعة، والمرة دي نزيل جزءًا من الصلصال لصنع <b>فتحة في الأسفل</b>. والغطاء في مكانه.'), 'point');
+  await g.next(T('Cut a gap at the bottom ▸', P('اصنع فتحة في الأسفل ◂', 'اصنعي فتحة في الأسفل ◂')));
+  Object.assign(sc, { lid: true, gap: true, lit: 1, smoke: 0 }); g.paint();
+  g.say(T('Now there is a gap at the bottom, but the lid is still on. What happens to the flame?', 'دلوقتي فيه فتحة في الأسفل، لكن الغطاء لسه موجود. ماذا يحدث لِلهب الشمعة؟'), 'think');
+  await g.choice({
+    options: [T('It still goes out', 'ينطفئ أيضًا'), T('It keeps burning', 'يستمر في الاحتراق'), T('It burns brightly', 'يشتعل بقوة')], correct: T('It still goes out', 'ينطفئ أيضًا'),
+    hint: T('For the air to be replaced it must flow in AND out.', 'علشان الهواء يتجدد لازم يدخل ويخرج.'),
+    ok: T(`It still goes out. With the lid on, the air cannot flow in and out, so the air inside is ${kw('not replaced')}.`, `ينطفئ أيضًا. مع وجود الغطاء لا يتدفق الهواء إلى الداخل والخارج، فالهواء داخل الوعاء ${kw('لا يتجدد')}.`),
+    reveal: () => burnOut(2200) });
+  g.say(T('One more try. The teacher lights the candle again, and now we take off the lid.', 'تجربة كمان. المعلِّم يشعل الشمعة مرة تانية، ودلوقتي نرفع الغطاء.'), 'point');
+  await g.next(T('Take off the lid ▸', P('ارفع الغطاء ◂', 'ارفعي الغطاء ◂')));
+  Object.assign(sc, { lid: false, gap: true, lit: 1, smoke: 0 }); g.paint();
+  g.say(T('Now there are gaps at both the <b>top</b> and the <b>bottom</b>. What happens to the flame?', 'دلوقتي فيه فتحتان؛ إحداهما في <b>الأعلى</b> والأخرى في <b>الأسفل</b>. ماذا يحدث للهب؟'), 'think');
+  await g.choice({
+    options: [T('It keeps burning', 'يستمر في الاحتراق'), T('It goes out immediately', 'ينطفئ في الحال'), T('It gets weaker little by little and goes out', 'يقل تدريجيًّا وينطفئ')], correct: T('It keeps burning', 'يستمر في الاحتراق'),
+    hint: T('Look: now air can come in and go out.', P('بص: دلوقتي الهواء يقدر يدخل ويخرج.', 'بصي: دلوقتي الهواء يقدر يدخل ويخرج.')),
+    ok: T(`It ${kw('keeps burning')}! Fresh air flows in at the bottom and the used air flows out at the top, so the air is always replaced.`, `${kw('يستمر في الاحتراق')}! يتدفق الهواء المتجدد من الفتحة السفلية ويخرج الهواء من الفتحة العلوية، فيتجدد الهواء باستمرار.`),
+    reveal: () => { sc.arrows = true; g.tween(900, k => { sc.lit = 1 + .18 * k; }); } });
+  g.say(T('So, for things to keep burning, fresh ___ must constantly flow in and out.', 'إذن، لاستمرار احتراق الأشياء يجب أن يتدفق ___ المتجدد إلى الداخل والخارج باستمرار.'), 'think');
+  await g.choice({
+    options: [T('air', 'الهواء'), T('water vapor', 'بخار الماء'), T('darkness', 'الظلام')], correct: T('air', 'الهواء'),
+    hint: T('It came in through the gap at the bottom.', 'دخل من الفتحة السفلية.'),
+    ok: T(`For things to keep burning, fresh ${kw('air')} must constantly flow in and out.`, `لاستمرار احتراق الأشياء يجب أن يتدفق ${kw('الهواء')} المتجدد إلى الداخل والخارج باستمرار.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+const BARSPOTS = [
+  { id: 'n2', name: T('The longest part of the bar', 'أطول جزء في الشريط'), ring: rr(BX + 4, BY - 8, (BAR.wn - 8).toFixed(1), 92) },
+  { id: 'o2', name: T('The middle part of the bar', 'الجزء الأوسط في الشريط'), ring: rr((BX + BAR.wn + 4).toFixed(1), BY - 8, (BAR.wo - 10).toFixed(1), 92) },
+  { id: 'co2', name: T('The thinnest part, at the end of the bar', 'أرفع جزء، في آخر الشريط'), ring: rr((BX + BAR.wn + BAR.wo - 3).toFixed(1), BY - 16, 22, 108) }
+];
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('What is air made of?', 'مِمَّ يتكون الهواء؟'));
+  sc.mode = 'bar'; sc.lab = {}; sc.hi = null; g.paint();
+  g.say(T(`Air is a ${kw('mixture of gases')} like nitrogen, oxygen and carbon dioxide. This bar shows how much there is of each. <b>Nitrogen</b> is about 78% of the air. Tap nitrogen on the bar.`, P(`يتكون الهواء الجوي من ${kw('خليط من غازات')} متنوعة، مثل النيتروجين والأكسجين وثاني أكسيد الكربون. الشريط ده بيبيّن نسبة كل غاز. <b>النيتروجين</b> حوالي ٧٨٪ من الهواء. اضغط على النيتروجين في الشريط.`, `يتكون الهواء الجوي من ${kw('خليط من غازات')} متنوعة، مثل النيتروجين والأكسجين وثاني أكسيد الكربون. الشريط ده بيبيّن نسبة كل غاز. <b>النيتروجين</b> حوالي ٧٨٪ من الهواء. اضغطي على النيتروجين في الشريط.`)), 'point');
+  await g.spot(BARSPOTS, 'n2', { reveal: () => { sc.lab.n2 = true; g.paint(); },
+    hint: T('78% is most of the air: look for the biggest part.', P('٧٨٪ يعني أغلب الهواء: دوّر على أكبر جزء.', '٧٨٪ يعني أغلب الهواء: دوّري على أكبر جزء.')),
+    ok: T(`${kw('Nitrogen')} is the biggest part: about 78% of the air.`, `${kw('النيتروجين')} هو أكبر جزء: حوالي ٧٨٪ من الهواء.`) });
+  g.say(T('<b>Oxygen</b> is about 21% of the air. Tap oxygen on the bar.', P('<b>الأكسجين</b> حوالي ٢١٪ من الهواء. اضغط على الأكسجين في الشريط.', '<b>الأكسجين</b> حوالي ٢١٪ من الهواء. اضغطي على الأكسجين في الشريط.')), 'think');
+  await g.spot(BARSPOTS, 'o2', { reveal: () => { sc.lab.o2 = true; g.paint(); },
+    hint: T('21% is about one fifth of the bar.', '٢١٪ يعني حوالي خُمس الشريط.'),
+    ok: T(`${kw('Oxygen')} is about 21% of the air.`, `${kw('الأكسجين')} حوالي ٢١٪ من الهواء.`) });
+  g.say(T('The very thin part at the end is carbon dioxide and other gases. About how much of the air is carbon dioxide?', 'الجزء الرفيع جدًّا في الآخر هو ثاني أكسيد الكربون وغازات أخرى. كم نسبة ثاني أكسيد الكربون في الهواء تقريبًا؟'), 'think');
+  await g.choice({
+    options: [T('About 0.04%', 'حوالي ٠٫٠٤٪'), T('About 21%', 'حوالي ٢١٪'), T('About 78%', 'حوالي ٧٨٪')], correct: T('About 0.04%', 'حوالي ٠٫٠٤٪'),
+    hint: T('It is the smallest part of the bar.', 'هو أصغر جزء في الشريط.'),
+    ok: T(`Nitrogen (about 78%), oxygen (about 21%), carbon dioxide (${kw('about 0.04%')}), etc.`, `النيتروجين (حوالي ٧٨٪)، والأكسجين (حوالي ٢١٪)، وثاني أكسيد الكربون (${kw('حوالي ٠٫٠٤٪')}) وغازات أخرى.`),
+    reveal: () => { sc.lab.co2 = true; g.paint(); } });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Three jars of gas', 'ثلاثة أوعية من الغازات'));
+  sc.mode = 'gas'; sc.g = {}; sc.cur = null; g.paint();
+  g.say(T('Which gas has the power to help things burn? The teacher filled three jars: one with <b>nitrogen</b>, one with <b>oxygen</b> and one with <b>carbon dioxide</b>. We put a lit candle into each jar and put the lid on.', 'أي الغازات لديه القدرة على المساعدة على احتراق المواد؟ ملأ المعلِّم ثلاثة أوعية: واحد <b>بالنيتروجين</b>، وواحد <b>بالأكسجين</b>، وواحد <b>بثاني أكسيد الكربون</b>. هندخل شمعة مشتعلة في كل وعاء ونضع الغطاء.'), 'point');
+  await g.next();
+  const buttons = [{ label: T('🔥 Burns brightly', '🔥 يشتعل بقوة'), value: 'bright', c: 1 }, { label: T('💨 The flame goes out', '💨 ينطفئ اللهب'), value: 'out', c: 0 }];
+  for (const k of g.shuffle(GASES)) {
+    sc.cur = k; g.paint();
+    const right = k === 'o2' ? 'bright' : 'out';
+    g.say(T(`The lit candle goes into the jar of <b>${NAME[k].toLowerCase()}</b>. What happens?`, `الشمعة المشتعلة تدخل وعاء <b>${NAME[k]}</b>. ماذا يحدث؟`), 'think');
+    const told = k === 'o2' ? T(`In the jar of <b>oxygen</b> it ${kw('burns brightly')}.`, `في وعاء <b>الأكسجين</b> ${kw('يشتعل اللهب بقوة')}.`)
+      : T(`In the jar of <b>${NAME[k].toLowerCase()}</b> the flame ${kw('goes out')}.`, `في وعاء <b>${NAME[k]}</b> ${kw('ينطفئ اللهب')}.`);
+    await g.pick({ buttons, correct: right, ok: T(`Yes! ${told}`, `صح! ${told}`), no: told, reveal: () => { sc.g[k] = right; sc.cur = null; g.paint(); } });
+  }
+  g.setTray(null);
+  g.say(T('So, what gas is included in the air and has the power to help things burn?', 'إذن، ما الغاز الموجود في الهواء واللازم لحدوث الاحتراق؟'), 'think');
+  await g.choice({
+    options: [NAME.o2, NAME.n2, NAME.co2], correct: NAME.o2,
+    hint: T('In which jar did the candle burn brightly?', 'الشمعة اشتعلت بقوة في أي وعاء؟'),
+    ok: T(`${kw('Oxygen')} has the power to help things burn, but nitrogen and carbon dioxide do not.`, `يساعد ${kw('الأكسجين')} على الاحتراق، بينما النيتروجين وثاني أكسيد الكربون لا يساعدان على الاحتراق.`) });
+  g.say(T('How did the teacher collect each gas? Turn the water-filled jar upside down in the water, fill ___ of it with the gas, and put the lid on.', 'كيف جمَّع المعلِّم كل غاز؟ اقلب الوعاء المملوء بالماء رأسًا على عقب داخل حوض الماء، ثم املأ ___ من حجمه بالغاز، وضع الغطاء عليه مباشرة.'), 'think');
+  await g.choice({
+    options: [T('70%', '٧٠٪'), T('7%', '٧٪'), T('100%', '١٠٠٪')], correct: T('70%', '٧٠٪'),
+    hint: T('More than half of the jar, but not all of it.', 'أكثر من نصف الوعاء، لكن مش كله.'),
+    ok: T(`Fill ${kw('70%')} of the jar with the gas, and put the lid on.`, `املأ ${kw('٧٠٪')} من حجم الوعاء بالغاز، وضع الغطاء عليه مباشرة.`) });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Air after burning', 'الهواء بعد الاحتراق'));
+  Object.assign(sc, { mode: 'lime', candleIn: false, burned: false, lids: false, limeLit: 1, milky: 0, shake: 0 }); g.paint();
+  g.say(T(`What changes in the air after things burn? We put ${kw('limewater')} into each of the 2 jars. It is colorless and clear. Soon we will shake the jars. What must we wear first?`, `ما التغيرات التي تطرأ على الهواء بعد احتراق الأشياء؟ صببنا ${kw('ماء الجير الرائق')} في كلٍّ من الوعاءين، وهو سائل شفاف عديم اللون. بعد شوية هنرجّ الوعاءين. نلبس إيه الأول؟`), 'think');
+  await g.choice({
+    options: [T('Safety goggles', 'نظارات السلامة'), T('A woollen hat', 'قبعة صوف'), T('Sunglasses', 'نظارة شمس')], correct: T('Safety goggles', 'نظارات السلامة'),
+    hint: T('We must protect our eyes from the limewater.', 'لازم نحمي عينينا من ماء الجير.'),
+    ok: T(`Wear ${kw('safety goggles')} so the limewater doesn’t get in your eyes.`, `احرص على ارتداء ${kw('نظارات السلامة')}؛ لتجنب ملامسة ماء الجير لعينيك.`) });
+  g.say(T('Now the teacher puts a lit candle into one jar. We put the lid on and wait until the flame goes out.', 'دلوقتي المعلِّم يضع شمعة مشتعلة داخل أحد الوعاءين، ونغلقه بالغطاء، وننتظر حتى ينطفئ اللهب.'), 'point');
+  await g.next(T('Put the candle in ▸', P('ضع الشمعة ◂', 'ضعي الشمعة ◂')));
+  Object.assign(sc, { candleIn: true, lids: true, limeLit: 1 }); g.paint();
+  await g.tween(2600, k => { sc.limeLit = 1 - k; }); sc.limeLit = 0; g.paint();
+  g.say(T('The flame went out. We take out the candle and shake the 2 jars.', 'انطفأ اللهب. نخرج الشمعة، ثم نرجّ الوعاءين جيدًا.'), 'point');
+  await g.next(T('Shake the 2 jars ▸', P('رُجَّ الوعاءين ◂', 'رُجِّي الوعاءين ◂')));
+  Object.assign(sc, { candleIn: false, burned: true }); g.paint();
+  await g.tween(1500, k => { sc.shake = k; sc.milky = k; }); sc.shake = 0; g.paint();
+  g.say(T('Look! The limewater turned <b>milky white</b> in the jar where the candle burned. Which gas increased in that jar?', P('شوف! ماء الجير <b>تعكَّر وتحول إلى اللون الأبيض</b> في الوعاء الذي احترقت فيه الشمعة. ما الغاز الذي زادت كميته في هذا الوعاء؟', 'شوفي! ماء الجير <b>تعكَّر وتحول إلى اللون الأبيض</b> في الوعاء الذي احترقت فيه الشمعة. ما الغاز الذي زادت كميته في هذا الوعاء؟')), 'think');
+  await g.choice({
+    options: [NAME.co2, NAME.o2, NAME.n2], correct: NAME.co2,
+    hint: T('Limewater turns milky white when it reacts with this gas.', 'ماء الجير يتعكر ويتحول إلى اللون الأبيض عند تفاعله مع هذا الغاز.'),
+    ok: T(`${kw('Carbon dioxide')}: its amount increases because it is newly produced when things burn. Limewater turns milky white when it reacts with it.`, `${kw('ثاني أكسيد الكربون')}: تزداد كميته؛ لأنه ينتج عن احتراق الأشياء. وماء الجير يتعكر ويتحول إلى اللون الأبيض عند تفاعله معه.`) });
+  g.say(T('And how does the amount of oxygen change after burning?', 'وكيف تتغير كمية الأكسجين بعد الاحتراق؟'), 'think');
+  await g.choice({
+    options: [T('It decreases, because it is used when things burn', 'تقل؛ لأنه يُستهلك أثناء احتراق الأشياء'), T('It increases, because it is produced when things burn', 'تزداد؛ لأنه ينتج عن احتراق الأشياء'), T('It does not change', 'لا تتغير')],
+    correct: T('It decreases, because it is used when things burn', 'تقل؛ لأنه يُستهلك أثناء احتراق الأشياء'),
+    hint: T('Oxygen is the gas that helps things burn.', 'الأكسجين هو الغاز الذي يساعد على الاحتراق.'),
+    ok: T(`When things burn, a part of the ${kw('oxygen')} in the air is used, and ${kw('carbon dioxide')} is produced.`, `عند احتراق الأشياء، يُستهلك جزء من ${kw('أكسجين')} الهواء الجوي، وينتج غاز ${kw('ثاني أكسيد الكربون')}.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: which gas? ---------- */
+const SPEED = [
+  { t: T('About 78% of the air', 'حوالي ٧٨٪ من الهواء'), ans: 'n2' },
+  { t: T('The gas that makes up most of the air', 'الغاز الذي يكوِّن أكبر نسبة من الهواء'), ans: 'n2' },
+  { t: T('About 21% of the air', 'حوالي ٢١٪ من الهواء'), ans: 'o2' },
+  { t: T('Has the power to help things burn', 'يساعد على الاحتراق'), ans: 'o2' },
+  { t: T('Its amount decreases after burning', 'تقل كميته بعد الاحتراق'), ans: 'o2' },
+  { t: T('It is used when things burn', 'يُستهلك أثناء احتراق الأشياء'), ans: 'o2' },
+  { t: T('A lit incense stick burns brightly in it', 'عود البخور المشتعل يشتعل فيه بقوة'), ans: 'o2' },
+  { t: T('About 0.04% of the air', 'حوالي ٠٫٠٤٪ من الهواء'), ans: 'co2' },
+  { t: T('Its amount increases after burning', 'تزداد كميته بعد الاحتراق'), ans: 'co2' },
+  { t: T('It is newly produced when things burn', 'ينتج عن احتراق الأشياء'), ans: 'co2' },
+  { t: T('Turns limewater milky white', 'يعكِّر ماء الجير ويحوِّله إلى اللون الأبيض'), ans: 'co2' }
+];
+async function stage3() {
+  sc.mode = 'bar'; sc.lab = { n2: true, o2: true, co2: true }; sc.hi = null; g.paint();
+  const some = (k, n) => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, n);
+  await g.speedRound({
+    items: some('n2', 2).concat(some('o2', 3), some('co2', 3)), rounds: 8,
+    buttons: [{ label: NAME.n2, value: 'n2', c: 0 }, { label: NAME.o2, value: 'o2', c: 2 }, { label: NAME.co2, value: 'co2', c: 3 }],
+    ask: T('Which gas is it?', 'أي غاز هذا؟'),
+    intro: T('Speed Round! I will say something about one gas of the air. Is it <b>nitrogen</b>, <b>oxygen</b> or <b>carbon dioxide</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هقول معلومة عن غاز من غازات الهواء. هل هو <b>النيتروجين</b> ولا <b>الأكسجين</b> ولا <b>ثاني أكسيد الكربون</b>؟ اضغط على الزرار الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هقول معلومة عن غاز من غازات الهواء. هل هو <b>النيتروجين</b> ولا <b>الأكسجين</b> ولا <b>ثاني أكسيد الكربون</b>؟ اضغطي على الزرار الصح قبل ما الوقت يخلص. ٨ جولات!')),
+    think: T('Nitrogen, oxygen or carbon dioxide?', 'النيتروجين، الأكسجين، أم ثاني أكسيد الكربون؟'),
+    show: () => { sc.hi = null; g.paint(); }, reveal: it => { sc.hi = it.ans; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my lab. First we find out what a candle needs to <b>keep burning</b>. Then we look for the gas that helps things burn, and we check the air after burning.`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت معملي. الأول هنعرف الشمعة محتاجة إيه علشان <b>تستمر في الاحتراق</b>. وبعدين ندوّر على الغاز اللي بيساعد على الاحتراق، ونفحص الهواء بعد الاحتراق.`, `أهلًا يا <b>${g.name()}</b>! نوّرتي معملي. الأول هنعرف الشمعة محتاجة إيه علشان <b>تستمر في الاحتراق</b>. وبعدين ندوّر على الغاز اللي بيساعد على الاحتراق، ونفحص الهواء بعد الاحتراق.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Master of the flame!', P('بقيت خبير الاحتراق!', 'بقيتي خبيرة الاحتراق!')),
+    text: T('For things to keep burning, fresh <b>air</b> must constantly flow in and out. <b>Oxygen</b> has the power to help things burn. After burning, oxygen decreases and <b>carbon dioxide</b> increases: it turns limewater milky white.', 'لاستمرار احتراق الأشياء يجب أن يتدفق <b>الهواء</b> المتجدد إلى الداخل والخارج باستمرار. <b>الأكسجين</b> يساعد على الاحتراق. وبعد الاحتراق تقل كمية الأكسجين وتزداد كمية <b>ثاني أكسيد الكربون</b>، وهو يعكِّر ماء الجير ويحوِّله إلى اللون الأبيض.') }
+}).catch(err => console.error(err));
+window.__flame = { sc, render };
+})();
+</script>
+</body>
+</html>

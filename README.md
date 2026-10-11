@@ -1,6 +1,6 @@
 # Science Island
 
-Educational games for Grade 4 and Grade 5 Science (Egyptian curriculum, Languages and Arabic tracks, first term). Reesho the parrot is the coach.
+Educational games for Grade 4, Grade 5 and Grade 6 Science (Egyptian curriculum, Languages and Arabic tracks, first term). Reesho the parrot is the coach.
 Players pick their grade once, then a chapter; every chapter has its own map, game, questions and Champions board.
 
 - `index.html`: home. Pick the grade, the track (Languages or Arabic) and type a first name
@@ -11,6 +11,7 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `seasons.html`: Season Explorer, Chapter 2's game: the player moves through a year and watches a luffa plant and a lizard change with the temperature (3 stages: Warm Up, Missions, Speed Round "high or low temperature?")
 - `seedlab.html`: Seed Lab, Chapter 3's game: open a kidney bean (soak, peel, split), find the embryo and the cotyledon, test for starch with iodine; then three experiments in which the player sets cup B and may change one condition only (water, air, temperature); then a Speed Round "will it germinate?"
 - `habitat.html`, `butterfly.html`, `garden.html`: the games of Grade 4, Chapters 1 to 3 (see "Grade 4" below)
+- `flame.html`: Flame Lab, the game of Grade 6, Chapter 1 (see "Grade 6" below)
 - `quiz.html`: `#quest` (questions on the whole chapter), `#daily` (Daily 5), `#review` (spaced repetition) for the chosen chapter; `#exam=oct` is Reesho's Exam Hall (see below)
 - `champions.html`: this week's top 10 for the chosen chapter (resets every Saturday)
 - `questions.js`: Chapter 1, 23 ideas from the school book (all four lessons 1-1 to 1-4), each with 2-4 phrasings, plus 3 bonus ideas from the Column "The Camel" (`bonus: true`: one comes after the Boss round, never counts for the stars, not in Daily 5). Other chapters get their own file (`questions_ch2.js`, ...)
@@ -30,9 +31,9 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 Progress is saved per player on each device, separately for each chapter (XP and the daily streak are shared). Several children can share one device.
 
 ## Grades
-A player belongs to one grade (`players[id].grade`: `g4`, `g5`), chosen on the home page, and sees that grade's chapters and monthly test only.
+A player belongs to one grade (`players[id].grade`: `g4`, `g5`, `g6`), chosen on the home page, and sees that grade's chapters and monthly test only.
 In `chapters.js` a chapter or test carries `grade`; without it, it belongs to Grade 5 (the first grade the site had). Chapter ids are unique across grades
-(`ch1`… for Grade 5, `g4c1`… for Grade 4), so progress and the Champions boards stay separate. Idea ids (`M5`, `L2`…) are unique inside one grade and language only.
+(`ch1`… for Grade 5, `g4c1`… for Grade 4, `g6c1`… for Grade 6), so progress and the Champions boards stay separate. Idea ids (`M5`, `L2`…) are unique inside one grade and language only.
 `SI.grade()`, `SI.gradeName()`, `SI.chapters()` (this grade), `SI.allChapters()`, `SI.exams()` (this grade). The owner's preview opens every grade.
 
 ## Grade 4
@@ -48,6 +49,15 @@ Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2
 - `assets/map_g4c1.svg` … `map_g4c3.svg`, `assets/bg_g4c1.svg` … `bg_g4c3.svg`: drawn by `tools/make_g4_maps.js`
 - Monthly test: `quiz.html#exam=g4m1` (Chapters 1 to 3)
 Where the two books differ, each file follows its own book: in the Arabic book the stage is «الشرنقة» and the adult comes out when «ينشق الغلاف الخارجي» (the English book says "the back splits open").
+
+## Grade 6
+Chapter 1 of the first term, "Conditions for Burning" / «شروط الاحتراق», in English and Arabic, from the school book 2026/2027 (pages 6-17, the same pages in both books):
+- `questions_g6c1.js` / `_ar.js`: 18 ideas from the three lessons (how things burn and air, the role of oxygen, air after burning), plus 4 bonus ideas ("Let's Expand" and the Column "Combustion and Future Energy"). The Column differs between the two books, so its bonus questions use only what both books say
+- `g6_art.js`: the chapter's drawings made in code (candle, flame, bottomless jar on clay, jars of gas, limewater, the bar of the gases of the air) and its 4 tap pictures (`jarSetups`, `airBar`, `gasJars`, `limeJars`)
+- `flame.html` (Flame Lab), built on the Grade 4 game kit (`g4_game.js`): the candle in the jar with a lid, with a gap at the bottom, and with gaps at the top and the bottom; the components of air; a lit candle in jars of nitrogen, oxygen and carbon dioxide; the limewater test; Speed Round "which gas?". Only the teacher lights the candle, as in the book
+- `assets/map_g6c1.svg`, `assets/bg_g6c1.svg`: drawn by `tools/make_g6_maps.js`
+- No monthly test yet (one chapter). Chapters 2 to 10 are listed as "soon"
+The book prints no result for step 2 of the first experiment (a gap at the bottom while the lid is on). The game shows the flame going out, which is the standard result of this classroom experiment (air is replaced only when it can flow in and out).
 
 ## Question types
 Besides `mc`, `tf`, `fill`, `order`, `match` and `tap`, there are five exam-style types (they train the written questions of the school tests):
@@ -80,7 +90,7 @@ Every page loads the shared files with a stamp, e.g. `common.js?v=20261010c`. On
 ## Owner tools
 - `admin.html`: the owner's page (not linked from the game). Google sign-in; only the owner's account passes (same Firestore rule as reviews.html: reading `feedback`). "آخر التعديلات" lists recent changes from `changes.js` with direct links; below it every question of a chapter in English and Arabic side by side. New and changed phrasings are marked on this device (it remembers what you have already seen; "علّمت الكل كمتشاف" resets the marks).
 - `quiz.html#preview`: every phrasing one by one, nothing saved. Opens only on a device where the owner signed in on admin.html in the last 30 days (otherwise it is the normal Quest). `quiz.html#preview=B6.2&lang=ar` opens one phrasing in Arabic (`lang=en` for English).
-- `arm.html#stage2` / `#stage3`: jump straight to a stage of Arm Mechanic (`seasons.html#stage2` / `#stage3` for Season Explorer, `seedlab.html#stage2` / `#stage3` for Seed Lab; the same for `habitat.html`, `butterfly.html` and `garden.html`).
+- `arm.html#stage2` / `#stage3`: jump straight to a stage of Arm Mechanic (`seasons.html#stage2` / `#stage3` for Season Explorer, `seedlab.html#stage2` / `#stage3` for Seed Lab; the same for `habitat.html`, `butterfly.html`, `garden.html` and `flame.html`).
 - The owner's preview also opens a chapter that has a questions file but is not `ready` yet (it is listed on admin.html as "لسه مقفول").
 - After each change, add a line to `changes.js`.
 

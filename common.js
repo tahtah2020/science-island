@@ -494,7 +494,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      Counts page views with approximate location only. No player names are sent, and the data
      is not used for advertising. Runs on the published site only, not on local copies. */
   const GA_ID = 'G-XP595P45PX';
-  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
+  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
     'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
