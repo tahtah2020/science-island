@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Butterfly Garden · How Insects Grow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="g4_game.css?v=20261011f">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Butterfly Garden.</noscript>
+<script src="firebase-config.js?v=20261011f"></script>
+<script src="chapters.js?v=20261011f"></script>
+<script src="common.js?v=20261011f"></script>
+<script src="g4_art.js?v=20261011f"></script>
+<script src="g4_game.js?v=20261011f"></script>
+<script>
+(() => {
+'use strict';
+/* Butterfly Garden · the game of Grade 4, Chapter 2 "How Insects Grow".
+   Stage 1 (Warm Up): raise a butterfly: find the egg under the leaf, feed the larva and watch it molt, wait for the pupa, see the adult come out.
+   Stage 2 (Missions): 1) the body of an insect: head, thorax (6 legs, 4 wings), abdomen; 2) is it an insect? count the legs.
+   Stage 3 (Speed Round): egg, larva, pupa or adult?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 26-35):
+   the book's Arabic words are اليرقة، الانسلاخ، الشرنقة، الحشرة البالغة، الرأس، الصدر، البطن، قرون الاستشعار. */
+const A = window.G4ART, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+const SKY = '#e6f3f8';
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'leaf', flip: 0, hatched: false, size: 0, skin: false, holes: 0, split: 0, adult: false, wrinkle: 1, animal: null, hi: null };
+const HOLES = [[112, -14, 10], [62, 16, 8], [128, 18, 9], [86, -22, 7]];
+const ground = `<path d="M0 252h420v28H0z" fill="#bfe59c"/><path d="M0 252h420v5H0z" fill="#a8dc86"/>`;
+
+function leaf() {
+  const under = sc.flip > .5, sy = Math.cos(Math.PI * sc.flip), k = Math.max(.04, Math.abs(sy));
+  const onLeaf = under ? (sc.hatched
+    ? `${at(196, 150, 2.2, `<g opacity=".55">${A.egg()}</g>`)}${at(262, 152, 1.55, A.larva({ size: sc.size, skin: sc.skin }))}`
+    : at(204, 152, 2.6, A.egg())) : '';
+  return `<rect width="420" height="280" fill="${SKY}"/>${ground}
+    <path d="M52 280C60 220 70 180 92 150" fill="none" stroke="#5f9548" stroke-width="9" stroke-linecap="round"/>${at(60, 232, .5, A.bigLeaf(), 200)}
+    <g transform="translate(92 150) scale(1 ${k.toFixed(3)})">${at(0, 0, 1.75, A.bigLeaf({ under, holes: under ? HOLES.slice(0, sc.holes) : [], bg: SKY }))}</g>${onLeaf}`;
+}
+function pupa() {
+  return `<rect width="420" height="280" fill="${SKY}"/>${ground}
+    <path d="M0 30C60 22 130 26 196 44" fill="none" stroke="#5f9548" stroke-width="8" stroke-linecap="round"/>${at(60, 27, .7, A.bigLeaf(), 150)}${at(118, 32, .6, A.bigLeaf(), -24)}
+    ${at(150, 38, 2.2, A.pupa({ split: sc.split, empty: sc.adult }))}
+    ${at(322, 282, 1.5, A.flowerHead())}${sc.adult ? at(326, 198, 1.25, A.butterflySide({ wrinkle: sc.wrinkle })) : ''}`;
+}
+function body() { return `<rect width="420" height="280" fill="#eef7e6"/>${at(215, 140, 1.25, A.insectBig())}`; }
+const ZOO = {
+  grasshopper: { name: T('grasshopper', 'الجرادة'), ins: true, draw: () => at(214, 196, 2.7, A.grasshopper()) },
+  spider: { name: T('spider', 'العنكبوت'), ins: false, masc: true, draw: () => at(210, 118, 2.05, A.spider()) },
+  ant: { name: T('ant', 'النملة'), ins: true, draw: () => at(218, 192, 3.1, A.ant()) },
+  pillbug: { name: T('pill bug', 'قمل الخشب'), ins: false, masc: true, draw: () => at(210, 188, 3.3, A.pillbug()) },
+  dragonfly: { name: T('dragonfly', 'اليعسوب'), ins: true, masc: true, draw: () => at(210, 124, 2.4, A.dragonfly()) },
+  beetle: { name: T('dung beetle', 'خنفساء الروث'), ins: true, draw: () => at(196, 204, 2.3, A.scarab()) }
+};
+function zoo() {
+  const z = ZOO[sc.animal];
+  return `<rect width="420" height="280" fill="#fdf3dc"/><rect x="14" y="14" width="392" height="252" rx="18" fill="#fff8ea" stroke="#eadbb8" stroke-width="3"/>
+    ${z ? `${z.draw()}<g><rect x="110" y="222" width="200" height="38" rx="19" fill="#fff" stroke="#eadbb8" stroke-width="2"/><text x="210" y="248" text-anchor="middle" font-size="21" font-weight="900" fill="#1f3d57">${z.name}</text></g>` : ''}`;
+}
+const STAGES = ['egg', 'larva', 'pupa', 'adult'];
+const NAME = { egg: T('Egg', 'بيضة'), larva: T('Larva', 'يرقة'), pupa: T('Pupa', 'شرنقة'), adult: T('Adult', 'حشرة بالغة') };
+const TILE = {
+  egg: () => `${at(8, 82, .52, A.bigLeaf({ under: true }))}${at(46, 82, 1.9, A.egg())}`,
+  larva: () => `${at(4, 90, .56, A.bigLeaf({ holes: [[112, -14, 10]], bg: SKY }))}${at(44, 88, .74, A.larva({ size: 1 }))}`,
+  pupa: () => `<path d="M6 34C34 26 62 28 86 38" fill="none" stroke="#5f9548" stroke-width="4.5" stroke-linecap="round"/>${at(28, 35, .34, A.bigLeaf(), 164)}${at(48, 33, 1.35, A.pupa())}`,
+  adult: () => `${at(44, 150, .9, A.flowerHead())}${at(52, 108, .64, A.butterflySide())}`
+};
+function stages() {
+  return `<rect width="420" height="280" fill="#fdf3dc"/>` + STAGES.map((k, i) => {
+    const x = 8 + (SI.isAr() ? 3 - i : i) * 102;   // Arabic reads from the right: بيضة ← يرقة ← شرنقة ← حشرة بالغة
+    return `<g transform="translate(${x} 40)"><rect width="96" height="170" rx="12" fill="${SKY}" stroke="${sc.hi === k ? '#2e9e6b' : '#fff'}" stroke-width="${sc.hi === k ? 7 : 3}"/>${TILE[k]()}</g>
+      <text x="${x + 48}" y="236" text-anchor="middle" font-size="18" font-weight="900" fill="#1f3d57">${NAME[k]}</text>`;
+  }).join('');
+}
+const render = () => ({ leaf, pupa, body, zoo, stages })[sc.mode]();
+
+const g = G4Game({ ch: 'g4c2', logo: '🦋', title: ['Butterfly Garden', 'حديقة الفراشات'], sub: ['Chapter 2 · How Insects Grow', 'الفصل ٢ · كيف تنمو الحشرات؟'],
+  bg: 'assets/bg_g4c2.svg', bgc: '#dff3e4', label: ['Reesho’s butterfly garden', 'حديقة الفراشات بتاعة ريشو'], render });
+const kw = g.kw;
+
+/* ---------- Stage 1 · Warm Up: raise a butterfly ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'leaf', flip: 0, hatched: false, size: 0, skin: false, holes: 0, split: 0, adult: false, wrinkle: 1 }); g.paint();
+  g.say(T('A butterfly laid an <b>egg</b> on this plant: the plant its babies eat. Where do we look for the egg?', 'وضعت فراشة <b>بيضة</b> على النبات ده: النبات اللي هيأكله صغارها. ندوّر على البيضة فين؟'), 'think');
+  await g.choice({
+    options: [T('On the underside of the leaf', 'على السطح الخلفي للورقة (ظهر الورقة)'), T('On top of dry sand', 'فوق الرمال الجافة'), T('At the tip of a branch in a high, windy place', 'عند طرف غصن في مكان مرتفع وعاصف')],
+    correct: T('On the underside of the leaf', 'على السطح الخلفي للورقة (ظهر الورقة)'),
+    hint: T('The babies must find their food as soon as they come out.', 'الصغار لازم يلاقوا غذاءهم أول ما يخرجوا.'),
+    ok: T(`Many insects are born from eggs. Many eggs are laid on the ${kw('underside of leaves')}. Look: here it is!`, P(`تبدأ حياة العديد من الحشرات من البيض، ويُوضَع الكثير من البيض على ${kw('السطح الخلفي للأوراق')}. شوف: أهي!`, `تبدأ حياة العديد من الحشرات من البيض، ويُوضَع الكثير من البيض على ${kw('السطح الخلفي للأوراق')}. شوفي: أهي!`)),
+    reveal: () => g.tween(900, k => { sc.flip = k; }) });
+  g.say(T('Let’s wait a few days…', 'يلّا نستنى كام يوم…'), 'point');
+  await g.next(T('Wait a few days ▸', P('استنى كام يوم ◂', 'استني كام يوم ◂')));
+  sc.hatched = true; sc.size = 0; g.paint();
+  g.say(T('Something came out of the egg! What do we call the baby insect that just came out of the egg?', 'حاجة خرجت من البيضة! ماذا نسمِّي الحشرة الصغيرة التي خرجت للتوِّ من البيضة؟'), 'think');
+  await g.choice({
+    options: [NAME.larva, NAME.pupa, NAME.adult], correct: NAME.larva,
+    hint: T('It is the stage that comes just after the egg.', 'هي المرحلة التي تلي البيضة.'),
+    ok: T(`The ${kw('larva')} is the baby insect that just came out of the egg. A newborn larva eats a lot of food and grows.`, `${kw('اليرقة')} هي الحشرة الصغيرة التي خرجت للتوِّ من البيضة. تأكل اليرقة حديثة الفقس كميات كبيرة من الطعام وتنمو بسرعة.`) });
+  g.say(T('The larva is hungry. Give it leaves!', P('اليرقة جعانة. أكّلها ورق!', 'اليرقة جعانة. أكّليها ورق!')), 'point');
+  await g.next(T('Feed the larva 🍃', P('أكّل اليرقة 🍃', 'أكّلي اليرقة 🍃')));
+  sc.holes = 1; await g.tween(900, k => { sc.size = .4 * k; }); sc.skin = true; g.paint();
+  g.say(T('It ate and got bigger, so it took off its old skin! What is this called?', 'أكلت وزاد حجمها، فتخلصت من جلدها القديم! ماذا تُسمَّى هذه العملية؟'), 'think');
+  await g.choice({
+    options: [T('Molting', 'الانسلاخ'), T('Sowing', 'الزراعة'), T('Classifying', 'التصنيف')], correct: T('Molting', 'الانسلاخ'),
+    hint: T('It means shedding the skin.', 'معناها تبديل الجلد.'),
+    ok: T(`When a larva eats and gets bigger, it takes off its skin. This is called ${kw('molting')} (shedding skin).`, `عندما تأكل اليرقة ويزداد حجمها تتخلص من جلدها القديم، وتُسمَّى هذه العملية ${kw('الانسلاخ')} (تبديل الجلد).`) });
+  for (let i = 0; i < 2; i++) {
+    g.say(T('It does this many times to grow larger. Feed it again!', P('وتُكرِّر اليرقة هذه العملية عدة مرات حتى تصبح أكبر حجمًا. أكّلها تاني!', 'وتُكرِّر اليرقة هذه العملية عدة مرات حتى تصبح أكبر حجمًا. أكّليها تاني!')), 'point');
+    await g.next(T('Feed it again 🍃', P('أكّلها تاني 🍃', 'أكّليها تاني 🍃')));
+    sc.skin = false; sc.holes = i ? 4 : 3; const a = sc.size, b = i ? 1 : .7;
+    await g.tween(900, k => { sc.size = a + (b - a) * k; }); sc.skin = true; g.paint();
+  }
+  g.say(T('Now the larva is big, and it stops eating. Watch where it goes…', P('دلوقتي اليرقة كبرت، وتوقفت عن الأكل. راقب هتروح فين…', 'دلوقتي اليرقة كبرت، وتوقفت عن الأكل. راقبي هتروح فين…')), 'point');
+  await g.next(T('Watch ▸', P('راقب ◂', 'راقبي ◂')));
+  sc.mode = 'pupa'; sc.split = 0; sc.adult = false; g.paint();
+  g.say(T('It became a <b>pupa</b>, hanging under a leaf. Which sentence about the pupa is correct?', 'تحولت إلى <b>شرنقة</b> معلَّقة تحت ورقة. أي جملة صحيحة عن مرحلة الشرنقة؟'), 'think');
+  await g.choice({
+    options: [T('Inside the body, it is preparing to change into an adult', 'داخل هذه المرحلة، تستعد لتتحول إلى حشرة بالغة'), T('During this stage, it eats even more leaves than when it was a larva', 'خلال هذه المرحلة، تأكل أوراقًا أكثر مما كانت تأكله عندما كانت يرقة'), T('The pupa keeps moving around in this form for the rest of its life', 'تبقى الشرنقة تتحرك بهذا الشكل طوال بقية حياتها')],
+    correct: T('Inside the body, it is preparing to change into an adult', 'داخل هذه المرحلة، تستعد لتتحول إلى حشرة بالغة'),
+    hint: T('The pupa does not move and does not eat.', 'الشرنقة لا تتحرك ولا تأكل.'),
+    ok: T(`The ${kw('pupa')} does not move, so it looks like it is resting. But inside, its body is changing from a child to an adult.`, `${kw('الشرنقة')} لا تتحرك؛ لذلك تبدو كأنها في حالة سكون، لكن داخلها يتحول جسمها من صغير إلى حشرة بالغة.`) });
+  g.say(T('Shh… the adult is coming out! What happens first?', 'هسسس… الحشرة البالغة بتخرج! ماذا يحدث أولًا؟'), 'think');
+  await g.choice({
+    options: [T('The back splits open', 'ينشق الغلاف الخارجي'), T('The wings fall off', 'تسقط الأجنحة'), T('The adult lays eggs', 'تضع الحشرة البالغة البيض')], correct: T('The back splits open', 'ينشق الغلاف الخارجي'),
+    hint: T('It must make a way out first.', 'لازم تفتح لنفسها طريق للخروج أولًا.'),
+    ok: T(`When the adult comes out, the ${kw('back splits open')} first.`, `عندما تخرج الحشرة البالغة ${kw('ينشق الغلاف الخارجي')} أولًا.`),
+    reveal: async () => { await g.tween(900, k => { sc.split = k; }); sc.adult = true; sc.wrinkle = 1; g.paint(); } });
+  g.say(T('Look at its wings: they are small and <b>wrinkled</b>! What do we do?', P('شوف أجنحتها: صغيرة و<b>مجعَّدة</b>! نعمل إيه؟', 'شوفي أجنحتها: صغيرة و<b>مجعَّدة</b>! نعمل إيه؟')), 'think');
+  await g.choice({
+    options: [T('Wait: they stretch out after a while', 'ننتظر: تتمدَّد وتنبسط بعد فترة قصيرة'), T('Pull them open with our fingers', 'نشدّها بأصابعنا لتنفتح'), T('Wash them with water', 'نغسلها بالماء')],
+    correct: T('Wait: they stretch out after a while', 'ننتظر: تتمدَّد وتنبسط بعد فترة قصيرة'),
+    hint: T('Its wings are soft and new. We must not touch them.', 'أجنحتها لسه طرية وجديدة. مانلمسهاش.'),
+    ok: T(`The wings are wrinkled at first, but they ${kw('stretch out')} after a while. This is the ${kw('adult')}: the fully grown form. It lays eggs to connect to new life.`, `تكون الأجنحة مجعَّدة في البداية، لكنها ${kw('تتمدَّد وتنبسط')} بعد فترة قصيرة. هذه هي ${kw('الحشرة البالغة')}: الشكل المكتمل النمو من الحشرة، تضع البيض لتبدأ دورة حياة جديدة.`),
+    reveal: () => g.tween(1400, k => { sc.wrinkle = 1 - k; }) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+const BODY = [
+  { id: 'head', name: T('The first part, with the eyes and the antennae', 'الجزء الأول، وعليه العينان وقرنا الاستشعار'), ring: ring(150, 140, 36, 38) },
+  { id: 'thorax', name: T('The middle part', 'الجزء الأوسط'), ring: ring(215, 140, 32, 36) },
+  { id: 'abdomen', name: T('The last part', 'الجزء الأخير'), ring: ring(313, 140, 68, 44) }
+];
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('The body of an insect', 'تركيب جسم الحشرة'));
+  sc.mode = 'body'; g.paint();
+  g.say(T(`The body of an adult insect is made of 3 parts: ${kw('head')}, ${kw('thorax')} and ${kw('abdomen')}. Tap the <b>head</b>.`, P(`يتكوَّن جسم الحشرة البالغة من ٣ أجزاء: ${kw('الرأس')}، و${kw('الصدر')}، و${kw('البطن')}. اضغط على <b>الرأس</b>.`, `يتكوَّن جسم الحشرة البالغة من ٣ أجزاء: ${kw('الرأس')}، و${kw('الصدر')}، و${kw('البطن')}. اضغطي على <b>الرأس</b>.`)), 'point');
+  await g.spot(BODY, 'head', {
+    hint: T('The head is the part with the eyes.', 'الرأس هو الجزء اللي عليه العينان.'),
+    ok: T(`On the ${kw('head')} there are eyes, a mouth and 1 pair of antennae (2 of them).`, `يوجد على ${kw('الرأس')} عينان، وفم، وزوج واحد من قرون الاستشعار (قرنان).`) });
+  g.say(T('Now tap the part where <b>all the legs</b> are attached.', P('دلوقتي اضغط على الجزء اللي تتصل به <b>جميع الأرجل</b>.', 'دلوقتي اضغطي على الجزء اللي تتصل به <b>جميع الأرجل</b>.')), 'think');
+  await g.spot(BODY, 'thorax', {
+    hint: T('Follow the legs: where do they come from?', P('تابع الأرجل: طالعة منين؟', 'تابعي الأرجل: طالعة منين؟')),
+    ok: T(`There are ${kw('6 legs')}, and they are all on the ${kw('thorax')}. The 4 wings are on the thorax too.`, `للحشرة ${kw('٦ أرجل')}، وجميعها متصلة بمنطقة ${kw('الصدر')}. ويتصل بالصدر أيضًا ٤ أجنحة.`) });
+  g.say(T('And the last part: tap the <b>abdomen</b>.', P('والجزء الأخير: اضغط على <b>البطن</b>.', 'والجزء الأخير: اضغطي على <b>البطن</b>.')), 'think');
+  await g.spot(BODY, 'abdomen', {
+    hint: T('It is the long part at the back.', 'هو الجزء الطويل في الخلف.'),
+    ok: T(`Head, thorax, ${kw('abdomen')}: 3 parts!`, `الرأس، والصدر، و${kw('البطن')}: ٣ أجزاء!`) });
+  g.say(T('What do we call the long, rod-like parts on an insect’s head?', 'ماذا نُسمِّي الأجزاء الطويلة الشبيهة بالعِصي الموجودة على رأس الحشرة؟'), 'think');
+  await g.choice({
+    options: [T('Antennae', 'قرون الاستشعار'), T('Wings', 'الأجنحة'), T('Legs', 'الأرجل')], correct: T('Antennae', 'قرون الاستشعار'),
+    hint: T('They are on the head, not on the thorax.', 'هي على الرأس، مش على الصدر.'),
+    ok: T(`They are the ${kw('antennae')}: 1 pair, 2 of them. Animals with this body structure are called ${kw('insects')}.`, `هي ${kw('قرون الاستشعار')}: زوج واحد (قرنان). وتُسمَّى الحيوانات التي تمتلك هذا التركيب الجسمي ${kw('حشرات')}.`) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Is it an insect?', 'هل هو حشرة؟'));
+  sc.mode = 'zoo'; sc.animal = null; g.paint();
+  g.say(T('An insect’s body has <b>3 parts</b> and <b>6 legs</b> on the thorax. Look at each animal and count its legs: is it an insect?', P('جسم الحشرة يتكوَّن من <b>٣ أجزاء</b> ولها <b>٦ أرجل</b> متصلة بالصدر. شوف كل حيوان وعدّ أرجله: هل هو حشرة؟', 'جسم الحشرة يتكوَّن من <b>٣ أجزاء</b> ولها <b>٦ أرجل</b> متصلة بالصدر. شوفي كل حيوان وعدّي أرجله: هل هو حشرة؟')), 'point');
+  await g.next();
+  const buttons = [{ label: T('✓ Insect', '✓ حشرة'), value: 'yes', c: 2 }, { label: T('✗ Not an insect', '✗ ليس حشرة'), value: 'no', c: 3 }];
+  for (const id of g.shuffle(Object.keys(ZOO))) {
+    const z = ZOO[id]; sc.animal = id; g.paint();
+    g.say(T(`The <b>${z.name}</b>: is it an insect?`, `<b>${z.name}</b>: ${z.masc ? 'هل هو حشرة؟' : 'هل هي حشرة؟'}`), 'think');
+    const told = z.ins ? T(`The <b>${z.name}</b> is an insect: its body has 3 parts, and it has 6 legs (3 on each side).`, `<b>${z.name}</b> من الحشرات: ${z.masc ? 'جسمه' : 'جسمها'} يتكوَّن من ٣ أجزاء، ${z.masc ? 'وله' : 'ولها'} ٦ أرجل (٣ في كل جانب).`)
+      : id === 'spider' ? T('The <b>spider</b> has 8 legs, so it is not built the same way as insects.', '<b>العنكبوت</b> له ٨ أرجل؛ لذلك لا يمتلك التركيب نفسه الذي تمتلكه الحشرات.')
+        : T('The <b>pill bug</b> has many more than 6 legs, so it is not built the same way as insects.', '<b>قمل الخشب</b> له أرجل أكثر كثيرًا من ٦؛ لذلك لا يمتلك التركيب نفسه الذي تمتلكه الحشرات.');
+    await g.pick({ buttons, correct: z.ins ? 'yes' : 'no', ok: T(`Yes! ${told}`, `صح! ${told}`), no: told });
+  }
+  g.setTray(null);
+}
+async function stage2() { await mission1(); await mission2(); }
+
+/* ---------- Stage 3 · Speed Round: which stage? ---------- */
+const SPEED = [
+  { t: T('The life of a butterfly begins from it', 'تبدأ منها حياة الفراشة'), ans: 'egg' },
+  { t: T('Often laid on the underside of a leaf', 'تُوضَع غالبًا على ظهر ورقة نبات'), ans: 'egg' },
+  { t: T('The baby insect that just came out of the egg', 'الحشرة الصغيرة التي خرجت للتوِّ من البيضة'), ans: 'larva' },
+  { t: T('Eats a lot of food and grows', 'تأكل كميات كبيرة من الطعام وتنمو'), ans: 'larva' },
+  { t: T('Takes off its skin many times (molting)', 'تبدِّل جلدها عدة مرات (الانسلاخ)'), ans: 'larva' },
+  { t: T('Does not move, and looks like it is resting', 'لا تتحرك، وتبدو كأنها في حالة سكون'), ans: 'pupa' },
+  { t: T('Inside, its body is changing into an adult', 'يتحول جسمها من الداخل إلى حشرة بالغة'), ans: 'pupa' },
+  { t: T('The stage that comes just after the larva', 'المرحلة التي تأتي بعد اليرقة مباشرةً'), ans: 'pupa' },
+  { t: T('The fully grown form', 'الشكل المكتمل النمو'), ans: 'adult' },
+  { t: T('Lays eggs to connect to new life', 'تضع البيض لتبدأ دورة حياة جديدة'), ans: 'adult' },
+  { t: T('Its wings are wrinkled at first, then they stretch out', 'أجنحتها مجعَّدة في البداية ثم تتمدَّد وتنبسط'), ans: 'adult' }
+];
+async function stage3() {
+  sc.mode = 'stages'; sc.hi = null; g.paint();
+  const two = k => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, 2);
+  await g.speedRound({
+    items: STAGES.reduce((a, k) => a.concat(two(k)), []), rounds: 8, ms: 14000,
+    buttons: STAGES.map(k => ({ label: NAME[k], value: k })),
+    ask: T('Which stage is it?', 'أي مرحلة هذه؟'),
+    intro: T('Speed Round! Butterflies grow in this order: <b>egg → larva → pupa → adult</b>. I will say something about one stage. Press its button before time runs out. 8 rounds!', P('جولة السرعة! تنمو الفراشات وفق الترتيب التالي: <b>بيضة ← يرقة ← شرنقة ← حشرة بالغة</b>. هقول معلومة عن مرحلة منها. اضغط على زرارها قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! تنمو الفراشات وفق الترتيب التالي: <b>بيضة ← يرقة ← شرنقة ← حشرة بالغة</b>. هقول معلومة عن مرحلة منها. اضغطي على زرارها قبل ما الوقت يخلص. ٨ جولات!')),
+    think: T('Egg, larva, pupa or adult?', 'بيضة، يرقة، شرنقة، أم حشرة بالغة؟'),
+    show: () => { sc.hi = null; g.paint(); }, reveal: it => { sc.hi = it.ans; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my garden. First we raise a <b>butterfly</b> from an egg. Then we look closely at the body of an <b>insect</b>.`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت حديقتي. الأول هنربّي <b>فراشة</b> بدءًا من البيضة. وبعدين نشوف جسم <b>الحشرة</b> عن قُرب.`, `أهلًا يا <b>${g.name()}</b>! نوّرتي حديقتي. الأول هنربّي <b>فراشة</b> بدءًا من البيضة. وبعدين نشوف جسم <b>الحشرة</b> عن قُرب.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Butterfly friend!', P('بقيت صديق الفراشات!', 'بقيتي صديقة الفراشات!')),
+    text: T('Butterflies grow in this order: <b>egg → larva → pupa → adult</b>. An insect’s body is made of a <b>head</b>, a <b>thorax</b> and an <b>abdomen</b>, and its <b>6 legs</b> are all on the thorax.', 'تنمو الفراشات وفق الترتيب التالي: <b>بيضة ← يرقة ← شرنقة ← حشرة بالغة</b>. ويتكوَّن جسم الحشرة من <b>الرأس والصدر والبطن</b>، ولها <b>٦ أرجل</b> جميعها متصلة بالصدر.') }
+}).catch(err => console.error(err));
+window.__butterfly = { sc, render };
+})();
+</script>
+</body>
+</html>

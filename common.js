@@ -70,8 +70,15 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   /* ---------- chapters (the list lives in chapters.js) ----------
      Each chapter keeps its own progress in profile.ch[chapterId]:
      quest and game (best, stars, plays), cards (review schedule), lastVar (last phrasing), dailyLast */
-  const chapters = () => window.CHAPTERS || [];
-  const chapterById = id => chapters().find(c => c.id === id) || null;
+  /* grades: a player belongs to one grade (chosen on the home page) and sees that grade's chapters and tests only.
+     A chapter or test without `grade` in chapters.js belongs to Grade 5, the first grade the site had. */
+  const GRADES = { g4: ['Grade 4', 'الصف الرابع'], g5: ['Grade 5', 'الصف الخامس'], g6: ['Grade 6', 'الصف السادس'] };
+  const grade = () => ((player() || {}).grade || 'g5');
+  const chGrade = c => (c && c.grade) || 'g5';
+  const gradeName = g => { const n = GRADES[g || grade()] || GRADES.g5; return T(n[0], n[1]); };
+  const allChapters = () => window.CHAPTERS || [];
+  const chapters = () => allChapters().filter(c => chGrade(c) === grade());
+  const chapterById = id => allChapters().find(c => c.id === id) || null;
   const chapterId = () => prof().cur || null;
   const chapter = () => chapterById(chapterId());
   function setChapter(id) { if (chapterById(id)) updateProf(p => { p.cur = id; }); return chapter(); }
@@ -82,8 +89,9 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     if (!chReady(c)) { location.href = CHAPTERS_PAGE; return null; }
     return c;
   }
-  /* open for this player: marked ready, and for the Arabic track it also needs its Arabic questions */
-  function chReady(c) { return !!(c && c.ready && (!isAr() || c.questionsAr)); }
+  /* open for this player: marked ready, in the player's grade (the owner may look at every grade),
+     and for the Arabic track it also needs its Arabic questions */
+  function chReady(c) { return !!(c && c.ready && (!isAr() || c.questionsAr) && (chGrade(c) === grade() || isOwner())); }
   function chProf(id) { id = id || chapterId(); return ((prof().ch || {})[id]) || {}; }
   function updateChProf(fn, id) {
     id = id || chapterId(); if (!id) return {};
@@ -123,8 +131,9 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return Array.isArray(window.IDEAS) ? window.IDEAS : null;
   }
   /* monthly tests (chapters.js: window.EXAMS). examParts: the chapters of a test that this player can be asked about */
-  const exams = () => window.EXAMS || [];
-  const examById = id => exams().find(e => e.id === id) || (id ? null : exams()[0] || null);
+  const exams = () => (window.EXAMS || []).filter(e => (e.grade || 'g5') === grade());   // this grade's tests
+  /* a test opens for its own grade only (the owner may open every grade's test) */
+  const examById = id => { const e = id ? (window.EXAMS || []).find(x => x.id === id) : exams()[0]; return e && ((e.grade || 'g5') === grade() || isOwner()) ? e : null; };
   const examParts = ex => ((ex && ex.parts) || []).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && (isAr() ? p.c.questionsAr : p.c.questions));
 
   /* saves made before the site had several chapters all belong to Chapter 1: move them into ch.ch1 */
@@ -485,8 +494,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      Counts page views with approximate location only. No player names are sent, and the data
      is not used for advertising. Runs on the published site only, not on local copies. */
   const GA_ID = 'G-XP595P45PX';
-  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
-    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall' };
+  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
+    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
     return PAGE_NAMES[file + location.hash] || PAGE_NAMES[file] || document.title;
@@ -789,7 +798,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const rate = { due: rateDue, ask: rateAsk, guard: rateGuard, flush: rateFlush, CHOICES: RATE_CHOICES, WANTS: RATE_WANTS };
 
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
-    chapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
+    grade, gradeName, chGrade, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
     weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, rate, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT };
   applyLang();
