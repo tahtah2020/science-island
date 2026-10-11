@@ -132,7 +132,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
   /* monthly tests (chapters.js: window.EXAMS). examParts: the chapters of a test that this player can be asked about */
   const exams = () => (window.EXAMS || []).filter(e => (e.grade || 'g5') === grade());   // this grade's tests
-  const examById = id => (window.EXAMS || []).find(e => e.id === id) || (id ? null : exams()[0] || null);
+  /* a test opens for its own grade only (the owner may open every grade's test) */
+  const examById = id => { const e = id ? (window.EXAMS || []).find(x => x.id === id) : exams()[0]; return e && ((e.grade || 'g5') === grade() || isOwner()) ? e : null; };
   const examParts = ex => ((ex && ex.parts) || []).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && (isAr() ? p.c.questionsAr : p.c.questions));
 
   /* saves made before the site had several chapters all belong to Chapter 1: move them into ch.ch1 */

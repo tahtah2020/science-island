@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261011e">
+<link rel="stylesheet" href="g4_game.css?v=20261011f">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Habitat Explorer.</noscript>
-<script src="firebase-config.js?v=20261011e"></script>
-<script src="chapters.js?v=20261011e"></script>
-<script src="common.js?v=20261011e"></script>
-<script src="g4_art.js?v=20261011e"></script>
-<script src="g4_game.js?v=20261011e"></script>
+<script src="firebase-config.js?v=20261011f"></script>
+<script src="chapters.js?v=20261011f"></script>
+<script src="common.js?v=20261011f"></script>
+<script src="g4_art.js?v=20261011f"></script>
+<script src="g4_game.js?v=20261011f"></script>
 <script>
 (() => {
 'use strict';
@@ -56,7 +56,7 @@ function yard() {
 }
 function two() {
   const hi = side => sc.hi === side ? `<rect x="${side === 'nile' ? 5 : 215}" y="5" width="200" height="270" rx="14" fill="none" stroke="#2e9e6b" stroke-width="7"/>` : '';
-  const label = (x, s) => `<g><rect x="${x - 74}" y="10" width="148" height="24" rx="12" fill="#fff" opacity=".88"/><text x="${x}" y="27" text-anchor="middle" font-size="13" font-weight="900" fill="#1f3d57">${s}</text></g>`;
+  const label = (x, s) => `<g><rect x="${x - 88}" y="9" width="176" height="28" rx="14" fill="#fff" opacity=".88"/><text x="${x}" y="29" text-anchor="middle" font-size="16" font-weight="900" fill="#1f3d57">${s}</text></g>`;
   const c = sc.card && ORG[sc.card];
   return `<defs><clipPath id="hL"><rect width="206" height="280"/></clipPath><clipPath id="hR"><rect x="214" width="206" height="280"/></clipPath></defs>
     <g clip-path="url(#hL)"><rect width="210" height="280" fill="#cdeaf7"/><rect y="118" width="210" height="80" fill="#8fd3ee"/>
@@ -68,7 +68,7 @@ function two() {
       <path d="M232 262q24 -9 48 0t48 0t48 0" fill="none" stroke="#d9b06a" stroke-width="2.6" opacity=".7"/>${at(392, 266, .55, A.colocynth())}</g>
     <rect x="206" width="8" height="280" fill="#fff8ea"/>
     ${sc.placed.map(id => ORG[id].put()).join('')}${label(105, SIDE.nile)}${label(315, SIDE.desert)}${hi('nile')}${hi('desert')}
-    ${c ? `<g transform="translate(210 112)"><rect x="-70" y="-58" width="140" height="124" rx="16" fill="#fff8ea" stroke="#23799f" stroke-width="4"/>${c.card()}<text x="0" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="#1f3d57">${c.name}</text></g>` : ''}`;
+    ${c ? `<g transform="translate(210 112)"><rect x="-70" y="-58" width="140" height="124" rx="16" fill="#fff8ea" stroke="#23799f" stroke-width="4"/>${c.card()}<text x="0" y="57" text-anchor="middle" font-size="19" font-weight="900" fill="#1f3d57">${c.name}</text></g>` : ''}`;
 }
 const desertBack = `<rect width="420" height="280" fill="#fbe9c6"/><path d="M0 214C70 178 150 184 220 206C290 228 360 214 420 196V280H0Z" fill="#f1d9a0"/><path d="M0 246C80 232 180 238 260 250C330 260 380 256 420 250V280H0Z" fill="#e9c583"/>
   <path d="M30 266q30 -9 60 0t60 0M260 268q30 -9 60 0t60 0" fill="none" stroke="#d9b06a" stroke-width="2.6" opacity=".7"/>`;
@@ -97,6 +97,7 @@ const render = () => ({ yard, two, fennec, jerboa, day })[sc.mode]();
 const g = G4Game({ ch: 'g4c1', logo: '🦊', title: ['Habitat Explorer', 'مستكشف المَواطن'], sub: ['Chapter 1 · Nature in Our Surroundings', 'الفصل ١ · الطبيعة من حولنا'],
   bg: 'assets/bg_g4c1.svg', bgc: '#f6e7c4', label: ['The place Reesho is exploring', 'المكان الذي يستكشفه ريشو'], render });
 const kw = g.kw;
+document.getElementById('tray').dir = 'ltr';   // the Nile is on the left of the picture and the desert on the right, so the two buttons keep that order in Arabic too
 
 /* ---------- Stage 1 · Warm Up: where are the living organisms? ---------- */
 const YARD = [

@@ -101,8 +101,8 @@ window.IDEAS = [
     explain: 'يتكوَّن جسم الفراشة البالغة من ٣ أجزاء: الرأس، والصدر، والبطن.',
     variants: [
       { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'يتكوَّن جسم الفراشة البالغة من ٣ أجزاء: الرأس، والصدر، و ___.', options: ['البطن', 'الذيل', 'الصدفة'], answer: 0 },
-      { type: 'tap', diagram: 'insectBody', mode: 'timed', seconds: 15, level: 'easy', q: 'اضغط على رأس الفراشة.', answer: 'head' },
-      { type: 'tap', diagram: 'insectBody', mode: 'normal', level: 'medium', q: 'اضغط على بطن الفراشة.', answer: 'abdomen' },
+      { type: 'tap', diagram: 'insectBody', mode: 'timed', seconds: 15, level: 'easy', q: 'اضغط على رأس الحشرة.', answer: 'head' },
+      { type: 'tap', diagram: 'insectBody', mode: 'normal', level: 'medium', q: 'اضغط على بطن الحشرة.', answer: 'abdomen' },
       { type: 'multi', mode: 'normal', level: 'medium', q: 'اختر الأجزاء الثلاثة التي يتكوَّن منها جسم الحشرة.', options: ['الرأس', 'الصدر', 'البطن', 'الصدفة', 'الجذور'], answer: [0, 1, 2] },
       { type: 'tf', mode: 'timed', seconds: 10, level: 'easy', q: 'يتكوَّن جسم الفراشة البالغة من جزأين فقط.', answer: 1 },
       { type: 'order', mode: 'normal', level: 'medium', q: 'رتِّب أجزاء جسم الحشرة، بدءًا من الأمام.', items: ['البطن', 'الرأس', 'الصدر'], answer: [1, 2, 0] }

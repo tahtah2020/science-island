@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261011e">
+<link rel="stylesheet" href="g4_game.css?v=20261011f">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Butterfly Garden.</noscript>
-<script src="firebase-config.js?v=20261011e"></script>
-<script src="chapters.js?v=20261011e"></script>
-<script src="common.js?v=20261011e"></script>
-<script src="g4_art.js?v=20261011e"></script>
-<script src="g4_game.js?v=20261011e"></script>
+<script src="firebase-config.js?v=20261011f"></script>
+<script src="chapters.js?v=20261011f"></script>
+<script src="common.js?v=20261011f"></script>
+<script src="g4_art.js?v=20261011f"></script>
+<script src="g4_game.js?v=20261011f"></script>
 <script>
 (() => {
 'use strict';
@@ -62,7 +62,7 @@ const ZOO = {
 function zoo() {
   const z = ZOO[sc.animal];
   return `<rect width="420" height="280" fill="#fdf3dc"/><rect x="14" y="14" width="392" height="252" rx="18" fill="#fff8ea" stroke="#eadbb8" stroke-width="3"/>
-    ${z ? `${z.draw()}<g><rect x="130" y="228" width="160" height="30" rx="15" fill="#fff" stroke="#eadbb8" stroke-width="2"/><text x="210" y="249" text-anchor="middle" font-size="16" font-weight="900" fill="#1f3d57">${z.name}</text></g>` : ''}`;
+    ${z ? `${z.draw()}<g><rect x="110" y="222" width="200" height="38" rx="19" fill="#fff" stroke="#eadbb8" stroke-width="2"/><text x="210" y="248" text-anchor="middle" font-size="21" font-weight="900" fill="#1f3d57">${z.name}</text></g>` : ''}`;
 }
 const STAGES = ['egg', 'larva', 'pupa', 'adult'];
 const NAME = { egg: T('Egg', 'بيضة'), larva: T('Larva', 'يرقة'), pupa: T('Pupa', 'شرنقة'), adult: T('Adult', 'حشرة بالغة') };
@@ -74,9 +74,9 @@ const TILE = {
 };
 function stages() {
   return `<rect width="420" height="280" fill="#fdf3dc"/>` + STAGES.map((k, i) => {
-    const x = 8 + i * 102;
+    const x = 8 + (SI.isAr() ? 3 - i : i) * 102;   // Arabic reads from the right: بيضة ← يرقة ← شرنقة ← حشرة بالغة
     return `<g transform="translate(${x} 40)"><rect width="96" height="170" rx="12" fill="${SKY}" stroke="${sc.hi === k ? '#2e9e6b' : '#fff'}" stroke-width="${sc.hi === k ? 7 : 3}"/>${TILE[k]()}</g>
-      <text x="${x + 48}" y="236" text-anchor="middle" font-size="15" font-weight="900" fill="#1f3d57">${NAME[k]}</text>${i < 3 ? `<path d="M${x + 97} 125h4" stroke="#c9a23c" stroke-width="3" stroke-linecap="round"/>` : ''}`;
+      <text x="${x + 48}" y="236" text-anchor="middle" font-size="18" font-weight="900" fill="#1f3d57">${NAME[k]}</text>`;
   }).join('');
 }
 const render = () => ({ leaf, pupa, body, zoo, stages })[sc.mode]();

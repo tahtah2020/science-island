@@ -101,8 +101,8 @@ window.IDEAS = [
     explain: 'The body of an adult butterfly is made of 3 parts: head, thorax and abdomen.',
     variants: [
       { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'The body of an adult butterfly is made of 3 parts: head, thorax and ___.', options: ['abdomen', 'tail', 'shell'], answer: 0 },
-      { type: 'tap', diagram: 'insectBody', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap the head of the butterfly.', answer: 'head' },
-      { type: 'tap', diagram: 'insectBody', mode: 'normal', level: 'medium', q: 'Tap the abdomen of the butterfly.', answer: 'abdomen' },
+      { type: 'tap', diagram: 'insectBody', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap the head of the insect.', answer: 'head' },
+      { type: 'tap', diagram: 'insectBody', mode: 'normal', level: 'medium', q: 'Tap the abdomen of the insect.', answer: 'abdomen' },
       { type: 'multi', mode: 'normal', level: 'medium', q: 'Choose the three parts of an insect’s body.', options: ['Head', 'Thorax', 'Abdomen', 'Shell', 'Roots'], answer: [0, 1, 2] },
       { type: 'tf', mode: 'timed', seconds: 10, level: 'easy', q: 'The body of an adult butterfly is made of 2 parts only.', answer: 1 },
       { type: 'order', mode: 'normal', level: 'medium', q: 'Put the parts of the insect’s body in order, starting from the front.', items: ['Abdomen', 'Head', 'Thorax'], answer: [1, 2, 0] }
