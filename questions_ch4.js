@@ -27,7 +27,7 @@ window.IDEAS = [
     explain: 'A seedling grown without sunlight has yellowish leaves and a thin, long stem. It does not grow healthy, even if it has water, air and fertilizer.',
     variants: [
       { type: 'mc', mode: 'normal', level: 'medium', q: 'Which correctly describes a seedling grown without sunlight?', options: ['Leaves become yellowish and stems grow thin and long', 'Leaves grow big and stems grow thick', 'It does not grow at all'], answer: 0 },
-      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens to a plant that gets water, air and fertilizer, but no light?', parts: ['Its leaves become yellowish', 'and its stem grows', 'thin and weak'], extra: ['Its leaves become dark green', 'thick and strong'] },
+      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens to a plant that gets water, air and fertilizer, but no light?', parts: ['Its leaves become yellowish', 'and its stem grows', 'thin and long'], extra: ['Its leaves become dark green', 'thick and strong'] },
       { type: 'tf', mode: 'normal', level: 'medium', q: 'A plant kept in a dark box grows a thick, strong stem and dark green leaves.', answer: 1 }
     ] },
   { id: 'L4', lesson: 1, concept: 'The sunlight experiment',
