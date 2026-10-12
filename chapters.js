@@ -1,7 +1,8 @@
 /* Science Island · chapter list: Science, first term, Grades 4, 5 and 6 (Languages and Arabic tracks).
    A chapter opens for players when `ready` is true. To publish a new chapter, fill in:
-     grade     : 'g4' | 'g5' | 'g6'. A chapter without it belongs to Grade 5. A player sees the chapters of their own grade only.
-                 Chapter ids are unique on the whole site: Grade 5 uses ch1…, Grade 4 uses g4c1…, Grade 6 uses g6c1…
+     grade     : 'g4' | 'g5' | 'g6' | 'p1'. A chapter without it belongs to Grade 5. A player sees the chapters of their own grade only.
+                 Chapter ids are unique on the whole site: Grade 5 uses ch1…, Grade 4 uses g4c1…, Grade 6 uses g6c1…, Prep 1 uses p1u1… (units)
+     questMax  : optional: a long chapter asks only this many ideas in each Quest (all lessons and all Boss ideas are always in it)
      titleAr   : the chapter title in the Arabic school book (Arabic track)
      questions : file with that chapter's window.IDEAS (for example 'questions_ch2.js')
      questionsAr : the same questions in Arabic for the Arabic track (for example 'questions_ch2_ar.js')
@@ -143,7 +144,30 @@ window.CHAPTERS = [
     lessons: ['Grouping Solutions', 'What Is Dissolved in Solutions'] },
 
   { id: 'g6c10', grade: 'g6', n: 10, title: 'Reaction between Solutions and Metals', titleAr: 'تفاعل المحاليل مع الفلزات', icon: '⚗️', tint: '#e9eef2', ready: false,
-    lessons: ['Aqueous Solutions and Metals', 'What Is Left After Evaporation'] }
+    lessons: ['Aqueous Solutions and Metals', 'What Is Left After Evaporation'] },
+
+  /* ---------- Prep 1 (first preparatory, school book "Discover and Learn", 4 units in the first term) ----------
+     The preparatory books are made of units («الوحدة»), so a Prep 1 "chapter" is one unit and the pages call it a unit.
+     questMax: a unit has many ideas, so each Unit Quest asks this many (every lesson and every Boss idea is always in it). */
+  { id: 'p1u1', grade: 'p1', n: 1, title: 'The Matter', titleAr: 'المادة', icon: '⚛️', tint: '#dbeefb', ready: true,
+    lessons: ['Structure of the Atom', 'The Periodic Table of Elements', 'Matter and Its Properties', 'Chemical Bonds'],
+    lessonsAr: ['تركيب الذرة', 'الجدول الدوري لتصنيف العناصر', 'المادة وخصائصها', 'الروابط الكيميائية'],
+    questions: 'questions_p1u1.js', questionsAr: 'questions_p1u1_ar.js', art: 'p1_art.js', questMax: 24,
+    game: { href: 'atomlab.html', name: 'Atom Lab', nameAr: 'معمل الذرة', icon: '⚛️', hint: 'Build an atom, find it in the periodic table and watch atoms bond!', hintAr: 'ابنِ ذرة، ودوّر على مكانها في الجدول الدوري، وشوف الذرات بترتبط إزاي!' },
+    map: { img: 'assets/map_p1u1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'assets/map_p1u1.svg', quizBg: 'assets/bg_p1u1.svg' },
+
+  { id: 'p1u2', grade: 'p1', n: 2, title: 'Force Fields', titleAr: 'مجالات القوى', icon: '🧲', tint: '#ece3fb', ready: false,
+    lessons: ['Electric Forces', 'Magnetic Forces', 'Gravitational Forces'],
+    lessonsAr: ['القوى الكهربية', 'القوى المغناطيسية', 'قوى الجاذبية'] },
+
+  { id: 'p1u3', grade: 'p1', n: 3, title: 'Living Organisms, Their Structure and Processes', titleAr: 'الكائنات الحية تركيبها وعملياتها', icon: '🦠', tint: '#e2f4dc', ready: false,
+    lessons: ['Cells and Life', 'General Characteristics of Living Organisms', 'Microbes'],
+    lessonsAr: ['الخلايا والحياة', 'الصفات العامة للكائنات الحية', 'الميكروبات'] },
+
+  { id: 'p1u4', grade: 'p1', n: 4, title: 'The (Earth - Sun - Moon) System', titleAr: 'نظام (الأرض - الشمس - القمر)', icon: '🌍', tint: '#e3ecfb', ready: false,
+    lessons: ['The Earth and the Solar System', 'Lunar Eclipse'],
+    lessonsAr: ['الأرض والنظام الشمسي', 'خسوف القمر'] }
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.
@@ -151,6 +175,7 @@ window.CHAPTERS = [
                from the chapter, chance: how often the chapter is in a paper (both for a chapter the test only touches).
                A chapter is asked in the player's language only when it has a questions file for that language.
      grade   : the grade the test belongs to (Grade 5 when missing).
+     minParts: the test card shows once this many of its chapters are open (2 when missing; 1 for a test of one unit).
    Enrichment ideas (bonus) are left out of a test; exam extras from the outside guide (bonus + guide) are included. */
 window.EXAMS = [
   { id: 'oct', title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
@@ -158,5 +183,7 @@ window.EXAMS = [
   { id: 'g4m1', grade: 'g4', title: 'Monthly Test', titleAr: 'امتحان الشهر', icon: '📝',
     parts: [{ ch: 'g4c1' }, { ch: 'g4c2' }, { ch: 'g4c3' }] },
   { id: 'g6m1', grade: 'g6', title: 'Monthly Test', titleAr: 'امتحان الشهر', icon: '📝',
-    parts: [{ ch: 'g6c1' }, { ch: 'g6c2' }, { ch: 'g6c3' }] }
+    parts: [{ ch: 'g6c1' }, { ch: 'g6c2' }, { ch: 'g6c3' }] },
+  { id: 'p1oct', grade: 'p1', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'p1u1', lessons: [1, 2, 3] }] }
 ];

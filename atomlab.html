@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atom Lab · The Matter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="g4_game.css?v=20261012d">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Atom Lab.</noscript>
+<script src="firebase-config.js?v=20261012d"></script>
+<script src="chapters.js?v=20261012d"></script>
+<script src="common.js?v=20261012d"></script>
+<script src="p1_art.js?v=20261012d"></script>
+<script src="g4_game.js?v=20261012d"></script>
+<script>
+(() => {
+'use strict';
+/* Atom Lab · the game of Prep 1, Unit 1 "The Matter". Built on the shared game kit (g4_game.js).
+   Stage 1 (Warm Up): build an atom of sodium: the nucleus, Z and A, the neutrons (A − Z), the electrons, then fill the energy levels K, L, M (book pages 3-8).
+   Stage 2 (Missions): 1) find the place of Na, Cl and Ne in the periodic table from their electron configuration (pages 13-15);
+                       2) sodium chloride (ionic bond) and hydrogen chloride (single covalent bond), then O=O and N≡N (pages 26-30);
+                       3) physical or chemical property? (pages 22-23)
+   Stage 3 (Speed Round): element, compound or mixture? (pages 19-21)
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book.
+   Symbols, formulas and electron configurations stay left to right (ltr) inside Arabic sentences. */
+const A = window.P1ART, at = A.at, f1 = A.f1, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const ltr = s => '⁦' + s + '⁩';
+const L = (x, y, s, o) => A.ltrText(x, y, s, o);
+const W = (x, y, s, o) => A.label(x, y, s, o);
+const rr = (x, y, w, h, rx = 10) => `<rect class="ring" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const BG = '#eef6fb';
+const pill = (x, y, s, fill = '#ffffff') => `<rect x="${f1(x - 11)}" y="${f1(y - 11)}" width="22" height="22" rx="11" fill="${fill}" stroke="#8fbfe0" stroke-width="2"/>${L(x, y + 5, s, { fs: 13 })}`;
+
+/* an atom drawn from its levels. slots: how many places each level has (default: its electrons); omit: [[level, place], …] left empty;
+   rings: how many levels are drawn; nuc: false hides the nucleus; seat: [level, place] drawn as an empty dashed place */
+function atomG(levels, o, x = {}) {
+  const slots = x.slots || levels, nr = A.nucleusR(o.p, o.n, o.b), r0 = Math.max(o.r0 || 30, nr + 10), dr = o.dr || 20;
+  const nRings = x.rings != null ? x.rings : levels.length;
+  let s = '';
+  for (let i = 0; i < nRings; i++) s += `<circle r="${f1(r0 + i * dr)}" fill="none" stroke="${A.COL.orbit}" stroke-width="${x.hi === i ? 4 : 2}"/>`;
+  if (x.nuc !== false) s += A.nucleus(o.p, o.n, o.b);
+  if (x.seat) { const q = A.electronAt(slots, x.seat[0], x.seat[1], o); s += `<circle cx="${f1(q.x)}" cy="${f1(q.y)}" r="${(o.er || 5) + 1}" fill="#fff" stroke="${A.COL.electron}" stroke-width="1.6" stroke-dasharray="3 3"/>`; }
+  levels.forEach((cnt, i) => {
+    if (i >= nRings) return;
+    for (let k = 0; k < cnt; k++) {
+      if (x.omit && x.omit.some(([a, c]) => a === i && c === k)) continue;
+      const q = A.electronAt(slots, i, k, o); s += at(q.x, q.y, 1, A.electron(o.er || 5));
+    }
+  });
+  return s;
+}
+const ringR = (o, i) => Math.max(o.r0 || 30, A.nucleusR(o.p, o.n, o.b) + 10) + i * (o.dr || 20);
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'atom',
+  nuc: false, rings: 0, lv: [0, 0, 0], know: {}, hiRing: null,          // Stage 1: the atom of sodium
+  found: {}, cur: null,                                                 // Mission 1: the periodic table
+  bond: 'ionic', move: 0, ions: false, join: 0, shared: false,          // Mission 2: bonds
+  card: null,
+  board: { phy: [], chem: [] },                                         // Mission 3: physical or chemical
+  hi: null };                                                           // Stage 3: the three boxes
+
+/* Stage 1: the atom of sodium on the left, its card on the right */
+const NA = { p: 11, n: 12, b: 5.5, r0: 40, dr: 24, er: 6 }, AX = 140, AY = 140;
+const LV = ['K', 'L', 'M'];
+function atomScene() {
+  let s = `<rect width="420" height="280" fill="${BG}"/>`;
+  const slots = sc.lv.map(n => Math.max(1, n));
+  if (!sc.nuc) s += `<circle cx="${AX}" cy="${AY}" r="34" fill="#ffffff" stroke="#9fb3c4" stroke-width="2.4" stroke-dasharray="6 6"/>${L(AX, AY + 12, '?', { fs: 34, fill: '#9fb3c4' })}`;
+  s += at(AX, AY, 1, atomG(sc.lv, NA, { slots, rings: sc.rings, nuc: sc.nuc, hi: sc.hiRing }));
+  for (let i = 0; i < sc.rings; i++) { const R = ringR(NA, i), a = -135 * Math.PI / 180; s += pill(AX + Math.cos(a) * R, AY + Math.sin(a) * R, LV[i]); }
+  const k = sc.know;
+  s += `<rect x="262" y="26" width="146" height="228" rx="16" fill="#ffffff" stroke="#c9d6e2" stroke-width="2.4"/>
+    ${L(300, 78, '23', { fs: 17, anchor: 'end', fill: k.A ? '#c4483a' : '#1f3d57' })}${L(300, 120, '11', { fs: 17, anchor: 'end', fill: k.Z ? '#c4483a' : '#1f3d57' })}${L(304, 114, 'Na', { fs: 48, anchor: 'start' })}
+    ${W(335, 150, T('Sodium', 'الصوديوم'), { fs: 15 })}<path d="M276 162H394" stroke="#e1e8ef" stroke-width="2"/>
+    ${W(335, 186, T('Protons: ', 'البروتونات: ') + (k.p ? '11' : '?'), { fs: 14, fill: k.p ? '#c4483a' : '#8a9aa8' })}
+    ${W(335, 212, T('Neutrons: ', 'النيوترونات: ') + (k.n ? '12' : '?'), { fs: 14, fill: k.n ? '#5b6976' : '#8a9aa8' })}
+    ${W(335, 238, T('Electrons: ', 'الإلكترونات: ') + (k.e ? '11' : '?'), { fs: 14, fill: k.e ? '#22679f' : '#8a9aa8' })}`;
+  if (k.cfg) s += `<rect x="70" y="248" width="140" height="26" rx="13" fill="#fff8ea" stroke="#e6c483" stroke-width="2"/>${L(140, 266, 'K 2 · L 8 · M 1', { fs: 14 })}`;
+  return s;
+}
+/* the spots on the levels: the outer level first, so that the inner one is on top */
+const band = (cx, cy, r1, r2) => `<path class="ring" fill-rule="evenodd" d="M${f1(cx - r2)} ${cy}a${f1(r2)} ${f1(r2)} 0 1 0 ${f1(2 * r2)} 0a${f1(r2)} ${f1(r2)} 0 1 0 ${f1(-2 * r2)} 0Z${r1 > 0 ? `M${f1(cx - r1)} ${cy}a${f1(r1)} ${f1(r1)} 0 1 1 ${f1(2 * r1)} 0a${f1(r1)} ${f1(r1)} 0 1 1 ${f1(-2 * r1)} 0Z` : ''}"/>`;
+const ringSpots = () => [0, 1, 2].map(i => ({ id: LV[i], name: T(`Level ${LV[i]}`, `المستوى ${LV[i]}`), ring: band(AX, AY, i ? ringR(NA, i) - 11 : 0, ringR(NA, i) + 11) }));
+
+/* Mission 1: the A groups of periods 1 to 4 */
+const GR = ['1A', '2A', '3A', '4A', '5A', '6A', '7A', '0'], TX = 66, TY = 46, TW = 41, TH = 46;
+const hasCell = (r, g) => r > 0 || g === 0 || g === 7;
+const cellX = g => TX + g * TW, cellY = r => TY + r * TH;
+const KNOWN = { '0-0': 'H', '0-7': 'He' };
+function tableScene() {
+  let s = `<rect width="420" height="280" fill="#f7f9fc"/>`;
+  GR.forEach((g, i) => { s += L(cellX(i) + TW / 2, TY - 10, g, { fs: 13 }); });
+  for (let r = 0; r < 4; r++) {
+    s += L(TX - 14, cellY(r) + TH / 2 + 5, String(r + 1), { fs: 14, fill: '#5b6976' });
+    for (let g = 0; g < 8; g++) {
+      if (!hasCell(r, g)) continue;
+      const sym = sc.found[`${r}-${g}`] || KNOWN[`${r}-${g}`];
+      s += `<rect x="${cellX(g) + 2}" y="${cellY(r) + 2}" width="${TW - 4}" height="${TH - 4}" rx="7" fill="${sym ? A.GROUP_COL[g] : '#ffffff'}" stroke="${sym ? '#ffffff' : '#c9d6e2'}" stroke-width="1.6"/>${sym ? L(cellX(g) + TW / 2, cellY(r) + TH / 2 + 6, sym, { fs: 16 }) : ''}`;
+    }
+  }
+  s += `<text x="0" y="0" transform="translate(26 ${TY + 2 * TH}) rotate(-90)" text-anchor="middle" font-size="12" font-weight="900" fill="#5b6976">${T('Period', 'الدورة')}</text>`;
+  if (sc.cur) s += `<rect x="120" y="240" width="180" height="30" rx="15" fill="#fff8ea" stroke="#e6c483" stroke-width="2"/>${L(210, 260, `${sc.cur.sym}:  ${sc.cur.cfg}`, { fs: 15 })}`;
+  return s;
+}
+const tableSpots = () => {
+  const out = [];
+  for (let r = 0; r < 4; r++) for (let g = 0; g < 8; g++) if (hasCell(r, g)) out.push({ id: `${r}-${g}`, name: T(`Period ${r + 1}, group ${GR[g]}`, `الدورة ${r + 1}، المجموعة ${GR[g]}`), ring: rr(cellX(g) + 1, cellY(r) + 1, TW - 2, TH - 2, 8) });
+  return out;
+};
+
+/* Mission 2: bonds */
+const ONA = { p: 11, n: 12, b: 4, r0: 30, dr: 18, er: 5, spin: 44 }, OCL = { p: 17, n: 18, b: 4, r0: 30, dr: 18, er: 5, spin: 224 };
+const OH = { p: 1, n: 0, b: 5, r0: 30, dr: 18, er: 5 }, OCL2 = Object.assign({}, OCL, { spin: 201.5 }), OHR = Object.assign({}, OH, { spin: 90 });
+const NAX = 100, CLX = 312, BY = 132;
+function ionicScene() {
+  const from = A.electronAt([2, 8, 1], 2, 0, ONA), to = A.electronAt([2, 8, 8], 2, 0, OCL);
+  const x1 = NAX + from.x, y1 = BY + from.y, x2 = CLX + to.x, y2 = BY + to.y, k = sc.move;
+  let s = `<rect width="420" height="280" fill="${BG}"/>`;
+  s += at(NAX, BY, 1, sc.ions ? atomG([2, 8], ONA, { rings: 2 }) : atomG([2, 8, 1], ONA, { omit: k > 0 ? [[2, 0]] : null }));
+  s += at(CLX, BY, 1, atomG([2, 8, 8], OCL, { omit: sc.ions ? null : [[2, 0]], seat: sc.ions || k > 0 ? null : [2, 0] }));
+  if (k > 0 && !sc.ions) s += at(x1 + (x2 - x1) * k, y1 + (y2 - y1) * k - Math.sin(k * Math.PI) * 34, 1, A.electron(5.5));
+  const nm = sc.ions ? ['Na⁺  (2,8)', 'Cl⁻  (2,8,8)'] : ['Na  (2,8,1)', 'Cl  (2,8,7)'];
+  s += L(NAX, 252, nm[0], { fs: 15 }) + L(CLX, 252, nm[1], { fs: 15 });
+  if (sc.ions) {
+    s += `<circle cx="${NAX + 46}" cy="${BY - 50}" r="15" fill="#ef6b57"/>${L(NAX + 46, BY - 44, '+', { fs: 20, fill: '#fff' })}<circle cx="${CLX + 76}" cy="${BY - 78}" r="15" fill="#3f93db"/>${L(CLX + 76, BY - 72, '−', { fs: 22, fill: '#fff' })}
+      <path d="M176 ${BY + 4}l14 -8v16z M246 ${BY + 4}l-14 -8v16z" fill="#c4483a"/><path d="M188 ${BY + 4}H232" stroke="#c4483a" stroke-width="3" stroke-dasharray="4 4"/>
+      ${L(210, 24, '[Na]⁺ [Cl]⁻', { fs: 17 })}`;
+  }
+  return s;
+}
+function covScene() {
+  const k = sc.join, hx = 110 + 40 * k, cx = 300 - 52 * k;
+  let s = `<rect width="420" height="280" fill="${BG}"/>`;
+  if (!sc.shared) {
+    s += at(hx, BY, 1, atomG([1], OHR));
+    s += at(cx, BY, 1, atomG([2, 8, 8], OCL, { omit: [[2, 0]] }));
+    s += L(hx, 252, 'H  (1)', { fs: 15 }) + L(cx, 252, 'Cl  (2,8,7)', { fs: 15 });
+  } else {
+    const xm = ((hx + ringR(OH, 0)) + (cx - ringR(OCL, 2))) / 2;
+    s += at(hx, BY, 1, atomG([0], OH)) + at(cx, BY, 1, atomG([2, 8, 8], OCL2, { omit: [[2, 0], [2, 1]] }));
+    s += `<ellipse cx="${f1(xm)}" cy="${BY}" rx="11" ry="21" fill="#fde6a4" opacity=".85" stroke="#e6a93c" stroke-width="2"/>` + at(xm, BY - 9, 1, A.electron(5)) + at(xm, BY + 9, 1, A.electron(5));
+    s += L(210, 252, 'H − Cl', { fs: 18 });
+    s += `<path d="M${f1(xm)} ${BY - 26}V48" stroke="#e6a93c" stroke-width="2" stroke-dasharray="4 4"/>` + W(f1(xm), 40, T('A shared pair of electrons', 'زوج من الإلكترونات المشتركة'), { fs: 13.5, fill: '#a8701c' });
+  }
+  return s;
+}
+const CARDS = ['single', 'double', 'triple'];
+function cardsScene() {
+  let s = `<rect width="420" height="280" fill="#f7f9fc"/>`;
+  CARDS.forEach((c, i) => {
+    const y = 14 + i * 88, on = sc.card === c;
+    s += `<rect x="130" y="${y}" width="160" height="80" rx="14" fill="#ffffff" stroke="${on ? '#2e9e6b' : '#c9d6e2'}" stroke-width="${on ? 4 : 2}"/>${at(130, y + 2, 1, A.bondCard(c))}`;
+  });
+  return s;
+}
+
+/* Mission 3: the board of physical and chemical properties. In Arabic the first button (physical) is on the right, so is its column */
+const COLX = { phy: T(112, 308), chem: T(308, 112) };
+function boardScene() {
+  let s = `<rect width="420" height="280" fill="#eef3ee"/><rect x="14" y="14" width="392" height="252" rx="16" fill="#ffffff" stroke="#a8834f" stroke-width="5"/><path d="M210 30V250" stroke="#e1e8ef" stroke-width="3"/>`;
+  s += W(COLX.phy, 46, T('Physical properties', 'خواص فيزيائية'), { fs: 15, fill: '#1b6182' }) + W(COLX.chem, 46, T('Chemical properties', 'خواص كيميائية'), { fs: 15, fill: '#a8323a' });
+  s += `<path d="M34 58H190M230 58H386" stroke="#e1e8ef" stroke-width="2"/>`;
+  ['phy', 'chem'].forEach(c => sc.board[c].forEach((t, i) => { s += W(COLX[c], 86 + i * 28, t, { fs: 13.5 }); }));
+  return s;
+}
+
+/* Stage 3: element, compound or mixture */
+const RED = '#ef7d6b', BLUE = '#5aa6e0', SPOTS = [[24, 30, 20], [68, 26, -30], [44, 62, 60], [86, 70, 10], [24, 96, -60], [70, 104, 30]];
+const KIND = ['element', 'compound', 'mixture'];
+const KX = { element: T(18, 284), compound: 151, mixture: T(284, 18) };
+const NAME = { element: T('Element', 'عنصر'), compound: T('Compound', 'مركب'), mixture: T('Mixture', 'مخلوط') };
+function boxesScene() {
+  const kinds = { element: SPOTS.map(() => [RED, RED]), compound: SPOTS.map(() => [RED, BLUE]), mixture: [[RED, RED], [BLUE, BLUE], [RED, RED], [BLUE, BLUE], [BLUE, BLUE], [RED, RED]] };
+  let s = `<rect width="420" height="280" fill="${BG}"/>`;
+  KIND.forEach(k => {
+    const x = KX[k], on = sc.hi === k;
+    s += `<rect x="${x}" y="40" width="118" height="150" rx="14" fill="#ffffff" stroke="${on ? '#2e9e6b' : '#9fb3c4'}" stroke-width="${on ? 5 : 2.4}"/>`;
+    s += SPOTS.map(([dx, dy, rot], i) => at(x + dx + 4, 40 + dy + 6, 1, A.diatomic(kinds[k][i][0], kinds[k][i][1], 8, rot))).join('');
+    s += W(x + 59, 222, NAME[k], { fs: 17, fill: on ? '#2e9e6b' : '#1f3d57' });
+  });
+  return s;
+}
+const render = () => ({ atom: atomScene, table: tableScene, ionic: ionicScene, cov: covScene, cards: cardsScene, board: boardScene, boxes: boxesScene })[sc.mode]();
+
+const g = G4Game({ ch: 'p1u1', logo: '⚛️', title: ['Atom Lab', 'معمل الذرة'], sub: ['Unit 1 · The Matter', 'الوحدة ١ · المادة'],
+  bg: 'assets/bg_p1u1.svg', bgc: '#dbeefb', label: ['Reesho’s atom lab', 'معمل الذرة بتاع ريشو'], render });
+const kw = g.kw;
+async function addElectrons(i, n) {
+  for (let k = 0; k < n; k++) { sc.lv[i]++; g.paint(); await g.sleep(g.reduceMotion ? 0 : 170); }
+}
+
+/* ---------- Stage 1 · Warm Up: build an atom of sodium ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'atom', nuc: false, rings: 0, lv: [0, 0, 0], know: {}, hiRing: null }); g.paint();
+  g.say(T(`Let’s build an atom of <b>sodium</b>. Its card shows two numbers beside the symbol ${ltr('Na')}. First: which particles are found in the ${kw('nucleus')} of the atom?`,
+    `يلّا نبني ذرة <b>صوديوم</b>. الكارت بتاعها فيه رقمين جنب الرمز ${ltr('Na')}. الأول: ما الجسيمات الموجودة في ${kw('نواة')} الذرة؟`), 'think');
+  await g.choice({
+    options: [T('Protons and neutrons', 'البروتونات والنيوترونات'), T('Protons and electrons', 'البروتونات والإلكترونات'), T('Electrons only', 'الإلكترونات فقط')], correct: T('Protons and neutrons', 'البروتونات والنيوترونات'),
+    hint: T('The electrons revolve around the nucleus.', 'الإلكترونات بتدور حوالين النواة.'),
+    ok: T(`The nucleus contains the ${kw('protons')} (positive) and the ${kw('neutrons')} (neutral). The electrons revolve around it at very high speeds.`, `تحتوي النواة على ${kw('البروتونات')} الموجبة و${kw('النيوترونات')} المتعادلة، وتدور حولها الإلكترونات بسرعات فائقة.`),
+    reveal: () => { sc.nuc = true; g.paint(); } });
+  g.say(T(`The small number at the lower left of the symbol is the ${kw('atomic number')} (Z). For sodium Z = 11. What does the atomic number tell us?`,
+    `الرقم الصغير أسفل يسار الرمز هو ${kw('العدد الذري')} ${ltr('(Z)')}. للصوديوم ${ltr('Z = 11')}. العدد الذري يعبر عن إيه؟`), 'point');
+  await g.choice({
+    options: [T('The number of protons', 'عدد البروتونات'), T('The number of neutrons', 'عدد النيوترونات'), T('The number of nucleons', 'عدد النيوكلونات')], correct: T('The number of protons', 'عدد البروتونات'),
+    hint: T('It is the particles with the positive charge.', 'هي الجسيمات اللي شحنتها موجبة.'),
+    ok: T(`The atomic number (Z) is the number of ${kw('protons')} in the nucleus. Sodium has 11 protons.`, `العدد الذري ${ltr('(Z)')} هو عدد ${kw('البروتونات')} في النواة. ذرة الصوديوم فيها 11 بروتونًا.`),
+    reveal: () => { sc.know.Z = sc.know.p = true; g.paint(); } });
+  g.say(T(`The number at the upper left is the ${kw('mass number')} (A): the number of protons and neutrons together. For sodium A = 23. How many neutrons are in the nucleus?`,
+    `الرقم أعلى يسار الرمز هو ${kw('العدد الكتلي')} ${ltr('(A)')}: مجموع البروتونات والنيوترونات. للصوديوم ${ltr('A = 23')}. كم نيوترونًا في النواة؟`), 'think');
+  await g.choice({
+    options: ['12', '23', '11'], correct: '12',
+    hint: T('Subtract the atomic number from the mass number.', P('اطرح العدد الذري من العدد الكتلي.', 'اطرحي العدد الذري من العدد الكتلي.')),
+    ok: T(`A − Z = 23 − 11 = ${kw('12')} neutrons.`, `الفرق بين العدد الكتلي والعدد الذري يساوي عدد النيوترونات: ${ltr('23 − 11 = 12')}، يعني ${kw('12')} نيوترونًا.`),
+    reveal: () => { sc.know.A = sc.know.n = true; g.paint(); } });
+  g.say(T('The atom is <b>electrically neutral</b>. How many electrons does the atom of sodium have?', 'الذرة <b>متعادلة كهربيًا</b>. كم إلكترونًا في ذرة الصوديوم؟'), 'think');
+  await g.choice({
+    options: ['11', '12', '23'], correct: '11',
+    hint: T('The negative charges must balance the positive charges.', 'الشحنات السالبة لازم تساوي الشحنات الموجبة.'),
+    ok: T(`${kw('11')} electrons: in any atom, the number of positive protons equals the number of negative electrons.`, `${kw('11')} إلكترونًا: في أي ذرة يكون عدد البروتونات الموجبة مساويًا لعدد الإلكترونات السالبة.`),
+    reveal: () => { sc.know.e = true; sc.rings = 3; g.paint(); } });
+  g.say(T(`The electrons revolve around the nucleus in ${kw('energy levels')}: K, L, M… Which level is filled first? Tap it.`, P(`الإلكترونات بتدور حول النواة في ${kw('مستويات الطاقة')}: ${ltr('K, L, M')}… أنهي مستوى يتملي الأول؟ اضغط عليه.`, `الإلكترونات بتدور حول النواة في ${kw('مستويات الطاقة')}: ${ltr('K, L, M')}… أنهي مستوى يتملي الأول؟ اضغطي عليه.`)), 'point');
+  await g.spot(ringSpots(), 'K', {
+    hint: T('It is the level nearest to the nucleus.', 'هو أقرب مستوى للنواة.'),
+    ok: T(`The first level, ${kw('K')}, is filled first; then the higher levels, one after the other.`, `يُملأ مستوى الطاقة الأول ${kw('K')} بالإلكترونات أولًا، ثم يتتابع ملء مستويات الطاقة الأعلى.`) });
+  g.say(T('How many electrons does level K need to be full? (2n², with n = 1)', `كم إلكترونًا يلزم لتشبُّع المستوى ${ltr('K')}؟ ${ltr('(2n², n = 1)')}`), 'think');
+  await g.choice({
+    options: ['2', '8', '18'], correct: '2',
+    hint: T('2 × 1² = ?', ltr('2 × 1² = ?')),
+    ok: T(`Level K is full with ${kw('2')} electrons.`, `يتشبع المستوى ${ltr('K')} بعدد ${kw('2')} إلكترون.`),
+    reveal: () => { sc.hiRing = 0; addElectrons(0, 2); } });
+  g.say(T('9 electrons are left. Tap the next level.', P('فاضل 9 إلكترونات. اضغط على المستوى اللي بعده.', 'فاضل 9 إلكترونات. اضغطي على المستوى اللي بعده.')), 'point');
+  await g.spot(ringSpots(), 'L', {
+    hint: T('K is full. Go one level out.', 'المستوى K اتملى. اطلع مستوى واحد لبرّه.'),
+    ok: T(`Next comes level ${kw('L')} (n = 2).`, `بعده المستوى ${kw('L')} ${ltr('(n = 2)')}.`) });
+  g.say(T('How many electrons does level L need to be full? (2n², with n = 2)', `كم إلكترونًا يلزم لتشبُّع المستوى ${ltr('L')}؟ ${ltr('(2n², n = 2)')}`), 'think');
+  await g.choice({
+    options: ['8', '9', '18'], correct: '8',
+    hint: T('2 × 2² = 2 × 4', ltr('2 × 2² = 2 × 4')),
+    ok: T(`Level L is full with ${kw('8')} electrons. 1 electron is still left.`, `يتشبع المستوى ${ltr('L')} بعدد ${kw('8')} إلكترونات. وفاضل إلكترون واحد.`),
+    reveal: () => { sc.hiRing = 1; addElectrons(1, 8); } });
+  g.say(T('Where does the last electron go? Tap its level.', P('الإلكترون الأخير يروح فين؟ اضغط على المستوى بتاعه.', 'الإلكترون الأخير يروح فين؟ اضغطي على المستوى بتاعه.')), 'point');
+  await g.spot(ringSpots(), 'M', {
+    hint: T('K and L are both full.', 'المستويان K و L مليانين.'),
+    ok: T(`It goes into level ${kw('M')}.`, `يدخل المستوى ${kw('M')}.`),
+    reveal: () => { sc.hiRing = 2; addElectrons(2, 1); } });
+  g.say(T('So, what is the electron configuration of sodium?', 'إذن، ما التوزيع الإلكتروني لذرة الصوديوم؟'), 'think');
+  await g.choice({
+    options: [ltr('2,8,1'), ltr('2,9'), ltr('1,8,2')], correct: ltr('2,8,1'),
+    hint: T('Count the electrons in K, then L, then M.', P('عِدّ إلكترونات K وبعدين L وبعدين M.', 'عِدّي إلكترونات K وبعدين L وبعدين M.')),
+    ok: T(`Sodium: ${kw('2,8,1')}. K has 2, L has 8 and M has 1.`, `الصوديوم: ${kw(ltr('2,8,1'))}. في ${ltr('K')} إلكترونان، وفي ${ltr('L')} ثمانية، وفي ${ltr('M')} إلكترون واحد.`),
+    reveal: () => { sc.know.cfg = true; sc.hiRing = null; g.paint(); } });
+  g.say(T('Which electron of sodium has the <b>most energy</b>?', 'أي إلكترون في ذرة الصوديوم له <b>أكبر طاقة</b>؟'), 'think');
+  await g.choice({
+    options: [T('The electron in level M', 'الإلكترون الموجود في المستوى M'), T('An electron in level K', 'إلكترون في المستوى K'), T('They all have the same energy', 'كلها لها نفس الطاقة')], correct: T('The electron in level M', 'الإلكترون الموجود في المستوى M'),
+    hint: T('The farther from the nucleus, the more energy.', 'كل ما يبعد عن النواة تزيد طاقته.'),
+    ok: T(`The energy of the level ${kw('increases')} as it gets farther from the nucleus, so the electron in M has the most energy.`, `${kw('تزداد')} طاقة مستوى الطاقة كلما بعُد عن النواة، فالإلكترون الموجود في المستوى ${ltr('M')} له أكبر طاقة.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Where is it in the periodic table?', 'مكانه فين في الجدول الدوري؟'));
+  Object.assign(sc, { mode: 'table', found: {}, cur: { sym: 'Na', cfg: '2,8,1' } }); g.paint();
+  g.say(T(`Here are the A groups of the first 4 periods. The place of an element is found from its electron configuration. Sodium is ${ltr('2,8,1')}: it has 3 occupied energy levels. In which ${kw('period')} is it?`,
+    `دي مجموعات A في أول 4 دورات. موقع العنصر بيتحدد من توزيعه الإلكتروني. الصوديوم ${ltr('2,8,1')}: فيه 3 مستويات طاقة مشغولة. في أي ${kw('دورة')} يقع؟`), 'think');
+  await g.choice({
+    options: [T('Period 3', 'الدورة الثالثة'), T('Period 1', 'الدورة الأولى'), T('Period 11', 'الدورة 11')], correct: T('Period 3', 'الدورة الثالثة'),
+    hint: T('The period number = the number of occupied energy levels.', 'رقم الدورة = عدد مستويات الطاقة المشغولة بالإلكترونات.'),
+    ok: T(`The number of occupied energy levels is the ${kw('period number')}: period 3.`, `عدد مستويات الطاقة المشغولة بالإلكترونات هو ${kw('رقم الدورة')}: الدورة الثالثة.`) });
+  g.say(T(`Sodium has 1 electron in its last energy level. In which ${kw('group')} is it?`, `في مستوى الطاقة الأخير للصوديوم إلكترون واحد. في أي ${kw('مجموعة')} يقع؟`), 'think');
+  await g.choice({
+    options: [ltr('1A'), ltr('3A'), ltr('0')], correct: ltr('1A'),
+    hint: T('The group number = the number of electrons in the last level.', 'رقم المجموعة = عدد الإلكترونات في مستوى الطاقة الأخير.'),
+    ok: T(`The number of electrons in the last energy level gives the ${kw('group number')}: group 1A, the alkali metals.`, `عدد الإلكترونات في مستوى الطاقة الأخير يحدد ${kw('رقم المجموعة')}: المجموعة ${ltr('1A')}، فلزات الأقلاء.`) });
+  g.say(T('Now tap the place of sodium: period 3, group 1A.', P(`اضغط دلوقتي على مكان الصوديوم: الدورة الثالثة، المجموعة ${ltr('1A')}.`, `اضغطي دلوقتي على مكان الصوديوم: الدورة الثالثة، المجموعة ${ltr('1A')}.`)), 'point');
+  await g.spot(tableSpots(), '2-0', {
+    hint: T('Count the periods from the top: 1, 2, 3. Group 1A is the first column.', 'عِدّ الدورات من فوق: 1، 2، 3. والمجموعة 1A هي أول عمود.'),
+    ok: T(`${kw('Sodium')} is in period 3, group 1A.`, `${kw('الصوديوم')} في الدورة الثالثة، المجموعة ${ltr('1A')}.`),
+    reveal: () => { sc.found['2-0'] = 'Na'; g.paint(); } });
+  sc.cur = { sym: 'Cl', cfg: '2,8,7' }; g.paint();
+  g.say(T(`Chlorine is ${ltr('2,8,7')}. Tap its place.`, P(`الكلور ${ltr('2,8,7')}. اضغط على مكانه.`, `الكلور ${ltr('2,8,7')}. اضغطي على مكانه.`)), 'think');
+  await g.spot(tableSpots(), '2-6', {
+    hint: T('3 occupied levels → period 3. 7 electrons in the last level → group 7A.', 'مستويات مشغولة 3 ← الدورة الثالثة. 7 إلكترونات في المستوى الأخير ← المجموعة 7A.'),
+    ok: T(`${kw('Chlorine')} is in period 3, group 7A: the halogens.`, `${kw('الكلور')} في الدورة الثالثة، المجموعة ${ltr('7A')}: الهالوجينات.`),
+    reveal: () => { sc.found['2-6'] = 'Cl'; g.paint(); } });
+  sc.cur = { sym: 'Ne', cfg: '2,8' }; g.paint();
+  g.say(T(`Neon is ${ltr('2,8')}: its last level is full. Tap its place.`, P(`النيون ${ltr('2,8')}: مستواه الأخير مكتمل. اضغط على مكانه.`, `النيون ${ltr('2,8')}: مستواه الأخير مكتمل. اضغطي على مكانه.`)), 'think');
+  await g.spot(tableSpots(), '1-7', {
+    hint: T('2 occupied levels → period 2. A full last level (8 electrons) → group 0.', 'مستويان مشغولان ← الدورة الثانية. المستوى الأخير مكتمل (8 إلكترونات) ← المجموعة 0.'),
+    ok: T(`${kw('Neon')} is in period 2, group 0: the noble gases.`, `${kw('النيون')} في الدورة الثانية، المجموعة ${ltr('0')}: الغازات النبيلة.`),
+    reveal: () => { sc.found['1-7'] = 'Ne'; sc.cur = null; g.paint(); } });
+  g.say(T(`Sodium ends with ${ltr('1')} electron and chlorine ends with ${ltr('7')}. Which one is a <b>metal</b>?`, `التوزيع الإلكتروني للصوديوم ينتهي بإلكترون واحد، والكلور ينتهي بـ 7 إلكترونات. أيهما <b>فلز</b>؟`), 'think');
+  await g.choice({
+    options: [T('Sodium', 'الصوديوم'), T('Chlorine', 'الكلور'), T('Both of them', 'الاثنان')], correct: T('Sodium', 'الصوديوم'),
+    hint: T('Most metals end with 1, 2 or 3 electrons.', 'معظم الفلزات ينتهي توزيعها الإلكتروني بعدد 1 أو 2 أو 3 إلكترونات.'),
+    ok: T(`The electron configuration of most ${kw('metals')} ends with 1, 2 or 3 electrons, and of most ${kw('nonmetals')} with 5, 6 or 7.`, `ينتهي التوزيع الإلكتروني لمعظم ${kw('الفلزات')} بعدد 1 أو 2 أو 3 إلكترونات، بينما ينتهي التوزيع الإلكتروني لمعظم ${kw('اللافلزات')} بعدد 5 أو 6 أو 7.`) });
+  g.say(T('What is the <b>valency</b> of chlorine (group 7A)?', `ما <b>تكافؤ</b> الكلور (المجموعة ${ltr('7A')})؟`), 'think');
+  await g.choice({
+    options: [T('Monovalent (1)', 'أحادي التكافؤ (1)'), T('7', '7'), T('Divalent (2)', 'ثنائي التكافؤ (2)')], correct: T('Monovalent (1)', 'أحادي التكافؤ (1)'),
+    hint: T('From group 5A to group 0: valency = 8 − the electrons in the last level.', 'من المجموعة 5A إلى المجموعة 0: التكافؤ = 8 − عدد إلكترونات المستوى الأخير.'),
+    ok: T(`8 − 7 = 1: chlorine is ${kw('monovalent')}. It has one unpaired electron.`, `${ltr('8 − 7 = 1')}: الكلور ${kw('أحادي التكافؤ')}، فيه إلكترون واحد مفرد.`) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('How do atoms bond?', 'إزاي الذرات بترتبط؟'));
+  Object.assign(sc, { mode: 'ionic', move: 0, ions: false }); g.paint();
+  g.say(T(`Sodium ${ltr('(2,8,1)')} meets chlorine ${ltr('(2,8,7)')}. The nearest noble gas to sodium is neon ${ltr('(2,8)')}. What does the sodium atom do to reach it?`,
+    `الصوديوم ${ltr('(2,8,1)')} قابل الكلور ${ltr('(2,8,7)')}. أقرب غاز نبيل للصوديوم هو النيون ${ltr('(2,8)')}. ذرة الصوديوم تعمل إيه علشان توصل لتوزيعه؟`), 'think');
+  await g.choice({
+    options: [T('It loses 1 electron', 'تفقد إلكترونًا واحدًا'), T('It gains 7 electrons', 'تكتسب 7 إلكترونات'), T('It gains 1 electron', 'تكتسب إلكترونًا واحدًا')], correct: T('It loses 1 electron', 'تفقد إلكترونًا واحدًا'),
+    hint: T('Losing one electron is easier than gaining seven.', 'إنها تفقد إلكترون واحد أسهل بكتير من إنها تكسب 7.'),
+    ok: T(`Sodium ${kw('loses')} its electron, and chlorine ${kw('gains')} it. Now both have the stable configuration of the nearest noble gas.`, `تفقد ذرة الصوديوم إلكترونها و${kw('تكتسبه')} ذرة الكلور، فتصل كل منهما إلى التوزيع الإلكتروني المستقر لأقرب غاز نبيل.`),
+    reveal: () => g.tween(1400, k => { sc.move = k; }).then(() => { sc.ions = true; g.paint(); }) });
+  g.say(T('Now sodium has 11 protons and only 10 electrons. What is its charge?', 'دلوقتي الصوديوم فيه 11 بروتونًا و10 إلكترونات بس. شحنته كام؟'), 'think');
+  await g.choice({
+    options: [ltr('+1'), ltr('−1'), ltr('0')], correct: ltr('+1'),
+    hint: T('There is one more proton than electrons.', 'البروتونات زيادة واحد عن الإلكترونات.'),
+    ok: T(`${kw('+1')}: an atom that loses electrons becomes a ${kw('positive ion')} (cation): ${ltr('Na⁺')}.`, `${kw(ltr('+1'))}: الذرة التي تفقد إلكترونات تتحول إلى ${kw('أيون موجب')} (كاتيون): ${ltr('Na⁺')}.`) });
+  g.say(T('Chlorine now has 17 protons and 18 electrons. What did it become?', 'الكلور دلوقتي فيه 17 بروتونًا و18 إلكترونًا. بقى إيه؟'), 'think');
+  await g.choice({
+    options: [T('A negative ion (anion)', 'أيون سالب (أنيون)'), T('A positive ion (cation)', 'أيون موجب (كاتيون)'), T('A neutral atom', 'ذرة متعادلة')], correct: T('A negative ion (anion)', 'أيون سالب (أنيون)'),
+    hint: T('It has one more electron than protons.', 'الإلكترونات زيادة واحد عن البروتونات.'),
+    ok: T(`An atom that gains electrons becomes a ${kw('negative ion')} (anion): ${ltr('Cl⁻')}.`, `الذرة التي تكتسب إلكترونات تتحول إلى ${kw('أيون سالب')} (أنيون): ${ltr('Cl⁻')}.`) });
+  g.say(T('The positive ion and the negative ion attract each other. What is this bond called?', 'الأيون الموجب والأيون السالب بيتجاذبوا. الترابط ده اسمه إيه؟'), 'think');
+  await g.choice({
+    options: [T('Ionic bonding', 'الترابط الأيوني'), T('Covalent bonding', 'الترابط التساهمي'), T('A double bond', 'رابطة ثنائية')], correct: T('Ionic bonding', 'الترابط الأيوني'),
+    hint: T('It holds ions together.', 'بيربط بين أيونات.'),
+    ok: T(`The electrostatic attraction between the cation and the anion is the ${kw('ionic bond')}. Sodium chloride is an ionic compound: ${ltr('[Na]⁺ [Cl]⁻')}.`, `التجاذب الكهربي بين الكاتيون والأنيون يسمى ${kw('الترابط الأيوني')}، وكلوريد الصوديوم مركب أيوني: ${ltr('[Na]⁺ [Cl]⁻')}.`) });
+
+  Object.assign(sc, { mode: 'cov', join: 0, shared: false }); g.paint();
+  g.say(T(`Now hydrogen ${ltr('(1)')} meets chlorine ${ltr('(2,8,7)')}. Hydrogen needs 1 electron to be like helium, and chlorine needs 1 electron to be like argon. What do they do?`,
+    `دلوقتي الهيدروجين ${ltr('(1)')} قابل الكلور ${ltr('(2,8,7)')}. الهيدروجين محتاج إلكترون واحد علشان يبقى زي الهيليوم، والكلور محتاج إلكترون واحد علشان يبقى زي الأرجون. هيعملوا إيه؟`), 'think');
+  await g.choice({
+    options: [T('Each shares 1 electron', 'تساهم كل ذرة بإلكترون واحد'), T('Hydrogen gives its electron to chlorine', 'الهيدروجين يعطي إلكترونه للكلور'), T('Chlorine gives an electron to hydrogen', 'الكلور يعطي إلكترونًا للهيدروجين')], correct: T('Each shares 1 electron', 'تساهم كل ذرة بإلكترون واحد'),
+    hint: T('Both atoms need one more electron, so neither gives one away.', 'الذرتين محتاجين إلكترون، فمحدش فيهم هيدّي التاني.'),
+    ok: T(`Each atom ${kw('shares')} one valence electron. The pair of electrons revolves around both atoms.`, `تساهم كل ذرة ${kw('بإلكترون واحد')} من إلكترونات التكافؤ، ويدور زوج الإلكترونات حول الذرتين.`),
+    reveal: () => g.tween(1100, k => { sc.join = k; }).then(() => { sc.shared = true; g.paint(); }) });
+  g.say(T(`This bond is written with a dash: ${ltr('H − Cl')}. What is it called?`, `الرابطة دي بتتكتب بشَرطة: ${ltr('H − Cl')}. اسمها إيه؟`), 'think');
+  await g.choice({
+    options: [T('A single covalent bond', 'رابطة تساهمية أحادية'), T('An ionic bond', 'رابطة أيونية'), T('A double covalent bond', 'رابطة تساهمية ثنائية')], correct: T('A single covalent bond', 'رابطة تساهمية أحادية'),
+    hint: T('One pair of electrons is shared.', 'فيه زوج واحد بس من الإلكترونات مشترك.'),
+    ok: T(`One shared pair of electrons = a ${kw('single covalent bond')} (−). Covalent bonds form between atoms of nonmetals.`, `زوج واحد من الإلكترونات المشتركة = ${kw('رابطة تساهمية أحادية')} ${ltr('(−)')}. والترابط التساهمي ينشأ بين ذرات العناصر اللافلزية.`) });
+
+  Object.assign(sc, { mode: 'cards', card: 'double' }); g.paint();
+  g.say(T(`In the oxygen molecule ${ltr('O = O')}, how many pairs of electrons are shared?`, `في جزيء الأكسجين ${ltr('O = O')}، كم زوجًا من الإلكترونات مشتركًا؟`), 'think');
+  await g.choice({
+    options: [T('Two pairs: a double bond', 'زوجان: رابطة ثنائية'), T('One pair: a single bond', 'زوج واحد: رابطة أحادية'), T('Three pairs: a triple bond', 'ثلاثة أزواج: رابطة ثلاثية')], correct: T('Two pairs: a double bond', 'زوجان: رابطة ثنائية'),
+    hint: T('Count the dashes between the two atoms.', P('عِدّ الشَّرطات بين الذرتين.', 'عِدّي الشَّرطات بين الذرتين.')),
+    ok: T(`${ltr('O = O')}: two shared pairs, a ${kw('double covalent bond')}.`, `${ltr('O = O')}: زوجان مشتركان، ${kw('رابطة تساهمية ثنائية')}.`) });
+  sc.card = 'triple'; g.paint();
+  g.say(T(`And the nitrogen molecule ${ltr('N ≡ N')}?`, `وجزيء النيتروجين ${ltr('N ≡ N')}؟`), 'think');
+  await g.choice({
+    options: [T('A triple covalent bond', 'رابطة تساهمية ثلاثية'), T('A double covalent bond', 'رابطة تساهمية ثنائية'), T('An ionic bond', 'رابطة أيونية')], correct: T('A triple covalent bond', 'رابطة تساهمية ثلاثية'),
+    hint: T('There are three dashes.', 'فيه 3 شَرطات.'),
+    ok: T(`${ltr('N ≡ N')}: three shared pairs, a ${kw('triple covalent bond')}.`, `${ltr('N ≡ N')}: ثلاثة أزواج مشتركة، ${kw('رابطة تساهمية ثلاثية')}.`) });
+}
+const PROPS = [
+  { t: T('Honey is more viscous than water', 'العسل أكثر لزوجة من الماء'), s: T('Viscosity', 'اللزوجة'), k: 'phy' },
+  { t: T('Cork floats on water and iron sinks', 'الفلين يطفو فوق الماء والحديد يغوص'), s: T('Density', 'الكثافة'), k: 'phy' },
+  { t: T('Copper conducts electricity', 'النحاس يوصل التيار الكهربي'), s: T('Conducting electricity', 'توصيل الكهرباء'), k: 'phy' },
+  { t: T('Ice melts into liquid water', 'انصهار الجليد إلى ماء'), s: T('Melting of ice', 'انصهار الجليد'), k: 'phy' },
+  { t: T('Litmus paper changes its colour in lemon juice', 'يتغير لون شريط دوار الشمس في عصير الليمون'), s: T('Litmus colour', 'لون دوار الشمس'), k: 'chem' },
+  { t: T('Calcium carbonate gives gas bubbles with vinegar', 'كربونات الكالسيوم تُكوِّن فقاعات غاز مع الخل'), s: T('Gas with vinegar', 'غاز مع الخل'), k: 'chem' },
+  { t: T('A magnesium ribbon burns and turns into a white powder', 'شريط الماغنسيوم يشتعل ويتحول إلى مسحوق أبيض'), s: T('Magnesium burns', 'اشتعال الماغنسيوم'), k: 'chem' }
+];
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Physical or chemical?', 'فيزيائية ولا كيميائية؟'));
+  Object.assign(sc, { mode: 'board', board: { phy: [], chem: [] } }); g.paint();
+  g.say(T(`${kw('Physical properties')} can be observed, and some of them measured. ${kw('Chemical properties')} only appear when a chemical reaction changes the form and composition of the substance. Let’s sort!`,
+    `${kw('الخواص الفيزيائية')} للمواد يمكن ملاحظتها وقياس بعضها، بينما ${kw('الخواص الكيميائية')} لا تظهر إلا عند حدوث تفاعل كيميائي يؤدي إلى تغير شكل وتركيب المادة. يلّا نصنّف!`), 'point');
+  await g.next();
+  const buttons = [{ label: T('Physical', 'فيزيائية'), value: 'phy', c: 0 }, { label: T('Chemical', 'كيميائية'), value: 'chem', c: 3 }];
+  const list = g.shuffle(PROPS.filter(p => p.k === 'phy')).slice(0, 3).concat(g.shuffle(PROPS.filter(p => p.k === 'chem')).slice(0, 3));
+  for (const it of g.shuffle(list)) {
+    const told = it.k === 'phy' ? T(`<b>${it.t}</b>: a ${kw('physical')} property. Nothing new is formed.`, `<b>${it.t}</b>: خاصية ${kw('فيزيائية')}؛ لم تتكون مادة جديدة.`)
+      : T(`<b>${it.t}</b>: a ${kw('chemical')} property. It appears only in a chemical reaction.`, `<b>${it.t}</b>: خاصية ${kw('كيميائية')}؛ لا تظهر إلا عند حدوث تفاعل كيميائي.`);
+    g.say(T(`<b>${it.t}</b>. Physical or chemical property?`, `<b>${it.t}</b>. خاصية فيزيائية ولا كيميائية؟`), 'think');
+    await g.pick({ buttons, correct: it.k, ok: T(`Yes! ${told}`, `صح! ${told}`), no: told, reveal: () => { sc.board[it.k].push(it.s); g.paint(); } });
+  }
+  g.setTray(null);
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: element, compound or mixture? ---------- */
+const WHY = {
+  element: T('One kind of atom: the simplest pure form of matter.', 'نوع واحد من الذرات: أبسط صورة نقية للمادة.'),
+  compound: T('Two or more elements chemically combined in fixed mass ratios.', 'اتحاد كيميائي بين عنصرين أو أكثر بنسب كتلية ثابتة.'),
+  mixture: T('Not chemically combined: separated by physical methods.', 'مواد غير متحدة كيميائيًا، وتُفصل بطرق فيزيائية.')
+};
+const F = (f, en, ar) => `${ltr(f)} ${T(`(${en})`, `(${ar})`)}`;
+const SPEED = [
+  { t: F('O₂', 'oxygen', 'الأكسجين'), ans: 'element' }, { t: F('Hg', 'mercury', 'الزئبق'), ans: 'element' }, { t: F('Cu', 'copper', 'النحاس'), ans: 'element' },
+  { t: F('O₃', 'ozone', 'الأوزون'), ans: 'element' }, { t: F('Al', 'aluminum', 'الألومنيوم'), ans: 'element' }, { t: F('N₂', 'nitrogen', 'النيتروجين'), ans: 'element' },
+  { t: F('H₂O', 'water', 'الماء'), ans: 'compound' }, { t: F('CO₂', 'carbon dioxide', 'ثاني أكسيد الكربون'), ans: 'compound' }, { t: F('NaCl', 'sodium chloride', 'كلوريد الصوديوم'), ans: 'compound' },
+  { t: F('CH₄', 'methane', 'الميثان'), ans: 'compound' }, { t: F('HNO₃', 'nitric acid', 'حمض النيتريك'), ans: 'compound' }, { t: F('CaCuSi₄O₁₀', 'Egyptian blue', 'الأزرق المصري'), ans: 'compound' },
+  { t: T('Table salt in water', 'ملح الطعام في الماء'), ans: 'mixture' }, { t: T('Sand in water', 'الرمل في الماء'), ans: 'mixture' }, { t: T('Table salt and sand in water', 'ملح الطعام والرمل في الماء'), ans: 'mixture' }
+].map(s => Object.assign(s, { why: WHY[s.ans] }));
+async function stage3() {
+  Object.assign(sc, { mode: 'boxes', hi: null }); g.paint();
+  const some = (k, n) => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, n);
+  await g.speedRound({
+    items: some('element', 3).concat(some('compound', 3), some('mixture', 3)), rounds: 9,
+    buttons: KIND.map((k, i) => ({ label: NAME[k], value: k, c: [0, 2, 3][i] })),
+    ask: T('Element, compound or mixture?', 'عنصر، مركب، أم مخلوط؟'),
+    intro: T('Speed Round! I show you a substance. Is it an <b>element</b>, a <b>compound</b> or a <b>mixture</b>? Press the right button before time runs out. 9 rounds!', P('جولة السرعة! هوريك مادة. هل هي <b>عنصر</b> ولا <b>مركب</b> ولا <b>مخلوط</b>؟ اضغط على الزرار الصح قبل ما الوقت يخلص. ٩ جولات!', 'جولة السرعة! هوريكي مادة. هل هي <b>عنصر</b> ولا <b>مركب</b> ولا <b>مخلوط</b>؟ اضغطي على الزرار الصح قبل ما الوقت يخلص. ٩ جولات!')),
+    think: T('Element, compound or mixture?', 'عنصر، مركب، أم مخلوط؟'),
+    show: () => { sc.hi = null; g.paint(); }, reveal: it => { sc.hi = it.ans; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my atom lab. First we build an <b>atom</b> of sodium. Then we find elements in the <b>periodic table</b>, watch atoms <b>bond</b>, and sort the properties of matter.`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت معمل الذرة. الأول هنبني <b>ذرة</b> صوديوم. وبعدين ندوّر على العناصر في <b>الجدول الدوري</b>، ونشوف الذرات بترتبط إزاي، ونصنّف خواص المادة.`, `أهلًا يا <b>${g.name()}</b>! نوّرتي معمل الذرة. الأول هنبني <b>ذرة</b> صوديوم. وبعدين ندوّر على العناصر في <b>الجدول الدوري</b>، ونشوف الذرات بترتبط إزاي، ونصنّف خواص المادة.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Master of matter!', P('بقيت خبير المادة!', 'بقيتي خبيرة المادة!')),
+    text: T('The atom has a <b>nucleus</b> of protons and neutrons, and electrons in <b>energy levels</b>. The electron configuration gives the <b>period</b> and the <b>group</b> of an element. Atoms bond by <b>ionic</b> or <b>covalent</b> bonding.', 'تتكون الذرة من <b>نواة</b> بها البروتونات والنيوترونات، وإلكترونات تدور في <b>مستويات الطاقة</b>. ومن التوزيع الإلكتروني نعرف <b>الدورة</b> و<b>المجموعة</b> للعنصر. وترتبط الذرات بالترابط <b>الأيوني</b> أو <b>التساهمي</b>.') }
+}).catch(err => console.error(err));
+window.__atom = { sc, render };
+})();
+</script>
+</body>
+</html>

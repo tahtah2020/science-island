@@ -262,7 +262,7 @@
         <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Best', 'أعلى نتيجة')}: ${best}</span><span>+${gain.gained} XP · ${T('Level', 'المستوى')} ${gain.after.n}</span></div>
         <p>${done.text}</p>
         <div class="acts">
-          <a class="btn primary" href="quiz.html#quest">${T('Chapter Quest ▸', 'تحدي الفصل ◂')}</a>
+          <a class="btn primary" href="quiz.html#quest">${T(`${SI.questName(SI.chapterById(cfg.ch))} ▸`, `${SI.questName(SI.chapterById(cfg.ch))} ◂`)}</a>
           <a class="btn" href="map.html">${T('Map', 'الخريطة')}</a>
           <button class="btn" id="again" type="button">${T('Play again', G('العب تاني', 'العبي تاني'))}</button>
         </div>

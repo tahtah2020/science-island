@@ -11,6 +11,10 @@ const TAPS = { armBent: ['in', 'out'], armStraight: ['in', 'out'], armJoints: ['
   breathBags: ['milky', 'clear'], airways: ['nose', 'windpipe', 'lungs'], gasExchange: ['toBlood', 'toAir'],
   digestTract: ['foodpipe', 'stomach', 'liver', 'small', 'large'], salivaTubes: ['blue', 'same'], gutWalls: ['villi', 'flat'], cloths: ['loops', 'flat'],
   jarSetups: ['closed', 'open', 'gaps'], airBar: ['n2', 'o2', 'co2'], gasJars: ['n2', 'o2', 'co2'], limeJars: ['clear', 'milky'],
+  /* Prep 1 (p1_art.js) */
+  atomParts: ['nucleus', 'electron', 'proton', 'neutron'], energyLevels: ['K', 'L', 'M', 'N'], ptBlocks: ['s', 'p', 'd', 'f'],
+  ptGroups: ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g0'], particleBoxes: ['element', 'compound', 'mixture'], mixBeakers: ['hetero', 'homo'],
+  bondTypes: ['ionic', 'single', 'double', 'triple'], carbonShapes: ['straight', 'branched', 'cyclic'],
   /* Grade 4 (g4_art.js) */
   hidePlaces: ['grass', 'stone', 'rock', 'sand'], nileDesert: ['nile', 'desert'], fennec: ['ears', 'feet', 'tail'], desertDay: ['hole', 'sand', 'dune'],
   butterflyStages: ['egg', 'larva', 'pupa', 'adult'], insectBody: ['head', 'thorax', 'abdomen'], insectSide: ['antennae', 'wings', 'legs'], whoIsInsect: ['grasshopper', 'spider', 'pillbug'],

@@ -1,6 +1,6 @@
 # Science Island
 
-Educational games for Grade 4, Grade 5 and Grade 6 Science (Egyptian curriculum, Languages and Arabic tracks, first term). Reesho the parrot is the coach.
+Educational games for Grade 4, Grade 5, Grade 6 and Prep 1 Science (Egyptian curriculum, Languages and Arabic tracks, first term). Reesho the parrot is the coach.
 Players pick their grade once, then a chapter; every chapter has its own map, game, questions and Champions board.
 
 - `index.html`: home. Pick the grade, the track (Languages or Arabic) and type a first name
@@ -12,6 +12,7 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `seedlab.html`: Seed Lab, Chapter 3's game: open a kidney bean (soak, peel, split), find the embryo and the cotyledon, test for starch with iodine; then three experiments in which the player sets cup B and may change one condition only (water, air, temperature); then a Speed Round "will it germinate?"
 - `habitat.html`, `butterfly.html`, `garden.html`: the games of Grade 4, Chapters 1 to 3 (see "Grade 4" below)
 - `flame.html`: Flame Lab, the game of Grade 6, Chapter 1 (see "Grade 6" below)
+- `atomlab.html`: Atom Lab, the game of Prep 1, Unit 1 (see "Prep 1" below)
 - `quiz.html`: `#quest` (questions on the whole chapter), `#daily` (Daily 5), `#review` (spaced repetition) for the chosen chapter; `#exam=oct` is Reesho's Exam Hall (see below)
 - `champions.html`: this week's top 10 for the chosen chapter (resets every Saturday)
 - `questions.js`: Chapter 1, 23 ideas from the school book (all four lessons 1-1 to 1-4), each with 2-4 phrasings, plus 3 bonus ideas from the Column "The Camel" (`bonus: true`: one comes after the Boss round, never counts for the stars, not in Daily 5). Other chapters get their own file (`questions_ch2.js`, ...)
@@ -31,9 +32,9 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 Progress is saved per player on each device, separately for each chapter (XP and the daily streak are shared). Several children can share one device.
 
 ## Grades
-A player belongs to one grade (`players[id].grade`: `g4`, `g5`, `g6`), chosen on the home page, and sees that grade's chapters and monthly test only.
+A player belongs to one grade (`players[id].grade`: `g4`, `g5`, `g6`, `p1`), chosen on the home page, and sees that grade's chapters and monthly test only.
 In `chapters.js` a chapter or test carries `grade`; without it, it belongs to Grade 5 (the first grade the site had). Chapter ids are unique across grades
-(`ch1`… for Grade 5, `g4c1`… for Grade 4, `g6c1`… for Grade 6), so progress and the Champions boards stay separate. Idea ids (`M5`, `L2`…) are unique inside one grade and language only.
+(`ch1`… for Grade 5, `g4c1`… for Grade 4, `g6c1`… for Grade 6, `p1u1`… for Prep 1), so progress and the Champions boards stay separate. Idea ids (`M5`, `L2`…) are unique inside one grade and language only.
 `SI.grade()`, `SI.gradeName()`, `SI.chapters()` (this grade), `SI.allChapters()`, `SI.exams()` (this grade). The owner's preview opens every grade.
 
 ## Grade 4
@@ -102,6 +103,22 @@ The channel `https://t.me/motafawek` announces new chapters and games. The playe
 - **Fixed links**: the footer of `index.html` and a card on `contact.html`. Any link with `data-tg="place"` counts as opening the channel.
 - Rules, saved for the whole device in `tg` inside `si.v2` (`seen`, `no`, `go` = days): at most once in 7 days, hidden for 30 days after "Not now", never again after the channel button was tapped. No XP or stars for joining, and never during play. A closed chapter always answers the tap (after joining it only says where the news will be).
 - Statistics (GA4 events, each with `from` = `soon` | `rating` | `home` | `contact`): `telegram_shown`, `telegram_click`, `telegram_later`.
+
+## Prep 1 (first year of preparatory school)
+The Prep 1 book is divided into **units** (not chapters), so for a `p1` player the site says «الوحدة» / "Unit", "Unit Quest" and "Choose a unit"
+(`SI.isUnits()`, `SI.chWord()`, `SI.chWords()`, `SI.questName()` in `common.js`). Unit 1 of the first term is open, in English and Arabic, from the school book «اكتشف وتعلم» (page n is the same in both books):
+- Unit 1 "The Matter" / «المادة» (pages 2-31): `questions_p1u1.js` / `_ar.js`, 33 ideas from the four lessons (structure of the atom, the periodic table, matter and its properties, chemical bonds), plus 2 bonus ideas from the scientists' profiles (Rutherford, Mendeleev). 185 phrasings in each language
+- `questMax: 24` in `chapters.js`: a unit is long, so one Unit Quest asks 24 ideas (every Boss idea, and the others spread over all the lessons, the ones the player knows least first)
+- Idea letters (unique inside Prep 1): A, P, M, B, X (Unit 1)
+- `p1_art.js`: the Prep 1 drawings (the atom with its nucleus and energy levels, the periodic table, molecules, beakers, Lewis dots, carbon chains) and the tap pictures of Unit 1 (`atomParts`, `energyLevels`, `ptBlocks`, `ptGroups`, `particleBoxes`, `mixBeakers`, `bondTypes`, `carbonShapes`)
+- `atomlab.html` (Atom Lab), on the game kit (`g4_game.js`): build an atom of sodium (nucleus, Z, A, neutrons = A − Z, electrons, filling K, L, M); find Na, Cl and Ne in the periodic table from their electron configuration; sodium chloride (ionic bond) and hydrogen chloride (single covalent bond), then O=O and N≡N; physical or chemical property?; Speed Round "element, compound or mixture?"
+- Map and background `assets/map_p1u1.svg`, `assets/bg_p1u1.svg`: drawn by `tools/make_p1_maps.js`
+- Reesho's Exam Hall: `p1oct`, the October monthly test on Unit 1, lessons 1 to 3 (`minParts: 1` lets a one-unit test show on the units page)
+- Units 2 to 4 are listed as "soon"
+- In the Arabic files, symbols, formulas and electron configurations are wrapped in left-to-right isolates (`ltr()`) and configurations are written without spaces (2,8,1), so they read correctly inside Arabic sentences
+
+Notes for the science review (Unit 1):
+- The book counts vitamin D among molecules with "several thousands" of atoms (it has about 70), so that idea uses only plastic polymers and hemoglobin.
 
 ## Releasing an update (cache stamp)
 Every page loads the shared files with a stamp, e.g. `common.js?v=20261010c`. On each release change the stamp in all pages
