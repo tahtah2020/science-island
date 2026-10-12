@@ -993,7 +993,7 @@ function addWhyBtn(q, ex) {
     b.disabled = true; b.textContent = T('🦜 Reesho is thinking…', 'ريشو بيفكّر… 🦜');
     try {
       const res = await fetch(REESHO_API, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ qid: `${SI.chapterId() || 'ch1'}-${q.id}-${q.vi}`, question: q.q, chosen: wrong, correct: answerText(q),
+        body: JSON.stringify({ qid: `${SI.chapterId() || 'ch1'}-${q.id}-${q.vi}`, question: q.q, chosen: wrong, correct: answerText(q), fact: q.explain || '',
           lang: AR ? 'ar' : 'en', gender: SI.gender() === 'f' ? 'girl' : 'boy' }) });
       const d = await res.json();
       if (!res.ok || !d.explanation) throw new Error(d.error || 'no_reply');
