@@ -98,6 +98,8 @@ body{
 .explain.no{background:var(--bad-bg)}
 .why-btn{margin-top:10px;width:100%;font-weight:800;font-size:16px;padding:10px 14px;border-radius:14px;background:#fff6df;border:2px solid var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
 .why-btn:disabled{opacity:.7;cursor:default}
+.why-play{display:block;margin-top:10px;font-weight:800;font-size:15px;padding:8px 14px;border-radius:12px;background:#fff;border:2px solid var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
+.why-play:disabled{opacity:.7;cursor:default}
 .why-box{margin-top:10px;border-radius:16px;padding:12px 14px;background:#fff6df;border:2px solid var(--gold,#f2b134);font-size:16.5px;line-height:1.55}
 .actions{margin-top:12px;display:flex;justify-content:flex-end}
 .pvbar{display:flex;gap:8px;margin-bottom:12px}
@@ -606,6 +608,7 @@ function ask(q) {
       : q.type === 'fix' ? esc(q.q).replace(esc(q.wrong), `<u class="wrong">${esc(q.wrong)}</u>`) : esc(q.q));
     const ex = $('#explain'); ex.hidden = true; ex.className = 'explain';
     document.querySelectorAll('.why-btn, .why-box').forEach(n => n.remove());
+    stopReeshoVoice();
     const timed = q.mode === 'timed';
     let finished = false, tries = 0, stopTimer = null;
     const finish = (correct, firstTry, timeout = false) => {
@@ -964,6 +967,24 @@ const ideaById = id => window.IDEAS.find(I => I.id === id);
 
 /* ---------- "Why was I wrong?": Reesho explains a wrong answer (Claude, through the reesho-api worker) ---------- */
 const REESHO_API = 'https://reesho-api.ahmadtahoon2020.workers.dev/';
+/* Reesho reads his explanation aloud in his own voice (ElevenLabs, through the same worker); plays by itself unless sound is off */
+function stopReeshoVoice() { try { if (window.__reeshoAudio) window.__reeshoAudio.pause(); } catch (e) {} window.__reeshoAudio = null; }
+function addVoice(box, text, sig) {
+  let url = null;
+  const pb = mk('button', 'why-play', T('🔊 Listen to Reesho', '🔊 اسمع ريشو')); pb.type = 'button';
+  box.appendChild(pb);
+  const load = () => url ? Promise.resolve(url) : fetch(REESHO_API + 'voice', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, sig }) })
+    .then(r => { if (!r.ok) throw new Error('voice'); return r.blob(); }).then(bl => (url = URL.createObjectURL(bl)));
+  const play = () => {
+    pb.disabled = true; pb.textContent = T('🦜 Getting ready…', 'ريشو بيجهّز صوته… 🦜');
+    load().then(u => { stopReeshoVoice(); const a = new Audio(u); window.__reeshoAudio = a; return a.play(); })
+      .catch(() => { if (AR) SI.speak(text); })
+      .finally(() => { pb.disabled = false; pb.textContent = T('🔊 Listen again', '🔊 اسمع تاني'); });
+  };
+  pb.onclick = play;
+  if (!SI.isMuted()) play();
+}
+
 function addWhyBtn(q, ex) {
   const wrong = q._wrong; delete q._wrong;
   const b = mk('button', 'btn why-btn', T('🦜 Why is my answer wrong?', G('🦜 ليه إجابتي غلط؟', '🦜 ليه إجابتي غلط؟')));
@@ -978,6 +999,7 @@ function addWhyBtn(q, ex) {
       if (!res.ok || !d.explanation) throw new Error(d.error || 'no_reply');
       const box = mk('div', 'why-box', `<b>🦜 ${T('Reesho', 'ريشو')}:</b> ${esc(d.explanation)}`);
       b.replaceWith(box); say(T('Now you know why!', G('كده عرفت السبب!', 'كده عرفتي السبب!')), 'point');
+      if (d.sig) addVoice(box, d.explanation, d.sig);
     } catch (e) {
       b.replaceWith(mk('div', 'why-box', T('🦜 Reesho is resting now. Read the explanation above and try again later!', G('🦜 ريشو بيرتاح دلوقتي. اقرأ الشرح اللي فوق وجرّب بعدين!', '🦜 ريشو بيرتاح دلوقتي. اقري الشرح اللي فوق وجرّبي بعدين!'))));
     }
