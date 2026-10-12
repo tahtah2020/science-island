@@ -72,10 +72,17 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      quest and game (best, stars, plays), cards (review schedule), lastVar (last phrasing), dailyLast */
   /* grades: a player belongs to one grade (chosen on the home page) and sees that grade's chapters and tests only.
      A chapter or test without `grade` in chapters.js belongs to Grade 5, the first grade the site had. */
-  const GRADES = { g4: ['Grade 4', 'الصف الرابع'], g5: ['Grade 5', 'الصف الخامس'], g6: ['Grade 6', 'الصف السادس'] };
+  const GRADES = { g4: ['Grade 4', 'الصف الرابع'], g5: ['Grade 5', 'الصف الخامس'], g6: ['Grade 6', 'الصف السادس'], p1: ['Prep 1', 'الصف الأول الإعدادي'] };
   const grade = () => ((player() || {}).grade || 'g5');
   const chGrade = c => (c && c.grade) || 'g5';
   const gradeName = g => { const n = GRADES[g || grade()] || GRADES.g5; return T(n[0], n[1]); };
+  /* the preparatory-stage books are made of units («الوحدة»), not chapters («الفصل»): the pages name them the way the book does.
+     c = a chapter (its grade decides); without it the player's grade decides */
+  const UNIT_GRADES = { p1: true };
+  const isUnits = c => !!UNIT_GRADES[c ? chGrade(c) : grade()];
+  const chWord = c => (isUnits(c) ? T('Unit', 'الوحدة') : T('Chapter', 'الفصل'));
+  const chWords = c => (isUnits(c) ? T('Units', 'الوحدات') : T('Chapters', 'الفصول'));
+  const questName = c => (isUnits(c) ? T('Unit Quest', 'تحدي الوحدة') : T('Chapter Quest', 'تحدي الفصل'));
   const allChapters = () => window.CHAPTERS || [];
   const chapters = () => allChapters().filter(c => chGrade(c) === grade());
   const chapterById = id => allChapters().find(c => c.id === id) || null;
@@ -135,6 +142,21 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   /* a test opens for its own grade only (the owner may open every grade's test) */
   const examById = id => { const e = id ? (window.EXAMS || []).find(x => x.id === id) : exams()[0]; return e && ((e.grade || 'g5') === grade() || isOwner()) ? e : null; };
   const examParts = ex => ((ex && ex.parts) || []).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && (isAr() ? p.c.questionsAr : p.c.questions));
+  /* what a test covers, for its card and its first page: "Chapters 1, 2, 3", or "Unit 1 · Lessons 1 to 3" for a test on part of one unit.
+     Chapters the test only touches (max) are not named. */
+  function examScope(ex, parts) {
+    parts = (parts || examParts(ex)).filter(p => p.max == null);
+    if (!parts.length) return '';
+    const c = parts[0].c;
+    if (parts.length === 1 && parts[0].lessons) {
+      const L = parts[0].lessons.slice().sort((a, b) => a - b), run = L.length > 1 && L[L.length - 1] - L[0] === L.length - 1;
+      const span = run ? T(`Lessons ${L[0]} to ${L[L.length - 1]}`, `الدروس من ${L[0]} إلى ${L[L.length - 1]}`)
+        : T(`Lesson${L.length > 1 ? 's' : ''} ${L.join(', ')}`, `${L.length > 1 ? 'الدروس' : 'الدرس'} ${L.join('، ')}`);
+      return `${chWord(c)} ${c.n} · ${span}`;
+    }
+    const names = parts.map(p => p.c.n).join(T(', ', '، '));
+    return `${parts.length === 1 ? chWord(c) : chWords(c)} ${names}`;
+  }
 
   /* saves made before the site had several chapters all belong to Chapter 1: move them into ch.ch1 */
   (function migrate() {
@@ -494,8 +516,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      Counts page views with approximate location only. No player names are sent, and the data
      is not used for advertising. Runs on the published site only, not on local copies. */
   const GA_ID = 'G-XP595P45PX';
-  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
-    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall' };
+  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
+    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall', 'quiz.html#exam=g6m1': 'Exam Hall', 'quiz.html#exam=p1oct': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
     return PAGE_NAMES[file + location.hash] || PAGE_NAMES[file] || document.title;
@@ -879,7 +901,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const rate = { due: rateDue, ask: rateAsk, guard: rateGuard, flush: rateFlush, CHOICES: RATE_CHOICES, WANTS: RATE_WANTS };
 
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
-    grade, gradeName, chGrade, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
+    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
     weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT };
   applyLang();

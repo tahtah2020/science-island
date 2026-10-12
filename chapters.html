@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261012c">
+<link rel="stylesheet" href="common.css?v=20261012d">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -84,13 +84,13 @@ html[dir=rtl] button.ch{text-align:right}
       </div>
     </div>
     <div class="exams" id="exams"></div>
-    <h2 class="sect" data-ar="اختر الفصل">Choose a chapter <span class="ar">اختر الفصل</span></h2>
+    <h2 class="sect" id="sect" data-ar="اختر الفصل">Choose a chapter <span class="ar">اختر الفصل</span></h2>
     <ol class="list" id="list"></ol>
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261012c"></script>
-<script src="common.js?v=20261012c"></script>
+<script src="chapters.js?v=20261012d"></script>
+<script src="common.js?v=20261012d"></script>
 <script>
 (() => {
   'use strict';
@@ -99,6 +99,7 @@ html[dir=rtl] button.ch{text-align:right}
   if (SI.isAr()) document.title = 'جزيرة العلوم · الفصول';
   const esc = SI.esc, T = SI.T, list = SI.chapters(), cur = SI.chapterId();
   $('#sub').textContent = T(`${SI.gradeName()} · Languages · First term`, `${SI.gradeName()} · عربي · الفصل الدراسي الأول`);
+  if (SI.isUnits()) $('#sect').innerHTML = T('Choose a unit <span class="ar">اختر الوحدة</span>', 'اختر الوحدة');   // the preparatory books are made of units
 
   const lv = SI.levelInfo(SI.xp());
   $('#lvlTitle').textContent = `${T('Level', 'المستوى')} ${lv.n} · ${lv.title}`;
@@ -118,11 +119,11 @@ html[dir=rtl] button.ch{text-align:right}
     const li = document.createElement('li');
     const s = SI.chapterStars(c.id); total += s.got; if (s.got) started = true;
     const tile = `<span class="tile" style="background-color:${c.tint || '#e3f1f7'}${c.cover ? `;background-image:url(${c.cover})` : ''}">${c.cover ? '' : c.icon || '📘'}<span class="n">${c.n}</span></span>`;
-    const nL = c.lessons.length, lessons = T(`${nL} lesson${nL > 1 ? 's' : ''}`, nL === 1 ? 'درس واحد' : nL === 2 ? 'درسان' : `${nL} دروس`), title = SI.chTitle(c), chN = T(`Chapter ${c.n}`, `الفصل ${c.n}`);
+    const nL = c.lessons.length, lessons = T(`${nL} lesson${nL > 1 ? 's' : ''}`, nL === 1 ? 'درس واحد' : nL === 2 ? 'درسان' : `${nL} دروس`), title = SI.chTitle(c), chN = `${SI.chWord(c)} ${c.n}`;
     if (SI.chReady(c)) {
       const a = document.createElement('a');
       a.className = 'ch' + (c.id === cur ? ' cur' : ''); a.href = 'map.html';
-      a.setAttribute('aria-label', T(`Chapter ${c.n}: ${c.title}, ${s.got} of ${s.of} stars`, `${chN}: ${title}، ${s.got} من ${s.of} نجوم`));
+      a.setAttribute('aria-label', T(`${chN}: ${c.title}, ${s.got} of ${s.of} stars`, `${chN}: ${title}، ${s.got} من ${s.of} نجوم`));
       a.innerHTML = `${tile}<span class="tx"><span class="k">${chN}</span><b>${esc(title)}</b>
         <span class="meta"><span>${lessons}</span><span class="st" aria-hidden="true">${'★'.repeat(s.got)}<span class="no">${'★'.repeat(s.of - s.got)}</span></span></span></span>
         <span class="go" aria-hidden="true">${c.id === cur ? T('Continue ▸', 'كمّل ◂') : '›'}</span>`;
@@ -137,25 +138,26 @@ html[dir=rtl] button.ch{text-align:right}
   });
   $('#stars').textContent = total;
 
-  /* Reesho's Exam Hall: one card for each monthly test that has at least two chapters ready in the player's language */
+  /* Reesho's Exam Hall: one card for each monthly test that has at least two chapters ready in the player's language
+     (a test on part of one unit says so with minParts: 1 in chapters.js) */
   SI.exams().forEach(ex => {
-    const parts = SI.examParts(ex).filter(p => p.max == null && SI.chReady(p.c)); if (parts.length < 2) return;
+    const parts = SI.examParts(ex).filter(p => p.max == null && SI.chReady(p.c)); if (parts.length < (ex.minParts || 2)) return;
     const E = (SI.prof().exams || {})[ex.id], title = T(ex.title, ex.titleAr), hall = T('Reesho’s Exam Hall', 'لجنة ريشو');
-    const names = parts.map(p => p.c.n).join(T(', ', '، '));
+    const names = SI.examScope(ex, parts);
     const a = document.createElement('a');
     a.className = 'ch exam'; a.href = `quiz.html#exam=${ex.id}`;
     a.setAttribute('aria-label', `${hall}: ${title}`);
     a.innerHTML = `<span class="tile" aria-hidden="true">${ex.icon || '📝'}</span><span class="tx"><span class="k">${hall}</span><b>${esc(title)}</b>
-      <span class="meta"><span>${T(`Chapters ${names}`, `الفصول ${names}`)} · ${T('20 marks', '٢٠ درجة')}</span>${E && E.plays ? `<span class="best">${T('Best', 'أعلى درجة')}: ${E.best} / ${E.of || 20}</span>` : `<span class="soon">${T('New', 'جديد')}</span>`}</span></span>
+      <span class="meta"><span>${names} · ${T('20 marks', '٢٠ درجة')}</span>${E && E.plays ? `<span class="best">${T('Best', 'أعلى درجة')}: ${E.best} / ${E.of || 20}</span>` : `<span class="soon">${T('New', 'جديد')}</span>`}</span></span>
       <span class="go" aria-hidden="true">›</span>`;
     a.onclick = () => SI.sfx.tick();
     $('#exams').appendChild(a);
   });
 
-  const curCh = SI.chapter();
+  const curCh = SI.chapter(), U = SI.isUnits();
   $('#bubble').innerHTML = started && curCh
-    ? T(`Welcome back, <b>${esc(me.name)}</b>! Keep going with <b>${esc(curCh.title)}</b>, or pick another chapter.`, SI.G(`أهلًا بعودتك يا <b>${esc(me.name)}</b>! كمّل في <b>${esc(SI.chTitle(curCh))}</b>، أو اختر فصلًا آخر.`, `أهلًا بعودتك يا <b>${esc(me.name)}</b>! كمّلي في <b>${esc(SI.chTitle(curCh))}</b>، أو اختاري فصلًا آخر.`))
-    : T(`Hi, <b>${esc(me.name)}</b>! I’m Reesho. Pick a chapter and let’s play!`, SI.G(`أهلًا يا <b>${esc(me.name)}</b>! أنا ريشو. اختر فصلًا ويلّا نلعب!`, `أهلًا يا <b>${esc(me.name)}</b>! أنا ريشو. اختاري فصلًا ويلّا نلعب!`));
+    ? T(`Welcome back, <b>${esc(me.name)}</b>! Keep going with <b>${esc(curCh.title)}</b>, or pick another ${U ? 'unit' : 'chapter'}.`, SI.G(`أهلًا بعودتك يا <b>${esc(me.name)}</b>! كمّل في <b>${esc(SI.chTitle(curCh))}</b>، أو اختر ${U ? 'وحدة أخرى' : 'فصلًا آخر'}.`, `أهلًا بعودتك يا <b>${esc(me.name)}</b>! كمّلي في <b>${esc(SI.chTitle(curCh))}</b>، أو اختاري ${U ? 'وحدة أخرى' : 'فصلًا آخر'}.`))
+    : T(`Hi, <b>${esc(me.name)}</b>! I’m Reesho. Pick a ${U ? 'unit' : 'chapter'} and let’s play!`, SI.G(`أهلًا يا <b>${esc(me.name)}</b>! أنا ريشو. اختر ${U ? 'وحدة' : 'فصلًا'} ويلّا نلعب!`, `أهلًا يا <b>${esc(me.name)}</b>! أنا ريشو. اختاري ${U ? 'وحدة' : 'فصلًا'} ويلّا نلعب!`));
   if (started) $('#parrot').src = 'assets/parrot_thumbs.png';
 })();
 </script>

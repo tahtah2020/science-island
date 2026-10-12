@@ -367,9 +367,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261012c"></script>
-<script src="chapters.js?v=20261012c"></script>
-<script src="common.js?v=20261012c"></script>
+<script src="firebase-config.js?v=20261012d"></script>
+<script src="chapters.js?v=20261012d"></script>
+<script src="common.js?v=20261012d"></script>
 <script>
 (() => {
 'use strict';
@@ -964,7 +964,7 @@ async function playList(list, label) {
     const q = list[i];
     if (q.src === 'bonus' && list[i - 1] && list[i - 1].src !== 'bonus') {
       sfx.boss(); await banner(T('Bonus', 'إضافي'), T('Extra question!', 'سؤال إضافي!'));
-      say(q.guide ? T('A bonus question in the style of the monthly test. Extra points!', 'سؤال إضافي على طريقة امتحان الشهر. نقط زيادة!') : T('A bonus question from the chapter’s extra reading. Extra points!', 'سؤال إضافي من الجزء الإثرائي في الكتاب. نقط زيادة!'), 'point');
+      say(q.guide ? T('A bonus question in the style of the monthly test. Extra points!', 'سؤال إضافي على طريقة امتحان الشهر. نقط زيادة!') : T(`A bonus question from the ${SI.isUnits() ? 'unit' : 'chapter'}’s extra reading. Extra points!`, 'سؤال إضافي من الجزء الإثرائي في الكتاب. نقط زيادة!'), 'point');
     } else if (q.mode === 'boss' && list[i - 1] && list[i - 1].mode !== 'boss') {
       sfx.boss(); SI.voice('boss'); await banner(T('Get ready', 'استعد'), T('Boss Round!', 'التحدي الكبير!'), 'boss');
       say(T('Boss questions mix two ideas. Take your time!', G('أسئلة التحدي الكبير بتجمع فكرتين. خد وقتك!', 'أسئلة التحدي الكبير بتجمع فكرتين. خدي وقتك!')), 'point');
@@ -1005,10 +1005,21 @@ async function playList(list, label) {
 }
 
 /* Chapter Quest: 20 ideas, one phrasing each; normal and timed mixed, Boss ideas last */
+/* A long chapter (a whole unit of the preparatory book) sets questMax in chapters.js: each Quest then asks that many ideas:
+   every Boss idea, and normal ideas taken in turn from each lesson (the ones the player knows least first), so every lesson is in it */
+function questIdeas() {
+  const all = window.IDEAS.filter(I => !I.bonus), max = CH.questMax;
+  if (!max || all.length <= max) return all;
+  const boss = all.filter(I => I.boss), cards = SI.chProf().cards || {}, box = I => (cards[I.id] ? cards[I.id].box : -1), byL = {};
+  shuffle(all.filter(I => !I.boss)).sort((x, y) => box(x) - box(y)).forEach(I => { (byL[I.lesson] = byL[I.lesson] || []).push(I); });
+  const lessons = Object.keys(byL).sort((x, y) => x - y), keep = [];
+  for (let k = 0; keep.length < max - boss.length && lessons.some(l => byL[l].length); k++) { const L = byL[lessons[k % lessons.length]]; if (L.length) keep.push(L.shift()); }
+  return keep.concat(boss);
+}
 function buildQuest() {
   const normal = [], timed = [], boss = [];
   const bonus = window.IDEAS.filter(I => I.bonus);
-  window.IDEAS.filter(I => !I.bonus).forEach(I => {
+  questIdeas().forEach(I => {
     const q = variantOf(I);
     if (I.boss) { q.mode = 'boss'; boss.push(q); } else (q.mode === 'timed' ? timed : normal).push(q);
   });
@@ -1222,11 +1233,11 @@ function examResults(EX, res, total) {
     <span class="grade${pct >= .75 ? ' top' : ''}">${grade}</span>
     <div class="qm">${res.perQ.map((m, i) => `<span><small>${T('Question', 'السؤال')} ${i + 1}</small>${m} / 5</span>`).join('')}</div>
     ${levelBlock(gain)}
-    <h3>${T('Marks by chapter', 'الدرجات حسب الفصل')}</h3><ul class="byc">${byCh}</ul>
+    <h3>${SI.isUnits() ? T('Marks by unit', 'الدرجات حسب الوحدة') : T('Marks by chapter', 'الدرجات حسب الفصل')}</h3><ul class="byc">${byCh}</ul>
     ${miss ? `<h3>${T('Look again at these', 'راجع دول تاني')}</h3><ul class="miss">${miss}</ul>` : `<p style="text-align:center">${T('A perfect paper! 🎉', 'ورقة من غير ولا غلطة! 🎉')}</p>`}
     <div class="row acts">
       <button class="btn primary" type="button" id="again">${T('New paper', 'ورقة جديدة')}</button>
-      <a class="btn" href="chapters.html">${T('Chapters', 'الفصول')}</a>
+      <a class="btn" href="chapters.html">${SI.chWords()}</a>
     </div></div>`);
   document.body.appendChild(o);
   o.querySelectorAll('a[data-ch]').forEach(a => { a.onclick = () => { SI.setChapter(a.dataset.ch); }; });
@@ -1238,7 +1249,7 @@ async function examMain() {
   const me = SI.player();
   const EX = SI.examById((/^#exam=([\w-]+)/.exec(location.hash) || [])[1]);
   if (!EX) { location.href = SI.CHAPTERS_PAGE; return; }
-  document.querySelectorAll('a[href="map.html"]').forEach(a => { a.href = SI.CHAPTERS_PAGE; const l = T('Back to the chapters', 'رجوع للفصول'); a.title = l; if (a.hasAttribute('aria-label')) a.setAttribute('aria-label', l); });
+  document.querySelectorAll('a[href="map.html"]').forEach(a => { a.href = SI.CHAPTERS_PAGE; const l = SI.isUnits() ? T('Back to the units', 'رجوع للوحدات') : T('Back to the chapters', 'رجوع للفصول'); a.title = l; if (a.hasAttribute('aria-label')) a.setAttribute('aria-label', l); });
   $('.logo').textContent = EX.icon || '📝';
   $('#scorePill').firstElementChild.textContent = T('Marks', 'الدرجات');
   const title = T(EX.title, EX.titleAr), hall = T('Reesho’s Exam Hall', 'لجنة ريشو');
@@ -1256,9 +1267,8 @@ async function examMain() {
   const last = ((SI.prof().exams || {})[EX.id] || {}).lastVar || {};
   const paper = buildPaper(pool, caps, last), total = paper.flat().reduce((n, q) => n + q.exam.marks, 0);
   if (total < 20) throw new Error('Not enough questions for a full paper.');
-  const names = parts.filter(p => p.max == null).map(p => p.c.n).join(T(', ', '، '));
   const prev = (SI.prof().exams || {})[EX.id];
-  await intro(hall, `${title} · ${T(`Chapters ${names}`, `الفصول ${names}`)}`,
+  await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
     T('4 questions, 5 marks each: <b>20 marks</b>. Part (A) is short and gets <b>one try</b>. Part (B) is worth 2 marks. Every time you come back, Reesho writes a new paper!',
       G('٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', '٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!'))
     + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || 20}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
@@ -1276,10 +1286,9 @@ async function main() {
 
   if (mode === 'preview') return preview(set);
   if (mode === 'quest') {
-    const N = window.IDEAS.filter(I => !I.bonus).length;
-    set(T('Chapter Quest', 'تحدي الفصل'), T(`${CH.title} · ${N} questions`, `${TITLE} · ${N} سؤال`));
-    const list = buildQuest(); rememberVariants(list);
-    await intro(T(`Ready, ${esc(me.name)}?`, G(`جاهز يا ${esc(me.name)}؟`, `جاهزة يا ${esc(me.name)}؟`)), T(`Chapter ${CH.n} Quest · ${N} questions`, `تحدي الفصل ${CH.n} · ${N} سؤال`),
+    const list = buildQuest(), N = list.filter(q => q.src !== 'bonus').length; rememberVariants(list);
+    set(SI.questName(CH), T(`${CH.title} · ${N} questions`, `${TITLE} · ${N} سؤال`));
+    await intro(T(`Ready, ${esc(me.name)}?`, G(`جاهز يا ${esc(me.name)}؟`, `جاهزة يا ${esc(me.name)}؟`)), T(`${SI.chWord(CH)} ${CH.n} Quest · ${N} questions`, `تحدي ${SI.chWord(CH)} ${CH.n} · ${N} سؤال`),
       T('Some questions have a timer ⏱. The last ones are Boss questions ★. Get 5 right in a row for a mystery box 🎁. Your best score goes on the Champions board 🏆!',
         G('بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوب ٥ صح ورا بعض وخد صندوق المفاجآت 🎁. وأعلى نتيجة ليك بتدخل لوحة الأبطال 🏆!', 'بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوبي ٥ صح ورا بعض وخدي صندوق المفاجآت 🎁. وأعلى نتيجة ليكي بتدخل لوحة الأبطال 🏆!')));
     const res = await playList(list, 'quest');
@@ -1312,7 +1321,7 @@ async function main() {
       const cards = SI.chProf().cards || {};
       const next = Object.values(cards).map(c => c.due).sort((a, b) => a - b)[0];
       const when = next ? Math.max(1, Math.round((next - Date.now()) / DAY)) : 0;
-      notice(T('All caught up!', 'مفيش حاجة متأخرة!'), next ? T(`Nothing to review right now. Come back in about <b>${when} day${when > 1 ? 's' : ''}</b>.`, G(`مفيش مراجعة دلوقتي. ارجع بعد حوالي <b>${when} يوم</b>.`, `مفيش مراجعة دلوقتي. ارجعي بعد حوالي <b>${when} يوم</b>.`)) : T('Play the Chapter Quest first. Reesho will save the tricky questions here.', 'العب تحدي الفصل الأول، وريشو هيحفظ لك الأسئلة الصعبة هنا.'),
+      notice(T('All caught up!', 'مفيش حاجة متأخرة!'), next ? T(`Nothing to review right now. Come back in about <b>${when} day${when > 1 ? 's' : ''}</b>.`, G(`مفيش مراجعة دلوقتي. ارجع بعد حوالي <b>${when} يوم</b>.`, `مفيش مراجعة دلوقتي. ارجعي بعد حوالي <b>${when} يوم</b>.`)) : T(`Play the ${SI.questName(CH)} first. Reesho will save the tricky questions here.`, `العب ${SI.questName(CH)} الأول، وريشو هيحفظ لك الأسئلة الصعبة هنا.`),
         `<a class="btn primary" href="map.html">${T('Map', 'الخريطة')}</a>`);
       return;
     }
@@ -1326,7 +1335,7 @@ window.addEventListener('hashchange', () => location.reload());
 const EXAM = /^#exam\b/.test(location.hash);
 const notReady = e => {
   console.error(e);
-  notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل الأسئلة. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${T('Chapters', 'الفصول')}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
+  notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل الأسئلة. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${SI.chWords()}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
 };
 if (EXAM) { if (SI.requirePlayer()) examMain().catch(notReady); }
 else if (SI.requirePlayer() && ((/^#preview/.test(location.hash) && SI.isOwner() && (SI.chapter() || {}).questions) || SI.requireChapter())) {   // the owner can preview a chapter before it opens
@@ -1334,7 +1343,7 @@ else if (SI.requirePlayer() && ((/^#preview/.test(location.hash) && SI.isOwner()
   if (CH.quizBg) document.body.style.backgroundImage = `linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)),url(${CH.quizBg})`;
   SI.loadQuestions().then(main).catch(e => {
     console.error(e);
-    notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions for this chapter could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل أسئلة الفصل. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${T('Chapters', 'الفصول')}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
+    notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل الأسئلة. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${SI.chWords()}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
   });
 }
 window.__quiz = { ask: q => ask(q), DIAGRAMS, variantOf, mysteryBox, notice, buildPaper, answerText, examResults, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
