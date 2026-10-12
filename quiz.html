@@ -611,6 +611,8 @@ function ask(q) {
     stopReeshoVoice();
     const timed = q.mode === 'timed';
     let finished = false, tries = 0, stopTimer = null;
+    const retry = !timed && !q.oneTry;   // practice: a wrong answer means "try again" until it is right (not the timed ones, not the exam)
+    const tryAgain = () => say(T('Not quite. Try again!', G('قرّبت! جرّب تاني.', 'قرّبتي! جرّبي تاني.')), 'think');
     const finish = (correct, firstTry, timeout = false) => {
       if (finished) return; finished = true;
       const left = stopTimer ? stopTimer() : 0;
@@ -626,7 +628,7 @@ function ask(q) {
       const opts = q.type === 'tf' ? [T('True', 'صح'), T('False', 'خطأ')] : q.options;
       const order = q.type === 'tf' ? [0, 1] : shuffle(opts.map((_, i) => i));
       const wrap = mk('div', 'choices' + (q.type === 'tf' ? ' two tf' : q.type === 'fill' ? ' two' : ''));
-      const maxTries = (!timed && !q.oneTry && q.type === 'mc' && opts.length > 2) ? 2 : 1;   // the exam gives one try
+      const maxTries = retry ? Infinity : 1;   // practice: until right; timed and exam: one try
       const btns = order.map((oi, k) => {
         const b = optBtn(q.type === 'tf' ? (oi === 0 ? T('✓ True', '✓ صح') : T('✗ False', '✗ خطأ')) : esc(opts[oi]), q.type === 'tf' ? '' : T('ABCD', 'أبجد')[k]);
         b.dataset.oi = oi;
@@ -641,7 +643,7 @@ function ask(q) {
             b.classList.add('bad'); b.disabled = true; sfx.bad();
             q._wrong = q.type === 'tf' ? (oi === 0 ? T('True', 'صح') : T('False', 'خطأ')) : opts[oi];
             if (tries >= maxTries) { reveal(); finish(false, false); }
-            else say(T('Not quite. Try once more!', G('قرّبت! جرّب مرة كمان.', 'قرّبتي! جرّبي مرة كمان.')), 'think');
+            else { tryAgain(); addWhyBtn(q, $('#explain')); }   // Reesho can explain this wrong pick before the next try
           }
         };
         wrap.appendChild(b); return b;
@@ -678,11 +680,16 @@ function ask(q) {
       undo.onclick = () => { if (!finished) { picked.length = 0; check.disabled = true; paint(); } };
       check.onclick = () => {
         if (finished) return;
-        const ok = picked.every((v, i) => v === q.answer[i]);
+        const ok = picked.every((v, i) => v === q.answer[i]); tries++;
         btns.forEach(b => { const pos = picked.indexOf(+b.dataset.ii); b.classList.remove('sel'); b.classList.add(q.answer[pos] === +b.dataset.ii ? 'good' : 'bad'); b.disabled = true; });
         undo.disabled = check.disabled = true; tools.hidden = true;
+        if (!ok && retry) {   // show what is out of place, then let them order it again
+          sfx.bad(); tryAgain();
+          setTimeout(() => { if (finished) return; picked.length = 0; btns.forEach(b => { b.classList.remove('good', 'bad'); b.disabled = false; }); tools.hidden = false; check.disabled = true; paint(); }, 1400);
+          return;
+        }
         if (!ok) reveal();
-        finish(ok, ok);
+        finish(ok, ok && tries === 1);
       };
       reveal = () => {
         undo.disabled = check.disabled = true; tools.hidden = true; btns.forEach(b => b.disabled = true);
@@ -723,9 +730,19 @@ function ask(q) {
         if (finished) return;
         let ok = true; lb.forEach(b => b.classList.remove('sel'));
         q.left.forEach((_, i) => { const good = pairs[i] === q.answer[i]; ok = ok && good; lb[i].classList.add(good ? 'good' : 'bad'); rb[pairs[i]].classList.add(good ? 'good' : 'bad'); });
-        tools.hidden = true;
+        tools.hidden = true; tries++;
+        if (!ok && retry) {   // keep the right pairs, undo the wrong ones, try again
+          sfx.bad(); tryAgain();
+          setTimeout(() => {
+            if (finished) return;
+            q.left.forEach((_, i) => { if (pairs[i] !== q.answer[i]) delete pairs[i]; });
+            [...lb, ...Object.values(rb)].forEach(b => b.classList.remove('good', 'bad'));
+            tools.hidden = false; check.disabled = true; paint();
+          }, 1400);
+          return;
+        }
         if (!ok) reveal(); else { check.disabled = true; [...lb, ...Object.values(rb)].forEach(b => b.disabled = true); }
-        finish(ok, ok);
+        finish(ok, ok && tries === 1);
       };
       reveal = () => {
         check.disabled = true; tools.hidden = true; [...lb, ...Object.values(rb)].forEach(b => b.disabled = true);
@@ -741,10 +758,11 @@ function ask(q) {
       const hots = [...wrap.querySelectorAll('.hot')];
       const pick = h => {
         if (finished) return;
-        const ok = h.dataset.id === q.answer;
+        const ok = h.dataset.id === q.answer; tries++;
         h.classList.add(ok ? 'good' : 'bad');
+        if (!ok && retry) { sfx.bad(); tryAgain(); h.style.pointerEvents = 'none'; h.setAttribute('tabindex', '-1'); return; }   // try another place
         if (!ok) reveal(); else hots.forEach(x => x.setAttribute('tabindex', '-1'));
-        finish(ok, ok);
+        finish(ok, ok && tries === 1);
       };
       hots.forEach(h => {
         h.addEventListener('click', () => pick(h));
@@ -772,7 +790,20 @@ function ask(q) {
         tools.hidden = true;
         btns.forEach(b => { const oi = +b.dataset.oi, right = q.answer.includes(oi); b.disabled = true; b.classList.remove('sel'); if (picked.has(oi)) b.classList.add('was'); b.classList.add(right ? 'good' : picked.has(oi) ? 'bad' : 'dim'); });
       };
-      check.onclick = () => { if (finished) return; const ok = picked.size === q.answer.length && q.answer.every(a => picked.has(a)); mark(); finish(ok, ok); };
+      check.onclick = () => {
+        if (finished) return; tries++;
+        const ok = picked.size === q.answer.length && q.answer.every(a => picked.has(a));
+        if (!ok && retry) {   // flash the wrong picks and drop them; a missing right one just needs another pick
+          sfx.bad();
+          const wrongs = btns.filter(b => picked.has(+b.dataset.oi) && !q.answer.includes(+b.dataset.oi));
+          say(wrongs.length ? T('Some of these are not right. Try again!', G('في اختيارات مش صح. جرّب تاني!', 'في اختيارات مش صح. جرّبي تاني!'))
+            : T('Right so far, but there is more. Pick the rest!', G('صح لحد دلوقتي، بس لسه في كمان. كمّل!', 'صح لحد دلوقتي، بس لسه في كمان. كمّلي!')), 'think');
+          wrongs.forEach(b => { b.classList.add('bad'); b.disabled = true; });
+          setTimeout(() => { if (finished) return; wrongs.forEach(b => { picked.delete(+b.dataset.oi); b.classList.remove('bad', 'sel'); b.disabled = false; b.setAttribute('aria-pressed', 'false'); }); check.disabled = !picked.size; }, 1400);
+          return;
+        }
+        mark(); finish(ok, ok && tries === 1);
+      };
       reveal = mark;
       tools.appendChild(check); area.append(wrap, tools);
     }
@@ -829,7 +860,22 @@ function ask(q) {
         return ok;
       };
       const showRight = () => area.appendChild(mk('div', 'explain no', q.cols.map((c, ci) => `<b>${esc(c)}:</b> ${q.items.filter((_, i) => q.answer[i] === ci).map(esc).join(' · ')}`).join('<br>')));
-      check.onclick = () => { if (finished) return; const ok = mark(); if (!ok) showRight(); finish(ok, ok); };
+      check.onclick = () => {
+        if (finished) return; tries++;
+        const ok = mark();
+        if (!ok && retry) {   // wrong cards go back to the pile, right ones stay; place them again
+          sfx.bad(); tryAgain();
+          setTimeout(() => {
+            if (finished) return;
+            chips.forEach(b => { const ii = +b.dataset.ii; if (place[ii] !== q.answer[ii]) place[ii] = -1; b.classList.remove('good', 'bad'); b.disabled = place[ii] >= 0; });
+            cols.forEach(c => { c.tabIndex = 0; });
+            tools.hidden = false; now.hidden = false;
+            const next = order.find(ii => place[ii] < 0); sel = next === undefined ? null : next; paint();
+          }, 1600);
+          return;
+        }
+        if (!ok) showRight(); finish(ok, ok && tries === 1);
+      };
       reveal = () => { mark(); showRight(); };
       tools.appendChild(check); area.append(now, tbl, waitLab, pool, tools); paint();
     }
