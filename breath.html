@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breath Lab · Respiration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="g4_game.css?v=20261012c">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Breath Lab.</noscript>
+<script src="firebase-config.js?v=20261012c"></script>
+<script src="chapters.js?v=20261012c"></script>
+<script src="common.js?v=20261012c"></script>
+<script src="g6_body.js?v=20261012c"></script>
+<script src="g4_game.js?v=20261012c"></script>
+<script>
+(() => {
+'use strict';
+/* Breath Lab · the game of Grade 6, Chapter 2 "Respiration". Built on the shared game kit (g4_game.js).
+   Stage 1 (Warm Up): two plastic bags, our breath and room air, tested with limewater (book page 19).
+   Stage 2 (Missions): 1) the path of the air we breathe in; 2) gas exchange in the lungs, zoomed in; 3) breathing out, and how fish breathe (page 21).
+   Stage 3 (Speed Round): oxygen or carbon dioxide?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 18-23). */
+const A = window.G6BODY, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const rr = (x, y, w, h) => `<rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="12"/>`;
+const WALL = '#eef6fb';
+const table = y => `<rect y="${y}" width="420" height="${280 - y}" fill="#d9b27c"/><rect y="${y}" width="420" height="6" fill="#a8834f" opacity=".55"/>`;
+const O2 = T('Oxygen', 'الأكسجين'), CO2 = T('Carbon dioxide', 'ثاني أكسيد الكربون'), N2 = T('Nitrogen', 'النيتروجين');
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'bags', puffA: 0, puffB: 0, liquid: false, milky: 0, shake: 0,     // Stage 1: bag A = our breath, bag B = room air
+  hi: null, airIn: false, airOut: false,                                              // the body
+  o2: false, co2: false, dots: -1,                                                    // gas exchange, zoomed in
+  gills: false, bub: -1 };                                                            // the fish
+
+function bagsScene() {
+  const rot = (Math.sin(sc.shake * Math.PI * 6) * 8).toFixed(1);
+  const bag = (x, puff, milky) => `<g transform="translate(${x} 240) rotate(${rot})">${at(0, 0, 1.3, A.bag({ puff, liquid: sc.liquid, milky }))}</g>`;
+  const lab = (x, s) => A.text(x, 266, s, 14.5, '#5d452c');
+  return `<rect width="420" height="280" fill="${WALL}"/>${table(240)}${bag(130, sc.puffA, sc.milky)}${bag(290, sc.puffB, 0)}
+    ${sc.puffA > .95 ? lab(130, T('Breathed-out air', 'هواء الزفير')) : ''}${sc.puffB > .95 ? lab(290, T('Room air', 'هواء الغرفة')) : ''}`;
+}
+const BX = 210, BY = 4, BK = 1.1, bx = x => +(BX + x * BK).toFixed(1), by = y => +(BY + y * BK).toFixed(1);
+function bodyScene() {
+  return `<rect width="420" height="280" fill="${WALL}"/>${at(BX, BY, BK, A.body({ h: 256 }) + A.airways({ hi: sc.hi }))}
+    ${sc.airIn ? A.arrow(96, 22, bx(-26), by(42), 14, '#3a8fd0') + A.text(74, 46, T('Breathed-in air', 'هواء الشهيق'), 13.5, '#23638f') : ''}
+    ${sc.airOut ? A.arrow(bx(26), by(46), 328, 30, 14, '#8a7a9f') + A.text(346, 54, T('Breathed-out air', 'هواء الزفير'), 13.5, '#5d4f73') : ''}`;
+}
+const ZX = 30, ZY = 52, ZK = 1.2;
+function zoomScene() {
+  return `<rect width="420" height="280" fill="#fdf3dc"/>${A.text(210, 34, T('Gas exchange in the lungs', 'تبادل الغازات في الرئتين'), 18)}
+    ${at(ZX, ZY, ZK, A.exchange({ labels: true, o2: sc.o2, co2: sc.co2, dots: sc.dots }))}
+    ${sc.o2 ? A.text(ZX + 258 * ZK, ZY + 98 * ZK, O2, 15, A.C_O2) : ''}${sc.co2 ? A.text(ZX + 44 * ZK, ZY + 98 * ZK, CO2, T(14, 13), A.C_CO2) : ''}`;
+}
+function fishScene() {
+  let waves = '', bubbles = '';
+  [[60, 56], [300, 40], [180, 236], [352, 214], [44, 196]].forEach(([x, y]) => { waves += `<path d="M${x - 22} ${y}q11 -9 22 0t22 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>`; });
+  if (sc.bub >= 0) for (let i = 0; i < 4; i++) { const k = (sc.bub + i * .25) % 1; bubbles += `<circle cx="${(166 + i * 9 + Math.sin(k * 6 + i) * 5).toFixed(1)}" cy="${(126 - k * 96).toFixed(1)}" r="${(4 + i).toFixed(1)}" fill="#fff" stroke="${A.C_CO2}" stroke-width="2" opacity="${(1 - k * .7).toFixed(2)}"/>`; }
+  return `<rect width="420" height="280" fill="#cfeaf7"/>${waves}${at(216, 152, 2, A.fish({ gills: sc.gills }))}${bubbles}
+    ${sc.gills ? `<path d="M176 196v32" stroke="#1f3d57" stroke-width="2.4"/>${A.text(176, 248, T('Gills', 'الخياشيم'), 15)}` : ''}`;
+}
+const render = () => ({ bags: bagsScene, body: bodyScene, zoom: zoomScene, fish: fishScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c2', logo: '🫁', title: ['Breath Lab', 'معمل التنفس'], sub: ['Chapter 2 · Respiration', 'الفصل ٢ · التنفس'],
+  bg: 'assets/bg_g6c2.svg', bgc: '#dff1f8', label: ['Reesho’s breath lab', 'معمل التنفس بتاع ريشو'], render });
+const kw = g.kw;
+
+/* ---------- Stage 1 · Warm Up: what is in the air we breathe out? ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'bags', puffA: 0, puffB: 0, liquid: false, milky: 0, shake: 0 }); g.paint();
+  g.say(T('Is the air we breathe in different from the air we breathe out? Let’s do an experiment. We prepare two plastic bags. First, breathe into one bag.', P('هل الهواء الذي نستنشقه يختلف عن الهواء الذي نزفره؟ يلّا نُجرِ تجربة. أحضرنا كيسين بلاستيكيين. الأول، انفخ أحد الكيسين بنفسك.', 'هل الهواء الذي نستنشقه يختلف عن الهواء الذي نزفره؟ يلّا نُجرِ تجربة. أحضرنا كيسين بلاستيكيين. الأول، انفخي أحد الكيسين بنفسك.')), 'point');
+  await g.next(T('Breathe into the bag ▸', P('انفخ الكيس ◂', 'انفخي الكيس ◂')));
+  await g.tween(1300, k => { sc.puffA = k; }); sc.puffA = 1; g.paint();
+  g.say(T('Now we fill the other bag with <b>room air</b>, so that we can compare.', 'دلوقتي نترك الكيس الآخر مملوءًا <b>بهواء الغرفة</b>، علشان نقارن.'), 'point');
+  await g.next(T('Fill the other bag ▸', P('املأ الكيس الآخر ◂', 'املئي الكيس الآخر ◂')));
+  await g.tween(1000, k => { sc.puffB = k; }); sc.puffB = 1; g.paint();
+  g.say(T('Which liquid do we pour into each bag to check the air?', 'ما السائل الذي نسكبه في كل كيس لنفحص الهواء؟'), 'think');
+  await g.choice({
+    options: [T('Limewater', 'ماء الجير الرائق'), T('Salt water', 'ماء مالح'), T('Oil', 'زيت')], correct: T('Limewater', 'ماء الجير الرائق'),
+    hint: T('We used it in Chapter 1 to check for carbon dioxide.', 'استخدمناه في الفصل الأول للكشف عن ثاني أكسيد الكربون.'),
+    ok: T(`Pour a little ${kw('limewater')} into each bag. It is colorless and clear.`, `اسكب قليلًا من ${kw('ماء الجير الرائق')} في كل كيس. هو سائل شفاف عديم اللون.`),
+    reveal: () => { sc.liquid = true; g.paint(); } });
+  g.say(T('Now we close the two bags and shake them well.', 'دلوقتي نغلق الكيسين ونرجُّهما جيدًا.'), 'point');
+  await g.next(T('Shake the bags ▸', P('رُجَّ الكيسين ◂', 'رُجِّي الكيسين ◂')));
+  await g.tween(1600, k => { sc.shake = k; sc.milky = k; }); sc.shake = 0; sc.milky = 1; g.paint();
+  g.say(T('Look! In the bag of breathed-out air the limewater turned <b>milky white</b>. Which gas is there more of in this bag?', P('شوف! في كيس هواء الزفير ماء الجير <b>تعكَّر وأصبح لونه أبيض مثل لون الحليب</b>. ما الغاز الذي تزداد كميته في هذا الكيس؟', 'شوفي! في كيس هواء الزفير ماء الجير <b>تعكَّر وأصبح لونه أبيض مثل لون الحليب</b>. ما الغاز الذي تزداد كميته في هذا الكيس؟')), 'think');
+  await g.choice({
+    options: [CO2, O2, N2], correct: CO2,
+    hint: T('Limewater turns milky white when it reacts with this gas.', 'ماء الجير يتعكَّر ويتحول إلى اللون الأبيض عند تفاعله مع هذا الغاز.'),
+    ok: T(`${kw('Carbon dioxide')}! The air we breathe out has more carbon dioxide than the air we breathe in.`, `${kw('ثاني أكسيد الكربون')}! يحتوي هواء الزفير على ثاني أكسيد الكربون أكثر من هواء الشهيق.`) });
+  g.say(T('And is there still oxygen in the air we breathe out?', 'وهل يحتوي هواء الزفير على أكسجين؟'), 'think');
+  await g.choice({
+    options: [T('Yes, it also has oxygen', 'نعم، يحتوي على أكسجين أيضًا'), T('No, it has no oxygen at all', 'لا، لا يحتوي على أكسجين'), T('Yes, more than the air we breathe in', 'نعم، أكثر من هواء الشهيق')],
+    correct: T('Yes, it also has oxygen', 'نعم، يحتوي على أكسجين أيضًا'),
+    hint: T('We take in only some of the oxygen from the air.', 'الجسم يحصل على جزء من أكسجين الهواء، مش كله.'),
+    ok: T(`The air we breathe out ${kw('also has oxygen')}, but it has more carbon dioxide than the air we breathe in.`, `يحتوي هواء الزفير على ${kw('أكسجين أيضًا')}، لكنه يحتوي على ثاني أكسيد الكربون أكثر من هواء الشهيق.`) });
+  g.say(T('So, taking in oxygen and letting out carbon dioxide is called ___.', 'إذن، تُسمَّى عملية حصول الجسم على الأكسجين وإخراج ثاني أكسيد الكربون ___.'), 'think');
+  await g.choice({
+    options: [T('breathing', 'بالتنفس'), T('burning', 'بالاحتراق'), T('digestion', 'بالهضم')], correct: T('breathing', 'بالتنفس'),
+    hint: T('We do it all day and all night, in and out.', 'بنعمله طول اليوم: شهيق وزفير.'),
+    ok: T(`Taking in oxygen and letting out carbon dioxide is called ${kw('breathing')}.`, `تُسمَّى عملية حصول الجسم على الأكسجين وإخراج ثاني أكسيد الكربون ${kw('بالتنفس')}.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+const SPOTS = [
+  { id: 'nose', name: T('The nose and the mouth', 'الأنف والفم'), ring: rr(bx(-27), by(22), (54 * BK).toFixed(1), (38 * BK).toFixed(1)) },
+  { id: 'windpipe', name: T('The tube in the neck', 'الأنبوبة التي في الرقبة'), ring: rr(bx(-23), by(62), (46 * BK).toFixed(1), (46 * BK).toFixed(1)) },
+  { id: 'lungs', name: T('The two organs in the chest', 'العضوان اللذان في الصدر'), ring: rr(bx(-74), by(110), (148 * BK).toFixed(1), (112 * BK).toFixed(1)) }
+];
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('The path of the air', 'مسار الهواء'));
+  Object.assign(sc, { mode: 'body', hi: null, airIn: false, airOut: false }); g.paint();
+  g.say(T('How does air move around inside our body? When we breathe in, where does the air enter from? Tap it.', P('كيف يتحرك الهواء داخل أجسامنا؟ في الشهيق، من أين يدخل الهواء؟ اضغط عليه.', 'كيف يتحرك الهواء داخل أجسامنا؟ في الشهيق، من أين يدخل الهواء؟ اضغطي عليه.')), 'think');
+  await g.spot(SPOTS, 'nose', { reveal: () => { sc.hi = 'nose'; sc.airIn = true; g.paint(); },
+    hint: T('Look at the face.', P('بص على الوجه.', 'بصي على الوجه.')),
+    ok: T(`The air is breathed in from the ${kw('nose and mouth')}.`, `يدخل الهواء من ${kw('الأنف والفم')}.`) });
+  g.say(T('Then the air goes through the <b>windpipe</b>. Tap the windpipe.', P('ثم يمر الهواء عبر <b>القصبة الهوائية</b>. اضغط على القصبة الهوائية.', 'ثم يمر الهواء عبر <b>القصبة الهوائية</b>. اضغطي على القصبة الهوائية.')), 'think');
+  await g.spot(SPOTS, 'windpipe', { reveal: () => { sc.hi = 'windpipe'; g.paint(); },
+    hint: T('It is a tube that goes down the neck.', 'هي أنبوبة تنزل في الرقبة.'),
+    ok: T(`The air goes through the ${kw('windpipe')}.`, `يمر الهواء عبر ${kw('القصبة الهوائية')}.`) });
+  g.say(T('Where is the air sent to? Tap them.', P('إلى أين يصل الهواء؟ اضغط عليهما.', 'إلى أين يصل الهواء؟ اضغطي عليهما.')), 'think');
+  await g.spot(SPOTS, 'lungs', { reveal: () => { sc.hi = 'lungs'; g.paint(); },
+    hint: T('They are two big organs in the chest.', 'هما عضوان كبيران في الصدر.'),
+    ok: T(`The air is sent to the left and right ${kw('lungs')} in our chest.`, `يصل الهواء إلى ${kw('الرئتين')} اليمنى واليسرى في الصدر.`) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Gas exchange', 'تبادل الغازات'));
+  Object.assign(sc, { mode: 'zoom', o2: false, co2: false, dots: -1 }); g.paint();
+  g.say(T('This is a zoomed-in picture of the lung: one of the alveoli, with a blood vessel around it. Which gas is taken from the air into the blood?', 'دي صورة مكبَّرة من الرئة: واحدة من الحويصلات الهوائية، وحولها وعاء دموي. ما الغاز الذي ينتقل من الهواء إلى الدم؟'), 'think');
+  await g.choice({
+    options: [O2, CO2, N2], correct: O2,
+    hint: T('It is the gas our body needs from the air.', 'هو الغاز الذي يحتاجه جسمنا من الهواء.'),
+    ok: T(`Through the blood vessels around the lungs, ${kw('oxygen')} in the air is taken into the blood.`, `من خلال الأوعية الدموية المحيطة بالرئتين ينتقل ${kw('الأكسجين')} الموجود في الهواء إلى الدم.`),
+    reveal: () => { sc.o2 = true; g.tween(1800, k => { sc.dots = k; }).then(() => { sc.dots = .35; g.paint(); }); } });
+  g.say(T('And which gas is let out from the blood into the air?', 'وما الغاز الذي ينتقل من الدم إلى الهواء؟'), 'think');
+  await g.choice({
+    options: [CO2, O2, N2], correct: CO2,
+    hint: T('It is the gas that turned the limewater milky white.', 'هو الغاز الذي عكَّر ماء الجير.'),
+    ok: T(`${kw('Carbon dioxide')} in the blood is let out into the air.`, `ينتقل ${kw('ثاني أكسيد الكربون')} الموجود في الدم إلى الهواء.`),
+    reveal: () => { sc.co2 = true; g.tween(1800, k => { sc.dots = k; }).then(() => { sc.dots = .35; g.paint(); }); } });
+  g.say(T('The blood is now rich in oxygen. What carries the oxygen to the whole body?', 'الدم بقى غني بالأكسجين. ما الذي ينقل الأكسجين إلى الجسم كله؟'), 'think');
+  await g.choice({
+    options: [T('The blood', 'الدم'), T('The muscles', 'العضلات'), T('The bones', 'العظام')], correct: T('The blood', 'الدم'),
+    hint: T('The oxygen is already inside it.', 'الأكسجين موجود فيه دلوقتي.'),
+    ok: T(`The oxygen taken into the ${kw('blood')} is carried to the whole body by the work of the heart.`, `ينقل ${kw('الدم')} الأكسجين إلى الجسم بأكمله بفضل عمل القلب.`) });
+  g.say(T('What is the organ in our chest called that exchanges oxygen and carbon dioxide?', 'ما اسم العضو الذي يتم فيه تبادل الأكسجين وثاني أكسيد الكربون؟'), 'think');
+  await g.choice({
+    options: [T('The lungs', 'الرئتان'), T('The heart', 'القلب'), T('The stomach', 'المعدة')], correct: T('The lungs', 'الرئتان'),
+    hint: T('The air we breathe in is sent to them.', 'هواء الشهيق يصل إليهما.'),
+    ok: T(`The ${kw('lungs')} are the place for gas exchange.`, `${kw('الرئتان')} هما مكان تبادل الغازات.`) });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Breathing out', 'الزفير'));
+  Object.assign(sc, { mode: 'body', hi: 'lungs', airIn: false, airOut: false }); g.paint();
+  g.say(T('Now the air in the lungs has a lot of carbon dioxide. Which way does it go out?', 'دلوقتي الهواء في الرئتين محمَّل بنسبة عالية من ثاني أكسيد الكربون. كيف يخرج؟'), 'think');
+  await g.choice({
+    options: [T('Through the windpipe, then out from the nose and mouth', 'يمر عبر القصبة الهوائية، ثم يخرج من الأنف والفم'), T('Out from the nose and mouth, then through the windpipe', 'يخرج من الأنف والفم، ثم يمر عبر القصبة الهوائية'), T('Through the stomach, then out from the mouth', 'يمر عبر المعدة، ثم يخرج من الفم')],
+    correct: T('Through the windpipe, then out from the nose and mouth', 'يمر عبر القصبة الهوائية، ثم يخرج من الأنف والفم'),
+    hint: T('It goes back the same way it came in.', 'يرجع من نفس الطريق اللي دخل منه.'),
+    ok: T(`Air with a lot of carbon dioxide goes through the ${kw('windpipe')} and is breathed out from the nose and mouth.`, `يمر الهواء المحمل بنسبة عالية من ثاني أكسيد الكربون عبر ${kw('القصبة الهوائية')} ليخرج مع هواء الزفير من الأنف والفم.`),
+    reveal: () => { sc.hi = 'windpipe'; sc.airOut = true; g.paint(); } });
+  Object.assign(sc, { mode: 'fish', gills: false, bub: -1 }); g.paint();
+  g.say(T('Other animals breathe too. From where do fish let out carbon dioxide?', 'الحيوانات الأخرى تتنفس أيضًا. من أين تطلق الأسماك ثاني أكسيد الكربون؟'), 'think');
+  await g.choice({
+    options: [T('From their gills', 'من خياشيمها'), T('From their lungs', 'من رئتيها'), T('From their fins', 'من زعانفها')], correct: T('From their gills', 'من خياشيمها'),
+    hint: T('They are behind the head of the fish, on each side.', 'موجودة خلف رأس السمكة، على الجانبين.'),
+    ok: T(`Fish let out carbon dioxide from their ${kw('gills')}.`, `تطلق الأسماك ثاني أكسيد الكربون من ${kw('خياشيمها')}.`),
+    reveal: () => { sc.gills = true; g.tween(2400, k => { sc.bub = k; }).then(() => { sc.bub = -1; g.paint(); }); } });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: oxygen or carbon dioxide? ---------- */
+const SPEED = [
+  { t: T('We take in some of it from the air', 'نحصل عليه من الهواء عندما نتنفس'), ans: 'o2' },
+  { t: T('It is taken from the air into the blood', 'ينتقل من الهواء إلى الدم'), ans: 'o2' },
+  { t: T('The blood carries it to the whole body', 'ينقله الدم إلى الجسم بأكمله'), ans: 'o2' },
+  { t: T('There is less of it in the air we breathe out', 'كميته أقل في هواء الزفير'), ans: 'o2' },
+  { t: T('We let it out when we breathe', 'نتخلص منه عندما نتنفس'), ans: 'co2' },
+  { t: T('It is let out from the blood into the air', 'ينتقل من الدم إلى الهواء'), ans: 'co2' },
+  { t: T('It increases in the air we breathe out', 'تزداد كميته في هواء الزفير'), ans: 'co2' },
+  { t: T('It turns limewater milky white', 'يعكِّر ماء الجير ويجعل لونه أبيض'), ans: 'co2' },
+  { t: T('Fish let it out from their gills', 'تطلقه الأسماك من خياشيمها'), ans: 'co2' }
+];
+async function stage3() {
+  Object.assign(sc, { mode: 'zoom', o2: false, co2: false, dots: -1 }); g.paint();
+  const some = (k, n) => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, n);
+  await g.speedRound({
+    items: some('o2', 4).concat(some('co2', 4)), rounds: 8,
+    buttons: [{ label: O2, value: 'o2', c: 0 }, { label: CO2, value: 'co2', c: 3 }],
+    ask: T('Which gas is it?', 'أي غاز هذا؟'),
+    intro: T('Speed Round! I will say something about one gas. Is it <b>oxygen</b> or <b>carbon dioxide</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هقول معلومة عن غاز. هل هو <b>الأكسجين</b> ولا <b>ثاني أكسيد الكربون</b>؟ اضغط على الزرار الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هقول معلومة عن غاز. هل هو <b>الأكسجين</b> ولا <b>ثاني أكسيد الكربون</b>؟ اضغطي على الزرار الصح قبل ما الوقت يخلص. ٨ جولات!')),
+    think: T('Oxygen or carbon dioxide?', 'الأكسجين أم ثاني أكسيد الكربون؟'),
+    show: () => { sc.o2 = sc.co2 = false; g.paint(); }, reveal: it => { sc.o2 = it.ans === 'o2'; sc.co2 = it.ans === 'co2'; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my breath lab. First we test the air we <b>breathe out</b>. Then we follow the air to the lungs and see how oxygen gets into the blood.`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت معمل التنفس. الأول هنختبر <b>هواء الزفير</b>. وبعدين نتتبَّع الهواء لحد الرئتين، ونشوف الأكسجين بيوصل للدم إزاي.`, `أهلًا يا <b>${g.name()}</b>! نوّرتي معمل التنفس. الأول هنختبر <b>هواء الزفير</b>. وبعدين نتتبَّع الهواء لحد الرئتين، ونشوف الأكسجين بيوصل للدم إزاي.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Master of breathing!', P('بقيت خبير التنفس!', 'بقيتي خبيرة التنفس!')),
+    text: T('We breathe to take in some of the <b>oxygen</b> from the air and let out <b>carbon dioxide</b>. The air goes through the windpipe to the <b>lungs</b>. There, oxygen is taken into the blood and carbon dioxide is let out, and the blood carries the oxygen to the whole body.', 'نتنفس للحصول على <b>الأكسجين</b> من الهواء، والتخلص من <b>ثاني أكسيد الكربون</b>. يمر الهواء عبر القصبة الهوائية ليصل إلى <b>الرئتين</b>، وهناك ينتقل الأكسجين إلى الدم ويخرج ثاني أكسيد الكربون، وينقل الدم الأكسجين إلى الجسم بأكمله.') }
+}).catch(err => console.error(err));
+window.__breath = { sc, render };
+})();
+</script>
+</body>
+</html>

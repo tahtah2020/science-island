@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food Journey · Digestion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="g4_game.css?v=20261012c">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Food Journey.</noscript>
+<script src="firebase-config.js?v=20261012c"></script>
+<script src="chapters.js?v=20261012c"></script>
+<script src="common.js?v=20261012c"></script>
+<script src="g6_body.js?v=20261012c"></script>
+<script src="g4_game.js?v=20261012c"></script>
+<script>
+(() => {
+'use strict';
+/* Food Journey · the game of Grade 6, Chapter 3 "Digestion". Built on the shared game kit (g4_game.js).
+   Stage 1 (Warm Up): the route of food from the mouth to the anus (book page 25).
+   Stage 2 (Missions): 1) the saliva experiment: starch, about 40 degrees Celsius, iodine solution (page 27);
+                       2) the towel and the villi of the small intestine (page 31); 3) where the nutrients go: blood, liver, whole body (page 31).
+   Stage 3 (Speed Round): which organ is it?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 24-33). */
+const A = window.G6BODY, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const rr = (x, y, w, h) => `<rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="12"/>`;
+const WALL = '#eef6fb';
+const table = y => `<rect y="${y}" width="420" height="${280 - y}" fill="#d9b27c"/><rect y="${y}" width="420" height="6" fill="#a8834f" opacity=".55"/>`;
+const NAME = { mouth: T('Mouth', 'الفم'), foodpipe: T('Food pipe', 'المريء'), stomach: T('Stomach', 'المعدة'), small: T('Small intestine', 'الأمعاء الدقيقة'), large: T('Large intestine', 'الأمعاء الغليظة'), liver: T('Liver', 'الكبد') };
+const THE = { foodpipe: T('The food pipe', 'المريء'), stomach: T('The stomach', 'المعدة'), small: T('The small intestine', 'الأمعاء الدقيقة'), large: T('The large intestine', 'الأمعاء الغليظة'), liver: T('The liver', 'الكبد'),
+  windpipe: T('The windpipe', 'القصبة الهوائية'), lungs: T('The lungs', 'الرئتان') };
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'gut', hi: null, food: null, names: [],                                   // the body: names = the organs whose names show
+  swabs: false, warm: false, col: {}, drop: null,                                            // the saliva experiment: col[A|B] = 'blue' | 'same'
+  walls: false, wet: false };                                                                // cloths and walls
+
+const GX = 210, GY = 2, GK = .745, gx = x => +(GX + x * GK).toFixed(1), gy = y => +(GY + y * GK).toFixed(1);
+/* where each name is written: [side, the y of the organ, the x of its edge on that side] (in the units of the drawing) */
+const LAB = { mouth: ['r', 50, 12], stomach: ['r', 176, 54], large: ['r', 256, 68], foodpipe: ['l', 108, -7], liver: ['l', 166, -70], small: ['l', 262, -30] };
+function gutScene() {
+  let labs = '';
+  sc.names.forEach(id => { const [side, y, ex] = LAB[id], Y = gy(y), on = sc.hi === id;
+    labs += side === 'r' ? `<path d="M${gx(ex)} ${Y}H300" stroke="#1f3d57" stroke-width="1.8"/>${A.text(358, Y + 5, NAME[id], 13.5, on ? '#1f7a52' : '#1f3d57')}`
+      : `<path d="M${gx(ex)} ${Y}H120" stroke="#1f3d57" stroke-width="1.8"/>${A.text(62, Y + 5, NAME[id], 13.5, on ? '#1f7a52' : '#1f3d57')}`; });
+  return `<rect width="420" height="280" fill="${WALL}"/>${at(GX, GY, GK, A.body({ h: 372, mouth: 'open' }) + A.gut({ hi: sc.hi, food: sc.food }))}${labs}`;
+}
+const TX = { A: 165, B: 255 };
+function tubesScene() {
+  const tube = k => { const c = sc.col[k]; return at(TX[k], 227, 1.5, A.tube({ level: .5, swab: sc.swabs, color: c ? A.IODINE[c] : undefined })); };
+  return `<rect width="420" height="280" fill="${WALL}"/>${table(236)}
+    ${at(210, 236, 1.5, A.beaker({ back: true, level: sc.warm ? .62 : 0 }))}${tube('A')}${tube('B')}${at(210, 236, 1.5, A.beaker({ front: true, steam: sc.warm }))}
+    ${sc.warm ? `<rect x="292" y="150" width="62" height="24" rx="8" fill="#fff" stroke="#e2603f" stroke-width="2"/>${A.text(323, 167, T('40 °C', '٤٠ °م'), 14, '#b3442a')}` : ''}
+    ${sc.drop ? at(TX[sc.drop] + 12, 58, .8, A.dropper({})) + at(TX[sc.drop] + 12, 70, .7, A.drop('#9a5a2b')) : ''}
+    ${sc.swabs ? A.text(118, 264, T('Starch + water', 'نشا + ماء'), 14, '#5d452c') + A.text(302, 264, T('Starch + saliva', 'نشا + لعاب'), 14, '#5d452c') : ''}`;
+}
+const WK = 1.25, WX = [14, 220];                                                             // the two cloths and the two walls: flat on the left, loops / villi on the right
+function wallsScene() {
+  const drops = (x, y) => [0, 1, 2].map(i => at(x + (40 + i * 35) * WK, y, 1.2, A.drop())).join('');
+  return `<rect width="420" height="280" fill="#fdf3dc"/>
+    ${at(WX[0], 104, WK, A.cloth({ kind: 'flat', w: 150 }))}${at(WX[1], 104, WK, A.cloth({ kind: 'loops', w: 150 }))}
+    ${sc.wet ? drops(WX[0], 72) : drops(WX[0], 40) + drops(WX[1], 40)}
+    ${sc.wet ? A.text(WX[0] + 94, 128, T('The water stays on top', 'الماء باقٍ على السطح'), 13.5, '#5d452c') + A.text(WX[1] + 94, 128, T('The water is absorbed', 'امتص الماء'), 13.5, '#1f7a52') : ''}
+    ${sc.walls ? at(WX[0], 258, WK, A.wall({ kind: 'flat', w: 150 })) + at(WX[1], 258, WK, A.wall({ kind: 'villi', w: 150 })) : ''}`;
+}
+const render = () => ({ gut: gutScene, tubes: tubesScene, walls: wallsScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c3', logo: '🍎', title: ['Food Journey', 'رحلة الطعام'], sub: ['Chapter 3 · Digestion', 'الفصل ٣ · الهضم'],
+  bg: 'assets/bg_g6c3.svg', bgc: '#fde3dc', label: ['The journey of food inside the body', 'رحلة الطعام داخل الجسم'], render });
+const kw = g.kw;
+/* the bite of food moves from where it is to the organ `to`, then that organ gets its name and a green outline */
+async function moveTo(to) {
+  const a = Array.isArray(sc.food) ? sc.food : A.GUTPOS[sc.food || 'mouth'], b = A.GUTPOS[to];
+  sc.hi = null;
+  await g.tween(900, k => { sc.food = [+(a[0] + (b[0] - a[0]) * k).toFixed(1), +(a[1] + (b[1] - a[1]) * k).toFixed(1)]; });
+  sc.food = to; if (LAB[to]) { sc.hi = to; if (!sc.names.includes(to)) sc.names.push(to); }
+  g.paint();
+}
+
+/* ---------- Stage 1 · Warm Up: where does the food go? ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'gut', hi: 'mouth', food: 'mouth', names: ['mouth'] }); g.paint();
+  g.say(T('A bite of bread goes into the <b>mouth</b>. Food is first broken down into small pieces in the mouth! Where does it go after that?', 'لقمة خبز دخلت <b>الفم</b>. يتم أولًا تفتيت الطعام إلى قطع صغيرة في الفم! أين يذهب بعد ذلك؟'), 'think');
+  await g.choice({
+    options: [THE.foodpipe, THE.windpipe, THE.small], correct: THE.foodpipe,
+    hint: T('It is a tube that goes down from the mouth, but it is not the tube for air.', 'هي أنبوبة تنزل من الفم، لكنها مش أنبوبة الهواء.'),
+    ok: T(`From the mouth, the food goes down the ${kw('food pipe')}.`, `عند البلع ينتقل الطعام من الفم إلى ${kw('المريء')}.`),
+    reveal: () => moveTo('foodpipe') });
+  g.say(T('Which organ does the food reach after the food pipe?', 'إلى أي عضو يصل الطعام بعد المريء؟'), 'think');
+  await g.choice({
+    options: [THE.stomach, THE.large, THE.lungs], correct: THE.stomach,
+    hint: T('It is like a bag at the end of the food pipe.', 'هو مثل كيس في آخر المريء.'),
+    ok: T(`After the food pipe, the food reaches the ${kw('stomach')}.`, `بعد المريء يصل الطعام إلى ${kw('المعدة')}.`),
+    reveal: () => moveTo('stomach') });
+  g.say(T('And after the stomach?', 'وبعد المعدة؟'), 'think');
+  await g.choice({
+    options: [THE.small, THE.large, THE.foodpipe], correct: THE.small,
+    hint: T('There are two intestines. Which one comes first?', 'فيه نوعان من الأمعاء. أيهما الأول؟'),
+    ok: T(`After the stomach, the food goes into the ${kw('small intestine')}.`, `بعد المعدة ينتقل الطعام إلى ${kw('الأمعاء الدقيقة')}.`),
+    reveal: () => moveTo('small') });
+  g.say(T('And after the small intestine?', 'وبعد الأمعاء الدقيقة؟'), 'think');
+  await g.choice({
+    options: [THE.large, THE.stomach, THE.liver], correct: THE.large,
+    hint: T('It is the wide tube around the small intestine.', 'هي الأنبوبة العريضة التي تحيط بالأمعاء الدقيقة.'),
+    ok: T(`After the small intestine comes the ${kw('large intestine')}.`, `بعد الأمعاء الدقيقة تأتي ${kw('الأمعاء الغليظة')}.`),
+    reveal: () => moveTo('large') });
+  g.say(T('What is left comes out from the anus. What is the path of food from the mouth to the anus called?', 'يخرج الطعام غير المهضوم عبر فتحة الشرج. ماذا يُسمَّى مسار الطعام من الفم إلى فتحة الشرج؟'), 'think');
+  await g.choice({
+    options: [T('The digestive tract', 'القناة الهضمية'), T('The windpipe', 'القصبة الهوائية'), T('The blood vessels', 'الأوعية الدموية')], correct: T('The digestive tract', 'القناة الهضمية'),
+    hint: T('Its name comes from the word “digestion”.', 'اسمها من كلمة «الهضم».'),
+    ok: T(`The path of food from the mouth to the anus is called the ${kw('digestive tract')}.`, `يُسمَّى مسار الطعام من الفم إلى فتحة الشرج ${kw('بالقناة الهضمية')}.`),
+    reveal: () => moveTo('out') });
+  sc.food = null; sc.hi = null; g.paint();
+  g.say(T('And what do we call breaking down food and changing it into a form that is easy to absorb?', 'وماذا نُسمِّي عملية تكسير الطعام وتحويله إلى صورة يسهل امتصاصها؟'), 'think');
+  await g.choice({
+    options: [T('Digestion', 'الهضم'), T('Breathing', 'التنفس'), T('Burning', 'الاحتراق')], correct: T('Digestion', 'الهضم'),
+    hint: T('It is the name of this chapter.', 'هو اسم الفصل ده.'),
+    ok: T(`Breaking down food and changing it into a form that is easy to absorb is called ${kw('digestion')}.`, `تسمَّى عملية تكسير الطعام وتحويله إلى صورة يسهل امتصاصها ${kw('بالهضم')}.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('What does saliva do?', 'ما وظيفة اللعاب؟'));
+  Object.assign(sc, { mode: 'tubes', swabs: false, warm: false, col: {}, drop: null }); g.paint();
+  g.say(T('When you chew rice or bread, it starts to taste sweet! Does it have something to do with saliva? We put dilute <b>starch</b> solution into two test tubes with a dropper.', 'عندما تمضغ الأرز أو الخبز يبدأ طعمهما في التحول إلى المذاق الحلو! فهل لهذا علاقة بوظيفة اللعاب؟ وضعنا محلول <b>النشا</b> المخفف في أنبوبتي اختبار باستخدام القطَّارة.'), 'point');
+  await g.next(T('Add the cotton swabs ▸', P('ضع القطعتين القطنيتين ◂', 'ضعي القطعتين القطنيتين ◂')));
+  sc.swabs = true; g.paint();
+  g.say(T('One test tube gets a cotton swab soaked with <b>water</b>, and the other a cotton swab soaked with <b>saliva</b>. Now we put the two test tubes in hot water for a few minutes. About how hot is the water?', 'في أنبوبة قطعة قطنية مبللة <b>بالماء</b>، وفي الأنبوبة الأخرى قطعة قطنية مبللة <b>باللعاب</b>. دلوقتي نضع الأنبوبتين في ماء ساخن لبضع دقائق. كم درجة حرارة الماء تقريبًا؟'), 'think');
+  await g.choice({
+    options: [T('About 40 degrees Celsius', 'حوالي ٤٠ درجة مئوية'), T('About 100 degrees Celsius', 'حوالي ١٠٠ درجة مئوية'), T('About 0 degrees Celsius', 'حوالي صفر درجة مئوية')], correct: T('About 40 degrees Celsius', 'حوالي ٤٠ درجة مئوية'),
+    hint: T('Warm, but not boiling.', 'ماء دافئ، مش مغلي.'),
+    ok: T(`Hot water of ${kw('about 40 degrees Celsius')}.`, `ماء ساخن درجته ${kw('حوالي ٤٠ درجة مئوية')}.`),
+    reveal: () => { sc.warm = true; g.paint(); } });
+  g.say(T('Why do we warm the test tubes in hot water of about 40 degrees Celsius?', 'لماذا تُوضع الأنابيب في ماء ساخن درجته حوالي ٤٠ درجة مئوية؟'), 'think');
+  await g.choice({
+    options: [T('To make it about the same temperature as inside the body', 'لجَعل درجة الحرارة قريبة من درجة الحرارة داخل الجسم'), T('To disinfect', 'لقتل الجراثيم'), T('To evaporate the water', 'لتَبخير الماء')],
+    correct: T('To make it about the same temperature as inside the body', 'لجَعل درجة الحرارة قريبة من درجة الحرارة داخل الجسم'),
+    hint: T('Where does saliva do its work?', 'اللعاب بيشتغل فين؟'),
+    ok: T(`To make ${kw('the same environment as inside the body')}.`, `لتهيئة ${kw('بيئة مماثلة للبيئة الموجودة داخل الجسم')}.`) });
+  g.say(T('A few minutes later, we add 1 or 2 drops of dilute <b>iodine solution</b> to each warmed test tube.', 'بعد بضع دقائق، نضيف قطرة أو قطرتين من <b>محلول اليود</b> المخفف إلى كل أنبوبة دافئة.'), 'point');
+  await g.next();
+  const buttons = [{ label: T('🔵 Changes to blue-black', '🔵 يتغير إلى الأزرق الداكن'), value: 'blue', c: 0 }, { label: T('➖ Does not change', '➖ لا يتغير اللون'), value: 'same', c: 1 }];
+  for (const k of g.shuffle(['A', 'B'])) {
+    sc.drop = k; g.paint();
+    const right = k === 'A' ? 'blue' : 'same';
+    g.say(k === 'A' ? T('The iodine solution drops into the test tube with <b>starch and water</b>. What happens to the color?', 'نضيف محلول اليود إلى أنبوبة <b>(نشا + ماء)</b>. ماذا يحدث للون؟')
+      : T('The iodine solution drops into the test tube with <b>starch and saliva</b>. What happens to the color?', 'نضيف محلول اليود إلى أنبوبة <b>(نشا + لعاب)</b>. ماذا يحدث للون؟'), 'think');
+    const told = k === 'A' ? T(`The test tube with starch and water ${kw('changed to blue-black')}.`, `أنبوبة (نشا + ماء) ${kw('تغيَّر لونها إلى الأزرق الداكن')}.`)
+      : T(`The test tube with starch and saliva ${kw('did not change')}.`, `أنبوبة (نشا + لعاب) ${kw('لم يتغير لونها')}.`);
+    await g.pick({ buttons, correct: right, ok: T(`Yes! ${told}`, `صح! ${told}`), no: told, reveal: () => { sc.col[k] = right; sc.drop = null; g.paint(); } });
+  }
+  g.setTray(null);
+  g.say(T('So, what did the saliva do to the starch?', 'إذن، ماذا فعل اللعاب بالنشا؟'), 'think');
+  await g.choice({
+    options: [T('It broke down the starch', 'كسَّر النشا'), T('It turned into starch', 'تحوَّل إلى نشا'), T('It did nothing to the starch', 'لم يفعل بالنشا شيئًا')], correct: T('It broke down the starch', 'كسَّر النشا'),
+    hint: T('In the test tube with saliva the color did not change to blue-black.', 'في أنبوبة اللعاب لم يتغير اللون إلى الأزرق الداكن.'),
+    ok: T(`The starch is ${kw('broken down')} due to the function of saliva. Saliva changes starch into something else.`, `النشا ${kw('يتفكك')} بسبب وظيفة اللعاب. اللعاب يحوِّل النشا إلى مادة أخرى.`) });
+  g.say(T('A liquid that has the function of digesting food, like saliva, is called a ___.', 'يُسمَّى السائل الذي يقوم بهضم الطعام، مثل اللعاب، ___.'), 'think');
+  await g.choice({
+    options: [T('digestive juice', 'بالعصارة الهاضمة'), T('digestive tract', 'بالقناة الهضمية'), T('limewater', 'بماء الجير')], correct: T('digestive juice', 'بالعصارة الهاضمة'),
+    hint: T('It is a liquid, like the juice of a fruit.', 'هو سائل، زي عصير الفاكهة.'),
+    ok: T(`It is called a ${kw('digestive juice')}. Digestive juices are produced not only in the mouth, but also in the stomach and intestines.`, `يُسمَّى ${kw('بالعصارة الهاضمة')}، ولا تُنتَج العصارات الهاضمة في الفم فقط، بل تُنتَج أيضًا في المعدة والأمعاء.`) });
+}
+const CLOTHS = [{ id: 'flat', name: T('The flat cloth', 'قطعة القماش المسطَّحة'), ring: rr(8, 18, 198, 96) }, { id: 'loops', name: T('The cloth with many loop-like threads', 'قطعة القماش التي عليها خيوط على شكل حلقات'), ring: rr(214, 18, 198, 96) }];
+const WALLS = [{ id: 'flat', name: T('The flat wall', 'الجدار المسطَّح'), ring: rr(8, 164, 198, 104) }, { id: 'villi', name: T('The wall with the small bumps', 'الجدار الذي عليه نتوءات صغيرة'), ring: rr(214, 164, 198, 104) }];
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('The towel and the small intestine', 'المنشفة والأمعاء الدقيقة'));
+  Object.assign(sc, { mode: 'walls', walls: false, wet: false }); g.paint();
+  g.say(T('Here are two cloths: a flat cloth, and a towel with many loop-like threads. Drops of water fall on both. Which cloth absorbs water better? Tap it.', P('دي قطعتا قماش: قطعة مسطَّحة، ومنشفة عليها خيوط كثيرة على شكل حلقات. نقط ماء هتنزل على القطعتين. أي قطعة تمتص الماء بشكل أفضل؟ اضغط عليها.', 'دي قطعتا قماش: قطعة مسطَّحة، ومنشفة عليها خيوط كثيرة على شكل حلقات. نقط ماء هتنزل على القطعتين. أي قطعة تمتص الماء بشكل أفضل؟ اضغطي عليها.')), 'think');
+  await g.spot(CLOTHS, 'loops', { reveal: () => { sc.wet = true; g.paint(); }, hint: '',
+    ok: T(`A cloth with many ${kw('loop-like threads')} absorbs water better than a flat cloth.`, `قطعة قماش تحتوي على ${kw('خيوط كثيرة على شكل حلقات')} تمتص الماء بشكل أفضل من قطعة قماش مسطَّحة.`) });
+  g.say(T('Just like a towel, the inner wall of the small intestine has small bumps. What are they called?', 'تمامًا مثل المنشفة، يحتوي الجدار الداخلي للأمعاء الدقيقة على نتوءات صغيرة. ماذا نُسمِّيها؟'), 'think');
+  await g.choice({
+    options: [T('Villi', 'الخملات'), T('Gills', 'الخياشيم'), T('Alveoli', 'الحويصلات الهوائية')], correct: T('Villi', 'الخملات'),
+    hint: T('Gills are for fish, and alveoli are in the lungs.', 'الخياشيم للأسماك، والحويصلات الهوائية في الرئتين.'),
+    ok: T(`${kw('Villi')}: small bumps on the inside of the small intestine.`, `${kw('الخملات')}: نتوءات صغيرة على الجدار الداخلي للأمعاء الدقيقة.`),
+    reveal: () => { sc.walls = true; g.paint(); } });
+  g.say(T('Look at these two walls. Which wall has the <b>larger surface area</b>? Tap it.', P('بص على الجدارين. أي جدار له <b>مساحة سطح أكبر</b>؟ اضغط عليه.', 'بصي على الجدارين. أي جدار له <b>مساحة سطح أكبر</b>؟ اضغطي عليه.')), 'think');
+  await g.spot(WALLS, 'villi', { hint: '',
+    ok: T(`Because villi are lined up closely, the inner ${kw('surface area')} of the small intestine becomes larger.`, `لأن الخملات تصطف متقاربة جدًّا فإن ${kw('مساحة السطح')} الداخلي للأمعاء الدقيقة تصبح أكبر.`) });
+  g.say(T('So, what is the advantage of having villi on the wall of the small intestine?', 'إذن، ما فائدة وجود الخملات على جدار الأمعاء الدقيقة؟'), 'think');
+  await g.choice({
+    options: [T('Nutrients can be absorbed efficiently', 'تُمتَصّ العناصر الغذائية بكفاءة'), T('It makes it easier to swallow food', 'تُسهِّل بَلْع الطعام'), T('It stores the nutrients', 'تختزن العناصر الغذائية')], correct: T('Nutrients can be absorbed efficiently', 'تُمتَصّ العناصر الغذائية بكفاءة'),
+    hint: T('Think of the towel and the water.', P('فكّر في المنشفة والماء.', 'فكّري في المنشفة والماء.')),
+    ok: T(`With a larger surface area, the small intestine can ${kw('absorb')} nutrients and water efficiently.`, `مع مساحة سطح أكبر، تستطيع الأمعاء الدقيقة ${kw('امتصاص')} العناصر الغذائية والماء بكفاءة عالية.`) });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Where do the nutrients go?', 'أين تذهب العناصر الغذائية؟'));
+  Object.assign(sc, { mode: 'gut', hi: null, food: null, names: ['mouth', 'foodpipe', 'stomach', 'small', 'large'] }); g.paint();
+  g.say(T('Where are the nutrients from digested food mainly absorbed?', 'أين يتم امتصاص العناصر الغذائية من الطعام المهضوم بشكل أساسي؟'), 'think');
+  await g.choice({
+    options: [THE.small, THE.stomach, THE.large], correct: THE.small,
+    hint: T('Its inner wall has villi.', 'جدارها الداخلي عليه خملات.'),
+    ok: T(`The nutrients are mainly absorbed in the ${kw('small intestine')} along with water.`, `يتم امتصاص العناصر الغذائية بشكل أساسي في ${kw('الأمعاء الدقيقة')} مع الماء.`),
+    reveal: () => { sc.hi = 'small'; g.paint(); } });
+  g.say(T('What carries the absorbed nutrients to the whole body?', 'ما الذي ينقل العناصر الغذائية الممتصة إلى الجسم بأكمله؟'), 'think');
+  await g.choice({
+    options: [T('The blood', 'الدم'), T('The nerves', 'الأعصاب'), T('The muscles', 'العضلات')], correct: T('The blood', 'الدم'),
+    hint: T('It also carries oxygen to the whole body.', 'هو اللي بينقل الأكسجين كمان إلى الجسم بأكمله.'),
+    ok: T(`The nutrients are carried to the whole body by the ${kw('blood')}.`, `تنتقل العناصر الغذائية إلى الجسم بأكمله عن طريق ${kw('الدم')}.`) });
+  g.say(T('Which organ do the absorbed nutrients pass through first?', 'بأي عضو تمر العناصر الغذائية الممتصة أولًا؟'), 'think');
+  await g.choice({
+    options: [THE.liver, THE.stomach, THE.large], correct: THE.liver,
+    hint: T('It is the dark organ beside the stomach.', 'هو العضو الداكن بجانب المعدة.'),
+    ok: T(`They pass through the ${kw('liver')}. The liver stores some of the nutrients and sends them out to the whole body when needed.`, `تمر ${kw('بالكبد')}. يعمل الكبد على تخزين بعض العناصر الغذائية وإرسالها إلى الجسم بأكمله عند الحاجة إليها.`),
+    reveal: () => { sc.hi = 'liver'; if (!sc.names.includes('liver')) sc.names.push('liver'); g.paint(); } });
+  g.say(T('And what is absorbed in the large intestine?', 'وماذا يُمتَصُّ في الأمعاء الغليظة؟'), 'think');
+  await g.choice({
+    options: [T('More water', 'المزيد من الماء'), T('Most of the nutrients', 'معظم العناصر الغذائية'), T('Oxygen', 'الأكسجين')], correct: T('More water', 'المزيد من الماء'),
+    hint: T('The nutrients were already absorbed in the small intestine.', 'العناصر الغذائية امتُصَّت قبل كده في الأمعاء الدقيقة.'),
+    ok: T(`${kw('More water')} is absorbed in the large intestine, and what is left is eliminated from the anus as feces.`, `يتم امتصاص ${kw('المزيد من الماء')} في الأمعاء الغليظة، وما يتبقى يتم التخلص منه عبر فتحة الشرج على هيئة براز.`),
+    reveal: () => { sc.hi = 'large'; g.paint(); } });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: which organ? ---------- */
+const SPEED = [
+  { t: T('Food is first broken down into small pieces here', 'يتم فيه أولًا تفتيت الطعام إلى قطع صغيرة'), ans: 'mouth' },
+  { t: T('Saliva breaks down starch here', 'يكسِّر اللعاب النشا فيه'), ans: 'mouth' },
+  { t: T('Nutrients are mainly absorbed here', 'يتم فيها امتصاص العناصر الغذائية بشكل أساسي'), ans: 'small' },
+  { t: T('Villi are on its inner wall', 'على جدارها الداخلي خملات'), ans: 'small' },
+  { t: T('Food reaches it right after the stomach', 'يصل إليها الطعام بعد المعدة مباشرة'), ans: 'small' },
+  { t: T('More water is absorbed here', 'يتم فيها امتصاص المزيد من الماء'), ans: 'large' },
+  { t: T('The last organ before the anus', 'آخر عضو قبل فتحة الشرج'), ans: 'large' },
+  { t: T('It stores some of the nutrients', 'يخزِّن بعض العناصر الغذائية'), ans: 'liver' },
+  { t: T('Absorbed nutrients pass through it first', 'تمر به العناصر الغذائية الممتصة أولًا'), ans: 'liver' },
+  { t: T('It sends nutrients out to the whole body when needed', 'يرسل العناصر الغذائية إلى الجسم بأكمله عند الحاجة إليها'), ans: 'liver' }
+];
+async function stage3() {
+  Object.assign(sc, { mode: 'gut', hi: null, food: null, names: ['mouth', 'small', 'large', 'liver'] }); g.paint();
+  const some = (k, n) => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, n);
+  await g.speedRound({
+    items: some('mouth', 2).concat(some('small', 2), some('large', 2), some('liver', 2)), rounds: 8,
+    buttons: [{ label: NAME.mouth, value: 'mouth', c: 0 }, { label: NAME.small, value: 'small', c: 1 }, { label: NAME.large, value: 'large', c: 3 }, { label: NAME.liver, value: 'liver', c: 2 }],
+    ask: T('Which organ is it?', 'أي عضو هذا؟'),
+    intro: T('Speed Round! I will say something about one organ. Is it the <b>mouth</b>, the <b>small intestine</b>, the <b>large intestine</b> or the <b>liver</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هقول معلومة عن عضو. هل هو <b>الفم</b> ولا <b>الأمعاء الدقيقة</b> ولا <b>الأمعاء الغليظة</b> ولا <b>الكبد</b>؟ اضغط على الزرار الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هقول معلومة عن عضو. هل هو <b>الفم</b> ولا <b>الأمعاء الدقيقة</b> ولا <b>الأمعاء الغليظة</b> ولا <b>الكبد</b>؟ اضغطي على الزرار الصح قبل ما الوقت يخلص. ٨ جولات!')),
+    think: T('Mouth, small intestine, large intestine or liver?', 'الفم، الأمعاء الدقيقة، الأمعاء الغليظة، أم الكبد؟'),
+    show: () => { sc.hi = null; g.paint(); }, reveal: it => { sc.hi = it.ans; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Today we follow a bite of food on its <b>journey</b> inside the body. Then we find out what saliva does, and where the nutrients go.`, P(`أهلًا يا <b>${g.name()}</b>! النهارده هنتتبَّع لقمة طعام في <b>رحلتها</b> داخل الجسم. وبعدين نكتشف وظيفة اللعاب، ونعرف العناصر الغذائية بتروح فين.`, `أهلًا يا <b>${g.name()}</b>! النهارده هنتتبَّع لقمة طعام في <b>رحلتها</b> داخل الجسم. وبعدين نكتشف وظيفة اللعاب، ونعرف العناصر الغذائية بتروح فين.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Master of digestion!', P('بقيت خبير الهضم!', 'بقيتي خبيرة الهضم!')),
+    text: T('Food goes from the mouth to the <b>food pipe</b>, the <b>stomach</b>, the <b>small intestine</b> and the <b>large intestine</b>. Saliva is a digestive juice that breaks down starch. The nutrients are mainly absorbed in the small intestine, and the blood carries them through the liver to the whole body.', 'ينتقل الطعام من الفم إلى <b>المريء</b>، ثم <b>المعدة</b>، ثم <b>الأمعاء الدقيقة</b>، ثم <b>الأمعاء الغليظة</b>. اللعاب عصارة هاضمة تكسِّر النشا. ويتم امتصاص العناصر الغذائية بشكل أساسي في الأمعاء الدقيقة، وينقلها الدم إلى الجسم بأكمله مرورًا بالكبد.') }
+}).catch(err => console.error(err));
+window.__foodtrip = { sc, render };
+})();
+</script>
+</body>
+</html>

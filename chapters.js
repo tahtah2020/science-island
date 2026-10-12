@@ -108,11 +108,21 @@ window.CHAPTERS = [
     map: { img: 'assets/map_g6c1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'assets/map_g6c1.svg', quizBg: 'assets/bg_g6c1.svg' },
 
-  { id: 'g6c2', grade: 'g6', n: 2, title: 'Respiration', titleAr: 'التنفس', icon: '🫁', tint: '#dff1f8', ready: false,
-    lessons: ['How Breathing Works', 'How Lungs Work'] },
+  { id: 'g6c2', grade: 'g6', n: 2, title: 'Respiration', titleAr: 'التنفس', icon: '🫁', tint: '#dff1f8', ready: true,
+    lessons: ['How Breathing Works', 'How Lungs Work'],
+    lessonsAr: ['كيف يحدث التنفس؟', 'كيف تعمل الرئتان؟'],
+    questions: 'questions_g6c2.js', questionsAr: 'questions_g6c2_ar.js', art: 'g6_body.js',
+    game: { href: 'breath.html', name: 'Breath Lab', nameAr: 'معمل التنفس', icon: '🫁', hint: 'Test the air you breathe out, then follow the oxygen into the blood!', hintAr: 'اختبر هواء الزفير بماء الجير، وتتبَّع الأكسجين لحد ما يوصل للدم!' },
+    map: { img: 'assets/map_g6c2.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'assets/map_g6c2.svg', quizBg: 'assets/bg_g6c2.svg' },
 
-  { id: 'g6c3', grade: 'g6', n: 3, title: 'Digestion', titleAr: 'الهضم', icon: '🍎', tint: '#fde3dc', ready: false,
-    lessons: ['Where Food Goes', 'The Function of Saliva', 'How Absorption Works'] },
+  { id: 'g6c3', grade: 'g6', n: 3, title: 'Digestion', titleAr: 'الهضم', icon: '🍎', tint: '#fde3dc', ready: true,
+    lessons: ['Where Food Goes', 'The Function of Saliva', 'How Absorption Works'],
+    lessonsAr: ['أين يذهب الطعام؟', 'وظيفة اللعاب', 'كيف يتم الامتصاص؟'],
+    questions: 'questions_g6c3.js', questionsAr: 'questions_g6c3_ar.js', art: 'g6_body.js',
+    game: { href: 'foodtrip.html', name: 'Food Journey', nameAr: 'رحلة الطعام', icon: '🍎', hint: 'Follow a bite of food through the body, then find out what saliva does!', hintAr: 'تتبَّع لقمة الطعام جوه الجسم، واكتشف وظيفة اللعاب!' },
+    map: { img: 'assets/map_g6c3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'assets/map_g6c3.svg', quizBg: 'assets/bg_g6c3.svg' },
 
   { id: 'g6c4', grade: 'g6', n: 4, title: 'Circulation and Excretion', titleAr: 'الدورة الدموية والإخراج', icon: '❤️', tint: '#fde3ea', ready: false,
     lessons: ['Heart and Blood', 'How the Kidneys Work', 'Various Organs'] },
@@ -146,5 +156,7 @@ window.EXAMS = [
   { id: 'oct', title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'ch1' }, { ch: 'ch2' }, { ch: 'ch3' }, { ch: 'ch4', lessons: [1], max: 1, chance: .5 }] },
   { id: 'g4m1', grade: 'g4', title: 'Monthly Test', titleAr: 'امتحان الشهر', icon: '📝',
-    parts: [{ ch: 'g4c1' }, { ch: 'g4c2' }, { ch: 'g4c3' }] }
+    parts: [{ ch: 'g4c1' }, { ch: 'g4c2' }, { ch: 'g4c3' }] },
+  { id: 'g6m1', grade: 'g6', title: 'Monthly Test', titleAr: 'امتحان الشهر', icon: '📝',
+    parts: [{ ch: 'g6c1' }, { ch: 'g6c2' }, { ch: 'g6c3' }] }
 ];
