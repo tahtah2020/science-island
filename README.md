@@ -51,13 +51,25 @@ Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2
 Where the two books differ, each file follows its own book: in the Arabic book the stage is «الشرنقة» and the adult comes out when «ينشق الغلاف الخارجي» (the English book says "the back splits open").
 
 ## Grade 6
-Chapter 1 of the first term, "Conditions for Burning" / «شروط الاحتراق», in English and Arabic, from the school book 2026/2027 (pages 6-17, the same pages in both books):
-- `questions_g6c1.js` / `_ar.js`: 18 ideas from the three lessons (how things burn and air, the role of oxygen, air after burning), plus 4 bonus ideas ("Let's Expand" and the Column "Combustion and Future Energy"). The Column differs between the two books, so its bonus questions use only what both books say
-- `g6_art.js`: the chapter's drawings made in code (candle, flame, bottomless jar on clay, jars of gas, limewater, the bar of the gases of the air) and its 4 tap pictures (`jarSetups`, `airBar`, `gasJars`, `limeJars`)
-- `flame.html` (Flame Lab), built on the Grade 4 game kit (`g4_game.js`): the candle in the jar with a lid, with a gap at the bottom, and with gaps at the top and the bottom; the components of air; a lit candle in jars of nitrogen, oxygen and carbon dioxide; the limewater test; Speed Round "which gas?". Only the teacher lights the candle, as in the book
-- `assets/map_g6c1.svg`, `assets/bg_g6c1.svg`: drawn by `tools/make_g6_maps.js`
-- No monthly test yet (one chapter). Chapters 2 to 10 are listed as "soon"
-The book prints no result for step 2 of the first experiment (a gap at the bottom while the lid is on). The game shows the flame going out, which is the standard result of this classroom experiment (air is replaced only when it can flow in and out).
+Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2026/2027 (page n is the same in both books):
+- Chapter 1 "Conditions for Burning" / «شروط الاحتراق» (pages 6-17): `questions_g6c1.js` / `_ar.js`, 18 ideas from the three lessons (how things burn and air, the role of oxygen, air after burning), plus 4 bonus ideas ("Let's Expand" and the Column "Combustion and Future Energy"). The Column differs between the two books, so its bonus questions use only what both books say
+- Chapter 2 "Respiration" / «التنفس» (pages 18-23): `questions_g6c2.js` / `_ar.js`, 15 ideas from the two lessons (how breathing works, how lungs work). The chapter has no "Let's Expand", so no bonus ideas
+- Chapter 3 "Digestion" / «الهضم» (pages 24-33): `questions_g6c3.js` / `_ar.js`, 20 ideas from the three lessons (where food goes, the function of saliva, how absorption works), plus 3 bonus ideas on the liver ("Let's Expand", page 33)
+- Idea letters (unique inside Grade 6): A, O, B, X (Chapter 1) · R, L (Chapter 2) · D, S, V, Y (Chapter 3)
+- `g6_art.js`: the Chapter 1 drawings (candle, flame, bottomless jar on clay, jars of gas, limewater, the bar of the gases of the air) and its tap pictures (`jarSetups`, `airBar`, `gasJars`, `limeJars`)
+- `g6_body.js`: the Chapter 2 and 3 drawings (plastic bags with limewater, the upper body with the windpipe and lungs, gas exchange zoomed in, a fish with gills, the digestive tract, test tubes, beaker, dropper, the wall of the small intestine with and without villi, cloths) and their tap pictures (`breathBags`, `airways`, `gasExchange`, `digestTract`, `salivaTubes`, `gutWalls`, `cloths`)
+- Games, all built on the Grade 4 game kit (`g4_game.js`):
+  - `flame.html` (Flame Lab): the candle in the jar with a lid, with a gap at the bottom, and with gaps at the top and the bottom; the components of air; a lit candle in jars of nitrogen, oxygen and carbon dioxide; the limewater test; Speed Round "which gas?". Only the teacher lights the candle, as in the book
+  - `breath.html` (Breath Lab): our breath and room air in two bags with limewater; the path of the air to the lungs (tap the nose and mouth, windpipe, lungs); gas exchange zoomed in; breathing out and fish gills; Speed Round "oxygen or carbon dioxide?"
+  - `foodtrip.html` (Food Journey): a bite of food from the mouth to the anus; the saliva experiment (starch, about 40 °C, iodine solution); the towel and the villi; where the nutrients go (blood, liver); Speed Round "which organ?"
+- Maps and backgrounds `assets/map_g6c1..3.svg`, `assets/bg_g6c1..3.svg`: drawn by `tools/make_g6_maps.js`
+- Reesho's Exam Hall: `g6m1`, the monthly test on Chapters 1, 2 and 3
+- Chapters 4 to 10 are listed as "soon"
+
+Notes for the science review:
+- Chapter 1: the book prints no result for step 2 of the first experiment (a gap at the bottom while the lid is on). The game shows the flame going out, which is the standard result of this classroom experiment (air is replaced only when it can flow in and out).
+- Chapter 2: the book does not print the result of the room-air bag. The tap question asks for "the bag that has less carbon dioxide" (the clear limewater), and "the air we breathe out has less oxygen" comes from "we take in some of the oxygen" and the Exercise on page 23.
+- Chapter 3: the English book says the liver's harmful substances are "eliminated in urine"; the Arabic book does not mention urine, so the bonus question uses only the common part. The English definition of digestion says "with teeth"; the Arabic one does not. The Arabic book names the test tubes «أ» (starch + water) and «ب» (starch + saliva); the English story question uses the same A and B.
 
 ## Question types
 Besides `mc`, `tf`, `fill`, `order`, `match` and `tap`, there are five exam-style types (they train the written questions of the school tests):
