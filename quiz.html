@@ -643,7 +643,7 @@ function ask(q) {
             b.classList.add('bad'); b.disabled = true; sfx.bad();
             q._wrong = q.type === 'tf' ? (oi === 0 ? T('True', 'صح') : T('False', 'خطأ')) : opts[oi];
             if (tries >= maxTries) { reveal(); finish(false, false); }
-            else { tryAgain(); addWhyBtn(q, $('#explain')); }   // Reesho can explain this wrong pick before the next try
+            else { tryAgain(); addWhyBtn(q, $('#explain'), true); }   // Reesho can explain this wrong pick before the next try
           }
         };
         wrap.appendChild(b); return b;
@@ -1031,7 +1031,7 @@ function addVoice(box, text, sig) {
   if (!SI.isMuted()) play();
 }
 
-function addWhyBtn(q, ex) {
+function addWhyBtn(q, ex, hint = false) {   // hint: the question is still open, so Reesho must not give the answer away
   const wrong = q._wrong; delete q._wrong;
   const b = mk('button', 'btn why-btn', T('🦜 Why is my answer wrong?', G('🦜 ليه إجابتي غلط؟', '🦜 ليه إجابتي غلط؟')));
   b.type = 'button';
@@ -1039,7 +1039,7 @@ function addWhyBtn(q, ex) {
     b.disabled = true; b.textContent = T('🦜 Reesho is thinking…', 'ريشو بيفكّر… 🦜');
     try {
       const res = await fetch(REESHO_API, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ qid: `${SI.chapterId() || 'ch1'}-${q.id}-${q.vi}`, question: q.q, chosen: wrong, correct: answerText(q), fact: q.explain || '',
+        body: JSON.stringify({ qid: `${SI.chapterId() || 'ch1'}-${q.id}-${q.vi}`, question: q.q, chosen: wrong, correct: answerText(q), fact: q.explain || '', hint,
           lang: AR ? 'ar' : 'en', gender: SI.gender() === 'f' ? 'girl' : 'boy' }) });
       const d = await res.json();
       if (!res.ok || !d.explanation) throw new Error(d.error || 'no_reply');
