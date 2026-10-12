@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heat Lab · Matter and Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="g4_game.css?v=20261013a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Heat Lab.</noscript>
+<script src="firebase-config.js?v=20261013a"></script>
+<script src="chapters.js?v=20261013a"></script>
+<script src="common.js?v=20261013a"></script>
+<script src="p2_art.js?v=20261013a"></script>
+<script src="g4_game.js?v=20261013a"></script>
+<script>
+(() => {
+'use strict';
+/* Heat Lab · the game of Prep 2, Unit 1 "Matter and Energy". Built on the shared game kit (g4_game.js).
+   Stage 1 (Warm Up): the particles of a solid, a liquid and a gas (book pages 3-7); then heat ice from −20 °C until the water boils and draw
+                      the heating curve while it happens: flat at 0 °C (melting) and at 100 °C (boiling) (pages 11-13).
+   Stage 2 (Missions): 1) open, closed or isolated system? (page 22)
+                       2) the heat race: same flame, same time: less water against more water, then oil against water (pages 24-28)
+                       3) a pot on a fire: tap where heat moves by conduction, convection and radiation (pages 32-37)
+   Stage 3 (Speed Round): conduction, convection or radiation? (pages 31-37)
+   Every T('English', 'عربي') has both languages (the unit opens for the Arabic track first). The Arabic science sentences follow the Arabic school book. */
+const A = window.P2ART, at = A.at, f1 = A.f1, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const ltr = s => '⁦' + s + '⁩';
+const deg = n => ltr(n + '°C');
+const L = (x, y, s, o) => A.ltrText(x, y, s, o);
+const W = (x, y, s, o) => A.label(x, y, s, o);
+const rr = (x, y, w, h, rx = 12) => `<rect class="ring" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const rc = (x, y, r) => `<circle class="ring" cx="${f1(x)}" cy="${f1(y)}" r="${f1(r)}"/>`;
+const AR = SI.isAr();
+const BG = '#eef6fb';
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'lens', t: 0, hi: null,                                   // Stage 1a: the three states
+  temp: -20, ice: 1, level: .55, boil: 0, pts: [[0, -20]], time: 0,        // Stage 1b: heating ice
+  sys: null,                                                               // Mission 1: systems
+  race: 'mass', ta: 20, tb: 20,                                            // Mission 2: the heat race
+  handle: 0 };                                                             // Mission 3: the pot on the fire
+
+/* Stage 1a: three big magnifiers of particles; in Arabic the solid is on the right */
+const KIND = ['solid', 'liquid', 'gas'];
+const LX = { solid: AR ? 340 : 80, liquid: 210, gas: AR ? 80 : 340 }, LY = 118, LR = 62;
+const NAME = { solid: T('Solid', 'صلب'), liquid: T('Liquid', 'سائل'), gas: T('Gas', 'غاز') };
+function lensScene() {
+  let s = `<rect width="420" height="280" fill="${BG}"/>`;
+  KIND.forEach(k => {
+    const on = sc.hi === k;
+    s += at(LX[k], LY, 1, A.lens(k, LR, { t: sc.t, r: 5.4, k: 'g' }));
+    if (on) s += `<circle cx="${LX[k]}" cy="${LY}" r="${LR + 6}" fill="none" stroke="#2e9e6b" stroke-width="5"/>`;
+    s += W(LX[k], LY + LR + 30, NAME[k], { fs: 17, fill: on ? '#2e9e6b' : '#1f3d57' });
+  });
+  return s;
+}
+const lensSpots = () => KIND.map((k, i) => ({ id: k, name: T(`View ${i + 1}`, `الصورة ${i + 1}`), ring: rc(LX[k], LY, LR + 4) }));
+/* a gentle, slow shake while the three magnifiers are on the screen (not when the player asked for less motion) */
+let loop = 0, last = 0;
+function shake(on) {
+  cancelAnimationFrame(loop);
+  if (!on || g.reduceMotion) return;
+  const step = now => { if (now - last > 60) { last = now; sc.t = (sc.t + .012) % 1; g.paint(); } loop = requestAnimationFrame(step); };
+  loop = requestAnimationFrame(step);
+}
+
+/* Stage 1b: a beaker of ice on a burner, a thermometer, a small magnifier, and the heating curve drawn as time goes by */
+const BX = AR ? 300 : 120, GX0 = AR ? 22 : 236, GW = 162, GY0 = 232, GH = 190, TMIN = -20, TMAX = 120, TEND = 9;
+const gy = t => GY0 - (t - TMIN) / (TMAX - TMIN) * GH, gx = time => GX0 + time / TEND * GW;
+function heatScene() {
+  let s = `<rect width="420" height="280" fill="${BG}"/>`;
+  const state = sc.ice > 0 ? (sc.ice < 1 ? 'mix' : 'solid') : 'liquid';
+  s += at(BX, 196, 1, A.burner(true));
+  s += at(BX, 199, 1, A.beaker({ w: 84, h: 100, fill: '#a9dcf5', level: sc.ice >= 1 ? 0 : sc.level * (1 - sc.ice * .8), ice: sc.ice > 0 ? Math.max(1, Math.round(sc.ice * 5)) : 0, bubbles: sc.boil ? 9 : 0, steam: sc.boil ? 3 : 0 }));
+  s += at(BX + 22, 186, 1, A.thermometer(sc.temp, { min: TMIN, max: TMAX, len: 128 }));
+  s += `<rect x="${BX - 52}" y="10" width="104" height="30" rx="15" fill="#ffffff" stroke="#c9d6e2" stroke-width="2"/>${L(BX, 31, `${Math.round(sc.temp)}°C`, { fs: 18, fill: sc.temp > 0 ? '#c4483a' : '#22679f' })}`;
+  /* the small magnifier: what the particles look like now */
+  const lk = sc.boil ? 'gas' : sc.ice >= 1 ? 'solid' : state === 'mix' ? 'solid' : 'liquid';
+  s += at(BX + (AR ? 72 : -72), 74, 1, A.lens(lk, 30, { r: 4, t: sc.time * .7, k: 'h' }));
+  /* the graph */
+  s += `<rect x="${GX0 - 12}" y="${GY0 - GH - 14}" width="${GW + 26}" height="${GH + 40}" rx="12" fill="#ffffff" stroke="#c9d6e2" stroke-width="2"/>
+    <path d="M${GX0} ${GY0 - GH - 4}V${GY0}H${GX0 + GW + 6}" stroke="#5b6976" stroke-width="2" fill="none"/>`;
+  [0, 100].forEach(t => { s += `<path d="M${GX0} ${f1(gy(t))}H${GX0 + GW}" stroke="#e1e8ef" stroke-width="1.4" stroke-dasharray="4 4"/>${L(GX0 + 4, gy(t) - 4, String(t), { fs: 11, anchor: 'start', fill: '#5b6976' })}`; });
+  s += L(GX0 + 4, GY0 - GH + 4, '°C', { fs: 11, anchor: 'start', fill: '#5b6976' }) + W(GX0 + GW, GY0 + 18, T('time', 'الزمن'), { fs: 11, anchor: 'end', fill: '#5b6976' });
+  if (sc.pts.length > 1) s += `<path d="M${sc.pts.map(([x, t]) => `${f1(gx(x))} ${f1(gy(t))}`).join('L')}" fill="none" stroke="#e0457b" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const p = sc.pts[sc.pts.length - 1]; s += `<circle cx="${f1(gx(p[0]))}" cy="${f1(gy(p[1]))}" r="5" fill="#e0457b"/>`;
+  return s;
+}
+
+/* Mission 1: three systems, numbered */
+const SX = AR ? [350, 210, 70] : [70, 210, 350], SYS = ['open', 'closed', 'isolated'];
+function sysScene() {
+  let s = `<rect width="420" height="280" fill="#f3f8fd"/><rect y="236" width="420" height="44" fill="#e3eaf1"/>`;
+  s += at(SX[0], 236, 1.05, A.boilingPot()) + at(SX[1], 236, 1.1, A.canInIce()) + at(SX[2], 236, 1.05, A.thermos());
+  SX.forEach((x, i) => { const on = sc.sys === SYS[i]; s += L(x, 264, `(${i + 1})`, { fs: 15, fill: on ? '#2e9e6b' : '#1f3d57' }); if (on) s += `<rect x="${x - 64}" y="24" width="128" height="224" rx="16" fill="none" stroke="#2e9e6b" stroke-width="4"/>`; });
+  return s;
+}
+const sysSpots = () => SYS.map((k, i) => ({ id: k, name: T(`Picture ${i + 1}`, `الصورة ${i + 1}`), ring: rr(SX[i] - 62, 26, 124, 220, 14) }));
+
+/* Mission 2: two beakers on two burners, same flame, with their thermometers */
+const RX = AR ? [300, 120] : [120, 300];   // [beaker A, beaker B]
+function raceScene() {
+  let s = `<rect width="420" height="280" fill="${BG}"/>`;
+  const cfg = sc.race === 'mass'
+    ? [{ lv: .8, fill: '#a9dcf5', name: T('More water', 'ماء أكثر') }, { lv: .3, fill: '#a9dcf5', name: T('Less water', 'ماء أقل') }]
+    : [{ lv: .55, fill: '#a9dcf5', name: T('Water', 'ماء') }, { lv: .55, fill: '#f6cf6a', line: '#d6a73a', name: T('Oil (same mass)', 'زيت (نفس الكتلة)') }];
+  [sc.ta, sc.tb].forEach((t, i) => {
+    const x = RX[i], c = cfg[i];
+    s += at(x, 196, 1, A.burner(true)) + at(x, 199, 1, A.beaker({ w: 84, h: 100, fill: c.fill, line: c.line, level: c.lv }));
+    s += at(x + 22, 186, 1, A.thermometer(t, { min: 0, max: 100, len: 128 }));
+    s += `<rect x="${x - 50}" y="12" width="100" height="28" rx="14" fill="#ffffff" stroke="#c9d6e2" stroke-width="2"/>${L(x, 32, `${Math.round(t)}°C`, { fs: 17, fill: '#c4483a' })}`;
+    s += W(x, 272, c.name, { fs: 14 });
+  });
+  return s;
+}
+
+/* Mission 3: the pot on the fire. In Arabic the handle points left */
+const PX = 200, PY = 168, FL = AR ? -1 : 1;
+function potScene() {
+  return `<rect width="420" height="280" fill="#fff8ef"/><g transform="translate(${PX} ${PY}) scale(${FL * 1.35} 1.35)">${A.potOnFire({ handleHeat: sc.handle })}</g>`;
+}
+const potSpots = () => [
+  { id: 'cond', name: T('The handle of the pot', 'يد الإناء'), ring: rr(PX + FL * 112 - 50, PY - 92, 100, 44) },
+  { id: 'conv', name: T('The curved arrows inside the water', 'الأسهم المنحنية داخل الماء'), ring: rr(PX - 74, PY - 74, 148, 70) },
+  { id: 'rad', name: T('The wavy lines coming out of the fire', 'الخطوط المتموجة الخارجة من النار'), ring: rr(PX - FL * 92 - 48, PY + 8, 96, 74) }
+];
+
+const render = () => ({ lens: lensScene, heat: heatScene, sys: sysScene, race: raceScene, pot: potScene })[sc.mode]();
+
+const g = G4Game({ ch: 'p2u1', logo: '🌡️', title: ['Heat Lab', 'معمل الحرارة'], sub: ['Unit 1 · Matter and Energy', 'الوحدة ١ · المادة والطاقة'],
+  bg: 'assets/bg_p2u1.svg', bgc: '#dcefff', label: ['Reesho’s heat lab', 'معمل الحرارة بتاع ريشو'], render });
+const kw = g.kw;
+
+/* move the heating on: temperature from a to b, time from t0 to t1 (and anything else in more) */
+function heatTo(ms, a, b, t0, t1, more) {
+  const n0 = sc.pts.length;
+  return g.tween(ms, k => {
+    sc.temp = a + (b - a) * k; sc.time = t0 + (t1 - t0) * k;
+    sc.pts.length = n0; sc.pts.push([sc.time, sc.temp]);
+    if (more) more(k);
+  });
+}
+
+/* ---------- Stage 1 · Warm Up: particles, then heating ice ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'lens', hi: null }); g.paint(); shake(true);
+  g.say(T(`Matter is anything that has mass and takes up space. Here are the ${kw('particles')} of matter in its three states, under my magnifier. Which one has a <b>fixed shape and a fixed volume</b>? Tap it.`,
+    P(`المادة هي كل ما له كتلة ويشغل حيزًا. دي ${kw('جسيمات')} المادة في حالاتها الثلاث تحت العدسة بتاعتي. أنهي حالة لها <b>شكل ثابت وحجم ثابت</b>؟ اضغط عليها.`, `المادة هي كل ما له كتلة ويشغل حيزًا. دي ${kw('جسيمات')} المادة في حالاتها الثلاث تحت العدسة بتاعتي. أنهي حالة لها <b>شكل ثابت وحجم ثابت</b>؟ اضغطي عليها.`)), 'point');
+  await g.spot(lensSpots(), 'solid', {
+    hint: T('Look for the particles packed tightly in rows.', P('دوّر على الجسيمات المتلاصقة في صفوف.', 'دوّري على الجسيمات المتلاصقة في صفوف.')),
+    ok: T(`The ${kw('solid')}: the forces of attraction between its particles are very strong, the spaces between them are very small, and they only vibrate in place.`, `${kw('المادة الصلبة')}: قوى التجاذب بين جسيماتها قوية جدًا، والمسافات البينية صغيرة جدًا، وتهتز الجسيمات في مواضعها دون أن تنتقل.`),
+    reveal: () => { sc.hi = 'solid'; } });
+  g.say(T('In which state do the particles move <b>randomly and completely freely</b>? Tap it.', P('في أنهي حالة الجسيمات بتتحرك <b>بطريقة عشوائية وبحرية تامة</b>؟ اضغط عليها.', 'في أنهي حالة الجسيمات بتتحرك <b>بطريقة عشوائية وبحرية تامة</b>؟ اضغطي عليها.')), 'think');
+  await g.spot(lensSpots(), 'gas', {
+    hint: T('Its particles are few and far apart.', 'جسيماتها قليلة ومتباعدة.'),
+    ok: T(`The ${kw('gas')}: the forces of attraction are very weak, so the gas spreads (diffusion) and takes the shape and the volume of its container.`, `${kw('الغاز')}: قوى التجاذب بين جسيماته ضعيفة جدًا، وهذا يفسر قدرته على الانتشار واتخاذه شكل وحجم الإناء الحاوي له.`),
+    reveal: () => { sc.hi = 'gas'; } });
+  g.say(T('And why can a liquid <b>flow</b> and take the shape of its container?', 'وليه السائل يقدر <b>ينساب</b> وياخد شكل الإناء؟'), 'think');
+  await g.choice({
+    options: [T('Its forces of attraction are fairly weak: its particles can move but still hold together', 'قوى التجاذب بين جسيماته ضعيفة نسبيًا تسمح بحرية الحركة لكنها كافية لتماسكها'), T('Its particles do not move at all', 'جسيماته لا تتحرك أبدًا'), T('There are no spaces between its particles', 'لا توجد مسافات بين جسيماته')],
+    correct: T('Its forces of attraction are fairly weak: its particles can move but still hold together', 'قوى التجاذب بين جسيماته ضعيفة نسبيًا تسمح بحرية الحركة لكنها كافية لتماسكها'),
+    hint: T('Its particles are close together, but not in rows.', 'جسيماته متقاربة بس مش مترتبة في صفوف.'),
+    ok: T(`Liquids and gases both flow, so together they are called ${kw('fluids')}.`, `السوائل والغازات تشترك في قابلية الانسياب، لذا تُصنف في مجموعة واحدة تُعرف ${kw('بالموائع')}.`),
+    reveal: () => { sc.hi = 'liquid'; } });
+  shake(false);
+
+  /* heating ice */
+  Object.assign(sc, { mode: 'heat', temp: -20, ice: 1, level: .55, boil: 0, pts: [[0, -20]], time: 0 }); g.paint();
+  g.say(T(`Now an experiment! A beaker of ice at ${deg(-20)}, a thermometer and a flame. Heat it gently and watch the thermometer and the graph.`, P(`دلوقتي تجربة! كأس فيها ثلج درجة حرارته ${deg(-20)}، وترمومتر، ولهب. سخّن بهدوء وبص على الترمومتر والرسم البياني.`, `دلوقتي تجربة! كأس فيها ثلج درجة حرارته ${deg(-20)}، وترمومتر، ولهب. سخّني بهدوء وبصي على الترمومتر والرسم البياني.`)), 'point');
+  await g.next(T('🔥 Heat ▸', P('🔥 سخّن ◂', '🔥 سخّني ◂')));
+  await heatTo(1600, -20, 0, 0, 1.4);
+  g.say(T(`The ice reached ${deg(0)} and starts to melt. Keep heating!`, P(`الثلج وصل ${deg(0)} وبدأ ينصهر. كمّل تسخين!`, `الثلج وصل ${deg(0)} وبدأ ينصهر. كمّلي تسخين!`)), 'think');
+  await g.next(T('🔥 Heat ▸', P('🔥 سخّن ◂', '🔥 سخّني ◂')));
+  await heatTo(2200, 0, 0, 1.4, 3.4, k => { sc.ice = 1 - k; });
+  g.say(T('We heated all the time, but the thermometer stayed at 0 until all the ice melted. Why?', 'إحنا كنا بنسخّن طول الوقت، بس الترمومتر فضل ثابت عند الصفر لحد ما الثلج انصهر كله. ليه؟'), 'think');
+  await g.choice({
+    options: [T('The heat weakens the forces of attraction between the particles', 'الطاقة الحرارية تعمل على إضعاف قوى التجاذب بين الجسيمات'), T('The flame went out', 'اللهب انطفأ'), T('The ice was losing heat', 'الثلج كان يفقد طاقة حرارية')],
+    correct: T('The heat weakens the forces of attraction between the particles', 'الطاقة الحرارية تعمل على إضعاف قوى التجاذب بين الجسيمات'),
+    hint: T('The flame was on all the time. Where did the heat go?', 'اللهب كان شغال طول الوقت. الحرارة راحت فين؟'),
+    ok: T(`While it melts, the temperature stays fixed: the heat gained ${kw('weakens the forces of attraction')}, so the solid turns into a liquid.`, `أثناء الانصهار تظل درجة الحرارة ثابتة، وتعمل الطاقة الحرارية المكتسبة على ${kw('إضعاف قوى التجاذب')} بين الجسيمات، لذا تتحول المادة من حالة إلى أخرى.`) });
+  g.say(T(`What is ${deg(0)} called for ice?`, `درجة ${deg(0)} بالنسبة للثلج اسمها إيه؟`), 'think');
+  await g.choice({
+    options: [T('The melting point', 'درجة (نقطة) الانصهار'), T('The boiling point', 'درجة (نقطة) الغليان'), T('Room temperature', 'درجة حرارة الغرفة')], correct: T('The melting point', 'درجة (نقطة) الانصهار'),
+    hint: T('At this temperature the solid turns into a liquid.', 'عند الدرجة دي الصلب بيتحول لسائل.'),
+    ok: T(`The ${kw('melting point')} of ice is ${deg(0)} at normal atmospheric pressure.`, `${kw('درجة انصهار')} الثلج ${deg(0)} عند الضغط الجوي المعتاد.`) });
+  g.say(T('Now we have water. Heat it more!', P('بقى عندنا ماء. سخّن أكتر!', 'بقى عندنا ماء. سخّني أكتر!')), 'point');
+  await g.next(T('🔥 Heat ▸', P('🔥 سخّن ◂', '🔥 سخّني ◂')));
+  await heatTo(2400, 0, 100, 3.4, 6);
+  g.say(T('Bubbles! The water is boiling. Look at the thermometer while it boils.', P('فقاعات! الماء بيغلي. بص على الترمومتر وهو بيغلي.', 'فقاعات! الماء بيغلي. بصي على الترمومتر وهو بيغلي.')), 'think');
+  await g.next(T('🔥 Heat ▸', P('🔥 سخّن ◂', '🔥 سخّني ◂')));
+  sc.boil = 1;
+  await heatTo(2200, 100, 100, 6, 8.6, k => { sc.level = .55 - .2 * k; });
+  g.say(T('At what temperature does pure water boil at normal atmospheric pressure?', 'عند أي درجة يغلي الماء النقي عند الضغط الجوي المعتاد؟'), 'think');
+  await g.choice({
+    options: [deg(100), deg(0), deg(50)], correct: deg(100),
+    hint: T('Read the flat top part of the graph.', P('اقرا الجزء الأفقي اللي فوق في الرسم.', 'اقري الجزء الأفقي اللي فوق في الرسم.')),
+    ok: T(`The ${kw('boiling point')} of water is ${deg(100)} at normal pressure, and the temperature stays fixed until all the water has evaporated.`, `${kw('درجة غليان')} الماء ${deg(100)} عند الضغط الجوي المعتاد، وتظل درجة الحرارة ثابتة للماء وبخاره حتى تمام التبخر.`) });
+  g.say(T('If we boiled the same water on top of a high mountain, its boiling point would…', 'لو غلّينا نفس الماء فوق جبل عالي، درجة غليانه…'), 'think');
+  await g.choice({
+    options: [T(`go below ${deg(100)}`, `تنخفض عن ${deg(100)}`), T(`go above ${deg(100)}`, `ترتفع عن ${deg(100)}`), T('stay the same', 'لا تتغير')], correct: T(`go below ${deg(100)}`, `تنخفض عن ${deg(100)}`),
+    hint: T('The air pressure is lower up there.', 'الضغط الجوي فوق الجبل أقل.'),
+    ok: T(`Lower pressure, lower boiling point: about ${deg(1)} less for every ${ltr('300 m')} of height. A pressure cooker does the opposite: higher pressure, higher boiling point.`, `كلما انخفض الضغط الجوي انخفضت درجة غليان الماء، بمقدار ${deg(1)} تقريبًا لكل ارتفاع ${ltr('300 m')}. والقدر الكاتم يزيد الضغط فيغلي الماء عند درجة أعلى.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  Object.assign(sc, { mode: 'sys', sys: null }); g.paint();
+  g.say(T(`Mission 1: ${kw('systems')}. A system is any part of the universe we study to watch its energy and matter change. Which of these is an <b>isolated</b> system? Tap it.`,
+    P(`المهمة الأولى: ${kw('النظام')}. النظام هو أي جزء من الكون يكون موضعًا للدراسة وملاحظة تغير الطاقة والمادة به. أنهي واحد فيهم <b>نظام معزول</b>؟ اضغط عليه.`, `المهمة الأولى: ${kw('النظام')}. النظام هو أي جزء من الكون يكون موضعًا للدراسة وملاحظة تغير الطاقة والمادة به. أنهي واحد فيهم <b>نظام معزول</b>؟ اضغطي عليه.`)), 'point');
+  await g.spot(sysSpots(), 'isolated', {
+    hint: T('It keeps a hot drink hot.', 'ده اللي بيحافظ على المشروب سخن.'),
+    ok: T(`The thermos is an ${kw('isolated system')}: no energy and no matter are exchanged with the surroundings.`, `حافظ الحرارة (الترمس) ${kw('نظام معزول')}: لا يحدث فيه تبادل للطاقة أو المادة مع الوسط المحيط.`),
+    reveal: () => { sc.sys = 'isolated'; } });
+  g.say(T('Which one is an <b>open</b> system? Tap it.', P('وأنهي واحد <b>نظام مفتوح</b>؟ اضغط عليه.', 'وأنهي واحد <b>نظام مفتوح</b>؟ اضغطي عليه.')), 'think');
+  await g.spot(sysSpots(), 'open', {
+    hint: T('Steam (matter) and heat (energy) both leave it.', 'البخار (مادة) والحرارة (طاقة) الاتنين بيخرجوا منه.'),
+    ok: T(`The open pot of boiling water is an ${kw('open system')}: energy and matter are exchanged with the surroundings.`, `الإناء المفتوح الذي به ماء يغلي ${kw('نظام مفتوح')}: يحدث فيه تبادل للطاقة والمادة مع الوسط المحيط.`),
+    reveal: () => { sc.sys = 'open'; } });
+  g.say(T('So the can of soft drink in ice is a closed system. Why?', 'يبقى عبوة المشروب الغازي في الثلج نظام مغلق. ليه؟'), 'think');
+  await g.choice({
+    options: [T('It exchanges energy but not matter', 'يحدث فيه تبادل للطاقة دون المادة'), T('It exchanges matter but not energy', 'يحدث فيه تبادل للمادة دون الطاقة'), T('It exchanges nothing', 'لا يحدث فيه تبادل للطاقة أو المادة')],
+    correct: T('It exchanges energy but not matter', 'يحدث فيه تبادل للطاقة دون المادة'),
+    hint: T('The drink gets cold, but nothing goes in or out of the can.', 'المشروب بيبرد، بس مفيش حاجة بتدخل أو تخرج من العلبة.'),
+    ok: T(`A ${kw('closed system')} exchanges energy, not matter, with its surroundings.`, `${kw('النظام المغلق')} يحدث فيه تبادل للطاقة دون المادة مع الوسط المحيط.`),
+    reveal: () => { sc.sys = 'closed'; } });
+}
+async function mission2() {
+  Object.assign(sc, { mode: 'race', race: 'mass', ta: 20, tb: 20 }); g.paint();
+  g.say(T(`Mission 2: the ${kw('heat race')}! Two beakers of water at ${deg(20)}, the same flame, the same time. One has more water, one has less. Which one will get hotter?`,
+    `المهمة التانية: ${kw('سباق الحرارة')}! كأسين فيهم ماء عند ${deg(20)}، ونفس اللهب، ونفس الوقت. واحدة فيها ماء أكتر وواحدة فيها ماء أقل. أنهي واحدة هتسخن أكتر؟`), 'think');
+  await g.choice({
+    options: [T('The beaker with less water', 'الكأس اللي فيها ماء أقل'), T('The beaker with more water', 'الكأس اللي فيها ماء أكثر'), T('They will be the same', 'هيبقوا زي بعض')], correct: T('The beaker with less water', 'الكأس اللي فيها ماء أقل'),
+    hint: T('The same heat is shared by fewer particles in one of them.', 'نفس الحرارة بتتوزع على جسيمات أقل في واحدة منهم.'),
+    ok: T(`The smaller the mass, the bigger the change in temperature: the heat is shared by ${kw('fewer particles')}, so their average kinetic energy goes up more.`, `التغير في درجة حرارة المادة يزداد كلما كانت الكتلة أقل، حيث تتوزع الطاقة الحرارية على ${kw('عدد أقل من الجسيمات')} فيزداد متوسط طاقة حركتها بمقدار أكبر.`),
+    reveal: () => g.tween(1800, k => { sc.ta = 20 + 22 * k; sc.tb = 20 + 52 * k; }) });
+  Object.assign(sc, { race: 'type', ta: 20, tb: 20 }); g.paint();
+  g.say(T(`Round 2: equal masses of water and oil at ${deg(20)}, the same flame, the same time. Which one will get hotter?`, `الجولة التانية: كتلتين متساويتين من الماء والزيت عند ${deg(20)}، ونفس اللهب، ونفس الوقت. أنهي واحد هيسخن أكتر؟`), 'think');
+  await g.choice({
+    options: [T('The oil', 'الزيت'), T('The water', 'الماء'), T('They will be the same', 'هيبقوا زي بعض')], correct: T('The oil', 'الزيت'),
+    hint: T('Different substances change temperature by different amounts.', 'المواد المختلفة بتسخن بمقادير مختلفة.'),
+    ok: T(`The oil gets hotter than an equal mass of water with the same heat. Water has a very high ${kw('specific heat')} (${ltr('4180 J/kg°C')}).`, `ترتفع درجة حرارة كتلة من الزيت بمقدار أكبر من كتلة مساوية لها من الماء عند اكتسابهما نفس الكمية من الطاقة الحرارية. فالماء ${kw('حرارته النوعية')} مرتفعة (${ltr('4180 J/kg°C')}).`),
+    reveal: () => g.tween(1800, k => { sc.ta = 20 + 18 * k; sc.tb = 20 + 46 * k; }) });
+  g.say(T('That is why water is used in the car radiator. What does a high specific heat let water do?', 'علشان كده بيستخدموا الماء في رادياتير العربية. الحرارة النوعية العالية بتخلي الماء يعمل إيه؟'), 'think');
+  await g.choice({
+    options: [T('Absorb a lot of heat without a big rise in temperature', 'يمتص كميات كبيرة من الطاقة الحرارية دون ارتفاع كبير في درجة حرارته'), T('Get hot very fast', 'يسخن بسرعة كبيرة'), T('Turn into ice fast', 'يتجمد بسرعة')],
+    correct: T('Absorb a lot of heat without a big rise in temperature', 'يمتص كميات كبيرة من الطاقة الحرارية دون ارتفاع كبير في درجة حرارته'),
+    hint: T('Think of the water that got hotter more slowly.', P('افتكر الماء اللي سخن أبطأ.', 'افتكري الماء اللي سخن أبطأ.')),
+    ok: T(`Water is an excellent liquid for ${kw('cooling')}: it absorbs large amounts of heat without a big rise in its temperature, so it protects the engine.`, `يُعد الماء سائلًا ممتازًا ${kw('للتبريد')}: يمتص كميات كبيرة من الطاقة الحرارية دون ارتفاع كبير في درجة حرارته، فيحمي محرك السيارة من التلف.`) });
+}
+async function mission3() {
+  Object.assign(sc, { mode: 'pot', handle: 0 }); g.paint();
+  g.say(T(`Mission 3: a pot of water on a fire. Heat moves in three ways. Tap where heat moves by ${kw('conduction')} (through a solid).`,
+    P(`المهمة التالتة: إناء فيه ماء على النار. الحرارة بتنتقل بتلات طرق. اضغط على المكان اللي الحرارة بتنتقل فيه ${kw('بالتوصيل')} (خلال جسم صلب).`, `المهمة التالتة: إناء فيه ماء على النار. الحرارة بتنتقل بتلات طرق. اضغطي على المكان اللي الحرارة بتنتقل فيه ${kw('بالتوصيل')} (خلال جسم صلب).`)), 'point');
+  await g.spot(potSpots(), 'cond', {
+    hint: T('Which part of the pot is a solid that gets hot from one end to the other?', 'أنهي جزء صلب في الإناء بيسخن من طرف للطرف التاني؟'),
+    ok: T(`The ${kw('handle')}: heat moves along the solid by conduction, as each particle vibrates and passes energy to its neighbour. That is why handles are made of plastic or wood.`, `${kw('يد الإناء')}: تنتقل الحرارة على امتداد الجسم الصلب بالتوصيل، حيث تهتز الجسيمات وتنقل جزءًا من طاقتها للجسيمات المجاورة. ولهذا تُصنع المقابض من البلاستيك أو الخشب.`),
+    reveal: () => { g.tween(1400, k => { sc.handle = k; }); } });
+  g.say(T(`Now tap where heat moves by ${kw('convection')} (with the moving particles of a fluid).`, P(`دلوقتي اضغط على المكان اللي الحرارة بتنتقل فيه ${kw('بالحمل')} (مع حركة جسيمات المائع).`, `دلوقتي اضغطي على المكان اللي الحرارة بتنتقل فيه ${kw('بالحمل')} (مع حركة جسيمات المائع).`)), 'think');
+  await g.spot(potSpots(), 'conv', {
+    hint: T('The water at the bottom gets hot and rises.', 'الماء اللي تحت بيسخن ويطلع لفوق.'),
+    ok: T(`The ${kw('convection currents')} in the water: hot water is less dense and rises, and cold water, which is denser, sinks to take its place.`, `${kw('تيارات الحمل')} في الماء: تقل كثافة الماء الساخن فيرتفع إلى أعلى، ويهبط الماء البارد ذو الكثافة الأعلى ليحل محله.`) });
+  g.say(T(`Last one: tap where heat moves by ${kw('radiation')}.`, P(`آخر واحدة: اضغط على المكان اللي الحرارة بتنتقل فيه ${kw('بالإشعاع')}.`, `آخر واحدة: اضغطي على المكان اللي الحرارة بتنتقل فيه ${kw('بالإشعاع')}.`)), 'think');
+  await g.spot(potSpots(), 'rad', {
+    hint: T('You feel it on your hands near the fire, without touching anything.', P('بتحس بيها على إيدك جنب النار من غير ما تلمس حاجة.', 'بتحسي بيها على إيدك جنب النار من غير ما تلمسي حاجة.')),
+    ok: T(`The ${kw('infrared rays')} from the fire: radiation needs no particles, so it even crosses empty space, like the heat of the Sun reaching the Earth.`, `${kw('الأشعة تحت الحمراء')} الخارجة من النار: الإشعاع لا يحتاج إلى جسيمات المادة، ولهذا تصل حرارة الشمس إلى الأرض عبر الفراغ.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: conduction, convection or radiation? ---------- */
+const WHY = {
+  cond: T('Heat moves through a solid, from particle to particle.', 'تنتقل الحرارة خلال الجسم الصلب من جسيم إلى الجسيم المجاور.'),
+  conv: T('Heat moves with the moving particles of a fluid: warm rises, cold sinks.', 'تنتقل الحرارة مع حركة جسيمات المائع: الدافئ يرتفع والبارد يهبط.'),
+  rad: T('Electromagnetic waves (infrared rays), even through empty space.', 'موجات كهرومغناطيسية (أشعة تحت حمراء) تنتقل حتى في الفراغ.')
+};
+const SPEED = [
+  { t: T('A metal spoon in a cup of hot tea gets hot', 'ملعقة معدنية في كوب شاي ساخن تسخن'), ans: 'cond' },
+  { t: T('The wax pins fall off a copper rod heated at one end', 'سقوط الدبابيس المثبتة بالشمع على ساق نحاس يُسخن طرفها'), ans: 'cond' },
+  { t: T('An object lying on a hot heater', 'جسم موضوع على سخان ساخن يلامسه'), ans: 'cond' },
+  { t: T('The metal handle of a pot gets hot', 'تسخن يد الإناء المعدنية'), ans: 'cond' },
+  { t: T('A heater on the floor warms the whole room', 'المدفأة على أرضية الغرفة تدفئ الغرفة كلها'), ans: 'conv' },
+  { t: T('The sea breeze in the daytime', 'نسيم البحر أثناء النهار'), ans: 'conv' },
+  { t: T('An eagle soars without flapping its wings', 'نسر يحلّق دون أن يرفّ بجناحيه'), ans: 'conv' },
+  { t: T('Hot water rises and cold water sinks in a pot on a fire', 'الماء الساخن يرتفع والبارد يهبط في إناء على النار'), ans: 'conv' },
+  { t: T('The heat of the Sun reaches the Earth through space', 'وصول حرارة الشمس إلى الأرض عبر الفراغ'), ans: 'rad' },
+  { t: T('A snake senses the warmth of its prey at night', 'الثعبان يستشعر حرارة جسم فريسته ليلًا'), ans: 'rad' },
+  { t: T('A thermograph camera takes pictures in the dark', 'الترموجراف يصوّر الأجسام في الظلام'), ans: 'rad' },
+  { t: T('You feel warm sitting in the sunshine', 'الإحساس بالدفء عند الجلوس في الشمس'), ans: 'rad' }
+].map(s => Object.assign(s, { why: WHY[s.ans] }));
+const WAY = ['cond', 'conv', 'rad'], WAY_NAME = { cond: T('Conduction', 'توصيل'), conv: T('Convection', 'حمل'), rad: T('Radiation', 'إشعاع') };
+async function stage3() {
+  Object.assign(sc, { mode: 'pot', handle: 0 }); g.paint();
+  const some = (k, n) => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, n);
+  await g.speedRound({
+    items: some('cond', 3).concat(some('conv', 3), some('rad', 3)), rounds: 9,
+    buttons: WAY.map((k, i) => ({ label: WAY_NAME[k], value: k, c: [0, 2, 3][i] })),
+    ask: T('Conduction, convection or radiation?', 'توصيل، حمل، أم إشعاع؟'),
+    intro: T('Speed Round! I describe how heat moves. Is it <b>conduction</b>, <b>convection</b> or <b>radiation</b>? Press the right button before time runs out. 9 rounds!', P('جولة السرعة! هقولك موقف بتنتقل فيه الحرارة. هل هو <b>توصيل</b> ولا <b>حمل</b> ولا <b>إشعاع</b>؟ اضغط على الزرار الصح قبل ما الوقت يخلص. ٩ جولات!', 'جولة السرعة! هقولك موقف بتنتقل فيه الحرارة. هل هو <b>توصيل</b> ولا <b>حمل</b> ولا <b>إشعاع</b>؟ اضغطي على الزرار الصح قبل ما الوقت يخلص. ٩ جولات!')),
+    think: T('Conduction, convection or radiation?', 'توصيل، حمل، أم إشعاع؟'),
+    reveal: it => { sc.handle = it.ans === 'cond' ? 1 : 0; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my heat lab. First we look at the <b>particles</b> of matter and heat ice until it boils. Then we sort <b>systems</b>, race two thermometers, and find how <b>heat moves</b>.`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت معمل الحرارة. الأول هنبص على <b>جسيمات</b> المادة ونسخّن ثلج لحد ما يغلي. وبعدين نصنّف <b>الأنظمة</b>، ونعمل سباق بين ترمومترين، ونعرف <b>الحرارة بتنتقل</b> إزاي.`, `أهلًا يا <b>${g.name()}</b>! نوّرتي معمل الحرارة. الأول هنبص على <b>جسيمات</b> المادة ونسخّن ثلج لحد ما يغلي. وبعدين نصنّف <b>الأنظمة</b>، ونعمل سباق بين ترمومترين، ونعرف <b>الحرارة بتنتقل</b> إزاي.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Master of heat!', P('بقيت خبير الحرارة!', 'بقيتي خبيرة الحرارة!')),
+    text: T('Matter changes state when it gains or loses heat; the temperature stays fixed while it melts or boils. The temperature is a measure of the <b>average kinetic energy</b> of the particles. Heat moves by <b>conduction</b>, <b>convection</b> and <b>radiation</b>.', 'تتحول المادة من حالة إلى أخرى عند اكتسابها أو فقدها طاقة حرارية، وتظل درجة الحرارة ثابتة أثناء الانصهار والغليان. ودرجة الحرارة مقياس <b>لمتوسط طاقة حركة</b> الجسيمات. وتنتقل الحرارة <b>بالتوصيل</b> و<b>الحمل</b> و<b>الإشعاع</b>.') }
+}).catch(err => console.error(err));
+window.__heat = { sc, render };
+})();
+</script>
+</body>
+</html>

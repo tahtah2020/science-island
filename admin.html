@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261012d">
+<link rel="stylesheet" href="common.css?v=20261013a">
 <style>
 /* Owner's page: what changed, and every question in English and Arabic side by side.
    "New" and "changed" are worked out on this device: each phrasing's content is remembered once you have seen it. */
@@ -105,10 +105,10 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     </div>
   </main>
 </div>
-<script src="firebase-config.js?v=20261012d"></script>
-<script src="chapters.js?v=20261012d"></script>
-<script src="changes.js?v=20261012d"></script>
-<script src="common.js?v=20261012d"></script>
+<script src="firebase-config.js?v=20261013a"></script>
+<script src="chapters.js?v=20261013a"></script>
+<script src="changes.js?v=20261013a"></script>
+<script src="common.js?v=20261013a"></script>
 <script>
 (async () => {
   'use strict';
@@ -184,9 +184,9 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     multi: 'اختر كل الصحيح', table: 'جدول مقارنة', fix: 'صوّب ما تحته خط', term: 'المصطلح العلمي', build: 'كوّن الإجابة', why: 'علّل', whatif: 'ماذا يحدث', function: 'ما وظيفة', define: 'ما المقصود' };
   const TAP = { in: 'العضلة الأمامية', out: 'العضلة الخلفية', shoulder: 'الكتف', elbow: 'الكوع', wrist: 'المعصم', skull: 'الجمجمة', ribs: 'الضلوع', backbone: 'العمود الفقري',
     coat: 'غلاف البذرة', embryo: 'الجنين (الجزء الصغير في الأعلى)', cotyledon: 'الفلقة (النصف الكبير)', ungerminated: 'البذرة التي لم تنبت', germinated: 'البذرة التي نبتت', A: 'الكوب (أ)', B: 'الكوب (ب)',
-    sprout: 'صورة النبات الصغير الجديد', flower: 'صورة النبات وعليه أزهار', fruit: 'صورة النبات وعليه ثمار', wither: 'صورة النبات الذابل والبذور', rock: 'فوق الصخرة تحت الشمس', crevice: 'داخل شق الصخرة', sand: 'على الرمال المكشوفة',
+    sprout: 'صورة النبات الصغير الجديد', flower: 'صورة النبات وعليه أزهار', fruit: 'صورة النبات وعليه ثمار', wither: 'صورة النبات الذابل والبذور', rock: 'فوق الصخرة تحت الشمس', crevice: 'داخل شق الصخرة', sand: 'على الرمال المكشوفة / محقن الرمل',
     /* Grade 6 (g6_art.js) */
-    closed: 'الوعاء المغطى بغطاء', open: 'الوعاء بدون غطاء', gaps: 'الوعاء بفتحتين (أعلى وأسفل)', n2: 'النيتروجين', o2: 'الأكسجين', co2: 'ثاني أكسيد الكربون', clear: 'ماء الجير الشفاف', milky: 'ماء الجير المتعكر الأبيض',
+    closed: 'الوعاء المغطى بغطاء / النظام المغلق', open: 'الوعاء بدون غطاء / النظام المفتوح', gaps: 'الوعاء بفتحتين (أعلى وأسفل)', n2: 'النيتروجين', o2: 'الأكسجين', co2: 'ثاني أكسيد الكربون', clear: 'ماء الجير الشفاف', milky: 'ماء الجير المتعكر الأبيض',
     /* Prep 1 (p1_art.js) */
     nucleus: 'النواة', electron: 'الإلكترون', proton: 'البروتون', neutron: 'النيوترون', K: 'المستوى K', L: 'المستوى L', M: 'المستوى M', N: 'المستوى N',
     s: 'الفئة s', p: 'الفئة p', d: 'الفئة d', f: 'الفئة f', g1: 'المجموعة 1A', g2: 'المجموعة 2A', g3: 'المجموعة 3A', g4: 'المجموعة 4A', g5: 'المجموعة 5A', g6: 'المجموعة 6A', g7: 'المجموعة 7A', g0: 'المجموعة 0',
@@ -196,7 +196,9 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     grass: 'بين الحشائش', stone: 'أسفل الحجر', nile: 'ضفاف نهر النيل', desert: 'الصحراء', ears: 'الأذنان', feet: 'القدمان', tail: 'الذيل', hole: 'الجُحر تحت الأرض', dune: 'فوق الكثيب الرملي',
     egg: 'البيضة', larva: 'اليرقة', pupa: 'الشرنقة', adult: 'الحشرة البالغة', head: 'الرأس', thorax: 'الصدر', abdomen: 'البطن', antennae: 'قرون الاستشعار', wings: 'الأجنحة', legs: 'الأرجل',
     grasshopper: 'الجرادة (٦ أرجل)', spider: 'العنكبوت', pillbug: 'قمل الخشب', sunflower: 'بذرة عبَّاد الشمس', chickpea: 'بذرة الحمص', fava: 'بذرة الفول', heap: 'تحت كومة تربة عالية', right: 'حفرة عمقها حوالي ١ سم', deep: 'حفرة عميقة جدًّا',
-    seedleaf: 'ورقة بذرية', trueleaf: 'ورقة حقيقية', bud: 'البرعم', leaves: 'الأوراق', stem: 'الساق', roots: 'الجذور' };
+    seedleaf: 'ورقة بذرية', trueleaf: 'ورقة حقيقية', bud: 'البرعم', leaves: 'الأوراق', stem: 'الساق', roots: 'الجذور',
+    solid: 'الحالة الصلبة', liquid: 'الحالة السائلة', gas: 'الحالة الغازية', air: 'محقن الهواء', water: 'محقن الماء', melt: 'سهم الانصهار', freeze: 'سهم التجمد', evap: 'سهم التبخر', cond: 'سهم التكثف / التوصيل', subl: 'سهم التسامي', depo: 'سهم التساقط',
+    melting: 'جزء الانصهار (عند 0)', boiling: 'جزء الغليان (عند 100)', isolated: 'النظام المعزول', metal: 'ملعقة المعدن', wood: 'ملعقة الخشب', plastic: 'ملعقة البلاستيك', rad: 'الإشعاع (1)', conv: 'الحمل (3)' };
   function answer(v, ar) {
     if (v.type === 'tf') return v.answer === 0 ? (ar ? 'صح' : 'True') : (ar ? 'خطأ' : 'False');
     if (v.type === 'mc' || v.type === 'fill') return v.options[v.answer];
@@ -255,8 +257,8 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     render();
   }
   const sel = $('#ch');
-  const GR = { g4: 'الصف الرابع', g5: 'الصف الخامس', g6: 'الصف السادس', p1: 'الصف الأول الإعدادي' };
-  SI.allChapters().filter(c => c.questions).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `${GR[SI.chGrade(c)] || ''} · ${SI.isUnits(c) ? 'الوحدة' : 'الفصل'} ${c.n} · ${c.titleAr || c.title}${c.ready ? '' : ' (لسه مقفول)'}`; sel.appendChild(o); });   // a chapter still being written can be reviewed here before it opens
+  const GR = { g4: 'الصف الرابع', g5: 'الصف الخامس', g6: 'الصف السادس', p1: 'الصف الأول الإعدادي', p2: 'الصف الثاني الإعدادي' };
+  SI.allChapters().filter(c => c.questions || c.questionsAr).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `${GR[SI.chGrade(c)] || ''} · ${SI.isUnits(c) ? 'الوحدة' : 'الفصل'} ${c.n} · ${c.titleAr || c.title}${c.ready ? '' : ' (لسه مقفول)'}`; sel.appendChild(o); });   // a chapter still being written can be reviewed here before it opens
   sel.onchange = () => loadChapter(sel.value);
   const setF = v => { onlyNew = v; $('#fNew').setAttribute('aria-pressed', v); $('#fAll').setAttribute('aria-pressed', !v); render(); };
   $('#fNew').onclick = () => setF(true); $('#fAll').onclick = () => setF(false);

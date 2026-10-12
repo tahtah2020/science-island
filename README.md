@@ -1,6 +1,6 @@
 # Science Island
 
-Educational games for Grade 4, Grade 5, Grade 6 and Prep 1 Science (Egyptian curriculum, Languages and Arabic tracks, first term). Reesho the parrot is the coach.
+Educational games for Grade 4, Grade 5, Grade 6, Prep 1 and Prep 2 Science (Egyptian curriculum, Languages and Arabic tracks, first term). Reesho the parrot is the coach.
 Players pick their grade once, then a chapter; every chapter has its own map, game, questions and Champions board.
 
 - `index.html`: home. Pick the grade, the track (Languages or Arabic) and type a first name
@@ -13,6 +13,7 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `habitat.html`, `butterfly.html`, `garden.html`: the games of Grade 4, Chapters 1 to 3 (see "Grade 4" below)
 - `flame.html`: Flame Lab, the game of Grade 6, Chapter 1 (see "Grade 6" below)
 - `atomlab.html`: Atom Lab, the game of Prep 1, Unit 1 (see "Prep 1" below)
+- `heatlab.html`: Heat Lab, the game of Prep 2, Unit 1 (see "Prep 2" below)
 - `quiz.html`: `#quest` (questions on the whole chapter), `#daily` (Daily 5), `#review` (spaced repetition) for the chosen chapter; `#exam=oct` is Reesho's Exam Hall (see below)
 - `champions.html`: this week's top 10 for the chosen chapter (resets every Saturday)
 - `questions.js`: Chapter 1, 23 ideas from the school book (all four lessons 1-1 to 1-4), each with 2-4 phrasings, plus 3 bonus ideas from the Column "The Camel" (`bonus: true`: one comes after the Boss round, never counts for the stars, not in Daily 5). Other chapters get their own file (`questions_ch2.js`, ...)
@@ -32,9 +33,9 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 Progress is saved per player on each device, separately for each chapter (XP and the daily streak are shared). Several children can share one device.
 
 ## Grades
-A player belongs to one grade (`players[id].grade`: `g4`, `g5`, `g6`, `p1`), chosen on the home page, and sees that grade's chapters and monthly test only.
+A player belongs to one grade (`players[id].grade`: `g4`, `g5`, `g6`, `p1`, `p2`), chosen on the home page, and sees that grade's chapters and monthly test only.
 In `chapters.js` a chapter or test carries `grade`; without it, it belongs to Grade 5 (the first grade the site had). Chapter ids are unique across grades
-(`ch1`… for Grade 5, `g4c1`… for Grade 4, `g6c1`… for Grade 6, `p1u1`… for Prep 1), so progress and the Champions boards stay separate. Idea ids (`M5`, `L2`…) are unique inside one grade and language only.
+(`ch1`… for Grade 5, `g4c1`… for Grade 4, `g6c1`… for Grade 6, `p1u1`… for Prep 1, `p2u1`… for Prep 2), so progress and the Champions boards stay separate. Idea ids (`M5`, `L2`…) are unique inside one grade and language only.
 `SI.grade()`, `SI.gradeName()`, `SI.chapters()` (this grade), `SI.allChapters()`, `SI.exams()` (this grade). The owner's preview opens every grade.
 
 ## Grade 4
@@ -119,6 +120,22 @@ The Prep 1 book is divided into **units** (not chapters), so for a `p1` player t
 
 Notes for the science review (Unit 1):
 - The book counts vitamin D among molecules with "several thousands" of atoms (it has about 70), so that idea uses only plastic polymers and hemoglobin.
+
+## Prep 2 (second year of preparatory school)
+Units, like Prep 1 (`UNIT_GRADES` in `common.js`). Unit 1 of the first term is open for the **Arabic track only**: it was written from the Arabic school book «اكتشف وتعلم» 2026/2027; the English book has not been added yet.
+A chapter now opens only in a language it has a questions file for (`chReady` in `common.js`), so a Languages-track Prep 2 player sees the unit as "Soon".
+- Unit 1 «المادة والطاقة» "Matter and Energy" (pages 2-38): `questions_p2u1_ar.js`, 35 ideas from the four lessons (states of matter, changes of state, internal energy and temperature, methods of heat transfer), 200 phrasings. No enrichment ideas: the "technology" and "integration" boxes are part of the lessons, so they are core questions
+- Idea letters (unique inside Prep 2): S, C, E, H (Unit 1). Boss ideas: S11, C10, E7, H7
+- `questMax: 24` in `chapters.js`, as in Prep 1
+- `p2_art.js`: the Prep 2 drawings (particles of the three states, beaker, burner, thermometer, syringes, pot on a fire, spoons, thermos, can in ice) and the tap pictures of Unit 1 (`particleStates`, `syringes`, `stateCycle`, `heatingCurve`, `systems3`, `spoons`, `heatPot`). Pictures with a left and a right are mirrored for an Arabic player (the solid on the right, as in the book); the axes of the heating curve stay left to right, as in the book
+- `heatlab.html` (Heat Lab), on the game kit (`g4_game.js`): the particles of a solid, a liquid and a gas; heat ice from −20 °C until it boils while the heating curve draws itself (flat at 0 °C and at 100 °C); open, closed or isolated system?; the heat race (less water against more water, oil against water, why water cools a car engine); a pot on a fire: tap conduction, convection and radiation; Speed Round "conduction, convection or radiation?". Every text has both languages, ready for the English book
+- Map and background `assets/map_p2u1.svg`, `assets/bg_p2u1.svg`: drawn by `tools/make_p2_maps.js`
+- Reesho's Exam Hall: `p2oct`, the October monthly test on Unit 1, lessons 1 to 3 (the same split as Prep 1; change `lessons` in `chapters.js` if the school's October plan differs)
+- Units 2 to 4 are listed as "soon"
+
+Notes for the science review (Unit 1):
+- The book prints no result for the iron and copper rods with wax pins (page 33); no question asks which rod drops its pins first. The copper-and-glass Boss question uses the lesson exercise on page 38 (glass is not a metal, so the copper pins fall first).
+- "In which processes does the kinetic energy of the particles increase?" follows the book's own exercise on page 13 (melting and evaporation).
 
 ## Releasing an update (cache stamp)
 Every page loads the shared files with a stamp, e.g. `common.js?v=20261010c`. On each release change the stamp in all pages

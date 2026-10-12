@@ -1,12 +1,13 @@
 /* Science Island · chapter list: Science, first term, Grades 4, 5 and 6 (Languages and Arabic tracks).
    A chapter opens for players when `ready` is true. To publish a new chapter, fill in:
-     grade     : 'g4' | 'g5' | 'g6' | 'p1'. A chapter without it belongs to Grade 5. A player sees the chapters of their own grade only.
-                 Chapter ids are unique on the whole site: Grade 5 uses ch1…, Grade 4 uses g4c1…, Grade 6 uses g6c1…, Prep 1 uses p1u1… (units)
+     grade     : 'g4' | 'g5' | 'g6' | 'p1' | 'p2'. A chapter without it belongs to Grade 5. A player sees the chapters of their own grade only.
+                 Chapter ids are unique on the whole site: Grade 5 uses ch1…, Grade 4 uses g4c1…, Grade 6 uses g6c1…, Prep 1 uses p1u1…, Prep 2 uses p2u1… (units)
      questMax  : optional: a long chapter asks only this many ideas in each Quest (all lessons and all Boss ideas are always in it)
      titleAr   : the chapter title in the Arabic school book (Arabic track)
      questions : file with that chapter's window.IDEAS (for example 'questions_ch2.js')
      questionsAr : the same questions in Arabic for the Arabic track (for example 'questions_ch2_ar.js')
-                   A chapter opens for Arabic-track players only when it has questionsAr.
+                   A chapter opens for Arabic-track players only when it has questionsAr, and for Languages-track players only when it has questions
+                   (Prep 2, Unit 1 has only the Arabic file for now).
      game      : the chapter's own interactive game { href, name, nameAr, icon, hint, hintAr }
      map       : { img, stops } - stop positions in percent of the picture, in this order:
                  game, Chapter Quest, Daily 5, Review, Champions  ->  [x, y, label side]
@@ -167,7 +168,29 @@ window.CHAPTERS = [
 
   { id: 'p1u4', grade: 'p1', n: 4, title: 'The (Earth - Sun - Moon) System', titleAr: 'نظام (الأرض - الشمس - القمر)', icon: '🌍', tint: '#e3ecfb', ready: false,
     lessons: ['The Earth and the Solar System', 'Lunar Eclipse'],
-    lessonsAr: ['الأرض والنظام الشمسي', 'خسوف القمر'] }
+    lessonsAr: ['الأرض والنظام الشمسي', 'خسوف القمر'] },
+
+  /* ---------- Prep 2 (second preparatory, school book "Discover and Learn", 4 units in the first term) ----------
+     Units, like Prep 1. Unit 1 has its Arabic questions only (the English book has not been added yet), so it opens for the Arabic track. */
+  { id: 'p2u1', grade: 'p2', n: 1, title: 'Matter and Energy', titleAr: 'المادة والطاقة', icon: '🌡️', tint: '#dcefff', ready: true,
+    lessons: ['States of Matter', 'Changes of State', 'Internal Energy and Temperature', 'Methods of Heat Transfer'],
+    lessonsAr: ['حالات المادة', 'تغير حالات المادة', 'الطاقة الداخلية ودرجة الحرارة', 'طرق انتقال الحرارة'],
+    questionsAr: 'questions_p2u1_ar.js', art: 'p2_art.js', questMax: 24,
+    game: { href: 'heatlab.html', name: 'Heat Lab', nameAr: 'معمل الحرارة', icon: '🌡️', hint: 'Heat ice until it boils, watch the particles and race two thermometers!', hintAr: 'سخّن الثلج لحد ما يغلي، وشوف الجسيمات، واعمل سباق بين ترمومترين!' },
+    map: { img: 'assets/map_p2u1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'assets/map_p2u1.svg', quizBg: 'assets/bg_p2u1.svg' },
+
+  { id: 'p2u2', grade: 'p2', n: 2, title: 'Matter and Chemical Reactions', titleAr: 'المادة والتفاعلات الكيميائية', icon: '⚗️', tint: '#efe3fb', ready: false,
+    lessons: ['Chemical Reactions', 'The Chemical Equation', 'Nutrition Chemistry'],
+    lessonsAr: ['التفاعلات الكيميائية', 'المعادلة الكيميائية', 'كيمياء التغذية'] },
+
+  { id: 'p2u3', grade: 'p2', n: 3, title: 'Energy Flow in Photosynthesis and Cellular Respiration', titleAr: 'تدفق الطاقة في عمليتي البناء الضوئي والتنفس الخلوي', icon: '🌿', tint: '#e2f4dc', ready: false,
+    lessons: ['Photosynthesis', 'Cellular Respiration'],
+    lessonsAr: ['عملية البناء الضوئي', 'عملية التنفس الخلوي'] },
+
+  { id: 'p2u4', grade: 'p2', n: 4, title: 'Geological Processes', titleAr: 'العمليات الجيولوجية', icon: '🏔️', tint: '#e3ecfb', ready: false,
+    lessons: ['Changing the Earth’s Surface', 'Formation of Minerals and Soil'],
+    lessonsAr: ['تغير سطح الأرض', 'تكوين المعادن والتربة'] }
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.
@@ -185,5 +208,7 @@ window.EXAMS = [
   { id: 'g6m1', grade: 'g6', title: 'Monthly Test', titleAr: 'امتحان الشهر', icon: '📝',
     parts: [{ ch: 'g6c1' }, { ch: 'g6c2' }, { ch: 'g6c3' }] },
   { id: 'p1oct', grade: 'p1', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
-    parts: [{ ch: 'p1u1', lessons: [1, 2, 3] }] }
+    parts: [{ ch: 'p1u1', lessons: [1, 2, 3] }] },
+  { id: 'p2oct', grade: 'p2', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'p2u1', lessons: [1, 2, 3] }] }
 ];

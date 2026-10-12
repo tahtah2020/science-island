@@ -72,13 +72,13 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      quest and game (best, stars, plays), cards (review schedule), lastVar (last phrasing), dailyLast */
   /* grades: a player belongs to one grade (chosen on the home page) and sees that grade's chapters and tests only.
      A chapter or test without `grade` in chapters.js belongs to Grade 5, the first grade the site had. */
-  const GRADES = { g4: ['Grade 4', 'الصف الرابع'], g5: ['Grade 5', 'الصف الخامس'], g6: ['Grade 6', 'الصف السادس'], p1: ['Prep 1', 'الصف الأول الإعدادي'] };
+  const GRADES = { g4: ['Grade 4', 'الصف الرابع'], g5: ['Grade 5', 'الصف الخامس'], g6: ['Grade 6', 'الصف السادس'], p1: ['Prep 1', 'الصف الأول الإعدادي'], p2: ['Prep 2', 'الصف الثاني الإعدادي'] };
   const grade = () => ((player() || {}).grade || 'g5');
   const chGrade = c => (c && c.grade) || 'g5';
   const gradeName = g => { const n = GRADES[g || grade()] || GRADES.g5; return T(n[0], n[1]); };
   /* the preparatory-stage books are made of units («الوحدة»), not chapters («الفصل»): the pages name them the way the book does.
      c = a chapter (its grade decides); without it the player's grade decides */
-  const UNIT_GRADES = { p1: true };
+  const UNIT_GRADES = { p1: true, p2: true };
   const isUnits = c => !!UNIT_GRADES[c ? chGrade(c) : grade()];
   const chWord = c => (isUnits(c) ? T('Unit', 'الوحدة') : T('Chapter', 'الفصل'));
   const chWords = c => (isUnits(c) ? T('Units', 'الوحدات') : T('Chapters', 'الفصول'));
@@ -98,7 +98,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
   /* open for this player: marked ready, in the player's grade (the owner may look at every grade),
      and for the Arabic track it also needs its Arabic questions */
-  function chReady(c) { return !!(c && c.ready && (!isAr() || c.questionsAr) && (chGrade(c) === grade() || isOwner())); }
+  function chReady(c) { return !!(c && c.ready && (isAr() ? c.questionsAr : c.questions) && (chGrade(c) === grade() || isOwner())); }   // a chapter opens only in a language it has questions for
   function chProf(id) { id = id || chapterId(); return ((prof().ch || {})[id]) || {}; }
   function updateChProf(fn, id) {
     id = id || chapterId(); if (!id) return {};
@@ -516,8 +516,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      Counts page views with approximate location only. No player names are sent, and the data
      is not used for advertising. Runs on the published site only, not on local copies. */
   const GA_ID = 'G-XP595P45PX';
-  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
-    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall', 'quiz.html#exam=g6m1': 'Exam Hall', 'quiz.html#exam=p1oct': 'Exam Hall' };
+  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'heatlab.html': 'Heat Lab', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
+    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall', 'quiz.html#exam=g6m1': 'Exam Hall', 'quiz.html#exam=p1oct': 'Exam Hall', 'quiz.html#exam=p2oct': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
     return PAGE_NAMES[file + location.hash] || PAGE_NAMES[file] || document.title;

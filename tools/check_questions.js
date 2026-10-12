@@ -15,6 +15,9 @@ const TAPS = { armBent: ['in', 'out'], armStraight: ['in', 'out'], armJoints: ['
   atomParts: ['nucleus', 'electron', 'proton', 'neutron'], energyLevels: ['K', 'L', 'M', 'N'], ptBlocks: ['s', 'p', 'd', 'f'],
   ptGroups: ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g0'], particleBoxes: ['element', 'compound', 'mixture'], mixBeakers: ['hetero', 'homo'],
   bondTypes: ['ionic', 'single', 'double', 'triple'], carbonShapes: ['straight', 'branched', 'cyclic'],
+  /* Prep 2 (p2_art.js) */
+  particleStates: ['solid', 'liquid', 'gas'], syringes: ['air', 'water', 'sand'], stateCycle: ['melt', 'freeze', 'evap', 'cond', 'subl', 'depo'],
+  heatingCurve: ['solid', 'melting', 'liquid', 'boiling', 'gas'], systems3: ['open', 'closed', 'isolated'], spoons: ['metal', 'wood', 'plastic'], heatPot: ['rad', 'cond', 'conv'],
   /* Grade 4 (g4_art.js) */
   hidePlaces: ['grass', 'stone', 'rock', 'sand'], nileDesert: ['nile', 'desert'], fennec: ['ears', 'feet', 'tail'], desertDay: ['hole', 'sand', 'dune'],
   butterflyStages: ['egg', 'larva', 'pupa', 'adult'], insectBody: ['head', 'thorax', 'abdomen'], insectSide: ['antennae', 'wings', 'legs'], whoIsInsect: ['grasshopper', 'spider', 'pillbug'],
