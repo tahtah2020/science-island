@@ -142,7 +142,17 @@ Notes for the science review (Unit 1):
 
 ## Releasing an update (cache stamp)
 Every page loads the shared files with a stamp, e.g. `common.js?v=20261010c`. On each release change the stamp in all pages
-(one search-and-replace of the old stamp). Without it, phones may keep an old cached `common.js` next to new pages and the site breaks.
+(`node tools/release.js` does it). Without it, phones may keep an old cached `common.js` next to new pages and the site breaks.
+
+## Owner scripts (tools/)
+Run from the site folder. Each prints what it did; none of them commits.
+- `node tools/check_questions.js`: checks every questions file (answers, tap targets, ids, English/Arabic parity). Must end with "all good".
+- `node tools/new_chapter.js p2u2 [--lang ar] [--game reactlab.html --name "Reaction Lab|معمل التفاعلات" --icon ⚗️]`: for a chapter already listed in `chapters.js`, shows the idea letters free in its grade, creates the empty questions files with the rules and a template, adds `questions` / `questionsAr` / `art` / `questMax` (and `game`, `map`, `cover`, `quizBg`) to its entry, creates a game page on the kit and its `PAGE_NAMES` line, and lists what is left by hand. Never overwrites a file, never sets `ready: true`.
+- `node tools/smoke_test.js p2u1 [--lang ar] [--quick] [--game-only] | --all`: renders every phrasing at 390×844, 844×390 and 1366×768 (only the phone with `--quick`) and plays the chapter's game to the results panel. Prints only problems and saves their screenshots in `tools/smoke_out/` (ignored by git). A chapter under test opens even before `ready: true`. The three older games (`arm.html`, `seasons.html`, `seedlab.html`) are only opened and checked for errors.
+- `node tools/coverage.js p2u1 [--lang en] [--book 14,9,11,12] [--left "…"]`: the coverage report in Arabic Markdown, counted from the files: ideas and phrasings per lesson next to the book's count, every concept with its question types, timed share and levels, and the concepts left out. `node tools/coverage.js --all` gives one line per chapter.
+- `node tools/release.js [--title "…" --item "…" --link "label|href|ch"] [--dry]`: runs the questions check (stops on a problem), sets today's stamp in every page and adds the `changes.js` entry.
+
+Usual order for a new chapter: `new_chapter.js` → write the ideas and the game → `check_questions.js` → `smoke_test.js` → `ready: true` → `release.js` → `coverage.js` for the report → README → commit and push.
 
 ## Owner tools
 - `admin.html`: the owner's page (not linked from the game). Google sign-in; only the owner's account passes (same Firestore rule as reviews.html: reading `feedback`). "آخر التعديلات" lists recent changes from `changes.js` with direct links; below it every question of a chapter in English and Arabic side by side. New and changed phrasings are marked on this device (it remembers what you have already seen; "علّمت الكل كمتشاف" resets the marks).
