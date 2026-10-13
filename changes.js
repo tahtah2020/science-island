@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-13', title: 'الصف الثاني الإعدادي: أسئلة الكتاب الناقصة في الدرس الرابع',
+    items: [
+      { text: 'فكرة جديدة H8 «الحرارة ودرجة الحرارة، والخلط حتى الاتزان» بأربع صياغات: علّل اختلاف الحرارة عن درجة الحرارة، واختيار الرسم البياني عند خلط ماء ٤٠ درجة مع ماء ٥ درجات (صورة جديدة بأربعة رسوم)، وأي الجسمين (X) و(Y) متوسط طاقة حركة جسيماته أكبر. كلها من أسئلة الكتاب صفحتي ٣٦ و٣٨.', links: [{ label: 'الرسوم الأربعة', href: 'quiz.html#preview=H8.2&lang=ar', ch: 'p2u1' }, { label: 'علّل', href: 'quiz.html#preview=H8.1&lang=ar', ch: 'p2u1' }] }
+    ] },
   { date: '2026-10-13', title: 'الصف الثاني الإعدادي: الوحدة الأولى «المادة والطاقة» (عربي) + امتحان شهر أكتوبر',
     items: [
       { text: 'زرار «الصف الثاني الإعدادي» في الصفحة الرئيسية. زي أولى إعدادي، الموقع بيقول «الوحدة» و«تحدي الوحدة». الوحدة الأولى مفتوحة للمسار العربي، والوحدات ٢ و٣ و٤ «قريبًا».', links: [{ label: 'الرئيسية', href: 'index.html' }] },

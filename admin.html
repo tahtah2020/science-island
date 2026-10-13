@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261013a">
+<link rel="stylesheet" href="common.css?v=20261013b">
 <style>
 /* Owner's page: what changed, and every question in English and Arabic side by side.
    "New" and "changed" are worked out on this device: each phrasing's content is remembered once you have seen it. */
@@ -105,10 +105,10 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     </div>
   </main>
 </div>
-<script src="firebase-config.js?v=20261013a"></script>
-<script src="chapters.js?v=20261013a"></script>
-<script src="changes.js?v=20261013a"></script>
-<script src="common.js?v=20261013a"></script>
+<script src="firebase-config.js?v=20261013b"></script>
+<script src="chapters.js?v=20261013b"></script>
+<script src="changes.js?v=20261013b"></script>
+<script src="common.js?v=20261013b"></script>
 <script>
 (async () => {
   'use strict';
@@ -198,7 +198,7 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     grasshopper: 'الجرادة (٦ أرجل)', spider: 'العنكبوت', pillbug: 'قمل الخشب', sunflower: 'بذرة عبَّاد الشمس', chickpea: 'بذرة الحمص', fava: 'بذرة الفول', heap: 'تحت كومة تربة عالية', right: 'حفرة عمقها حوالي ١ سم', deep: 'حفرة عميقة جدًّا',
     seedleaf: 'ورقة بذرية', trueleaf: 'ورقة حقيقية', bud: 'البرعم', leaves: 'الأوراق', stem: 'الساق', roots: 'الجذور',
     solid: 'الحالة الصلبة', liquid: 'الحالة السائلة', gas: 'الحالة الغازية', air: 'محقن الهواء', water: 'محقن الماء', melt: 'سهم الانصهار', freeze: 'سهم التجمد', evap: 'سهم التبخر', cond: 'سهم التكثف / التوصيل', subl: 'سهم التسامي', depo: 'سهم التساقط',
-    melting: 'جزء الانصهار (عند 0)', boiling: 'جزء الغليان (عند 100)', isolated: 'النظام المعزول', metal: 'ملعقة المعدن', wood: 'ملعقة الخشب', plastic: 'ملعقة البلاستيك', rad: 'الإشعاع (1)', conv: 'الحمل (3)' };
+    melting: 'جزء الانصهار (عند 0)', boiling: 'جزء الغليان (عند 100)', isolated: 'النظام المعزول', metal: 'ملعقة المعدن', wood: 'ملعقة الخشب', plastic: 'ملعقة البلاستيك', rad: 'الإشعاع (1)', conv: 'الحمل (3)', mixA: 'الرسم (أ): يتقابلان في المنتصف', mixB: 'الرسم (ب)', mixC: 'الرسم (ج)', mixD: 'الرسم (د)' };
   function answer(v, ar) {
     if (v.type === 'tf') return v.answer === 0 ? (ar ? 'صح' : 'True') : (ar ? 'خطأ' : 'False');
     if (v.type === 'mc' || v.type === 'fill') return v.options[v.answer];

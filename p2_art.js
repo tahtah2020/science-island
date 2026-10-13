@@ -5,7 +5,7 @@
    window.P2ART = the drawings; window.CH_DIAGRAMS gets the tap pictures:
      Unit 1: particleStates (solid | liquid | gas) · syringes (air | water | sand) · stateCycle (melt | freeze | evap | cond | subl | depo)
              heatingCurve (solid | melting | liquid | boiling | gas) · systems3 (open | closed | isolated) · spoons (metal | wood | plastic)
-             heatPot (rad | cond | conv)
+             heatPot (rad | cond | conv) · mixGraphs (mixA | mixB | mixC | mixD)
    The names read by screen readers describe what is drawn, never the answer. */
 (function () {
   'use strict';
@@ -274,6 +274,33 @@
       ${hot('conv', T('Number 3', 'الرقم 3'), ringRect(cx - 54, 76, 108, 52))}</svg>`;
   }
 
+  /* four small graphs (أ ب ج د) of two equal amounts of water, A at 40 °C and B at 5 °C, after they are mixed.
+     mixA: they meet in the middle and stay there (right) · mixB: they cross and swap · mixC: both stay as they were · mixD: they get closer but never meet */
+  function mixGraphs() {
+    const W = 150, H = 92, pos = AR() ? [[178, 8], [12, 8], [178, 112], [12, 112]] : [[12, 8], [178, 8], [12, 112], [178, 112]];
+    const tags = ['أ', 'ب', 'ج', 'د'], tagsEn = ['a', 'b', 'c', 'd'], ids = ['mixA', 'mixB', 'mixC', 'mixD'];
+    const yT = t => 78 - t / 45 * 66, xT = m => 26 + m / 45 * 116;
+    const curve = (pts, col, dash) => `<path d="M${pts.map(([m, t]) => `${f1(xT(m))} ${f1(yT(t))}`).join('L')}" fill="none" stroke="${col}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"${dash ? ' stroke-dasharray="5 4"' : ''}/>`;
+    const ease = (a, b, k) => b + (a - b) * Math.exp(-k);
+    const lines = {
+      mixA: [Array.from({ length: 10 }, (_, i) => [i * 5, ease(40, 22.5, i * .7)]), Array.from({ length: 10 }, (_, i) => [i * 5, ease(5, 22.5, i * .7)])],
+      mixB: [Array.from({ length: 10 }, (_, i) => [i * 5, 40 - 30 * (1 - Math.exp(-i * .5))]), Array.from({ length: 10 }, (_, i) => [i * 5, 5 + 32 * (1 - Math.exp(-i * .5))])],
+      mixC: [[[0, 40], [45, 40]], [[0, 30], [45, 30]]],
+      mixD: [Array.from({ length: 10 }, (_, i) => [i * 5, ease(40, 30, i * .7)]), Array.from({ length: 10 }, (_, i) => [i * 5, ease(5, 15, i * .7)])]
+    };
+    let s = `${svgOpen(210, T('Four small graphs of temperature against time for two amounts of water, A (solid line) and B (dashed line), labelled a, b, c and d', 'أربعة رسوم بيانية صغيرة لدرجة الحرارة مع الزمن لكميتين من الماء: A (خط متصل) و B (خط متقطع)، مرقمة أ و ب و ج و د'))}${frame(210, '#fbfdff')}`;
+    ids.forEach((id, i) => {
+      const [x, y] = pos[i];
+      s += at(x, y, 1, `<rect width="${W}" height="${H}" rx="10" fill="#ffffff" stroke="#c9d6e2" stroke-width="2"/>
+        <path d="M26 10V78H144" fill="none" stroke="#5b6976" stroke-width="1.6"/>${[0, 20, 40].map(t => ltrText(22, yT(t) + 3.5, String(t), { fs: 8.5, anchor: 'end', fill: '#5b6976' })).join('')}
+        ${curve(lines[id][0], '#e5533d')}${curve(lines[id][1], '#3f93db', true)}
+        ${ltrText(146, yT(lines[id][0][lines[id][0].length - 1][1]) - 3, 'A', { fs: 9, anchor: 'end', fill: '#c4483a' })}${ltrText(146, yT(lines[id][1][lines[id][1].length - 1][1]) + 10, 'B', { fs: 9, anchor: 'end', fill: '#22679f' })}
+        <circle cx="${AR() ? W - 12 : 12}" cy="12" r="10" fill="#fff8ea" stroke="#e6c483" stroke-width="1.6"/>${label(AR() ? W - 12 : 12, 16.5, T(tagsEn[i], tags[i]), { fs: 11.5 })}`);
+    });
+    ids.forEach((id, i) => { const [x, y] = pos[i]; s += hot(id, T(`Graph ${tagsEn[i]}`, `الرسم ${tags[i]}`), ringRect(x - 3, y - 3, W + 6, H + 6, 12)); });
+    return s + '</svg>';
+  }
+
   window.P2ART = { at, f1, esc, ltrText, label, COL, rng, dot, particlePlaces, particles, lens, beaker, steam, burner, thermometer, syringe, potOnFire, spoon, thermos, canInIce, boilingPot, cY, CURVE };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { particleStates, syringes, stateCycle, heatingCurve, systems3, spoons, heatPot });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { particleStates, syringes, stateCycle, heatingCurve, systems3, spoons, heatPot, mixGraphs });
 })();
