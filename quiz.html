@@ -374,9 +374,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261013c"></script>
-<script src="chapters.js?v=20261013c"></script>
-<script src="common.js?v=20261013c"></script>
+<script src="firebase-config.js?v=20261013d"></script>
+<script src="chapters.js?v=20261013d"></script>
+<script src="common.js?v=20261013d"></script>
 <script>
 (() => {
 'use strict';
@@ -1017,6 +1017,9 @@ const ideaById = id => window.IDEAS.find(I => I.id === id);
 
 /* ---------- "Why was I wrong?": Reesho explains a wrong answer (Claude, through the reesho-api worker) ---------- */
 const REESHO_API = 'https://reesho-api.ahmadtahoon2020.workers.dev/';
+/* Switch: false hides the "Why is my answer wrong?" button, Reesho's written explanation and its spoken voice
+   (paused 2026-10-13: the explanations had science mistakes and the voice mispronounced Arabic). true turns it back on. */
+const REESHO_EXPLAIN_ON = false;
 /* Reesho reads his explanation aloud in his own voice (ElevenLabs, through the same worker); plays by itself unless sound is off */
 function stopReeshoVoice() { try { if (window.__reeshoAudio) window.__reeshoAudio.pause(); } catch (e) {} window.__reeshoAudio = null; }
 function addVoice(box, text, sig) {
@@ -1037,6 +1040,7 @@ function addVoice(box, text, sig) {
 
 function addWhyBtn(q, ex, hint = false) {   // hint: the question is still open, so Reesho must not give the answer away
   const wrong = q._wrong; delete q._wrong;
+  if (!REESHO_EXPLAIN_ON) return;
   const b = mk('button', 'btn why-btn', T('🦜 Why is my answer wrong?', G('🦜 ليه إجابتي غلط؟', '🦜 ليه إجابتي غلط؟')));
   b.type = 'button';
   b.onclick = async () => {

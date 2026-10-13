@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-13', title: 'إيقاف شرح ريشو وصوته مؤقتًا',
+    items: [
+      { text: 'زرار «ليه إجابتي غلط؟» وشرح ريشو المكتوب وصوته اتوقفوا مؤقتًا، لأن الشرح كان فيه أخطاء علمية (زي إن ثعلب الفنك مالوش فرو في باطن قدميه) والنطق لسه مش مظبوط. الطالب لسه بيشوف الشرح الثابت تحت السؤال وبيحاول تاني. أصوات ريشو القصيرة المسجلة (برافو، حاول تاني…) شغالة زي ما هي. للتشغيل تاني: REESHO_EXPLAIN_ON = true في quiz.html.' }
+    ] },
   { date: '2026-10-13', title: 'الصف الثاني الإعدادي: الوحدة الأولى «المادة والطاقة» للمسار اللغات (الكتاب الإنجليزي)',
     items: [
       { text: 'ملف أسئلة إنجليزي جديد للوحدة الأولى من كتاب «Discover and Learn» الإنجليزي (صفحات ٢–٣٨): نفس الـ٣٦ فكرة ونفس الـ٢٠٤ صياغة ونفس الإجابات زي الملف العربي، لكن كل جملة بكلمات الكتاب الإنجليزي. الوحدة بقت مفتوحة لطلاب اللغات، وامتحان أكتوبر بقى يشتغل لهم كمان.', links: [{ label: 'أول سؤال بالإنجليزي', href: 'quiz.html#preview=S1.1&lang=en', ch: 'p2u1' }, { label: 'سؤال الترموجراف', href: 'quiz.html#preview=H6.3&lang=en', ch: 'p2u1' }] },

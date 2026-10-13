@@ -97,6 +97,9 @@ To add a test (for example November): add an entry to `window.EXAMS` (with `grad
 - `SI.visit()` → intro (first time), hello (same day), back (yesterday), miss (2-6 days), missbig (7+ days); `SI.greet()` shows Reesho's welcome after the name is tapped.
 - `SI.bye()` (👋 button on chapters and map): browsers cannot talk when a tab closes, so goodbye is a button.
 
+## Reesho's explanation of a wrong answer (paused)
+`quiz.html` can show a "Why is my answer wrong?" button that asks the `reesho-api` worker (Claude) for an explanation and reads it aloud (ElevenLabs). It is **switched off** since 2026-10-13 (`REESHO_EXPLAIN_ON = false` in `quiz.html`): an explanation contradicted the science (the fennec fox's furry soles) and the voice mispronounced Arabic. The fixed explanation under each question and the short recorded clips in `assets/voice/` still work. Set it to `true` to turn it back on.
+
 ## Telegram channel invitation
 The channel `https://t.me/motafawek` announces new chapters and games. The players are children, so Reesho talks to the child but the invitation is for a parent ("ask Mum or Dad"). The code is `SI.tg` in `common.js` (the address is `TG_URL`).
 - **A closed chapter** (`chapters.html`): tapping a "Soon" chapter opens `SI.tg.soon(title)`: "… is coming soon", plus the channel button.
