@@ -122,13 +122,13 @@ Notes for the science review (Unit 1):
 - The book counts vitamin D among molecules with "several thousands" of atoms (it has about 70), so that idea uses only plastic polymers and hemoglobin.
 
 ## Prep 2 (second year of preparatory school)
-Units, like Prep 1 (`UNIT_GRADES` in `common.js`). Unit 1 of the first term is open for the **Arabic track only**: it was written from the Arabic school book «اكتشف وتعلم» 2026/2027; the English book has not been added yet.
-A chapter now opens only in a language it has a questions file for (`chReady` in `common.js`), so a Languages-track Prep 2 player sees the unit as "Soon".
-- Unit 1 «المادة والطاقة» "Matter and Energy" (pages 2-38): `questions_p2u1_ar.js`, 36 ideas from the four lessons (states of matter, changes of state, internal energy and temperature, methods of heat transfer), 204 phrasings. No enrichment ideas: the "technology" and "integration" boxes are part of the lessons, so they are core questions
+Units, like Prep 1 (`UNIT_GRADES` in `common.js`). Unit 1 of the first term is open in English and Arabic, each written from its own school book «اكتشف وتعلم» / "Discover and Learn" 2026/2027 (page n is the same in both books).
+A chapter opens only in a language it has a questions file for (`chReady` in `common.js`).
+- Unit 1 «المادة والطاقة» "Matter and Energy" (pages 2-38): `questions_p2u1.js` / `questions_p2u1_ar.js`, 36 ideas from the four lessons (states of matter, changes in the states of matter, internal energy and temperature, methods of heat transfer), 204 phrasings in each language. No enrichment ideas: the "technology" and "integration" boxes are part of the lessons, so they are core questions
 - Idea letters (unique inside Prep 2): S, C, E, H (Unit 1). Boss ideas: S11, C10, E7, H7
 - `questMax: 24` in `chapters.js`, as in Prep 1
 - `p2_art.js`: the Prep 2 drawings (particles of the three states, beaker, burner, thermometer, syringes, pot on a fire, spoons, thermos, can in ice) and the tap pictures of Unit 1 (`particleStates`, `syringes`, `stateCycle`, `heatingCurve`, `systems3`, `spoons`, `heatPot`, `mixGraphs`). Pictures with a left and a right are mirrored for an Arabic player (the solid on the right, as in the book); the axes of the heating curve stay left to right, as in the book
-- `heatlab.html` (Heat Lab), on the game kit (`g4_game.js`): the particles of a solid, a liquid and a gas; heat ice from −20 °C until it boils while the heating curve draws itself (flat at 0 °C and at 100 °C); open, closed or isolated system?; the heat race (less water against more water, oil against water, why water cools a car engine); a pot on a fire: tap conduction, convection and radiation; Speed Round "conduction, convection or radiation?". Every text has both languages, ready for the English book
+- `heatlab.html` (Heat Lab), on the game kit (`g4_game.js`): the particles of a solid, a liquid and a gas; heat ice from −20 °C until it boils while the heating curve draws itself (flat at 0 °C and at 100 °C); open, closed or isolated system?; the heat race (less water against more water, oil against water, why water cools a car engine); a pot on a fire: tap conduction, convection and radiation; Speed Round "conduction, convection or radiation?". Every text has both languages; the English texts follow the English book
 - Map and background `assets/map_p2u1.svg`, `assets/bg_p2u1.svg`: drawn by `tools/make_p2_maps.js`
 - Reesho's Exam Hall: `p2oct`, the October monthly test on Unit 1, lessons 1 to 3 (the same split as Prep 1; change `lessons` in `chapters.js` if the school's October plan differs)
 - Units 2 to 4 are listed as "soon"
@@ -136,6 +136,9 @@ A chapter now opens only in a language it has a questions file for (`chReady` in
 Notes for the science review (Unit 1):
 - The book prints no result for the iron and copper rods with wax pins (page 33); no question asks which rod drops its pins first. The copper-and-glass Boss question uses the lesson exercise on page 38 (glass is not a metal, so the copper pins fall first).
 - "In which processes does the kinetic energy of the particles increase?" follows the book's own exercise on page 13 (melting and evaporation).
+- English file: the term "thermographic camera" is too long for the letter tiles, so H6.3 asks for "Thermographic" (The ___ camera…), and H3.1 asks "Thermal ___" (Conductivity). The table of S11 uses the columns No mass / Solid / Gas / Liquid (shorter for phones; same answers as the Arabic file).
+- The English Evaluation of Lesson 2 asks which substances boil above 50 °C (X, Y and Z); the site keeps the Arabic book's question "above 50 °C and below 90 °C" (X and Z), which the same table answers.
+- Not asked (no printed answer or open-ended): the four metals heated for 10 minutes (Lesson 3, Evaluation 1-2), copper or aluminium for cookware and why mercury is used in thermometers (page 28), why water is a large part of the human body, research activities and issues for discussion.
 
 ## Releasing an update (cache stamp)
 Every page loads the shared files with a stamp, e.g. `common.js?v=20261010c`. On each release change the stamp in all pages

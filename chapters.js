@@ -6,8 +6,7 @@
      titleAr   : the chapter title in the Arabic school book (Arabic track)
      questions : file with that chapter's window.IDEAS (for example 'questions_ch2.js')
      questionsAr : the same questions in Arabic for the Arabic track (for example 'questions_ch2_ar.js')
-                   A chapter opens for Arabic-track players only when it has questionsAr, and for Languages-track players only when it has questions
-                   (Prep 2, Unit 1 has only the Arabic file for now).
+                   A chapter opens for Arabic-track players only when it has questionsAr, and for Languages-track players only when it has questions.
      game      : the chapter's own interactive game { href, name, nameAr, icon, hint, hintAr }
      map       : { img, stops } - stop positions in percent of the picture, in this order:
                  game, Chapter Quest, Daily 5, Review, Champions  ->  [x, y, label side]
@@ -173,9 +172,9 @@ window.CHAPTERS = [
   /* ---------- Prep 2 (second preparatory, school book "Discover and Learn", 4 units in the first term) ----------
      Units, like Prep 1. Unit 1 has its Arabic questions only (the English book has not been added yet), so it opens for the Arabic track. */
   { id: 'p2u1', grade: 'p2', n: 1, title: 'Matter and Energy', titleAr: 'المادة والطاقة', icon: '🌡️', tint: '#dcefff', ready: true,
-    lessons: ['States of Matter', 'Changes of State', 'Internal Energy and Temperature', 'Methods of Heat Transfer'],
+    lessons: ['States of Matter', 'Changes in the States of Matter', 'Internal Energy and Temperature', 'Methods of Heat Transfer'],
     lessonsAr: ['حالات المادة', 'تغير حالات المادة', 'الطاقة الداخلية ودرجة الحرارة', 'طرق انتقال الحرارة'],
-    questionsAr: 'questions_p2u1_ar.js', art: 'p2_art.js', questMax: 24,
+    questions: 'questions_p2u1.js', questionsAr: 'questions_p2u1_ar.js', art: 'p2_art.js', questMax: 24,
     game: { href: 'heatlab.html', name: 'Heat Lab', nameAr: 'معمل الحرارة', icon: '🌡️', hint: 'Heat ice until it boils, watch the particles and race two thermometers!', hintAr: 'سخّن الثلج لحد ما يغلي، وشوف الجسيمات، واعمل سباق بين ترمومترين!' },
     map: { img: 'assets/map_p2u1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'assets/map_p2u1.svg', quizBg: 'assets/bg_p2u1.svg' },

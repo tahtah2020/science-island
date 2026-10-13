@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261013b">
+<link rel="stylesheet" href="g4_game.css?v=20261013c">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Heat Lab.</noscript>
-<script src="firebase-config.js?v=20261013b"></script>
-<script src="chapters.js?v=20261013b"></script>
-<script src="common.js?v=20261013b"></script>
-<script src="p2_art.js?v=20261013b"></script>
-<script src="g4_game.js?v=20261013b"></script>
+<script src="firebase-config.js?v=20261013c"></script>
+<script src="chapters.js?v=20261013c"></script>
+<script src="common.js?v=20261013c"></script>
+<script src="p2_art.js?v=20261013c"></script>
+<script src="g4_game.js?v=20261013c"></script>
 <script>
 (() => {
 'use strict';
@@ -149,7 +149,7 @@ function heatTo(ms, a, b, t0, t1, more) {
 /* ---------- Stage 1 · Warm Up: particles, then heating ice ---------- */
 async function stage1() {
   Object.assign(sc, { mode: 'lens', hi: null }); g.paint(); shake(true);
-  g.say(T(`Matter is anything that has mass and takes up space. Here are the ${kw('particles')} of matter in its three states, under my magnifier. Which one has a <b>fixed shape and a fixed volume</b>? Tap it.`,
+  g.say(T(`Matter is anything that has mass and occupies space. Here are the ${kw('particles')} of matter in its three states, under my magnifier. Which one has a <b>fixed shape and a fixed volume</b>? Tap it.`,
     P(`المادة هي كل ما له كتلة ويشغل حيزًا. دي ${kw('جسيمات')} المادة في حالاتها الثلاث تحت العدسة بتاعتي. أنهي حالة لها <b>شكل ثابت وحجم ثابت</b>؟ اضغط عليها.`, `المادة هي كل ما له كتلة ويشغل حيزًا. دي ${kw('جسيمات')} المادة في حالاتها الثلاث تحت العدسة بتاعتي. أنهي حالة لها <b>شكل ثابت وحجم ثابت</b>؟ اضغطي عليها.`)), 'point');
   await g.spot(lensSpots(), 'solid', {
     hint: T('Look for the particles packed tightly in rows.', P('دوّر على الجسيمات المتلاصقة في صفوف.', 'دوّري على الجسيمات المتلاصقة في صفوف.')),
@@ -288,7 +288,7 @@ const SPEED = [
   { t: T('Hot water rises and cold water sinks in a pot on a fire', 'الماء الساخن يرتفع والبارد يهبط في إناء على النار'), ans: 'conv' },
   { t: T('The heat of the Sun reaches the Earth through space', 'وصول حرارة الشمس إلى الأرض عبر الفراغ'), ans: 'rad' },
   { t: T('A snake senses the warmth of its prey at night', 'الثعبان يستشعر حرارة جسم فريسته ليلًا'), ans: 'rad' },
-  { t: T('A thermograph camera takes pictures in the dark', 'الترموجراف يصوّر الأجسام في الظلام'), ans: 'rad' },
+  { t: T('A thermographic camera takes pictures in the dark', 'الترموجراف يصوّر الأجسام في الظلام'), ans: 'rad' },
   { t: T('You feel warm sitting in the sunshine', 'الإحساس بالدفء عند الجلوس في الشمس'), ans: 'rad' }
 ].map(s => Object.assign(s, { why: WHY[s.ans] }));
 const WAY = ['cond', 'conv', 'rad'], WAY_NAME = { cond: T('Conduction', 'توصيل'), conv: T('Convection', 'حمل'), rad: T('Radiation', 'إشعاع') };

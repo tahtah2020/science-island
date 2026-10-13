@@ -3,6 +3,14 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-13', title: 'الصف الثاني الإعدادي: الوحدة الأولى «المادة والطاقة» للمسار اللغات (الكتاب الإنجليزي)',
+    items: [
+      { text: 'ملف أسئلة إنجليزي جديد للوحدة الأولى من كتاب «Discover and Learn» الإنجليزي (صفحات ٢–٣٨): نفس الـ٣٦ فكرة ونفس الـ٢٠٤ صياغة ونفس الإجابات زي الملف العربي، لكن كل جملة بكلمات الكتاب الإنجليزي. الوحدة بقت مفتوحة لطلاب اللغات، وامتحان أكتوبر بقى يشتغل لهم كمان.', links: [{ label: 'أول سؤال بالإنجليزي', href: 'quiz.html#preview=S1.1&lang=en', ch: 'p2u1' }, { label: 'سؤال الترموجراف', href: 'quiz.html#preview=H6.3&lang=en', ch: 'p2u1' }] },
+      { text: 'أسماء الدروس للمسار اللغات زي الكتاب: الدرس التاني اسمه «Changes in the States of Matter».' },
+      { text: 'لعبة «معمل الحرارة» بالإنجليزي اتجربت لآخرها، واتعدلت جملتين على كلام الكتاب («occupies space» و«thermographic camera»).', links: [{ label: 'افتح اللعبة', href: 'heatlab.html', ch: 'p2u1' }] },
+      { text: 'خانات الحروف في أسئلة «اكتب المصطلح» بقت أضيق شوية لما الكلمة تكون طويلة (١٢ حرف أو أكتر زي Compressibility) عشان تيجي في شاشة الموبايل.' },
+      { text: 'ملاحظة للمراجعة العلمية: سؤال الجدول في الفكرة S11 اتغيرت أعمدته في الإنجليزي لـ «No mass / Solid / Gas / Liquid» عشان تيجي في الموبايل، ونفس الإجابات.' }
+    ] },
   { date: '2026-10-13', title: 'الصف الثاني الإعدادي: أسئلة الكتاب الناقصة في الدرس الرابع',
     items: [
       { text: 'فكرة جديدة H8 «الحرارة ودرجة الحرارة، والخلط حتى الاتزان» بأربع صياغات: علّل اختلاف الحرارة عن درجة الحرارة، واختيار الرسم البياني عند خلط ماء ٤٠ درجة مع ماء ٥ درجات (صورة جديدة بأربعة رسوم)، وأي الجسمين (X) و(Y) متوسط طاقة حركة جسيماته أكبر. كلها من أسئلة الكتاب صفحتي ٣٦ و٣٨.', links: [{ label: 'الرسوم الأربعة', href: 'quiz.html#preview=H8.2&lang=ar', ch: 'p2u1' }, { label: 'علّل', href: 'quiz.html#preview=H8.1&lang=ar', ch: 'p2u1' }] }

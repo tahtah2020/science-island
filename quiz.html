@@ -289,6 +289,8 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
 .slots{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;margin:2px 0 12px}
 .slots .word{display:flex;gap:4px}
 .slot{font:inherit;font-weight:900;font-size:clamp(16px,4.4vw,24px);width:clamp(21px,6.3vw,40px);height:clamp(34px,9vw,48px);padding:0;border:0;border-bottom:4px solid var(--primary);border-radius:8px 8px 0 0;background:#eef7fb;color:var(--navy);cursor:pointer;display:grid;place-items:center;text-transform:uppercase}
+.slots .word.long{gap:2px}
+.slots .word.long .slot{width:clamp(18px,5.3vw,36px);font-size:clamp(15px,4vw,22px)}
 .slot.fixed{background:transparent;border-color:transparent;cursor:default;width:auto;min-width:10px}
 .slot.lock{background:var(--ok-bg);border-color:var(--ok);cursor:default}
 .slot.bad{background:var(--bad-bg);border-color:var(--coral)}
@@ -372,9 +374,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261013b"></script>
-<script src="chapters.js?v=20261013b"></script>
-<script src="common.js?v=20261013b"></script>
+<script src="firebase-config.js?v=20261013c"></script>
+<script src="chapters.js?v=20261013c"></script>
+<script src="common.js?v=20261013c"></script>
 <script>
 (() => {
 'use strict';
@@ -894,6 +896,8 @@ function ask(q) {
         b.onclick = () => { if (finished || S.lock || !S.tile) return; S.tile.el.classList.remove('used'); S.tile = null; sfx.tick(); paint(); };
         word.appendChild(b); slots.push(S);
       });
+      /* a long single word (12+ letters, e.g. "Compressibility") gets narrower boxes so it fits a phone screen */
+      slotsEl.querySelectorAll('.word').forEach(w => { if (w.querySelectorAll('.slot:not(.fixed)').length >= 12) w.classList.add('long'); });
       const letters = slots.map(S => S.ch);
       const spare = shuffle([...(AR ? 'بتجحدرسشصعفقكلمنهوي' : 'aeiourstlnmcdph')].filter(c => !letters.some(l => same(l, c)))).slice(0, letters.length >= 5 ? 2 : 1);
       const tiles = shuffle(letters.concat(spare)).map(ch => {
