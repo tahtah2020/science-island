@@ -24,9 +24,12 @@ const TAPS = { armBent: ['in', 'out'], armStraight: ['in', 'out'], armJoints: ['
   seedKinds: ['sunflower', 'chickpea', 'fava'], sowDepth: ['heap', 'right', 'deep'], seedlingLeaves: ['seedleaf', 'trueleaf'], flowerFruit: ['bud', 'flower', 'fruit'], plantBody: ['leaves', 'stem', 'roots'] };
 const load = f => { const w = {}; new Function('window', fs.readFileSync(path.join(ROOT, f), 'utf8'))(w); return w; };
 const CH = load('chapters.js').CHAPTERS, gradeOf = {}, pairs = [];
-CH.forEach(c => { [c.questions, c.questionsAr].forEach(f => { if (f) gradeOf[f] = c.grade || 'g5'; }); if (c.questions && c.questionsAr) pairs.push([c.questions, c.questionsAr]); });
+/* questions files live in the subject folders (science/, math/ …); ids must be unique inside one subject, grade and language */
+CH.forEach(c => { [c.questions, c.questionsAr].forEach(f => { if (f) gradeOf[f] = (c.subject || 'science') + ':' + (c.grade || 'g5'); }); if (c.questions && c.questionsAr) pairs.push([c.questions, c.questionsAr]); });
+const dirs = [''].concat((load('chapters.js').SUBJECTS || [{ dir: 'science' }]).map(s => s.dir).filter(d => d && fs.existsSync(path.join(ROOT, d))));
+const files = [].concat(...dirs.map(d => fs.readdirSync(path.join(ROOT, d)).filter(f => /^questions.*\.js$/.test(f)).map(f => d ? d + '/' + f : f)));
 let bad = 0; const allIds = {};
-for (const f of fs.readdirSync(ROOT).filter(f => /^questions.*\.js$/.test(f))) {
+for (const f of files) {
   const w = load(f);
   const err = m => { bad++; console.log(f + ': ' + m); };
   if (!gradeOf[f]) err('not listed in chapters.js');
@@ -35,7 +38,7 @@ for (const f of fs.readdirSync(ROOT).filter(f => /^questions.*\.js$/.test(f))) {
   w.IDEAS.forEach(I => {
     if (!/^[A-Z]\d+$/.test(I.id)) err('bad id ' + I.id);
     if (ids.has(I.id)) err('duplicate id ' + I.id); ids.add(I.id);
-    const k = (gradeOf[f] || 'g5') + ':' + lang + ':' + I.id; if (allIds[k]) err(`id ${I.id} also in ${allIds[k]}`); allIds[k] = f;
+    const k = (gradeOf[f] || 'science:g5') + ':' + lang + ':' + I.id; if (allIds[k]) err(`id ${I.id} also in ${allIds[k]}`); allIds[k] = f;
     if (!I.bonus) core++;
     if (!I.explain || !I.concept) err(I.id + ' no explain/concept');
     if (!I.lesson) err(I.id + ' no lesson');

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261013e">
+<link rel="stylesheet" href="common.css?v=20261014a">
 <style>
 /* Owner's page: what changed, and every question in English and Arabic side by side.
    "New" and "changed" are worked out on this device: each phrasing's content is remembered once you have seen it. */
@@ -105,10 +105,10 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     </div>
   </main>
 </div>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="changes.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="changes.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
 <script>
 (async () => {
   'use strict';
@@ -258,7 +258,7 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
   }
   const sel = $('#ch');
   const GR = { g4: 'الصف الرابع', g5: 'الصف الخامس', g6: 'الصف السادس', p1: 'الصف الأول الإعدادي', p2: 'الصف الثاني الإعدادي' };
-  SI.allChapters().filter(c => c.questions || c.questionsAr).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `${GR[SI.chGrade(c)] || ''} · ${SI.isUnits(c) ? 'الوحدة' : 'الفصل'} ${c.n} · ${c.titleAr || c.title}${c.ready ? '' : ' (لسه مقفول)'}`; sel.appendChild(o); });   // a chapter still being written can be reviewed here before it opens
+  SI.allChapters().filter(c => c.questions || c.questionsAr).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `${(SI.subjectById(SI.chSubject(c)) || {}).titleAr || ''} · ${GR[SI.chGrade(c)] || ''} · ${SI.isUnits(c) ? 'الوحدة' : 'الفصل'} ${c.n} · ${c.titleAr || c.title}${c.ready ? '' : ' (لسه مقفول)'}`; sel.appendChild(o); });   // a chapter still being written can be reviewed here before it opens
   sel.onchange = () => loadChapter(sel.value);
   const setF = v => { onlyNew = v; $('#fNew').setAttribute('aria-pressed', v); $('#fAll').setAttribute('aria-pressed', !v); render(); };
   $('#fNew').onclick = () => setF(true); $('#fAll').onclick = () => setF(false);

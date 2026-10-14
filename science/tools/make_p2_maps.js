@@ -1,11 +1,11 @@
-/* Owner tool (not part of the game): draws the maps and page backgrounds of Prep 1 from the drawing functions in p1_art.js (and the shared shapes of g4_art.js).
-   Run from the site folder:  node tools/make_p1_maps.js   ->  assets/map_p1u1.svg, bg_p1u1.svg (and the next units as they are added)
+/* Owner tool (not part of the game): draws the maps and page backgrounds of Prep 2 from the drawing functions in p2_art.js (and the shared shapes of g4_art.js).
+   Run from the site folder:  node science/tools/make_p2_maps.js   ->  science/assets/map_p2u1.svg, bg_p2u1.svg (and the next units as they are added)
    STOPS are the five stops in map pixels (1224 x 1285), the same as the other maps; keep them in step with map.stops in chapters.js (percent). */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ctx = { window: {} };
-['g4_art.js', 'p1_art.js'].forEach(f => vm.runInNewContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx));
-const A = ctx.window.G4ART, P = ctx.window.P1ART, at = A.at;   // A: shared shapes (blob, sun…), P: the Prep 1 drawings
+['g4_art.js', 'p2_art.js'].forEach(f => vm.runInNewContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx));
+const A = ctx.window.G4ART, P = ctx.window.P2ART, at = A.at;   // A: shared shapes (blob, sun…), P: the Prep 2 drawings
 let seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 const f = n => (Math.round(n * 10) / 10);
 function curve(pts) { let d = `M${pts[0][0]} ${pts[0][1]}`; for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
@@ -50,37 +50,40 @@ function island(land, sand, inside, trail = ['#dcc48a', '#fbf0cf', '#e6cf96']) {
 }
 function save(name, s) { s = s.replace(/\n\s+/g, '\n'); fs.writeFileSync(path.join(ROOT, 'assets', name), s); console.log(name, (s.length / 1024).toFixed(1) + ' KB'); }
 
-/* ---------- Unit 1 · The Matter: a science park of atoms, the periodic table and beakers ---------- */
+/* ---------- Unit 1 · Matter and Energy: a frozen shore with icebergs, a lab of flames and thermometers, and a warm sunny beach ---------- */
 (function () {
-  seed = 17;
-  let inside = `<ellipse cx="300" cy="1010" rx="260" ry="150" fill="#bfe3f3" opacity=".55"/><ellipse cx="920" cy="1010" rx="250" ry="150" fill="#d9e8c4" opacity=".6"/><ellipse cx="930" cy="330" rx="280" ry="200" fill="#dcd6f3" opacity=".55"/><ellipse cx="290" cy="320" rx="230" ry="160" fill="#c4e79f" opacity=".6"/>`;
-  for (let i = 0; i < 40; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040));
-  let s = island([[0, '#c3e6a6'], [.5, '#d4ecc2'], [1, '#dfe8f3']], ['#f3e6b8', '#ecebdc'], inside);
-  /* 1 a big model of an atom (lithium: 2, 1) on a stand */
-  s += `<g transform="translate(176 880)"><path d="M0 70v60" stroke="#8e98a3" stroke-width="10" stroke-linecap="round"/><ellipse cx="0" cy="134" rx="46" ry="12" fill="#8e98a3"/>${at(0, 0, 1.15, P.atom([2, 1], { p: 3, n: 4, b: 7, r0: 34, dr: 26, er: 6, spin: 30 }))}</g>`;
-  /* 2 the periodic table, as a sign */
-  s += board(1010, 880, 250, 150, at(-108, -58, .68, P.ptCells(0, 0, 18, { gap: 8 })));
-  /* 3 the beakers: table salt in water and sand in water */
-  s += bench(230, 640, 190) + at(180, 640, .8, P.beaker({ fill: '#a9dcf5' })) + at(280, 640, .8, P.beaker({ fill: '#c9d8c0', sand: true }));
-  /* the A groups, as a sign */
-  s += board(900, 300, 240, 120, P.GROUPS.map((g, i) => `<rect x="${-104 + i * 26}" y="-40" width="24" height="80" rx="5" fill="${P.GROUP_COL[i]}"/>`).join('') + P.GROUP_ROWS[1].map((e, i) => P.ltrText(-92 + i * 26, 6, e, { fs: 13 })).join(''));
-  /* molecules floating around: oxygen, carbon dioxide-like pairs and water-like groups */
-  [[560, 480, '#ef7d6b', '#ef7d6b', 20], [1080, 560, '#5aa6e0', '#5aa6e0', -30], [560, 905, '#ef7d6b', '#5aa6e0', 40], [660, 1170, '#ef7d6b', '#ef7d6b', -10], [1050, 1090, '#ef7d6b', '#5aa6e0', 70], [420, 420, '#5aa6e0', '#5aa6e0', 10]]
-    .forEach(([x, y, a, b, r]) => { s += at(x, y, 2.2, P.diatomic(a, b, 8, r)); });
-  s += at(1000, 680, 1.5, P.carbonGroup([[0, 0], [26, 0], [52, 0], [26, -26]], [[0, 1], [1, 2], [1, 3]]));
-  s += tree(330, 850, .85) + tree(420, 1195, .8, ['#96d47c', '#5fae58']) + tree(800, 1190, .8) + tree(250, 330, .7) + tree(1060, 440, .8, ['#96d47c', '#5fae58']);
-  s += sunAt(1090, 140, 2.2) + cloud(140, 110, .8, .85) + cloud(930, 70, .7, .85) + '</svg>';
-  save('map_p1u1.svg', s);
+  seed = 29;
+  const iceberg = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-70 0L-46 -60L-18 -86L8 -70L30 -104L58 -40L76 0Z" fill="#f4fbff" stroke="#9cd2ea" stroke-width="4" stroke-linejoin="round"/><path d="M-18 -86L-8 -30L-30 0M30 -104L22 -40L40 0" fill="none" stroke="#cdeaf6" stroke-width="4"/><path d="M-82 2H88" stroke="#8fd3ee" stroke-width="6" stroke-linecap="round"/></g>`;
+  const flake = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})" stroke="#ffffff" stroke-width="3" stroke-linecap="round">${[0, 60, 120].map(a => `<path d="M0 -10V10" transform="rotate(${a})"/>`).join('')}</g>`;
+  const wave = (x, y, k, col = '#e5533d') => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0c6 -6 12 6 18 0s12 6 18 0s12 6 18 0" fill="none" stroke="${col}" stroke-width="4" stroke-linecap="round"/><path d="M54 0l-9 -6m9 6l-9 6" stroke="${col}" stroke-width="4" stroke-linecap="round"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#e9f6fc" opacity=".85"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#ffe2c4" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#fde9b8" opacity=".6"/><ellipse cx="300" cy="330" rx="230" ry="160" fill="#d6ecf7" opacity=".7"/>`;
+  for (let i = 0; i < 34; i++) { const x = f(90 + rnd() * 1040), y = f(140 + rnd() * 1040); inside += x < 560 && y > 800 ? flake(x, y, .9) : tuft(x, y); }
+  let s = island([[0, '#cfe9f5'], [.5, '#dff0d0'], [1, '#f6e3bd']], ['#f3e6b8', '#ecebdc'], inside);
+  /* 1 icebergs and ice cubes by the cold shore */
+  s += iceberg(150, 960, 1.05) + iceberg(420, 1180, .7);
+  [[250, 1150, 10], [300, 1170, -8], [270, 1190, 20]].forEach(([x, y, r]) => { s += `<rect x="${x - 18}" y="${y - 18}" width="36" height="36" rx="7" transform="rotate(${r} ${x} ${y})" fill="#f4fbff" stroke="#9cd2ea" stroke-width="4"/>`; });
+  /* 2 a beaker of boiling water on a burner, with a big thermometer */
+  s += at(1000, 950, 1.9, P.burner(true)) + at(1000, 956, 1.9, P.beaker({ fill: '#a9dcf5', level: .55, bubbles: 8, steam: 3 })) + at(1110, 960, 1.5, P.thermometer(100, { min: -20, max: 120, len: 130 }));
+  /* 3 the three states, as a sign */
+  s += board(230, 610, 300, 130, ['solid', 'liquid', 'gas'].map((k, i) => at(-96 + i * 96, -6, 1, P.lens(k, 38, { r: 4.2, k: 'm' + i }))).join(''));
+  /* 4 a pot on a campfire (conduction, convection, radiation) */
+  s += at(1000, 400, 1.15, P.potOnFire());
+  /* the warm sun sends its rays (radiation) */
+  s += sunAt(1090, 140, 2.2) + wave(980, 170, 1.4, '#f0a43a') + wave(1010, 230, 1.4, '#f0a43a');
+  /* a kettle-like pot of steam and a thermos near the trail */
+  s += at(590, 1170, 1.1, P.thermos()) + at(440, 450, 1, P.boilingPot());
+  s += tree(820, 1190, .8, ['#96d47c', '#5fae58']) + tree(330, 330, .7, ['#9fd6c9', '#5aa697']) + tree(470, 830, .75);
+  s += cloud(140, 110, .8, .85) + cloud(560, 70, .7, .85) + '</svg>';
+  save('map_p2u1.svg', s);
 
   let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
-<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d3e9f8"/><stop offset=".55" stop-color="#e8f1fb"/><stop offset=".56" stop-color="#d9e4ee"/><stop offset="1" stop-color="#c9d8e6"/></linearGradient></defs>
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".5" stop-color="#eef4fb"/><stop offset="1" stop-color="#fbe9d6"/></linearGradient></defs>
 <rect width="1600" height="1000" fill="url(#g)"/>
 ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 <path d="M0 820C300 790 620 840 900 812C1180 784 1400 810 1600 802V1000H0Z" fill="#d9b27c"/><path d="M0 820C300 790 620 840 900 812C1180 784 1400 810 1600 802" fill="none" stroke="#a8834f" stroke-width="6" opacity=".5"/>`;
-  b += at(220, 460, 2.4, P.atom([2, 8, 1], { p: 11, n: 12, b: 4, r0: 30, dr: 18, er: 5, spin: 10 }));
-  b += `<g opacity=".9">${at(1180, 360, 1.6, P.ptCells(0, 0, 18, { gap: 8 }))}</g>`;
-  b += at(560, 840, 1.6, P.beaker({ fill: '#a9dcf5' })) + at(740, 840, 1.6, P.beaker({ fill: '#c9d8c0', sand: true })) + at(960, 840, 1.4, P.beaker({ fill: '#f7c6d3', level: .4 }));
-  [[700, 300, '#ef7d6b', '#ef7d6b', 20], [900, 420, '#5aa6e0', '#ef7d6b', -30], [1450, 760, '#ef7d6b', '#5aa6e0', 50], [420, 720, '#5aa6e0', '#5aa6e0', -20]].forEach(([x, y, a, c, r]) => { b += at(x, y, 3, P.diatomic(a, c, 8, r)); });
-  b += at(1260, 900, 2, P.carbonGroup([[0, 0], [26, 0], [52, 0], [78, 0]], [[0, 1], [1, 2], [2, 3]])) + '</svg>';
-  save('bg_p1u1.svg', b);
+  b += iceberg(200, 830, 1.8);
+  b += at(560, 840, 2, P.beaker({ fill: '#a9dcf5', level: .4, ice: true })) + at(780, 840, 2, P.beaker({ fill: '#a9dcf5', level: .6 })) + at(1000, 840, 2, P.beaker({ fill: '#a9dcf5', level: .5, bubbles: 7, steam: 3 }));
+  b += at(1220, 600, 2.4, P.lens('gas', 60, { r: 6, k: 'bg1' })) + at(380, 420, 1.8, P.lens('solid', 60, { r: 6, k: 'bg2' }));
+  b += sunAt(1450, 150, 2.6) + wave(1300, 180, 1.8, '#f0a43a') + '</svg>';
+  save('bg_p2u1.svg', b);
 })();

@@ -1,26 +1,40 @@
-/* Science Island · chapter list: Science, first term, Grades 4, 5 and 6 (Languages and Arabic tracks).
+/* Motafawek (متفوق) · the subjects, and the chapter list of every subject, grade and track, first term.
+   Every subject keeps its files in its own folder (science/: questions, drawings, maps; the game pages stay at the site root).
    A chapter opens for players when `ready` is true. To publish a new chapter, fill in:
+     subject   : the subject id in window.SUBJECTS below. A chapter (or test) without it belongs to Science.
+                 Chapter ids are unique on the whole site, across subjects: Science keeps ch1, g4c1…; another subject starts with its own prefix (Math: m5c1…, mp1u1…).
      grade     : 'g4' | 'g5' | 'g6' | 'p1' | 'p2'. A chapter without it belongs to Grade 5. A player sees the chapters of their own grade only.
                  Chapter ids are unique on the whole site: Grade 5 uses ch1…, Grade 4 uses g4c1…, Grade 6 uses g6c1…, Prep 1 uses p1u1…, Prep 2 uses p2u1… (units)
      questMax  : optional: a long chapter asks only this many ideas in each Quest (all lessons and all Boss ideas are always in it)
      titleAr   : the chapter title in the Arabic school book (Arabic track)
-     questions : file with that chapter's window.IDEAS (for example 'questions_ch2.js')
-     questionsAr : the same questions in Arabic for the Arabic track (for example 'questions_ch2_ar.js')
+     questions : file with that chapter's window.IDEAS (for example 'science/questions_ch2.js')
+     questionsAr : the same questions in Arabic for the Arabic track (for example 'science/questions_ch2_ar.js')
                    A chapter opens for Arabic-track players only when it has questionsAr, and for Languages-track players only when it has questions.
      game      : the chapter's own interactive game { href, name, nameAr, icon, hint, hintAr }
      map       : { img, stops } - stop positions in percent of the picture, in this order:
                  game, Chapter Quest, Daily 5, Review, Champions  ->  [x, y, label side]
      art       : optional script with the chapter's own drawings; it adds the tap pictures of its questions
-                 to window.CH_DIAGRAMS (for example 'ch2_art.js') and is loaded before the questions
+                 to window.CH_DIAGRAMS (for example 'science/ch2_art.js') and is loaded before the questions
      cover     : optional picture for the chapter card (otherwise the icon is shown)
      quizBg    : optional background picture for the question pages
      theme     : optional colours, for example { primary:'#2f8f5b', 'primary-d':'#237047' }
    Lesson names follow the school book. */
+/* subjects, in the order of the tabs on the chapters page.
+   lang: which questions file each track reads ({ lang: 'en', ar: 'ar' } when left out: Languages track English, Arabic track Arabic).
+   soon: the tab shows "coming soon" · hidden: not shown at all */
+window.SUBJECTS = [
+  { id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬', tint: '#dcefff', dir: 'science' },
+  { id: 'math', title: 'Math', titleAr: 'الرياضيات', icon: '🔢', tint: '#ffe6cc', dir: 'math', soon: true },
+  { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
+  { id: 'arabic', title: 'Arabic', titleAr: 'اللغة العربية', icon: '📖', tint: '#fbe3e3', dir: 'arabic', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
+  { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' }, hidden: true }
+];
+
 window.CHAPTERS = [
   { id: 'ch1', n: 1, title: 'Bones and Muscles', titleAr: 'العظام والعضلات', icon: '🦴', tint: '#dff1f8', ready: true,
     lessons: ['Bones and Muscles', 'Structure of Bones', 'Whole Body Skeleton', 'Animal Bodies'],
     lessonsAr: ['العظام والعضلات', 'تركيب العظام', 'الهيكل العظمي الكامل للجسم', 'أجسام الحيوانات'],
-    questions: 'questions.js', questionsAr: 'questions_ar.js',
+    questions: 'science/questions.js', questionsAr: 'science/questions_ar.js',
     game: { href: 'arm.html', name: 'Arm Mechanic', nameAr: 'ميكانيكي الذراع', icon: '🦾', hint: 'See how your muscles pull your bones!', hintAr: 'شوف إزاي عضلاتك بتشد عظامك!' },
     map: { img: 'assets/map_island.jpg', stops: [[59.6, 82.9, 'left'], [54.6, 67.1, 'right'], [41.3, 51.4, 'right'], [39.6, 38.1, 'left'], [68.2, 12.5, 'below']] },
     cover: 'assets/map_island.jpg', quizBg: 'assets/bg_park.jpg' },
@@ -28,22 +42,22 @@ window.CHAPTERS = [
   { id: 'ch2', n: 2, title: 'Changes in the Seasons', titleAr: 'التغيرات في الفصول', icon: '🍂', tint: '#fdebd3', ready: true,
     lessons: ['Changes over a Year', 'Animals and Temperature'],
     lessonsAr: ['التغيرات خلال السنة', 'الحيوانات ودرجة الحرارة'],
-    questions: 'questions_ch2.js', questionsAr: 'questions_ch2_ar.js', art: 'ch2_art.js',
+    questions: 'science/questions_ch2.js', questionsAr: 'science/questions_ch2_ar.js', art: 'science/ch2_art.js',
     game: { href: 'seasons.html', name: 'Season Explorer', nameAr: 'مستكشف الفصول', icon: '🌡️', hint: 'Travel through the year and see what the temperature changes!', hintAr: 'رحلة خلال السنة: درجة الحرارة بتغيّر إيه؟' },
-    map: { img: 'assets/map_ch2.svg', stops: [[30, 82, 'right'], [63, 68, 'left'], [36, 51, 'right'], [65, 37, 'left'], [44, 14, 'below']] },
-    cover: 'assets/map_ch2.svg', quizBg: 'assets/bg_ch2.svg' },
+    map: { img: 'science/assets/map_ch2.svg', stops: [[30, 82, 'right'], [63, 68, 'left'], [36, 51, 'right'], [65, 37, 'left'], [44, 14, 'below']] },
+    cover: 'science/assets/map_ch2.svg', quizBg: 'science/assets/bg_ch2.svg' },
 
   { id: 'ch3', n: 3, title: 'Conditions for Germination', titleAr: 'شروط الإنبات', icon: '🌱', tint: '#e2f4dc', ready: true,
     lessons: ['Inside the Seed', 'Water and Germination', 'Air and Germination', 'Temperature and Germination', 'Summary of Germination'],
     lessonsAr: ['ما بداخل البذرة', 'الماء والإنبات', 'الهواء والإنبات', 'درجة الحرارة والإنبات', 'ملخص الإنبات'],
-    questions: 'questions_ch3.js', questionsAr: 'questions_ch3_ar.js', art: 'ch3_art.js',
+    questions: 'science/questions_ch3.js', questionsAr: 'science/questions_ch3_ar.js', art: 'science/ch3_art.js',
     game: { href: 'seedlab.html', name: 'Seed Lab', nameAr: 'معمل البذور', icon: '🧪', hint: 'Open a seed, then find out what seeds need to germinate!', hintAr: 'افتح البذرة واكتشف البذور محتاجة إيه علشان تنبت!' },
-    map: { img: 'assets/map_ch3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_ch3.svg', quizBg: 'assets/bg_ch3.svg' },
+    map: { img: 'science/assets/map_ch3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_ch3.svg', quizBg: 'science/assets/bg_ch3.svg' },
 
   { id: 'ch4', n: 4, title: 'Conditions for Growth', titleAr: 'شروط النمو', icon: '🌿', tint: '#d9f2e4', ready: false,
     lessons: ['Sunlight and Growth', 'Fertilizer and Growth'],
-    questions: 'questions_ch4.js' },   // first part only: used by the Exam Hall until the chapter opens (it still needs its game and map)
+    questions: 'science/questions_ch4.js' },   // first part only: used by the Exam Hall until the chapter opens (it still needs its game and map)
 
   { id: 'ch5', n: 5, title: 'From Flower to Fruit', titleAr: 'من الزهرة إلى الثمرة', icon: '🌼', tint: '#fdf3c9', ready: false,
     lessons: ['Structure of a Luffa Flower', 'How to Use a Microscope', 'Pollination and How Fruits Grow'] },
@@ -64,26 +78,26 @@ window.CHAPTERS = [
   { id: 'g4c1', grade: 'g4', n: 1, title: 'Nature in Our Surroundings', titleAr: 'الطبيعة من حولنا', icon: '🦊', tint: '#f6e7c4', ready: true,
     lessons: ['Let’s Find Living Organisms', 'How to Observe', 'Colors and Shapes of Living Organisms', 'Different Places, Different Living Organisms', 'Desert Living Organisms'],
     lessonsAr: ['لنبحث عن الكائنات الحية', 'كيف نلاحظ؟', 'ألوان وأشكال الكائنات الحية', 'أماكن مختلفة .. كائنات حية مختلفة', 'الكائنات الحية الصحراوية'],
-    questions: 'questions_g4c1.js', questionsAr: 'questions_g4c1_ar.js', art: 'g4_art.js',
+    questions: 'science/questions_g4c1.js', questionsAr: 'science/questions_g4c1_ar.js', art: 'science/g4_art.js',
     game: { href: 'habitat.html', name: 'Habitat Explorer', nameAr: 'مستكشف المَواطن', icon: '🔍', hint: 'Find where living organisms live, by the Nile and in the desert!', hintAr: 'اكتشف الكائنات الحية عايشة فين: على ضفاف النيل وفي الصحراء!' },
-    map: { img: 'assets/map_g4c1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_g4c1.svg', quizBg: 'assets/bg_g4c1.svg' },
+    map: { img: 'science/assets/map_g4c1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g4c1.svg', quizBg: 'science/assets/bg_g4c1.svg' },
 
   { id: 'g4c2', grade: 'g4', n: 2, title: 'How Insects Grow', titleAr: 'كيف تنمو الحشرات؟', icon: '🦋', tint: '#fde3ea', ready: true,
     lessons: ['Eggs and Larvae', 'Pupae and Adults', 'Body Structure of Adults'],
     lessonsAr: ['البيض واليرقات', 'الشرنقة والحشرات البالغة', 'تركيب جسم الحشرات البالغة'],
-    questions: 'questions_g4c2.js', questionsAr: 'questions_g4c2_ar.js', art: 'g4_art.js',
+    questions: 'science/questions_g4c2.js', questionsAr: 'science/questions_g4c2_ar.js', art: 'science/g4_art.js',
     game: { href: 'butterfly.html', name: 'Butterfly Garden', nameAr: 'حديقة الفراشات', icon: '🦋', hint: 'Raise a butterfly from an egg, then find out what makes an insect!', hintAr: 'ربِّ فراشة من أول البيضة، واعرف إيه اللي بيخلّي الحشرة حشرة!' },
-    map: { img: 'assets/map_g4c2.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_g4c2.svg', quizBg: 'assets/bg_g4c2.svg' },
+    map: { img: 'science/assets/map_g4c2.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g4c2.svg', quizBg: 'science/assets/bg_g4c2.svg' },
 
   { id: 'g4c3', grade: 'g4', n: 3, title: 'How Plants Grow', titleAr: 'كيف تنمو النباتات؟', icon: '🌻', tint: '#dff0fb', ready: true,
     lessons: ['Sowing Seeds', 'After Sprouting', 'Flowers and Fruits', 'The Plant Body'],
     lessonsAr: ['زراعة البذور', 'بعد الإنبات', 'الأزهار والثمار', 'أجزاء النبات'],
-    questions: 'questions_g4c3.js', questionsAr: 'questions_g4c3_ar.js', art: 'g4_art.js',
+    questions: 'science/questions_g4c3.js', questionsAr: 'science/questions_g4c3_ar.js', art: 'science/g4_art.js',
     game: { href: 'garden.html', name: 'My Little Garden', nameAr: 'حديقتي الصغيرة', icon: '🌻', hint: 'Sow a seed and grow a sunflower, from sprout to new seeds!', hintAr: 'ازرع بذرة وكبّر عبّاد الشمس، من النبتة الصغيرة لحد البذور الجديدة!' },
-    map: { img: 'assets/map_g4c3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_g4c3.svg', quizBg: 'assets/bg_g4c3.svg' },
+    map: { img: 'science/assets/map_g4c3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g4c3.svg', quizBg: 'science/assets/bg_g4c3.svg' },
 
   { id: 'g4c4', grade: 'g4', n: 4, title: 'Properties of Light', titleAr: 'خصائص الضوء', icon: '🔦', tint: '#fff3c4', ready: false,
     lessons: ['How Sunlight Travels', 'Gathering Light', 'Shadows and the Sun (1)', 'Shadows and the Sun (2)', 'Sun and Shade'] },
@@ -104,26 +118,26 @@ window.CHAPTERS = [
   { id: 'g6c1', grade: 'g6', n: 1, title: 'Conditions for Burning', titleAr: 'شروط الاحتراق', icon: '🕯️', tint: '#ffe9c9', ready: true,
     lessons: ['How Things Burn and Air', 'The Role of Oxygen', 'Air After Burning'],
     lessonsAr: ['الهواء واحتراق الأشياء', 'دور الأكسجين', 'الهواء بعد الاحتراق'],
-    questions: 'questions_g6c1.js', questionsAr: 'questions_g6c1_ar.js', art: 'g6_art.js',
+    questions: 'science/questions_g6c1.js', questionsAr: 'science/questions_g6c1_ar.js', art: 'science/g6_art.js',
     game: { href: 'flame.html', name: 'Flame Lab', nameAr: 'معمل اللهب', icon: '🕯️', hint: 'Keep the candle burning, then find the gas that helps things burn!', hintAr: 'خلّي الشمعة تستمر في الاحتراق، واكتشف الغاز اللي بيساعد على الاحتراق!' },
-    map: { img: 'assets/map_g6c1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_g6c1.svg', quizBg: 'assets/bg_g6c1.svg' },
+    map: { img: 'science/assets/map_g6c1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g6c1.svg', quizBg: 'science/assets/bg_g6c1.svg' },
 
   { id: 'g6c2', grade: 'g6', n: 2, title: 'Respiration', titleAr: 'التنفس', icon: '🫁', tint: '#dff1f8', ready: true,
     lessons: ['How Breathing Works', 'How Lungs Work'],
     lessonsAr: ['كيف يحدث التنفس؟', 'كيف تعمل الرئتان؟'],
-    questions: 'questions_g6c2.js', questionsAr: 'questions_g6c2_ar.js', art: 'g6_body.js',
+    questions: 'science/questions_g6c2.js', questionsAr: 'science/questions_g6c2_ar.js', art: 'science/g6_body.js',
     game: { href: 'breath.html', name: 'Breath Lab', nameAr: 'معمل التنفس', icon: '🫁', hint: 'Test the air you breathe out, then follow the oxygen into the blood!', hintAr: 'اختبر هواء الزفير بماء الجير، وتتبَّع الأكسجين لحد ما يوصل للدم!' },
-    map: { img: 'assets/map_g6c2.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_g6c2.svg', quizBg: 'assets/bg_g6c2.svg' },
+    map: { img: 'science/assets/map_g6c2.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g6c2.svg', quizBg: 'science/assets/bg_g6c2.svg' },
 
   { id: 'g6c3', grade: 'g6', n: 3, title: 'Digestion', titleAr: 'الهضم', icon: '🍎', tint: '#fde3dc', ready: true,
     lessons: ['Where Food Goes', 'The Function of Saliva', 'How Absorption Works'],
     lessonsAr: ['أين يذهب الطعام؟', 'وظيفة اللعاب', 'كيف يتم الامتصاص؟'],
-    questions: 'questions_g6c3.js', questionsAr: 'questions_g6c3_ar.js', art: 'g6_body.js',
+    questions: 'science/questions_g6c3.js', questionsAr: 'science/questions_g6c3_ar.js', art: 'science/g6_body.js',
     game: { href: 'foodtrip.html', name: 'Food Journey', nameAr: 'رحلة الطعام', icon: '🍎', hint: 'Follow a bite of food through the body, then find out what saliva does!', hintAr: 'تتبَّع لقمة الطعام جوه الجسم، واكتشف وظيفة اللعاب!' },
-    map: { img: 'assets/map_g6c3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_g6c3.svg', quizBg: 'assets/bg_g6c3.svg' },
+    map: { img: 'science/assets/map_g6c3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g6c3.svg', quizBg: 'science/assets/bg_g6c3.svg' },
 
   { id: 'g6c4', grade: 'g6', n: 4, title: 'Circulation and Excretion', titleAr: 'الدورة الدموية والإخراج', icon: '❤️', tint: '#fde3ea', ready: false,
     lessons: ['Heart and Blood', 'How the Kidneys Work', 'Various Organs'] },
@@ -152,10 +166,10 @@ window.CHAPTERS = [
   { id: 'p1u1', grade: 'p1', n: 1, title: 'The Matter', titleAr: 'المادة', icon: '⚛️', tint: '#dbeefb', ready: true,
     lessons: ['Structure of the Atom', 'The Periodic Table of Elements', 'Matter and Its Properties', 'Chemical Bonds'],
     lessonsAr: ['تركيب الذرة', 'الجدول الدوري لتصنيف العناصر', 'المادة وخصائصها', 'الروابط الكيميائية'],
-    questions: 'questions_p1u1.js', questionsAr: 'questions_p1u1_ar.js', art: 'p1_art.js', questMax: 24,
+    questions: 'science/questions_p1u1.js', questionsAr: 'science/questions_p1u1_ar.js', art: 'science/p1_art.js', questMax: 24,
     game: { href: 'atomlab.html', name: 'Atom Lab', nameAr: 'معمل الذرة', icon: '⚛️', hint: 'Build an atom, find it in the periodic table and watch atoms bond!', hintAr: 'ابنِ ذرة، ودوّر على مكانها في الجدول الدوري، وشوف الذرات بترتبط إزاي!' },
-    map: { img: 'assets/map_p1u1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_p1u1.svg', quizBg: 'assets/bg_p1u1.svg' },
+    map: { img: 'science/assets/map_p1u1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_p1u1.svg', quizBg: 'science/assets/bg_p1u1.svg' },
 
   { id: 'p1u2', grade: 'p1', n: 2, title: 'Force Fields', titleAr: 'مجالات القوى', icon: '🧲', tint: '#ece3fb', ready: false,
     lessons: ['Electric Forces', 'Magnetic Forces', 'Gravitational Forces'],
@@ -174,10 +188,10 @@ window.CHAPTERS = [
   { id: 'p2u1', grade: 'p2', n: 1, title: 'Matter and Energy', titleAr: 'المادة والطاقة', icon: '🌡️', tint: '#dcefff', ready: true,
     lessons: ['States of Matter', 'Changes in the States of Matter', 'Internal Energy and Temperature', 'Methods of Heat Transfer'],
     lessonsAr: ['حالات المادة', 'تغير حالات المادة', 'الطاقة الداخلية ودرجة الحرارة', 'طرق انتقال الحرارة'],
-    questions: 'questions_p2u1.js', questionsAr: 'questions_p2u1_ar.js', art: 'p2_art.js', questMax: 24,
+    questions: 'science/questions_p2u1.js', questionsAr: 'science/questions_p2u1_ar.js', art: 'science/p2_art.js', questMax: 24,
     game: { href: 'heatlab.html', name: 'Heat Lab', nameAr: 'معمل الحرارة', icon: '🌡️', hint: 'Heat ice until it boils, watch the particles and race two thermometers!', hintAr: 'سخّن الثلج لحد ما يغلي، وشوف الجسيمات، واعمل سباق بين ترمومترين!' },
-    map: { img: 'assets/map_p2u1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
-    cover: 'assets/map_p2u1.svg', quizBg: 'assets/bg_p2u1.svg' },
+    map: { img: 'science/assets/map_p2u1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_p2u1.svg', quizBg: 'science/assets/bg_p2u1.svg' },
 
   { id: 'p2u2', grade: 'p2', n: 2, title: 'Matter and Chemical Reactions', titleAr: 'المادة والتفاعلات الكيميائية', icon: '⚗️', tint: '#efe3fb', ready: false,
     lessons: ['Chemical Reactions', 'The Chemical Equation', 'Nutrition Chemistry'],

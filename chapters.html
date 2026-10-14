@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Science Island · Chapters</title>
+<title>Motafawek · Chapters</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261013e">
+<link rel="stylesheet" href="common.css?v=20261014a">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -40,6 +40,16 @@ html[dir=rtl] button.ch{text-align:right}
 .ch .st .no{color:#e3d9c4}
 .ch .go{flex:none;font-size:24px;font-weight:900;color:var(--primary)}
 .ch.cur .go{font-size:13px;background:var(--ok);color:#fff;border-radius:99px;padding:4px 10px}
+.subj{display:flex;gap:8px;flex-wrap:wrap}
+.subj:empty{display:none}
+.subj button{display:flex;align-items:center;gap:7px;font:inherit;font-weight:900;font-size:15.5px;color:var(--navy);cursor:pointer;
+  background:var(--card);border:3px solid transparent;border-radius:99px;padding:7px 15px 7px 9px;box-shadow:0 4px 14px rgba(31,61,87,.12)}
+html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
+.subj button .i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:18px}
+.subj button[aria-pressed=true]{border-color:var(--primary);background:#fff}
+.subj button.later{opacity:.75}
+.subj button small{font-size:11.5px;font-weight:900;color:#8a5a00;background:#ffe9b3;border-radius:99px;padding:1px 8px}
+.subj button:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .exams{display:grid;gap:12px}
 .exams:empty{display:none}
 .ch.exam{background:linear-gradient(135deg,#fff8e0,#ffe9b3);border-color:#f2b134}
@@ -61,7 +71,7 @@ html[dir=rtl] button.ch{text-align:right}
   <header class="top">
     <a class="brand" href="index.html" title="Change player" data-ar-label="تغيير اللاعب">
       <div class="logo" aria-hidden="true">🏝️</div>
-      <div><h1 data-ar="جزيرة العلوم">Science Island</h1><p id="sub">Grade 5 · Languages · First term</p></div>
+      <div><h1 data-ar="متفوّق">Motafawek</h1><p id="sub">Grade 5 · Languages · First term</p></div>
     </a>
     <div class="hud">
       <span class="pill" title="Daily streak" data-ar-label="أيام متتالية">🔥 <b id="streak">0</b></span>
@@ -83,23 +93,36 @@ html[dir=rtl] button.ch{text-align:right}
         </div>
       </div>
     </div>
+    <div class="subj" id="subj" role="group" aria-label="Subject" data-ar-label="المادة"></div>
     <div class="exams" id="exams"></div>
     <h2 class="sect" id="sect" data-ar="اختر الفصل">Choose a chapter <span class="ar">اختر الفصل</span></h2>
     <ol class="list" id="list"></ol>
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
 <script>
 (() => {
   'use strict';
   const me = SI.requirePlayer(); if (!me) return;
   const $ = s => document.querySelector(s);
-  if (SI.isAr()) document.title = 'جزيرة العلوم · الفصول';
-  const esc = SI.esc, T = SI.T, list = SI.chapters(), cur = SI.chapterId();
-  $('#sub').textContent = T(`${SI.gradeName()} · Languages · First term`, `${SI.gradeName()} · عربي · الفصل الدراسي الأول`);
+  if (SI.isAr()) document.title = 'متفوّق · الفصول';
+  const esc = SI.esc, T = SI.T, cur = SI.chapterId();
   if (SI.isUnits()) $('#sect').innerHTML = T('Choose a unit <span class="ar">اختر الوحدة</span>', 'اختر الوحدة');   // the preparatory books are made of units
+
+  /* subject tabs: an open subject shows its chapters; a "soon" subject is announced with the Telegram invitation */
+  function tabs() {
+    const box = $('#subj'), all = SI.subjects(); box.innerHTML = '';
+    if (all.length < 2) return;
+    all.forEach(s => {
+      const b = document.createElement('button'); b.type = 'button'; if (s.soon) b.className = 'later';
+      b.setAttribute('aria-pressed', String(s.id === SI.subjectId()));
+      b.innerHTML = `<span class="i" style="background:${s.tint || '#e3f1f7'}" aria-hidden="true">${s.icon || '📘'}</span>${esc(SI.subjectName(s))}${s.soon ? `<small>${T('Soon', 'قريبًا')}</small>` : ''}`;
+      b.onclick = () => { SI.sfx.tick(); if (s.soon) return SI.tg.soon(SI.subjectName(s)); SI.setSubject(s.id); render(); };
+      box.appendChild(b);
+    });
+  }
 
   const lv = SI.levelInfo(SI.xp());
   $('#lvlTitle').textContent = `${T('Level', 'المستوى')} ${lv.n} · ${lv.title}`;
@@ -113,8 +136,12 @@ html[dir=rtl] button.ch{text-align:right}
   const paint = () => { mute.setAttribute('aria-pressed', SI.isMuted()); mute.setAttribute('aria-label', SI.isMuted() ? T('Sound off', 'الصوت مغلق') : T('Sound on', 'الصوت شغال')); };
   mute.onclick = () => { SI.setMuted(!SI.isMuted()); paint(); }; paint();
 
-  let total = 0, started = false;
-  const box = $('#list');
+  let started = false;
+  function render() {
+  const list = SI.chapters(); let total = 0;
+  $('#sub').textContent = T(`${SI.gradeName()} · ${SI.subjectName()} · Languages · First term`, `${SI.gradeName()} · ${SI.subjectName()} · عربي · الفصل الدراسي الأول`);
+  tabs();
+  const box = $('#list'); box.innerHTML = ''; $('#exams').innerHTML = '';
   list.forEach(c => {
     const li = document.createElement('li');
     const s = SI.chapterStars(c.id); total += s.got; if (s.got) started = true;
@@ -153,6 +180,8 @@ html[dir=rtl] button.ch{text-align:right}
     a.onclick = () => SI.sfx.tick();
     $('#exams').appendChild(a);
   });
+  }
+  render();
 
   const curCh = SI.chapter(), U = SI.isUnits();
   $('#bubble').innerHTML = started && curCh

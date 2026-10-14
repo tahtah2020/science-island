@@ -1,5 +1,5 @@
 /* Owner tool (not part of the game): draws the maps and page backgrounds of Grade 6, Chapters 1 to 3, from the drawing functions in g6_art.js and g6_body.js.
-   Run from the site folder:  node tools/make_g6_maps.js   ->  assets/map_g6c1.svg, bg_g6c1.svg, map_g6c2.svg, bg_g6c2.svg, map_g6c3.svg, bg_g6c3.svg
+   Run from the site folder:  node science/tools/make_g6_maps.js   ->  science/assets/map_g6c1.svg, bg_g6c1.svg, map_g6c2.svg, bg_g6c2.svg, map_g6c3.svg, bg_g6c3.svg
    STOPS are the five stops in map pixels (1224 x 1285), the same as the Grade 4 maps; keep them in step with map.stops in chapters.js (percent). */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const ROOT = path.join(__dirname, '..');

@@ -18,7 +18,10 @@ const write = (f, s) => { if (fs.existsSync(path.join(ROOT, f))) return console.
 const CH = load('chapters.js').CHAPTERS, id = args[0], c = CH.find(x => x.id === id);
 if (!c) { console.log('usage: node tools/new_chapter.js <chapter id> [--lang ar|en] [--game file.html --name "En|Ar" --icon 🧪] [--dry]\nnot ready yet: ' + CH.filter(x => !x.ready).map(x => x.id).join(' ')); process.exit(1); }
 const grade = c.grade || 'g5', units = /^p/.test(grade), langs = opt('--lang') ? [opt('--lang')] : ['en', 'ar'];
-const sameGrade = CH.filter(x => (x.grade || 'g5') === grade);
+const SUBJ = (load('chapters.js').SUBJECTS || []).find(s => s.id === (c.subject || 'science')) || { id: 'science', dir: 'science' };
+const D = (SUBJ.dir || SUBJ.id) + '/';   // the subject's folder: questions, drawings and maps go there
+if (!dry) fs.mkdirSync(path.join(ROOT, D, 'assets'), { recursive: true });
+const sameGrade = CH.filter(x => (x.grade || 'g5') === grade && (x.subject || 'science') === SUBJ.id);
 const prev = sameGrade.filter(x => x.ready && x.map).pop();
 
 // idea letters already used in this grade
@@ -30,8 +33,8 @@ console.log(`letters used in ${grade}: ${Object.keys(used).sort().map(L => `${L}
 console.log(`free letters: ${free.join(' ')}  → pick one letter per lesson\n`);
 
 // 1) questions files
-const art = opt('--art') || [`${grade}_art.js`, prev && prev.art].find(f => f && fs.existsSync(path.join(ROOT, f))) || null;
-const qf = { en: `questions_${id}.js`, ar: `questions_${id}_ar.js` };
+const art = opt('--art') || [`${D}${grade}_art.js`, prev && prev.art].find(f => f && fs.existsSync(path.join(ROOT, f))) || null;
+const qf = { en: `${D}questions_${id}.js`, ar: `${D}questions_${id}_ar.js` };
 const head = (lang) => {
   const ar = lang === 'ar', ls = (ar ? c.lessonsAr : c.lessons) || [];
   return `/* ${ar ? (c.titleAr || c.title) : c.title} · ${grade} · ${ar ? 'Arabic school book' : 'English school book'}, first term 2026/2027 (pages …)
@@ -72,8 +75,8 @@ const game = opt('--game'), [nameEn, nameAr] = (opt('--name') || 'New Game|لع�
 const lines = add.length ? ['    ' + add.join(', ') + ','] : [];
 if (game && !/game:/.test(entry)) {
   lines.push(`    game: { href: '${game}', name: ${JSON.stringify(nameEn)}, nameAr: ${JSON.stringify(nameAr)}, icon: '${icon}', hint: '…', hintAr: '…' },`);
-  lines.push(`    map: { img: 'assets/map_${id}.svg', stops: ${JSON.stringify(prev ? prev.map.stops : [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']]).replace(/,/g, ', ').replace(/"/g, "'")} },`);
-  lines.push(`    cover: 'assets/map_${id}.svg', quizBg: 'assets/bg_${id}.svg',`);
+  lines.push(`    map: { img: '${D}assets/map_${id}.svg', stops: ${JSON.stringify(prev ? prev.map.stops : [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']]).replace(/,/g, ', ').replace(/"/g, "'")} },`);
+  lines.push(`    cover: '${D}assets/map_${id}.svg', quizBg: '${D}assets/bg_${id}.svg',`);
 }
 if (lines.length) {
   const nl = entry.lastIndexOf('\n'), at = start + (nl >= 0 ? nl + 1 : entry.length);
@@ -99,18 +102,18 @@ if (game) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css${v}">
+<link rel="stylesheet" href="game_kit.css${v}">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play ${nameEn}.</noscript>
 <script src="firebase-config.js${v}"></script>
 <script src="chapters.js${v}"></script>
 <script src="common.js${v}"></script>
-${art ? `<script src="${art}${v}"></script>\n` : ''}<script src="g4_game.js${v}"></script>
+${art ? `<script src="${art}${v}"></script>\n` : ''}<script src="game_kit.js${v}"></script>
 <script>
 (() => {
 'use strict';
-/* ${nameEn} · the game of ${c.title} (${grade}). Built on the shared game kit (g4_game.js).
+/* ${nameEn} · the game of ${c.title} (${grade}). Built on the shared game kit (game_kit.js).
    Stage 1 (Warm Up): … (book pages …)
    Stage 2 (Missions): … (pages …)
    Stage 3 (Speed Round): … (pages …)
@@ -123,7 +126,7 @@ function render() {               // the SVG of the scene, drawn in code from sc
   return \`<rect width="\${VW}" height="\${VH}" fill="#eef6fb"/>\`;
 }
 const g = G4Game({ ch: '${id}', logo: '${icon}', title: [${JSON.stringify(nameEn)}, ${JSON.stringify(nameAr)}], sub: ['${unit[0]} ${n} · ${c.title.replace(/'/g, "\\'")}', '${unit[1]} ${n} · ${(c.titleAr || '').replace(/'/g, "\\'")}'],
-  bg: 'assets/bg_${id}.svg', bgc: '${c.tint || '#eef6fb'}', label: [${JSON.stringify(nameEn)}, ${JSON.stringify(nameAr)}], render });
+  bg: '${D}assets/bg_${id}.svg', bgc: '${c.tint || '#eef6fb'}', label: [${JSON.stringify(nameEn)}, ${JSON.stringify(nameAr)}], render });
 
 async function stage1() {
   g.say(T('…', P('…')), 'point'); await g.next();
@@ -158,8 +161,8 @@ g.run({
 console.log(`
 Still by hand:
  1. write the ideas in ${langs.map(l => qf[l]).join(' and ')} (from the book pages)
- 2. new tap pictures → ${art || '<grade>_art.js'} (window.CH_DIAGRAMS), their targets in TAPS (tools/check_questions.js), Arabic labels in TAP (admin.html)
- 3. ${game ? `the scene and stages of ${game}; ` : ''}map and background: assets/map_${id}.svg, assets/bg_${id}.svg from tools/make_${grade.replace(/\d/, '')}*_maps.js
+ 2. new tap pictures → ${art || D + grade + '_art.js'} (window.CH_DIAGRAMS), their targets in TAPS (tools/check_questions.js), Arabic labels in TAP (admin.html)
+ 3. ${game ? `the scene and stages of ${game}; ` : ''}map and background: ${D}assets/map_${id}.svg, ${D}assets/bg_${id}.svg from ${D}tools/make_*_maps.js
  4. a monthly test that includes it? window.EXAMS in chapters.js
  5. node tools/check_questions.js → node tools/smoke_test.js ${id} → set ready: true → node tools/release.js --title "…" --item "…"
  6. node tools/coverage.js ${id} --book … --left "…" for the report, and update README.md`);

@@ -1,5 +1,5 @@
 /* Owner tool (not part of the game): draws the maps and page backgrounds of Grade 4, Chapters 1 to 3, from the drawing functions in g4_art.js.
-   Run from the site folder:  node tools/make_g4_maps.js   ->  assets/map_g4c1.svg … map_g4c3.svg, assets/bg_g4c1.svg … bg_g4c3.svg
+   Run from the site folder:  node science/tools/make_g4_maps.js   ->  science/assets/map_g4c1.svg … map_g4c3.svg, assets/bg_g4c1.svg … bg_g4c3.svg
    STOPS are the five stops in map pixels (1224 x 1285), the same for the three maps; keep them in step with map.stops in chapters.js (percent). */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const ROOT = path.join(__dirname, '..');

@@ -7,19 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261013e">
+<link rel="stylesheet" href="game_kit.css?v=20261014a">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Breath Lab.</noscript>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
-<script src="g6_body.js?v=20261013e"></script>
-<script src="g4_game.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
+<script src="science/g6_body.js?v=20261014a"></script>
+<script src="game_kit.js?v=20261014a"></script>
 <script>
 (() => {
 'use strict';
-/* Breath Lab · the game of Grade 6, Chapter 2 "Respiration". Built on the shared game kit (g4_game.js).
+/* Breath Lab · the game of Grade 6, Chapter 2 "Respiration". Built on the shared game kit (game_kit.js).
    Stage 1 (Warm Up): two plastic bags, our breath and room air, tested with limewater (book page 19).
    Stage 2 (Missions): 1) the path of the air we breathe in; 2) gas exchange in the lungs, zoomed in; 3) breathing out, and how fish breathe (page 21).
    Stage 3 (Speed Round): oxygen or carbon dioxide?
@@ -66,7 +66,7 @@ function fishScene() {
 const render = () => ({ bags: bagsScene, body: bodyScene, zoom: zoomScene, fish: fishScene })[sc.mode]();
 
 const g = G4Game({ ch: 'g6c2', logo: '🫁', title: ['Breath Lab', 'معمل التنفس'], sub: ['Chapter 2 · Respiration', 'الفصل ٢ · التنفس'],
-  bg: 'assets/bg_g6c2.svg', bgc: '#dff1f8', label: ['Reesho’s breath lab', 'معمل التنفس بتاع ريشو'], render });
+  bg: 'science/assets/bg_g6c2.svg', bgc: '#dff1f8', label: ['Reesho’s breath lab', 'معمل التنفس بتاع ريشو'], render });
 const kw = g.kw;
 
 /* ---------- Stage 1 · Warm Up: what is in the air we breathe out? ---------- */

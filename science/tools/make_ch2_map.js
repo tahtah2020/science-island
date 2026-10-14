@@ -1,5 +1,5 @@
 /* Owner tool (not part of the game): draws Chapter 2's map and page background from the chapter's own drawing functions.
-   Run from the site folder:  node tools/make_ch2_map.js   ->  assets/map_ch2.svg, assets/bg_ch2.svg
+   Run from the site folder:  node science/tools/make_ch2_map.js   ->  science/assets/map_ch2.svg, assets/bg_ch2.svg
    STOPS are the five stops in map pixels (1224 x 1285); keep them in step with map.stops in chapters.js (percent). */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const ROOT = path.join(__dirname, '..');

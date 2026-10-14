@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261013e">
+<link rel="stylesheet" href="game_kit.css?v=20261014a">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play My Little Garden.</noscript>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
-<script src="g4_art.js?v=20261013e"></script>
-<script src="g4_game.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
+<script src="science/g4_art.js?v=20261014a"></script>
+<script src="game_kit.js?v=20261014a"></script>
 <script>
 (() => {
 'use strict';
@@ -73,7 +73,7 @@ function body() {
 const render = () => ({ seeds, pot, measure, bloom, body })[sc.mode]();
 
 const g = G4Game({ ch: 'g4c3', logo: '🌻', title: ['My Little Garden', 'حديقتي الصغيرة'], sub: ['Chapter 3 · How Plants Grow', 'الفصل ٣ · كيف تنمو النباتات؟'],
-  bg: 'assets/bg_g4c3.svg', bgc: '#e3f3d0', label: ['Reesho’s little garden', 'حديقة ريشو الصغيرة'], render });
+  bg: 'science/assets/bg_g4c3.svg', bgc: '#e3f3d0', label: ['Reesho’s little garden', 'حديقة ريشو الصغيرة'], render });
 const kw = g.kw;
 
 /* ---------- Stage 1 · Warm Up: sow a sunflower seed ---------- */

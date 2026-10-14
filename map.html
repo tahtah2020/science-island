@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Science Island · Map</title>
+<title>Motafawek · Map</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261013e">
+<link rel="stylesheet" href="common.css?v=20261014a">
 <style>
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}
 .mapWrap{position:relative;width:100%;max-width:min(680px, calc((100vh - 120px) * 1224 / 1285));margin:0 auto;aspect-ratio:1224/1285;border-radius:26px;
@@ -65,7 +65,7 @@
   <header class="top">
     <a class="brand" href="chapters.html" title="All chapters" data-ar-label="كل الفصول">
       <div class="logo" aria-hidden="true" id="logo">🏝️</div>
-      <div><h1 id="chTitle">Science Island</h1><p id="chSub">Grade 5 · Languages</p></div>
+      <div><h1 id="chTitle">Motafawek</h1><p id="chSub">Grade 5 · Languages</p></div>
     </a>
     <div class="hud">
       <span class="pill" id="streakPill" title="Daily streak" data-ar-label="أيام متتالية">🔥 <b id="streak">0</b></span>
@@ -93,9 +93,9 @@
     </aside>
   </main>
 </div>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
 <script>
 (async () => {
   'use strict';
@@ -105,7 +105,7 @@
   const $ = s => document.querySelector(s), T = SI.T, AR = SI.isAr(), TITLE = SI.chTitle(CH);
   const P = SI.chProf(), now = Date.now();
   const arm = P.game || {}, quest = P.quest || {}, daily = SI.dailyState();   // "arm" = this chapter's own game
-  document.title = `${TITLE} · ${T('Science Island', 'جزيرة العلوم')}`;
+  document.title = `${TITLE} · ${T('Motafawek', 'متفوّق')}`;
   $('#chTitle').textContent = TITLE;
   $('#chSub').textContent = T(`${SI.gradeName(SI.chGrade(CH))} · Languages · ${SI.chWord(CH)} ${CH.n}`, `${SI.gradeName(SI.chGrade(CH))} · عربي · ${SI.chWord(CH)} ${CH.n}`);
   if (CH.icon) $('#logo').textContent = CH.icon;

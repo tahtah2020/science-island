@@ -7,19 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261013e">
+<link rel="stylesheet" href="game_kit.css?v=20261014a">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Flame Lab.</noscript>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
-<script src="g6_art.js?v=20261013e"></script>
-<script src="g4_game.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
+<script src="science/g6_art.js?v=20261014a"></script>
+<script src="game_kit.js?v=20261014a"></script>
 <script>
 (() => {
 'use strict';
-/* Flame Lab · the game of Grade 6, Chapter 1 "Conditions for Burning". Built on the shared game kit (g4_game.js).
+/* Flame Lab · the game of Grade 6, Chapter 1 "Conditions for Burning". Built on the shared game kit (game_kit.js).
    Stage 1 (Warm Up): the candle in the bottomless jar: lid on, a gap at the bottom, gaps at the top and the bottom (book page 7).
    Stage 2 (Missions): 1) the components of air; 2) a lit candle in jars of nitrogen, oxygen and carbon dioxide (page 9);
                        3) the air after burning, checked with limewater (page 13).
@@ -74,7 +74,7 @@ function limeScene() {
 const render = () => ({ jar: jarScene, bar: barScene, gas: gasScene, lime: limeScene })[sc.mode]();
 
 const g = G4Game({ ch: 'g6c1', logo: '🕯️', title: ['Flame Lab', 'معمل اللهب'], sub: ['Chapter 1 · Conditions for Burning', 'الفصل ١ · شروط الاحتراق'],
-  bg: 'assets/bg_g6c1.svg', bgc: '#ffe9c9', label: ['Reesho’s flame lab', 'معمل اللهب بتاع ريشو'], render });
+  bg: 'science/assets/bg_g6c1.svg', bgc: '#ffe9c9', label: ['Reesho’s flame lab', 'معمل اللهب بتاع ريشو'], render });
 const kw = g.kw;
 const burnOut = ms => g.tween(ms, k => { sc.lit = 1 - k; }).then(() => { sc.lit = 0; sc.smoke = 1; g.paint(); });
 

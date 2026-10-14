@@ -7,19 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261013e">
+<link rel="stylesheet" href="game_kit.css?v=20261014a">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Heat Lab.</noscript>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
-<script src="p2_art.js?v=20261013e"></script>
-<script src="g4_game.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
+<script src="science/p2_art.js?v=20261014a"></script>
+<script src="game_kit.js?v=20261014a"></script>
 <script>
 (() => {
 'use strict';
-/* Heat Lab · the game of Prep 2, Unit 1 "Matter and Energy". Built on the shared game kit (g4_game.js).
+/* Heat Lab · the game of Prep 2, Unit 1 "Matter and Energy". Built on the shared game kit (game_kit.js).
    Stage 1 (Warm Up): the particles of a solid, a liquid and a gas (book pages 3-7); then heat ice from −20 °C until the water boils and draw
                       the heating curve while it happens: flat at 0 °C (melting) and at 100 °C (boiling) (pages 11-13).
    Stage 2 (Missions): 1) open, closed or isolated system? (page 22)
@@ -133,7 +133,7 @@ const potSpots = () => [
 const render = () => ({ lens: lensScene, heat: heatScene, sys: sysScene, race: raceScene, pot: potScene })[sc.mode]();
 
 const g = G4Game({ ch: 'p2u1', logo: '🌡️', title: ['Heat Lab', 'معمل الحرارة'], sub: ['Unit 1 · Matter and Energy', 'الوحدة ١ · المادة والطاقة'],
-  bg: 'assets/bg_p2u1.svg', bgc: '#dcefff', label: ['Reesho’s heat lab', 'معمل الحرارة بتاع ريشو'], render });
+  bg: 'science/assets/bg_p2u1.svg', bgc: '#dcefff', label: ['Reesho’s heat lab', 'معمل الحرارة بتاع ريشو'], render });
 const kw = g.kw;
 
 /* move the heating on: temperature from a to b, time from t0 to t1 (and anything else in more) */

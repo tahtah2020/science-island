@@ -3,7 +3,7 @@
      say · next · choice · spot · pick · speedRound · banner · tween · addScore · results.
    choice, spot and pick take reveal(): it is called as soon as the answer is known, to change the scene.
    Each game page only holds its own scene (drawn with g4_art.js) and its three stages: Warm Up, Missions, Speed Round.
-   Needs common.js (window.SI) and g4_game.css. Usage:
+   Needs common.js (window.SI) and game_kit.css. Usage:
      const g = G4Game({ ch: 'g4c1', logo: '🦊', title: ['Habitat Explorer', 'مستكشف المَواطن'], sub: ['Chapter 1 · …', 'الفصل ١ · …'],
                         bg: 'assets/bg_g4c1.svg', bgc: '#f6e7c4', label: ['…', '…'], render: () => '<svg markup>' });
      g.run({ intro: '…', stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, …], done: { title: '…', text: '…' } });

@@ -7,19 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261013e">
+<link rel="stylesheet" href="game_kit.css?v=20261014a">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Food Journey.</noscript>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
-<script src="g6_body.js?v=20261013e"></script>
-<script src="g4_game.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
+<script src="science/g6_body.js?v=20261014a"></script>
+<script src="game_kit.js?v=20261014a"></script>
 <script>
 (() => {
 'use strict';
-/* Food Journey · the game of Grade 6, Chapter 3 "Digestion". Built on the shared game kit (g4_game.js).
+/* Food Journey · the game of Grade 6, Chapter 3 "Digestion". Built on the shared game kit (game_kit.js).
    Stage 1 (Warm Up): the route of food from the mouth to the anus (book page 25).
    Stage 2 (Missions): 1) the saliva experiment: starch, about 40 degrees Celsius, iodine solution (page 27);
                        2) the towel and the villi of the small intestine (page 31); 3) where the nutrients go: blood, liver, whole body (page 31).
@@ -70,7 +70,7 @@ function wallsScene() {
 const render = () => ({ gut: gutScene, tubes: tubesScene, walls: wallsScene })[sc.mode]();
 
 const g = G4Game({ ch: 'g6c3', logo: '🍎', title: ['Food Journey', 'رحلة الطعام'], sub: ['Chapter 3 · Digestion', 'الفصل ٣ · الهضم'],
-  bg: 'assets/bg_g6c3.svg', bgc: '#fde3dc', label: ['The journey of food inside the body', 'رحلة الطعام داخل الجسم'], render });
+  bg: 'science/assets/bg_g6c3.svg', bgc: '#fde3dc', label: ['The journey of food inside the body', 'رحلة الطعام داخل الجسم'], render });
 const kw = g.kw;
 /* the bite of food moves from where it is to the organ `to`, then that organ gets its name and a green outline */
 async function moveTo(to) {

@@ -7,19 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="g4_game.css?v=20261013e">
+<link rel="stylesheet" href="game_kit.css?v=20261014a">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Atom Lab.</noscript>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
-<script src="p1_art.js?v=20261013e"></script>
-<script src="g4_game.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
+<script src="science/p1_art.js?v=20261014a"></script>
+<script src="game_kit.js?v=20261014a"></script>
 <script>
 (() => {
 'use strict';
-/* Atom Lab · the game of Prep 1, Unit 1 "The Matter". Built on the shared game kit (g4_game.js).
+/* Atom Lab · the game of Prep 1, Unit 1 "The Matter". Built on the shared game kit (game_kit.js).
    Stage 1 (Warm Up): build an atom of sodium: the nucleus, Z and A, the neutrons (A − Z), the electrons, then fill the energy levels K, L, M (book pages 3-8).
    Stage 2 (Missions): 1) find the place of Na, Cl and Ne in the periodic table from their electron configuration (pages 13-15);
                        2) sodium chloride (ionic bond) and hydrogen chloride (single covalent bond), then O=O and N≡N (pages 26-30);
@@ -189,7 +189,7 @@ function boxesScene() {
 const render = () => ({ atom: atomScene, table: tableScene, ionic: ionicScene, cov: covScene, cards: cardsScene, board: boardScene, boxes: boxesScene })[sc.mode]();
 
 const g = G4Game({ ch: 'p1u1', logo: '⚛️', title: ['Atom Lab', 'معمل الذرة'], sub: ['Unit 1 · The Matter', 'الوحدة ١ · المادة'],
-  bg: 'assets/bg_p1u1.svg', bgc: '#dbeefb', label: ['Reesho’s atom lab', 'معمل الذرة بتاع ريشو'], render });
+  bg: 'science/assets/bg_p1u1.svg', bgc: '#dbeefb', label: ['Reesho’s atom lab', 'معمل الذرة بتاع ريشو'], render });
 const kw = g.kw;
 async function addElectrons(i, n) {
   for (let k = 0; k < n; k++) { sc.lv[i]++; g.paint(); await g.sleep(g.reduceMotion ? 0 : 170); }

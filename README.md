@@ -1,4 +1,17 @@
-# Science Island
+# Motafawek (متفوّق)
+
+Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math is next (shown as "soon"), then Social Studies, Arabic and English.
+
+## Subjects and folders
+- The path of a player: grade (home page) → subject (tabs on `chapters.html`) → chapter or unit → map, game, questions.
+- `window.SUBJECTS` in `chapters.js`: `id`, `title` / `titleAr`, `icon`, `tint`, `dir` (its folder), `soon` (tab shows "Soon" and the Telegram invitation), `hidden`, and `lang`: which questions file each track reads (`{ lang: 'en', ar: 'ar' }` by default; `{ lang: 'ar', ar: 'ar' }` for a subject taught in Arabic on both tracks, such as Arabic or Social Studies; `{ lang: 'en', ar: 'en' }` for English).
+- A chapter or monthly test carries `subject` (without it: `science`). Chapter ids stay unique on the whole site (Math: `m5c1`, `mp1u1`…), so progress and Champions boards never mix.
+- `common.js`: `SI.subjects()`, `SI.subject()`, `SI.subjectId()`, `SI.setSubject(id)`, `SI.subjectName()`, `SI.chSubject(c)`, and `SI.qFile(c)` (the questions file this player reads). `SI.chapters()` and `SI.exams()` give the player's grade and chosen subject. Opening a chapter also selects its subject. XP, levels and the daily streak are shared by all subjects.
+- Files: every page (`.html`) stays at the site root, so links never change. Each subject keeps its other files in its folder: `science/` holds the questions files, the drawings (`*_art.js`, `g6_body.js`), the maps and backgrounds (`science/assets/`) and the map scripts (`science/tools/`). Shared files stay at the root: `common.js`, `common.css`, `chapters.js`, `game_kit.js` / `game_kit.css` (the game kit for every subject), `assets/` (Reesho, voice, banner, shared backgrounds).
+- A game page of another subject starts with the subject's name: `math-fractions.html`.
+- Paths in `chapters.js` include the folder: `questions: 'science/questions_p2u1.js'`, `map: { img: 'science/assets/map_p2u1.svg' }`.
+
+# Science
 
 Educational games for Grade 4, Grade 5, Grade 6, Prep 1 and Prep 2 Science (Egyptian curriculum, Languages and Arabic tracks, first term). Reesho the parrot is the coach.
 Players pick their grade once, then a chapter; every chapter has its own map, game, questions and Champions board.
@@ -21,10 +34,10 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `questions_ch2.js` / `questions_ch2_ar.js`: Chapter 2 "Changes in the Seasons", 15 ideas from the school book (lessons 2-1 and 2-2, pages 20-25) plus 3 bonus ideas from the Column "Desert Wisdom" (pages 26-27)
 - `questions_ch3.js` / `questions_ch3_ar.js`: Chapter 3 "Conditions for Germination", 22 ideas from the school book (lessons 3-1 to 3-5, pages 28-42), 3 bonus ideas ("Let's Expand" and the Column "The Magic Seeds") and 3 exam extras from the outside guide. The Arabic file follows the Arabic school book's wording (الفلقة، الجنين، محلول اليود، الشرط الذي نغيّره…); the cups are (أ) and (ب), and for an Arabic player cup (أ) is drawn on the right, as in the book
 - `questions_ch4.js`: the start of Chapter 4 "Conditions for Growth" (7 ideas from the school book). The chapter is still closed; the Exam Hall asks one question from lesson 4-1 in about half of the papers
-- `ch3_art.js`: Chapter 3's drawings made in code (the kidney bean and its parts, the cups, the refrigerator, the dark box) and its tap pictures (`seedParts`, `iodineSeeds`, `cupsWater`, `cupsAir`, `cupsTemp`). `assets/map_ch3.svg`, `assets/bg_ch3.svg` are drawn by `tools/make_ch3_map.js`
+- `ch3_art.js`: Chapter 3's drawings made in code (the kidney bean and its parts, the cups, the refrigerator, the dark box) and its tap pictures (`seedParts`, `iodineSeeds`, `cupsWater`, `cupsAir`, `cupsTemp`). `assets/map_ch3.svg`, `assets/bg_ch3.svg` are drawn by `science/tools/make_ch3_map.js`
 - `tools/check_questions.js`: run `node tools/check_questions.js` before a release: it checks every questions file (answers, tap targets, ids) and that each Arabic file mirrors its English one
 - `ch2_art.js`: Chapter 2's drawings made in code (the luffa through the year, the lizard, the rock scene). The game uses them, and so do the chapter's tap pictures (`plantYear`, `lizardSummer`, `lizardWinter`)
-- `assets/map_ch2.svg`, `assets/bg_ch2.svg`: Chapter 2's map and page background, drawn by `tools/make_ch2_map.js` (run `node tools/make_ch2_map.js` after changing it)
+- `assets/map_ch2.svg`, `assets/bg_ch2.svg`: Chapter 2's map and page background, drawn by `science/tools/make_ch2_map.js` (run `node science/tools/make_ch2_map.js` after changing it)
 - `common.js` / `common.css`: shared player profiles, chapters, XP levels, streaks, sounds, Arabic voice, Champions board
 - Visitor statistics: Google Analytics 4, loaded from `common.js` (`GA_ID`); page views and approximate location only, no player names
 - `firebase-config.js`: paste the Firebase web config here to make the Champions board online
@@ -44,11 +57,11 @@ Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2
 - `questions_g4c2.js` / `_ar.js`: "How Insects Grow" (pages 26-35): 14 ideas from the three lessons, plus 2 bonus ideas ("Let's Raise Butterflies from Eggs")
 - `questions_g4c3.js` / `_ar.js`: "How Plants Grow" (pages 36-49): 19 ideas from the four lessons, plus 2 bonus ideas
 - `g4_art.js`: every Grade 4 drawing made in code (animals and plants of the Nile and the desert, the butterfly's stages, the sunflower from seed to seed…) and the 13 tap pictures of the three chapters
-- `g4_game.js` + `g4_game.css`: the game kit shared by the three games. It builds the page and gives the tools (Reesho's bubble, choices, tap spots, sorting buttons, Speed Round, results); a game page only holds its scene and its three stages
+- `game_kit.js` + `game_kit.css`: the game kit shared by the three games. It builds the page and gives the tools (Reesho's bubble, choices, tap spots, sorting buttons, Speed Round, results); a game page only holds its scene and its three stages
 - `habitat.html` (Habitat Explorer): find living organisms in a dry place; sort who lives along the Nile River and who lives in the desert; the fennec fox, the jerboa, day and night in the desert; Speed Round "Nile River or desert?"
 - `butterfly.html` (Butterfly Garden): raise a butterfly from the egg under the leaf to the adult; the three body parts of an insect; "is it an insect?"; Speed Round "egg, larva, pupa or adult?"
 - `garden.html` (My Little Garden): sow a sunflower seed, seed leaves and true leaves; measure the plant height; from bud to flower to fruit to new seeds; roots, stem and leaves; Speed Round
-- `assets/map_g4c1.svg` … `map_g4c3.svg`, `assets/bg_g4c1.svg` … `bg_g4c3.svg`: drawn by `tools/make_g4_maps.js`
+- `assets/map_g4c1.svg` … `map_g4c3.svg`, `assets/bg_g4c1.svg` … `bg_g4c3.svg`: drawn by `science/tools/make_g4_maps.js`
 - Monthly test: `quiz.html#exam=g4m1` (Chapters 1 to 3)
 Where the two books differ, each file follows its own book: in the Arabic book the stage is «الشرنقة» and the adult comes out when «ينشق الغلاف الخارجي» (the English book says "the back splits open").
 
@@ -60,11 +73,11 @@ Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2
 - Idea letters (unique inside Grade 6): A, O, B, X (Chapter 1) · R, L (Chapter 2) · D, S, V, Y (Chapter 3)
 - `g6_art.js`: the Chapter 1 drawings (candle, flame, bottomless jar on clay, jars of gas, limewater, the bar of the gases of the air) and its tap pictures (`jarSetups`, `airBar`, `gasJars`, `limeJars`)
 - `g6_body.js`: the Chapter 2 and 3 drawings (plastic bags with limewater, the upper body with the windpipe and lungs, gas exchange zoomed in, a fish with gills, the digestive tract, test tubes, beaker, dropper, the wall of the small intestine with and without villi, cloths) and their tap pictures (`breathBags`, `airways`, `gasExchange`, `digestTract`, `salivaTubes`, `gutWalls`, `cloths`)
-- Games, all built on the Grade 4 game kit (`g4_game.js`):
+- Games, all built on the Grade 4 game kit (`game_kit.js`):
   - `flame.html` (Flame Lab): the candle in the jar with a lid, with a gap at the bottom, and with gaps at the top and the bottom; the components of air; a lit candle in jars of nitrogen, oxygen and carbon dioxide; the limewater test; Speed Round "which gas?". Only the teacher lights the candle, as in the book
   - `breath.html` (Breath Lab): our breath and room air in two bags with limewater; the path of the air to the lungs (tap the nose and mouth, windpipe, lungs); gas exchange zoomed in; breathing out and fish gills; Speed Round "oxygen or carbon dioxide?"
   - `foodtrip.html` (Food Journey): a bite of food from the mouth to the anus; the saliva experiment (starch, about 40 °C, iodine solution); the towel and the villi; where the nutrients go (blood, liver); Speed Round "which organ?"
-- Maps and backgrounds `assets/map_g6c1..3.svg`, `assets/bg_g6c1..3.svg`: drawn by `tools/make_g6_maps.js`
+- Maps and backgrounds `assets/map_g6c1..3.svg`, `assets/bg_g6c1..3.svg`: drawn by `science/tools/make_g6_maps.js`
 - Reesho's Exam Hall: `g6m1`, the monthly test on Chapters 1, 2 and 3
 - Chapters 4 to 10 are listed as "soon"
 
@@ -115,8 +128,8 @@ The Prep 1 book is divided into **units** (not chapters), so for a `p1` player t
 - `questMax: 24` in `chapters.js`: a unit is long, so one Unit Quest asks 24 ideas (every Boss idea, and the others spread over all the lessons, the ones the player knows least first)
 - Idea letters (unique inside Prep 1): A, P, M, B, X (Unit 1)
 - `p1_art.js`: the Prep 1 drawings (the atom with its nucleus and energy levels, the periodic table, molecules, beakers, Lewis dots, carbon chains) and the tap pictures of Unit 1 (`atomParts`, `energyLevels`, `ptBlocks`, `ptGroups`, `particleBoxes`, `mixBeakers`, `bondTypes`, `carbonShapes`)
-- `atomlab.html` (Atom Lab), on the game kit (`g4_game.js`): build an atom of sodium (nucleus, Z, A, neutrons = A − Z, electrons, filling K, L, M); find Na, Cl and Ne in the periodic table from their electron configuration; sodium chloride (ionic bond) and hydrogen chloride (single covalent bond), then O=O and N≡N; physical or chemical property?; Speed Round "element, compound or mixture?"
-- Map and background `assets/map_p1u1.svg`, `assets/bg_p1u1.svg`: drawn by `tools/make_p1_maps.js`
+- `atomlab.html` (Atom Lab), on the game kit (`game_kit.js`): build an atom of sodium (nucleus, Z, A, neutrons = A − Z, electrons, filling K, L, M); find Na, Cl and Ne in the periodic table from their electron configuration; sodium chloride (ionic bond) and hydrogen chloride (single covalent bond), then O=O and N≡N; physical or chemical property?; Speed Round "element, compound or mixture?"
+- Map and background `assets/map_p1u1.svg`, `assets/bg_p1u1.svg`: drawn by `science/tools/make_p1_maps.js`
 - Reesho's Exam Hall: `p1oct`, the October monthly test on Unit 1, lessons 1 to 3 (`minParts: 1` lets a one-unit test show on the units page)
 - Units 2 to 4 are listed as "soon"
 - In the Arabic files, symbols, formulas and electron configurations are wrapped in left-to-right isolates (`ltr()`) and configurations are written without spaces (2,8,1), so they read correctly inside Arabic sentences
@@ -131,8 +144,8 @@ A chapter opens only in a language it has a questions file for (`chReady` in `co
 - Idea letters (unique inside Prep 2): S, C, E, H (Unit 1). Boss ideas: S11, C10, E7, H7
 - `questMax: 24` in `chapters.js`, as in Prep 1
 - `p2_art.js`: the Prep 2 drawings (particles of the three states, beaker, burner, thermometer, syringes, pot on a fire, spoons, thermos, can in ice) and the tap pictures of Unit 1 (`particleStates`, `syringes`, `stateCycle`, `heatingCurve`, `systems3`, `spoons`, `heatPot`, `mixGraphs`). Pictures with a left and a right are mirrored for an Arabic player (the solid on the right, as in the book); the axes of the heating curve stay left to right, as in the book
-- `heatlab.html` (Heat Lab), on the game kit (`g4_game.js`): the particles of a solid, a liquid and a gas; heat ice from −20 °C until it boils while the heating curve draws itself (flat at 0 °C and at 100 °C); open, closed or isolated system?; the heat race (less water against more water, oil against water, why water cools a car engine); a pot on a fire: tap conduction, convection and radiation; Speed Round "conduction, convection or radiation?". Every text has both languages; the English texts follow the English book
-- Map and background `assets/map_p2u1.svg`, `assets/bg_p2u1.svg`: drawn by `tools/make_p2_maps.js`
+- `heatlab.html` (Heat Lab), on the game kit (`game_kit.js`): the particles of a solid, a liquid and a gas; heat ice from −20 °C until it boils while the heating curve draws itself (flat at 0 °C and at 100 °C); open, closed or isolated system?; the heat race (less water against more water, oil against water, why water cools a car engine); a pot on a fire: tap conduction, convection and radiation; Speed Round "conduction, convection or radiation?". Every text has both languages; the English texts follow the English book
+- Map and background `assets/map_p2u1.svg`, `assets/bg_p2u1.svg`: drawn by `science/tools/make_p2_maps.js`
 - Reesho's Exam Hall: `p2oct`, the October monthly test on Unit 1, lessons 1 to 3 (the same split as Prep 1; change `lessons` in `chapters.js` if the school's October plan differs)
 - Units 2 to 4 are listed as "soon"
 
@@ -151,7 +164,7 @@ Every page loads the shared files with a stamp, e.g. `common.js?v=20261010c`. On
 Run from the site folder. Each prints what it did; none of them commits.
 - `node tools/check_questions.js`: checks every questions file (answers, tap targets, ids, English/Arabic parity). Must end with "all good".
 - `node tools/new_chapter.js p2u2 [--lang ar] [--game reactlab.html --name "Reaction Lab|معمل التفاعلات" --icon ⚗️]`: for a chapter already listed in `chapters.js`, shows the idea letters free in its grade, creates the empty questions files with the rules and a template, adds `questions` / `questionsAr` / `art` / `questMax` (and `game`, `map`, `cover`, `quizBg`) to its entry, creates a game page on the kit and its `PAGE_NAMES` line, and lists what is left by hand. Never overwrites a file, never sets `ready: true`.
-- `node tools/smoke_test.js p2u1 [--lang ar] [--quick] [--game-only] | --all`: renders every phrasing at 390×844, 844×390 and 1366×768 (only the phone with `--quick`) and plays the chapter's game to the results panel. Prints only problems and saves their screenshots in `tools/smoke_out/` (ignored by git). A chapter under test opens even before `ready: true`. The three older games (`arm.html`, `seasons.html`, `seedlab.html`) are only opened and checked for errors.
+- `node tools/smoke_test.js p2u1 [--lang ar] [--quick] [--game-only] | --all`: renders every phrasing at 390×844, 844×390 and 1366×768 (only the phone with `--quick`) and plays the chapter's game to the results panel. Prints only problems and saves their screenshots in `tools/smoke_out/` (ignored by git). A chapter under test opens even before `ready: true`. The three older games (`arm.html`, `seasons.html`, `seedlab.html`) are only opened and checked for errors. Checks run 6 at a time (`--par=8` for more); the whole site takes about 4 minutes, one unit about 1 minute.
 - `node tools/coverage.js p2u1 [--lang en] [--book 14,9,11,12] [--left "…"]`: the coverage report in Arabic Markdown, counted from the files: ideas and phrasings per lesson next to the book's count, every concept with its question types, timed share and levels, and the concepts left out. `node tools/coverage.js --all` gives one line per chapter.
 - `node tools/release.js [--title "…" --item "…" --link "label|href|ch"] [--dry]`: runs the questions check (stops on a problem), sets today's stamp in every page and adds the `changes.js` entry.
 
@@ -169,7 +182,13 @@ A player who picks **Arabic** on the home page sees every page in Arabic, right 
 `common.js` gives `SI.isAr()`, `SI.T(en, ar)` and `SI.chTitle(chapter)`; static HTML carries `data-ar` (text), `data-ar-label` (aria-label/title) and `data-ar-ph` (placeholder).
 The Arabic track has its own Champions board (the board key includes the track). A chapter opens for Arabic players only when it has `questionsAr` in `chapters.js`.
 
+## Adding a subject (Math next)
+1. In `window.SUBJECTS` remove `soon` (and `hidden`); create its folder (`math/`, with `assets/` and `tools/`).
+2. Add its chapters to `window.CHAPTERS` with `subject: 'math'`, `grade`, `n`, titles and lessons (`ready: false`), then `node tools/new_chapter.js <id>` for each.
+3. Question types the subject needs and the site does not have yet are added once to `quiz.html` (and to `tools/check_questions.js`), for example a number answer for Math, or a reading passage for the languages.
+
 ## Adding a chapter
+All files of a chapter except its game page go in its subject's folder (`science/questions_chN.js`…). `node tools/new_chapter.js` does the setup.
 1. Write `questions_chN.js` (same format as `questions.js`, sets `window.IDEAS`).
 2. Build the chapter's game page; it starts with `SI.requireChapter('chN')` and saves its result in `SI.updateChProf(c => { c.game = {best, stars, plays}; }, 'chN')`.
 3. In `chapters.js` fill in `questions`, `game`, `map` (picture + stop positions) and set `ready: true`.

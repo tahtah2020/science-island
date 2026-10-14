@@ -1,4 +1,4 @@
-/* Science Island · shared helpers: storage, player, chapters, XP levels, daily streak, sounds, Arabic voice, Champions board */
+/* Motafawek · shared helpers: storage, player, chapters, XP levels, daily streak, sounds, Arabic voice, Champions board */
 (function () {
   'use strict';
   const HOME = 'index.html', CHAPTERS_PAGE = 'chapters.html';
@@ -83,12 +83,25 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const chWord = c => (isUnits(c) ? T('Unit', 'الوحدة') : T('Chapter', 'الفصل'));
   const chWords = c => (isUnits(c) ? T('Units', 'الوحدات') : T('Chapters', 'الفصول'));
   const questName = c => (isUnits(c) ? T('Unit Quest', 'تحدي الوحدة') : T('Chapter Quest', 'تحدي الفصل'));
+  /* subjects (chapters.js: window.SUBJECTS). A chapter or test without `subject` belongs to Science, the first subject the site had.
+     A subject's `lang` says which questions file each track reads: { lang: 'en', ar: 'ar' } (the default: Languages track English,
+     Arabic track Arabic), { lang: 'ar', ar: 'ar' } for a subject taught in Arabic on both tracks, { lang: 'en', ar: 'en' } for English. */
+  const subjects = () => (window.SUBJECTS || [{ id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬' }]).filter(s => !s.hidden);
+  const subjectById = id => subjects().find(s => s.id === id) || (window.SUBJECTS || []).find(s => s.id === id) || null;
+  const chSubject = c => (c && c.subject) || 'science';
+  const subjectId = () => prof().subj || chSubject(chapterById(prof().cur)) || 'science';
+  const subject = () => subjectById(subjectId()) || subjects()[0];
+  function setSubject(id) { if (subjectById(id)) updateProf(p => { p.subj = id; }); return subject(); }
+  const subjectName = s => { s = s || subject(); return s ? T(s.title, s.titleAr) : ''; };
+  /* the questions file this player reads for chapter c (null when there is none in that language) */
+  const contentAr = c => { const L = (subjectById(chSubject(c)) || {}).lang; return L ? L[isAr() ? 'ar' : 'lang'] === 'ar' : isAr(); };
+  const qFile = c => (c ? (contentAr(c) ? c.questionsAr : c.questions) || null : null);
   const allChapters = () => window.CHAPTERS || [];
-  const chapters = () => allChapters().filter(c => chGrade(c) === grade());
+  const chapters = () => allChapters().filter(c => chGrade(c) === grade() && chSubject(c) === subjectId());
   const chapterById = id => allChapters().find(c => c.id === id) || null;
   const chapterId = () => prof().cur || null;
   const chapter = () => chapterById(chapterId());
-  function setChapter(id) { if (chapterById(id)) updateProf(p => { p.cur = id; }); return chapter(); }
+  function setChapter(id) { const c = chapterById(id); if (c) updateProf(p => { p.cur = id; p.subj = chSubject(c); }); return chapter(); }
   /* pages inside a chapter call this; a game page passes its own chapter id */
   function requireChapter(id) {
     if (id) setChapter(id);
@@ -98,7 +111,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
   /* open for this player: marked ready, in the player's grade (the owner may look at every grade),
      and for the Arabic track it also needs its Arabic questions */
-  function chReady(c) { return !!(c && c.ready && (isAr() ? c.questionsAr : c.questions) && (chGrade(c) === grade() || isOwner())); }   // a chapter opens only in a language it has questions for
+  function chReady(c) { return !!(c && c.ready && qFile(c) && (chGrade(c) === grade() || isOwner())); }   // a chapter opens only in a language it has questions for
   function chProf(id) { id = id || chapterId(); return ((prof().ch || {})[id]) || {}; }
   function updateChProf(fn, id) {
     id = id || chapterId(); if (!id) return {};
@@ -116,7 +129,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   function loadQuestions() {
     const c = chapter();
     return new Promise((res, rej) => {
-      const src = c && ((isAr() && c.questionsAr) || c.questions);   // Arabic-track players get the Arabic file
+      const src = qFile(c);   // the file of the player's track (Arabic-track players get the Arabic file)
       if (!src) return rej(new Error('This chapter has no questions yet.'));
       window.IDEAS = undefined;
       const add = (file, ok, bad) => { const el = document.createElement('script'); el.src = vq(file); el.onload = ok; el.onerror = bad; document.head.appendChild(el); };
@@ -130,7 +143,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const loaded = {};
   const addScript = file => new Promise((res, rej) => { const el = document.createElement('script'); el.src = vq(file); el.onload = res; el.onerror = () => rej(new Error('Could not load ' + file)); document.head.appendChild(el); });
   async function loadIdeas(c) {
-    const src = c && (isAr() ? c.questionsAr : c.questions);
+    const src = qFile(c);
     if (!src) return null;
     if (c.art && !loaded[c.art]) { await addScript(c.art); loaded[c.art] = true; }
     window.IDEAS = undefined;
@@ -138,10 +151,10 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return Array.isArray(window.IDEAS) ? window.IDEAS : null;
   }
   /* monthly tests (chapters.js: window.EXAMS). examParts: the chapters of a test that this player can be asked about */
-  const exams = () => (window.EXAMS || []).filter(e => (e.grade || 'g5') === grade());   // this grade's tests
+  const exams = () => (window.EXAMS || []).filter(e => (e.grade || 'g5') === grade() && chSubject(e) === subjectId());   // this grade's tests in the chosen subject
   /* a test opens for its own grade only (the owner may open every grade's test) */
   const examById = id => { const e = id ? (window.EXAMS || []).find(x => x.id === id) : exams()[0]; return e && ((e.grade || 'g5') === grade() || isOwner()) ? e : null; };
-  const examParts = ex => ((ex && ex.parts) || []).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && (isAr() ? p.c.questionsAr : p.c.questions));
+  const examParts = ex => ((ex && ex.parts) || []).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && qFile(p.c));
   /* what a test covers, for its card and its first page: "Chapters 1, 2, 3", or "Unit 1 · Lessons 1 to 3" for a test on part of one unit.
      Chapters the test only touches (max) are not named. */
   function examScope(ex, parts) {
@@ -901,6 +914,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const rate = { due: rateDue, ask: rateAsk, guard: rateGuard, flush: rateFlush, CHOICES: RATE_CHOICES, WANTS: RATE_WANTS };
 
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
+    subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
     weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT };

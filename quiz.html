@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chapter Quest · Science Island</title>
+<title>Chapter Quest · Motafawek</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -343,7 +343,7 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   <header class="top">
     <a class="brand" href="map.html" title="Back to the map" data-ar-label="رجوع للخريطة">
       <div class="logo" aria-hidden="true">🗺️</div>
-      <div><h1 id="title">Question Quest</h1><p id="subtitle">Science Island</p></div>
+      <div><h1 id="title">Question Quest</h1><p id="subtitle">Motafawek</p></div>
     </a>
     <div class="hud">
       <div class="pill" id="countPill">1 / 12</div>
@@ -374,9 +374,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
 <script>
 (() => {
 'use strict';
@@ -1387,7 +1387,7 @@ async function main() {
   const me = SI.player();
   const mode = /^#(daily|review)$/.test(location.hash) ? location.hash.slice(1) : (/^#preview/.test(location.hash) && SI.isOwner()) ? 'preview' : 'quest';   // preview opens only after the owner signs in on admin.html
   say(T(`Hi, ${esc(me.name)}! I’m Reesho.`, `أهلًا يا ${esc(me.name)}! أنا ريشو.`), 'wave');
-  const set = (t, s) => { $('#title').textContent = t; $('#subtitle').textContent = s; document.title = t + T(' · Science Island', ' · جزيرة العلوم'); };
+  const set = (t, s) => { $('#title').textContent = t; $('#subtitle').textContent = s; document.title = t + T(' · Motafawek', ' · متفوّق'); };
   const TITLE = SI.chTitle(CH);
 
   if (mode === 'preview') return preview(set);

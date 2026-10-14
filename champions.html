@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Science Island · Champions</title>
+<title>Motafawek · Champions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261013e">
+<link rel="stylesheet" href="common.css?v=20261014a">
 <style>
 .wrap{max-width:720px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .head{display:flex;align-items:flex-end;gap:12px}
@@ -60,9 +60,9 @@
     <div class="row"><a class="btn primary big" id="playQuest" href="quiz.html#quest" data-ar="العب تحدي الفصل ◂">Play Chapter Quest ▸</a></div>
   </div>
 </div>
-<script src="firebase-config.js?v=20261013e"></script>
-<script src="chapters.js?v=20261013e"></script>
-<script src="common.js?v=20261013e"></script>
+<script src="firebase-config.js?v=20261014a"></script>
+<script src="chapters.js?v=20261014a"></script>
+<script src="common.js?v=20261014a"></script>
 <script>
 (async () => {
   'use strict';
@@ -70,7 +70,7 @@
   const CH = SI.requireChapter(); if (!CH) return;
   SI.applyTheme();
   const $ = s => document.querySelector(s), T = SI.T;
-  if (SI.isAr()) document.title = 'الأبطال · جزيرة العلوم';
+  if (SI.isAr()) document.title = 'الأبطال · متفوّق';
   $('#chSub').textContent = T(`${SI.chWord(CH)} ${CH.n} · ${CH.title}`, `${SI.chWord(CH)} ${CH.n} · ${SI.chTitle(CH)}`);
   $('#playQuest').textContent = T(`Play ${SI.questName(CH)} ▸`, `العب ${SI.questName(CH)} ◂`);
   const ms = SI.weekEndsIn(), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5);
