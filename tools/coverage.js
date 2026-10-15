@@ -12,7 +12,7 @@ const opt = k => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : null
 const many = k => args.reduce((a, x, i) => (x === k ? a.concat(args[i + 1]) : a), []);
 const load = f => { const w = {}; new Function('window', fs.readFileSync(path.join(ROOT, f), 'utf8'))(w); return w; };
 const CH = load('chapters.js').CHAPTERS;
-const TYPE = { mc: 'اختيار', tf: 'صح/خطأ', fill: 'أكمل', multi: 'اختر كل الصحيح', order: 'رتّب', match: 'وصّل', tap: 'اضغط على الصورة', table: 'جدول', term: 'المصطلح', fix: 'صحّح', build: 'كوّن الإجابة' };
+const TYPE = { mc: 'اختيار', tf: 'صح/خطأ', fill: 'أكمل', multi: 'اختر كل الصحيح', order: 'رتّب', match: 'وصّل', tap: 'اضغط على الصورة', table: 'جدول', term: 'المصطلح', fix: 'صحّح', build: 'كوّن الإجابة', num: 'اكتب الناتج' };
 const BUILD = { why: 'علّل', whatif: 'ماذا يحدث لو', function: 'الوظيفة', define: 'عرّف' };
 const typeOf = v => (v.type === 'build' && BUILD[v.style]) || (v.style === 'odd' ? 'المختلف' : TYPE[v.type] || v.type);
 
@@ -34,7 +34,7 @@ const lang = opt('--lang') || (c.questionsAr ? 'ar' : 'en'), file = lang === 'ar
 if (!file) { console.log(`${id} has no ${lang} questions file`); process.exit(1); }
 const IDEAS = load(file).IDEAS, lessons = (lang === 'ar' && c.lessonsAr) || c.lessons || [];
 const book = (opt('--book') || '').split(',').filter(Boolean).map(Number);
-const word = c.grade && /^p/.test(c.grade) ? 'الوحدة' : 'الفصل';
+const word = (c.grade && /^p/.test(c.grade)) || c.subject === 'math' ? 'الوحدة' : 'الفصل';
 
 const core = IDEAS.filter(I => !I.bonus), bonus = IDEAS.filter(I => I.bonus);
 const nv = L => L.reduce((n, I) => n + I.variants.length, 0);

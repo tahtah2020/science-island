@@ -18,6 +18,8 @@ const TAPS = { armBent: ['in', 'out'], armStraight: ['in', 'out'], armJoints: ['
   /* Prep 2 (p2_art.js) */
   particleStates: ['solid', 'liquid', 'gas'], syringes: ['air', 'water', 'sand'], stateCycle: ['melt', 'freeze', 'evap', 'cond', 'subl', 'depo'],
   heatingCurve: ['solid', 'melting', 'liquid', 'boiling', 'gas'], systems3: ['open', 'closed', 'isolated'], spoons: ['metal', 'wood', 'plastic'], heatPot: ['rad', 'cond', 'conv'], mixGraphs: ['mixA', 'mixB', 'mixC', 'mixD'],
+  /* Math (math/m5_art.js) */
+  gridShade: ['gA', 'gB', 'gC'], placeChart: ['hundreds', 'tens', 'ones', 'tenths', 'hundredths', 'thousandths'], numLine: ['n0', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'n10'],
   /* Grade 4 (g4_art.js) */
   hidePlaces: ['grass', 'stone', 'rock', 'sand'], nileDesert: ['nile', 'desert'], fennec: ['ears', 'feet', 'tail'], desertDay: ['hole', 'sand', 'dune'],
   butterflyStages: ['egg', 'larva', 'pupa', 'adult'], insectBody: ['head', 'thorax', 'abdomen'], insectSide: ['antennae', 'wings', 'legs'], whoIsInsect: ['grasshopper', 'spider', 'pillbug'],
@@ -45,6 +47,7 @@ for (const f of files) {
     I.variants.forEach((v, i) => {
       nv++; const at = `${I.id}.${i + 1}`;
       if (!v.q) err(at + ' no q'); if (!v.level) err(at + ' no level');
+      if (v.fig && !TAPS[v.fig] && !['gridModel'].includes(v.fig)) err(at + ' unknown fig ' + v.fig);
       if (v.mode === 'timed' && !v.seconds) err(at + ' timed without seconds');
       if (I.boss && v.mode !== 'boss') err(at + ' boss idea, variant not boss');
       if (!I.boss && v.mode === 'boss') err(at + ' boss variant in a normal idea');
@@ -58,6 +61,12 @@ for (const f of files) {
       else if (v.type === 'tap') { if (!TAPS[v.diagram] || !TAPS[v.diagram].includes(v.answer)) err(at + ' tap target'); }
       else if (v.type === 'fix') { if (!v.q.includes(v.wrong)) err(at + ' wrong word not in sentence'); if (!v.answer) err(at + ' fix answer'); if ([...v.answer].filter(c => /\p{L}/u.test(c)).length > 18) err(at + ' answer too long for tiles'); }
       else if (v.type === 'term') { if (!v.answer || [...v.answer].filter(c => /\p{L}/u.test(c)).length > 18) err(at + ' term answer'); }
+      else if (v.type === 'num') {
+        if (!/^\d+(\.\d+)?$/.test(String(v.answer))) err(at + ' num answer must be a plain number text');
+        if (v.calc) { if (!/^[0-9+\-*/(). ]+$/.test(v.calc)) err(at + ' calc has odd characters'); else { let r; try { r = Function('return (' + v.calc + ')')(); } catch (e) { r = NaN; } if (!(Math.abs(r - Number(v.answer)) < 1e-9)) err(at + ' calc ' + v.calc + ' = ' + r + ' but answer is ' + v.answer); } }
+        else if (v.round) { const s = Math.pow(10, v.round[1]), r = Math.floor(Number(v.round[0]) * s + 0.5 + 1e-9) / s; if (!(Math.abs(r - Number(v.answer)) < 1e-9)) err(at + ' round ' + v.round[0] + ' to ' + v.round[1] + ' = ' + r + ' but answer is ' + v.answer); }
+        else if (!v.noCalc) err(at + ' num without calc (add calc: "expression" so the answer is checked, or noCalc: true)');
+      }
       else if (v.type === 'build') { const all = v.parts.concat(v.extra || []); if (new Set(all).size !== all.length) err(at + ' duplicate cards'); if (v.parts.length < 2) err(at + ' too few parts'); if (!v.style) err(at + ' build without style'); }
       else err(at + ' unknown type ' + v.type);
     });

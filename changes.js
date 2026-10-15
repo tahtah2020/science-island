@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-15', title: 'Math: Grade 5 Unit 1 (Languages track)',
+    items: [
+      { text: 'Math is open for Grade 5: Unit 1 Place Value of Decimals and Operations, with the Decimal Dock game and 40 question ideas.' },
+      { text: 'A new question type: write the number on a number pad.' }
+    ] },
   { date: '2026-10-15', title: 'جواهر وخزانة ريشو',
     items: [
       { text: 'كل ٥ نقاط خبرة بتديك جوهرة 💎، والجواهر بتتصرف في خزانة ريشو على قبعات ونظارات وأوشحة وعباءات. ظهور الجواهر في لوحة النتيجة وفي صفحتي الفصول والخريطة.', links: [{ label: 'خزانة ريشو', href: 'wardrobe.html' }] }

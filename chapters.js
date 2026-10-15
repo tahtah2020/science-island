@@ -24,7 +24,7 @@
    soon: the tab shows "coming soon" · hidden: not shown at all */
 window.SUBJECTS = [
   { id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬', tint: '#dcefff', dir: 'science' },
-  { id: 'math', title: 'Math', titleAr: 'الرياضيات', icon: '🔢', tint: '#ffe6cc', dir: 'math', soon: true },
+  { id: 'math', title: 'Math', titleAr: 'الرياضيات', icon: '🔢', tint: '#ffe6cc', dir: 'math' },
   { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
   { id: 'arabic', title: 'Arabic', titleAr: 'اللغة العربية', icon: '📖', tint: '#fbe3e3', dir: 'arabic', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
   { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' }, hidden: true }
@@ -203,7 +203,16 @@ window.CHAPTERS = [
 
   { id: 'p2u4', grade: 'p2', n: 4, title: 'Geological Processes', titleAr: 'العمليات الجيولوجية', icon: '🏔️', tint: '#e3ecfb', ready: false,
     lessons: ['Changing the Earth’s Surface', 'Formation of Minerals and Soil'],
-    lessonsAr: ['تغير سطح الأرض', 'تكوين المعادن والتربة'] }
+    lessonsAr: ['تغير سطح الأرض', 'تكوين المعادن والتربة'] },
+
+  /* ---------- Math (school book 2026/2027, first term). Units, like the preparatory books (SI.isUnits: every Math chapter is a unit) ----------
+     Grade 5, Unit 1: two concepts, 11 lessons. The English book file starts at Lesson 1, so the English unit title is the Arabic one translated. */
+  { id: 'm5c1', subject: 'math', grade: 'g5', n: 1, title: 'Place Value of Decimals and Operations', titleAr: 'القيمة المكانية للأعداد العشرية وحسابها', icon: '🔢', tint: '#ffe6cc', ready: true,
+    art: 'math/m5_art.js', questMax: 24, questions: 'math/questions_m5c1.js',
+    game: { href: 'math-decimals.html', name: "Decimal Dock", nameAr: "مرسى الأعداد العشرية", icon: '⛵', hint: 'Read grids, move digits, round on the number line and add and subtract decimals with models', hintAr: 'اقرأ الشبكات وحرّك الأرقام وقرّب على خط الأعداد واجمع واطرح الأعداد العشرية بالنماذج' },
+    map: { img: 'math/assets/map_m5c1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_m5c1.svg', quizBg: 'math/assets/bg_m5c1.svg',
+    lessons: ['Decimals to the Thousandths Place', 'Place Value Shuffle', 'Composing and Decomposing Decimals', 'Comparing Decimals', 'Rounding Decimals', 'Estimating Decimal Sums', 'Modeling Decimal Addition', 'Modeling Decimals Subtraction', 'Estimating Decimal Differences', 'Subtracting to the Thousandths Place', 'Decimal Story Problems'] }
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.

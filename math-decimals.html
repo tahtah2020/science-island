@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decimal Dock · Place Value of Decimals and Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261015b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Decimal Dock.</noscript>
+<script src="firebase-config.js?v=20261015b"></script>
+<script src="chapters.js?v=20261015b"></script>
+<script src="common.js?v=20261015b"></script>
+<script src="game_kit.js?v=20261015b"></script>
+<script src="math/m5_art.js?v=20261015b"></script>
+<script>
+(() => {
+'use strict';
+/* Decimal Dock · the game of Unit 1, Place Value of Decimals and Operations (Math, Grade 5). Built on the shared game kit (game_kit.js).
+   The play action IS the math: the scene is always a model (10 x 10 grid, place value chart, number line) and every answer changes the model.
+   Stage 1 (Warm Up): read decimals from shaded grids and the place value chart (lessons 1 and 3).
+   Stage 2 (Missions): x10 and /10 (lesson 2), compare (4), round on the number line (5), add with a model (7), subtract with a model (8), the Nile trip (7).
+   Stage 3 (Speed Round): < = > with the book's pairs (lesson 4).
+   Every T('English', 'عربي') has both languages. Numbers stay left to right. */
+const T = SI.T, G = SI.G, M = M5ART;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;      // a number inside Arabic text stays left to right
+const kw = s => `<b class="kw">${s}</b>`;
+const sc = { mode: 'grid', n: 0, cap: '' };
+const VW = 420, VH = 280;
+const COLX = {}; (() => { let x = 55; M.PLACES.forEach(p => { COLX[p.id] = [x, p.w]; x += p.w; }); })();
+
+function cap(s) { return s ? M.num(210, 262, s, { fs: 22 }) : ''; }
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  if (sc.mode === 'grid') s += M.grid100(130, 20, 160, sc.n, { x: sc.x, xFrom: sc.xFrom }) + cap(sc.cap);
+  else if (sc.mode === 'chart') s += M.chart(55, 62, { num: sc.num, hl: sc.hl }) + (sc.note ? M.lab(210, 40, sc.note, { fs: 13 }) : '') + cap(sc.cap);
+  else if (sc.mode === 'line') s += M.line(40, 150, 340, { from: sc.from, to: sc.to, at: sc.at, all: true }) + cap(sc.cap);
+  else if (sc.mode === 'add') s += M.grid100(26, 30, 150, sc.a, { fill: M.COL.yellow }) + M.num(210, 118, '+', { fs: 34 }) + M.grid100(244, 30, 150, sc.b, { fill: M.COL.green }) + cap(sc.cap);
+  else if (sc.mode === 'sum') s += M.grid100(60, 20, 150, Math.min(100, sc.a)) + M.grid100(230, 20, 150, Math.max(0, sc.a - 100), {}) + M.num(214, 118, '+', { fs: 0 }) + cap(sc.cap);
+  else if (sc.mode === 'river') s += `<rect y="150" width="${VW}" height="130" fill="#8fd3ee"/>` + M.lab(70, 120, 'Khartoum', { fs: 15 }) + M.lab(210, 120, 'Juba', { fs: 15 }) + M.lab(350, 120, 'Jinja', { fs: 15 }) +
+    `<path d="M70 150V190M210 150V190M350 150V190" stroke="#1f3d57" stroke-width="3"/>` + M.num(140, 214, '1,941.2 km', { fs: 16 }) + M.num(280, 214, '687.9 km', { fs: 16 }) + cap(sc.cap);
+  return s;
+}
+const rings = ids => ids.map(id => ({ id, name: id, ring: M.ringRect(COLX[id][0] + 1, 62, COLX[id][1] - 2, 84, 6) }));
+const tickRings = ids => ids.map(id => { const i = +id.slice(1), px = 40 + i * 34; return { id, name: T('Tick ', 'علامة ') + i, ring: M.ringRect(px - 14, 112, 28, 76, 8) }; });
+const g = G4Game({ ch: 'm5c1', logo: '⛵', title: ['Decimal Dock', 'مرسى الأعداد العشرية'], sub: ['Unit 1 · Place Value of Decimals and Operations', 'الوحدة 1 · القيمة المكانية للأعداد العشرية وحسابها'],
+  bg: 'math/assets/bg_m5c1.svg', bgc: '#ffe6cc', label: ['A grid, a place value chart or a number line for each question', 'شبكة أو جدول قيمة مكانية أو خط أعداد لكل سؤال'], render });
+const ok1 = (a, b) => T(a, b);
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'grid', n: 35, cap: '', x: false }); g.paint();
+  g.say(T(`Welcome to the dock! Every crate here is labelled with a decimal. This grid is <b>one whole</b> cut into 100 equal squares. ${kw('35')} squares are shaded. What decimal is shaded?`,
+    P(`أهلًا في المرسى! كل صندوق هنا عليه عدد عشري. الشبكة دي <b>وحدة كاملة</b> مقسّمة ١٠٠ مربع متساوي. ${kw(L('35'))} مربع ملوّن. إيه العدد العشري الملوّن؟`)), 'point');
+  await g.choice({ options: ['0.35', '3.5', '0.035', '0.53'], correct: '0.35', hint: T('Each square is one hundredth.', 'كل مربع جزء من مئة.'),
+    ok: T(`3 full columns are 3 ${kw('tenths')} and 5 more squares are 5 ${kw('hundredths')}: 0.35.`, `٣ أعمدة كاملة = ٣ ${kw('أجزاء من عشرة')} و٥ مربعات = ٥ ${kw('أجزاء من مئة')}: ${L('0.35')}.`), reveal: () => { sc.cap = '0.35'; g.paint(); } });
+  Object.assign(sc, { n: 7, cap: '' }); g.paint();
+  g.say(T('Now only 7 squares are shaded. Which decimal is that?', 'دلوقتي ٧ مربعات بس ملوّنة. إيه العدد العشري؟'), 'think');
+  await g.choice({ options: ['0.07', '0.7', '0.007', '7'], correct: '0.07', hint: T('No full column is shaded, so there are no tenths.', 'مفيش عمود كامل ملوّن، يعني مفيش أجزاء من عشرة.'),
+    ok: T('7 hundredths: 0.07. A zero holds the tenths place.', `٧ أجزاء من مئة: ${L('0.07')}. الصفر بيحجز خانة الأجزاء من عشرة.`), reveal: () => { sc.cap = '0.07'; g.paint(); } });
+  Object.assign(sc, { mode: 'chart', num: '34.527', hl: null, cap: '' }); g.paint();
+  g.say(T(`The crate number is ${kw('34.527')}. Tap the column that holds the digit <b>2</b>.`, `رقم الصندوق ${kw(L('34.527'))}. اضغط على العمود اللي فيه الرقم <b>٢</b>.`), 'point');
+  await g.spot(rings(['tens', 'ones', 'tenths', 'hundredths', 'thousandths']), 'hundredths', { hint: T('Count the places to the right of the decimal point.', 'عدّ الخانات يمين العلامة العشرية.'),
+    ok: T('The 2 is in the hundredths place: it is worth 0.02.', `الرقم ٢ في خانة الأجزاء من مئة: قيمته ${L('0.02')}.`), reveal: () => { sc.hl = 'hundredths'; g.paint(); } });
+  sc.hl = null; g.paint();
+  g.say(T('What is the value of the digit <b>5</b> in 34.527?', `إيه قيمة الرقم <b>٥</b> في ${L('34.527')}؟`), 'think');
+  await g.choice({ options: ['0.5', '0.05', '5', '0.005'], correct: '0.5', hint: T('Which place is right after the decimal point?', 'أنهي خانة بعد العلامة العشرية على طول؟'),
+    ok: T('5 tenths = 0.5. So 34.527 = 30 + 4 + 0.5 + 0.02 + 0.007.', `٥ أجزاء من عشرة = ${L('0.5')}. يعني ${L('34.527 = 30 + 4 + 0.5 + 0.02 + 0.007')}.`), reveal: () => { sc.hl = 'tenths'; g.paint(); } });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 2: place value shuffle
+  Object.assign(sc, { mode: 'chart', num: '6.5', hl: null, cap: '', note: '' }); g.paint();
+  g.say(T(`Mission 1: the ${kw('Place Value Shuffle')}. A crate marked 6.5 is loaded ${kw('10 times')}. What does the label say now?`, `المهمة ١: ${kw('لعبة القيمة المكانية')}. صندوق مكتوب عليه ${L('6.5')} اتحمّل ${kw('١٠ مرات')}. إيه اللي هيتكتب دلوقتي؟`), 'point');
+  await g.choice({ options: ['65', '6.50', '0.65', '650'], correct: '65', hint: T('Multiplying by 10 moves every digit one place to the left.', 'الضرب في ١٠ بيحرّك كل رقم خانة لليسار.'),
+    ok: T('6.5 × 10 = 65: every digit moved one place to the left.', `${L('6.5 × 10 = 65')}: كل رقم اتحرّك خانة لليسار.`),
+    reveal: () => { sc.num = '65'; sc.note = '× 10'; g.paint(); } });
+  Object.assign(sc, { num: '345', note: '', hl: null }); g.paint();
+  g.say(T('Now the crate marked 345 is shared into 10 equal piles: 345 ÷ 10.', `دلوقتي صندوق ${L('345')} اتقسم على ١٠: ${L('345 ÷ 10')}.`), 'think');
+  await g.choice({ options: ['34.5', '3,450', '3.45', '345.0'], correct: '34.5', hint: T('Dividing by 10 moves every digit one place to the right.', 'القسمة على ١٠ بتحرّك كل رقم خانة لليمين.'),
+    ok: T('345 ÷ 10 = 34.5: the 5 moved into the tenths place.', `${L('345 ÷ 10 = 34.5')}: الرقم ٥ راح خانة الأجزاء من عشرة.`), reveal: () => { sc.num = '34.5'; sc.note = '÷ 10'; g.paint(); } });
+}
+async function mission2() {                 // lesson 4: compare
+  Object.assign(sc, { mode: 'chart', num: '', cap: '', note: '' }); g.paint();
+  g.say(T(`Mission 2: two crates, ${kw('45.057')} and ${kw('45.100')}. Which sign goes between them?`, `المهمة ٢: صندوقين ${kw(L('45.057'))} و${kw(L('45.100'))}. أنهي علامة تتحط بينهم؟`), 'point');
+  sc.mode = 'chart'; sc.num = '45.057'; sc.note = '45.057  ?  45.100'; g.paint();
+  await g.pick({ buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }], correct: '<', points: 20,
+    ok: T('45.057 < 45.100: both have 45 ones, but 45.100 has 1 tenth and 45.057 has 0 tenths. More digits does not mean greater!', `${L('45.057 < 45.100')}: الاتنين فيهم ٤٥ آحاد، بس ${L('45.100')} فيه ١ جزء من عشرة و${L('45.057')} فيه صفر. عدد الأرقام الأكتر مش معناه أكبر!`),
+    no: T('Compare place by place from the left. Tenths first: 0 and 1.', 'قارن خانة خانة من الشمال. الأجزاء من عشرة الأول: ٠ و١.'),
+    reveal: () => { sc.note = '45.057  <  45.100'; g.paint(); } });
+  sc.setup = 1; g.setTray(null);
+  g.say(T('One more: 38.80 and 38.8.', `كمان واحد: ${L('38.80')} و${L('38.8')}.`), 'think');
+  sc.num = '38.80'; sc.note = '38.80  ?  38.8'; g.paint();
+  await g.pick({ buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }], correct: '=', points: 20,
+    ok: T('38.80 = 38.8: a zero at the end of a decimal does not change its value.', `${L('38.80 = 38.8')}: الصفر في آخر العدد العشري مبيغيّرش قيمته.`),
+    no: T('8 tenths and 80 hundredths cover the same part of a whole.', '٨ أجزاء من عشرة و٨٠ جزء من مئة نفس الجزء من الكل.'), reveal: () => { sc.note = '38.80  =  38.8'; g.paint(); } });
+  g.setTray(null);
+}
+async function mission3() {                 // lesson 5: rounding on the number line
+  Object.assign(sc, { mode: 'line', from: 7, to: 8, at: 7.7, cap: '' }); g.paint();
+  g.say(T('Mission 3: the flag is at 7.7. Round it to the nearest <b>whole number</b>. Tap the mark it is closest to.', `المهمة ٣: العلامة عند ${L('7.7')}. قرّبها لأقرب <b>عدد صحيح</b>. اضغط على العلامة الأقرب ليها.`), 'point');
+  await g.spot(tickRings(['n0', 'n10']), 'n10', { hint: T('Is the flag nearer to 7 or to 8?', 'العلامة أقرب لـ ٧ ولا ٨؟'),
+    ok: T('7.7 is past the halfway mark 7.5, so it rounds up to 8.', `${L('7.7')} عدّت منتصف المسافة ${L('7.5')}، يعني بتتقرّب لـ ${L('8')}.`) });
+  Object.assign(sc, { from: 3.5, to: 3.6, at: 3.54 }); g.paint();
+  g.say(T('Now 3.54, rounded to the nearest <b>tenth</b>. The line runs from 3.5 to 3.6.', `دلوقتي ${L('3.54')} لأقرب <b>جزء من عشرة</b>. الخط من ${L('3.5')} لـ ${L('3.6')}.`), 'think');
+  await g.spot(tickRings(['n0', 'n10']), 'n0', { hint: T('Look at the hundredths digit: 4 is less than 5.', 'بُص على رقم الأجزاء من مئة: ٤ أقل من ٥.'),
+    ok: T('3.54 is before the halfway mark 3.55, so it rounds down to 3.5.', `${L('3.54')} قبل منتصف المسافة ${L('3.55')}، يعني بتتقرّب لـ ${L('3.5')}.`) });
+}
+async function mission4() {                 // lesson 7: add with a model
+  Object.assign(sc, { mode: 'add', a: 45, b: 84, cap: '0.45 + 0.84' }); g.paint();
+  g.say(T('Mission 4: two loads. The yellow grid is 0.45 and the green grid is 0.84. How much is that altogether?', `المهمة ٤: حمولتين. الشبكة الصفرا ${L('0.45')} والخضرا ${L('0.84')}. المجموع كام؟`), 'point');
+  await g.choice({ options: ['1.29', '0.129', '1.19', '12.9'], correct: '1.29', hint: T('4 + 8 = 12 tenths. Regroup 10 tenths as 1 whole.', '٤ + ٨ = ١٢ جزء من عشرة. حوّل ١٠ أجزاء لواحد صحيح.'),
+    ok: T('0.45 + 0.84 = 1.29: 12 tenths = 1 whole and 2 tenths.', `${L('0.45 + 0.84 = 1.29')}: ١٢ جزء من عشرة = واحد صحيح و٢ من عشرة.`),
+    reveal: () => { sc.mode = 'sum'; sc.a = 129; sc.cap = '1.29'; g.paint(); } });
+}
+async function mission5() {                 // lesson 8: subtract with a model
+  Object.assign(sc, { mode: 'grid', n: 62, x: true, xFrom: 35, cap: '0.62 − 0.27' }); g.paint();
+  g.say(T('Mission 5: 0.62 of the grid is shaded and 0.27 is crossed out. What is left, 0.62 − 0.27?', `المهمة ٥: ${L('0.62')} من الشبكة ملوّن و${L('0.27')} متشطّب. إيه اللي فاضل ${L('0.62 − 0.27')}؟`), 'point');
+  await g.choice({ options: ['0.35', '0.45', '0.89', '0.25'], correct: '0.35', hint: T('Count the shaded squares that have no cross.', 'عدّ المربعات الملوّنة اللي مش متشطّبة.'),
+    ok: T('62 − 27 = 35 hundredths = 0.35.', `${L('62 − 27 = 35')} جزء من مئة = ${L('0.35')}.`), reveal: () => { sc.x = false; sc.n = 35; sc.cap = '0.35'; g.paint(); } });
+  Object.assign(sc, { x: false }); 
+}
+async function mission6() {                 // lesson 7: the Nile trip
+  Object.assign(sc, { mode: 'river', cap: '' }); g.paint();
+  g.say(T('Mission 6: your boat sails 1,941.2 km from Khartoum to Juba, then 687.9 km to Jinja. Line up the decimal points. How far is it from Khartoum to Jinja?', `المهمة ٦: مركبك مشت ${L('1,941.2')} كم من الخرطوم لجوبا، وبعدين ${L('687.9')} كم لجينجا. حط العلامات العشرية تحت بعض. المسافة من الخرطوم لجينجا كام؟`), 'point');
+  await g.choice({ options: ['2,629.1 km', '2,628.1 km', '2,539.1 km', '1,941.9 km'], correct: '2,629.1 km', hint: T('Estimate first: 1,900 + 700 = 2,600.', 'قدّر الأول: ١٩٠٠ + ٧٠٠ = ٢٦٠٠.'),
+    ok: T('1,941.2 + 687.9 = 2,629.1 km: tenths with tenths, ones with ones. It is close to the estimate 2,600.', `${L('1,941.2 + 687.9 = 2,629.1')} كم: الأجزاء من عشرة مع بعض والآحاد مع بعض. قريب من التقدير ${L('2,600')}.`), reveal: () => { sc.cap = '2,629.1 km'; g.paint(); } });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
+
+/* ---------- Stage 3 · Speed Round: < = > ---------- */
+const PAIRS = [['29.9', '30.2', '<'], ['36.5', '35.6', '>'], ['40.5', '41.0', '<'], ['35.2', '34.7', '>'], ['38.80', '38.8', '='], ['98.013', '98.101', '<'], ['50.009', '50.100', '<'], ['10.1', '10.011', '>'], ['2.01', '2.099', '<'], ['34.5', '34.500', '='], ['45.057', '45.100', '<'], ['0.7', '0.07', '>']];
+async function stage3() {
+  Object.assign(sc, { mode: 'chart', num: '', note: '', cap: '', hl: null }); g.paint();
+  await g.speedRound({ items: PAIRS.map(([a, b, r]) => ({ t: `${L(a)} <span style="opacity:.5">?</span> ${L(b)}`, ans: r, why: T(`${a} ${r} ${b}.`, L(`${a} ${r} ${b}`) + '.') })), rounds: 8, ms: 10000,
+    buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }],
+    ask: T('Which sign: <, = or >?', 'أنهي علامة: <، = ولا >؟'), intro: T('Speed Round! Two crates come in. Press the sign that fits. Compare place by place, and remember: zeros at the end do not change a decimal.', 'جولة السرعة! صندوقين هيظهروا. اضغط على العلامة المناسبة. قارن خانة خانة، وافتكر: الأصفار في الآخر مبتغيّرش قيمة العدد العشري.'), think: T('Place by place, from the left!', 'خانة خانة من الشمال!') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! The Nile dock is full of crates marked with decimals. Read the grids, move digits, round on the number line and add and subtract with models. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! مرسى النيل مليان صناديق عليها أعداد عشرية. اقرأ الشبكات، حرّك الأرقام، قرّب على خط الأعداد، واجمع واطرح بالنماذج. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can read, compare, round, add and subtract decimals with models. Next, try the questions of this unit.', 'بقيت تقرأ وتقارن وتقرّب وتجمع وتطرح الأعداد العشرية بالنماذج. جرّب دلوقتي أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

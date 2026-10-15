@@ -300,6 +300,18 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
 .tile:active{transform:translateY(2px);box-shadow:0 2px 0 var(--mint-d)}
 .tile.used{visibility:hidden}
 .tile:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+/* number answer (Math): the typed number and a number pad; numbers always read left to right, also on the Arabic track */
+.numbox{display:flex;align-items:baseline;justify-content:center;gap:10px;direction:ltr;margin:4px auto 12px;min-height:58px;max-width:340px;padding:6px 14px;border-bottom:4px solid var(--primary);border-radius:12px 12px 0 0;background:#eef7fb;font-weight:900;font-size:clamp(26px,7vw,36px);color:var(--navy);letter-spacing:1px}
+.numbox .u{font-size:clamp(14px,3.8vw,18px);letter-spacing:0;color:var(--ink)}
+.numbox .ph{opacity:.35}
+.numbox.lock{background:var(--ok-bg);border-color:var(--ok)}
+.numbox.bad{background:var(--bad-bg);border-color:var(--coral)}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:300px;margin:0 auto;direction:ltr}
+.numpad button{font:inherit;font-weight:900;font-size:clamp(20px,5.6vw,26px);height:clamp(46px,11.5vw,56px);border:0;border-radius:14px;background:var(--mint);color:var(--navy);box-shadow:0 4px 0 var(--mint-d);cursor:pointer}
+.numpad button:active{transform:translateY(2px);box-shadow:0 2px 0 var(--mint-d)}
+.numpad button.fn{background:#e9eef3;box-shadow:0 4px 0 #c5ced8;font-size:clamp(16px,4.4vw,20px)}
+.numpad button:disabled{opacity:.45;box-shadow:none}
+.numpad button:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .badge.exam{background:#1f3d57;color:#fff}
 .opt.was .num.tick{background:var(--ink)!important;border-color:var(--ink);color:#fff}
 .qtext .lead{display:block;font-size:.68em;font-weight:900;color:var(--primary-d);margin-bottom:2px}
@@ -374,9 +386,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261015a"></script>
-<script src="chapters.js?v=20261015a"></script>
-<script src="common.js?v=20261015a"></script>
+<script src="firebase-config.js?v=20261015b"></script>
+<script src="chapters.js?v=20261015b"></script>
+<script src="common.js?v=20261015b"></script>
 <script>
 (() => {
 'use strict';
@@ -557,9 +569,9 @@ const DIAGRAMS = {
 /* ---------- one question ---------- */
 const TYPE_LABEL = AR
   ? { tf: 'صح أم خطأ', fill: 'أكمل الفراغ', order: 'رتّب', match: 'صِل', tap: 'اضغط على الصورة', mc: 'اختر', odd: 'الكلمة الشاذة', spot: 'اكتشف الخطأ', story: 'قصة قصيرة',
-      multi: 'اختر كل الإجابات الصحيحة', table: 'قارن بين', fix: 'صوّب ما تحته خط', term: 'اكتب المصطلح العلمي', build: 'كوّن الإجابة', why: 'علّل', whatif: 'ماذا يحدث؟', function: 'ما وظيفة؟', define: 'ما المقصود بـ؟' }
+      multi: 'اختر كل الإجابات الصحيحة', table: 'قارن بين', fix: 'صوّب ما تحته خط', term: 'اكتب المصطلح العلمي', build: 'كوّن الإجابة', why: 'علّل', whatif: 'ماذا يحدث؟', function: 'ما وظيفة؟', define: 'ما المقصود بـ؟', num: 'اكتب الناتج' }
   : { tf: 'True or false', fill: 'Fill the gap', order: 'Put in order', match: 'Match the pairs', tap: 'Tap the picture', mc: 'Choose', odd: 'Odd one out', spot: 'Spot the mistake', story: 'Mini story',
-      multi: 'Choose all the correct answers', table: 'Compare between', fix: 'Correct the underlined word', term: 'Write the scientific term', build: 'Build the answer', why: 'Give a reason', whatif: 'What happens?', function: 'What is the function?', define: 'What is meant by?' };
+      multi: 'Choose all the correct answers', table: 'Compare between', fix: 'Correct the underlined word', term: 'Write the scientific term', build: 'Build the answer', why: 'Give a reason', whatif: 'What happens?', function: 'What is the function?', define: 'What is meant by?', num: 'Write the number' };
 const PTS = { easy: 10, medium: 15, hard: 25 };
 let timerStop = null;
 let keyHandler = null;                                     // typing on a keyboard fills the letter tiles
@@ -608,6 +620,7 @@ function ask(q) {
     const lead = LEAD[q.type === 'build' ? q.style : q.type];
     qt.innerHTML = (lead ? `<span class="lead">${lead}</span>` : '') + (q.type === 'fill' ? esc(q.q).replace('___', '<span class="gap" id="gap">&nbsp;</span>')
       : q.type === 'fix' ? esc(q.q).replace(esc(q.wrong), `<u class="wrong">${esc(q.wrong)}</u>`) : esc(q.q));
+    if (q.fig && q.type !== 'tap') { const fg = (window.CH_DIAGRAMS || {})[q.fig]; if (fg) area.appendChild(mk('div', 'diagramWrap', fg(q))); }   // a picture above the question (Math: grids, place value chart, number line)
     const ex = $('#explain'); ex.hidden = true; ex.className = 'explain';
     document.querySelectorAll('.why-btn, .why-box').forEach(n => n.remove());
     stopReeshoVoice();
@@ -755,7 +768,7 @@ function ask(q) {
     }
 
     else if (q.type === 'tap') {
-      const wrap = mk('div', 'diagramWrap', (DIAGRAMS[q.diagram] || (window.CH_DIAGRAMS || {})[q.diagram])());   // Chapter 1's pictures are here; other chapters bring their own (chapters.js: art)
+      const wrap = mk('div', 'diagramWrap', (DIAGRAMS[q.diagram] || (window.CH_DIAGRAMS || {})[q.diagram])(q));   // Chapter 1's pictures are here; other chapters bring their own (chapters.js: art). A picture may read the question (Math: q.pic)
       area.appendChild(wrap);
       const hots = [...wrap.querySelectorAll('.hot')];
       const pick = h => {
@@ -880,6 +893,49 @@ function ask(q) {
       };
       reveal = () => { mark(); showRight(); };
       tools.appendChild(check); area.append(now, tbl, waitLab, pool, tools); paint();
+    }
+
+    /* a number answer (Math): type it on the number pad. Two tries; the right number is shown after the second.
+       q.answer is the number as text ('12.42'); 0.50 equals 0.5 unless q.exact is true (a question about writing zeros) */
+    else if (q.type === 'num') {
+      const ans = String(q.answer), maxTries = 2;
+      const same = s => (q.exact ? s === ans : s !== '' && s !== '.' && Math.abs(Number(s) - Number(ans)) < 1e-9);
+      let val = '';
+      const box = mk('div', 'numbox'), pad = mk('div', 'numpad'), tools = mk('div', 'tools');
+      const check = mk('button', 'btn primary', T('Check ✓', 'تحقق ✓')); check.type = 'button'; check.disabled = true;
+      const paintBox = () => { box.innerHTML = (val ? esc(val) : '<span class="ph">?</span>') + (q.unit ? `<span class="u">${esc(q.unit)}</span>` : ''); check.disabled = !val || val === '.' || val.endsWith('.'); };
+      const keys = [];
+      const key = ch => {
+        if (finished) return;
+        if (ch === '⌫') val = val.slice(0, -1);
+        else if (ch === '.') { if (val.includes('.')) return; val = val === '' ? '0.' : val + '.'; }
+        else { if (val.replace('.', '').length >= 9) return; val = val === '0' ? ch : val + ch; }
+        box.classList.remove('bad'); sfx.tick(); paintBox();
+      };
+      ['7', '8', '9', '4', '5', '6', '1', '2', '3', '.', '0', '⌫'].forEach(ch => {
+        const b = mk('button', ch === '⌫' ? 'fn' : '', ch === '.' ? '·' : ch); b.type = 'button';
+        b.setAttribute('aria-label', ch === '⌫' ? T('Delete', 'امسح') : ch === '.' ? T('Decimal point', 'العلامة العشرية') : ch);
+        if (ch === '.') b.className = 'fn';
+        b.onclick = () => key(ch); pad.appendChild(b); keys.push(b);
+      });
+      const lockAll = () => { keys.forEach(b => { b.disabled = true; }); check.disabled = true; };
+      check.onclick = () => {
+        if (finished || check.disabled) return; tries++;
+        if (same(val)) { box.classList.add('lock'); lockAll(); finish(true, tries === 1); return; }
+        if (tries >= maxTries) { box.classList.add('bad'); lockAll(); val = ans; paintBox(); box.classList.add('lock'); box.classList.remove('bad'); finish(false, false); return; }
+        sfx.bad(); box.classList.add('bad'); val = ''; paintBox(); box.classList.add('bad');
+        say(T('Not quite. Check your number and try again!', G('قرّبت! راجع الرقم وجرّب تاني.', 'قرّبتي! راجعي الرقم وجرّبي تاني.')), 'think');
+      };
+      reveal = () => { lockAll(); val = ans; paintBox(); box.classList.add('lock'); };
+      keyHandler = e => {
+        if (finished || e.ctrlKey || e.metaKey || e.altKey) return;
+        if (e.key === 'Backspace') { e.preventDefault(); key('⌫'); return; }
+        if (e.key === 'Enter') { if (!(document.activeElement && document.activeElement.tagName === 'BUTTON') && !check.disabled) { e.preventDefault(); check.click(); } return; }
+        if (/^[0-9]$/.test(e.key)) { e.preventDefault(); key(e.key); } else if (e.key === '.' || e.key === ',') { e.preventDefault(); key('.'); }
+      };
+      paintBox();
+      area.appendChild(mk('div', 'helpline', T('Type the number with the pad', 'اكتب الرقم بلوحة الأرقام')));
+      tools.appendChild(check); area.append(box, pad, tools);
     }
 
     /* write the word with letter tiles: the scientific term, or the right word instead of the underlined one */
@@ -1258,10 +1314,11 @@ const answerText = q => {
   if (q.type === 'match') return q.left.map((l, i) => `${l}: ${q.right[q.answer[i]]}`).join(' · ');
   if (q.type === 'table') return q.cols.map((c, ci) => `${c}: ${q.items.filter((_, i) => q.answer[i] === ci).join(', ')}`).join(' · ');
   if (q.type === 'term' || q.type === 'fix') return String(q.answer);
+  if (q.type === 'num') return String(q.answer) + (q.unit ? ' ' + q.unit : '');
   if (q.type === 'build') return q.parts.join(' ');
   return q.explain || '';
 };
-const EXAM_A = v => (['tf', 'fill', 'fix', 'term', 'multi', 'order'].includes(v.type) || (v.type === 'mc' && v.style !== 'story')) ? v.type : null;
+const EXAM_A = v => (['tf', 'fill', 'fix', 'term', 'multi', 'order', 'num'].includes(v.type) || (v.type === 'mc' && v.style !== 'story')) ? v.type : null;
 const EXAM_B = v => v.type === 'build' ? (v.style === 'why' ? 'why' : v.style === 'whatif' ? 'whatif' : 'say') : (v.type === 'table' || v.type === 'match') ? 'compare' : v.type === 'tap' ? 'figure' : (v.type === 'mc' && v.style === 'story') ? 'story' : null;
 function buildPaper(pool, caps, last) {
   const cands = [], used = new Set(), perCh = {};
@@ -1272,7 +1329,7 @@ function buildPaper(pool, caps, last) {
     list.sort((x, y) => ((perCh[x.I.ch] || 0) - (perCh[y.I.ch] || 0)) || ((last[x.I.id] === x.vi) - (last[y.I.id] === y.vi)));   // spread over the chapters, new phrasings first
     const c = list[0]; used.add(c.I.id); perCh[c.I.ch] = (perCh[c.I.ch] || 0) + 1; return c;
   };
-  const kinds = shuffle(['tf', 'mc', 'fill', 'fix', 'term', 'multi', 'order']), fams = shuffle(['say', 'why', 'whatif', 'compare', 'figure', 'story']);
+  const kinds = shuffle(['tf', 'mc', 'fill', 'fix', 'term', 'multi', 'order', 'num']), fams = shuffle(['say', 'why', 'whatif', 'compare', 'figure', 'story']);
   const make = (c, n, part, marks) => c && Object.assign({ id: c.I.id, ch: c.I.ch, lesson: c.I.lesson, concept: c.I.concept, explain: c.I.explain, vi: c.vi }, c.v, c.v.explain ? { explain: c.v.explain } : {},
     { mode: 'normal', oneTry: true, exam: { q: n, part, marks } });
   const paper = [];

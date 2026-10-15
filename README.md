@@ -1,6 +1,6 @@
 # Motafawek (متفوّق)
 
-Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math is next (shown as "soon"), then Social Studies, Arabic and English.
+Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math has started (Grade 5, Unit 1), then Social Studies, Arabic and English.
 
 ## Subjects and folders
 - The path of a player: grade (home page) → subject (tabs on `chapters.html`) → chapter or unit → map, game, questions.
@@ -191,7 +191,15 @@ A player who picks **Arabic** on the home page sees every page in Arabic, right 
 `common.js` gives `SI.isAr()`, `SI.T(en, ar)` and `SI.chTitle(chapter)`; static HTML carries `data-ar` (text), `data-ar-label` (aria-label/title) and `data-ar-ph` (placeholder).
 The Arabic track has its own Champions board (the board key includes the track). A chapter opens for Arabic players only when it has `questionsAr` in `chapters.js`.
 
-## Adding a subject (Math next)
+## Math (math/)
+- Grade 5, Unit 1 `m5c1` «Place Value of Decimals and Operations» (11 lessons: decimals to thousandths, ×10 and ÷10, expanded form, comparing, rounding, estimating and modelling sums and differences, story problems). Game: `math-decimals.html` (Decimal Dock). Math chapters are called units («الوحدة») everywhere.
+- The school books print no answers, so every number answer is computed and checked by `tools/check_questions.js`.
+- New question type `num` (number pad, two tries): `answer` is plain number text and each question carries `calc: 'expression'` (or `round: ['7.7', 0]` for rounding, or `noCalc: true`); `unit` shows a unit after the box.
+- `q.fig` shows a picture above any non-tap question (`gridModel`, or a tap diagram); `q.diagram` + `q.pic` are for tap questions. Pictures: `math/m5_art.js` (`gridShade`, `placeChart`, `numLine`, `gridModel`).
+- Maps and backgrounds: `node math/tools/make_m_maps.js`.
+- The English unit title and lesson names are translated from the Arabic book; check them against the school books when both are at hand.
+
+## Adding a subject (Math was the first)
 1. In `window.SUBJECTS` remove `soon` (and `hidden`); create its folder (`math/`, with `assets/` and `tools/`).
 2. Add its chapters to `window.CHAPTERS` with `subject: 'math'`, `grade`, `n`, titles and lessons (`ready: false`), then `node tools/new_chapter.js <id>` for each.
 3. Question types the subject needs and the site does not have yet are added once to `quiz.html` (and to `tools/check_questions.js`), for example a number answer for Math, or a reading passage for the languages.
