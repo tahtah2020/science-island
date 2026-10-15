@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-16', title: 'إحصاءات الاختبارات',
+    items: [
+      { text: 'الإحصاءات (Google Analytics): quiz_start (بدء اختبار)، quiz_complete (إنهاء اختبار) مع النوع (quest أو daily أو review أو exam) ورقم الفصل والصف. بدون أي اسم.' }
+    ] },
   { date: '2026-10-15', title: 'Math: Grade 5 Unit 1 now also on the Arabic track',
     items: [
       { text: 'The Arabic version of the decimals unit is open: 40 ideas and 185 questions worded like the Arabic school book.' }
