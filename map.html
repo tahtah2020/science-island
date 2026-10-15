@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261014a">
+<link rel="stylesheet" href="common.css?v=20261015a">
 <style>
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}
 .mapWrap{position:relative;width:100%;max-width:min(680px, calc((100vh - 120px) * 1224 / 1285));margin:0 auto;aspect-ratio:1224/1285;border-radius:26px;
@@ -70,6 +70,7 @@
     <div class="hud">
       <span class="pill" id="streakPill" title="Daily streak" data-ar-label="أيام متتالية">🔥 <b id="streak">0</b></span>
       <span class="pill" title="Stars" data-ar-label="النجوم">⭐ <b id="stars">0</b> / <span id="starsOf">6</span></span>
+      <a class="pill" href="wardrobe.html" title="Gems · Reesho’s wardrobe" data-ar-label="الجواهر · خزانة ريشو">💎 <b id="gems">0</b></a>
       <button class="icon" id="mute" type="button" aria-label="Sound" aria-pressed="false" title="Sound on/off" data-ar-label="الصوت">♪</button>
       <a class="icon" href="chapters.html" aria-label="All chapters" title="All chapters" data-ar-label="كل الفصول">📚</a>
       <a class="icon" href="index.html" aria-label="Change player" title="Change player" data-ar-label="تغيير اللاعب">👤</a>
@@ -93,9 +94,9 @@
     </aside>
   </main>
 </div>
-<script src="firebase-config.js?v=20261014a"></script>
-<script src="chapters.js?v=20261014a"></script>
-<script src="common.js?v=20261014a"></script>
+<script src="firebase-config.js?v=20261015a"></script>
+<script src="chapters.js?v=20261015a"></script>
+<script src="common.js?v=20261015a"></script>
 <script>
 (async () => {
   'use strict';
@@ -123,6 +124,7 @@
   $('#lvlBar').style.width = Math.round(lv.pct * 100) + '%';
   $('#lvlNext').textContent = lv.to ? T(`${lv.to - lv.xp} XP to ${lv.next}`, `باقي ${lv.to - lv.xp} XP للوصول إلى مستوى «${lv.next}»`) : T('Top level reached!', 'وصلت لأعلى مستوى!');
   $('#streak').textContent = daily.streak;
+  $('#gems').textContent = SI.gems();
   const st = SI.chapterStars(CH.id);
   $('#stars').textContent = st.got; $('#starsOf').textContent = st.of;
 

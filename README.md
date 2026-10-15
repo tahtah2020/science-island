@@ -28,6 +28,7 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `atomlab.html`: Atom Lab, the game of Prep 1, Unit 1 (see "Prep 1" below)
 - `heatlab.html`: Heat Lab, the game of Prep 2, Unit 1 (see "Prep 2" below)
 - `quiz.html`: `#quest` (questions on the whole chapter), `#daily` (Daily 5), `#review` (spaced repetition) for the chosen chapter; `#exam=oct` is Reesho's Exam Hall (see below)
+- `wardrobe.html` / `wardrobe_items.js`: Reesho's wardrobe, bought with gems (see "Gems and Reesho's wardrobe")
 - `champions.html`: this week's top 10 for the chosen chapter (resets every Saturday)
 - `questions.js`: Chapter 1, 23 ideas from the school book (all four lessons 1-1 to 1-4), each with 2-4 phrasings, plus 3 bonus ideas from the Column "The Camel" (`bonus: true`: one comes after the Boss round, never counts for the stars, not in Daily 5). Other chapters get their own file (`questions_ch2.js`, ...)
 - `questions_ar.js`: the same ideas (same ids) in Arabic, worded like the Arabic school book, for the Arabic track. Where the two books differ, each file follows its own book (the Arabic book says "about 200 bones", the English one "about 206")
@@ -155,6 +156,14 @@ Notes for the science review (Unit 1):
 - English file: the term "thermographic camera" is too long for the letter tiles, so H6.3 asks for "Thermographic" (The ___ camera…), and H3.1 asks "Thermal ___" (Conductivity). The table of S11 uses the columns No mass / Solid / Gas / Liquid (shorter for phones; same answers as the Arabic file).
 - The English Evaluation of Lesson 2 asks which substances boil above 50 °C (X, Y and Z); the site keeps the Arabic book's question "above 50 °C and below 90 °C" (X and Z), which the same table answers.
 - Not asked (no printed answer or open-ended): the four metals heated for 10 minutes (Lesson 3, Evaluation 1-2), copper or aluminium for cookware and why mercury is used in thermometers (page 28), why water is a large part of the human body, research activities and issues for discussion.
+
+## Gems «جواهر» and Reesho's wardrobe
+Every `GEM_XP` (5) points of XP give the player one gem 💎. XP only grows, so the balance is `floor(xp / GEM_XP) - wardrobe.spent`: nothing extra is stored while earning, every activity that calls `SI.addXP` pays gems (it also returns `gems`, the gems of that call), and players who already had XP started with their gems. Gems are free to earn and are never sold for money; no item is limited in time and nothing is lost by staying away.
+- `common.js`: `SI.gems()`, `SI.wardrobe()` (`{ spent, owned, worn }`, saved in `profile.wardrobe`), `SI.buyItem(id, price)`, `SI.wearItem(slot, id | null)`, `SI.GEM_XP`.
+- `wardrobe_items.js`: `window.WARDROBE_SLOTS` (head, eyes, neck, back) and `window.WARDROBE` (12 items: id, slot, `en` / `ar`, `price`, optional `level` that opens it, `at` for items drawn around their own centre, `box` for the small picture, `svg`). Every item is drawn in code, in the coordinates of `assets/parrot_wave.png` (376 × 520). To add an item, add one object to the list; the page and its prices need no other change.
+- `wardrobe.html`: Reesho in the middle (the cape behind him, the other items in front), one tab for each slot, a card for each item (buy, wear, take off, or locked until a level). Opened from the 💎 pill on `chapters.html` and `map.html` and from the line under the level bar on the result panels (`quiz.html`, `game_kit.js`).
+- Prices run from 20 to 150 gems; the golden crown opens at level 4 and the golden cape at level 5.
+- Next ideas on the same base: Reesho wearing his items on the map and result panels (needs the items placed on each of his poses), a collection book filled from the mystery box, and "my island".
 
 ## Releasing an update (cache stamp)
 Every page loads the shared files with a stamp, e.g. `common.js?v=20261010c`. On each release change the stamp in all pages

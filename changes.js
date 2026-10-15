@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-15', title: 'جواهر وخزانة ريشو',
+    items: [
+      { text: 'كل ٥ نقاط خبرة بتديك جوهرة 💎، والجواهر بتتصرف في خزانة ريشو على قبعات ونظارات وأوشحة وعباءات. ظهور الجواهر في لوحة النتيجة وفي صفحتي الفصول والخريطة.', links: [{ label: 'خزانة ريشو', href: 'wardrobe.html' }] }
+    ] },
   { date: '2026-10-14', title: 'الموقع بقى «متفوّق» لكل المواد: اختيار المادة، والعلوم في مجلدها',
     items: [
       { text: 'صفحة الفصول فيها أزرار المواد فوق: «العلوم» مفتوحة، و«الرياضيات» عليها «قريبًا» وبتعرض دعوة قناة التليجرام. اختيار المادة بيتحفظ لكل لاعب، والنقاط والمستوى وأيام السلسلة مشتركة بين كل المواد.', links: [{ label: 'صفحة الفصول', href: 'chapters.html' }] },

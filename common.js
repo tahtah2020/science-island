@@ -214,7 +214,30 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return { n: i + 1, title: nm(i), xp, from: LEVELS[i][0], to: nxt ? nxt[0] : null, pct: nxt ? (xp - LEVELS[i][0]) / (nxt[0] - LEVELS[i][0]) : 1, next: nxt ? nm(i + 1) : null };
   }
   const xp = () => prof().xp || 0;
-  function addXP(n) { let b = 0, a = 0; updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; }); return { before: levelInfo(b), after: levelInfo(a), gained: a - b }; }
+  function addXP(n) { let b = 0, a = 0; updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; }); return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
+
+  /* ---------- gems «جواهر» and Reesho's wardrobe ----------
+     One gem for every GEM_XP points of XP. XP only grows, so the balance is floor(xp / GEM_XP) - spent: nothing extra is stored
+     while earning, every activity that calls addXP pays gems, and players who already have XP start with their gems.
+     profile.wardrobe = { spent, owned: [item ids], worn: { slot: item id } }. Gems are free to earn and never bought with money. */
+  const GEM_XP = 5;
+  const wardrobe = () => { const w = prof().wardrobe || {}; return { spent: w.spent || 0, owned: w.owned || [], worn: w.worn || {} }; };
+  const gems = () => Math.max(0, Math.floor(xp() / GEM_XP) - wardrobe().spent);
+  /* buy an item: id and price come from wardrobe.html's list; returns true when bought */
+  function buyItem(id, price) {
+    let ok = false;
+    updateProf(p => {
+      const w = p.wardrobe = p.wardrobe || {}; w.owned = w.owned || []; w.worn = w.worn || {}; w.spent = w.spent || 0;
+      if (w.owned.includes(id) || price < 0 || Math.floor((p.xp || 0) / GEM_XP) - w.spent < price) return;
+      w.spent += price; w.owned.push(id); ok = true;
+    });
+    return ok;
+  }
+  /* wear an owned item in its slot, or take the slot off with id = null */
+  function wearItem(slot, id) {
+    updateProf(p => { const w = p.wardrobe = p.wardrobe || {}; w.owned = w.owned || []; w.worn = w.worn || {}; if (!id) delete w.worn[slot]; else if (w.owned.includes(id)) w.worn[slot] = id; });
+    return wardrobe().worn;
+  }
 
   /* ---------- daily challenge streak ----------
      One streak for the player (any chapter's Daily 5 keeps it alive); "done today" is per chapter. */
@@ -529,7 +552,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      Counts page views with approximate location only. No player names are sent, and the data
      is not used for advertising. Runs on the published site only, not on local copies. */
   const GA_ID = 'G-XP595P45PX';
-  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'heatlab.html': 'Heat Lab', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
+  const PAGE_NAMES = { 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'heatlab.html': 'Heat Lab', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'wardrobe.html': 'Reesho wardrobe', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
     'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall', 'quiz.html#exam=g6m1': 'Exam Hall', 'quiz.html#exam=p1oct': 'Exam Hall', 'quiz.html#exam=p2oct': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
@@ -915,7 +938,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
 
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
-    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, today, dailyState, completeDaily,
+    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT };
   applyLang();

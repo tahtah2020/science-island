@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261014a">
+<link rel="stylesheet" href="common.css?v=20261015a">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -76,6 +76,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
     <div class="hud">
       <span class="pill" title="Daily streak" data-ar-label="أيام متتالية">🔥 <b id="streak">0</b></span>
       <span class="pill" title="Stars in all chapters" data-ar-label="النجوم في كل الفصول">⭐ <b id="stars">0</b></span>
+      <a class="pill" href="wardrobe.html" title="Gems · Reesho’s wardrobe" data-ar-label="الجواهر · خزانة ريشو">💎 <b id="gems">0</b></a>
       <button class="icon" id="mute" type="button" aria-label="Sound" aria-pressed="false" title="Sound on/off" data-ar-label="الصوت">♪</button>
       <a class="icon" href="index.html" aria-label="Change player" title="Change player" data-ar-label="تغيير اللاعب">👤</a>
       <button class="icon" id="bye" type="button" aria-label="Goodbye" title="Goodbye" data-ar-label="باي">👋</button>
@@ -100,8 +101,8 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261014a"></script>
-<script src="common.js?v=20261014a"></script>
+<script src="chapters.js?v=20261015a"></script>
+<script src="common.js?v=20261015a"></script>
 <script>
 (() => {
   'use strict';
@@ -130,6 +131,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   $('#lvlBar').style.width = Math.round(lv.pct * 100) + '%';
   $('#lvlNext').textContent = lv.to ? T(`${lv.to - lv.xp} XP to ${lv.next}`, `باقي ${lv.to - lv.xp} XP للوصول إلى مستوى «${lv.next}»`) : T('Top level reached!', 'وصلت لأعلى مستوى!');
   $('#streak').textContent = SI.dailyState().streak;
+  $('#gems').textContent = SI.gems();
 
   $('#bye').onclick = () => { SI.sfx.tick(); SI.bye(); };
   const mute = $('#mute');

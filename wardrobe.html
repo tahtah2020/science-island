@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Motafawek · Reesho’s Wardrobe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css?v=20261015a">
+<style>
+.wrap{max-width:980px;width:100%;margin:0 auto;display:grid;grid-template-columns:minmax(240px,340px) 1fr;gap:14px;align-items:start}
+.stage{display:flex;flex-direction:column;gap:10px;align-items:center;position:sticky;top:8px}
+.preview{position:relative;width:100%;max-width:300px;aspect-ratio:376/620;background:linear-gradient(#e3f1f7,#bfe8d6);border-radius:var(--radius);overflow:hidden}
+.preview img{position:absolute;left:0;top:16.13%;width:100%;height:83.87%;object-fit:contain}
+.preview svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.bubble{width:100%}
+.shop{display:flex;flex-direction:column;gap:12px;min-width:0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{display:flex;align-items:center;gap:7px;font:inherit;font-weight:900;font-size:15.5px;color:var(--navy);cursor:pointer;background:var(--card);border:3px solid transparent;border-radius:99px;padding:7px 15px 7px 11px;box-shadow:0 4px 14px rgba(31,61,87,.12)}
+html[dir=rtl] .tabs button{padding:7px 11px 7px 15px}
+.tabs button[aria-pressed=true]{border-color:var(--primary);background:#fff}
+.tabs button:focus-visible,.it:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.it{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;height:100%;font:inherit;color:var(--navy);cursor:pointer;background:var(--card);border:3px solid transparent;border-radius:var(--radius);padding:10px 8px 12px;box-shadow:0 6px 20px rgba(31,61,87,.13);transition:transform .12s,border-color .12s}
+.it:hover{transform:translateY(-2px);border-color:var(--primary)}
+.it.on{border-color:var(--ok);background:#f1fbf5}
+.it.lock{opacity:.7}
+.it svg{width:100%;height:72px;background:#e3f1f7;border-radius:14px}
+.it b{font-size:16px;font-weight:900;line-height:1.2;text-align:center}
+.it .st{font-size:13.5px;font-weight:900;border-radius:99px;padding:3px 12px;background:#fff;color:var(--navy);border:2px solid var(--line)}
+.it.on .st{background:var(--ok);border-color:var(--ok);color:#fff}
+.it.can .st{background:#fff6df;border-color:var(--gold)}
+.it.lock .st,.it.poor .st{color:#6b7f90}
+.gems b{direction:ltr;unicode-bidi:isolate}
+@media (max-width:640px){
+  .wrap{grid-template-columns:1fr}
+  .stage{position:static}
+  .preview{max-width:230px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){.it{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="chapters.html" title="Back" data-ar-label="رجوع">
+      <div class="logo" aria-hidden="true">🏝️</div>
+      <div><h1 data-ar="متفوّق">Motafawek</h1><p id="sub">Reesho’s Wardrobe</p></div>
+    </a>
+    <div class="hud">
+      <span class="pill gems" title="Gems" data-ar-label="الجواهر">💎 <b id="gems">0</b></span>
+      <button class="icon" id="mute" type="button" aria-label="Sound" aria-pressed="false" title="Sound on/off" data-ar-label="الصوت">♪</button>
+      <a class="icon" href="chapters.html" aria-label="Back" title="Back" data-ar-label="رجوع">‹</a>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="stage">
+      <div class="preview" id="preview" role="img" aria-label="Reesho the parrot with the things he wears" data-ar-label="البغبغان ريشو بالقطع التي يلبسها">
+        <svg id="back" viewBox="0 -100 376 620" aria-hidden="true"></svg>
+        <img src="assets/parrot_wave.png" alt="">
+        <svg id="front" viewBox="0 -100 376 620" aria-hidden="true"></svg>
+      </div>
+      <div class="bubble" id="bubble" aria-live="polite"></div>
+    </div>
+    <section class="shop">
+      <div class="tabs" id="tabs" role="group" aria-label="Kinds" data-ar-label="الأنواع"></div>
+      <ul class="grid" id="grid"></ul>
+    </section>
+  </main>
+</div>
+<noscript>Please turn on JavaScript to play.</noscript>
+<script src="chapters.js?v=20261015a"></script>
+<script src="common.js?v=20261015a"></script>
+<script src="wardrobe_items.js?v=20261015a"></script>
+<script>
+(() => {
+  'use strict';
+  const me = SI.requirePlayer(); if (!me) return;
+  const $ = s => document.querySelector(s);
+  const T = SI.T, G = SI.G, esc = SI.esc;
+  if (SI.isAr()) document.title = 'متفوّق · خزانة ريشو';
+  $('#sub').textContent = T('Reesho’s Wardrobe', 'خزانة ريشو');
+
+  const SLOTS = window.WARDROBE_SLOTS, ITEMS = window.WARDROBE;
+  const byId = id => ITEMS.find(i => i.id === id);
+  const name = i => T(i.en, i.ar);
+  let slot = SLOTS[0].id;
+
+  const mute = $('#mute');
+  const paint = () => { mute.setAttribute('aria-pressed', SI.isMuted()); mute.setAttribute('aria-label', SI.isMuted() ? T('Sound off', 'الصوت مغلق') : T('Sound on', 'الصوت شغال')); };
+  mute.onclick = () => { SI.setMuted(!SI.isMuted()); paint(); }; paint();
+
+  const say = html => { $('#bubble').innerHTML = html; };
+
+  /* Reesho with what he wears: the cape behind him, then scarf, glasses and hat in front */
+  const place = i => i.at ? `<g transform="translate(${i.at[0]} ${i.at[1]}) rotate(${i.at[2]})">${i.svg}</g>` : `<g>${i.svg}</g>`;
+  function dress() {
+    const w = SI.wardrobe().worn, on = s => (w[s] && byId(w[s])) ? place(byId(w[s])) : '';
+    $('#back').innerHTML = on('back');
+    $('#front').innerHTML = on('neck') + on('eyes') + on('head');
+  }
+
+  function tabs() {
+    const box = $('#tabs'); box.innerHTML = '';
+    SLOTS.forEach(s => {
+      const b = document.createElement('button'); b.type = 'button';
+      b.setAttribute('aria-pressed', String(s.id === slot));
+      b.innerHTML = `<span aria-hidden="true">${s.icon}</span>${esc(T(s.en, s.ar))}`;
+      b.onclick = () => { SI.sfx.tick(); slot = s.id; render(); };
+      box.appendChild(b);
+    });
+  }
+
+  function state(i) {
+    const W = SI.wardrobe(), lvl = SI.levelInfo(SI.xp()).n;
+    if (W.owned.includes(i.id)) return W.worn[i.slot] === i.id ? 'worn' : 'owned';
+    if (lvl < (i.level || 1)) return 'lock';
+    return SI.gems() >= i.price ? 'can' : 'poor';
+  }
+
+  function grid() {
+    const box = $('#grid'); box.innerHTML = '';
+    ITEMS.filter(i => i.slot === slot).forEach(i => {
+      const st = state(i), li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.className = 'it ' + ({ worn: 'on', owned: 'own', lock: 'lock', can: 'can', poor: 'poor' })[st];
+      const label = { worn: T('Wearing ✓', 'لابسه ✓'), owned: T('Wear', 'ألبس'), lock: T(`🔒 Level ${i.level}`, `🔒 المستوى ${i.level}`), can: `💎 ${i.price}`, poor: `💎 ${i.price}` }[st];
+      b.setAttribute('aria-label', `${name(i)}, ${label.replace(/[💎🔒✓]/g, '').trim()}`);
+      b.innerHTML = `<svg viewBox="${i.box.join(' ')}" aria-hidden="true">${i.svg}</svg><b>${esc(name(i))}</b><span class="st">${label}</span>`;
+      b.onclick = () => act(i, st);
+      li.appendChild(b); box.appendChild(li);
+    });
+  }
+
+  function act(i, st) {
+    if (st === 'worn') { SI.wearItem(i.slot, null); SI.sfx.tick(); say(T(`I took off the ${esc(name(i))}.`, `خلعت ${esc(name(i))}.`)); }
+    else if (st === 'owned') { SI.wearItem(i.slot, i.id); SI.sfx.ok(); say(T(`Look at me! I’m wearing the <b>${esc(name(i))}</b>!`, `شوف! لبست <b>${esc(name(i))}</b>!`)); }
+    else if (st === 'lock') { SI.sfx.tick(); say(T(`The ${esc(name(i))} opens at level ${i.level}. Keep playing and you’ll get there!`, `${esc(name(i))} بتتفتح عند المستوى ${i.level}. كمّل لعب وهتوصل!`)); }
+    else if (st === 'poor') { SI.sfx.tick(); const n = i.price - SI.gems(); say(T(`You need <b>${n}</b> more gems. Play a quest and you’ll win them!`, `ناقصك <b>${n}</b> جوهرة. العب تحدي وهتكسبها!`)); }
+    else if (SI.buyItem(i.id, i.price)) { SI.wearItem(i.slot, i.id); SI.sfx.win(); say(T(`It’s yours! Doesn’t the <b>${esc(name(i))}</b> look great?`, `بقت بتاعتك! شايف شكل <b>${esc(name(i))}</b> عليّا؟`)); }
+    render();
+  }
+
+  function render() {
+    $('#gems').textContent = SI.gems();
+    tabs(); grid(); dress();
+  }
+
+  say(T(`Hi, <b>${esc(me.name)}</b>! Every ${SI.GEM_XP} points you win gives you a 💎 gem. Pick something to dress me up!`, `أهلًا يا <b>${esc(me.name)}</b>! كل ${SI.GEM_XP} نقاط بتكسبها بتديك جوهرة 💎. اختر حاجة تلبّسهالي!`));
+  render();
+})();
+</script>
+</body>
+</html>

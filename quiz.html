@@ -374,9 +374,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261014a"></script>
-<script src="chapters.js?v=20261014a"></script>
-<script src="common.js?v=20261014a"></script>
+<script src="firebase-config.js?v=20261015a"></script>
+<script src="chapters.js?v=20261015a"></script>
+<script src="common.js?v=20261015a"></script>
 <script>
 (() => {
 'use strict';
@@ -1153,7 +1153,8 @@ function levelBlock(gain) {
   const L = gain.after;
   return `<div class="lvlbox"><div class="lvlrow"><b>${T('Level', 'المستوى')} ${L.n} · ${L.title}</b><span>+${gain.gained} XP</span></div>
     <div class="xpbar"><i style="width:${Math.round(L.pct * 100)}%"></i></div>
-    <small>${L.to ? T(`${L.to - L.xp} XP to ${L.next}`, `باقي ${L.to - L.xp} XP للوصول إلى مستوى «${L.next}»`) : T('Top level reached!', 'وصلت لأعلى مستوى!')}</small></div>`;
+    <small>${L.to ? T(`${L.to - L.xp} XP to ${L.next}`, `باقي ${L.to - L.xp} XP للوصول إلى مستوى «${L.next}»`) : T('Top level reached!', 'وصلت لأعلى مستوى!')}</small>
+    ${gain.gems > 0 ? `<small class="gemrow">💎 +${gain.gems} ${T('gems', 'جوهرة')} · <a href="wardrobe.html">${T('Reesho’s wardrobe', 'خزانة ريشو')}</a></small>` : ''}</div>`;
 }
 
 async function results(kind, res, total, extraXP = 0) {

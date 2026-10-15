@@ -259,7 +259,7 @@
         <img class="hero" src="assets/parrot_celebrate.png" alt="">
         <h2>${done.title}</h2>
         <div class="stars" aria-label="${T(`${stars} of 3 stars`, `${stars} من ٣ نجوم`)}">${'★'.repeat(stars)}<span class="off">${'★'.repeat(3 - stars)}</span></div>
-        <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Best', 'أعلى نتيجة')}: ${best}</span><span>+${gain.gained} XP · ${T('Level', 'المستوى')} ${gain.after.n}</span></div>
+        <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Best', 'أعلى نتيجة')}: ${best}</span><span>+${gain.gained} XP · ${T('Level', 'المستوى')} ${gain.after.n}</span>${gain.gems > 0 ? `<span>💎 +${gain.gems} ${T('gems', 'جوهرة')}</span>` : ''}</div>
         <p>${done.text}</p>
         <div class="acts">
           <a class="btn primary" href="quiz.html#quest">${T(`${SI.questName(SI.chapterById(cfg.ch))} ▸`, `${SI.questName(SI.chapterById(cfg.ch))} ◂`)}</a>
