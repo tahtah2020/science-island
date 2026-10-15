@@ -1213,9 +1213,14 @@ function levelBlock(gain) {
     ${gain.gems > 0 ? `<small class="gemrow">💎 +${gain.gems} ${T('gems', 'جوهرة')} · <a href="wardrobe.html">${T('Reesho’s wardrobe', 'خزانة ريشو')}</a></small>` : ''}</div>`;
 }
 
+/* usage statistics (GA4): quiz_start when the player taps Start, quiz_complete at the results screen.
+   Mode, chapter id and grade only; never a name. Silent when Analytics is not loaded (local copies). */
+const track = (name, params) => { try { const pl = SI.player() || {}; if (window.gtag) window.gtag('event', name, Object.assign({ grade: pl.grade || '' }, params)); } catch (e) {} };
+
 async function results(kind, res, total, extraXP = 0) {
   const acc = total ? res.firstRight / total : 0;
   const stars = acc >= .9 ? 3 : acc >= .7 ? 2 : acc > 0 ? 1 : 0;
+  track('quiz_complete', { mode: kind, chapter: CH.id || '', stars, accuracy: Math.round(acc * 100) });
   let bestScore = score;
   if (kind === 'quest') {
     SI.updateChProf(p => { const Q = p.quest = p.quest || {}; Q.best = Math.max(Q.best || 0, score); Q.stars = Math.max(Q.stars || 0, stars); Q.plays = (Q.plays || 0) + 1; bestScore = Q.best; });
@@ -1375,6 +1380,7 @@ async function playExam(paper) {
 function examResults(EX, res, total) {
   const pct = total ? res.marks / total : 0;
   const grade = pct >= .9 ? T('Excellent', 'ممتاز') : pct >= .75 ? T('Very good', 'جيد جدًا') : pct >= .5 ? T('Good', 'جيد') : T('Keep practising', 'محتاج تمرين');
+  track('quiz_complete', { mode: 'exam', exam: EX.id, marks: res.marks, of: total });
   let best = res.marks;
   SI.updateProf(p => {
     const E = (p.exams = p.exams || {})[EX.id] = p.exams[EX.id] || {};
@@ -1437,6 +1443,7 @@ async function examMain() {
       G('٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', '٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!'))
     + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || 20}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
   SI.voice('boss');
+  track('quiz_start', { mode: 'exam', exam: EX.id });
   const res = await playExam(paper);
   examResults(EX, res, total);
 }
@@ -1455,6 +1462,7 @@ async function main() {
     await intro(T(`Ready, ${esc(me.name)}?`, G(`جاهز يا ${esc(me.name)}؟`, `جاهزة يا ${esc(me.name)}؟`)), T(`${SI.chWord(CH)} ${CH.n} Quest · ${N} questions`, `تحدي ${SI.chWord(CH)} ${CH.n} · ${N} سؤال`),
       T('Some questions have a timer ⏱. The last ones are Boss questions ★. Get 5 right in a row for a mystery box 🎁. Your best score goes on the Champions board 🏆!',
         G('بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوب ٥ صح ورا بعض وخد صندوق المفاجآت 🎁. وأعلى نتيجة ليك بتدخل لوحة الأبطال 🏆!', 'بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوبي ٥ صح ورا بعض وخدي صندوق المفاجآت 🎁. وأعلى نتيجة ليكي بتدخل لوحة الأبطال 🏆!')));
+    track('quiz_start', { mode: 'quest', chapter: CH.id || '' });
     const res = await playList(list, 'quest');
     const retry = res.missed.filter(q => q.mode !== 'boss');
     if (retry.length) {
@@ -1470,11 +1478,13 @@ async function main() {
         `<button class="btn primary" type="button" id="practise">${T('Practise anyway', 'اتمرّن برضه')}</button><a class="btn" href="map.html">${T('Map', 'الخريطة')}</a>`);
       await new Promise(r => { $('#practise', o).onclick = () => { o.remove(); r(); }; });
       const list = buildDaily(); rememberVariants(list);
+      track('quiz_start', { mode: 'daily', chapter: CH.id || '' });
       const res = await playList(list, 'daily');
       return results('daily', res, list.length);
     }
     const list = buildDaily(); rememberVariants(list);
     await intro(T('Daily 5', 'خماسية اليوم'), st.streak ? T(`🔥 ${st.streak} day streak`, `🔥 ${st.streak} يوم ورا بعض`) : T('Start your streak today!', 'ابدأ سلسلتك النهارده!'), T('Five quick questions. Finish them to keep your fire streak going and win bonus XP.', 'خمس أسئلة سريعة. خلّصهم علشان تحافظ على سلسلتك وتكسب XP زيادة.'), T('Go!', 'يلّا!'));
+    track('quiz_start', { mode: 'daily', chapter: CH.id || '' });
     const res = await playList(list, 'daily');
     const streakNow = SI.completeDaily();
     await results('daily', res, list.length, 20 + Math.min(streakNow, 10) * 5);
@@ -1491,6 +1501,7 @@ async function main() {
     }
     rememberVariants(list);
     await intro(T('Review time', 'وقت المراجعة'), T(`${list.length} question${list.length > 1 ? 's' : ''} to practise`, `${list.length} سؤال للتمرين`), T('These were tricky before. Get them right to move them further away!', G('الأسئلة دي كانت صعبة عليك قبل كده. جاوبها صح علشان تبعد عنك!', 'الأسئلة دي كانت صعبة عليكي قبل كده. جاوبيها صح علشان تبعد عنك!')), T('Go!', 'يلّا!'));
+    track('quiz_start', { mode: 'review', chapter: CH.id || '' });
     const res = await playList(list, 'review');
     await results('review', res, list.length);
   }
