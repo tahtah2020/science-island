@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-16', title: 'الصفحة الرئيسية أسرع',
+    items: [
+      { text: 'دمج خطوتي «بطل ولا بطلة» والاسم في شاشة واحدة، فصارت خطوات اللاعب الجديد ٣ بدل ٤.' },
+      { text: 'زر «أكمل» للاعب العائد يفتح آخر فصل لعبه.' },
+      { text: 'إحصاءات (Google Analytics): onboarding_grade وonboarding_track وonboarding_name وonboarding_done وcontinue_click لمعرفة أين يتوقف الزوار.' }
+    ] },
   { date: '2026-10-16', title: 'إحصاءات الاختبارات',
     items: [
       { text: 'الإحصاءات (Google Analytics): quiz_start (بدء اختبار)، quiz_complete (إنهاء اختبار) مع النوع (quest أو daily أو review أو exam) ورقم الفصل والصف. بدون أي اسم.' }

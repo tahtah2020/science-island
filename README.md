@@ -16,7 +16,7 @@ Learning through play for Egyptian school students, Reesho the parrot as the coa
 Educational games for Grade 4, Grade 5, Grade 6, Prep 1 and Prep 2 Science (Egyptian curriculum, Languages and Arabic tracks, first term). Reesho the parrot is the coach.
 Players pick their grade once, then a chapter; every chapter has its own map, game, questions and Champions board.
 
-- `index.html`: home. Pick the grade, the track (Languages or Arabic) and type a first name
+- `index.html`: home. A new player taps the grade, the track (Languages or Arabic), then boy or girl and a first name on one screen (3 steps). A returning player taps a name, or the **Continue** button (last chapter, opens its map after Reesho's greeting). It loads `chapters.js` for that. Funnel events (GA4, no names): `onboarding_who`, `onboarding_grade`, `onboarding_track`, `onboarding_gender` (only for an old player with no boy/girl), `onboarding_name`, `onboarding_done`, `continue_click`. Quiz events from `quiz.html`: `quiz_start`, `quiz_complete`
 - `chapters.html`: the chapters of the player's grade for the term; a chapter opens when it is marked `ready` in `chapters.js`
 - `chapters.js`: the chapter list of every grade (grade, title, lessons, questions file, game, map picture and stop positions, colours) and the monthly tests
 - `map.html`: the chosen chapter's map with its stops (game, Chapter Quest, Daily 5, Review, Champions)

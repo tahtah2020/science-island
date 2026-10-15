@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261016a">
+<link rel="stylesheet" href="common.css?v=20261016b">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -44,6 +44,13 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 .choice .soon{margin-left:auto}
 .choice .go{margin-left:auto;font-size:22px;color:var(--primary);font-weight:900}
 .field{display:flex;gap:10px;flex-wrap:wrap}
+.cont{width:100%;flex-direction:column;gap:2px;margin-bottom:12px;line-height:1.25;text-align:center}
+.cont small{font-size:14px;font-weight:800;opacity:.92;overflow-wrap:anywhere}
+.gpick{display:flex;gap:10px;margin:0 0 12px}
+.gpick button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:900;font-size:18px;min-height:52px;padding:8px 10px;border-radius:16px;border:3px solid var(--line);background:#fff;color:var(--navy);cursor:pointer}
+.gpick button[aria-pressed="true"]{border-color:var(--primary);background:#e3f1f7}
+.gpick button:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.gpick .ar{font-size:16px;color:var(--ink)}
 .field input{flex:1;min-width:0;font:inherit;font-size:22px;font-weight:800;padding:12px 16px;border-radius:16px;border:3px solid var(--line);color:var(--navy);background:#fff}
 .field input:focus{outline:none;border-color:var(--primary)}
 .err{color:#b42318;font-weight:800;font-size:14.5px;margin:8px 0 0;min-height:1em;white-space:pre-line}
@@ -82,8 +89,8 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261016a">
-      <img src="assets/banner.jpg?v=20261016a" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261016b">
+      <img src="assets/banner.jpg?v=20261016b" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
@@ -92,6 +99,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <section class="step" id="stepWho" hidden>
     <h2>Who is playing? <span class="ar">مين بيلعب؟</span></h2>
     <p class="hint">Tap your name to continue. <span class="ar">اضغط على اسمك</span></p>
+    <button class="btn primary big cont" type="button" id="continueBtn" hidden><span>▶ Continue · أكمل</span><small id="contSub"></small></button>
     <div class="players" id="playerList"></div>
     <button class="btn" type="button" id="newPlayer">＋ New player · لاعب جديد</button>
   </section>
@@ -132,8 +140,12 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 
   <!-- step 3: name -->
   <section class="step" id="stepName" hidden>
-    <h2>What’s your name? <span class="ar">ما اسمك؟</span></h2>
+    <h2>Boy or girl, and your name <span class="ar">بطل ولا بطلة؟ وما اسمك؟</span></h2>
     <p class="hint">Your first name or a nickname. It shows on the Champions board. <span class="ar">الاسم الأول أو اسم مستعار فقط</span></p>
+    <div class="gpick" role="group" aria-label="Boy or girl · بطل ولا بطلة">
+      <button type="button" data-pick="m" aria-pressed="false">👦 <b>Boy</b> <span class="ar">بطل</span></button>
+      <button type="button" data-pick="f" aria-pressed="false">👧 <b>Girl</b> <span class="ar">بطلة</span></button>
+    </div>
     <form id="nameForm" novalidate>
       <div class="field">
         <input id="nameInput" name="name" autocomplete="given-name" maxlength="14" placeholder="e.g. Omar · عمر" aria-label="Your first name">
@@ -141,7 +153,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
       </div>
       <p class="err" id="nameErr" role="alert"></p>
     </form>
-    <button class="back" type="button" data-back="stepGender">‹ Back</button>
+    <button class="back" type="button" data-back="stepTrack">‹ Back</button>
   </section>
 
   <section class="says" id="says" hidden>
@@ -151,15 +163,19 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <p class="foot"><a href="contact.html">For parents and teachers <span class="ar">لأولياء الأمور والمعلمين</span></a>
     <a class="tg" href="https://t.me/motafawek" target="_blank" rel="noopener" data-tg="home"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.6c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.5-.6-.2L6.2 13.3l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>What is new, on Telegram <span class="ar">الجديد على تليجرام</span></a></p>
 </main>
-<script src="firebase-config.js?v=20261016a"></script>
-<script src="common.js?v=20261016a"></script>
+<script src="firebase-config.js?v=20261016b"></script>
+<script src="common.js?v=20261016b"></script>
+<script src="chapters.js?v=20261016b"></script>
 <script>
 (() => {
   'use strict';
   const $ = s => document.querySelector(s);
   const MAP = SI.CHAPTERS_PAGE;   // players choose a chapter first
   const steps = ['stepWho', 'stepGrade', 'stepTrack', 'stepGender', 'stepName'];
-  const show = id => { steps.forEach(s => $('#' + s).hidden = s !== id); const f = $('#' + id).querySelector('button:not(:disabled), input'); if (f) f.focus({ preventScroll: true }); };
+  /* usage statistics (GA4): where new players stop. One event per step, once per visit; no names. */
+  const ga = (n, p) => { try { if (window.gtag) window.gtag('event', n, p || {}); } catch (e) {} };
+  const STEP_EVENT = { stepWho: 'onboarding_who', stepGrade: 'onboarding_grade', stepTrack: 'onboarding_track', stepGender: 'onboarding_gender', stepName: 'onboarding_name' }, seen = new Set();
+  const show = id => { if (!seen.has(id)) { seen.add(id); ga(STEP_EVENT[id]); } steps.forEach(s => $('#' + s).hidden = s !== id); const f = $('#' + id).querySelector('button:not(:disabled), input'); if (f) f.focus({ preventScroll: true }); };
   const choice = { grade: 'g5', track: 'lang', g: '' };
   let fixId = null;   // an existing player who has not said boy or girl yet
   const enter = () => SI.greet().then(() => { location.href = MAP; });
@@ -177,22 +193,38 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
       box.appendChild(b);
     });
     show('stepWho');
+    /* a returning player: one tap goes back to the chapter they played last */
+    try {
+      const cp = SI.player(), cc = SI.chapter();
+      if (cp && cp.g && cc && SI.chReady(cc)) {
+        $('#contSub').textContent = `${cp.name} · ${SI.chTitle(cc)}`;
+        $('#continueBtn').hidden = false;
+        $('#continueBtn').onclick = () => { SI.sfx.tick(); ga('continue_click'); SI.greet().then(() => { location.href = 'map.html'; }); };
+      }
+    } catch (e) { console.warn(e); }
   } else show('stepGrade');
 
   $('#newPlayer').onclick = () => { SI.sfx.tick(); show('stepGrade'); };
   document.querySelectorAll('[data-grade]').forEach(b => b.onclick = () => { choice.grade = b.dataset.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade] || ''; SI.sfx.tick(); show('stepTrack'); });
-  document.querySelectorAll('[data-track]').forEach(b => b.onclick = () => { choice.track = b.dataset.track; SI.sfx.tick(); show('stepGender'); });
+  document.querySelectorAll('[data-track]').forEach(b => b.onclick = () => { choice.track = b.dataset.track; SI.sfx.tick(); show('stepName'); });
   document.querySelectorAll('[data-g]').forEach(b => b.onclick = () => {
     SI.sfx.tick();
     if (fixId) { SI.setGender(b.dataset.g); enter(); return; }
     choice.g = b.dataset.g; show('stepName');
   });
+  document.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => {
+    choice.g = b.dataset.pick; SI.sfx.tick(); $('#nameErr').textContent = '';
+    document.querySelectorAll('[data-pick]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $('#nameInput').focus({ preventScroll: true });
+  });
   document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => show(b.dataset.back));
   $('#nameForm').addEventListener('submit', e => {
     e.preventDefault();
+    if (!choice.g) { $('#nameErr').textContent = 'Tap boy or girl first · اختر بطل أو بطلة'; SI.sfx.bad(); return; }
     const r = SI.checkName($('#nameInput').value);
     if (!r.ok) { $('#nameErr').textContent = r.msg; SI.sfx.bad(); return; }
     SI.addPlayer({ name: r.name, grade: choice.grade, track: choice.track, g: choice.g });
+    ga('onboarding_done', { grade: choice.grade, track: choice.track });
     SI.sfx.ok(); enter();   // Reesho introduces himself
   });
 
