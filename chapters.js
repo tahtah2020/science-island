@@ -208,7 +208,7 @@ window.CHAPTERS = [
   /* ---------- Math (school book 2026/2027, first term). Units, like the preparatory books (SI.isUnits: every Math chapter is a unit) ----------
      Grade 5, Unit 1: two concepts, 11 lessons. The English book file starts at Lesson 1, so the English unit title is the Arabic one translated. */
   { id: 'm5c1', subject: 'math', grade: 'g5', n: 1, title: 'Place Value of Decimals and Operations', titleAr: 'القيمة المكانية للأعداد العشرية وحسابها', icon: '🔢', tint: '#ffe6cc', ready: true,
-    art: 'math/m5_art.js', questMax: 24, questions: 'math/questions_m5c1.js',
+    art: 'math/m5_art.js', questMax: 24, questionsAr: 'math/questions_m5c1_ar.js', lessonsAr: ['الكسور العشرية حتى جزء من الألف','تغيير القيم المكانية','تكوين الكسور العشرية وتحليلها','مقارنة الكسور العشرية','تقريب الكسور العشرية','تقدير مجموع الأعداد العشرية','نمذجة جمع الكسور العشرية','نمذجة طرح الكسور العشرية','تقدير الفرق بين عددين عشريين','طرح الكسور العشرية حتى جزء من الألف','مسائل كلامية على الكسور العشرية'], questions: 'math/questions_m5c1.js',
     game: { href: 'math-decimals.html', name: "Decimal Dock", nameAr: "مرسى الأعداد العشرية", icon: '⛵', hint: 'Read grids, move digits, round on the number line and add and subtract decimals with models', hintAr: 'اقرأ الشبكات وحرّك الأرقام وقرّب على خط الأعداد واجمع واطرح الأعداد العشرية بالنماذج' },
     map: { img: 'math/assets/map_m5c1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_m5c1.svg', quizBg: 'math/assets/bg_m5c1.svg',

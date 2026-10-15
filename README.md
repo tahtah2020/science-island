@@ -197,7 +197,7 @@ The Arabic track has its own Champions board (the board key includes the track).
 - New question type `num` (number pad, two tries): `answer` is plain number text and each question carries `calc: 'expression'` (or `round: ['7.7', 0]` for rounding, or `noCalc: true`); `unit` shows a unit after the box.
 - `q.fig` shows a picture above any non-tap question (`gridModel`, or a tap diagram); `q.diagram` + `q.pic` are for tap questions. Pictures: `math/m5_art.js` (`gridShade`, `placeChart`, `numLine`, `gridModel`).
 - Maps and backgrounds: `node math/tools/make_m_maps.js`.
-- The English unit title and lesson names are translated from the Arabic book; check them against the school books when both are at hand.
+- Both tracks: `math/questions_m5c1.js` (Languages track, from the English book) and `math/questions_m5c1_ar.js` (Arabic track, from the Arabic book); same ideas, ids, order and answers. The English unit title and lesson names are translated from the Arabic book; the Arabic file uses the Arabic book's number where the two books differ (15.348 instead of 15.36, same answer).
 
 ## Adding a subject (Math was the first)
 1. In `window.SUBJECTS` remove `soon` (and `hidden`); create its folder (`math/`, with `assets/` and `tools/`).
