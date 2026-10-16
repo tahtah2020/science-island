@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant Colony Count · Strategies for Addition and Subtraction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261016e">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Ant Colony Count.</noscript>
+<script src="firebase-config.js?v=20261016e"></script>
+<script src="chapters.js?v=20261016e"></script>
+<script src="common.js?v=20261016e"></script>
+<script src="game_kit.js?v=20261016e"></script>
+<script>
+(() => {
+'use strict';
+/* Ant Colony Count · the game of Unit 2, Strategies for Addition and Subtraction (Math, Grade 4). Built on the shared game kit (game_kit.js).
+   The scene is always a model: a bar model (whole and parts), a column sum with the regrouping marks, or two ant colonies.
+   Stage 1 (Warm Up): the properties of addition: zero, swap, group (lesson 1, book pages 24-26).
+   Stage 2 (Missions): add with regrouping and check with an estimate (2), subtract with regrouping (3), a bar model and a variable (4), a two-step problem (5).
+   Stage 3 (Speed Round): which property? (lesson 1).
+   Every T('English', 'عربي') has both languages. Numbers stay left to right. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const INK = '#1f3d57';
+const sc = { mode: 'colony', top: '', bottom: '', op: '+', res: '', whole: '', p1: '', p2: '', cap: '' };
+const VW = 420, VH = 280;
+const num = (x, y, s, fs = 22, fill = INK) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" unicode-bidi="embed" font-size="${fs}" font-weight="900" fill="${fill}">${s}</text>`;
+function ants(x, y, n, c = '#5a3a1e') { let s = ''; for (let i = 0; i < n; i++) s += `<ellipse cx="${x + (i % 6) * 22}" cy="${y + Math.floor(i / 6) * 16}" rx="7" ry="4.5" fill="${c}"/>`; return s; }
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  if (sc.mode === 'sum') {                      // a column sum
+    s += num(250, 70, sc.top, 34) + `<text x="150" y="124" text-anchor="middle" font-size="34" font-weight="900" fill="${INK}">${sc.op}</text>` + num(250, 124, sc.bottom, 34) + `<path d="M120 142H310" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>` + num(250, 190, sc.res, 34, '#2e9e6b');
+    if (sc.cap) s += num(210, 252, sc.cap, 17);
+  } else if (sc.mode === 'bar') {               // a bar model: the whole on top, two parts under it
+    s += `<rect x="40" y="50" width="340" height="52" rx="8" fill="#bcd9f2" stroke="${INK}" stroke-width="3"/>` + num(210, 86, sc.whole, 24);
+    s += `<rect x="40" y="130" width="170" height="52" rx="8" fill="#fbe38c" stroke="${INK}" stroke-width="3"/><rect x="210" y="130" width="170" height="52" rx="8" fill="#f5d3c2" stroke="${INK}" stroke-width="3" stroke-dasharray="${sc.p2 === '?' ? '8 6' : '0'}"/>`;
+    s += num(125, 166, sc.p1, 24) + num(295, 166, sc.p2, 24);
+    if (sc.cap) s += num(210, 236, sc.cap, 20);
+  } else {                                      // two colonies
+    s += `<ellipse cx="105" cy="170" rx="85" ry="55" fill="#f1d9ae" stroke="#a8773a" stroke-width="3"/><ellipse cx="315" cy="170" rx="85" ry="55" fill="#f1d9ae" stroke="#a8773a" stroke-width="3"/>`;
+    s += ants(55, 150, 9) + ants(265, 150, 12) + `<text x="105" y="60" text-anchor="middle" font-size="15" font-weight="900" fill="${INK}">${T('Colony A', 'المستعمرة (أ)')}</text><text x="315" y="60" text-anchor="middle" font-size="15" font-weight="900" fill="${INK}">${T('Colony B', 'المستعمرة (ب)')}</text>`;
+    s += num(105, 250, sc.top, 22) + num(315, 250, sc.bottom, 22);
+    if (sc.cap) s += num(210, 24, sc.cap, 16);
+  }
+  return s;
+}
+const g = G4Game({ ch: 'mg4u2', logo: '🐜', title: ['Ant Colony Count', 'مستعمرة النمل الحسابية'], sub: ['Unit 2 · Strategies for Addition and Subtraction', 'الوحدة 2 · إستراتيجيات عمليتي الجمع والطرح'],
+  bg: 'math/assets/bg_mg4u2.svg', bgc: '#ffe6cc', label: ['A column sum, a bar model or two colonies for each question', 'عملية عمودية أو نموذج شريطي أو مستعمرتين لكل سؤال'], render });
+
+/* ---------- Stage 1 · Warm Up: the properties of addition ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'sum', top: '0', op: '+', bottom: '2,345', res: '', cap: '' }); g.paint();
+  g.say(T(`Welcome to the colony! A new colony has no ants yet: ${kw('0 + 2,345')}. How many ants will there be?`, `أهلًا في المستعمرة! مستعمرة جديدة لسه مفيهاش نمل: ${kw(L('0 + 2,345'))}. هيبقى فيها كام نملة؟`), 'point');
+  await g.choice({ options: ['2,345', '0', '2,346', '23,450'], correct: '2,345', hint: T('What happens when we add zero?', 'إيه اللي بيحصل لما نجمع صفر؟'),
+    ok: T('Adding zero leaves the number as it is: the zero property.', 'جمع الصفر بيسيب العدد زي ما هو: خاصية العنصر المحايد.'), reveal: () => { sc.res = '2,345'; g.paint(); } });
+  Object.assign(sc, { top: '5 + 7 + 8 + 3', op: '', bottom: '3 + 7 + 8 + 5', res: '23', cap: '' }); g.paint();
+  g.say(T('The ants walked in two different orders: 5 + 7 + 8 + 3 and 3 + 7 + 8 + 5. Is the total the same?', 'النمل مشي بترتيبين مختلفين: ' + L('5 + 7 + 8 + 3') + ' و' + L('3 + 7 + 8 + 5') + '. المجموع واحد؟'), 'think');
+  await g.choice({ options: [T('Yes: 23 both times', 'أيوه: ٢٣ في الاتنين'), T('No: the first is bigger', 'لأ: الأول أكبر'), T('No: the second is bigger', 'لأ: التاني أكبر')], correct: T('Yes: 23 both times', 'أيوه: ٢٣ في الاتنين'),
+    hint: T('Add each one.', 'اجمع كل واحدة.'), ok: T('Changing the order does not change the sum: the swap property (commutative).', 'تغيير الترتيب مبيغيّرش المجموع: خاصية الإبدال.') });
+  Object.assign(sc, { top: '(10 + 4) + 20 + 17', bottom: '10 + 4 + (20 + 17)', res: '51', cap: '' }); g.paint();
+  g.say(T('Now the ants group differently: (10 + 4) + 20 + 17 and 10 + 4 + (20 + 17). Same total?', 'دلوقتي النمل بيجمّع بشكل مختلف: ' + L('(10 + 4) + 20 + 17') + ' و' + L('10 + 4 + (20 + 17)') + '. نفس المجموع؟'), 'think');
+  await g.choice({ options: [T('Yes: 51 both times', 'أيوه: ٥١ في الاتنين'), T('No: brackets change the total', 'لأ: الأقواس بتغيّر المجموع')], correct: T('Yes: 51 both times', 'أيوه: ٥١ في الاتنين'),
+    hint: T('Solve what is inside the brackets first.', 'احسب اللي جوا الأقواس الأول.'), ok: T('Changing the grouping does not change the sum: the group property (associative).', 'تغيير التجميع مبيغيّرش المجموع: خاصية الدمج.') });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 2: add with regrouping, check with an estimate
+  Object.assign(sc, { mode: 'sum', top: '142', op: '+', bottom: '165', res: '', cap: '' }); g.paint();
+  g.say(T(`Mission 1: the first ant bridge has ${kw('142')} ants and the second has ${kw('165')}. First estimate: round both to the nearest ten. What do you get?`, `المهمة ١: الجسر الأول فيه ${kw(L('142'))} نملة والتاني ${kw(L('165'))}. قدّر الأول: قرّب العددين لأقرب عشرة. هتجيب كام؟`), 'point');
+  await g.choice({ options: ['310', '300', '330', '410'], correct: '310', hint: T('140 + 170.', L('140 + 170') + '.'), ok: T('140 + 170 = 310.', `${L('140 + 170 = 310')}.`), reveal: () => { sc.cap = '≈ 310'; g.paint(); } });
+  g.say(T('Now the exact sum. 2 + 5 = 7 ones, 4 + 6 = 10 tens: make a new hundred!', `دلوقتي المجموع الدقيق. ${L('2 + 5 = 7')} آحاد، ${L('4 + 6 = 10')} عشرات: كوّن مية جديدة!`), 'think');
+  await g.choice({ options: ['307', '297', '317', '3,007'], correct: '307', hint: T('10 tens = 1 hundred and 0 tens.', '١٠ عشرات = مية و٠ عشرات.'), ok: T('142 + 165 = 307. It is close to the estimate 310, so it makes sense.', `${L('142 + 165 = 307')}. قريب من التقدير ${L('310')}، يعني معقول.`), reveal: () => { sc.res = '307'; g.paint(); } });
+}
+async function mission2() {                 // lesson 3: subtract with regrouping, error analysis
+  Object.assign(sc, { mode: 'sum', top: '521', op: '−', bottom: '37', res: '', cap: '' }); g.paint();
+  g.say(T(`Mission 2: a pupil solved ${kw('521 − 37')} and got 516. He took the smaller digit from the bigger one in every place. What did he forget?`, `المهمة ٢: تلميذ حل ${kw(L('521 − 37'))} وجاب ٥١٦. هو طرح الرقم الأصغر من الأكبر في كل خانة. إيه اللي نساه؟`), 'point');
+  await g.choice({ options: [T('To regroup a ten into 10 ones', 'يعيد تسمية عشرة لـ ١٠ آحاد'), T('To add instead', 'يجمع بدل ما يطرح'), T('To write the answer in words', 'يكتب الإجابة بالكلمات')], correct: T('To regroup a ten into 10 ones', 'يعيد تسمية عشرة لـ ١٠ آحاد'),
+    hint: T('Can you take 7 ones from 1 one?', 'ينفع تطرح ٧ آحاد من ١ آحاد؟'), ok: T('We need 11 ones, so we regroup one ten into 10 ones.', 'محتاجين ١١ آحاد، يعني بنعيد تسمية عشرة لـ ١٠ آحاد.') });
+  g.say(T('Now solve it right: 521 − 37.', 'دلوقتي حلها صح: ' + L('521 − 37') + '.'), 'think');
+  await g.choice({ options: ['484', '516', '494', '584'], correct: '484', hint: T('11 − 7 = 4 ones, then 1 ten − 3 tens needs another regroup.', `${L('11 − 7 = 4')} آحاد، وبعدين عشرة واحدة ناقص ٣ عشرات محتاجة إعادة تسمية كمان.`), ok: T('521 − 37 = 484.', `${L('521 − 37 = 484')}.`), reveal: () => { sc.res = '484'; g.paint(); } });
+}
+async function mission3() {                 // lesson 4: a bar model and a variable
+  Object.assign(sc, { mode: 'bar', whole: '5,328', p1: '2,164', p2: '?', cap: '' }); g.paint();
+  g.say(T(`Mission 3: a colony has ${kw('5,328')} ants. ${kw('2,164')} are females and the rest are males, a. Which equation matches the bar model?`, `المهمة ٣: مستعمرة فيها ${kw(L('5,328'))} نملة. ${kw(L('2,164'))} إناث والباقي ذكور a. أنهي معادلة بتمثّل النموذج الشريطي؟`), 'point');
+  await g.choice({ options: ['2,164 + a = 5,328', '5,328 + a = 2,164', 'a − 2,164 = 5,328', '2,164 − a = 5,328'], correct: '2,164 + a = 5,328', hint: T('The two parts add up to the whole.', 'الجزءين مجموعهم الكل.'), ok: T('part + part = whole: 2,164 + a = 5,328.', `جزء + جزء = الكل: ${L('2,164 + a = 5,328')}.`) });
+  g.say(T('So a = 5,328 − 2,164. How many males are there?', `يبقى ${L('a = 5,328 − 2,164')}. كام ذكر؟`), 'think');
+  await g.choice({ options: ['3,164', '3,264', '7,492', '2,164'], correct: '3,164', hint: T('Subtract with regrouping: 8 − 4 = 4, 2 tens − 6 tens needs a regroup.', `اطرح بإعادة التسمية: ${L('8 − 4 = 4')}، و٢ عشرات ناقص ٦ عشرات محتاجة إعادة تسمية.`), ok: T('a = 3,164 males.', `${L('a = 3,164')} ذكر.`), reveal: () => { sc.p2 = '3,164'; g.paint(); } });
+}
+async function mission4() {                 // lesson 5: a two-step problem with a hidden question
+  Object.assign(sc, { mode: 'colony', top: '1,025', bottom: '1,555', cap: '' }); g.paint();
+  g.say(T('Mission 4: on Wednesday colony A had 1,025 ants. On Friday 101 ants left it. Colony B has 1,555 ants. By how many does B have more than A? First, the <b>hidden question</b>: how many ants are left in A?', `المهمة ٤: يوم الأربعاء المستعمرة (أ) فيها ${L('1,025')} نملة. ويوم الجمعة ${L('101')} نملة سابوها. المستعمرة (ب) فيها ${L('1,555')}. (ب) أكتر من (أ) بكام؟ الأول <b>السؤال غير الظاهر</b>: كام نملة فاضلة في (أ)؟`), 'point');
+  await g.choice({ options: ['924', '1,126', '934', '1,924'], correct: '924', hint: T('1,025 − 101.', L('1,025 − 101') + '.'), ok: T('1,025 − 101 = 924 ants are left in A.', `${L('1,025 − 101 = 924')} نملة فاضلة في (أ).`), reveal: () => { sc.top = '924'; g.paint(); } });
+  g.say(T('Now the main question: 1,555 − 924.', `دلوقتي السؤال الرئيسي: ${L('1,555 − 924')}.`), 'think');
+  await g.choice({ options: ['631', '641', '531', '2,479'], correct: '631', hint: T('Subtract with regrouping, place by place.', 'اطرح بإعادة التسمية خانة خانة.'), ok: T('1,555 − 924 = 631: B has 631 more ants.', `${L('1,555 − 924 = 631')}: (ب) فيها ${L('631')} نملة زيادة.`), reveal: () => { sc.cap = '1,555 − 924 = 631'; g.paint(); } });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); }
+
+/* ---------- Stage 3 · Speed Round: which property? ---------- */
+const BT = [{ label: T('Zero', 'صفر'), value: 'z', c: 0 }, { label: T('Swap', 'إبدال'), value: 's', c: 1 }, { label: T('Group', 'دمج'), value: 'g', c: 2 }];
+const WHY = { z: T('Adding zero leaves the number: zero property.', 'جمع الصفر بيسيب العدد: العنصر المحايد.'), s: T('The order changed: swap property.', 'الترتيب اتغيّر: الإبدال.'), g: T('The brackets moved: group property.', 'الأقواس اتنقلت: الدمج.') };
+const ITEMS = [['0 + 2,345 = 2,345', 'z'], ['12,567,109 + 0 = 12,567,109', 'z'], ['5 + 7 = 7 + 5', 's'], ['8 + 7 + 3 + 5 = 3 + 7 + 8 + 5', 's'], ['9 + 4 = 4 + 9', 's'],
+  ['(10 + 4) + 20 = 10 + (4 + 20)', 'g'], ['10 + 4 + (20 + 17) = (10 + 4) + 20 + 17', 'g'], ['(6 + 2) + 1 = 6 + (2 + 1)', 'g'], ['8 + 0 = 8', 'z'], ['6 + 2 = 2 + 6', 's']];
+async function stage3() {
+  Object.assign(sc, { mode: 'colony', top: '', bottom: '', cap: '' }); g.paint();
+  await g.speedRound({ items: ITEMS.map(([t, r]) => ({ t: L(t), ans: r, why: WHY[r] })), rounds: 8, ms: 11000, buttons: BT,
+    ask: T('Which property?', 'أنهي خاصية؟'), intro: T('Speed Round! A sum comes in. Press the property it shows: Zero, Swap (order) or Group (brackets).', 'جولة السرعة! هتظهرلك عملية جمع. اضغط على الخاصية اللي بتوضّحها: صفر، إبدال (ترتيب) ولا دمج (أقواس).'),
+    think: T('Zero, Swap or Group?', 'صفر ولا إبدال ولا دمج؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! The ant colonies are growing and shrinking. Use the properties of addition, add and subtract with regrouping, and solve problems with a bar model. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! مستعمرات النمل بتكبر وبتصغر. استخدم خواص الجمع، واجمع واطرح بإعادة التسمية، وحل المسائل بالنموذج الشريطي. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can use the properties of addition and solve problems with regrouping and bar models. Next, try the questions of this unit.', 'بقيت تستخدم خواص الجمع وتحل المسائل بإعادة التسمية والنماذج الشريطية. جرّب أسئلة الوحدة دي.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

@@ -71,3 +71,28 @@ ${boat(300, 800, 2)}${boat(1180, 790, 1.5)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_m5c1.svg', b);
 })();
+
+/* ---------- Grade 4 · Unit 1 (Place Value Nest) and Unit 2 (Ant Colony Count): an island of ant hills ---------- */
+const antHill = (x, y, k, ants = 8) => { let a = ''; for (let i = 0; i < ants; i++) { const ax = f(-44 + ((i * 37) % 88)), ay = f(-6 - ((i * 23) % 36)); a += `<ellipse cx="${ax}" cy="${ay}" rx="4.5" ry="3" fill="#5a3a1e"/>`; }
+  return `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-70 0Q-34 -12 -20 -58Q0 -96 20 -58Q34 -12 70 0Z" fill="#d9a85c" stroke="#a8773a" stroke-width="4" stroke-linejoin="round"/>${a}</g>`; };
+function g4Island(id, accent, sign) {
+  seed = 23;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#f6dfb0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#d8efd0" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#f3d6a8" opacity=".6"/><ellipse cx="300" cy="300" rx="250" ry="180" fill="#e4efc8" opacity=".6"/>`;
+  for (let i = 0; i < 30; i++) { const x = f(90 + rnd() * 1040), y = f(140 + rnd() * 1040); inside += tuft(x, y); }
+  let s = island([[0, '#f7e0b0'], [.5, '#e3efc4'], [1, '#f4dcae']], ['#f3e6b8', '#f6efd2'], inside);
+  s += antHill(190, 780, 1.5, 10) + antHill(1010, 1010, 1.7, 14) + antHill(940, 300, 1.4, 9) + antHill(300, 330, 1.2, 8) + antHill(560, 1110, 1.1, 6);
+  s += sign.map(([x, y, k, n]) => crate(x, y, k, n)).join('');
+  s += at(470, 880, 1.1, A.palm()) + at(860, 820, 1.2, A.palm()) + at(1060, 480, 1, A.papyrus()) + at(190, 560, 1, A.papyrus());
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(560, 70, .7, .85) + '</svg>';
+  save('map_' + id + '.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fdf3dc"/><stop offset="1" stop-color="${accent}"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 800C300 770 620 830 900 800C1180 770 1400 800 1600 790V1000H0Z" fill="#e8c88a"/><path d="M0 860C300 840 620 890 900 860C1180 840 1400 865 1600 855V1000H0Z" fill="#d9b06a" opacity=".7"/>
+${antHill(300, 820, 2.6, 12)}${antHill(1200, 830, 2, 9)}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_' + id + '.svg', b);
+}
+g4Island('mg4u1', '#fbe3b8', [[540, 1180, 1, '1,000'], [590, 1190, .9, '100'], [640, 1182, .8, '10']]);
+g4Island('mg4u2', '#f6e0c2', [[540, 1180, 1, '+'], [590, 1190, .9, '−'], [640, 1182, .8, '=']]);

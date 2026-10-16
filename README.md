@@ -1,6 +1,6 @@
 # Motafawek (متفوّق)
 
-Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math has started (Grade 5, Unit 1), then Social Studies, Arabic and English.
+Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math has started (Grade 5 Unit 1, Grade 4 Units 1 and 2), then Social Studies, Arabic and English.
 
 ## Subjects and folders
 - The path of a player: grade (home page) → subject (tabs on `chapters.html`) → chapter or unit → map, game, questions.
@@ -198,6 +198,9 @@ The Arabic track has its own Champions board (the board key includes the track).
 - `q.fig` shows a picture above any non-tap question (`gridModel`, or a tap diagram); `q.diagram` + `q.pic` are for tap questions. Pictures: `math/m5_art.js` (`gridShade`, `placeChart`, `numLine`, `gridModel`).
 - Maps and backgrounds: `node math/tools/make_m_maps.js`.
 - Both tracks: `math/questions_m5c1.js` (Languages track, from the English book) and `math/questions_m5c1_ar.js` (Arabic track, from the Arabic book); same ideas, ids, order and answers. The English unit title and lesson names are translated from the Arabic book; the Arabic file uses the Arabic book's number where the two books differ (15.348 instead of 15.36, same answer).
+- Grade 4, Unit 1 `mg4u1` «القيمة المكانية» (8 lessons, idea ids A–H, 24 ideas / 120 phrasings) and Unit 2 `mg4u2` «إستراتيجيات عمليتي الجمع والطرح» (5 lessons, ids I–M, 16 ideas / 85 phrasings). Games: `math-placevalue.html` (Place Value Nest) and `math-addsub.html` (Ant Colony Count). Pictures: `math/g4_art.js` (`placeTable`, a tap diagram with column ids `b1 m100 m10 m1 t100 t10 t1 u100 u10 u1`; `pic.plain` draws it inside a game scene and `window.G4MATH.placeCols()` gives the column positions).
+- Arabic track only for now (`math/questions_mg4u1_ar.js`, `math/questions_mg4u2_ar.js`): the English book was not supplied, so Languages-track players cannot open these units until `questions_mg4u*.js` files exist. English titles are translated from the Arabic book.
+- Review notes: the books print no answers. Book page 32 conflicts with itself (text says 5,328 ants, the equation prints 2,164 + a = 5,398); the site uses 5,328, so a = 3,164. Not asked: the card-game activity (unit 1), activities on pages 26 and 31 (no printed result) and the open «write a problem / explain» items.
 
 ## Adding a subject (Math was the first)
 1. In `window.SUBJECTS` remove `soon` (and `hidden`); create its folder (`math/`, with `assets/` and `tools/`).

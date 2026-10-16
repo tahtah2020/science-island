@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Place Value Nest · Place Value</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261016e">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Place Value Nest.</noscript>
+<script src="firebase-config.js?v=20261016e"></script>
+<script src="chapters.js?v=20261016e"></script>
+<script src="common.js?v=20261016e"></script>
+<script src="game_kit.js?v=20261016e"></script>
+<script src="math/g4_art.js?v=20261016e"></script>
+<script>
+(() => {
+'use strict';
+/* Place Value Nest · the game of Unit 1, Place Value (Math, Grade 4). Built on the shared game kit (game_kit.js).
+   The scene is always a model: the place value table up to the billions, two ant hills with their counts, or a number line for rounding.
+   Stage 1 (Warm Up): read 35,891,455 in the table: which column, what value, which group (lesson 1, book pages 3-4).
+   Stage 2 (Missions): x10 moves digits left (lesson 2), the three forms of a number (3), compare two hills (5 and 6), order (7), round on the number line (8).
+   Stage 3 (Speed Round): < = > with pairs of the book (lessons 5 and 6).
+   Every T('English', 'عربي') has both languages. Numbers stay left to right. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;       // a number inside Arabic text stays left to right
+const kw = s => `<b class="kw">${s}</b>`;
+const INK = '#1f3d57';
+const COLS = ['b1', 'm100', 'm10', 'm1', 't100', 't10', 't1', 'u100', 'u10', 'u1'];     // the table's columns, left to right
+const sc = { mode: 'table', num: '', cap: '', a: '', b: '', from: 6000, to: 7000, at: 6700 };
+const VW = 420, VH = 280;
+const num = (x, y, s, fs = 22) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" unicode-bidi="embed" font-size="${fs}" font-weight="900" fill="${INK}">${s}</text>`;
+const fmt = s => String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+/* an ant hill with its count */
+function hill(x, y, k, ants) {
+  let s = `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-62 0Q-30 -10 -18 -52Q0 -86 18 -52Q30 -10 62 0Z" fill="#d9a85c" stroke="#a8773a" stroke-width="3" stroke-linejoin="round"/>`;
+  for (let i = 0; i < ants; i++) { const ax = -50 + ((i * 37) % 100), ay = -6 - ((i * 23) % 40) * (1 - Math.abs(ax) / 80); s += `<ellipse cx="${ax}" cy="${ay}" rx="4" ry="2.6" fill="#5a3a1e"/>`; }
+  return s + '</g>';
+}
+function ringAt(x, y, w, h) { return `<rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>`; }
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  if (sc.mode === 'table') {
+    s += `<g transform="translate(40 60)">` + window.CH_DIAGRAMS.placeTable({ pic: { num: sc.num, plain: true } }) + '</g>';
+    if (sc.cap) s += num(210, 232, sc.cap, 24);
+  } else if (sc.mode === 'hills') {
+    s += hill(115, 170, 1.25, 12) + hill(305, 170, 1.25, 16);
+    s += `<text x="115" y="40" text-anchor="middle" font-size="15" font-weight="900" fill="${INK}">${T('Hill 1', 'التل ١')}</text><text x="305" y="40" text-anchor="middle" font-size="15" font-weight="900" fill="${INK}">${T('Hill 2', 'التل ٢')}</text>`;
+    s += num(115, 220, sc.a, sc.a.length > 11 ? 17 : 22) + num(305, 220, sc.b, sc.b.length > 11 ? 17 : 22);
+    if (sc.cap) s += num(210, 262, sc.cap, 20);
+  } else if (sc.mode === 'line') {
+    const x0 = 40, x1 = 380, y = 150, p = x => x0 + (x1 - x0) * (x - sc.from) / (sc.to - sc.from), mid = (sc.from + sc.to) / 2;
+    s += `<path d="M${x0} ${y}H${x1}" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`;
+    [[sc.from, 'lo'], [mid, 'mid'], [sc.to, 'hi']].forEach(([v, id]) => { s += `<path d="M${p(v)} ${y - 14}V${y + 14}" stroke="${INK}" stroke-width="4"/>` + num(p(v), y + 38, fmt(v), id === 'mid' ? 14 : 17); });
+    s += `<text x="${p(mid)}" y="${y - 24}" text-anchor="middle" font-size="12" font-weight="800" fill="#c9761a">${T('halfway', 'المنتصف')}</text>`;
+    s += `<path d="M${p(sc.at)} ${y - 6}V${y - 58}" stroke="#c0392b" stroke-width="4"/><path d="M${p(sc.at)} ${y - 58}l26 8l-26 8z" fill="#c0392b"/>` + num(p(sc.at), y - 70, fmt(sc.at), 19);
+    if (sc.cap) s += num(210, 262, sc.cap, 22);
+  }
+  return s;
+}
+const colRings = ids => ids.map(id => { const c = window.G4MATH.placeCols()[id]; return { id, name: id, ring: ringAt(40 + c.x, 98, c.w, 66) }; });
+const lineRings = () => [{ id: 'lo', name: T('Lower mark', 'العلامة الأقل'), ring: ringAt(20, 100, 40, 90) }, { id: 'hi', name: T('Upper mark', 'العلامة الأكبر'), ring: ringAt(360, 100, 40, 90) }];
+
+const g = G4Game({ ch: 'mg4u1', logo: '🐜', title: ['Place Value Nest', 'عش القيمة المكانية'], sub: ['Unit 1 · Place Value', 'الوحدة 1 · القيمة المكانية'],
+  bg: 'math/assets/bg_mg4u1.svg', bgc: '#ffe6cc', label: ['A place value table, ant hills or a number line for each question', 'جدول قيمة مكانية أو تلال نمل أو خط أعداد لكل سؤال'], render });
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'table', num: '35891455', cap: '' }); g.paint();
+  g.say(T(`Welcome to the nest! The ants counted ${kw('35,891,455')} ants. This is the place value table. Tap the column that holds the digit <b>8</b>.`,
+    P(`أهلًا في العش! النمل عدّ ${kw(L('35,891,455'))} نملة. ده جدول القيمة المكانية. اضغط على العمود اللي فيه الرقم <b>٨</b>.`, `أهلًا في العش! النمل عدّ ${kw(L('35,891,455'))} نملة. ده جدول القيمة المكانية. اضغطي على العمود اللي فيه الرقم <b>٨</b>.`)), 'point');
+  await g.spot(colRings(COLS), 't100', { hint: T('Read from the right: units, thousands, then millions.', 'اقرأ من اليمين: الوحدات، بعدين الألوف، بعدين الملايين.'),
+    ok: T('The 8 is in the hundreds of thousands column.', 'الرقم ٨ في خانة مئات الألوف.') });
+  g.say(T(`What is the value of the digit <b>9</b> in ${kw('35,891,455')}?`, `إيه قيمة الرقم <b>٩</b> في ${kw(L('35,891,455'))}؟`), 'think');
+  await g.choice({ options: ['90,000', '9,000', '900,000', '9'], correct: '90,000', hint: T('The 9 is in the thousands group, in the tens column.', 'الرقم ٩ في مجموعة الألوف، في خانة العشرات.'),
+    ok: T('9 tens of thousands = 90,000.', `٩ عشرات ألوف = ${L('90,000')}.`) });
+  g.say(T('Which group comes right after the thousands?', 'أنهي مجموعة بتيجي بعد الألوف على طول؟'), 'think');
+  await g.choice({ options: [T('Millions', 'الملايين'), T('Units', 'الوحدات'), T('Billions', 'المليارات')], correct: T('Millions', 'الملايين'), hint: T('The groups grow from the right: units, thousands, millions, billions.', 'المجموعات بتكبر من اليمين: وحدات، ألوف، ملايين، مليارات.'),
+    ok: T('After thousands come the millions, then the billions.', 'بعد الألوف بتيجي الملايين وبعدها المليارات.') });
+  g.say(T(`Amir says every digit in the number 222 has the same value. Do you agree?`, `أمير بيقول إن كل الأرقام في العدد ${L('222')} ليها نفس القيمة. موافق؟`), 'think');
+  await g.choice({ options: [T('No: 200, 20 and 2', 'لأ: ٢٠٠ و٢٠ و٢'), T('Yes: they are all 2', 'أيوه: كلها ٢'), T('Yes: the number is small', 'أيوه: العدد صغير')], correct: T('No: 200, 20 and 2', 'لأ: ٢٠٠ و٢٠ و٢'),
+    hint: T('Does a digit keep its value in every place?', 'هل الرقم بيحتفظ بقيمته في كل خانة؟'), ok: T('The value of a digit depends on its place.', 'قيمة الرقم بتتغير بحسب مكانه.') });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 2
+  Object.assign(sc, { mode: 'table', num: '12', cap: '' }); g.paint();
+  g.say(T(`Mission 1: one hill has ${kw('12')} ants. How many ants are there in ${kw('10')} hills like it?`, `المهمة ١: التل الواحد فيه ${kw(L('12'))} نملة. كام نملة في ${kw('١٠')} تلال زيه؟`), 'point');
+  await g.choice({ options: ['120', '1,200', '22', '102'], correct: '120', hint: T('Times 10 moves every digit one place to the left.', 'الضرب في ١٠ بيحرّك كل رقم خانة لليسار.'),
+    ok: T('12 × 10 = 120: the digits moved one place to the left.', `${L('12 × 10 = 120')}: الأرقام اتحرّكت خانة لليسار.`), reveal: () => { sc.num = '120'; g.paint(); } });
+  Object.assign(sc, { num: '156' }); g.paint();
+  g.say(T(`Another hill has ${kw('156')} ants. And in 10 hills like it?`, `تل تاني فيه ${kw(L('156'))} نملة. وفي ١٠ تلال زيه؟`), 'think');
+  await g.choice({ options: ['1,560', '15,600', '166', '156'], correct: '1,560', hint: T('Move each digit one place to the left and put a zero in the ones.', 'حرّك كل رقم خانة لليسار واكتب صفر في الآحاد.'),
+    ok: T('156 × 10 = 1,560.', `${L('156 × 10 = 1,560')}.`), reveal: () => { sc.num = '1560'; g.paint(); } });
+}
+async function mission2() {                 // lesson 3: three forms
+  Object.assign(sc, { mode: 'table', num: '9231043204', cap: '' }); g.paint();
+  g.say(T('Mission 2: the ants wrote a number in words: nine billion, two hundred thirty-one million, forty-three thousand, two hundred four. Which is its standard form?', 'المهمة ٢: النمل كتب عدد بالكلمات: تسعة مليارات ومائتان وواحد وثلاثون مليونًا وثلاثة وأربعون ألفًا ومائتان وأربعة. إيه صيغته القياسية؟'), 'point');
+  await g.choice({ options: ['9,231,043,204', '9,231,430,204', '9,213,043,204', '9,231,043,240'], correct: '9,231,043,204', hint: T('Write each group in order: billions, millions, thousands, units.', 'اكتب كل مجموعة بالترتيب: مليارات، ملايين، ألوف، وحدات.'),
+    ok: T('The standard form is the number written with digits only.', `الصيغة القياسية هي العدد مكتوب بالأرقام بس: ${L('9,231,043,204')}.`), reveal: () => { sc.cap = '9,231,043,204'; g.paint(); } });
+  g.say(T('The same number can be written as a sum of the value of each digit. What do we call that form?', 'نفس العدد ممكن يتكتب كمجموع قيم أرقامه. إيه اسم الصيغة دي؟'), 'think');
+  await g.choice({ options: [T('Expanded form', 'الصيغة الممتدة'), T('Standard form', 'الصيغة القياسية'), T('Word form', 'الصيغة اللفظية')], correct: T('Expanded form', 'الصيغة الممتدة'), hint: T('It stretches the number out: 9,000,000,000 + 200,000,000 + …', 'بتمدّ العدد: ٩,٠٠٠,٠٠٠,٠٠٠ + ٢٠٠,٠٠٠,٠٠٠ + …'),
+    ok: T('That is the expanded form.', 'دي الصيغة الممتدة.') });
+}
+async function mission3() {                 // lessons 5 and 6: compare hills
+  Object.assign(sc, { mode: 'hills', a: '14,108', b: '15,108', cap: '' }); g.paint();
+  g.say(T('Mission 3: two hills. Hill 1 has 14,108 ants and Hill 2 has 15,108. Which sign goes in between?', `المهمة ٣: تلين. التل ١ فيه ${L('14,108')} نملة والتل ٢ فيه ${L('15,108')}. أنهي علامة تتحط بينهم؟`), 'point');
+  await g.pick({ buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }], correct: '<', points: 20,
+    ok: T('14,108 < 15,108: start from the left; the first place that differs is the thousands, 4 < 5.', `${L('14,108 < 15,108')}: ابدأ من الشمال؛ أول خانة بتختلف هي الألوف، ٤ أقل من ٥.`), reveal: () => { sc.cap = '14,108 < 15,108'; g.paint(); } });
+  Object.assign(sc, { a: '2,450,890,007', b: '2,500,000,000', cap: '' }); g.paint(); g.setTray(null);
+  g.say(T('Now Hill 1 has 2,450,890,007 ants and Hill 2 has 2,500,000,000.', `دلوقتي التل ١ فيه ${L('2,450,890,007')} نملة والتل ٢ فيه ${L('2,500,000,000')}.`), 'think');
+  await g.pick({ buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }], correct: '<', points: 20,
+    ok: T('2,450,890,007 < 2,500,000,000: the hundreds of millions are 4 and 5.', `${L('2,450,890,007 < 2,500,000,000')}: مئات الملايين ٤ و٥.`),
+    no: T('Compare from the left. Billions are equal, so look at the hundreds of millions.', 'قارن من الشمال. المليارات متساوية، يبقى بُص على مئات الملايين.'), reveal: () => { sc.cap = '2,450,890,007 < 2,500,000,000'; g.paint(); } });
+  g.setTray(null);
+}
+async function mission4() {                 // lesson 7: smallest of the ants' week
+  Object.assign(sc, { mode: 'hills', a: '78,999', b: '79,100', cap: '' }); g.paint();
+  g.say(T('Mission 4: Omar counted 78,999 · 79,100 · 78,091 · 79,010 · 78,090 ants on five days. Which is the <b>smallest</b>, the first in an ascending order?', `المهمة ٤: عمر عدّ ${L('78,999 · 79,100 · 78,091 · 79,010 · 78,090')} نملة في ٥ أيام. أنهي أصغر عدد، يعني أول واحد في الترتيب التصاعدي؟`), 'point');
+  await g.choice({ options: ['78,090', '78,091', '78,999', '79,010'], correct: '78,090', hint: T('All start with 7; compare the thousands, then the hundreds.', 'كلهم بيبدأوا بـ ٧؛ قارن الألوف وبعدين المئات.'),
+    ok: T('Ascending: 78,090 < 78,091 < 78,999 < 79,010 < 79,100.', `التصاعدي: ${L('78,090 < 78,091 < 78,999 < 79,010 < 79,100')}.`) });
+}
+async function mission5() {                 // lesson 8: rounding on the number line
+  Object.assign(sc, { mode: 'line', from: 6000, to: 7000, at: 6700, cap: '' }); g.paint();
+  g.say(T('Mission 5: the flag is at 6,700. Round it to the nearest <b>thousand</b>. Tap the mark it is closest to.', `المهمة ٥: العلامة عند ${L('6,700')}. قرّبها لأقرب <b>ألف</b>. اضغط على العلامة الأقرب ليها.`), 'point');
+  await g.spot(lineRings(), 'hi', { hint: T('Is the flag after the halfway mark?', 'العلامة بعد المنتصف؟'),
+    ok: T('6,700 is past the halfway mark 6,500, so it rounds up to 7,000.', `${L('6,700')} عدّت المنتصف ${L('6,500')}، يعني بتتقرّب لـ ${L('7,000')}.`) });
+  Object.assign(sc, { from: 16000, to: 17000, at: 16401 }); g.paint();
+  g.say(T('Now 16,401, to the nearest thousand.', `دلوقتي ${L('16,401')} لأقرب ألف.`), 'think');
+  await g.spot(lineRings(), 'lo', { hint: T('Is 16,401 before or after 16,500?', '١٦,٤٠١ قبل ولا بعد ١٦,٥٠٠؟'),
+    ok: T('16,401 is before 16,500, so it rounds down to 16,000.', `${L('16,401')} قبل ${L('16,500')}، يعني بتتقرّب لـ ${L('16,000')}.`) });
+  g.say(T('One more, with the rule: 7,578 rounded to the nearest thousand. Look at the hundreds digit.', `كمان واحد بالقاعدة: ${L('7,578')} لأقرب ألف. بُص على رقم المئات.`), 'think');
+  await g.choice({ options: ['8,000', '7,000', '7,600', '7,500'], correct: '8,000', hint: T('5 or more: add one to the thousands digit.', '٥ أو أكتر: زوّد واحد على رقم الألوف.'),
+    ok: T('The hundreds digit is 5, so 7,578 ≈ 8,000.', `رقم المئات ٥، يعني ${L('7,578 ≈ 8,000')}.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
+
+/* ---------- Stage 3 · Speed Round: < = > ---------- */
+const PAIRS = [['14,108', '15,108', '<'], ['123,978', '123,568', '>'], ['6,235,508', '6,235,678', '<'], ['2,500,000,000', '2,450,890,007', '>'], ['14,780,064', '14,790,064', '<'],
+  ['17,425,605', '17,420,605', '>'], ['8,400,761,903', '8,040,761,903', '>'], ['423,012', '432,021', '<'], ['100,513', '89,906', '>'], ['43,110', '43,120', '<'], ['654,300', '6,543', '>'], ['1,976,888', '1,976,888', '=']];
+async function stage3() {
+  Object.assign(sc, { mode: 'hills', a: '', b: '', cap: '' }); g.paint();
+  await g.speedRound({ items: PAIRS.map(([a, b, r]) => ({ t: `${L(a)} <span style="opacity:.5">?</span> ${L(b)}`, ans: r, why: T(`${a} ${r} ${b}.`, L(`${a} ${r} ${b}`) + '.') })), rounds: 8, ms: 10000,
+    buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }],
+    ask: T('Which sign: <, = or >?', 'أنهي علامة: <، = ولا >؟'), intro: T('Speed Round! Two hills come in. Press the sign that fits. Start from the left and stop at the first place that differs.', 'جولة السرعة! تلين هيظهروا. اضغط على العلامة المناسبة. ابدأ من الشمال وقف عند أول خانة بتختلف.'),
+    think: T('Which sign: <, = or >?', 'أنهي علامة: <، = ولا >؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! The ants are counting big numbers in their nest. Read the place value table, move digits, compare hills, order the counts and round on the number line. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! النمل بيعدّ أعداد كبيرة في العش. اقرأ جدول القيمة المكانية، حرّك الأرقام، قارن التلال، رتّب الأعداد وقرّب على خط الأعداد. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can read, compare, order and round big numbers. Next, try the questions of this unit.', 'بقيت تقرأ وتقارن وترتّب وتقرّب الأعداد الكبيرة. جرّب أسئلة الوحدة دي.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
