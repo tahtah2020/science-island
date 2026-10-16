@@ -214,19 +214,19 @@ window.CHAPTERS = [
     cover: 'math/assets/map_m5c1.svg', quizBg: 'math/assets/bg_m5c1.svg',
     lessons: ['Decimals to the Thousandths Place', 'Place Value Shuffle', 'Composing and Decomposing Decimals', 'Comparing Decimals', 'Rounding Decimals', 'Estimating Decimal Sums', 'Modeling Decimal Addition', 'Modeling Decimals Subtraction', 'Estimating Decimal Differences', 'Subtracting to the Thousandths Place', 'Decimal Story Problems'] },
 
-  /* Grade 4 Math, first term 2026/2027. Source: the Arabic school book (the English book is not here yet, so the Arabic track is built first).
-     The English titles are translated from the Arabic book. Unit 1: concept 1 "Strengthening Place Value" (lessons 1-4), concept 2 "Using Place Value" (lessons 5-8). */
+  /* Grade 4 Math, first term 2026/2027. Sources: the Arabic and English school books (each track follows its own book; same content).
+     Unit 1: concept 1 "Reinforcing Place Value" (lessons 1-4), concept 2 "Using Place Value" (lessons 5-8). */
   { id: 'mg4u1', subject: 'math', grade: 'g4', n: 1, title: 'Place Value', titleAr: 'القيمة المكانية', icon: '🔢', tint: '#ffe6cc', ready: true,
-    lessons: ['Large Numbers', 'Changing Place Values', 'Different Forms for Writing Numbers', 'Composing and Decomposing Numbers', 'Comparing Large Numbers', 'Comparing Numbers in Different Forms', 'Ordering Numbers Descending and Ascending', 'Rounding Rules'],
-    art: 'math/g4_art.js', questMax: 24, questionsAr: 'math/questions_mg4u1_ar.js',
+    lessons: ['Big Numbers', 'Changing Place Values', 'Many Forms to Write Numbers', 'Composing and Decomposing', 'Comparing Big Numbers', 'Comparing Numbers in Multiple Forms', 'Descending and Ascending Numbers', 'Rounding Rules'],
+    art: 'math/g4_art.js', questMax: 24, questions: 'math/questions_mg4u1.js', questionsAr: 'math/questions_mg4u1_ar.js',
     game: { href: 'math-placevalue.html', name: "Place Value Nest", nameAr: "عش القيمة المكانية", icon: '🐜', hint: 'Read big numbers in the place value table, move digits, compare, order and round', hintAr: 'اقرأ الأعداد الكبيرة في جدول القيمة المكانية وحرّك الأرقام وقارن ورتّب وقرّب' },
     map: { img: 'math/assets/map_mg4u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_mg4u1.svg', quizBg: 'math/assets/bg_mg4u1.svg',
     lessonsAr: ['الأعداد الكبيرة', 'تغيير القيم المكانية', 'صيغ متنوعة لكتابة الأعداد', 'تكوين الأعداد وتحليلها', 'مقارنة الأعداد الكبيرة', 'مقارنة الأعداد في صيغ مختلفة', 'ترتيب الأعداد تنازليًا وتصاعديًا', 'قواعد التقريب'] },
-  /* Unit 2: concept 1 "Strategies for Addition and Subtraction" (lessons 1-3), concept 2 "Solving Multi-step Problems" (lessons 4-5). */
-  { id: 'mg4u2', subject: 'math', grade: 'g4', n: 2, title: 'Strategies for Addition and Subtraction', titleAr: 'إستراتيجيات عمليتي الجمع والطرح', icon: '➕', tint: '#ffe6cc', ready: true,
-    lessons: ['Properties of Addition', 'Addition with Regrouping', 'Subtraction with Regrouping', 'Bar Models, Variables and Word Problems', 'Multi-step Word Problems with Addition and Subtraction'],
-    questMax: 20, questionsAr: 'math/questions_mg4u2_ar.js',
+  /* Unit 2: concept 1 "Using Addition and Subtraction Strategies" (lessons 1-3), concept 2 "Solving Multistep Problems" (lessons 4-5). */
+  { id: 'mg4u2', subject: 'math', grade: 'g4', n: 2, title: 'Addition and Subtraction Strategies', titleAr: 'إستراتيجيات عمليتي الجمع والطرح', icon: '➕', tint: '#ffe6cc', ready: true,
+    lessons: ['Properties of Addition', 'Addition with Regrouping', 'Subtraction with Regrouping', 'Bar Models, Variables, and Story Problems', 'Solving Multistep Story Problems with Addition and Subtraction'],
+    questMax: 20, questions: 'math/questions_mg4u2.js', questionsAr: 'math/questions_mg4u2_ar.js',
     game: { href: 'math-addsub.html', name: "Ant Colony Count", nameAr: "مستعمرة النمل الحسابية", icon: '🐜', hint: 'Add and subtract with regrouping, check with estimates and solve multi-step problems', hintAr: 'اجمع واطرح مع إعادة التسمية وتحقق بالتقدير وحل المسائل متعددة الخطوات' },
     map: { img: 'math/assets/map_mg4u2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_mg4u2.svg', quizBg: 'math/assets/bg_mg4u2.svg',

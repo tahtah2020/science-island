@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-16', title: 'الرياضيات للصف الرابع: النسخة الإنجليزية للوحدتين',
+    items: [
+      { text: 'ملفا الأسئلة الإنجليزيان للوحدتين الأولى والثانية من الكتاب الإنجليزي، فتفتح الوحدتان لمسار اللغات' }
+    ] },
   { date: '2026-10-16', title: 'الرياضيات للصف الرابع: الوحدتان الأولى والثانية',
     items: [
       { text: 'الوحدة الأولى: القيمة المكانية — لعبة عش القيمة المكانية و٢٤ فكرة سؤال' },
