@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>City Planner · Our City and Our Daily Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261017b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play City Planner.</noscript>
+<script src="firebase-config.js?v=20261017b"></script>
+<script src="chapters.js?v=20261017b"></script>
+<script src="common.js?v=20261017b"></script>
+<script src="studies/g4_art.js?v=20261017b"></script>
+<script src="game_kit.js?v=20261017b"></script>
+<script>
+(() => {
+'use strict';
+/* City Planner · the game of Unit 2, Our City and Our Daily Life (Social Studies, Grade 4). Built on the shared game kit (game_kit.js).
+   The scene is always a picture the child works on: a city plan from above, the service places, old and new things, a map of Egypt in three colours.
+   Stage 1 (Warm Up): the five uses of land (lesson 1, pages 40-45).
+   Stage 2 (Missions): old and new (lesson 2), service places (3), the future city (4), governorates and the capital (5).
+   Stage 3 (Speed Round): which kind of service? education, health, security or trade (lesson 3, pages 52-57).
+   Every T('English', 'عربي') has both languages. Names of places inside the pictures stay Arabic, as in the Arabic school book. */
+const T = SI.T, G = SI.G, A = S4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 340;
+const sc = { mode: 'blank', pic: null };
+const fit = (w, h) => { const k = Math.min(1, VW / w, VH / h); return { k, dx: (VW - w * k) / 2, dy: (VH - h * k) / 2 }; };
+const place = (f, inner) => `<g transform="translate(${A.f1(f.dx)} ${A.f1(f.dy)}) scale(${f.k})">${inner}</g>`;
+const FS = { land: fit(340, 300), serv: fit(340, 300), tn: fit(340, 250), reg: fit(340, 440) };
+const rr = (f, x, y, w, h, r = 10) => A.ringRect(f.dx + x * f.k, f.dy + y * f.k, w * f.k, h * f.k, r);
+const re = (f, cx, cy, rx, ry) => A.ringEl(f.dx + cx * f.k, f.dy + cy * f.k, rx * f.k, ry * f.k);
+const PL = o => ({ pic: Object.assign({ plain: true }, o || {}) });
+
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  const m = sc.mode;
+  if (m === 'land') s += place(FS.land, `<rect width="340" height="300" fill="#fbf6e6"/>` + D.landUse(PL()));
+  else if (m === 'serv') s += place(FS.serv, `<rect width="340" height="300" fill="#fbf6e6"/>` + D.servicePlan(PL()));
+  else if (m === 'tn') s += place(FS.tn, `<rect width="340" height="250" fill="#fbf6e6"/>` + D.thenNow(PL(sc.pic)));
+  else if (m === 'reg') s += place(FS.reg, `<rect width="340" height="440" fill="${A.PAPER}"/>` + D.regions(PL()));
+  return s;
+}
+const set = (mode, pic) => { sc.mode = mode; sc.pic = pic || null; g.paint(); };
+
+const landRings = () => { const r = D.landUse.rings(), nm = { farm: 'الحقول', homes: 'البيوت', park: 'الحديقة', tourist: 'الهرم والمتحف', factory: 'المصانع' }; return Object.keys(r).map(id => ({ id, name: nm[id], ring: rr(FS.land, ...r[id], 12) })); };
+const servRings = () => D.servicePlan.rings().map(p => ({ id: p.id, name: p.name, ring: rr(FS.serv, ...p.rect, 14) }));
+const tnRings = flip => [{ id: flip ? 'new' : 'old', name: 'اليسار', ring: rr(FS.tn, 8, 8, 160, 236, 12) }, { id: flip ? 'old' : 'new', name: 'اليمين', ring: rr(FS.tn, 172, 8, 160, 236, 12) }];
+const regRings = () => { const r = D.regions.rings(), nm = { delta: 'الدلتا', valley: 'الوادي', border: 'الصحراء' }; return Object.keys(r).map(id => ({ id, name: nm[id], ring: re(FS.reg, ...r[id]) })); };
+
+const g = G4Game({ ch: 'sg4u2', logo: '🏙️', title: ['City Planner', 'مخطط المدينة'], sub: ['Unit 2 · Our City and Our Daily Life', 'الوحدة 2 · مدينتنا وحياتنا اليومية'],
+  bg: 'studies/assets/bg_sg4u2.svg', bgc: '#e2eefb', label: ['A city plan, a map or a picture for each question', 'مخطط مدينة أو خريطة أو صورة لكل سؤال'], render, view: [VW, VH] });
+
+/* ---------- Stage 1 · Warm Up: land use ---------- */
+async function stage1() {
+  set('land');
+  g.say(T(`Welcome, city planner! Here is a plan of a city seen from above. A new <b>factory</b> must be built. Tap the best zone for it.`, P(`أهلًا يا مخطط المدينة! ده مخطط مدينة من فوق. لازم نبني <b>مصنع</b> جديد. اضغط على أنسب منطقة ليه.`, `أهلًا يا مخططة المدينة! ده مخطط مدينة من فوق. لازم نبني <b>مصنع</b> جديد. اضغطي على أنسب منطقة ليه.`)), 'point');
+  await g.spot(landRings(), 'factory', { hint: T('Factories are built away from the homes.', 'المصانع بتتبني بعيد عن البيوت.'),
+    ok: T(`Industrial areas are on the ${kw('outskirts')} of cities, away from homes, to reduce pollution.`, `المناطق الصناعية على ${kw('أطراف')} المدن وبعيدة عن البيوت لتقليل التلوث.`) });
+  g.say(T('Which zone produces our crops and food, and is a national wealth?', 'أنهي منطقة بتنتج المحاصيل والغذاء وتُعد ثروة قومية؟'), 'think');
+  await g.spot(landRings(), 'farm', { hint: T('Look for the green fields.', 'دوّر على الحقول الخضرا.'),
+    ok: T('Agricultural areas are a national wealth we must protect.', 'المناطق الزراعية ثروة قومية لازم نحافظ عليها.') });
+  g.say(T('People want a place to walk that also cleans the air. Tap it.', 'الناس عايزة مكان للتنزه ويكمان بينقّي الهوا. اضغط عليه.'), 'think');
+  await g.spot(landRings(), 'park', { hint: T('Trees clean the air.', 'الأشجار بتنقّي الهوا.'),
+    ok: T('Recreation areas such as parks are for walking and they clean the air.', 'المناطق الترفيهية زي الحدائق للتنزه وبتنقّي الهوا.') });
+  g.say(T('Where do people live, with schools and hospitals close by?', 'فين بيعيش الناس وجنبهم المدارس والمستشفيات؟'), 'think');
+  await g.spot(landRings(), 'homes', { hint: T('Look for the houses.', 'دوّر على البيوت.'),
+    ok: T('Residential areas have the homes and the basic services, usually in the heart of the city.', 'المناطق السكنية فيها البيوت والخدمات الأساسية، وغالبًا في قلب المدينة.') });
+  g.say(T('A tourist zone attracts visitors. What does it have?', 'المنطقة السياحية بتجذب الزوّار. فيها إيه؟'), 'think');
+  await g.choice({ options: ['معالم أثرية أو طبيعية', 'مصانع كبيرة', 'حقول قمح', 'ملاعب أندية'], correct: 'معالم أثرية أو طبيعية', hint: T('Think of museums and temples.', 'فكّر في المتاحف والمعابد.'),
+    ok: T(`${kw('Ancient or natural landmarks')} such as museums and old temples attract visitors and create jobs.`, `${kw('المعالم الأثرية أو الطبيعية')} زي المتاحف والمعابد بتجذب الزوّار وتوفر فرص عمل.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 2: old and new
+  set('tn', { set: 'lamp' });
+  g.say(T('Mission 1: the city has changed. Tap the <b>old</b> lamp, the kerosene lamp.', 'المهمة ١: المدينة اتغيّرت. اضغط على المصباح <b>القديم</b>، مصباح الكيروسين.'), 'point');
+  await g.spot(tnRings(false), 'old', { hint: T('The old lamp burns a flame.', 'المصباح القديم فيه لهب.'),
+    ok: T('Long ago people used simple tools, like kerosene lamps. Today we use electricity.', 'زمان الناس استخدمت أدوات بسيطة زي مصابيح الكيروسين. النهارده بنستخدم الكهرباء.') });
+  set('tn', { set: 'train', flip: true });
+  g.say(T('Tap the <b>modern</b> train. Modern transport is fast, safe and kind to the environment.', 'اضغط على القطار <b>الحديث</b>. المواصلات الحديثة سريعة وآمنة ومش بتضر البيئة.'), 'think');
+  await g.spot(tnRings(true), 'new', { hint: T('Which train looks faster?', 'أنهي قطر شكله أسرع؟'),
+    ok: T('The modern train joins speed, efficiency and safety. The metro, electric train and BRT are modern too.', 'القطار الحديث بيجمع السرعة والكفاءة والأمان. ومترو الأنفاق والقطار الكهربائي والأتوبيس الترددي كمان حديثين.') });
+  set('blank');
+  g.say(T('Why does the state build new cities in the desert?', 'ليه الدولة بتبني مدن جديدة في الصحرا؟'), 'think');
+  await g.choice({ options: ['لتقليل الازدحام', 'لزيادة التلوث', 'لنشر المناطق العشوائية', 'لزيادة التكدس السكاني'], correct: 'لتقليل الازدحام', hint: T('Old cities are crowded.', 'المدن القديمة زحمة.'),
+    ok: T(`To ${kw('reduce crowding')} in the old cities.`, `عشان ${kw('تقلل الزحمة')} في المدن القديمة.`) });
+}
+async function mission2() {                 // lesson 3: service places
+  set('serv');
+  g.say(T('Mission 2: the service places. Fire! Tap the place that puts out fires.', 'المهمة ٢: الأماكن الخدمية. حريق! اضغط على المكان اللي بيطفّي الحرائق.'), 'point');
+  await g.spot(servRings(), 'fire', { hint: T('Look for the red building.', 'دوّر على المبنى الأحمر.'),
+    ok: T('The civil defense centre puts out fires, rescues people and helps after disasters like earthquakes.', 'مركز الحماية المدنية بيطفّي الحرائق وينقذ الناس ويساعد وقت الكوارث زي الزلازل.') });
+  g.say(T('Someone needs help with traffic. Which place organises traffic?', 'في زحمة مرور. أنهي مكان بينظّم المرور؟'), 'think');
+  await g.spot(servRings(), 'police', { hint: T('This place keeps security and order.', 'المكان ده بيحفظ الأمن والنظام.'),
+    ok: T('The police keep security, catch lawbreakers, organise traffic and issue official documents.', 'الشرطة بتحفظ الأمن وتضبط المخالفين وتنظّم المرور وتصدر الوثائق الرسمية.') });
+  g.say(T('A sick child needs a check-up. Where do we go?', 'طفل تعبان محتاج كشف. نروح فين؟'), 'think');
+  await g.spot(servRings(), 'hospital', { hint: T('Where do doctors work?', 'فين بيشتغل الأطباء؟'),
+    ok: T('Hospitals give health services: check-ups and treatment.', 'المستشفيات بتقدم خدمات صحية: كشف وعلاج.') });
+  g.say(T('We want to buy food and school supplies. Which place gives trade services?', 'عايزين نشتري أكل وأدوات مدرسية. أنهي مكان بيقدم خدمات تجارية؟'), 'think');
+  await g.spot(servRings(), 'market', { hint: T('Where do we shop?', 'فين بنتسوق؟'),
+    ok: T('Markets give trade services. Buy only what you need, and the state watches prices.', 'الأسواق بتقدم خدمات تجارية. اشتري اللي تحتاجه بس، والدولة بتراقب الأسعار.') });
+}
+async function mission3() {                 // lesson 4: the future city
+  set('blank');
+  g.say(T('Mission 3: the city of the future. Which tool turns sunlight into electricity?', 'المهمة ٣: مدينة المستقبل. أنهي أداة بتحوّل ضوء الشمس لكهرباء؟'), 'point');
+  await g.choice({ options: ['الألواح الشمسية', 'البطاريات', 'المصابيح الكهربية', 'المولدات'], correct: 'الألواح الشمسية', hint: T('The name has the word sun in it.', 'اسمها فيه كلمة شمس.'),
+    ok: T(`${kw('Solar panels')} make electricity for lights, devices and electric cars.`, `${kw('الألواح الشمسية')} بتعمل كهرباء للإضاءة والأجهزة والسيارات الكهربائية.`) });
+  g.say(T('Cooperating to finish work fast, as one team. Which value is that?', 'نتعاون وننجز الشغل بسرعة كفريق واحد. دي أنهي قيمة؟'), 'think');
+  await g.choice({ options: ['التعاون', 'التسامح', 'الكرم', 'الانتماء الوطني'], correct: 'التعاون', hint: T('Working together.', 'شغل مع بعض.'),
+    ok: T(`${kw('Cooperation')}. We keep the values of our long history: cooperation, tolerance, respect and belonging.`, `${kw('التعاون')}. بنتمسك بقيم تاريخنا العريق: التعاون والتسامح والاحترام والانتماء.`) });
+}
+async function mission4() {                 // lesson 5: governorates
+  set('reg');
+  g.say(T('Mission 4: Egypt is divided into 27 governorates. Tap the part where the <b>Delta</b> governorates (Lower Egypt) are, like Kafr El-Sheikh.', 'المهمة ٤: مصر مقسّمة لـ٢٧ محافظة. اضغط على الجزء اللي فيه محافظات <b>الدلتا</b> (الوجه البحري) زي كفر الشيخ.'), 'point');
+  await g.spot(regRings(), 'delta', { hint: T('The Delta is in the north, near the Mediterranean.', 'الدلتا في الشمال قريبة من البحر المتوسط.'),
+    ok: T('The Delta governorates are in the north: Cairo, Alexandria, Sharqia, Menoufia and Beheira.', 'محافظات الدلتا في الشمال: القاهرة والإسكندرية والشرقية والمنوفية والبحيرة.') });
+  g.say(T('Now tap the part where Aswan, Qena and Minya are: the Nile valley, <b>Upper Egypt</b>.', 'دلوقتي اضغط على الجزء اللي فيه أسوان وقنا والمنيا: وادي النيل، <b>الوجه القبلي</b>.'), 'think');
+  await g.spot(regRings(), 'valley', { hint: T('They are along the Nile, south of Cairo.', 'على النيل جنوب القاهرة.'),
+    ok: T('Upper Egypt governorates lie along the Nile south of Cairo.', 'محافظات الوجه القبلي على النيل جنوب القاهرة.') });
+  g.say(T('Matrouh and the Red Sea are <b>border</b> governorates. Tap the big desert area.', 'مطروح والبحر الأحمر محافظات <b>حدود</b> صحراوية. اضغط على مساحة الصحرا الكبيرة.'), 'think');
+  await g.spot(regRings(), 'border', { hint: T('Look for the wide desert west of the Nile.', 'دوّر على الصحرا الواسعة غرب النيل.'),
+    ok: T('Border governorates cover wide desert lands: North and South Sinai, Red Sea, New Valley and Matrouh.', 'محافظات الحدود الصحراوية فيها مساحات واسعة: شمال وجنوب سيناء والبحر الأحمر والوادي الجديد ومطروح.') });
+  set('blank');
+  g.say(T('Where was the New Administrative Capital built?', 'فين اتبنت العاصمة الإدارية الجديدة؟'), 'think');
+  await g.choice({ options: ['شرق محافظة القاهرة', 'غرب محافظة القاهرة', 'جنوب أسوان', 'شمال الإسكندرية'], correct: 'شرق محافظة القاهرة', hint: T('Think about the direction.', 'فكّر في الاتجاه.'),
+    ok: T(`${kw('East')} of Cairo. It uses modern technology and clean energy.`, `${kw('شرق')} القاهرة. بتعتمد على التكنولوجيا الحديثة والطاقة النظيفة.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); }
+
+/* ---------- Stage 3 · Speed Round: which kind of service? ---------- */
+const ST = [['المدرسة', 'e'], ['مكتبة المدرسة', 'e'], ['المستشفى', 'h'], ['قسم الشرطة', 's'], ['تنظيم المرور', 's'], ['مركز الحماية المدنية', 's'], ['السوق', 't'], ['سوق الجلود', 't']];
+const WHY = { e: T('Education service.', 'خدمة تعليمية.'), h: T('Health service.', 'خدمة صحية.'), s: T('Security service.', 'خدمة أمنية.'), t: T('Trade service.', 'خدمة تجارية.') };
+async function stage3() {
+  set('blank');
+  await g.speedRound({ items: ST.map(([a, r]) => ({ t: `<span dir="rtl" lang="ar">${a}</span>`, ans: r, why: WHY[r] })), rounds: 8, ms: 10000,
+    buttons: [{ label: T('Education', 'تعليمية'), value: 'e', c: 0 }, { label: T('Health', 'صحية'), value: 'h', c: 1 }, { label: T('Security', 'أمنية'), value: 's', c: 2 }, { label: T('Trade', 'تجارية'), value: 't', c: 3 }],
+    ask: T('Which kind of service?', 'أنهي نوع خدمة؟'),
+    intro: T('Speed Round! A place or a job comes in. Press the kind of service it gives: education, health, security or trade.', 'جولة السرعة! هيظهر مكان أو مهمة. اضغط على نوع الخدمة اللي بيقدمها: تعليمية أو صحية أو أمنية أو تجارية.'),
+    think: T('What does it give us?', 'بيقدم لنا إيه؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! You are the city planner. Place the factory, the fields and the park, find the service places, see how the city has changed and read a map of the governorates. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! انت مخطط المدينة. حدّد مكان المصنع والحقول والحديقة، وادخل الأماكن الخدمية، وشوف المدينة اتغيّرت إزاي، واقرأ خريطة المحافظات. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can plan a city, tell the service places apart and read the governorates. Next, try the questions of this unit.', 'بقيت تخطط المدينة وتفرّق بين الأماكن الخدمية وتقرأ المحافظات. جرّب دلوقتي أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

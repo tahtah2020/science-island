@@ -10,6 +10,11 @@
      skyViews     (tap) ids plane · satellite                                                       a plane and a satellite taking pictures
      mapKinds     (tap) ids hand · digital                                                          a hand-drawn map and a map on a phone
      sourceCards  (tap) ids papyrus · carving · article · book     q.pic = { set: 'pca' } (letters of the three cards: p c a b)
+   Unit 2:
+     landUse      (tap) ids farm · homes · park · tourist · factory     the five uses of land in a city plan (no names on it)
+     servicePlan  (tap) ids school · hospital · police · fire · market · post
+     thenNow      (tap) ids old · new     q.pic = { set: 'train' | 'lamp' | 'phone', flip: true puts the new one on the left }
+     regions      (tap) ids delta · valley · border     Egypt in three colours: Delta, the Nile valley, the desert borders
    Texts are Arabic (the book is Arabic for both tracks). Screen-reader names describe the picture, never the answer.
    window.S4ART = the pieces the game and the map script reuse. */
 (function () {
@@ -265,9 +270,88 @@
     return wrap(340, 150, 'ثلاث بطاقات لمصادر معلومات: ' + set.map(k => SRC[k].ar.join(' ')).join('، '), s, plain);
   }
 
+  /* ================= Unit 2 «مدينتنا وحياتنا اليومية»: landUse · servicePlan · thenNow · regions ================= */
+  Object.assign(I, {
+    police: () => `<rect x="-14" y="-6" width="28" height="20" rx="2" fill="#6f95c9" stroke="#46689b" stroke-width="1.6"/><path d="M-16 -6L0 -15L16 -6Z" fill="#46689b"/><path d="M0 -4l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z" transform="translate(0 3) scale(.8)" fill="#f2b134" stroke="#c98a14" stroke-width="1.2" stroke-linejoin="round"/><rect x="-3.5" y="7" width="7" height="7" fill="#fff6e0"/>`,
+    fire: () => `<rect x="-14" y="-8" width="28" height="22" rx="2" fill="#e2603f" stroke="#b24428" stroke-width="1.6"/><rect x="-10" y="0" width="9" height="14" rx="1" fill="#fff6e0"/><rect x="1" y="0" width="9" height="14" rx="1" fill="#fff6e0"/><path d="M0 -20C-6 -14 -5 -9 0 -8C5 -9 6 -14 0 -20Z" fill="#f2b134" stroke="#c98a14" stroke-width="1.2"/><path d="M-14 -8H14" stroke="#b24428" stroke-width="2"/>`,
+    post: () => `<rect x="-15" y="-12" width="30" height="22" rx="3" fill="#fff6e0" stroke="#a8864c" stroke-width="1.8"/><path d="M-15 -11L0 2L15 -11" fill="none" stroke="#a8864c" stroke-width="1.8" stroke-linejoin="round"/><rect x="-6" y="10" width="12" height="6" fill="#e2603f"/>`,
+    factory: () => `<path d="M-16 14V-2L-6 -8V-2L4 -8V-2L14 -8V14Z" fill="#cfd8e0" stroke="#7f95a8" stroke-width="1.6" stroke-linejoin="round"/><rect x="8" y="-20" width="6" height="14" fill="#a9b6c2" stroke="#7f95a8" stroke-width="1.4"/><circle cx="12" cy="-24" r="4" fill="#fff" opacity=".8"/><circle cx="18" cy="-29" r="5" fill="#fff" opacity=".6"/><rect x="-11" y="4" width="5" height="5" fill="#9fd4ee"/><rect x="-2" y="4" width="5" height="5" fill="#9fd4ee"/><rect x="7" y="4" width="5" height="5" fill="#9fd4ee"/>`,
+    pyramid: () => `<path d="M-18 14L0 -14L18 14Z" fill="#e8c35c" stroke="#a8864c" stroke-width="1.8" stroke-linejoin="round"/><path d="M0 -14L18 14H6Z" fill="#d1a93f"/>`,
+    tree: () => `<rect x="-2.5" y="2" width="5" height="12" fill="#8a5a28"/><circle cy="-4" r="11" fill="#6fbf63" stroke="#4f9f52" stroke-width="1.6"/>`
+  });
+  const zone = (x, y, w, h, fill, inner) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${fill}" stroke="#fff" stroke-width="3"/>` + inner;
+
+  /* landUse (340 x 300): the five uses of land; no names on it, each zone shows what happens there */
+  function landUse(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="300" rx="14" fill="#fbf6e6"/>`;
+    let fields = ''; for (let i = 0; i < 9; i++) fields += `<rect x="16" y="${22 + i * 30}" width="84" height="20" rx="4" fill="${i % 2 ? '#a9d15f' : '#8fc24f'}"/><path d="M22 ${32 + i * 30}h72" stroke="#6ea83a" stroke-width="2" stroke-dasharray="3 5"/>`;
+    s += zone(8, 8, 100, 284, '#e6f2c8', fields + at(54, 270, .8, I.tree()));
+    let homes = ''; [[146, 134], [196, 134], [146, 190], [196, 190], [146, 246], [196, 246]].forEach(([x, y]) => { homes += at(x, y, .95, I.house()); }); homes += at(171, 160, 1, I.school()) ;
+    s += zone(116, 100, 120, 192, '#fdf0e0', homes.replace(at(171, 160, 1, I.school()), '') + at(171, 162, 1, I.school()));
+    s += zone(116, 8, 120, 84, '#d4edc0', at(146, 40, 1.2, I.tree()) + at(206, 44, 1.2, I.tree()) + `<ellipse cx="176" cy="66" rx="30" ry="12" fill="#9fd4ee" stroke="#6fb4dc" stroke-width="2"/>` + at(222, 70, .8, I.tree()) + at(130, 72, .8, I.tree()));
+    s += zone(244, 8, 88, 110, '#f8e9c6', at(270, 56, 1.5, I.pyramid()) + at(310, 70, 1, I.museum()) + at(298, 28, .8, I.tree()));
+    s += zone(244, 190, 88, 102, '#e3e8ee', at(272, 238, 1.4, I.factory()) + at(312, 250, 1, I.factory()));
+    s += `<path d="M236 128H244M236 154V300" stroke="#e3d6b0" stroke-width="0"/><rect x="244" y="122" width="88" height="64" rx="8" fill="#eadfbe"/><path d="M250 154H326" stroke="#fff" stroke-width="4" stroke-dasharray="10 8"/>`;
+    if (!plain) s += hot('farm', 'منطقة حقول خضراء', ringRect(8, 8, 100, 284, 12)) + hot('homes', 'منطقة بيوت ومدرسة', ringRect(116, 100, 120, 192, 12)) + hot('park', 'منطقة أشجار وبحيرة صغيرة', ringRect(116, 8, 120, 84, 12)) + hot('tourist', 'منطقة هرم ومتحف', ringRect(244, 8, 88, 110, 12)) + hot('factory', 'منطقة مصانع في طرف المخطط', ringRect(244, 190, 88, 102, 12));
+    return wrap(340, 300, 'مخطط مدينة من الأعلى فيه حقول وبيوت وأشجار وهرم ومصانع في الطرف', s, plain);
+  }
+  landUse.rings = () => ({ farm: [8, 8, 100, 284], homes: [116, 100, 120, 192], park: [116, 8, 120, 84], tourist: [244, 8, 88, 110], factory: [244, 190, 88, 102] });
+
+  /* servicePlan (340 x 300): six service places with their names */
+  const SERV = [{ id: 'school', ico: 'school', ar: 'المدرسة', tint: '#fde4dc' }, { id: 'hospital', ico: 'hospital', ar: 'المستشفى', tint: '#e8f2fa' }, { id: 'police', ico: 'police', ar: 'قسم الشرطة', tint: '#e3ebf8' },
+    { id: 'fire', ico: 'fire', ar: 'مركز الحماية المدنية', tint: '#fde6df' }, { id: 'market', ico: 'market', ar: 'السوق', tint: '#fdf0d4' }, { id: 'post', ico: 'post', ar: 'مكتب البريد', tint: '#f5ead2' }];
+  const servPos = i => ({ x: 62 + (i % 3) * 108, y: 70 + Math.floor(i / 3) * 144 });
+  function servicePlan(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="300" rx="14" fill="#fbf6e6"/>`;
+    s += `<path d="M8 143H332" stroke="#e3d6b0" stroke-width="14" stroke-linecap="round"/><path d="M14 143H326" stroke="#fff" stroke-width="3" stroke-dasharray="12 10"/>`;
+    SERV.forEach((p, i) => { const { x, y } = servPos(i); s += badge(x, y, p.ico, p.tint) + txt(x, y + 52, p.ar, { fs: p.ar.length > 12 ? 10 : 12 }); });
+    if (!plain) SERV.forEach((p, i) => { const { x, y } = servPos(i); s += hot(p.id, p.ar, ringRect(x - 50, y - 42, 100, 112, 14)); });
+    return wrap(340, 300, 'ست أماكن خدمية في مدينة: مدرسة ومستشفى وقسم شرطة ومركز حماية مدنية وسوق ومكتب بريد', s, plain);
+  }
+  servicePlan.rings = () => SERV.map((p, i) => { const { x, y } = servPos(i); return { id: p.id, name: p.ar, rect: [x - 50, y - 42, 100, 112] }; });
+
+  /* thenNow (340 x 250): two things side by side, the old one and the new one; no names. q.pic.set = 'train' | 'lamp' | 'phone', q.pic.flip puts the new one on the left */
+  const OLD = {
+    train: () => `<rect x="-34" y="-8" width="62" height="30" rx="4" fill="#3a3f48" stroke="#1f2329" stroke-width="2"/><rect x="-34" y="-30" width="30" height="24" rx="3" fill="#4a505a" stroke="#1f2329" stroke-width="2"/><rect x="14" y="-24" width="9" height="18" fill="#2b3037"/><path d="M18 -24c-8 -8 0 -12 -6 -18" fill="none" stroke="#c9d1d8" stroke-width="5" stroke-linecap="round"/><circle cx="-22" cy="26" r="9" fill="#2b3037" stroke="#1f2329" stroke-width="2"/><circle cx="0" cy="26" r="9" fill="#2b3037" stroke="#1f2329" stroke-width="2"/><circle cx="20" cy="26" r="9" fill="#2b3037" stroke="#1f2329" stroke-width="2"/><rect x="-28" y="-24" width="14" height="10" fill="#d8c79a"/>`,
+    lamp: () => `<ellipse cy="30" rx="26" ry="7" fill="#8a6a3a"/><path d="M-20 30C-28 8 -18 -2 -14 -2H14C18 -2 28 8 20 30Z" fill="#c9a15c" stroke="#8a6a3a" stroke-width="2"/><path d="M-12 -2V-28C-12 -34 12 -34 12 -28V-2Z" fill="#e8f4fa" fill-opacity=".7" stroke="#8aa5b8" stroke-width="2"/><path d="M0 -4C-7 -12 -5 -20 0 -26C5 -20 7 -12 0 -4Z" fill="#f2b134" stroke="#e2603f" stroke-width="1.6"/><path d="M26 6C38 8 36 22 24 22" fill="none" stroke="#8a6a3a" stroke-width="3"/>`,
+    phone: () => `<path d="M-30 30H30L24 8H-24Z" fill="#7a6f66" stroke="#4a423b" stroke-width="2" stroke-linejoin="round"/><circle cy="19" r="7" fill="#d9d2c8" stroke="#4a423b" stroke-width="1.6"/><path d="M-34 -4C-34 -16 -20 -18 -12 -14H12C20 -18 34 -16 34 -4C34 0 28 2 24 -2L22 -6H-22L-24 -2C-28 2 -34 0 -34 -4Z" fill="#5a5048" stroke="#2f2923" stroke-width="2" stroke-linejoin="round"/>`
+  }, NEW = {
+    train: () => `<path d="M-40 18C-40 -8 -30 -22 -4 -22H34C44 -22 48 -8 48 18Z" fill="#f4f8fb" stroke="#8aa5b8" stroke-width="2"/><path d="M-40 18H48V26H-40Z" fill="#2f8fd0"/><path d="M-30 -14H-6L-2 -2H-36Z" fill="#7fb8e0" stroke="#5f8fb4" stroke-width="1.4"/><rect x="6" y="-14" width="12" height="9" rx="2" fill="#9fd4ee"/><rect x="24" y="-14" width="12" height="9" rx="2" fill="#9fd4ee"/><circle cx="-18" cy="30" r="5" fill="#3a5c75"/><circle cx="30" cy="30" r="5" fill="#3a5c75"/>`,
+    lamp: () => `<path d="M-14 8C-30 -10 -22 -34 0 -34C22 -34 30 -10 14 8V16H-14Z" fill="#fff4b8" stroke="#e2b134" stroke-width="2.2"/><path d="M-8 16H8V30C8 34 -8 34 -8 30Z" fill="#b8c4cf" stroke="#7f95a8" stroke-width="1.8"/><path d="M-6 20H6M-6 25H6" stroke="#7f95a8" stroke-width="1.6"/><path d="M-4 8V-6L0 -12L4 -6V8" fill="none" stroke="#e2b134" stroke-width="2"/><path d="M-34 -36l-6 -5M0 -46V-54M34 -36l6 -5M-38 -12H-46M38 -12H46" stroke="#f2b134" stroke-width="3" stroke-linecap="round"/>`,
+    phone: () => `<rect x="-18" y="-34" width="36" height="68" rx="7" fill="#2b3037" stroke="#1f2329" stroke-width="2"/><rect x="-14" y="-28" width="28" height="52" rx="2" fill="#9fd4ee"/><circle cx="-4" cy="-14" r="5" fill="#6fbf63"/><circle cx="6" cy="2" r="5" fill="#f2b134"/><rect x="-10" y="10" width="14" height="5" rx="2" fill="#fff" opacity=".8"/><circle cy="29" r="2.5" fill="#6f7a85"/>`
+  };
+  function thenNow(q) {
+    const plain = !!(q && q.pic && q.pic.plain), k = (q && q.pic && q.pic.set) || 'train', flip = !!(q && q.pic && q.pic.flip);
+    let s = plain ? '' : `<rect width="340" height="250" rx="14" fill="#fbf6e6"/>`;
+    const L = flip ? NEW[k] : OLD[k], R = flip ? OLD[k] : NEW[k], lid = flip ? 'new' : 'old', rid = flip ? 'old' : 'new';
+    s += `<rect x="8" y="8" width="160" height="236" rx="12" fill="${flip ? '#eaf4fb' : '#f1e6d2'}" stroke="#fff" stroke-width="3"/><rect x="172" y="8" width="160" height="236" rx="12" fill="${flip ? '#f1e6d2' : '#eaf4fb'}" stroke="#fff" stroke-width="3"/>`;
+    s += at(88, 126, 1.5, L()) + at(252, 126, 1.5, R());
+    if (!plain) s += hot(lid, lid === 'old' ? 'الصورة اليسرى' : 'الصورة اليسرى', ringRect(8, 8, 160, 236, 12)) + hot(rid, 'الصورة اليمنى', ringRect(172, 8, 160, 236, 12));
+    return wrap(340, 250, 'صورتان لشيء واحد: واحدة لشكله قديمًا وواحدة لشكله حديثًا', s, plain);
+  }
+
+  /* regions (340 x 440): Egypt in three colours, the three kinds of governorates */
+  function regions(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="440" rx="14" fill="${PAPER}"/>`;
+    s += `<rect x="6" y="${MY - 12}" width="328" height="270" rx="6" fill="#cfeaf8" stroke="#3a5c75" stroke-width="2.4"/>`;
+    s += `<clipPath id="rgClip"><path d="${poly(EGYPT)}"/></clipPath><path d="${poly(EGYPT)}" fill="#f1e2b0" stroke="#8a6a3a" stroke-width="1.8" stroke-linejoin="round"/>`;
+    s += `<g clip-path="url(#rgClip)"><path d="${poly([[31.25, 30.05], [29.9, 30.7], [29.7, 31.7], [32.6, 31.7], [32.4, 30.9], [31.6, 30.1]])}" fill="#8fcf7f"/><path d="${line(NILE.concat([[31.25, 30.05]]))}" fill="none" stroke="#f2a65a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+    s += `<path d="${line(NILE)}" fill="none" stroke="#2f8fd0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="${line(DELTA_R)}M${f1(mx(DELTA_D[0][0]))} ${f1(my(DELTA_D[0][1]))}${DELTA_D.slice(1).map(([lo, la]) => 'L' + f1(mx(lo)) + ' ' + f1(my(la))).join('')}" fill="none" stroke="#2f8fd0" stroke-width="1.8" stroke-linecap="round"/>`;
+    s += `<path d="${poly(EGYPT)}" fill="none" stroke="#c0392b" stroke-width="1.4" stroke-dasharray="6 3 1.5 3" opacity=".85"/>`;
+    s += txt(mx(28.8), MY + 6, 'البحر المتوسط', { fs: 11, fill: '#2f6f9f' }) + txt(mx(35.9), my(25.3), 'البحر الأحمر', { fs: 11, fill: '#2f6f9f', rot: 62 }) + txt(mx(24.9) + 6, my(26.5), 'ليبيا', { fs: 10, fill: '#8a6a3a', anchor: 'start' }) + txt(mx(28.5), my(21.75), 'السودان', { fs: 10, fill: '#8a6a3a' });
+    s += `<rect x="${f1(mx(31.25) - 4.5)}" y="${f1(my(30.05) - 4.5)}" width="9" height="9" fill="#e2273a" stroke="#fff" stroke-width="1.4"/>` + txt(mx(31.25) - 8, my(30.05) + 14, 'القاهرة', { fs: 11, anchor: 'end', halo: true });
+    s += txt(170, 30, 'خريطة جمهورية مصر العربية', { fs: 15 });
+    if (!plain) s += hot('delta', 'منطقة خضراء في الشمال على شكل مثلث', ringEl(mx(31.15), my(30.85), 52, 34)) + hot('valley', 'شريط برتقالي على جانبي النهر جنوب القاهرة', ringEl(mx(31.7), my(27), 30, 84)) + hot('border', 'منطقة الصحراء الواسعة غرب النهر', ringEl(mx(27.4), my(26.3), 56, 66));
+    return wrap(340, 440, 'خريطة مصر بثلاثة ألوان: مثلث أخضر في الشمال وشريط برتقالي حول النيل ومساحات صحراوية واسعة', s, plain);
+  }
+  regions.rings = () => ({ delta: [mx(31.15), my(30.85), 52, 34], valley: [mx(31.7), my(27), 30, 84], border: [mx(27.4), my(26.3), 56, 66] });
+
   /* ---------- a compass for the map and the game ---------- */
   const compass = (r = 40) => `<circle r="${r}" fill="#fff6dc" stroke="#a8864c" stroke-width="${f1(r / 9)}"/><circle r="${f1(r * .82)}" fill="none" stroke="#a8864c" stroke-width="1.4" stroke-dasharray="2 4"/><path d="M0 ${-r * .75}L${r * .16} 0L0 ${r * .75}L${-r * .16} 0Z" fill="#cfd8e0" stroke="#8aa5b8" stroke-width="1.4"/><path d="M0 ${-r * .75}L${r * .16} 0L${-r * .16} 0Z" fill="#e2273a"/><circle r="${f1(r * .07)}" fill="#3a5c75"/>`;
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { compassTown, sunFacing, schoolPlan, mapParts, mapCities, pathPlans, skyViews, mapKinds, sourceCards });
-  window.S4ART = { I, icon: I, badge, at, txt, hot, ringRect, ringEl, compass, townPos, TOWN, TC, mx, my, EGYPT, CITIES, KEY, PANELS, SP, arrow, INK, PAPER, f1, esc };
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { compassTown, sunFacing, schoolPlan, mapParts, mapCities, pathPlans, skyViews, mapKinds, sourceCards, landUse, servicePlan, thenNow, regions });
+  window.S4ART = { zone, SERV, servPos, OLD, NEW, I, icon: I, badge, at, txt, hot, ringRect, ringEl, compass, townPos, TOWN, TC, mx, my, EGYPT, CITIES, KEY, PANELS, SP, arrow, INK, PAPER, f1, esc };
 })();

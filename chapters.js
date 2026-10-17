@@ -243,8 +243,12 @@ window.CHAPTERS = [
     cover: 'studies/assets/map_sg4u1.svg', quizBg: 'studies/assets/bg_sg4u1.svg',
     lessonsAr: ['الأماكن والاتجاهات من حولنا', 'الخريطة في حياتنا', 'تطور الخريطة', 'مصادر جمع المعلومات'] },
 
-  { id: 'sg4u2', subject: 'studies', grade: 'g4', n: 2, title: 'Our City and Our Daily Life', titleAr: 'مدينتنا وحياتنا اليومية', icon: '🏙️', tint: '#e2f4dc', ready: false,
+  { id: 'sg4u2', subject: 'studies', grade: 'g4', n: 2, title: 'Our City and Our Daily Life', titleAr: 'مدينتنا وحياتنا اليومية', icon: '🏙️', tint: '#e2f4dc', ready: true,
     lessons: ['How Does Our City Look?', 'The Development of Our City', 'Service Places in Our City', 'Our City in the Future', 'Where Is My Governorate?'],
+    questionsAr: 'studies/questions_sg4u2_ar.js', art: 'studies/g4_art.js',
+    game: { href: 'studies-city.html', name: "City Planner", nameAr: "مخطط المدينة", icon: '🏙️', hint: 'Plan a city: place the zones, find the service places and read the governorates.', hintAr: 'خطّط المدينة: حدّد المناطق، وادخل الأماكن الخدمية، واقرأ المحافظات.' },
+    map: { img: 'studies/assets/map_sg4u2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'studies/assets/map_sg4u2.svg', quizBg: 'studies/assets/bg_sg4u2.svg',
     lessonsAr: ['كيف تبدو مدينتنا؟', 'تطور مدينتنا', 'الأماكن الخدمية في مدينتنا', 'مدينتنا في المستقبل', 'أين تقع محافظتي؟'] },
 
   { id: 'sg4u3', subject: 'studies', grade: 'g4', n: 3, title: 'Egypt, Our Homeland', titleAr: 'مصر وطننا', icon: '🇪🇬', tint: '#e2f4dc', ready: false,

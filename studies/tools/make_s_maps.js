@@ -48,26 +48,30 @@ const rose = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><circ
 const sign = (x, y, w, h, inner) => `<g transform="translate(${x} ${y})"><path d="M${-w / 2 + 20} ${h / 2}v46M${w / 2 - 20} ${h / 2}v46" stroke="#a8834f" stroke-width="8" stroke-linecap="round"/><rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="14" fill="#fffaf0" stroke="#a8834f" stroke-width="6"/>${inner}</g>`;
 const post = (x, y, t) => `<g transform="translate(${x} ${y})"><rect x="-6" y="-60" width="12" height="100" fill="#a8834f"/><path d="M6 -56h60l16 14l-16 14h-60z" fill="#fde0bd" stroke="#a8834f" stroke-width="4" stroke-linejoin="round"/><text x="34" y="-36" text-anchor="middle" direction="ltr" font-family="Cairo,sans-serif" font-size="20" font-weight="900" fill="#1f3d57">${t}</text></g>`;
 const bld = (x, y, k, ico) => `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cy="26" rx="46" ry="12" fill="#000" opacity=".08"/>${S.I[ico]()}</g>`;
-function build() {
+function build(id, deco, bgdeco, rivers = true) {
   seed = 31;
   let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#f6dfb0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#d8efd0" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#f3d6a8" opacity=".6"/><ellipse cx="300" cy="300" rx="250" ry="180" fill="#e4efc8" opacity=".6"/>`;
   /* the Nile: a ribbon across the island */
   inside += `<path d="M1260 120C980 300 1100 520 760 620S300 760 -20 880" fill="none" stroke="#8fd3ee" stroke-width="60" stroke-linecap="round" opacity=".9"/><path d="M1260 120C980 300 1100 520 760 620S300 760 -20 880" fill="none" stroke="#c6ecf8" stroke-width="10" stroke-linecap="round" stroke-dasharray="2 34"/>`;
   for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(140 + rnd() * 1040); inside += tuft(x, y); }
   let s = island([[0, '#f7e0b0'], [.5, '#e3efc4'], [1, '#f4dcae']], ['#f3e6b8', '#f6efd2'], inside);
-  s += rose(990, 1010, 1.5);
-  s += bld(190, 1000, 1.7, 'school') + bld(1000, 280, 1.6, 'mosque') + bld(250, 330, 1.6, 'house') + bld(660, 1140, 1.5, 'market') + bld(1060, 480, 1.4, 'museum');
+  s += deco;
   s += at(470, 880, 1.1, A.palm()) + at(860, 820, 1.2, A.palm()) + at(560, 360, 1, A.papyrus());
   s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(560, 70, .7, .85) + '</svg>';
-  save('map_sg4u1.svg', s);
+  save('map_' + id + '.svg', s);
   const b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
 <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fdf3dc"/><stop offset="1" stop-color="#e4f1c8"/></linearGradient></defs>
 <rect width="1600" height="1000" fill="url(#g)"/>
 ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 <path d="M0 780C300 750 620 810 900 780C1180 750 1400 780 1600 770V1000H0Z" fill="#bfe3a0"/><path d="M0 840C300 820 620 870 900 840C1180 820 1400 845 1600 835V1000H0Z" fill="#a9d68a" opacity=".7"/>
 <path d="M0 900C400 860 900 940 1600 880V1000H0Z" fill="#8fd3ee" opacity=".7"/>
-${bld(300, 760, 2.4, 'school')}${bld(1180, 770, 2.2, 'house')}${bld(760, 770, 2, 'mosque')}
+${bgdeco}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
-  save('bg_sg4u1.svg', b);
+  save('bg_' + id + '.svg', b);
 }
-build();
+
+
+build('sg4u1', rose(990, 1010, 1.5) + bld(190, 1000, 1.7, 'school') + bld(1000, 280, 1.6, 'mosque') + bld(250, 330, 1.6, 'house') + bld(660, 1140, 1.5, 'market') + bld(1060, 480, 1.4, 'museum'),
+  `${bld(300, 760, 2.4, 'school')}${bld(1180, 770, 2.2, 'house')}${bld(760, 770, 2, 'mosque')}`);
+build('sg4u2', bld(190, 1000, 1.7, 'hospital') + bld(1000, 280, 1.6, 'police') + bld(250, 330, 1.6, 'fire') + bld(660, 1140, 1.5, 'market') + bld(1060, 480, 1.4, 'factory') + bld(960, 1010, 1.6, 'school') + bld(130, 560, 1.4, 'post'),
+  `${bld(300, 760, 2.4, 'hospital')}${bld(1180, 770, 2.2, 'market')}${bld(760, 770, 2, 'school')}${bld(520, 770, 1.8, 'police')}`);
