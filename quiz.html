@@ -1073,11 +1073,11 @@ async function mysteryBox() {
 }
 
 /* one phrasing per idea, a different one from last time when possible */
-function variantOf(idea) {
+function variantOf(idea, fixed) {
   const last = (SI.chProf().lastVar || {})[idea.id];
   let pool = idea.variants.map((_, i) => i);
   if (pool.length > 1) pool = pool.filter(i => i !== last);
-  const vi = pool[Math.floor(Math.random() * pool.length)], v = idea.variants[vi];
+  const vi = fixed != null && idea.variants[fixed] ? fixed : pool[Math.floor(Math.random() * pool.length)], v = idea.variants[vi];
   return Object.assign({ id: idea.id, lesson: idea.lesson, concept: idea.concept, explain: idea.explain, vi }, idea.bonus ? { src: 'bonus' } : {}, idea.guide ? { guide: true } : {}, v, v.explain ? { explain: v.explain } : {});
 }
 function rememberVariants(list) { SI.updateChProf(p => { p.lastVar = p.lastVar || {}; list.forEach(q => { p.lastVar[q.id] = q.vi; }); }); }
@@ -1130,10 +1130,23 @@ function addWhyBtn(q, ex, hint = false) {   // hint: the question is still open,
   const old = ex.parentNode.querySelectorAll('.why-btn, .why-box'); old.forEach(n => { if (n !== b) n.remove(); });
 }
 
-async function playList(list, label) {
-  const results = [], missed = [];
-  let firstRight = 0;
-  for (let i = 0; i < list.length; i++) {
+/* an unfinished Quest is kept in the chapter profile (p.run) so the child continues from the last question instead of starting again */
+const RUN_DAYS = 3;
+function saveRun(list, next, results, missed, firstRight) {
+  SI.updateChProf(p => { p.run = next >= list.length ? null : { ids: list.map(q => q.id + ':' + q.vi), i: next, results: Array.from(results, r => r === true ? 1 : r === false ? 0 : -1), missed: missed.map(q => q.id), firstRight, score, streak, best, at: Date.now() }; });
+}
+function loadRun() {
+  const r = SI.chProf().run;
+  if (!r || !r.ids || r.i <= 0 || r.i >= r.ids.length || Date.now() - r.at > RUN_DAYS * 864e5) return null;
+  const list = r.ids.map(k => { const [id, vi] = k.split(':'), I = ideaById(id); if (!I) return null; const q = variantOf(I, +vi); if (I.boss) q.mode = 'boss'; else if (I.bonus) q.mode = 'normal'; return q; });
+  if (list.some(q => !q)) return null;
+  return { list, run: { i: r.i, results: r.results.map(x => x === 1 ? true : x === 0 ? false : undefined), missed: r.missed, firstRight: r.firstRight, score: r.score, streak: r.streak, best: r.best } };
+}
+const clearRun = () => SI.updateChProf(p => { p.run = null; });
+async function playList(list, label, resume) {
+  const results = resume ? resume.results.slice() : [], missed = resume ? list.filter(q => resume.missed.includes(q.id)) : [];
+  let firstRight = resume ? resume.firstRight : 0;
+  for (let i = resume ? resume.i : 0; i < list.length; i++) {
     const q = list[i];
     if (q.src === 'bonus' && list[i - 1] && list[i - 1].src !== 'bonus') {
       sfx.boss(); await banner(T('Bonus', 'إضافي'), T('Extra question!', 'سؤال إضافي!'));
@@ -1172,6 +1185,7 @@ async function playList(list, label) {
       const card = $('#qcard'); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
     }
     header(q, i, list.length, results);
+    if (label === 'quest') saveRun(list, i + 1, results, missed, firstRight);   // leave now and the Quest continues from the next question
     await nextBtn(i === list.length - 1 ? T('Finish ▸', 'إنهاء ◂') : T('Next ▸', 'التالي ◂'));
     if (r.firstTry && streak > 0 && streak % 5 === 0) await mysteryBox();
   }
@@ -1474,6 +1488,29 @@ async function main() {
 
   if (mode === 'preview') return preview(set);
   if (mode === 'quest') {
+    let saved = loadRun();
+    if (saved) {   // the child left in the middle: continue from the last question, or start again
+      const n = saved.run.i + 1, tot = saved.list.length;
+      set(SI.questName(CH), T(`${CH.title} · ${tot} questions`, `${TITLE} · ${tot} سؤال`));
+      const o = notice(T('Welcome back!', 'أهلًا بعودتك!'), T(`You stopped at question <b>${n}</b> of ${tot}. Continue from there?`, G(`إنت وقفت عند السؤال <b>${n}</b> من ${tot}. تكمّل من هنا؟`, `إنتي وقفتي عند السؤال <b>${n}</b> من ${tot}. تكمّلي من هنا؟`)),
+        `<button class="btn primary" type="button" id="resumeRun">${T(`Continue from question ${n}`, `كمّل من السؤال ${n}`)}</button><button class="btn" type="button" id="freshRun">${T('Start again', 'ابدأ من الأول')}</button>`);
+      const again = await new Promise(r => { $('#resumeRun', o).onclick = () => { o.remove(); r(false); }; $('#freshRun', o).onclick = () => { o.remove(); r(true); }; });
+      if (again) { clearRun(); saved = null; }
+    }
+    if (saved) {
+      const list = saved.list, R = saved.run;
+      score = R.score || 0; $('#score').textContent = score; streak = R.streak || 0; best = R.best || 0;
+      track('quiz_resume', { mode: 'quest', chapter: CH.id || '', at: R.i });
+      say(T(`Let’s continue from question ${R.i + 1}!`, `يلّا نكمّل من السؤال ${R.i + 1}!`), 'point');
+      const res = await playList(list, 'quest', R);
+      clearRun();
+      const retry = res.missed.filter(q => q.mode !== 'boss');
+      if (retry.length) {
+        await banner(T('Second chance', 'فرصة تانية'), T('Try them again!', G('جرّبهم تاني!', 'جرّبيهم تاني!')));
+        await playList(retry.map(q => Object.assign({}, q, { mode: 'normal' })), 'retry');
+      }
+      return results('quest', res, list.filter(q => q.src !== 'bonus').length);
+    }
     const list = buildQuest(), N = list.filter(q => q.src !== 'bonus').length; rememberVariants(list);
     set(SI.questName(CH), T(`${CH.title} · ${N} questions`, `${TITLE} · ${N} سؤال`));
     await intro(T(`Ready, ${esc(me.name)}?`, G(`جاهز يا ${esc(me.name)}؟`, `جاهزة يا ${esc(me.name)}؟`)), T(`${SI.chWord(CH)} ${CH.n} Quest · ${N} questions`, `تحدي ${SI.chWord(CH)} ${CH.n} · ${N} سؤال`),
@@ -1481,6 +1518,7 @@ async function main() {
         G('بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوب ٥ صح ورا بعض وخد صندوق المفاجآت 🎁. وأعلى نتيجة ليك بتدخل لوحة الأبطال 🏆!', 'بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوبي ٥ صح ورا بعض وخدي صندوق المفاجآت 🎁. وأعلى نتيجة ليكي بتدخل لوحة الأبطال 🏆!')));
     track('quiz_start', { mode: 'quest', chapter: CH.id || '' });
     const res = await playList(list, 'quest');
+    clearRun();
     const retry = res.missed.filter(q => q.mode !== 'boss');
     if (retry.length) {
       await banner(T('Second chance', 'فرصة تانية'), T('Try them again!', G('جرّبهم تاني!', 'جرّبيهم تاني!')));
