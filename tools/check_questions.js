@@ -20,6 +20,8 @@ const TAPS = { landUse: ['farm','homes','park','tourist','factory'], servicePlan
   heatingCurve: ['solid', 'melting', 'liquid', 'boiling', 'gas'], systems3: ['open', 'closed', 'isolated'], spoons: ['metal', 'wood', 'plastic'], heatPot: ['rad', 'cond', 'conv'], mixGraphs: ['mixA', 'mixB', 'mixC', 'mixD'],
   /* Math (math/m5_art.js) */
   gridShade: ['gA', 'gB', 'gC'], placeTable: ['b1', 'm100', 'm10', 'm1', 't100', 't10', 't1', 'u100', 'u10', 'u1'], placeChart: ['hundreds', 'tens', 'ones', 'tenths', 'hundredths', 'thousandths'], numLine: ['n0', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'n10'],
+  /* English (english/g4_art.js) */
+  fiveSenses: ['eye', 'ear', 'nose', 'tongue', 'palm'],
   /* Grade 4 (g4_art.js) */
   hidePlaces: ['grass', 'stone', 'rock', 'sand'], nileDesert: ['nile', 'desert'], fennec: ['ears', 'feet', 'tail'], desertDay: ['hole', 'sand', 'dune'],
   butterflyStages: ['egg', 'larva', 'pupa', 'adult'], insectBody: ['head', 'thorax', 'abdomen'], insectSide: ['antennae', 'wings', 'legs'], whoIsInsect: ['grasshopper', 'spider', 'pillbug'],

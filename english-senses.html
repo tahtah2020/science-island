@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Senses Explorer · The Five Senses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261017d">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Senses Explorer.</noscript>
+<script src="firebase-config.js?v=20261017d"></script>
+<script src="chapters.js?v=20261017d"></script>
+<script src="common.js?v=20261017d"></script>
+<script src="english/g4_art.js?v=20261017d"></script>
+<script src="game_kit.js?v=20261017d"></script>
+<script>
+(() => {
+'use strict';
+/* Senses Explorer · the game of English Grade 4, Unit 1 "The Five Senses" (ministry book "English Primary 4", term 1). Built on the shared game kit (game_kit.js).
+   The scene is the picture the child works on: the five senses, a clock, a plate of food, a card with a sentence, Goha's market, stars.
+   Stage 1 (Warm Up): tap the part of the body for each sense; how many senses; smoke and fire (lesson 1, pages 8-10).
+   Stage 2 (Missions): Sarah's day: the clock and breakfast or dinner (lesson 2, page 11-12); present simple on a card (page 13); Goha and the soup (lesson 3, page 14-16);
+                       short or long vowel (page 17); sequence words (lesson 4, pages 18-19); stars and comments (lesson 5, page 20).
+   Stage 3 (Speed Round): which sense do you use? (lesson 1).
+   The English book is the same for both tracks, so the English words stay English; Reesho's Arabic helps around them. Every T('English', 'عربي') has both languages. */
+const T = SI.T, G = SI.G, E = E4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;      // an English word inside Arabic text stays left to right
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300;
+const sc = { mode: 'senses', fill: '', lines: [], emoji: '', word: '', h: 6, m: 0, ap: '', n: 0, smell: false, owner: false, coins: false };
+const FONT = 'Nunito, Cairo, sans-serif';
+const INK = '#1f3d57';
+const set = (mode, o) => { Object.assign(sc, { mode, fill: '', lines: [], emoji: '', word: '', ap: '', smell: false, owner: false, coins: false }, o || {}); g.paint(); };
+
+/* ---------- scene pieces ---------- */
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 24}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const cardSvg = () => {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf6e6"/><rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, y0 = 150 - (n - 1) * 20;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 40;
+    const len = parts.join(sc.fill || '_____').length, fs = Math.min(23, Math.floor(284 / (len * .58)));   // a long line gets a smaller font, so it stays inside the card
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+};
+const clockSvg = () => {
+  const cx = 170, cy = 140, r = 100, ha = ((sc.h % 12) + sc.m / 60) * 30, ma = sc.m * 6;
+  const hand = (a, len, w, c) => `<line x1="${cx}" y1="${cy}" x2="${(cx + Math.sin(a * Math.PI / 180) * len).toFixed(1)}" y2="${(cy - Math.cos(a * Math.PI / 180) * len).toFixed(1)}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf6e6"/><circle cx="${cx}" cy="${cy}" r="${r + 8}" fill="#e2603f"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff"/>`;
+  for (let i = 0; i < 12; i++) { const a = i * 30 * Math.PI / 180; s += `<line x1="${(cx + Math.sin(a) * (r - 12)).toFixed(1)}" y1="${(cy - Math.cos(a) * (r - 12)).toFixed(1)}" x2="${(cx + Math.sin(a) * (r - 3)).toFixed(1)}" y2="${(cy - Math.cos(a) * (r - 3)).toFixed(1)}" stroke="${INK}" stroke-width="${i % 3 ? 2 : 4}" stroke-linecap="round"/>`; }
+  [[12, 0], [3, 90], [6, 180], [9, 270]].forEach(([n, a]) => { s += txt((cx + Math.sin(a * Math.PI / 180) * (r - 28)).toFixed(1), (cy - Math.cos(a * Math.PI / 180) * (r - 28) + 8).toFixed(1), n, { fs: 22 }); });
+  s += hand(ha, 52, 7, INK) + hand(ma, 78, 4.5, '#23799f') + `<circle cx="${cx}" cy="${cy}" r="6" fill="#e2603f"/>`;
+  if (sc.ap) s += txt(170, 284, sc.ap, { fs: 26 });
+  return s;
+};
+const foodSvg = () => `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf6e6"/><ellipse cx="170" cy="150" rx="118" ry="104" fill="#fff" stroke="#d8c9a6" stroke-width="4"/><ellipse cx="170" cy="150" rx="86" ry="74" fill="#fff6e0" stroke="#eadcb8" stroke-width="3"/>`
+  + `<text x="170" y="184" text-anchor="middle" font-size="96">${sc.emoji}</text>` + txt(170, 286, sc.word, { fs: 26 });
+const wordSvg = () => `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf6e6"/><rect x="30" y="60" width="280" height="170" rx="24" fill="#fff" stroke="#d8c9a6" stroke-width="4"/>` + txt(170, 168, sc.word, { fs: 72, w: 900, fill: '#23799f' }) + `<text x="170" y="270" text-anchor="middle" font-size="30">🗣️</text>`;
+const star = (x, y, r, c) => { const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; p.push((x + Math.cos(a) * rr).toFixed(1) + ' ' + (y + Math.sin(a) * rr).toFixed(1)); } return `<path d="M${p.join('L')}Z" fill="${c}" stroke="#c98a14" stroke-width="2" stroke-linejoin="round"/>`; };
+const starsSvg = () => { let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf6e6"/><rect x="14" y="80" width="312" height="130" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`; for (let i = 0; i < 5; i++) s += star(50 + i * 60, 145, 26, i < sc.n ? '#f2b134' : '#ece3cf'); return s + txt(170, 250, sc.word || '', { fs: 24 }); };
+const person = (x, y, robe, k = 1, wide = 1) => `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cy="52" rx="${26 * wide}" ry="6" fill="#000" opacity=".1"/><path d="M${-18 * wide} 52L${-12 * wide} 6H${12 * wide}L${18 * wide} 52Z" fill="${robe}" stroke="#7a4a2a" stroke-width="2" stroke-linejoin="round"/><circle cy="-6" r="13" fill="#f6c9a4" stroke="#b9805a" stroke-width="2"/><ellipse cy="-18" rx="15" ry="9" fill="#fff" stroke="#b9a066" stroke-width="2"/><circle cx="-4.5" cy="-6" r="1.6" fill="${INK}"/><circle cx="4.5" cy="-6" r="1.6" fill="${INK}"/><path d="M-4 0q4 3 8 0" fill="none" stroke="#7a4a2a" stroke-width="1.6" stroke-linecap="round"/></g>`;
+const gohaSvg = () => {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#cfe8f6"/><rect y="214" width="${VW}" height="86" fill="#e9d9b0"/><path d="M0 214H340" stroke="#d2bf8a" stroke-width="3"/>`
+    + `<rect x="190" y="96" width="132" height="120" fill="#fbe3b8" stroke="#c9a15c" stroke-width="3"/><rect x="206" y="128" width="64" height="52" rx="4" fill="#8a5a28" opacity=".25" stroke="#c9a15c" stroke-width="3"/>`
+    + `<ellipse cx="238" cy="170" rx="22" ry="9" fill="#bfc8d0" stroke="#8a97a3" stroke-width="2"/><path d="M218 168a20 12 0 0 1 40 0Z" fill="#e2603f"/><rect x="284" y="150" width="28" height="66" rx="4" fill="#8a5a28"/>`;
+  for (let i = 0; i < 6; i++) s += `<path d="M${180 + i * 25} 96h25l-3 30a12.5 12 0 0 1-25 0z" fill="${i % 2 ? '#fff6e0' : '#e2603f'}" stroke="#b24428" stroke-width="1.6"/>`;
+  if (sc.smell) s += `<g fill="none" stroke="#f2b134" stroke-width="3" stroke-linecap="round" opacity=".85"><path d="M214 160q-10 -10 0 -20t0 -20"/><path d="M200 168q-14 -8 -4 -18t-4 -18"/><path d="M186 176q-16 -6 -6 -16t-6 -16"/></g>`;
+  s += person(84, 156, '#6fa8dc', 1.35);
+  if (sc.owner) s += person(150, 150, '#d9468e', 1.45, 1.5);
+  if (sc.coins) s += `<g fill="#f2b134" stroke="#c98a14" stroke-width="2"><circle cx="112" cy="182" r="8"/><circle cx="124" cy="190" r="8"/><circle cx="100" cy="192" r="8"/></g><g fill="none" stroke="#c98a14" stroke-width="2.4" stroke-linecap="round"><path d="M98 168l-8 -8M114 164v-12M130 172l9 -8"/></g>`;
+  return s;
+};
+function render() {
+  const m = sc.mode;
+  if (m === 'senses') return `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf6e6"/><g transform="translate(0 25)">${D.fiveSenses({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  if (m === 'clock') return clockSvg();
+  if (m === 'food') return foodSvg();
+  if (m === 'word') return wordSvg();
+  if (m === 'stars') return starsSvg();
+  if (m === 'goha') return gohaSvg();
+  return `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf6e6"/>`;
+}
+const sensesRings = () => { const r = D.fiveSenses.rings(); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.NAMES[id], ring: E.ringEl(x + w / 2, y + h / 2 + 25, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg4u1', logo: '👀', title: ['Senses Explorer', 'مستكشف الحواس'], sub: ['Unit 1 · The Five Senses', 'الوحدة 1 · الحواس الخمس'],
+  bg: 'english/assets/bg_eg4u1.svg', bgc: '#efe3fb', label: ['The five senses, Sarah’s day and Goha’s soup', 'الحواس الخمس ويوم سارة وحكاية جحا'], render, view: [VW, VH] });
+
+/* a sentence on a card with a gap; the child chooses the word. The gap is filled with the right word when the answer is known */
+async function fillCard(lines, options, correct, sayEn, sayAr, hintEn, hintAr, okEn, okAr) {
+  set('card', { lines });
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { sc.fill = correct; g.paint(); } });
+}
+
+/* ---------- Stage 1 · Warm Up (lesson 1) ---------- */
+async function stage1() {
+  set('senses');
+  g.say(T(`Welcome to Senses Explorer! We have five senses. Which part of your body do you use to <b>hear</b>? Tap it.`, P(`أهلًا في مستكشف الحواس! عندنا ٥ حواس. بتسمع بأنهي جزء في جسمك؟ اضغط عليه.`, `أهلًا في مستكشف الحواس! عندنا ٥ حواس. بتسمعي بأنهي جزء في جسمك؟ اضغطي عليه.`)), 'point');
+  await g.spot(sensesRings(), 'ear', { hint: T('We hear music and voices with this part.', 'بنسمع بيه الموسيقى والأصوات.'),
+    ok: T(`I ${kw('hear')} with my ${kw('ears')}.`, `${L('I hear with my ears.')} يعني بنسمع بالودان.`) });
+  g.say(T('Now tap the part you use to <b>smell</b> a flower.', 'دلوقتي اضغط على الجزء اللي بتشم بيه الوردة.'), 'think');
+  await g.spot(sensesRings(), 'nose', { hint: T('It is in the middle of your face.', 'هو في نص وشّك.'),
+    ok: T(`I ${kw('smell')} with my ${kw('nose')}.`, `${L('I smell with my nose.')} يعني بنشم بالمناخير.`) });
+  g.say(T('Tap the part you use to <b>taste</b> food.', 'اضغط على الجزء اللي بتدوق بيه الأكل.'), 'point');
+  await g.spot(sensesRings(), 'tongue', { hint: T('It is inside your mouth.', 'هو جوه بقّك.'),
+    ok: T(`I ${kw('taste')} with my ${kw('tongue')}.`, `${L('I taste with my tongue.')} يعني بنتذوق باللسان.`) });
+  g.say(T('Tap the part you use to <b>touch</b> soft and hard things.', 'اضغط على الجزء اللي بتلمس بيه الحاجات الناعمة والصلبة.'), 'think');
+  await g.spot(sensesRings(), 'palm', { hint: T('You use your hands.', 'بنستخدم إيدينا.'),
+    ok: T(`I ${kw('touch')} with my ${kw('hands')}. And I ${kw('see')} with my ${kw('eyes')}!`, `${L('I touch with my hands.')} وبنشوف بالعينين: ${L('I see with my eyes.')}`) });
+  g.say(T('How many senses do we have?', 'عندنا كام حاسة؟'), 'think');
+  await g.choice({ options: ['Five', 'Three', 'Seven'], correct: 'Five', hint: T('Taste, smell, see, hear and touch. Count them!', 'تذوق وشم وبصر وسمع ولمس. عدّهم!'),
+    ok: T(`We have ${kw('five')} senses: taste, smell, see, hear and touch.`, `عندنا ${kw('خمس')} حواس: ${L('taste, smell, see, hear, touch')}.`) });
+  await fillCard(['If we smell smoke,', 'we know there is a ___.'], ['fire', 'flower', 'soup'], 'fire',
+    'Senses also help us stay safe. Choose the word that fits the sentence.', 'الحواس كمان بتحمينا. اختار الكلمة اللي تكمّل الجملة.',
+    'Smoke comes from something burning.', 'الدخان بيطلع من حاجة بتولّع.',
+    `If we smell ${kw('smoke')}, we know there is a ${kw('fire')}. Senses help us stay safe.`, `لو شمّينا دخان نعرف إن فيه ${kw('حريقة')}. الحواس بتحمينا.`);
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 2: Sarah's day
+  set('clock', { h: 6, m: 0, ap: '☀️' });
+  g.say(T('Mission 1: Sarah’s healthy day. She wakes up early. What time does Sarah wake up?', 'المهمة ١: يوم سارة الصحي. هي بتصحى بدري. سارة بتصحى الساعة كام؟'), 'point');
+  await g.choice({ options: ['6:00 a.m.', '8:30 p.m.', '10:00 p.m.'], correct: '6:00 a.m.', hint: T('It is morning, and the clock shows six.', 'ده الصبح، والساعة بتشاور على ستة.'),
+    ok: T(`Sarah wakes up early at ${kw('6:00 a.m.')} and brushes her teeth.`, `سارة بتصحى بدري ${L('6:00 a.m.')} وبتغسل سنانها.`) });
+  set('clock', { h: 8, m: 30, ap: '🌙' });
+  g.say(T('Now it is the evening. When does Sarah go to bed?', 'دلوقتي بالليل. سارة بتنام الساعة كام؟'), 'think');
+  await g.choice({ options: ['8:30 p.m.', '10:00 p.m.', '6:00 a.m.'], correct: '8:30 p.m.', hint: T('She goes to bed early. Look at the moon!', 'هي بتنام بدري. بص على القمر!'),
+    ok: T(`Sarah goes to bed early at ${kw('8:30 p.m.')} and sleeps for 9 hours.`, `سارة بتنام بدري ${L('8:30 p.m.')} وبتنام ٩ ساعات.`) });
+  g.say(T('What does Sarah eat? Is it for <b>breakfast</b> or <b>dinner</b>? Press the right button.', 'سارة بتاكل إيه؟ ده للفطار ولا للعشا؟ اضغط على الزرار الصح.'), 'point');
+  const buttons = [{ label: T('Breakfast', 'Breakfast'), value: 'b', c: 1 }, { label: T('Dinner', 'Dinner'), value: 'd', c: 3 }];
+  const foods = [['🥚', 'Eggs', 'b', 'Sarah eats eggs and brown bread for breakfast.'], ['🍊', 'Orange juice', 'b', 'For breakfast, Sarah drinks orange juice.'],
+    ['🥦', 'Vegetables', 'd', 'For dinner, Sarah eats lots of vegetables and fruits.'], ['🍎', 'Fruits', 'd', 'Fruits give her important vitamins at dinner.']];
+  for (const [emoji, word, side, why] of g.shuffle(foods)) {
+    set('food', { emoji, word });
+    await g.pick({ buttons, correct: side, ok: T(`Yes! ${why}`, `صح! ${L(why)}`), no: T(`Not quite. ${why}`, `قرّبت. ${L(why)}`) });
+  }
+  g.setTray(null);
+}
+async function mission2() {                 // lesson 2: present simple
+  g.say(T('Mission 2: the present simple. We use it for daily habits and routines. With he, she, it or one person we add -s, -es or -ies.', 'المهمة ٢: المضارع البسيط. بنستخدمه للعادات اليومية. مع هو وهي وشخص واحد بنزوّد -s أو -es أو -ies.'), 'point');
+  await g.next();
+  await fillCard(['She ___ vitamins', 'every morning.'], ['takes', 'take', 'taking'], 'takes', 'Choose the right word.', 'اختار الكلمة الصح.', 'She is one person: add -s.', 'هي شخص واحد: زوّد -s.',
+    `${kw('She')} is one person, so we say ${kw('takes')}.`, `${L('She')} شخص واحد، فنقول ${L('takes')}.`);
+  await fillCard(['My brother and I ___ TV', 'in the evening.'], ['watch', 'watches', 'watching'], 'watch', 'Choose the right word.', 'اختار الكلمة الصح.', 'My brother and I is “we”.', '“My brother and I” معناها “احنا”.',
+    `${kw('My brother and I')} means “we”, so we use ${kw('watch')} without -s.`, `${L('My brother and I')} معناها احنا، فنقول ${L('watch')} من غير -s.`);
+  await fillCard(['My sister ___ English', 'every day.'], ['studies', 'studys', 'study'], 'studies', 'Choose the right word.', 'اختار الكلمة الصح.', 'Verbs ending in consonant + y change y to -ies.', 'الفعل اللي بينتهي بحرف ساكن + y بنحوّل y إلى ies.',
+    `${kw('My sister')} is one person. Study ends in consonant + y, so ${kw('studies')}.`, `${L('My sister')} شخص واحد. ${L('study')} بتنتهي بحرف ساكن + y، فنقول ${L('studies')}.`);
+  await fillCard(['The nurse ___', 'sick people.'], ['helps', 'help', 'helping'], 'helps', 'Choose the right word.', 'اختار الكلمة الصح.', 'The nurse is one person.', '“The nurse” شخص واحد.',
+    `${kw('The nurse')} is one person, so we add -s: ${kw('helps')}.`, `${L('The nurse')} شخص واحد، فنزوّد -s: ${L('helps')}.`);
+}
+async function mission3() {                 // lesson 3: Goha
+  set('goha', { smell: true });
+  g.say(T('Mission 3: Goha’s Great Meal. One morning, Goha was walking through the market. He was very <b>hungry</b>, but he didn’t have enough money to buy food. Suddenly, he smelled something wonderful!', 'المهمة ٣: وجبة جحا الرائعة. في يوم الصبح كان جحا ماشي في السوق. كان <b>جعان</b> جدًا ومعاهوش فلوس كفاية يشتري أكل. فجأة شمّ ريحة حلوة!'), 'point');
+  await g.next();
+  g.say(T('Why did Goha sit outside the restaurant?', 'ليه جحا قعد برا المطعم؟'), 'think');
+  await g.choice({ options: ['He was hungry and smelled the soup', 'He wanted to work there', 'He was waiting for a friend'], correct: 'He was hungry and smelled the soup', hint: T('Remember what he smelled.', 'افتكر هو شمّ إيه.'),
+    ok: T('Goha was hungry and had no money, so he enjoyed the smell of the soup.', 'جحا كان جعان ومعاهوش فلوس، فاستمتع بريحة الشوربة.') });
+  set('goha', { smell: true, owner: true });
+  g.say(T('The restaurant owner was <b>greedy</b>. He said, “You can’t smell the soup for free! You must pay for it!” Which word means “always wanting more than what is needed”?', 'صاحب المطعم كان <b>طمّاع</b>. قال: “مينفعش تشم الشوربة ببلاش! لازم تدفع!” أنهي كلمة معناها “دايمًا عايز أكتر من اللي محتاجه”؟'), 'think');
+  await g.choice({ options: ['greedy', 'hungry', 'jingling'], correct: 'greedy', hint: T('The owner wanted money even for a smell.', 'صاحب المطعم عايز فلوس حتى على الريحة.'),
+    ok: T(`${kw('Greedy')} means always wanting more than what is needed.`, `${L('Greedy')} معناها دايمًا عايز أكتر من اللي محتاجه.`) });
+  set('goha', { smell: true, owner: true, coins: true });
+  g.say(T('Goha took out a few coins and shook them. They made a <b>jingling</b> sound. How was Goha clever?', 'جحا طلّع كام عملة وهزّهم. طلّعوا صوت <b>رنين</b>. إزاي جحا كان ذكي؟'), 'think');
+  await g.choice({ options: ['He paid for the smell with the sound of his coins', 'He ran away', 'He cooked his own soup'], correct: 'He paid for the smell with the sound of his coins', hint: T('Smell for sound!', 'ريحة مقابل صوت!'),
+    ok: T('Goha said, “If you want money for the smell of your soup, then you can take the sound of my coins.”', 'جحا قال: “لو عايز فلوس على ريحة شوربتك، خُد صوت عملاتي.”') });
+  g.say(T('The owner laughed and invited Goha inside. What lesson do we learn from the story?', 'صاحب المطعم ضحك ودّى جحا يدخل. إيه الدرس اللي بنتعلمه من الحكاية؟'), 'think');
+  await g.choice({ options: ['Good food tastes better when shared with others', 'Money is more important than food', 'Never walk through the market'], correct: 'Good food tastes better when shared with others', hint: T('Listen to what the owner said at the end.', 'افتكر صاحب المطعم قال إيه في الآخر.'),
+    ok: T('The owner said, “Good food tastes better when shared with others!”', 'صاحب المطعم قال: “الأكل الحلو طعمه أحلى لما نتشاركه مع غيرنا!”') });
+}
+async function mission4() {                 // lesson 3: pronunciation
+  g.say(T('Mission 4: vowel sounds. A <b>short</b> vowel is quick, like the “a” in “hat”. A <b>long</b> vowel says its letter name, like the “a” in “plate”. Is the vowel in each word short or long?', 'المهمة ٤: أصوات الحروف المتحركة. الصوت <b>القصير</b> سريع زي حرف a في hat. والصوت <b>الطويل</b> بينطق اسم الحرف زي a في plate. صوت الحرف في كل كلمة قصير ولا طويل؟'), 'point');
+  const buttons = [{ label: T('Short vowel', 'Short vowel'), value: 's', c: 1 }, { label: T('Long vowel', 'Long vowel'), value: 'l', c: 0 }];
+  const words = [['hat', 's', 'the “a” in hat is quick'], ['plate', 'l', 'the “a” in plate says its name'], ['pot', 's', 'the “o” in pot is quick'], ['home', 'l', 'the “o” in home says its name'], ['pen', 's', 'the “e” in pen is quick'], ['feed', 'l', 'the “ee” in feed says its name']];
+  for (const [word, kind, why] of g.shuffle(words)) {
+    set('word', { word });
+    await g.pick({ buttons, correct: kind, ok: T(`Yes! In “${word}”, ${why}.`, `صح! ${L(`${word}: ${why}`)}.`), no: T(`Not quite. In “${word}”, ${why}.`, `قرّبت. ${L(`${word}: ${why}`)}.`) });
+  }
+  g.setTray(null);
+}
+async function mission5() {                 // lesson 4: sequence words
+  g.say(T('Mission 5: sequence words show the order of events. They are First, Next, Then, After that and Finally. Let’s read “My Healthy Life”.', 'المهمة ٥: كلمات الترتيب بتوضّح ترتيب الأحداث. وهي First وNext وThen وAfter that وFinally. يلّا نقرا “My Healthy Life”.'), 'point');
+  await g.next();
+  await fillCard(['___, I wake up early', 'at 6:00 a.m.'], ['First', 'Finally', 'After school'], 'First', 'Which word starts the routine?', 'أنهي كلمة بتبدأ الروتين؟', 'It comes at the beginning.', 'بتيجي في البداية.',
+    `We start with ${kw('First')}.`, `بنبدأ بـ ${L('First')}.`);
+  await fillCard(['___, I have a healthy', 'breakfast.'], ['Next', 'Finally', 'After school'], 'Next', 'Which word comes after First?', 'أنهي كلمة بتيجي بعد First؟', 'It comes right after First.', 'بتيجي على طول بعد First.',
+    `${kw('Next')} comes after First.`, `${L('Next')} بتيجي بعد ${L('First')}.`);
+  await fillCard(['___, I have lunch', 'with my family.'], ['After school', 'First', 'Next'], 'After school', 'When does the writer have lunch?', 'الكاتب بيتغدى إمتى؟', 'Lunch is at the end of the school day.', 'الغدا بعد اليوم الدراسي.',
+    `The writer has lunch ${kw('after school')}.`, `الكاتب بيتغدى ${L('after school')}.`);
+  await fillCard(['___, I go to bed', 'at 9:00 p.m.'], ['Finally', 'First', 'Then'], 'Finally', 'Which word ends the routine?', 'أنهي كلمة بتنهي الروتين؟', 'It comes at the end.', 'بتيجي في الآخر.',
+    `The day ends with ${kw('Finally')}.`, `اليوم بينتهي بـ ${L('Finally')}.`);
+}
+async function mission6() {                 // lesson 5: stars and comments
+  set('stars', { n: 5 });
+  g.say(T('Mission 6: giving feedback after a presentation. Stars show how good it was. What do <b>5 stars</b> mean?', 'المهمة ٦: إبداء الرأي بعد العرض التقديمي. النجوم بتوضّح مستوى العرض. إيه معنى <b>٥ نجوم</b>؟'), 'point');
+  await g.choice({ options: ['excellent', 'poor', 'fair'], correct: 'excellent', hint: T('It is the best mark.', 'ده أعلى تقدير.'), ok: T(`5 stars = ${kw('excellent')}.`, `${L('5 stars = excellent')}.`) });
+  set('stars', { n: 2 });
+  g.say(T('And what do <b>2 stars</b> mean?', 'وإيه معنى <b>نجمتين</b>؟'), 'think');
+  await g.choice({ options: ['fair', 'very good', 'excellent'], correct: 'fair', hint: T('1 = poor, 2 = fair, 3 = good…', '1 = poor و2 = fair و3 = good…'), ok: T(`2 stars = ${kw('fair')}.`, `${L('2 stars = fair')}.`) });
+  set('stars', { n: 4 });
+  g.say(T('And <b>4 stars</b>?', 'و<b>٤ نجوم</b>؟'), 'think');
+  await g.choice({ options: ['very good', 'good', 'poor'], correct: 'very good', hint: T('One star less than excellent.', 'أقل من excellent بنجمة.'), ok: T(`4 stars = ${kw('very good')}.`, `${L('4 stars = very good')}.`) });
+  await fillCard(['A friend speaks very quietly.', 'Comment: “___”'], ['Please speak louder', 'Well done', 'Excellent'], 'Please speak louder', 'Which comment helps your friend?', 'أنهي تعليق بيساعد صاحبك؟', 'He needs to speak with a louder voice.', 'محتاج يتكلم بصوت أعلى.',
+    `${kw('Please speak louder')} tells him what to do better.`, `${L('Please speak louder')} بتقوله يحسّن إيه.`);
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
+
+/* ---------- Stage 3 · Speed Round (lesson 1) ---------- */
+async function stage3() {
+  set('senses');
+  const buttons = [{ label: '👁️ Sight', value: 'see', c: 0 }, { label: '👂 Hearing', value: 'hear', c: 1 }, { label: '👃 Smell', value: 'smell', c: 2 }, { label: '👅 Taste', value: 'taste', c: 3 }, { label: '✋ Touch', value: 'touch', c: 4 }];
+  const items = [
+    { t: 'A huge tree', ans: 'see', why: 'We see with our eyes.' }, { t: 'A loud noise', ans: 'hear', why: 'We hear with our ears.' },
+    { t: 'The smell of a flower', ans: 'smell', why: 'We smell with our nose.' }, { t: 'Delicious food', ans: 'taste', why: 'We taste with our tongue.' },
+    { t: 'Soft and hard things', ans: 'touch', why: 'We touch with our hands.' }, { t: 'Birds singing', ans: 'hear', why: 'We hear with our ears.' },
+    { t: 'Colorful butterflies', ans: 'see', why: 'We see with our eyes.' }, { t: 'Smoke from a fire', ans: 'smell', why: 'We smell with our nose.' },
+    { t: 'Ice cream on your tongue', ans: 'taste', why: 'We taste with our tongue.' }, { t: 'Something in your bag', ans: 'touch', why: 'We touch with our hands.' }];
+  await g.speedRound({ items, buttons, rounds: 8,
+    ask: T('Which sense do you use?', 'بتستخدم أنهي حاسة؟'), intro: T('Speed Round! I say what is around you. Press the sense you use. Be quick!', 'جولة السرعة! هقولك على حاجة حواليك، واضغط على الحاسة اللي بتستخدمها. بسرعة!'),
+    think: T('Which sense?', 'أنهي حاسة؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Explore the five senses, follow Sarah’s healthy day, help Goha with the soup, and learn sequence words. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! اكتشف الحواس الخمس، وتابع يوم سارة الصحي، وساعد جحا مع الشوربة، وتعلّم كلمات الترتيب. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know the five senses, healthy habits, the present simple and sequence words. Next, try the questions of this unit.', 'بقيت تعرف الحواس الخمس والعادات الصحية والمضارع البسيط وكلمات الترتيب. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

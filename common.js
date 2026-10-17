@@ -81,7 +81,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   /* the preparatory-stage books are made of units («الوحدة»), not chapters («الفصل»): the pages name them the way the book does.
      c = a chapter (its grade decides); without it the player's grade decides */
   const UNIT_GRADES = { p1: true, p2: true };
-  const isUnits = c => !!UNIT_GRADES[c ? chGrade(c) : grade()] || ['math', 'studies'].includes(c ? chSubject(c) : subjectId());   // the Math and Social Studies books are made of units («الوحدة») in every grade
+  const isUnits = c => !!UNIT_GRADES[c ? chGrade(c) : grade()] || ['math', 'studies', 'english'].includes(c ? chSubject(c) : subjectId());   // the Math, Social Studies and English books are made of units («الوحدة») in every grade
   const chWord = c => (isUnits(c) ? T('Unit', 'الوحدة') : T('Chapter', 'الفصل'));
   const chWords = c => (isUnits(c) ? T('Units', 'الوحدات') : T('Chapters', 'الفصول'));
   const questName = c => (isUnits(c) ? T('Unit Quest', 'تحدي الوحدة') : T('Chapter Quest', 'تحدي الفصل'));
@@ -554,8 +554,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      Counts page views with approximate location only. No player names are sent, and the data
      is not used for advertising. Runs on the published site only, not on local copies. */
   const GA_ID = 'G-XP595P45PX';
-  const PAGE_NAMES = { 'studies-city.html': "City Planner", 'studies-compass.html': 'Compass Trail', 'math-addsub.html': "Ant Colony Count", 'math-placevalue.html': "Place Value Nest", 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'heatlab.html': 'Heat Lab', 'math-decimals.html': 'Decimal Dock', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'wardrobe.html': 'Reesho wardrobe', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
-    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall', 'quiz.html#exam=g6m1': 'Exam Hall', 'quiz.html#exam=p1oct': 'Exam Hall', 'quiz.html#exam=p2oct': 'Exam Hall' };
+  const PAGE_NAMES = { 'english-senses.html': "Senses Explorer", 'studies-city.html': "City Planner", 'studies-compass.html': 'Compass Trail', 'math-addsub.html': "Ant Colony Count", 'math-placevalue.html': "Place Value Nest", 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'heatlab.html': 'Heat Lab', 'math-decimals.html': 'Decimal Dock', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'wardrobe.html': 'Reesho wardrobe', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
+    'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=eg4oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall', 'quiz.html#exam=g6m1': 'Exam Hall', 'quiz.html#exam=p1oct': 'Exam Hall', 'quiz.html#exam=p2oct': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
     return PAGE_NAMES[file + location.hash] || PAGE_NAMES[file] || document.title;

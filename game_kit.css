@@ -56,11 +56,13 @@ html.ar-track body{font-family:"Cairo","Nunito",system-ui,sans-serif}
 .tray.n2{grid-template-columns:1fr 1fr}
 .tray.n3{grid-template-columns:1fr 1fr 1fr}
 .tray.n4{grid-template-columns:1fr 1fr}
+.tray.n5{grid-template-columns:1fr 1fr 1fr}
 .btn.pick{font-size:17px;min-height:58px;display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.25;text-align:center;padding:8px 10px}
 .btn.pick.c0{background:#cfe9f7;box-shadow:0 4px 0 #9ccbe3}
 .btn.pick.c1{background:#fde6b8;box-shadow:0 4px 0 #e6c483}
 .btn.pick.c2{background:#cdeec9;box-shadow:0 4px 0 #94cf8d}
 .btn.pick.c3{background:#f6d5e6;box-shadow:0 4px 0 #dfa9c6}
+.btn.pick.c4{background:#e6d9f6;box-shadow:0 4px 0 #bfa8e0}
 .btn.pick.good{outline:4px solid var(--ok);outline-offset:-4px;opacity:1}
 .btn.pick.bad{outline:4px solid var(--coral);outline-offset:-4px}
 

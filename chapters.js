@@ -27,7 +27,7 @@ window.SUBJECTS = [
   { id: 'math', title: 'Math', titleAr: 'الرياضيات', icon: '🔢', tint: '#ffe6cc', dir: 'math' },
   { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' } },
   { id: 'arabic', title: 'Arabic', titleAr: 'اللغة العربية', icon: '📖', tint: '#fbe3e3', dir: 'arabic', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
-  { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' }, hidden: true }
+  { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' } }
 ];
 
 window.CHAPTERS = [
@@ -253,7 +253,18 @@ window.CHAPTERS = [
 
   { id: 'sg4u3', subject: 'studies', grade: 'g4', n: 3, title: 'Egypt, Our Homeland', titleAr: 'مصر وطننا', icon: '🇪🇬', tint: '#e2f4dc', ready: false,
     lessons: ['The Flag of Our Homeland Egypt', 'Egypt on the World Map', 'The Landforms of Our Beautiful Land', 'Egypt’s Natural and Human Resources', 'Historical Landmarks in Egypt'],
-    lessonsAr: ['عَلَم وطننا مصر', 'مصر على خريطة العالم', 'تضاريس أرضنا الجميلة', 'ثروات مصر الطبيعية والبشرية', 'المَعالِم التاريخية في مصر'] }
+    lessonsAr: ['عَلَم وطننا مصر', 'مصر على خريطة العالم', 'تضاريس أرضنا الجميلة', 'ثروات مصر الطبيعية والبشرية', 'المَعالِم التاريخية في مصر'] },
+
+  /* English · Grade 4 · Term 1 (ministry book "English Primary 4", 2026/2027). One English book for both tracks:
+     the subject's lang is { lang: 'en', ar: 'en' }, so every unit has only a questions file (no _ar file).
+     Unit 1 "The Five Senses" (book pages 7-22). Idea letters: A-E (one per lesson). */
+  { id: 'eg4u1', subject: 'english', grade: 'g4', n: 1, title: 'The Five Senses', titleAr: 'الحواس الخمس', icon: '👀', tint: '#efe3fb', ready: true,
+    lessons: ['What are the Five Senses?', 'Healthy Habits', 'Story Time: Goha’s Great Meal', 'Writing: Sequence Words', 'Think and Create: A Presentation'],
+    questions: 'english/questions_eg4u1.js', art: 'english/g4_art.js',
+    game: { href: 'english-senses.html', name: 'Senses Explorer', nameAr: 'مستكشف الحواس', icon: '👀', hint: 'Match the five senses to your body, follow Sarah’s healthy day and Goha’s soup, then race the Speed Round!', hintAr: 'اربط الحواس الخمس بجسمك، وتابع يوم سارة الصحي وحكاية جحا مع الشوربة، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg4u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg4u1.svg', quizBg: 'english/assets/bg_eg4u1.svg',
+    lessonsAr: ['ما الحواس الخمس؟', 'العادات الصحية', 'وقت الحكاية: وجبة جحا الرائعة', 'الكتابة: كلمات الترتيب', 'فكّر وابتكر: عرض تقديمي'] }
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.
@@ -272,6 +283,8 @@ window.EXAMS = [
     parts: [{ ch: 'g6c1' }, { ch: 'g6c2' }, { ch: 'g6c3' }] },
   { id: 'p1oct', grade: 'p1', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'p1u1', lessons: [1, 2, 3] }] },
+  { id: 'eg4oct', subject: 'english', grade: 'g4', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'eg4u1' }] },
   { id: 'p2oct', grade: 'p2', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'p2u1', lessons: [1, 2, 3] }] }
 ];

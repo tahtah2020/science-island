@@ -386,9 +386,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261017c"></script>
-<script src="chapters.js?v=20261017c"></script>
-<script src="common.js?v=20261017c"></script>
+<script src="firebase-config.js?v=20261017d"></script>
+<script src="chapters.js?v=20261017d"></script>
+<script src="common.js?v=20261017d"></script>
 <script>
 (() => {
 'use strict';
@@ -579,6 +579,12 @@ let timerStop = null;
 let keyHandler = null;                                     // typing on a keyboard fills the letter tiles
 document.addEventListener('keydown', e => { if (keyHandler) keyHandler(e); });
 const LEAD = AR ? { why: 'علّل:', fix: 'صوّب ما تحته خط:', term: 'اكتب المصطلح العلمي:' } : { why: 'Give a reason for:', fix: 'Correct the underlined word:', term: 'Write the scientific term:' };
+/* English subject: words, not scientific terms; and a "sentence" style of the build question (put the word cards in order) */
+TYPE_LABEL.sentence = AR ? 'كوّن الجملة' : 'Build the sentence';
+if (SI.chSubject(CH) === 'english') {
+  TYPE_LABEL.term = AR ? 'اكتب الكلمة' : 'Write the word';
+  LEAD.term = AR ? 'اكتب الكلمة:' : 'Write the word:';
+}
 
 function header(q, idx, total, results) {
   const b = $('#badges'); b.innerHTML = '';

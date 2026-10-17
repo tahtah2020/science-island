@@ -209,6 +209,13 @@ The Arabic track has its own Champions board (the board key includes the track).
 - Pictures are drawn in code in `studies/g4_art.js` (nothing is copied from the book): `compassTown`, `sunFacing`, `schoolPlan`, `mapParts`, `mapCities`, `pathPlans`, `skyViews`, `mapKinds`, `sourceCards` (their tap ids are listed at the top of the file and in `TAPS` of `tools/check_questions.js`). SVG text there carries `direction="ltr"` so `text-anchor` does not flip on an RTL page.
 - Review notes: the book prints no answers. Questions about a picture of the book (number of classrooms, playground vs garden, art room nearest the teachers' room, security room on the left) are answered from a picture drawn here with the same layout. The book's fact / opinion / rumour set includes «vaccines cause illness» and «glasses weaken eyesight»; both are rumours by standard medical consensus. Not asked: the drawing tasks, essays, GPS-app activities, «propose an idea» prompts, the pamphlet activity and open comparisons.
 
+## English (english/)
+- One English book (Primary 4, Term 1) for both tracks: `lang: { lang: 'en', ar: 'en' }`, so every unit has one questions file with no `_ar` file. English chapters are called units (`SI.isUnits`). In quiz.html the `term` type reads "Write the word" for English.
+- Grade 4 Unit 1 `eg4u1` «The Five Senses» (ready): 5 lessons (senses pp 8-10, Healthy Habits and present simple pp 11-13, Goha story and short/long vowels pp 14-17, sequence words pp 18-19, presentation and feedback p 20), ids A-E, 29 ideas / 156 phrasings, Boss ideas A5, B6, C10, D5, E3. Game `english-senses.html` (Senses Explorer). Exam `eg4oct` (October Monthly Test).
+- New `build` style `sentence` ("Build the sentence"). Picture `fiveSenses` (tap ids `eye`, `ear`, `nose`, `tongue`, `palm`; `palm`, not `hand`, because the admin TAP map shares keys with Math). Pictures live in `english/g4_art.js`; maps and backgrounds: `node english/tools/make_e_maps.js`.
+- Review notes: the book's listening and audio tasks are asked as reading questions (no audio here). Open writing and speaking tasks are not asked. The self-assessment prints a phonetic symbol for the "o" in pot; the site avoids phonetic symbols. The "First" in the book's Tip box is struck through (a book glitch). "Goha paid a few coins" is false: he only shook his coins. Sorting comments into Praise / Advice is our own classification.
+- Other grades' English tab shows "Soon".
+
 ## Adding a subject (Math was the first)
 1. In `window.SUBJECTS` remove `soon` (and `hidden`); create its folder (`math/`, with `assets/` and `tools/`).
 2. Add its chapters to `window.CHAPTERS` with `subject: 'math'`, `grade`, `n`, titles and lessons (`ready: false`), then `node tools/new_chapter.js <id>` for each.
