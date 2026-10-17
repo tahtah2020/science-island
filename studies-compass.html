@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compass Trail · Our Directions Draw Our Steps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261017a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Compass Trail.</noscript>
+<script src="firebase-config.js?v=20261017a"></script>
+<script src="chapters.js?v=20261017a"></script>
+<script src="common.js?v=20261017a"></script>
+<script src="studies/g4_art.js?v=20261017a"></script>
+<script src="game_kit.js?v=20261017a"></script>
+<script>
+(() => {
+'use strict';
+/* Compass Trail · the game of Unit 1, Our Directions Draw Our Steps (Social Studies, Grade 4). Built on the shared game kit (game_kit.js).
+   The scene is always a picture the child works on: a little town, the rising sun, route plans, a map of Egypt, sources.
+   Stage 1 (Warm Up): the four main directions with the sun, then places around the park (lesson 1, pages 10-19).
+   Stage 2 (Missions): choose a route (1), parts of a map and the scale (2), cities on the map (2), plane or satellite (3), primary or secondary source (4).
+   Stage 3 (Speed Round): fact, opinion or rumour with the book's statements (lesson 4, pages 33-35).
+   Every T('English', 'عربي') has both languages. Names of places inside the pictures stay Arabic, as in the Arabic school book. */
+const T = SI.T, G = SI.G, A = S4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;      // a number inside Arabic text stays left to right
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 340;
+const sc = { mode: 'blank', set: 'pca', note: '' };
+const PL = { pic: { plain: true } };
+/* a picture of w x h is centred in the 340 x 340 scene; k shrinks it when it is taller */
+const fit = (w, h) => { const k = Math.min(1, VW / w, VH / h); return { k, dx: (VW - w * k) / 2, dy: (VH - h * k) / 2 }; };
+const place = (f, w, h, inner) => `<g transform="translate(${A.f1(f.dx)} ${A.f1(f.dy)}) scale(${f.k})">${inner}</g>`;
+const FS = { sun: fit(340, 260), school: fit(340, 290), egypt: fit(340, 440), path: fit(340, 262), sky: fit(340, 250), kinds: fit(340, 250), src: fit(340, 150) };
+const rr = (f, x, y, w, h, r = 10) => A.ringRect(f.dx + x * f.k, f.dy + y * f.k, w * f.k, h * f.k, r);
+const re = (f, cx, cy, rx, ry) => A.ringEl(f.dx + cx * f.k, f.dy + cy * f.k, rx * f.k, ry * f.k);
+
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  const m = sc.mode;
+  if (m === 'town') s += `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf6e6"/>` + D.compassTown(PL);
+  else if (m === 'sun') s += `<rect width="${VW}" height="${VH}" rx="14" fill="#cfe8f6"/>` + place(FS.sun, 340, 260, `<rect width="340" height="260" fill="#cfe8f6"/>` + D.sunFacing(PL));
+  else if (m === 'path') s += place(FS.path, 340, 262, D.pathPlans(PL));
+  else if (m === 'egypt') s += place(FS.egypt, 340, 440, `<rect width="340" height="440" fill="${A.PAPER}"/>` + D.mapParts(PL));
+  else if (m === 'cities') s += place(FS.egypt, 340, 440, `<rect width="340" height="440" fill="${A.PAPER}"/>` + D.mapCities(PL));
+  else if (m === 'sky') s += place(FS.sky, 340, 250, D.skyViews(PL));
+  else if (m === 'kinds') s += place(FS.kinds, 340, 250, D.mapKinds(PL));
+  else if (m === 'src') s += place(FS.src, 340, 150, D.sourceCards({ pic: { plain: true, set: sc.set } }));
+  else if (m === 'sign') s += `<text x="170" y="120" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="30" font-weight="900" fill="#1f3d57">${sc.note}</text>`;
+  return s;
+}
+const set = (mode, o) => { Object.assign(sc, { mode, set: 'pca', note: '' }, o || {}); g.paint(); };
+
+/* tap rings */
+const townRings = () => D.compassTown.rings().map(p => ({ id: p.id, name: p.name, ring: A.ringRect(p.x - 38, p.y - 36, 76, 84, 16) }));
+const sunRings = () => { const f = FS.sun; return [['ahead', 'أمامه', 146, 66, 48, 64], ['behind', 'خلفه', 146, 192, 48, 62], ['right', 'يمينه', 210, 142, 98, 60], ['left', 'يساره', 32, 142, 98, 60]].map(([id, name, x, y, w, h]) => ({ id, name, ring: rr(f, x, y, w, h) })); };
+const pathRings = () => A.PANELS.map(p => ({ id: p.id, name: p.title, ring: rr(FS.path, p.x, 4, 104, 254, 12) }));
+const partRings = () => { const f = FS.egypt, r = D.mapParts.rings(), nm = { title: 'العنوان', rose: 'وردة البوصلة', key: 'المفتاح', scale: 'مقياس الرسم' }; return Object.keys(r).map(id => ({ id, name: nm[id], ring: rr(f, ...r[id]) })); };
+const cityRings = ids => ids.map(id => { const c = D.mapCities.at(id); return { id, name: c.name, ring: re(FS.egypt, c.x, c.y, 26, 20) }; });
+const skyRings = () => [{ id: 'plane', name: 'الطائرة', ring: rr(FS.sky, 6, 6, 160, 238, 12) }, { id: 'satellite', name: 'القمر الصناعي', ring: rr(FS.sky, 174, 6, 160, 238, 12) }];
+const srcRings = ids => ids.map((k, i) => ({ id: { p: 'papyrus', c: 'carving', a: 'article', b: 'book' }[k], name: k, ring: rr(FS.src, 8 + i * 112, 8, 104, 134, 12) }));
+
+const g = G4Game({ ch: 'sg4u1', logo: '🧭', title: ['Compass Trail', 'رحلة البوصلة'], sub: ['Unit 1 · Our Directions Draw Our Steps', 'الوحدة 1 · اتجاهاتنا ترسم خطواتنا'],
+  bg: 'studies/assets/bg_sg4u1.svg', bgc: '#e2f4dc', label: ['A little town, a map or a plan for each question', 'بلدة صغيرة أو خريطة أو مخطط لكل سؤال'], render, view: [VW, VH] });
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('sun');
+  g.say(T(`Welcome to the Compass Trail! Early in the morning you stand facing the rising sun. Which direction are you facing?`, P(`أهلًا في رحلة البوصلة! في الصبح بدري انت واقف مواجه الشمس وهي بتشرق. إنت متجه ناحية أنهي اتجاه؟`, `أهلًا في رحلة البوصلة! في الصبح بدري إنتي واقفة مواجهة الشمس وهي بتشرق. إنتي متجهة ناحية أنهي اتجاه؟`)), 'point');
+  await g.choice({ options: ['الشرق', 'الغرب', 'الشمال', 'الجنوب'], correct: 'الشرق', hint: T('The sun always rises from the same side.', 'الشمس بتشرق دايمًا من نفس الناحية.'),
+    ok: T(`The sun rises in the ${kw('east')}, so you face east. The west is behind you.`, `الشمس بتشرق من ${kw('الشرق')}، يعني إنت متجه للشرق. والغرب وراك.`) });
+  g.say(T('Now tap the arrow that points to the <b>north</b>.', 'دلوقتي اضغط على السهم اللي بيشاور على <b>الشمال</b>.'), 'point');
+  await g.spot(sunRings(), 'left', { hint: T('Face east: the north is on your left hand.', 'وانت مواجه الشرق: الشمال على إيدك الشمال.'),
+    ok: T(`Facing east, the ${kw('north')} is on your left and the ${kw('south')} on your right.`, `وانت مواجه الشرق، ${kw('الشمال')} على يسارك و${kw('الجنوب')} على يمينك.`) });
+  g.say(T('Tap the arrow that points to the <b>west</b>.', 'اضغط على السهم اللي بيشاور على <b>الغرب</b>.'), 'think');
+  await g.spot(sunRings(), 'behind', { hint: T('West is the opposite of east.', 'الغرب عكس الشرق.'),
+    ok: T('The west is behind you, opposite the sun.', 'الغرب وراك، عكس الشمس.') });
+
+  set('town');
+  g.say(T('This is our little town. The park is in the middle and the north is at the top. Where is the <b>school</b> from the park?', 'دي بلدتنا الصغيرة. الحديقة في النص والشمال فوق. المدرسة في أنهي اتجاه بالنسبة للحديقة؟'), 'point');
+  await g.choice({ options: ['شرق', 'غرب', 'جنوب شرق', 'شمال شرق'], correct: 'شرق', hint: T('Look to the right side of the park.', 'بص على يمين الحديقة.'),
+    ok: T(`The school is ${kw('east')} of the park.`, `المدرسة ${kw('شرق')} الحديقة.`) });
+  g.say(T('Tap the place that is <b>south-west</b> of the park. It is between the south and the west.', 'اضغط على المكان اللي في <b>الجنوب الغربي</b> للحديقة. يعني بين الجنوب والغرب.'), 'think');
+  await g.spot(townRings(), 'bus', { hint: T('South-west is down and to the left.', 'الجنوب الغربي تحت وناحية الشمال.'),
+    ok: T(`The bus station is ${kw('south-west')} of the park.`, `محطة الحافلات ${kw('جنوب غرب')} الحديقة.`) });
+  g.say(T('You are in the park and want to go to the market. Which way do you walk?', 'انت في الحديقة وعايز تروح السوق. تمشي ناحية أنهي اتجاه؟'), 'think');
+  await g.choice({ options: ['الجنوب', 'الشمال', 'الشرق', 'الغرب'], correct: 'الجنوب', hint: T('The market is straight down from the park.', 'السوق تحت الحديقة على طول.'),
+    ok: T(`Walk ${kw('south')}: the market is right below the park.`, `امشي ناحية ${kw('الجنوب')}: السوق تحت الحديقة على طول.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: choose a route
+  set('path');
+  g.say(T('Mission 1: three routes lead from the house to the park. Salma is in a hurry. Tap the route she should take.', 'المهمة ١: تلات طرق من البيت للحديقة. سلمى مستعجلة. اضغط على الطريق اللي تمشي فيه.'), 'point');
+  await g.spot(pathRings(), 'p2', { hint: T('Which route is the shortest?', 'أنهي طريق هو الأقصر؟'),
+    ok: T(`The second route is the shortest: ${kw(L('500'))} metres, and it is direct.`, `الطريق التاني هو الأقصر: ${kw(L('500'))} متر ومباشر.`) });
+  g.say(T('Omar loves shopping on the way. Which route is best for him?', 'عمر بيحب يتسوق في الطريق. أنهي طريق يناسبه؟'), 'think');
+  await g.spot(pathRings(), 'p1', { hint: T('Look for the route with a shop on it, and curves.', 'دوّر على الطريق اللي فيه محل، وفيه منحنيات.'),
+    ok: T(`The first route has a shop and is ${L('650')} metres long: it is good for shopping. A route is not chosen by speed only; think about your goal.`, `الطريق الأول فيه محل وطوله ${L('650')} متر: مناسب للتسوق. اختيار الطريق مش بالسرعة بس، فكّر في هدفك.`) });
+}
+async function mission2() {                 // lesson 2: map parts and scale
+  set('egypt');
+  g.say(T('Mission 2: a map of Egypt. Tap the part that explains what the colours and symbols mean.', 'المهمة ٢: خريطة مصر. اضغط على الجزء اللي بيشرح معنى الألوان والرموز.'), 'point');
+  await g.spot(partRings(), 'key', { hint: T('It is the box at the bottom of the map.', 'ده المربع اللي تحت في الخريطة.'),
+    ok: T(`That is the ${kw('map key')}. It explains the colours and symbols.`, `ده ${kw('مفتاح الخريطة')}. بيشرح معنى الألوان والرموز.`) });
+  g.say(T('Now tap the part used to measure real distances.', 'دلوقتي اضغط على الجزء اللي بنحسب بيه المسافات الحقيقية.'), 'think');
+  await g.spot(partRings(), 'scale', { hint: T('It looks like a small ruler.', 'شكله زي مسطرة صغيرة.'),
+    ok: T(`The ${kw('scale')} compares a distance on the map with the real distance.`, `${kw('مقياس الرسم')} بيقارن المسافة على الخريطة بالمسافة الحقيقية.`) });
+  set('sign', { note: '1 cm = 100 km' });
+  g.say(T(`Cairo and Sohag are ${kw('5 cm')} apart on the map. The scale says 1 cm = 100 km. How far are they in real life?`, `القاهرة وسوهاج بينهم ${kw(L('5'))} سم على الخريطة. المقياس: ${L('1')} سم = ${L('100')} كم. المسافة الحقيقية كام؟`), 'point');
+  await g.choice({ options: ['500 km', '105 km', '20 km', '5,000 km'], correct: '500 km', hint: T('Multiply the centimetres by the scale.', 'اضرب السنتيمترات في مقياس الرسم.'),
+    ok: T(`5 × 100 = 500 km. Multiply the centimetres on the map by the scale.`, `${L('5 × 100 = 500')} كم. بنضرب السنتيمترات على الخريطة في مقياس الرسم.`), reveal: () => set('sign', { note: '5 × 100 = 500 km' }) });
+  set('cities');
+  g.say(T('Tap the city on the coast of the Red Sea.', 'اضغط على المدينة اللي على ساحل البحر الأحمر.'), 'point');
+  await g.spot(cityRings(['cairo', 'sohag', 'aswan', 'hurghada']), 'hurghada', { hint: T('The Red Sea is on the east side of Egypt.', 'البحر الأحمر على الناحية الشرقية من مصر.'),
+    ok: T('Hurghada is on the coast of the Red Sea.', 'الغردقة على ساحل البحر الأحمر.') });
+}
+async function mission3() {                 // lesson 3: plane or satellite
+  set('sky');
+  g.say(T('Mission 3: pictures from the sky help us draw maps. Tap what takes the picture that covers the <b>wider</b> area.', 'المهمة ٣: الصور من السما بتساعدنا نرسم الخرائط. اضغط على اللي بيصوّر صورة بتغطي مساحة <b>أوسع</b>.'), 'point');
+  await g.spot(skyRings(), 'satellite', { hint: T('Which one is higher up?', 'أنهي واحد أعلى؟'),
+    ok: T(`A ${kw('satellite')} takes space pictures that cover a wider area. A plane takes aerial pictures of a smaller area.`, `${kw('القمر الصناعي')} بيصوّر صور فضائية بتغطي مساحة أوسع. والطائرة بتصوّر صور جوية لمساحة أصغر.`) });
+  set('kinds');
+  g.say(T('Maps changed over time. Tap the <b>digital</b> map.', 'الخرائط اتغيّرت مع الزمن. اضغط على الخريطة <b>الرقمية</b>.'), 'think');
+  await g.spot([{ id: 'hand', name: 'اليدوية', ring: rr(FS.kinds, 8, 8, 160, 236, 12) }, { id: 'digital', name: 'الرقمية', ring: rr(FS.kinds, 190, 4, 120, 242, 18) }], 'digital', { hint: T('Which map is on a phone screen?', 'أنهي خريطة على شاشة موبايل؟'),
+    ok: T('The map on the phone is digital. GPS apps show accurate digital maps.', 'الخريطة على الموبايل رقمية. تطبيق GPS بيعرض خرائط رقمية دقيقة.') });
+  set('blank');
+  g.say(T('Long ago, Maryam al-Astrulabi developed an old tool that finds directions from the stars. What is it?', 'من زمان، مريم الإسطرلابي طوّرت أداة قديمة بتحدد الاتجاهات من النجوم. إيه هي؟'), 'think');
+  await g.choice({ options: ['الإسطرلاب', 'البوصلة الرقمية', 'القمر الصناعي', 'مقياس الرسم'], correct: 'الإسطرلاب', hint: T('It is an old astronomy tool.', 'أداة فلكية قديمة.'),
+    ok: T(`The ${kw('astrolabe')}. It was used to find directions, the Qibla and prayer times.`, `${kw('الإسطرلاب')}. استُخدم في تحديد الاتجاهات والقِبْلة وأوقات الصلاة.`) });
+}
+async function mission4() {                 // lesson 4: primary and secondary sources
+  set('src', { set: 'pca' });
+  g.say(T('Mission 4: three sources. Tap the <b>secondary</b> source, written long after the event.', 'المهمة ٤: تلات مصادر. اضغط على المصدر <b>الثانوي</b>، اللي اتسجّل بعد الحدث بفترة طويلة.'), 'point');
+  await g.spot(srcRings(['p', 'c', 'a']), 'article', { hint: T('Papyrus and carvings were made in ancient times.', 'البردي والنقوش اتعملوا في الزمن القديم.'),
+    ok: T(`An article is a ${kw('secondary')} source. Papyri and carvings are ${kw('primary')} sources.`, `المقال مصدر ${kw('ثانوي')}. والبرديات والنقوش مصادر ${kw('أولية')}.`) });
+  set('src', { set: 'cba' });
+  g.say(T('Now tap the <b>primary</b> source, recorded at the time of the event.', 'دلوقتي اضغط على المصدر <b>الأولي</b>، اللي اتسجّل وقت الحدث.'), 'think');
+  await g.spot(srcRings(['c', 'b', 'a']), 'carving', { hint: T('Which one is an ancient carving on stone?', 'أنهي واحد نقش قديم على حجر؟'),
+    ok: T('A carving is a primary source: it was made at the time of the event.', 'النقش مصدر أولي: اتعمل وقت الحدث.') });
+  set('blank');
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); }
+
+/* ---------- Stage 3 · Speed Round: fact, opinion or rumour ---------- */
+const ST = [
+  ['الشمس تشرق من الشرق', 'f', 'The sun rises in the east.'],
+  ['يجري نهر النيل في مصر', 'f', 'The Nile flows through Egypt.'],
+  ['المدرسة مكان للتعلم وتنمية المهارات', 'f', 'School is a place for learning and building skills.'],
+  ['الذهاب إلى الحديقة أفضل من الذهاب إلى النادي', 'o', 'Going to the park is better than going to the club.'],
+  ['مدينة الغردقة أجمل مدينة في العالم', 'o', 'Hurghada is the most beautiful city in the world.'],
+  ['مدينة الإسكندرية أجمل المدن الساحلية', 'o', 'Alexandria is the most beautiful coastal city.'],
+  ['التطعيمات تسبب الأمراض للأطفال', 'r', 'Vaccines make children ill.'],
+  ['استخدام النظارة الطبية يضعف النظر', 'r', 'Wearing glasses weakens your eyesight.']
+];
+async function stage3() {
+  set('blank');
+  await g.speedRound({ items: ST.map(([a, r, e]) => ({ t: `<span dir="rtl" lang="ar">${a}</span>`, ans: r,
+      why: r === 'f' ? T('A fact: it can be proved.', 'حقيقة: ممكن نثبتها.') : r === 'o' ? T('An opinion: a personal point of view.', 'رأي: وجهة نظر شخصية.') : T('A rumour: untrue news passed on with no known source.', 'شائعة: خبر غير صحيح بيتناقل من غير مصدر معروف.') })), rounds: 8, ms: 12000,
+    buttons: [{ label: T('Fact', 'حقيقة'), value: 'f', c: 0 }, { label: T('Opinion', 'رأي'), value: 'o', c: 1 }, { label: T('Rumour', 'شائعة'), value: 'r', c: 2 }],
+    ask: T('Fact, opinion or rumour?', 'حقيقة ولا رأي ولا شائعة؟'),
+    intro: T('Speed Round! A sentence comes in. Press Fact if it can be proved, Opinion if it is a personal view, or Rumour if it is untrue news with no source.', 'جولة السرعة! هتظهر جملة. اضغط حقيقة لو ممكن تتثبت، ورأي لو وجهة نظر شخصية، وشائعة لو خبر غير صحيح من غير مصدر.'),
+    think: T('Can it be proved?', 'ممكن نثبتها؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Follow the compass through a little town, read a map of Egypt, and sort the sources of information. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! امشي ورا البوصلة في بلدة صغيرة، واقرأ خريطة مصر، وصنّف مصادر المعلومات. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can find directions, read maps and tell facts from opinions and rumours. Next, try the questions of this unit.', 'بقيت تحدد الاتجاهات وتقرأ الخرائط وتفرّق بين الحقائق والآراء والشائعات. جرّب دلوقتي أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

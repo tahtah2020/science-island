@@ -25,7 +25,7 @@
 window.SUBJECTS = [
   { id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬', tint: '#dcefff', dir: 'science' },
   { id: 'math', title: 'Math', titleAr: 'الرياضيات', icon: '🔢', tint: '#ffe6cc', dir: 'math' },
-  { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
+  { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' } },
   { id: 'arabic', title: 'Arabic', titleAr: 'اللغة العربية', icon: '📖', tint: '#fbe3e3', dir: 'arabic', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
   { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' }, hidden: true }
 ];
@@ -230,7 +230,26 @@ window.CHAPTERS = [
     game: { href: 'math-addsub.html', name: "Ant Colony Count", nameAr: "مستعمرة النمل الحسابية", icon: '🐜', hint: 'Add and subtract with regrouping, check with estimates and solve multi-step problems', hintAr: 'اجمع واطرح مع إعادة التسمية وتحقق بالتقدير وحل المسائل متعددة الخطوات' },
     map: { img: 'math/assets/map_mg4u2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_mg4u2.svg', quizBg: 'math/assets/bg_mg4u2.svg',
-    lessonsAr: ['خواص عملية الجمع', 'الجمع مع إعادة التسمية', 'الطرح مع إعادة التسمية', 'النماذج الشريطية والمتغيرات والمسائل الكلامية', 'حل مسائل كلامية متعددة الخطوات باستخدام الجمع والطرح'] }
+    lessonsAr: ['خواص عملية الجمع', 'الجمع مع إعادة التسمية', 'الطرح مع إعادة التسمية', 'النماذج الشريطية والمتغيرات والمسائل الكلامية', 'حل مسائل كلامية متعددة الخطوات باستخدام الجمع والطرح'] },
+
+  /* ---------- Social Studies (the school book «مصر في قلب العالم» 2026/2027, first term). Units, like Math (SI.isUnits).
+     One Arabic book for both tracks: the subject's lang is { lang: 'ar', ar: 'ar' }, so every unit has only a questionsAr file.
+     Grade 4: Unit 1 «اتجاهاتنا ترسم خطواتنا» (book pages 10-37), Unit 2 «مدينتنا وحياتنا اليومية», Unit 3 «مصر وطننا». Idea letters: A-D (unit 1). */
+  { id: 'sg4u1', subject: 'studies', grade: 'g4', n: 1, title: 'Our Directions Draw Our Steps', titleAr: 'اتجاهاتنا ترسم خطواتنا', icon: '🧭', tint: '#e2f4dc', ready: true,
+    lessons: ['Places and Directions Around Us', 'The Map in Our Life', 'The Development of the Map', 'Sources of Gathering Information'],
+    questionsAr: 'studies/questions_sg4u1_ar.js', art: 'studies/g4_art.js',
+    game: { href: 'studies-compass.html', name: "Compass Trail", nameAr: "رحلة البوصلة", icon: '🧭', hint: 'Find directions with the sun, read plans and maps, and sort sources and rumours.', hintAr: 'حدّد الاتجاهات بالشمس، واقرأ المخططات والخرائط، وصنّف المصادر والشائعات.' },
+    map: { img: 'studies/assets/map_sg4u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'studies/assets/map_sg4u1.svg', quizBg: 'studies/assets/bg_sg4u1.svg',
+    lessonsAr: ['الأماكن والاتجاهات من حولنا', 'الخريطة في حياتنا', 'تطور الخريطة', 'مصادر جمع المعلومات'] },
+
+  { id: 'sg4u2', subject: 'studies', grade: 'g4', n: 2, title: 'Our City and Our Daily Life', titleAr: 'مدينتنا وحياتنا اليومية', icon: '🏙️', tint: '#e2f4dc', ready: false,
+    lessons: ['How Does Our City Look?', 'The Development of Our City', 'Service Places in Our City', 'Our City in the Future', 'Where Is My Governorate?'],
+    lessonsAr: ['كيف تبدو مدينتنا؟', 'تطور مدينتنا', 'الأماكن الخدمية في مدينتنا', 'مدينتنا في المستقبل', 'أين تقع محافظتي؟'] },
+
+  { id: 'sg4u3', subject: 'studies', grade: 'g4', n: 3, title: 'Egypt, Our Homeland', titleAr: 'مصر وطننا', icon: '🇪🇬', tint: '#e2f4dc', ready: false,
+    lessons: ['The Flag of Our Homeland Egypt', 'Egypt on the World Map', 'The Landforms of Our Beautiful Land', 'Egypt’s Natural and Human Resources', 'Historical Landmarks in Egypt'],
+    lessonsAr: ['عَلَم وطننا مصر', 'مصر على خريطة العالم', 'تضاريس أرضنا الجميلة', 'ثروات مصر الطبيعية والبشرية', 'المَعالِم التاريخية في مصر'] }
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.

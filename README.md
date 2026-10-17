@@ -1,6 +1,6 @@
 # Motafawek (متفوّق)
 
-Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math has started (Grade 5 Unit 1, Grade 4 Units 1 and 2), then Social Studies, Arabic and English.
+Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math has started (Grade 5 Unit 1, Grade 4 Units 1 and 2), Social Studies has started (Grade 4 Unit 1), then Arabic and English.
 
 ## Subjects and folders
 - The path of a player: grade (home page) → subject (tabs on `chapters.html`) → chapter or unit → map, game, questions.
@@ -201,6 +201,13 @@ The Arabic track has its own Champions board (the board key includes the track).
 - Grade 4, Unit 1 `mg4u1` «القيمة المكانية» (8 lessons, idea ids A–H, 24 ideas / 120 phrasings) and Unit 2 `mg4u2` «إستراتيجيات عمليتي الجمع والطرح» (5 lessons, ids I–M, 16 ideas / 85 phrasings). Games: `math-placevalue.html` (Place Value Nest) and `math-addsub.html` (Ant Colony Count). Pictures: `math/g4_art.js` (`placeTable`, a tap diagram with column ids `b1 m100 m10 m1 t100 t10 t1 u100 u10 u1`; `pic.plain` draws it inside a game scene and `window.G4MATH.placeCols()` gives the column positions).
 - Both tracks: `math/questions_mg4u1.js`, `math/questions_mg4u2.js` (Languages track, from the English book) and the `_ar` files (Arabic book); same ids, order and answers. The English book calls the billions place "Milliards" (word forms: "nine milliard, ..."), uses O/H/T place labels in the chart, and names the units «Addition and Subtraction Strategies» and «Reinforcing Place Value / Using Place Value»; the site follows each book. Its page 32 has the same 5,328 vs 5,398 conflict as the Arabic book.
 - Review notes: the books print no answers. Book page 32 conflicts with itself (text says 5,328 ants, the equation prints 2,164 + a = 5,398); the site uses 5,328, so a = 3,164. Not asked: the card games (Creating Big Numbers, Creating the Greatest, Number Battle; unit 1), activities on pages 26 and 31 (no printed result) and the open «write a problem / explain» items.
+
+## Social Studies (studies/)
+- One Arabic school book («مصر في قلب العالم») for both tracks: the subject has `lang: { lang: 'ar', ar: 'ar' }`, so every unit has only a `_ar` questions file (`studies/questions_sg4u1_ar.js`). Players of the Languages track see an English interface with Arabic question text; `quiz.html` sets `dir="rtl"` on the question, answer and explanation areas for them. Game speech is in both languages with `T()`; names of places inside the pictures stay Arabic.
+- Studies chapters are called units («الوحدة») everywhere (`SI.isUnits`). Grade 4 has three units: `sg4u1` «اتجاهاتنا ترسم خطواتنا» (ready), `sg4u2` «مدينتنا وحياتنا اليومية» and `sg4u3` «مصر وطننا» (`ready: false`, no questions yet). Idea letters: A–D unit 1 (one per lesson), E–I unit 2, J–N unit 3.
+- Unit 1: 4 lessons, 30 ideas / 192 phrasings, Boss ideas A7, B3, C5, D7. Game: `studies-compass.html` (Compass Trail). Maps and backgrounds: `node studies/tools/make_s_maps.js`.
+- Pictures are drawn in code in `studies/g4_art.js` (nothing is copied from the book): `compassTown`, `sunFacing`, `schoolPlan`, `mapParts`, `mapCities`, `pathPlans`, `skyViews`, `mapKinds`, `sourceCards` (their tap ids are listed at the top of the file and in `TAPS` of `tools/check_questions.js`). SVG text there carries `direction="ltr"` so `text-anchor` does not flip on an RTL page.
+- Review notes: the book prints no answers. Questions about a picture of the book (number of classrooms, playground vs garden, art room nearest the teachers' room, security room on the left) are answered from a picture drawn here with the same layout. The book's fact / opinion / rumour set includes «vaccines cause illness» and «glasses weaken eyesight»; both are rumours by standard medical consensus. Not asked: the drawing tasks, essays, GPS-app activities, «propose an idea» prompts, the pamphlet activity and open comparisons.
 
 ## Adding a subject (Math was the first)
 1. In `window.SUBJECTS` remove `soon` (and `hidden`); create its folder (`math/`, with `assets/` and `tools/`).

@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-17', title: 'Social Studies, Grade 4, Unit 1',
+    items: [
+      { text: 'Social Studies opens with Unit 1 «اتجاهاتنا ترسم خطواتنا»: 30 ideas, one game (Compass Trail), for both tracks' }
+    ] },
   { date: '2026-10-16', title: 'الرياضيات للصف الرابع: النسخة الإنجليزية للوحدتين',
     items: [
       { text: 'ملفا الأسئلة الإنجليزيان للوحدتين الأولى والثانية من الكتاب الإنجليزي، فتفتح الوحدتان لمسار اللغات' }

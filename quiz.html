@@ -386,9 +386,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261016f"></script>
-<script src="chapters.js?v=20261016f"></script>
-<script src="common.js?v=20261016f"></script>
+<script src="firebase-config.js?v=20261017a"></script>
+<script src="chapters.js?v=20261017a"></script>
+<script src="common.js?v=20261017a"></script>
 <script>
 (() => {
 'use strict';
@@ -403,6 +403,8 @@ const esc = SI.esc, T = SI.T, G = SI.G, AR = SI.isAr();
 
 /* ---------- per-player review schedule (Leitner boxes), sound, mute ---------- */
 const CH = SI.chapter() || {};                             // the chapter being played (questions come from CH.questions)
+/* Arabic content shown to a player of the English-interface track (Studies: one Arabic book for both tracks): read right to left */
+if (CH.id && SI.contentAr(CH) && !AR) ['qtext', 'area', 'explain'].forEach(id => { const e = document.getElementById(id); if (e) { e.setAttribute('dir', 'rtl'); e.setAttribute('lang', 'ar'); } });
 const armSkin = (SI.chProf('ch1').game || {}).skin || 0;   // arm colour chosen in Arm Mechanic, used by the arm diagrams
 const DAY = 864e5, INTERVALS = [0, 1, 3, 7, 14];
 function recordCard(id, firstTry, chId) {

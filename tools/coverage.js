@@ -34,7 +34,7 @@ const lang = opt('--lang') || (c.questionsAr ? 'ar' : 'en'), file = lang === 'ar
 if (!file) { console.log(`${id} has no ${lang} questions file`); process.exit(1); }
 const IDEAS = load(file).IDEAS, lessons = (lang === 'ar' && c.lessonsAr) || c.lessons || [];
 const book = (opt('--book') || '').split(',').filter(Boolean).map(Number);
-const word = (c.grade && /^p/.test(c.grade)) || c.subject === 'math' ? 'الوحدة' : 'الفصل';
+const word = (c.grade && /^p/.test(c.grade)) || ['math', 'studies'].includes(c.subject) ? 'الوحدة' : 'الفصل';
 
 const core = IDEAS.filter(I => !I.bonus), bonus = IDEAS.filter(I => I.bonus);
 const nv = L => L.reduce((n, I) => n + I.variants.length, 0);
