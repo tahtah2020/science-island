@@ -3,7 +3,7 @@
    الدروس: 1 موقع مصر الفلكي (ص 8–13) · 2 مظاهر سطح مصر (ص 14–21) · 3 مناخ مصر (ص 22–29) · 4 النباتات الطبيعية والحيوانات البرية (ص 30–35). تقييم الوحدة (ص 36–37) أفكاره موزعة على الدروس الأربعة، وسؤال «الأنشطة الختامية» مفتوح فلا يُسأل عنه.
    الأفكار بترتيب الكتاب، ولكل فكرة رقم درسها (lesson) الذي يظهر على كل سؤال. حروف الأفكار: A الدرس 1 · B الدرس 2 · C الدرس 3 · D الدرس 4.
    أفكار التحدي (Boss): A9 (حساب فروق التوقيت بخطوط الطول) · B15 (تصنيف مظاهر السطح في وحداتها) · C16 (مقارنة الإقليمين المناخيين وتصنيف المدن) · D13 (البيئات والأخطار وجهود الحماية). الأفكار الإثرائية (bonus): B16 (الصحراء البيضاء والسوداء) · C17 (التحديات المناخية) · D14 (النباتات والحيوانات المعرضة للخطر).
-   الصور (studies/g5_art.js): globeGrid · egyptGrid · egyptRegions · reliefForces · climateMap · sunRays. كلها مرسومة في الكود، لا شيء منسوخ من الكتاب.
+   الصور (studies/g5_art.js): globeGrid · egyptGrid · egyptRegions · reliefForces · climateMap · sunRays · dunes · habitats. كلها مرسومة في الكود، لا شيء منسوخ من الكتاب.
    الأرقام غربية، وكل رقم وسط الكلام داخل ltr() حتى يظهر بترتيبه الصحيح. الإجابات الرقمية (فروق التوقيت) كلها محسوبة ويعيد tools/check_questions.js حسابها.
    ملاحظات للمراجعة: خريطة الإقليمين (climateMap) مرسومة تقريبيًا: شريط الساحل الأخضر ضيق كما في خريطة الكتاب، وتصنيف المدن مبني على موقعها من الساحل (السلوم والإسكندرية ودمياط والعريش على البحر المتوسط، والمنيا والخارجة وأسوان ومرسى علم والأقصر في الإقليم الصحراوي). الكتاب
    في الدرس 3 لا يطبع أثر مرور مدار السرطان بجنوب مصر ولا سبب انخفاض الحرارة في الخريف، فلم يُسألا. في الدرس 4 لا يُسأل عن رأي التوسع العمراني ولا عن جدول «موافق وغير موافق» (آراء شخصية) ولا عن الأنشطة والبحث والتصميم والمطوية.
@@ -244,7 +244,7 @@ window.IDEAS = [
       { type: 'mc', mode: 'normal', level: 'easy', q: 'ما العوامل الباطنية التي شكلت سطح مصر؟', options: ['عوامل تحدث في باطن الأرض', 'عوامل تحدث على سطح الأرض', 'الرياح والأمطار فقط', 'الأنهار فقط'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'easy', q: 'ما العوامل الخارجية التي شكلت سطح مصر؟', options: ['عوامل تحدث على سطح الأرض', 'عوامل تحدث في باطن الأرض', 'الالتواءات والانكسارات', 'دوران الأرض حول نفسها'], answer: 0 },
       { type: 'fill', mode: 'timed', seconds: 12, level: 'medium', q: 'تكونت جبال البحر الأحمر بفعل ___.', options: ['الانكسارات', 'حركة المياه', 'حركة الهواء', 'الالتواءات'], answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'medium', q: 'ما العامل الذي شكّل الكثبان الرملية؟', options: ['التعرية بفعل الرياح', 'التعرية المائية', 'الالتواءات', 'الانكسارات'], answer: 0 },
+      { type: 'mc', fig: 'dunes', mode: 'normal', level: 'medium', q: 'ما العامل الذي شكّل الكثبان الرملية؟', options: ['التعرية بفعل الرياح', 'التعرية المائية', 'الالتواءات', 'الانكسارات'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'medium', q: 'ما العامل الذي شكّل وادي النيل والأودية الجافة؟', options: ['التعرية المائية', 'التعرية بفعل الرياح', 'الانكسارات', 'الالتواءات'], answer: 0 },
       { type: 'table', mode: 'normal', level: 'medium', q: 'صنّف العوامل التالية.', poc: 'العامل', cols: ['عوامل باطنية', 'عوامل خارجية'], items: ['الالتواءات', 'الانكسارات', 'التعرية بفعل الرياح', 'التعرية المائية'], answer: [0, 0, 1, 1] },
       { type: 'tap', diagram: 'reliefForces', mode: 'normal', level: 'medium', q: 'اضغط على الشكل الذي يوضح الحركات الانكسارية.', answer: 'fault' },
@@ -491,6 +491,9 @@ window.IDEAS = [
     explain: 'لكل بيئة نباتاتها وحيواناتها: في الوادي والدلتا والفيوم البردي والبوص وأبو قردان، وفي الصحاري الصبار والتين الشوكي والنخيل والإبل والغزلان والزواحف، وفي المناطق الساحلية التين والزيتون والمانجروف والثعالب والأرانب البرية وطائر النورس.',
     variants: [
       { type: 'table', mode: 'normal', level: 'medium', q: 'صنّف كل نبات أو حيوان حسب بيئته.', poc: 'الكائن', cols: ['الوادي والدلتا', 'المناطق الصحراوية', 'المناطق الساحلية'], items: ['نبات البوص', 'الصبار', 'طائر النورس', 'نبات البردي', 'الإبل', 'أشجار المانجروف'], answer: [0, 1, 2, 0, 1, 2] },
+      { type: 'tap', diagram: 'habitats', mode: 'normal', level: 'easy', q: 'اضغط على البيئة التي ينمو فيها نبات البردي والبوص.', answer: 'envNile' },
+      { type: 'tap', diagram: 'habitats', mode: 'normal', level: 'easy', q: 'اضغط على البيئة التي تعيش فيها الإبل ويرعى فيها الصبار.', answer: 'envDesert' },
+      { type: 'tap', diagram: 'habitats', mode: 'normal', level: 'medium', q: 'اضغط على البيئة التي تنمو فيها أشجار المانجروف ويعيش فيها طائر النورس.', answer: 'envCoast' },
       { type: 'mc', mode: 'normal', level: 'easy', q: 'في أي بيئة يعيش طائر النورس؟', options: ['المناطق الساحلية', 'الوادي والدلتا', 'المناطق الصحراوية', 'منخفض الفيوم'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'easy', q: 'في أي بيئة ينمو الصبار؟', options: ['المناطق الصحراوية', 'الوادي والدلتا', 'المناطق الساحلية', 'المستنقعات'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'easy', q: 'في أي بيئة ينمو نبات البوص؟', options: ['الوادي والدلتا', 'المناطق الصحراوية', 'المناطق الساحلية', 'قمم الجبال'], answer: 0 }
@@ -566,4 +569,11 @@ window.IDEAS = [
       { type: 'tf', mode: 'timed', seconds: 12, level: 'medium', q: 'ساهم الإنسان في استنزاف وتدمير عناصر الطبيعة وموارده.', answer: 0 }
     ] }
 ];
+/* A picture above every question that has one to look at (the type 'tap' already is one). The pictures carry no names; a question that asks for a degree (printed on the picture) keeps none. */
+const FIG = { A1: 'globeGrid', A2: 'globeGrid', A3: 'globeGrid', A4: 'globeGrid', A5: 'globeGrid', A6: 'globeGrid', A8: 'egyptGrid', A9: 'globeGrid',
+  B1: 'egyptRegions', B11: 'egyptRegions', B14: 'egyptRegions', B16: 'egyptRegions',
+  B2: 'egyptRegions', B3: 'egyptRegions', B4: 'egyptRegions', B5: 'egyptRegions', B6: 'egyptRegions', B7: 'egyptRegions', B8: 'egyptRegions', B9: 'egyptRegions', B10: 'egyptRegions', B12: 'egyptRegions', B13: 'reliefForces', B15: 'egyptRegions',
+  C3: 'climateMap', C4: 'climateMap', C17: 'egyptRegions', C6: 'sunRays', C7: 'sunRays', C9: 'sunRays', C10: 'sunRays', C11: 'sunRays', C12: 'sunRays', C13: 'climateMap', C14: 'climateMap', C15: 'climateMap', C16: 'climateMap',
+  D2: 'habitats', D3: 'habitats', D4: 'habitats', D5: 'habitats', D6: 'habitats', D13: 'habitats', D1: 'habitats', D7: 'habitats', D8: 'habitats', D9: 'habitats', D10: 'habitats', D11: 'habitats', D14: 'habitats' };
+window.IDEAS.forEach(I => I.variants.forEach(v => { if (FIG[I.id] && !v.fig && v.type !== 'tap' && !/ما درجة|درجة (خط|دائرة|مدار)/.test(v.q)) v.fig = FIG[I.id]; }));
 })();

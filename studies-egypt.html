@@ -36,7 +36,7 @@ const PL = { pic: { plain: true } };
 /* a picture of w x h is centred in the 340 x 340 scene */
 const fit = (w, h) => { const k = Math.min(1, VW / w, VH / h); return { k, dx: (VW - w * k) / 2, dy: (VH - h * k) / 2 }; };
 const place = (f, inner) => `<g transform="translate(${A.f1(f.dx)} ${A.f1(f.dy)}) scale(${f.k})">${inner}</g>`;
-const FS = { globe: fit(340, 300), egypt: fit(340, 300), forces: fit(340, 250), rays: fit(340, 300) };
+const FS = { globe: fit(340, 300), egypt: fit(340, 300), forces: fit(340, 250), rays: fit(340, 300), dunes: fit(340, 250), env: fit(340, 300) };
 const rr = (f, x, y, w, h, r = 10) => A.ringRect(f.dx + x * f.k, f.dy + y * f.k, w * f.k, h * f.k, r);
 const re = (f, cx, cy, rx, ry) => A.ringEl(f.dx + cx * f.k, f.dy + cy * f.k, rx * f.k, ry * f.k);
 
@@ -48,6 +48,8 @@ function render() {
   else if (m === 'regions') s += place(FS.egypt, bg + D.egyptRegions(PL));
   else if (m === 'rays') s += place(FS.rays, bg + D.sunRays(PL));
   else if (m === 'climate') s += place(FS.egypt, bg + D.climateMap(PL));
+  else if (m === 'dunes') s += place(FS.dunes, `<rect width="340" height="250" fill="${A.PAPER}"/>` + D.dunes(PL));
+  else if (m === 'env') s += place(FS.env, bg + D.habitats(PL));
   else if (m === 'forces') s += place(FS.forces, `<rect width="340" height="250" fill="${A.PAPER}"/>` + D.reliefForces(PL));
   else if (m === 'sign') s += `<text x="170" y="150" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="26" font-weight="900" fill="#1f3d57">${sc.note}</text>` +
     (sc.sub ? `<text x="170" y="190" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="18" font-weight="800" fill="#6b5a3a">${sc.sub}</text>` : '');
@@ -65,6 +67,7 @@ const regionRings = ids => { const r = D.egyptRegions.rings(), nm = { delta: 'ا
   return ids.map(id => ({ id, name: nm[id], ring: re(FS.egypt, r[id].cx, r[id].cy, r[id].rx, r[id].ry) })); };
 const rayRings = () => D.sunRays.rects().map(p => ({ id: p.id, name: p.id, ring: rr(FS.rays, p.x, p.y, p.w, p.h, 12) }));
 const climateRings = () => { const r = D.climateMap.rings(); return [{ id: 'med', name: 'إقليم البحر المتوسط', ring: rr(FS.egypt, r.med.x, r.med.y, r.med.w, r.med.h, 8) }, { id: 'desert', name: 'الإقليم الصحراوي الحار', ring: re(FS.egypt, r.desert.cx, r.desert.cy, r.desert.rx, r.desert.ry) }]; };
+const envRings = () => D.habitats.rects().map(p => ({ id: p.id, name: p.id, ring: rr(FS.env, p.x, p.y, p.w, p.h, 12) }));
 const forceRings = () => [{ id: 'fault', name: 'الانكسار', ring: rr(FS.forces, 8, 8, 160, 234, 12) }, { id: 'fold', name: 'الالتواء', ring: rr(FS.forces, 172, 8, 160, 234, 12) }];
 
 const g = G4Game({ ch: 'sg5u1', logo: '🗺️', title: ['Egypt Explorer', 'مستكشف مصر'], sub: ['Unit 1 · A Distinguished Location and Varied Nature', 'الوحدة 1 · مصر موقع متميز وطبيعة متنوعة'],
@@ -97,11 +100,11 @@ async function stage1() {
 
 /* ---------- Stage 2 · Missions ---------- */
 async function mission1() {                 // lesson 1: time difference
-  set('sign', { note: '30° ÷ 15 = ?' });
+  set('egyptGrid');
   g.say(T('Mission 1: every 15° of longitude is one hour. Cairo is at 30° east and London at 0°. How many hours apart are they?', 'المهمة ١: كل ' + L('15°') + ' من خطوط الطول بساعة. القاهرة على ' + L('30°') + ' شرق ولندن على ' + L('0°') + '. الفرق بينهم كام ساعة؟'), 'point');
   await g.choice({ options: ['ساعتان', 'ساعة', '4 ساعات', '30 ساعة'], correct: 'ساعتان', hint: T('Divide 30 by 15.', 'اقسم ' + L('30') + ' على ' + L('15') + '.'),
     ok: T(`${L('30 ÷ 15 = 2')} hours. Cairo is east of Greenwich, so it is ${kw('ahead')}.`, `${L('30 ÷ 15 = 2')} ساعتين. والقاهرة شرق جرينتش، يعني ${kw('بتسبق')} لندن.`), reveal: () => set('sign', { note: '30° ÷ 15 = 2' }) });
-  set('sign', { note: '6 + 2 = ?' });
+  set('egyptGrid');
   g.say(T('A match starts at 6 pm in London. What time is it in Cairo?', 'ماتش بيبدأ الساعة ' + L('6') + ' مساءً بتوقيت لندن. الساعة كام في القاهرة؟'), 'think');
   await g.choice({ options: ['8 مساءً', '4 عصرًا', '6 مساءً', '9 مساءً'], correct: '8 مساءً', hint: T('Cairo is 2 hours ahead.', 'القاهرة بتسبق بساعتين.'),
     ok: T(`${L('6 + 2 = 8')}: the match starts at ${kw('8 pm')} in Cairo.`, `${L('6 + 2 = 8')}: الماتش بيبدأ الساعة ${kw(L('8'))} مساءً بتوقيت القاهرة.`), reveal: () => set('sign', { note: '6 + 2 = 8 pm' }) });
@@ -132,7 +135,7 @@ async function mission3() {                 // lesson 2: forces
   g.say(T('Tap the picture where the layers were pressed from the sides and bent into waves.', 'اضغط على الرسم اللي الطبقات فيه اتضغطت من الجنبين واتنثنت زي موجات.'), 'think');
   await g.spot(forceRings(), 'fold', { hint: T('Wavy layers.', 'طبقات متموّجة.'),
     ok: T(`That is ${kw('folding')}: pressure from the sides bends the layers.`, `ده ${kw('الالتواء')}: ضغط من الجنبين بيثني الطبقات.`) });
-  set('blank');
+  set('dunes');
   g.say(T('What formed the sand dunes of the Great Sand Sea?', 'إيه اللي كوّن الكثبان الرملية في بحر الرمال العظيم؟'), 'think');
   await g.choice({ options: ['التعرية بفعل الرياح', 'التعرية المائية', 'الانكسارات', 'الالتواءات'], correct: 'التعرية بفعل الرياح', hint: T('An external factor that moves sand.', 'عامل خارجي بيحرّك الرمل.'),
     ok: T(`${kw('Wind erosion')} formed the dunes. ${kw('Water erosion')} formed the Nile valley and the dry wadis.`, `${kw('التعرية بفعل الرياح')} كوّنت الكثبان. و${kw('التعرية المائية')} كوّنت وادي النيل والأودية الجافة.`) });
@@ -160,20 +163,20 @@ async function mission4() {                 // lesson 3: the sun's rays, the sea
     ok: T(`The ${kw('Hot Desert')} region covers most of Egypt.`, `الإقليم ${kw('الصحراوي الحار')} بيغطي معظم أرض مصر.`) });
 }
 async function mission5() {                 // lesson 4: natural plants and wild animals
-  set('blank');
-  g.say(T('Mission 5: natural plants and wild animals. A water plant grows in the swamps and on the banks of the Nile, and the ancient Egyptians made paper from it. What is it?', 'المهمة ٥: النباتات الطبيعية والحيوانات البرية. نبات مائي بينمو في المستنقعات وعلى ضفاف النيل، وصنع منه المصريون القدماء الورق. إيه هو؟'), 'point');
-  await g.choice({ options: ['البردي', 'الصبار', 'المانجروف', 'النخيل'], correct: 'البردي', hint: T('It grows in the Nile valley and the delta.', 'بينمو في الوادي والدلتا.'),
+  set('env');
+  g.say(T('Mission 5: natural plants and wild animals. Tap the environment where <b>papyrus</b> grows, the water plant the ancient Egyptians made paper from.', 'المهمة ٥: النباتات الطبيعية والحيوانات البرية. اضغط على البيئة اللي بينمو فيها <b>البردي</b>، النبات المائي اللي صنع منه المصريون القدماء الورق.'), 'point');
+  await g.spot(envRings(), 'envNile', { hint: T('It grows in swamps and on the banks of the Nile.', 'بينمو في المستنقعات وعلى ضفاف النيل.'),
     ok: T(`${kw('Papyrus')} grows in the Nile valley, the delta and Fayoum.`, `${kw('البردي')} بينمو في وادي النيل والدلتا والفيوم.`) });
-  g.say(T('Which animals live in the Egyptian deserts and can bear hunger and thirst?', 'أنهي حيوانات بتعيش في الصحاري المصرية وبتتحمل الجوع والعطش؟'), 'think');
+  g.say(T('Which animals live in the Egyptian deserts and can bear hunger and thirst? (Look at the desert in the picture.)', 'أنهي حيوانات بتعيش في الصحاري المصرية وبتتحمل الجوع والعطش؟ (بص على الصحراء في الصورة)'), 'think');
   await g.choice({ options: ['الإبل والغزلان والزواحف', 'طائر النورس والأرانب البرية', 'أبو قردان والفئران', 'الثعالب والذئاب'], correct: 'الإبل والغزلان والزواحف', hint: T('Think of the desert.', 'فكّر في الصحراء.'),
     ok: T(`${kw('Camels, gazelles and reptiles')} live in the deserts.`, `${kw('الإبل والغزلان والزواحف')} بتعيش في الصحاري.`) });
-  g.say(T('The mangrove tree and the seagull live in which environment?', 'شجر المانجروف وطائر النورس بيعيشوا في أنهي بيئة؟'), 'think');
-  await g.choice({ options: ['المناطق الساحلية', 'الوادي والدلتا', 'المناطق الصحراوية', 'منخفض الفيوم'], correct: 'المناطق الساحلية', hint: T('Their plants bear salty soil.', 'نباتاتها بتتحمل الملوحة.'),
+  g.say(T('Tap the environment where the <b>mangrove</b> tree and the seagull live.', 'اضغط على البيئة اللي بيعيش فيها شجر <b>المانجروف</b> وطائر النورس.'), 'think');
+  await g.spot(envRings(), 'envCoast', { hint: T('Their plants bear salty soil.', 'نباتاتها بتتحمل الملوحة.'),
     ok: T(`The ${kw('coastal areas')}: their plants bear salt and sandy soil.`, `${kw('المناطق الساحلية')}: نباتاتها بتتحمل الأملاح والتربة الرملية.`) });
   g.say(T('Which of these is a danger to wild animals?', 'أنهي من دول خطر على الحيوانات البرية؟'), 'point');
   await g.choice({ options: ['الصيد الجائر', 'إنشاء المحميات الطبيعية', 'نشر الوعي', 'إصدار القوانين'], correct: 'الصيد الجائر', hint: T('It leads to extinction.', 'بيؤدي للانقراض.'),
     ok: T(`${kw('Over-hunting')} leads to extinction. Nature reserves, laws and awareness are the state’s efforts to protect them.`, `${kw('الصيد الجائر')} بيؤدي لانقراض الحيوانات. أما المحميات والقوانين والتوعية فهي جهود الدولة لحمايتها.`) });
-  set('blank');
+  set('env');
 }
 async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
 

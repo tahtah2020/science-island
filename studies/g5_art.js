@@ -7,6 +7,8 @@
      reliefForces  (tap) ids fault · fold                                                        two block diagrams of the ground: one broken and shifted, one bent into waves
      climateMap    (tap) ids med · desert                                                         Egypt in two colours: a narrow green strip on the north coast (Mediterranean region) and yellow for the rest (hot desert region), with five cities; no region is named
      sunRays       (tap) ids rayEq1 · rayS · rayN · rayEq2                                         four Earths, each with an arrow (a sun ray) falling straight on one latitude circle: equator, Tropic of Capricorn, Tropic of Cancer, equator; no season or date is written
+     dunes         (fig) no tap targets                                                          sand dunes under the sun, no wind arrows, so the picture never gives the answer
+     habitats      (tap) ids envNile · envDesert · envCoast                                       three stacked scenes: a canal bank (papyrus, reeds, white bird), a desert (aloe, prickly pear, palm, camel), a coast (fig tree, mangrove, gull); no word
    Texts are Arabic (the book is Arabic for both tracks). Screen-reader names describe the picture, never the answer.
    window.S5ART = the pieces the game and the map script reuse. */
 (function () {
@@ -182,6 +184,48 @@
   }
   sunRays.rects = () => RAYS.map(p => ({ id: p.id, x: p.x, y: p.y, w: 160, h: 140 }));
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays });
+  /* ================= 7 · sand dunes (340 x 250, a picture only: no wind arrows, no words) ================= */
+  function dunes(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="250" rx="14" fill="${PAPER}"/>`;
+    s += `<rect x="8" y="8" width="324" height="234" rx="12" fill="#cfe9f7"/><circle cx="268" cy="52" r="22" fill="#ffd23f" stroke="#f2b134" stroke-width="3"/>`;
+    const hill = (x0, y0, x1, y1, ymax, c) => `<path d="M${x0} 242V${y0}C${x0 + 50} ${ymax} ${x1 - 70} ${ymax - 12} ${x1} ${y1}V242Z" fill="${c}"/>`;
+    s += hill(8, 160, 332, 150, 90, '#f0cf86') + hill(8, 190, 332, 176, 130, '#e6bd6c') + hill(8, 222, 332, 212, 170, '#d9a950');
+    for (let i = 0; i < 5; i++) s += `<path d="M${30 + i * 58} ${196 + (i % 2) * 8}q14 -7 28 0M${44 + i * 58} ${214 - (i % 2) * 4}q12 -6 24 0" fill="none" stroke="#c4903f" stroke-width="1.6" stroke-linecap="round"/>`;
+    return wrap(340, 250, 'مشهد صحراوي فيه تلال رملية عالية متتابعة تحت سماء صافية وشمس', s, plain);
+  }
+
+  /* ================= 8 · three environments of Egypt (340 x 300): the Nile valley, the desert and the coast; no words ================= */
+  const ENV = [{ id: 'envNile', y: 8 }, { id: 'envDesert', y: 106 }, { id: 'envCoast', y: 204 }];
+  function habitats(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="300" rx="14" fill="${PAPER}"/>`;
+    const G = '#4a9a3f', G2 = '#6cbd54';
+    /* band 1: a canal bank with papyrus, reeds and a white bird */
+    let y = 8;
+    s += `<rect x="8" y="${y}" width="324" height="92" rx="12" fill="#e4f4fa"/><rect x="8" y="${y + 58}" width="324" height="34" fill="#8fd0ee"/><rect x="8" y="${y + 86}" width="324" height="6" rx="3" fill="#7bbf5e"/>`;
+    [[48, 30], [92, 22]].forEach(([x, h]) => { s += `<path d="M${x} ${y + 84}V${y + 84 - h * 2.2}" stroke="${G}" stroke-width="3"/>`; for (let a = -80; a <= 80; a += 20) { const r = a * Math.PI / 180; s += `<path d="M${x} ${y + 84 - h * 2.2}l${f1(Math.sin(r) * 20)} ${f1(-Math.cos(r) * 20 + 4)}" stroke="${G2}" stroke-width="2" stroke-linecap="round"/>`; } });
+    for (let i = 0; i < 9; i++) s += `<path d="M${150 + i * 9} ${y + 86}q${i % 2 ? 3 : -3} -30 ${i % 3 - 1} -52" fill="none" stroke="#7fae45" stroke-width="3" stroke-linecap="round"/>`;
+    s += `<ellipse cx="274" cy="${y + 62}" rx="15" ry="9" fill="#fff" stroke="#c9d6dc" stroke-width="1.2"/><path d="M285 ${y + 58}q10 -16 4 -30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="290" cy="${y + 27}" r="5" fill="#fff" stroke="#c9d6dc" stroke-width="1"/><path d="M294 ${y + 26}l11 3l-11 2z" fill="#f2a33a"/><path d="M270 ${y + 70}v14M278 ${y + 70}v14" stroke="#7a6a50" stroke-width="2"/>`;
+    /* band 2: desert with aloe, prickly pear, a palm and a camel */
+    y = 106;
+    s += `<rect x="8" y="${y}" width="324" height="92" rx="12" fill="#fbe7b3"/><path d="M8 ${y + 76}C90 ${y + 56} 160 ${y + 84} 250 ${y + 64}S320 ${y + 70} 332 ${y + 72}V${y + 80}a12 12 0 0 1 -12 12H20a12 12 0 0 1 -12 -12Z" fill="#efce7c"/>`;
+    for (let a = -60; a <= 60; a += 30) { const r = a * Math.PI / 180; s += `<path d="M44 ${y + 78}q${f1(Math.sin(r) * 14)} ${f1(-Math.cos(r) * 14)} ${f1(Math.sin(r) * 30)} ${f1(-Math.cos(r) * 30)}" stroke="#58a068" stroke-width="5" stroke-linecap="round" fill="none"/>`; }
+    [[100, 70, 11, 8], [114, 56, 10, 7], [92, 55, 9, 7]].forEach(([x, dy, rx, ry]) => { s += `<ellipse cx="${x}" cy="${y + dy}" rx="${rx}" ry="${ry}" fill="#5aa05a" stroke="#3f7f45" stroke-width="1.4"/>`; });
+    s += `<path d="M168 ${y + 80}q4 -26 -2 -46" stroke="#8a5a2b" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    for (let a = -70; a <= 70; a += 35) { const r = a * Math.PI / 180; s += `<path d="M166 ${y + 34}q${f1(Math.sin(r) * 18)} ${f1(-Math.cos(r) * 8 - 6)} ${f1(Math.sin(r) * 28)} ${f1(-Math.cos(r) * 2 + 8)}" stroke="#3f8f3a" stroke-width="3.4" fill="none" stroke-linecap="round"/>`; }
+    s += `<ellipse cx="262" cy="${y + 56}" rx="26" ry="12" fill="#c58a4a"/><path d="M246 ${y + 46}q8 -20 18 0z" fill="#c58a4a"/><path d="M284 ${y + 50}q10 -16 8 -28" stroke="#c58a4a" stroke-width="7" fill="none" stroke-linecap="round"/><ellipse cx="297" cy="${y + 22}" rx="9" ry="6" fill="#c58a4a"/><path d="M244 ${y + 64}v16M254 ${y + 66}v14M270 ${y + 66}v14M280 ${y + 64}v16" stroke="#a9733a" stroke-width="3.4" stroke-linecap="round"/>`;
+    /* band 3: a coast with a fig tree, a mangrove in the water and a gull */
+    y = 204;
+    s += `<rect x="8" y="${y}" width="324" height="88" rx="12" fill="#dff1fa"/><path d="M8 ${y + 58}H150C170 ${y + 58} 180 ${y + 88} 180 ${y + 88}H20a12 12 0 0 1 -12 -12Z" fill="#f0dca0"/><path d="M180 ${y + 56}H320a12 12 0 0 1 12 12V${y + 76}a12 12 0 0 1 -12 12H180Z" fill="#7cc8e8"/>`;
+    s += `<path d="M44 ${y + 62}V${y + 34}" stroke="#8a5a2b" stroke-width="5"/><circle cx="44" cy="${y + 26}" r="18" fill="#6aa84f"/><circle cx="36" cy="${y + 30}" r="3" fill="#8b3a62"/><circle cx="52" cy="${y + 22}" r="3" fill="#8b3a62"/><circle cx="46" cy="${y + 34}" r="3" fill="#8b3a62"/>`;
+    s += `<path d="M232 ${y + 62}q-14 -10 -26 4M232 ${y + 62}q-6 -14 -6 -24M232 ${y + 62}q8 -14 22 -18M232 ${y + 62}q16 -4 22 8" stroke="#7a5a30" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="232" cy="${y + 34}" rx="26" ry="14" fill="#4f9a5a"/>`;
+    s += `<path d="M120 ${y + 24}q14 -14 24 0q10 -14 24 0" fill="none" stroke="#fff" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M120 ${y + 24}q14 -14 24 0q10 -14 24 0" fill="none" stroke="#9fb4be" stroke-width="1" stroke-linecap="round"/>`;
+    if (!plain) ENV.forEach(p => { s += hot(p.id, p.id === 'envNile' ? 'الشريط العلوي: ضفة ماء فيها نباتات خضراء وطائر أبيض' : p.id === 'envDesert' ? 'الشريط الأوسط: رمال وصبار ونخلة وجمل' : 'الشريط السفلي: شاطئ وبحر وشجرة وطائر محلق', ringRect(8, p.y, 324, 92, 12)); });
+    return wrap(340, 300, 'ثلاثة مشاهد فوق بعضها: ضفة ماء بنباتات، وصحراء بصبار وجمل، وساحل بحر بأشجار وطائر', s, plain);
+  }
+  habitats.rects = () => ENV.map(p => ({ id: p.id, x: 8, y: p.y, w: 324, h: 92 }));
+
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, dunes, habitats, dunes, habitats });
   window.S5ART = { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, txt, hot, ringRect, ringEl, wrap, path, f1, esc, mx, my, poly, line, EGYPT, NILE, DELTA, SINAI, WEST, EAST, UNIT, INK, PAPER, FONT, GX, GY };
 })();
