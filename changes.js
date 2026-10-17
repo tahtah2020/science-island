@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-17', title: 'English is shown in English only',
+    items: [
+      { text: 'The English subject now stays in English for the Arabic track too' }
+    ] },
   { date: '2026-10-17', title: 'English Grade 4 · Unit 1: The Five Senses',
     items: [
       { text: 'New English subject: Unit 1 with 29 ideas, the Senses Explorer game and the October Monthly Test', links: [{ label: 'English', href: 'chapters.html', ch: 'eg4u1' }] }

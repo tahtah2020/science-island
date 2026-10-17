@@ -28,7 +28,8 @@
   const LANG_OVR = (/[#&]lang=(ar|en)\b/.exec(location.hash) || [])[1];   // owner preview links can force a language: #preview=M1.1&lang=ar
   /* a subject taught in Arabic on both tracks (Studies) is shown fully in Arabic, right to left, to the Languages track too */
   const arSubject = () => { try { const s = subjectById(subjectId()); return !!(s && s.lang && s.lang.lang === 'ar' && s.lang.ar === 'ar'); } catch (e) { return false; } };
-  const isAr = () => (LANG_OVR ? LANG_OVR === 'ar' : ((player() || {}).track === 'ar' || arSubject()));
+  const enSubject = () => { try { const s = subjectById(subjectId()); return !!(s && s.lang && s.lang.lang === 'en' && s.lang.ar === 'en'); } catch (e) { return false; } };   // English: English only on both tracks
+  const isAr = () => (LANG_OVR ? LANG_OVR === 'ar' : (enSubject() ? false : ((player() || {}).track === 'ar' || arSubject())));
   const T = (en, ar) => (isAr() && ar != null ? ar : en);
   const chTitle = c => (c ? (isAr() && c.titleAr) || c.title : '');
   const RTL_CSS = `

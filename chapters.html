@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261017d">
+<link rel="stylesheet" href="common.css?v=20261017e">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -101,8 +101,8 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261017d"></script>
-<script src="common.js?v=20261017d"></script>
+<script src="chapters.js?v=20261017e"></script>
+<script src="common.js?v=20261017e"></script>
 <script>
 (() => {
   'use strict';
@@ -110,7 +110,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   const $ = s => document.querySelector(s);
   if (SI.isAr()) document.title = 'متفوّق · الفصول';
   const esc = SI.esc, T = SI.T, cur = SI.chapterId();
-  if (SI.isUnits()) $('#sect').innerHTML = T('Choose a unit <span class="ar">اختر الوحدة</span>', 'اختر الوحدة');   // the preparatory books are made of units
+  if (SI.isUnits()) $('#sect').innerHTML = SI.subjectId() === 'english' ? 'Choose a unit' : T('Choose a unit <span class="ar">اختر الوحدة</span>', 'اختر الوحدة');   // the preparatory books are made of units
 
   /* subject tabs: an open subject shows its chapters; a "soon" subject is announced with the Telegram invitation */
   function tabs() {
@@ -141,7 +141,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   let started = false;
   function render() {
   const list = SI.chapters(); let total = 0;
-  $('#sect').innerHTML = SI.isUnits() ? T('Choose a unit <span class="ar">اختر الوحدة</span>', 'اختر الوحدة') : T('Choose a chapter <span class="ar">اختر الفصل</span>', 'اختر الفصل');
+  $('#sect').innerHTML = SI.subjectId() === 'english' ? 'Choose a unit' : SI.isUnits() ? T('Choose a unit <span class="ar">اختر الوحدة</span>', 'اختر الوحدة') : T('Choose a chapter <span class="ar">اختر الفصل</span>', 'اختر الفصل');
   $('#sub').textContent = T(`${SI.gradeName()} · ${SI.subjectName()} · Languages · First term`, `${SI.gradeName()} · ${SI.subjectName()} · عربي · الفصل الدراسي الأول`);
   tabs();
   const box = $('#list'); box.innerHTML = ''; $('#exams').innerHTML = '';

@@ -214,6 +214,7 @@ The Arabic track has its own Champions board (the board key includes the track).
 - Grade 4 Unit 1 `eg4u1` «The Five Senses» (ready): 5 lessons (senses pp 8-10, Healthy Habits and present simple pp 11-13, Goha story and short/long vowels pp 14-17, sequence words pp 18-19, presentation and feedback p 20), ids A-E, 29 ideas / 156 phrasings, Boss ideas A5, B6, C10, D5, E3. Game `english-senses.html` (Senses Explorer). Exam `eg4oct` (October Monthly Test).
 - New `build` style `sentence` ("Build the sentence"). Picture `fiveSenses` (tap ids `eye`, `ear`, `nose`, `tongue`, `palm`; `palm`, not `hand`, because the admin TAP map shares keys with Math). Pictures live in `english/g4_art.js`; maps and backgrounds: `node english/tools/make_e_maps.js`.
 - Review notes: the book's listening and audio tasks are asked as reading questions (no audio here). Open writing and speaking tasks are not asked. The self-assessment prints a phonetic symbol for the "o" in pot; the site avoids phonetic symbols. The "First" in the book's Tip box is struck through (a book glitch). "Goha paid a few coins" is false: he only shook his coins. Sorting comments into Praise / Advice is our own classification.
+- English is English-only on BOTH tracks: `SI.isAr()` is false while the English subject is chosen (`enSubject()` in `common.js`), so the Arabic track sees no Arabic interface, titles or explanations there; `titleAr` / `lessonsAr` stay in `chapters.js` for the owner pages only.
 - Other grades' English tab shows "Soon".
 
 ## Adding a subject (Math was the first)
