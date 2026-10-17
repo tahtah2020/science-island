@@ -1,0 +1,137 @@
+/* Social Studies · Grade 5 pictures, drawn in code (CH_DIAGRAMS). Nothing is copied from the school book: every map and block diagram is drawn here with simple shapes.
+   Used by q.fig (a picture above a question), q.diagram + q.pic (tap), and by the game studies-egypt.html (pic.plain = the inner markup only, no frame and no tap rings).
+   Unit 1 «مصر موقع متميز وطبيعة متنوعة»:
+     globeGrid     (tap) ids equator · cancer · capricorn · arctic · antarctic · greenwich      a flat world map with its grid; the lines carry degrees only, never names; Egypt is the red square
+     egyptGrid     (fig) no tap targets                                                          Egypt with its longitude and latitude lines, the Tropic of Cancer, Cairo, Aswan, Alexandria
+     egyptRegions  (tap) ids delta · valley · fayoum · west · east · sinai                       Egypt in four colours: the Nile unit (delta, valley, Fayoum), the Western Desert, the Eastern Desert, Sinai; no unit is named
+     reliefForces  (tap) ids fault · fold                                                        two block diagrams of the ground: one broken and shifted, one bent into waves
+   Texts are Arabic (the book is Arabic for both tracks). Screen-reader names describe the picture, never the answer.
+   window.S5ART = the pieces the game and the map script reuse. */
+(function () {
+  'use strict';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const f1 = n => (Math.round(n * 10) / 10).toString();
+  const INK = '#1f3d57', PAPER = '#fffaf0';
+  const FONT = 'Cairo, Nunito, sans-serif';
+  const txt = (x, y, s, o = {}) => `<text x="${f1(x)}" y="${f1(y)}" text-anchor="${o.anchor || 'middle'}" direction="ltr" font-family="${FONT}" font-size="${o.fs || 11}" font-weight="${o.w || 800}" fill="${o.fill || INK}"${o.halo ? ' stroke="#fff" stroke-width="3" paint-order="stroke" stroke-linejoin="round"' : ''}${o.rot ? ` transform="rotate(${o.rot} ${f1(x)} ${f1(y)})"` : ''}>${esc(s)}</text>`;
+  const hot = (id, name, inner) => `<g class="hot" data-id="${id}" role="button" tabindex="0" aria-label="${esc(name)}">${inner}</g>`;
+  const ringRect = (x, y, w, h, r = 12) => `<rect class="ring" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${r}"/>`;
+  const ringEl = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}"/>`;
+  const wrap = (w, h, label, inner, plain) => (plain ? inner : `<svg class="diagram" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}">${inner}</svg>`);
+  const path = pts => pts.map(([x, y], i) => (i ? 'L' : 'M') + f1(x) + ' ' + f1(y)).join('');
+
+  /* ================= 1 · the world grid (340 x 300): longitude 0.9 px per degree, latitude 1.4 px per degree ================= */
+  const GX = lon => 8 + (lon + 180) * 0.9, GY = lat => 150 - lat * 1.4;
+  const LAND = {
+    namerica: [[-168, 66], [-140, 70], [-100, 72], [-80, 70], [-60, 60], [-55, 50], [-67, 45], [-75, 38], [-81, 31], [-80, 25], [-90, 29], [-97, 26], [-97, 20], [-90, 21], [-87, 16], [-83, 9], [-78, 8], [-85, 11], [-92, 15], [-105, 20], [-110, 24], [-117, 32], [-124, 40], [-125, 50], [-135, 58], [-148, 60], [-165, 60]],
+    samerica: [[-78, 8], [-72, 12], [-62, 10], [-50, 0], [-35, -6], [-39, -15], [-48, -26], [-58, -38], [-65, -42], [-68, -52], [-72, -50], [-74, -40], [-71, -20], [-76, -14], [-81, -6], [-80, 0]],
+    africa: [[-17, 21], [-17, 15], [-10, 6], [0, 5], [9, 4], [10, -3], [13, -12], [12, -17], [15, -27], [18, -34], [25, -34], [32, -28], [35, -22], [40, -15], [40, -5], [51, 11], [43, 12], [38, 18], [34, 27], [32, 31], [25, 32], [20, 31], [10, 34], [10, 37], [0, 36], [-6, 36], [-10, 30]],
+    eurasia: [[-10, 36], [-9, 43], [-5, 48], [5, 52], [10, 57], [5, 62], [15, 69], [30, 71], [60, 70], [100, 77], [140, 72], [170, 68], [180, 65], [160, 60], [140, 52], [135, 43], [122, 38], [122, 30], [120, 22], [108, 18], [105, 9], [100, 13], [98, 8], [103, 1], [95, 16], [90, 22], [80, 15], [77, 8], [72, 20], [67, 25], [57, 25], [56, 26], [50, 30], [48, 29], [52, 16], [43, 13], [35, 28], [34, 31], [35, 36], [27, 37], [26, 40], [23, 37], [19, 41], [15, 38], [12, 44], [3, 43], [-1, 37]],
+    australia: [[114, -22], [122, -18], [131, -12], [137, -12], [142, -11], [146, -19], [153, -27], [150, -37], [141, -38], [130, -32], [115, -34]],
+    antarctica: [[-180, -72], [-120, -75], [-60, -70], [0, -70], [60, -68], [120, -66], [180, -72], [180, -90], [-180, -90]]
+  };
+  const GLINES = [['equator', 0, '0°', '#e2603f', ''], ['cancer', 23.5, '23.5° ش', '#d98b1f', '5 3'], ['capricorn', -23.5, '23.5° ج', '#d98b1f', '5 3'], ['arctic', 66.5, '66.5° ش', '#5b72c0', '5 3'], ['antarctic', -66.5, '66.5° ج', '#5b72c0', '5 3']];
+  const GNAME = { equator: 'خط أفقي في منتصف الخريطة', cancer: 'خط أفقي فوق المنتصف يمر بجنوب مصر', capricorn: 'خط أفقي تحت المنتصف', arctic: 'خط أفقي قرب أعلى الخريطة', antarctic: 'خط أفقي قرب أسفل الخريطة', greenwich: 'خط رأسي في منتصف الخريطة' };
+  function globeGrid(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="300" rx="14" fill="${PAPER}"/>`;
+    s += `<rect x="8" y="24" width="324" height="252" rx="4" fill="#cfe8f6" stroke="#3a5c75" stroke-width="2"/>`;
+    Object.values(LAND).forEach(p => { s += `<path d="${path(p.map(([lo, la]) => [GX(lo), GY(la)]))}Z" fill="#bfdc8e" stroke="#9bbf6a" stroke-width="1" stroke-linejoin="round"/>`; });
+    for (let lo = -150; lo <= 150; lo += 30) {
+      if (lo === 0) continue;
+      s += `<path d="M${f1(GX(lo))} 24V276" stroke="#6f93a8" stroke-width=".9" stroke-dasharray="2 3" opacity=".8"/>` + txt(GX(lo), 289, Math.abs(lo) + '°' + (lo < 0 ? ' غ' : ' ق'), { fs: 8.5, w: 700, fill: '#3a5c75' });
+    }
+    s += `<path d="M${f1(GX(0))} 24V276" stroke="#e0307a" stroke-width="2"/>` + txt(GX(0), 289, '0°', { fs: 8.5, w: 800, fill: '#e0307a' });
+    GLINES.forEach(([id, la, lab, col, dash]) => {
+      s += `<path d="M8 ${f1(GY(la))}H332" stroke="${col}" stroke-width="${id === 'equator' ? 2 : 1.6}"${dash ? ` stroke-dasharray="${dash}"` : ''}/>` + txt(12, GY(la) - 3, lab, { fs: 8.5, w: 800, anchor: 'start', fill: col, halo: true });
+    });
+    s += `<rect x="${f1(GX(25))}" y="${f1(GY(31.6))}" width="${f1(GX(37) - GX(25))}" height="${f1(GY(22) - GY(31.6))}" fill="#e2273a" stroke="#fff" stroke-width="1"/>` + txt(GX(31) + 12, GY(31.6) - 5, 'مصر', { fs: 10, anchor: 'start', fill: '#b3202e', halo: true });
+    if (!plain) {
+      ['equator', 'cancer', 'capricorn', 'arctic', 'antarctic'].forEach(id => { const la = GLINES.find(g => g[0] === id)[1]; s += hot(id, GNAME[id], ringRect(8, GY(la) - 12, 324, 24, 6)); });
+      s += hot('greenwich', GNAME.greenwich, ringRect(GX(0) - 12, 24, 24, 252, 6));
+    }
+    return wrap(340, 300, 'خريطة للعالم عليها شبكة من الخطوط الأفقية والرأسية، وتظهر مصر مربعًا أحمر فوق المنتصف بقليل', s, plain);
+  }
+  globeGrid.lines = () => GLINES.map(([id, la]) => ({ id, y: GY(la) }));
+
+  /* ================= 2 · Egypt from longitude and latitude (340 x 300) ================= */
+  const LON0 = 24.2, LAT0 = 32.2, KX = 24.5, MY = 26;
+  const mx = lon => 8 + (lon - LON0) * KX, my = lat => MY + (LAT0 - lat) * KX;
+  const poly = pts => pts.map(([lo, la], i) => (i ? 'L' : 'M') + f1(mx(lo)) + ' ' + f1(my(la))).join('') + 'Z';
+  const line = pts => pts.map(([lo, la], i) => (i ? 'L' : 'M') + f1(mx(lo)) + ' ' + f1(my(la))).join('');
+  const EGYPT = [[25.15, 31.57], [26.5, 31.5], [27.25, 31.35], [28.5, 30.95], [29.9, 31.2], [30.4, 31.5], [31.0, 31.6], [31.8, 31.5], [32.3, 31.28], [33.2, 31.1], [34.27, 31.23], [34.9, 29.5], [34.55, 28.5], [34.25, 27.75], [33.9, 28.2], [33.6, 28.8], [33.0, 29.6], [32.55, 29.95], [32.45, 29.6], [32.6, 29.1], [33.2, 28.2], [33.8, 27.25], [33.95, 26.7], [34.4, 26.0], [34.9, 25.1], [35.3, 24.2], [35.6, 23.5], [36.3, 22.8], [36.9, 22.0], [31.5, 22.0], [25.0, 22.0]];
+  const NILE = [[32.9, 24.05], [32.65, 25.7], [32.7, 26.15], [31.7, 26.55], [31.2, 27.2], [30.8, 28.1], [31.1, 29.07], [31.25, 30.05]];
+  const DELTA_R = [[31.25, 30.05], [30.9, 30.6], [30.4, 31.45]], DELTA_D = [[31.25, 30.05], [31.5, 30.7], [31.8, 31.5]];
+  const DELTA = [[31.25, 30.05], [29.9, 30.7], [29.7, 31.7], [32.6, 31.7], [32.4, 30.9], [31.6, 30.1]];
+  const SINAI = [[32.3, 31.5], [34.5, 31.5], [34.9, 29.5], [34.55, 28.5], [34.25, 27.75], [33.9, 28.2], [33.6, 28.8], [33.0, 29.6], [32.55, 29.95], [32.4, 30.5]];
+  const WEST = [[24.9, 22.0], [24.9, 31.7], [29.7, 31.7], [29.7, 30.7], [31.05, 30.0]].concat(NILE.slice().reverse().slice(1)).concat([[32.9, 22.0]]);
+  const EAST = [[31.25, 30.05], [32.55, 29.95], [32.45, 29.6], [32.6, 29.1], [33.2, 28.2], [33.8, 27.25], [33.95, 26.7], [34.4, 26.0], [34.9, 25.1], [35.3, 24.2], [35.6, 23.5], [36.3, 22.8], [37.0, 22.0], [32.9, 22.0]].concat(NILE.slice(0, -1));
+  const CAIRO = [31.25, 30.05];
+
+  function egyptBase(s, fill) {
+    return s + `<clipPath id="eg5Clip"><path d="${poly(EGYPT)}"/></clipPath><path d="${poly(EGYPT)}" fill="${fill}" stroke="#8a6a3a" stroke-width="1.8" stroke-linejoin="round"/>`;
+  }
+  function egyptGrid(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="300" rx="14" fill="${PAPER}"/>`;
+    s += `<rect x="8" y="${MY - 6}" width="324" height="262" rx="6" fill="#cfeaf8" stroke="#3a5c75" stroke-width="2"/>`;
+    s = egyptBase(s, '#f8e6b4');
+    for (let lo = 26; lo <= 36; lo += 2) s += `<path d="M${f1(mx(lo))} ${MY - 6}V${MY + 256}" stroke="#6f93a8" stroke-width=".8" stroke-dasharray="2 3"/>` + txt(mx(lo), MY + 268, lo + '° ق', { fs: 8.5, w: 700, fill: '#3a5c75' });
+    for (let la = 24; la <= 30; la += 2) s += `<path d="M8 ${f1(my(la))}H332" stroke="#6f93a8" stroke-width=".8" stroke-dasharray="2 3"/>` + txt(11, my(la) - 2, la + '° ش', { fs: 8.5, w: 700, anchor: 'start', fill: '#3a5c75' });
+    s += txt(mx(25), MY - 10, '25° ق', { fs: 9, w: 900, fill: '#e0307a' }) + txt(mx(37), MY - 10, '37° ق', { fs: 9, w: 900, fill: '#e0307a' });
+    s += `<path d="M8 ${f1(my(22))}H332" stroke="#e0307a" stroke-width="1.6"/>` + txt(11, my(22) + 11, '22° ش', { fs: 9, w: 900, anchor: 'start', fill: '#e0307a' });
+    s += `<path d="M8 ${f1(my(31.6))}H332" stroke="#e0307a" stroke-width="1.6"/>` + txt(11, my(31.6) - 3, '31°36′ ش', { fs: 9, w: 900, anchor: 'start', fill: '#e0307a' });
+    s += `<path d="M8 ${f1(my(23.5))}H332" stroke="#d98b1f" stroke-width="1.8" stroke-dasharray="6 3"/>` + txt(mx(35.4), my(23.5) - 4, '23.5° ش', { fs: 9, w: 900, fill: '#b36c0a', halo: true });
+    s += `<path d="${line(NILE)}" fill="none" stroke="#2f8fd0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="${line(DELTA_R)}M${f1(mx(DELTA_D[0][0]))} ${f1(my(DELTA_D[0][1]))}${DELTA_D.slice(1).map(([lo, la]) => 'L' + f1(mx(lo)) + ' ' + f1(my(la))).join('')}" fill="none" stroke="#2f8fd0" stroke-width="2" stroke-linecap="round"/>`;
+    [['القاهرة', 31.25, 30.05, -7, 14, 'end', true], ['الإسكندرية', 29.92, 31.2, -2, 15, 'middle'], ['أسوان', 32.9, 24.09, 7, 4, 'start']].forEach(([n, lo, la, dx, dy, an, cap]) => {
+      s += cap ? `<rect x="${f1(mx(lo) - 4.5)}" y="${f1(my(la) - 4.5)}" width="9" height="9" fill="#e2273a" stroke="#fff" stroke-width="1.4"/>` : `<circle cx="${f1(mx(lo))}" cy="${f1(my(la))}" r="3.2" fill="${INK}" stroke="#fff" stroke-width="1.2"/>`;
+      s += txt(mx(lo) + dx, my(la) + dy, n, { fs: 10, anchor: an, halo: true });
+    });
+    return wrap(340, 300, 'خريطة لمصر عليها خطوط الطول ودوائر العرض ومدار السرطان جنوب مصر، وعليها القاهرة والإسكندرية وأسوان', s, plain);
+  }
+
+  /* ================= 3 · the four relief units of Egypt (340 x 300) ================= */
+  const UNIT = { nile: '#7fcf6f', west: '#f6e3a6', east: '#ecb46a', sinai: '#c98f6a' };
+  function egyptRegions(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="300" rx="14" fill="${PAPER}"/>`;
+    s += `<rect x="8" y="${MY - 6}" width="324" height="262" rx="6" fill="#cfeaf8" stroke="#3a5c75" stroke-width="2"/>`;
+    s = egyptBase(s, UNIT.west);
+    s += `<g clip-path="url(#eg5Clip)"><path d="${poly(WEST)}" fill="${UNIT.west}"/><path d="${poly(EAST)}" fill="${UNIT.east}"/><path d="${poly(SINAI)}" fill="${UNIT.sinai}"/>`;
+    s += `<path d="${poly(DELTA)}" fill="${UNIT.nile}"/><path d="${line(NILE.concat([CAIRO]))}" fill="none" stroke="${UNIT.nile}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="${f1(mx(30.6))}" cy="${f1(my(29.4))}" rx="14" ry="9" fill="${UNIT.nile}"/><path d="${line([[31.0, 29.1], [30.75, 29.35]])}" stroke="${UNIT.nile}" stroke-width="4" stroke-linecap="round"/></g>`;
+    s += `<path d="${line(NILE)}" fill="none" stroke="#2f8fd0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="${line(DELTA_R)}M${f1(mx(DELTA_D[0][0]))} ${f1(my(DELTA_D[0][1]))}${DELTA_D.slice(1).map(([lo, la]) => 'L' + f1(mx(lo)) + ' ' + f1(my(la))).join('')}" fill="none" stroke="#2f8fd0" stroke-width="2" stroke-linecap="round"/>`;
+    s += `<path d="${poly(EGYPT)}" fill="none" stroke="#8a6a3a" stroke-width="1.6" stroke-linejoin="round"/>`;
+    s += `<rect x="${f1(mx(CAIRO[0]) - 4.5)}" y="${f1(my(CAIRO[1]) - 4.5)}" width="9" height="9" fill="#e2273a" stroke="#fff" stroke-width="1.4"/>` + txt(mx(CAIRO[0]) + 8, my(CAIRO[1]) + 14, 'القاهرة', { fs: 10, anchor: 'start', halo: true });
+    s += txt(mx(28.8), my(31.9) - 3, 'البحر المتوسط', { fs: 10, fill: '#2f6f9f' }) + txt(mx(36.3), my(25.2), 'البحر الأحمر', { fs: 10, fill: '#2f6f9f', rot: 62 });
+    s += txt(mx(24.9) + 6, my(23.2), 'ليبيا', { fs: 10, fill: '#8a6a3a', anchor: 'start' }) + txt(mx(30), my(22.0) + 14, 'السودان', { fs: 10, fill: '#8a6a3a' });
+    if (!plain) {
+      s += hot('west', 'منطقة صفراء فاتحة واسعة غرب النهر', ringEl(...Object.values(egyptRegions.rings().west))) + hot('east', 'منطقة برتقالية بين النهر والبحر الأحمر', ringEl(...Object.values(egyptRegions.rings().east))) + hot('sinai', 'منطقة بنية على شكل مثلث شرق قناة السويس', ringEl(...Object.values(egyptRegions.rings().sinai)));
+      s += hot('delta', 'منطقة خضراء على شكل مثلث في الشمال', ringEl(...Object.values(egyptRegions.rings().delta))) + hot('valley', 'شريط أخضر ضيق على جانبي النهر', ringEl(...Object.values(egyptRegions.rings().valley))) + hot('fayoum', 'بقعة خضراء صغيرة غرب النهر جنوب القاهرة', ringEl(...Object.values(egyptRegions.rings().fayoum)));
+    }
+    return wrap(340, 300, 'خريطة لمصر بأربعة ألوان: أخضر على جانبي النيل وفي الشمال، وأصفر فاتح واسع في الغرب، وبرتقالي في الشرق، وبني في المثلث الشرقي', s, plain);
+  }
+  egyptRegions.rings = () => ({ west: { cx: mx(27.7), cy: my(26.8), rx: 58, ry: 84 }, east: { cx: mx(33.1), cy: my(26.3), rx: 30, ry: 70 }, sinai: { cx: mx(33.7), cy: my(29.9), rx: 34, ry: 44 }, delta: { cx: mx(31.0), cy: my(30.95), rx: 32, ry: 20 }, valley: { cx: mx(31.8), cy: my(26.8), rx: 14, ry: 66 }, fayoum: { cx: mx(30.6), cy: my(29.4), rx: 16, ry: 12 } });
+
+  /* ================= 4 · forces that shape the ground (340 x 250): two block diagrams, no words ================= */
+  function reliefForces(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="250" rx="14" fill="${PAPER}"/>`;
+    const LAY = [['#7cc46a', 8], ['#a8794f', 26], ['#c9b58a', 30], ['#8a6a4a', 40]];
+    /* left panel: a broken ground, one side lifted and the other lowered */
+    s += `<rect x="8" y="8" width="160" height="234" rx="12" fill="#e8f4fb" stroke="#c5d9e6" stroke-width="2"/>`;
+    let y0 = 98; LAY.forEach(([c, h]) => { s += `<rect x="18" y="${y0 - 6}" width="70" height="${h}" fill="${c}"/>`; y0 += h; });
+    y0 = 134; LAY.forEach(([c, h]) => { s += `<rect x="90" y="${y0 - 6}" width="70" height="${h}" fill="${c}"/>`; y0 += h; });
+    s += `<path d="M89 90V232" stroke="#5a3b1e" stroke-width="2.4" stroke-dasharray="5 3"/>`;
+    s += `<path d="M53 150V112M45 120l8 -9l8 9" fill="none" stroke="#e2603f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M125 160V198M117 190l8 9l8 -9" fill="none" stroke="#e2603f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+    /* right panel: a bent ground, squeezed from both sides */
+    s += `<rect x="172" y="8" width="160" height="234" rx="12" fill="#e8f4fb" stroke="#c5d9e6" stroke-width="2"/>`;
+    const wave = dy => { const pts = []; for (let x = 182; x <= 322; x += 10) pts.push([x, dy + 22 * Math.sin((x - 182) / 140 * Math.PI * 2 + 1)]); return pts; };
+    let top = 100; LAY.forEach(([c, h]) => { const a = wave(top), b = wave(top + h); s += `<path d="${path(a)}${path(b.slice().reverse()).replace('M', 'L')}Z" fill="${c}"/>`; top += h; });
+    s += `<path d="M184 188h24M200 181l9 7l-9 7" fill="none" stroke="#e2603f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M320 188h-24M304 181l-9 7l9 7" fill="none" stroke="#e2603f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+    if (!plain) s += hot('fault', 'الشكل الأيسر: أرض انشقت وارتفع جانبها وانخفض الجانب الآخر', ringRect(8, 8, 160, 234, 12)) + hot('fold', 'الشكل الأيمن: أرض انثنت على شكل موجات بضغط من الجانبين', ringRect(172, 8, 160, 234, 12));
+    return wrap(340, 250, 'شكلان لباطن الأرض: واحد انشقت فيه الطبقات وانزلق جانب أعلى من الآخر، وواحد انثنت فيه الطبقات على شكل موجات', s, plain);
+  }
+
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces });
+  window.S5ART = { globeGrid, egyptGrid, egyptRegions, reliefForces, txt, hot, ringRect, ringEl, wrap, path, f1, esc, mx, my, poly, line, EGYPT, NILE, DELTA, SINAI, WEST, EAST, UNIT, INK, PAPER, FONT, GX, GY };
+})();

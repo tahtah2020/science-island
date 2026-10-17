@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Egypt Explorer · A Distinguished Location and Varied Nature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261017f">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Egypt Explorer.</noscript>
+<script src="firebase-config.js?v=20261017f"></script>
+<script src="chapters.js?v=20261017f"></script>
+<script src="common.js?v=20261017f"></script>
+<script src="studies/g5_art.js?v=20261017f"></script>
+<script src="game_kit.js?v=20261017f"></script>
+<script>
+(() => {
+'use strict';
+/* Egypt Explorer · the game of Unit 1, Egypt: a Distinguished Location and Varied Nature (Social Studies, Grade 5). Built on the shared game kit (game_kit.js).
+   The scene is always a picture the child works on: the world grid, Egypt with its lines, the four relief units, the forces under the ground.
+   Stage 1 (Warm Up): the grid of lines on the world map and Egypt's astronomical location (lesson 1, pages 8-13).
+   Stage 2 (Missions): time difference by longitude (1), the four relief units (2), faulting and folding (2).
+   Stage 3 (Speed Round): longitude line or latitude circle, with the book's statements (lesson 1).
+   Lessons 3 and 4 (climate, plants and animals) are added when their pages arrive.
+   Every T('English', 'عربي') has both languages. Names of places inside the pictures stay Arabic, as in the Arabic school book. */
+const T = SI.T, G = SI.G, A = S5ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;      // a number inside Arabic text stays left to right
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 340;
+const sc = { mode: 'blank', note: '', sub: '' };
+const PL = { pic: { plain: true } };
+/* a picture of w x h is centred in the 340 x 340 scene */
+const fit = (w, h) => { const k = Math.min(1, VW / w, VH / h); return { k, dx: (VW - w * k) / 2, dy: (VH - h * k) / 2 }; };
+const place = (f, inner) => `<g transform="translate(${A.f1(f.dx)} ${A.f1(f.dy)}) scale(${f.k})">${inner}</g>`;
+const FS = { globe: fit(340, 300), egypt: fit(340, 300), forces: fit(340, 250) };
+const rr = (f, x, y, w, h, r = 10) => A.ringRect(f.dx + x * f.k, f.dy + y * f.k, w * f.k, h * f.k, r);
+const re = (f, cx, cy, rx, ry) => A.ringEl(f.dx + cx * f.k, f.dy + cy * f.k, rx * f.k, ry * f.k);
+
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  const m = sc.mode, bg = `<rect width="340" height="300" fill="${A.PAPER}"/>`;
+  if (m === 'globe') s += place(FS.globe, bg + D.globeGrid(PL));
+  else if (m === 'egyptGrid') s += place(FS.egypt, bg + D.egyptGrid(PL));
+  else if (m === 'regions') s += place(FS.egypt, bg + D.egyptRegions(PL));
+  else if (m === 'forces') s += place(FS.forces, `<rect width="340" height="250" fill="${A.PAPER}"/>` + D.reliefForces(PL));
+  else if (m === 'sign') s += `<text x="170" y="150" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="26" font-weight="900" fill="#1f3d57">${sc.note}</text>` +
+    (sc.sub ? `<text x="170" y="190" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="18" font-weight="800" fill="#6b5a3a">${sc.sub}</text>` : '');
+  return s;
+}
+const set = (mode, o) => { Object.assign(sc, { mode, note: '', sub: '' }, o || {}); g.paint(); };
+
+/* tap rings */
+const globeRings = ids => ids.map(id => {
+  const f = FS.globe, W = { equator: ['خط الاستواء', 0], cancer: ['مدار السرطان', 23.5], capricorn: ['مدار الجدي', -23.5], arctic: ['الدائرة القطبية الشمالية', 66.5], antarctic: ['الدائرة القطبية الجنوبية', -66.5] };
+  if (id === 'greenwich') return { id, name: 'خط جرينتش', ring: rr(f, A.GX(0) - 9, 4, 18, 292, 9) };
+  return { id, name: W[id][0], ring: rr(f, 4, A.GY(W[id][1]) - 9, 332, 18, 9) };
+});
+const regionRings = ids => { const r = D.egyptRegions.rings(), nm = { delta: 'الدلتا', valley: 'وادي النيل', fayoum: 'الفيوم', west: 'الصحراء الغربية', east: 'الصحراء الشرقية', sinai: 'سيناء' };
+  return ids.map(id => ({ id, name: nm[id], ring: re(FS.egypt, r[id].cx, r[id].cy, r[id].rx, r[id].ry) })); };
+const forceRings = () => [{ id: 'fault', name: 'الانكسار', ring: rr(FS.forces, 8, 8, 160, 234, 12) }, { id: 'fold', name: 'الالتواء', ring: rr(FS.forces, 172, 8, 160, 234, 12) }];
+
+const g = G4Game({ ch: 'sg5u1', logo: '🗺️', title: ['Egypt Explorer', 'مستكشف مصر'], sub: ['Unit 1 · A Distinguished Location and Varied Nature', 'الوحدة 1 · مصر موقع متميز وطبيعة متنوعة'],
+  bg: 'studies/assets/bg_sg5u1.svg', bgc: '#e2f4dc', label: ['A map or a drawing under the ground for each question', 'خريطة أو رسم تحت الأرض لكل سؤال'], render, view: [VW, VH] });
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('globe');
+  g.say(T('Welcome, explorer! This map of the world is covered with imaginary lines. Tap the main <b>longitude line</b>, the one with the degree zero.', P('أهلًا يا مستكشف! خريطة العالم دي عليها خطوط وهمية. اضغط على <b>خط الطول</b> الرئيسي، اللي درجته صفر.', 'أهلًا يا مستكشفة! خريطة العالم دي عليها خطوط وهمية. اضغطي على <b>خط الطول</b> الرئيسي، اللي درجته صفر.')), 'point');
+  await g.spot(globeRings(['greenwich', 'equator']), 'greenwich', { hint: T('It is a vertical line, a half circle from pole to pole.', 'هو خط رأسي، نص دايرة من القطب للقطب.'),
+    ok: T(`That is the ${kw('Greenwich')} line, the prime meridian, at ${kw('0°')}.`, `ده خط ${kw('جرينتش')}، خط الطول الرئيسي، درجته ${kw(L('0°'))}.`) });
+  g.say(T('Now tap the latitude circle that divides the Earth into two equal halves.', 'دلوقتي اضغط على دائرة العرض اللي بتقسم الكرة الأرضية لنصفين متساويين.'), 'think');
+  await g.spot(globeRings(['equator', 'cancer', 'capricorn']), 'equator', { hint: T('Its degree is zero too.', 'درجتها كمان صفر.'),
+    ok: T(`That is the ${kw('equator')}, at ${L('0°')}. North of it is the northern half, south of it the southern half.`, `دي ${kw('دائرة الاستواء')}، درجتها ${L('0°')}. شمالها النصف الشمالي وجنوبها النصف الجنوبي.`) });
+  g.say(T('Tap the <b>Tropic of Cancer</b>, at 23.5° north of the equator.', 'اضغط على <b>مدار السرطان</b>، اللي على ' + L('23.5°') + ' شمال دائرة الاستواء.'), 'point');
+  await g.spot(globeRings(['cancer', 'capricorn', 'arctic', 'antarctic']), 'cancer', { hint: T('It is the first circle north of the equator.', 'هي أول دايرة شمال الاستواء.'),
+    ok: T('The Tropic of Cancer is 23.5° north; the Tropic of Capricorn is 23.5° south.', `مدار السرطان ${L('23.5°')} شمالًا، ومدار الجدي ${L('23.5°')} جنوبًا.`) });
+  g.say(T('Which circle is at 66.5° north of the equator?', 'أنهي دايرة على ' + L('66.5°') + ' شمال دائرة الاستواء؟'), 'think');
+  await g.choice({ options: ['الدائرة القطبية الشمالية', 'الدائرة القطبية الجنوبية', 'مدار السرطان', 'مدار الجدي'], correct: 'الدائرة القطبية الشمالية', hint: T('Near the north pole.', 'قريبة من القطب الشمالي.'),
+    ok: T(`It is the ${kw('Arctic Circle')}. The Antarctic Circle has the same degree, 66.5°, but south of the equator.`, `دي ${kw('الدائرة القطبية الشمالية')}. والجنوبية لها نفس الدرجة ${L('66.5°')} لكن جنوب الاستواء.`) });
+
+  set('egyptGrid');
+  g.say(T('Now Egypt. Egypt lies between latitude circles 22° and 31°36′. Is it north or south of the equator?', 'دلوقتي مصر. مصر بين دائرتي عرض ' + L('22°') + ' و' + L('31°36′') + '. هي شمال ولا جنوب دائرة الاستواء؟'), 'point');
+  await g.choice({ options: ['شمال', 'جنوب'], correct: 'شمال', hint: T('Both degrees are north.', 'الدرجتين شمالية.'),
+    ok: T(`Egypt is ${kw('north')} of the equator, in the northern half of the Earth.`, `مصر ${kw('شمال')} دائرة الاستواء، في نصف الكرة الشمالي.`) });
+  g.say(T('Which latitude circle passes through the south of Egypt?', 'أنهي دايرة عرض بتمر بجنوب مصر؟'), 'think');
+  await g.choice({ options: ['مدار السرطان', 'مدار الجدي', 'دائرة الاستواء', 'الدائرة القطبية الشمالية'], correct: 'مدار السرطان', hint: T('The dashed line on the map.', 'الخط المتقطع على الخريطة.'),
+    ok: T(`The ${kw('Tropic of Cancer')} passes through the south of Egypt.`, `${kw('مدار السرطان')} بيمر بجنوب مصر.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: time difference
+  set('sign', { note: '30° ÷ 15 = ?' });
+  g.say(T('Mission 1: every 15° of longitude is one hour. Cairo is at 30° east and London at 0°. How many hours apart are they?', 'المهمة ١: كل ' + L('15°') + ' من خطوط الطول بساعة. القاهرة على ' + L('30°') + ' شرق ولندن على ' + L('0°') + '. الفرق بينهم كام ساعة؟'), 'point');
+  await g.choice({ options: ['ساعتان', 'ساعة', '4 ساعات', '30 ساعة'], correct: 'ساعتان', hint: T('Divide 30 by 15.', 'اقسم ' + L('30') + ' على ' + L('15') + '.'),
+    ok: T(`${L('30 ÷ 15 = 2')} hours. Cairo is east of Greenwich, so it is ${kw('ahead')}.`, `${L('30 ÷ 15 = 2')} ساعتين. والقاهرة شرق جرينتش، يعني ${kw('بتسبق')} لندن.`), reveal: () => set('sign', { note: '30° ÷ 15 = 2' }) });
+  set('sign', { note: '6 + 2 = ?' });
+  g.say(T('A match starts at 6 pm in London. What time is it in Cairo?', 'ماتش بيبدأ الساعة ' + L('6') + ' مساءً بتوقيت لندن. الساعة كام في القاهرة؟'), 'think');
+  await g.choice({ options: ['8 مساءً', '4 عصرًا', '6 مساءً', '9 مساءً'], correct: '8 مساءً', hint: T('Cairo is 2 hours ahead.', 'القاهرة بتسبق بساعتين.'),
+    ok: T(`${L('6 + 2 = 8')}: the match starts at ${kw('8 pm')} in Cairo.`, `${L('6 + 2 = 8')}: الماتش بيبدأ الساعة ${kw(L('8'))} مساءً بتوقيت القاهرة.`), reveal: () => set('sign', { note: '6 + 2 = 8 pm' }) });
+}
+async function mission2() {                 // lesson 2: the four relief units
+  set('regions');
+  g.say(T('Mission 2: the surface of Egypt has four units. Tap the <b>largest</b> one by area.', 'المهمة ٢: سطح مصر أربع وحدات. اضغط على <b>أكبر</b> وحدة مساحة.'), 'point');
+  await g.spot(regionRings(['west', 'east', 'sinai', 'valley']), 'west', { hint: T('It is on the west of the Nile.', 'هي غرب النيل.'),
+    ok: T(`The ${kw('Western Desert')} is the largest relief unit.`, `${kw('الصحراء الغربية')} أكبر الوحدات التضاريسية مساحة.`) });
+  g.say(T('Tap the desert rich in <b>gold</b>, with oil and natural gas.', 'اضغط على الصحراء الغنية بـ<b>الذهب</b>، وفيها البترول والغاز الطبيعي.'), 'think');
+  await g.spot(regionRings(['west', 'east', 'sinai']), 'east', { hint: T('It lies between the Nile and the Red Sea.', 'بين النيل والبحر الأحمر.'),
+    ok: T(`The ${kw('Eastern Desert')} is a mountainous plateau rich in minerals.`, `${kw('الصحراء الشرقية')} صحراء جبلية هضبية غنية بالمعادن.`) });
+  g.say(T('Mount St Catherine and Mount Moses are in the south of which unit?', 'جبل سانت كاترين وجبل موسى في جنوب أنهي وحدة؟'), 'think');
+  await g.spot(regionRings(['west', 'east', 'sinai', 'delta']), 'sinai', { hint: T('A peninsula east of the Suez Canal.', 'شبه جزيرة شرق قناة السويس.'),
+    ok: T(`The south of ${kw('Sinai')} has rugged mountains such as Mount St Catherine.`, `جنوب ${kw('سيناء')} فيه جبال وعرة زي جبل سانت كاترين.`) });
+  g.say(T('Tap the triangle of fertile land made by the Nile silt at its mouth.', 'اضغط على المثلث من الأرض الخصبة اللي كوّنها طمي النيل عند المصب.'), 'point');
+  await g.spot(regionRings(['delta', 'valley', 'fayoum']), 'delta', { hint: T('It is in the north.', 'هو في الشمال.'),
+    ok: T(`The ${kw('Nile Delta')} is about half of the farmland.`, `${kw('دلتا النيل')} حوالي نصف مساحة الأراضي الزراعية.`) });
+  g.say(T('Which of these gets Nile water through the Bahr Yusuf canal?', 'أنهي منهم بتوصله مياه النيل عن طريق ترعة بحر يوسف؟'), 'think');
+  await g.spot(regionRings(['delta', 'valley', 'fayoum']), 'fayoum', { hint: T('A depression in the Western Desert.', 'منخفض في الصحراء الغربية.'),
+    ok: T(`The ${kw('Fayoum depression')} receives Nile water and silt through the Bahr Yusuf canal.`, `${kw('منخفض الفيوم')} بتوصله مياه النيل والطمي عن طريق ترعة بحر يوسف.`) });
+}
+async function mission3() {                 // lesson 2: forces
+  set('forces');
+  g.say(T('Mission 3: forces under the ground shaped Egypt. Tap the picture where the ground <b>broke</b>, one side up and one side down.', 'المهمة ٣: قوى تحت الأرض شكّلت مصر. اضغط على الرسم اللي الأرض فيه <b>انكسرت</b>، جانب فوق وجانب تحت.'), 'point');
+  await g.spot(forceRings(), 'fault', { hint: T('Look for the block that slid.', 'دوّر على الجزء اللي انزلق.'),
+    ok: T(`That is ${kw('faulting')}. It formed the Red Sea mountains.`, `ده ${kw('الانكسار')}. وبسببه اتكوّنت جبال البحر الأحمر.`) });
+  g.say(T('Tap the picture where the layers were pressed from the sides and bent into waves.', 'اضغط على الرسم اللي الطبقات فيه اتضغطت من الجنبين واتنثنت زي موجات.'), 'think');
+  await g.spot(forceRings(), 'fold', { hint: T('Wavy layers.', 'طبقات متموّجة.'),
+    ok: T(`That is ${kw('folding')}: pressure from the sides bends the layers.`, `ده ${kw('الالتواء')}: ضغط من الجنبين بيثني الطبقات.`) });
+  set('blank');
+  g.say(T('What formed the sand dunes of the Great Sand Sea?', 'إيه اللي كوّن الكثبان الرملية في بحر الرمال العظيم؟'), 'think');
+  await g.choice({ options: ['التعرية بفعل الرياح', 'التعرية المائية', 'الانكسارات', 'الالتواءات'], correct: 'التعرية بفعل الرياح', hint: T('An external factor that moves sand.', 'عامل خارجي بيحرّك الرمل.'),
+    ok: T(`${kw('Wind erosion')} formed the dunes. ${kw('Water erosion')} formed the Nile valley and the dry wadis.`, `${kw('التعرية بفعل الرياح')} كوّنت الكثبان. و${kw('التعرية المائية')} كوّنت وادي النيل والأودية الجافة.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: longitude line or latitude circle ---------- */
+const ST = [
+  ['أنصاف دوائر رأسية بين القطبين', 'lo', 'Vertical half circles between the poles.'],
+  ['عددها ' + L('360') + ' خطًّا', 'lo', 'There are 360.'],
+  ['تحدد المواقع شرقًا وغربًا', 'lo', 'They locate places east and west.'],
+  ['تساعد في معرفة فروق التوقيت', 'lo', 'They help us find time differences.'],
+  ['دوائر أفقية غير متساوية الطول', 'la', 'Horizontal circles of unequal length.'],
+  ['عددها ' + L('180') + ' دائرة', 'la', 'There are 180.'],
+  ['تحدد المواقع شمالًا وجنوبًا', 'la', 'They locate places north and south.'],
+  ['تساعد في دراسة المناخ', 'la', 'They help us study climate.']
+];
+async function stage3() {
+  set('globe');
+  await g.speedRound({ items: ST.map(([a, r, e]) => ({ t: `<span dir="rtl" lang="ar">${a}</span>`, ans: r,
+      why: r === 'lo' ? T('A longitude line: ' + e, 'ده من خطوط الطول.') : T('A latitude circle: ' + e, 'ده من دوائر العرض.') })), rounds: 8, ms: 12000,
+    buttons: [{ label: T('Longitude', 'خطوط الطول'), value: 'lo', c: 0 }, { label: T('Latitude', 'دوائر العرض'), value: 'la', c: 1 }],
+    ask: T('Longitude line or latitude circle?', 'خط طول ولا دائرة عرض؟'),
+    intro: T('Speed Round! A sentence comes in. Press Longitude if it describes the lines from pole to pole, or Latitude if it describes the horizontal circles.', 'جولة السرعة! هتظهر جملة. اضغط خطوط الطول لو بتوصف الخطوط الرأسية من قطب لقطب، ودوائر العرض لو بتوصف الدوائر الأفقية.'),
+    think: T('Vertical or horizontal?', 'رأسي ولا أفقي؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Read the lines on the world map, place Egypt, and travel through its four land units. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! اقرأ الخطوط على خريطة العالم، وحدد مكان مصر، وسافر في وحداتها التضاريسية الأربع. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can read the lines on a map, place Egypt and name its land units. Next, try the questions of this unit.', 'بقيت تقرأ الخطوط على الخريطة وتحدد مكان مصر وتسمّي وحداتها التضاريسية. جرّب دلوقتي أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

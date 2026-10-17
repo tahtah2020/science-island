@@ -75,3 +75,5 @@ build('sg4u1', rose(990, 1010, 1.5) + bld(190, 1000, 1.7, 'school') + bld(1000, 
   `${bld(300, 760, 2.4, 'school')}${bld(1180, 770, 2.2, 'house')}${bld(760, 770, 2, 'mosque')}`);
 build('sg4u2', bld(190, 1000, 1.7, 'hospital') + bld(1000, 280, 1.6, 'police') + bld(250, 330, 1.6, 'fire') + bld(660, 1140, 1.5, 'market') + bld(1060, 480, 1.4, 'factory') + bld(960, 1010, 1.6, 'school') + bld(130, 560, 1.4, 'post'),
   `${bld(300, 760, 2.4, 'hospital')}${bld(1180, 770, 2.2, 'market')}${bld(760, 770, 2, 'school')}${bld(520, 770, 1.8, 'police')}`);
+build('sg5u1', rose(990, 1010, 1.5) + bld(190, 1000, 1.7, 'museum') + bld(1000, 280, 1.6, 'mosque') + bld(250, 330, 1.6, 'house') + bld(660, 1140, 1.5, 'market') + bld(1060, 480, 1.4, 'school'),
+  `${bld(300, 760, 2.4, 'museum')}${bld(1180, 770, 2.2, 'house')}${bld(760, 770, 2, 'mosque')}`);

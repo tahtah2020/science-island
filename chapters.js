@@ -255,6 +255,17 @@ window.CHAPTERS = [
     lessons: ['The Flag of Our Homeland Egypt', 'Egypt on the World Map', 'The Landforms of Our Beautiful Land', 'Egypt’s Natural and Human Resources', 'Historical Landmarks in Egypt'],
     lessonsAr: ['عَلَم وطننا مصر', 'مصر على خريطة العالم', 'تضاريس أرضنا الجميلة', 'ثروات مصر الطبيعية والبشرية', 'المَعالِم التاريخية في مصر'] },
 
+  /* Social Studies · Grade 5 · Term 1 (the school book «مصر حكاية وطن وحضارة» 2026/2027). Units, one Arabic book for both tracks (lang { lang: 'ar', ar: 'ar' }).
+     Unit 1 «مصر موقع متميز وطبيعة متنوعة» (book pages 8-36): 1 موقع مصر الفلكي (8-13) · 2 مظاهر سطح مصر (14-21) · 3 مناخ مصر (22-29) · 4 النباتات الطبيعية والحيوانات البرية (30-35). Idea letters: A-D (one per lesson).
+     Lessons 1-2 are written; lessons 3-4 wait for their book pages, so the unit stays ready: false (it opens only in the owner's preview). */
+  { id: 'sg5u1', subject: 'studies', grade: 'g5', n: 1, title: 'Egypt: a Distinguished Location and Varied Nature', titleAr: 'مصر موقع متميز وطبيعة متنوعة', icon: '🗺️', tint: '#e2f4dc', ready: false,
+    lessons: ['Egypt’s Astronomical Location', 'Egypt’s Surface Features', 'Egypt’s Climate', 'Natural Plants and Wild Animals'],
+    questionsAr: 'studies/questions_sg5u1_ar.js', art: 'studies/g5_art.js',
+    game: { href: 'studies-egypt.html', name: "Egypt Explorer", nameAr: "مستكشف مصر", icon: '🗺️', hint: 'Read the grid of lines on the map, place Egypt, and travel through its four landform regions.', hintAr: 'اقرأ شبكة الخطوط على الخريطة، وحدّد موقع مصر، وتجوّل في أقسام سطحها الأربعة.' },
+    map: { img: 'studies/assets/map_sg5u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'studies/assets/map_sg5u1.svg', quizBg: 'studies/assets/bg_sg5u1.svg',
+    lessonsAr: ['موقع مصر الفلكي', 'مظاهر سطح مصر', 'مناخ مصر', 'النباتات الطبيعية والحيوانات البرية'] },
+
   /* English · Grade 4 · Term 1 (ministry book "English Primary 4", 2026/2027). One English book for both tracks:
      the subject's lang is { lang: 'en', ar: 'en' }, so every unit has only a questions file (no _ar file).
      Unit 1 "The Five Senses" (book pages 7-22). Idea letters: A-E (one per lesson). */
