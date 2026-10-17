@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-17', title: 'Social Studies shown fully in Arabic',
+    items: [
+      { text: 'Languages track sees Social Studies in Arabic, right to left, same as the Arabic track' }
+    ] },
   { date: '2026-10-17', title: 'Social Studies, Grade 4, Unit 2',
     items: [
       { text: 'Unit 2 «مدينتنا وحياتنا اليومية»: 36 ideas, one game (City Planner), for both tracks' }
