@@ -46,6 +46,7 @@ body{
 .badge.timed{background:#fff0d9;color:#b45309}
 .badge.boss{background:#3a2a5e;color:#ffe08a}
 .badge.bonus{background:#fdf2c4;color:#8a6400}
+.badge.lesson{background:#e4f3dc;color:#2d6a1f}
 .progress{display:flex;gap:4px;flex-wrap:wrap}
 .progress i{width:11px;height:11px;border-radius:50%;background:#dbe9f0}
 .progress i.ok{background:var(--ok)}
@@ -592,6 +593,9 @@ function header(q, idx, total, results) {
   if (q.mode === 'timed') b.appendChild(mk('span', 'badge timed', `⏱ ${q.seconds}${T('s', ' ث')}`));
   if (q.mode === 'boss') b.appendChild(mk('span', 'badge boss', T('★ Boss', '★ التحدي الكبير')));
   if (q.src === 'bonus') b.appendChild(mk('span', 'badge bonus', T('Bonus', 'إضافي')));
+  /* where the question comes from: the lesson of the book (units only), so the owner and the child know which lesson it covers */
+  const SC = (q.ch && SI.chapterById(q.ch)) || CH;
+  if (q.lesson && SC && SC.id && SI.isUnits(SC) && (SC.lessons || []).length > 1) { const nm = (AR ? SC.lessonsAr : SC.lessons) || SC.lessons || [], lb = mk('span', 'badge lesson', `${T('Lesson', 'الدرس')} ${q.lesson}${nm[q.lesson - 1] ? ' · ' + nm[q.lesson - 1] : ''}`); b.appendChild(lb); }
   if (q.exam) b.appendChild(mk('span', 'badge exam', `${T('Q', 'س')}${q.exam.q} (${q.exam.part}) · ${q.exam.marks === 1 ? T('1 mark', 'درجة واحدة') : T(`${q.exam.marks} marks`, 'درجتان')}`));
   const p = $('#progress'); p.innerHTML = '';
   for (let i = 0; i < total; i++) p.appendChild(mk('i', results[i] === true ? 'ok' : results[i] === false ? 'no' : i === idx ? 'now' : ''));
@@ -1193,6 +1197,11 @@ function buildQuest() {
     const q = variantOf(I);
     if (I.boss) { q.mode = 'boss'; boss.push(q); } else (q.mode === 'timed' ? timed : normal).push(q);
   });
+  if (CH.bookOrder) {   // the questions follow the book: lesson 1, then 2 and so on; each lesson in the order of its ideas, the Boss ideas of every lesson at the end
+    const pos = new Map(window.IDEAS.map((I, i) => [I.id, i])), byBook = (x, y) => (pos.get(x.id) - pos.get(y.id));
+    const extraB = bonus.length ? [Object.assign(variantOf(bonus[Math.floor(Math.random() * bonus.length)]), { mode: 'normal' })] : [];
+    return normal.concat(timed).sort(byBook).concat(boss.sort(byBook), extraB);
+  }
   const N = shuffle(normal), T = shuffle(timed), seq = [];
   while (N.length || T.length) {
     if (N.length) seq.push(N.shift());

@@ -5,6 +5,8 @@
      egyptGrid     (fig) no tap targets                                                          Egypt with its longitude and latitude lines, the Tropic of Cancer, Cairo, Aswan, Alexandria
      egyptRegions  (tap) ids delta · valley · fayoum · west · east · sinai                       Egypt in four colours: the Nile unit (delta, valley, Fayoum), the Western Desert, the Eastern Desert, Sinai; no unit is named
      reliefForces  (tap) ids fault · fold                                                        two block diagrams of the ground: one broken and shifted, one bent into waves
+     climateMap    (tap) ids med · desert                                                         Egypt in two colours: a narrow green strip on the north coast (Mediterranean region) and yellow for the rest (hot desert region), with five cities; no region is named
+     sunRays       (tap) ids rayEq1 · rayS · rayN · rayEq2                                         four Earths, each with an arrow (a sun ray) falling straight on one latitude circle: equator, Tropic of Capricorn, Tropic of Cancer, equator; no season or date is written
    Texts are Arabic (the book is Arabic for both tracks). Screen-reader names describe the picture, never the answer.
    window.S5ART = the pieces the game and the map script reuse. */
 (function () {
@@ -132,6 +134,54 @@
     return wrap(340, 250, 'شكلان لباطن الأرض: واحد انشقت فيه الطبقات وانزلق جانب أعلى من الآخر، وواحد انثنت فيه الطبقات على شكل موجات', s, plain);
   }
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces });
-  window.S5ART = { globeGrid, egyptGrid, egyptRegions, reliefForces, txt, hot, ringRect, ringEl, wrap, path, f1, esc, mx, my, poly, line, EGYPT, NILE, DELTA, SINAI, WEST, EAST, UNIT, INK, PAPER, FONT, GX, GY };
+  /* ================= 5 · the two climate regions of Egypt (340 x 300): a green strip on the north coast, yellow everywhere else ================= */
+  const MED = [[24.9, 31.8], [34.6, 31.8], [34.6, 31.05], [33.3, 30.75], [32.0, 30.6], [30.0, 30.6], [28.5, 30.75], [26.5, 30.85], [24.9, 30.95]];
+  function climateMap(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="300" rx="14" fill="${PAPER}"/>`;
+    s += `<rect x="8" y="${MY - 6}" width="324" height="262" rx="6" fill="#cfeaf8" stroke="#3a5c75" stroke-width="2"/>`;
+    s = egyptBase(s, '#f6dc8a');
+    s += `<g clip-path="url(#eg5Clip)"><path d="${poly(MED)}" fill="#a9d96a"/></g>`;
+    s += `<path d="${line(NILE)}" fill="none" stroke="#2f8fd0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="${line(DELTA_R)}M${f1(mx(DELTA_D[0][0]))} ${f1(my(DELTA_D[0][1]))}${DELTA_D.slice(1).map(([lo, la]) => 'L' + f1(mx(lo)) + ' ' + f1(my(la))).join('')}" fill="none" stroke="#2f8fd0" stroke-width="2" stroke-linecap="round"/>`;
+    s += `<path d="${poly(EGYPT)}" fill="none" stroke="#8a6a3a" stroke-width="1.6" stroke-linejoin="round"/>`;
+    s += `<path d="M8 ${f1(my(23.5))}H332" stroke="#d98b1f" stroke-width="1.4" stroke-dasharray="6 3"/>` + txt(mx(35.4), my(23.5) - 4, '23.5° ش', { fs: 9, w: 900, fill: '#b36c0a', halo: true });
+    [['الإسكندرية', 29.92, 31.2, 0, -7], ['القاهرة', 31.25, 30.05, 8, 4, 'start'], ['أسوان', 32.9, 24.09, 7, 4, 'start'], ['الخارجة', 30.55, 25.45, 7, 4, 'start'], ['مرسى علم', 34.9, 25.07, -6, 4, 'end']].forEach(([n, lo, la, dx, dy, an]) => {
+      s += `<circle cx="${f1(mx(lo))}" cy="${f1(my(la))}" r="3.2" fill="${INK}" stroke="#fff" stroke-width="1.2"/>` + txt(mx(lo) + dx, my(la) + dy, n, { fs: 10, anchor: an || 'middle', halo: true });
+    });
+    s += txt(mx(28.8), my(31.9) - 3, 'البحر المتوسط', { fs: 10, fill: '#2f6f9f' }) + txt(mx(36.3), my(25.2), 'البحر الأحمر', { fs: 10, fill: '#2f6f9f', rot: 62 });
+    if (!plain) {
+      const r = climateMap.rings();
+      s += hot('med', 'شريط أخضر ضيق على ساحل الشمال', ringRect(r.med.x, r.med.y, r.med.w, r.med.h, 8)) + hot('desert', 'المنطقة الصفراء الواسعة في الوسط والجنوب', ringEl(r.desert.cx, r.desert.cy, r.desert.rx, r.desert.ry));
+    }
+    return wrap(340, 300, 'خريطة لمصر بلونين: شريط أخضر ضيق على ساحل البحر المتوسط، وأصفر في بقية مساحتها', s, plain);
+  }
+  climateMap.rings = () => ({ med: { x: mx(24.9), y: my(31.8) - 2, w: mx(34.6) - mx(24.9), h: my(30.6) - my(31.8) + 6 }, desert: { cx: mx(30.3), cy: my(26.4), rx: 66, ry: 74 } });
+
+  /* ================= 6 · where the sun's rays fall straight down, in four positions of the Earth (340 x 300): no names, no dates ================= */
+  const RAYS = [{ id: 'rayEq1', lat: 0, x: 8, y: 8 }, { id: 'rayS', lat: -23.5, x: 172, y: 8 }, { id: 'rayN', lat: 23.5, x: 8, y: 152 }, { id: 'rayEq2', lat: 0, x: 172, y: 152 }];
+  function sunRays(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="300" rx="14" fill="${PAPER}"/>`;
+    const R = 46;
+    RAYS.forEach(p => {
+      const cx = p.x + 70, cy = p.y + 74;
+      s += `<rect x="${p.x}" y="${p.y}" width="160" height="140" rx="12" fill="#fff6dc" stroke="#ecd9a0" stroke-width="2"/>`;
+      s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#8fd0ee" stroke="#3a7ea8" stroke-width="2"/>`;
+      [[0, '0°', '#e2603f'], [23.5, '23.5° ش', '#d98b1f'], [-23.5, '23.5° ج', '#d98b1f']].forEach(([la, lab, col]) => {
+        const dy = -Math.sin(la * Math.PI / 180) * R, dx = Math.cos(la * Math.PI / 180) * R;
+        s += `<path d="M${f1(cx - dx)} ${f1(cy + dy)}H${f1(cx + dx)}" stroke="${col}" stroke-width="1.6"${la ? ' stroke-dasharray="4 3"' : ''}/>` + txt(cx + dx + 3, cy + dy + 3, lab, { fs: 7.5, w: 800, anchor: 'start', fill: col });
+      });
+      const a = p.lat * Math.PI / 180, ux = -Math.cos(a), uy = -Math.sin(a);
+      const x0 = cx + ux * (R + 44), y0 = cy + uy * (R + 44), x1 = cx + ux * (R + 2), y1 = cy + uy * (R + 2);
+      s += `<circle cx="${f1(p.x + 14)}" cy="${f1(p.y + 14)}" r="9" fill="#ffd23f" stroke="#e8a317" stroke-width="2"/>`;
+      s += `<path d="M${f1(x0)} ${f1(y0)}L${f1(x1)} ${f1(y1)}" stroke="#f08a1c" stroke-width="3.4" stroke-linecap="round"/><path d="M${f1(x1 + ux * 9 - uy * 5)} ${f1(y1 + uy * 9 + ux * 5)}L${f1(x1)} ${f1(y1)}L${f1(x1 + ux * 9 + uy * 5)} ${f1(y1 + uy * 9 - ux * 5)}" stroke="#f08a1c" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`;
+      s += `<circle cx="${f1(cx + ux * R)}" cy="${f1(cy + uy * R)}" r="3.4" fill="#e2273a" stroke="#fff" stroke-width="1.2"/>`;
+    });
+    if (!plain) RAYS.forEach(p => { s += hot(p.id, 'شكل للأرض تسقط عليه أشعة الشمس عند نقطة حمراء', ringRect(p.x, p.y, 160, 140, 12)); });
+    return wrap(340, 300, 'أربعة أشكال للأرض والشمس: في كل شكل سهم يمثل شعاع الشمس يسقط على نقطة حمراء عند دائرة عرض مختلفة', s, plain);
+  }
+  sunRays.rects = () => RAYS.map(p => ({ id: p.id, x: p.x, y: p.y, w: 160, h: 140 }));
+
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays });
+  window.S5ART = { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, txt, hot, ringRect, ringEl, wrap, path, f1, esc, mx, my, poly, line, EGYPT, NILE, DELTA, SINAI, WEST, EAST, UNIT, INK, PAPER, FONT, GX, GY };
 })();

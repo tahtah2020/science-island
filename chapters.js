@@ -5,6 +5,7 @@
                  Chapter ids are unique on the whole site, across subjects: Science keeps ch1, g4c1…; another subject starts with its own prefix (Math: m5c1…, mp1u1…).
      grade     : 'g4' | 'g5' | 'g6' | 'p1' | 'p2'. A chapter without it belongs to Grade 5. A player sees the chapters of their own grade only.
                  Chapter ids are unique on the whole site: Grade 5 uses ch1…, Grade 4 uses g4c1…, Grade 6 uses g6c1…, Prep 1 uses p1u1…, Prep 2 uses p2u1… (units)
+     bookOrder : optional: true = the questions of a Quest follow the book (lesson 1, then 2, then 3...; Boss ideas last) instead of a shuffle. Every question of a unit also shows a badge with its lesson
      questMax  : optional: a long chapter asks only this many ideas in each Quest (all lessons and all Boss ideas are always in it)
      titleAr   : the chapter title in the Arabic school book (Arabic track)
      questions : file with that chapter's window.IDEAS (for example 'science/questions_ch2.js')
@@ -257,11 +258,11 @@ window.CHAPTERS = [
 
   /* Social Studies · Grade 5 · Term 1 (the school book «مصر حكاية وطن وحضارة» 2026/2027). Units, one Arabic book for both tracks (lang { lang: 'ar', ar: 'ar' }).
      Unit 1 «مصر موقع متميز وطبيعة متنوعة» (book pages 8-36): 1 موقع مصر الفلكي (8-13) · 2 مظاهر سطح مصر (14-21) · 3 مناخ مصر (22-29) · 4 النباتات الطبيعية والحيوانات البرية (30-35). Idea letters: A-D (one per lesson).
-     Lessons 1-2 are written; lessons 3-4 wait for their book pages, so the unit stays ready: false (it opens only in the owner's preview). */
-  { id: 'sg5u1', subject: 'studies', grade: 'g5', n: 1, title: 'Egypt: a Distinguished Location and Varied Nature', titleAr: 'مصر موقع متميز وطبيعة متنوعة', icon: '🗺️', tint: '#e2f4dc', ready: false,
+     All four lessons are written (ids A-D). The questions follow the book (bookOrder) and every question carries its lesson badge. The monthly test «sg5oct» covers lessons 1 and 2 only. */
+  { id: 'sg5u1', subject: 'studies', grade: 'g5', n: 1, title: 'Egypt: a Distinguished Location and Varied Nature', titleAr: 'مصر موقع متميز وطبيعة متنوعة', icon: '🗺️', tint: '#e2f4dc', ready: true,
     lessons: ['Egypt’s Astronomical Location', 'Egypt’s Surface Features', 'Egypt’s Climate', 'Natural Plants and Wild Animals'],
-    questionsAr: 'studies/questions_sg5u1_ar.js', art: 'studies/g5_art.js',
-    game: { href: 'studies-egypt.html', name: "Egypt Explorer", nameAr: "مستكشف مصر", icon: '🗺️', hint: 'Read the grid of lines on the map, place Egypt, and travel through its four landform regions.', hintAr: 'اقرأ شبكة الخطوط على الخريطة، وحدّد موقع مصر، وتجوّل في أقسام سطحها الأربعة.' },
+    questionsAr: 'studies/questions_sg5u1_ar.js', art: 'studies/g5_art.js', bookOrder: true, questMax: 32,
+    game: { href: 'studies-egypt.html', name: "Egypt Explorer", nameAr: "مستكشف مصر", icon: '🗺️', hint: 'Read the grid of lines on the map, place Egypt, and travel through its landforms, seasons, climate regions, plants and animals.', hintAr: 'اقرأ شبكة الخطوط على الخريطة، وحدّد موقع مصر، وتجوّل في سطحها وفصولها وأقاليمها المناخية ونباتاتها وحيواناتها.' },
     map: { img: 'studies/assets/map_sg5u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'studies/assets/map_sg5u1.svg', quizBg: 'studies/assets/bg_sg5u1.svg',
     lessonsAr: ['موقع مصر الفلكي', 'مظاهر سطح مصر', 'مناخ مصر', 'النباتات الطبيعية والحيوانات البرية'] },
@@ -295,6 +296,8 @@ window.CHAPTERS = [
 window.EXAMS = [
   { id: 'oct', title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'ch1' }, { ch: 'ch2' }, { ch: 'ch3' }, { ch: 'ch4', lessons: [1], max: 1, chance: .5 }] },
+  { id: 'sg5oct', subject: 'studies', grade: 'g5', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'sg5u1', lessons: [1, 2] }] },
   { id: 'g4m1', grade: 'g4', title: 'Monthly Test', titleAr: 'امتحان الشهر', icon: '📝',
     parts: [{ ch: 'g4c1' }, { ch: 'g4c2' }, { ch: 'g4c3' }] },
   { id: 'g6m1', grade: 'g6', title: 'Monthly Test', titleAr: 'امتحان الشهر', icon: '📝',

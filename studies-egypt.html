@@ -22,9 +22,9 @@
 /* Egypt Explorer · the game of Unit 1, Egypt: a Distinguished Location and Varied Nature (Social Studies, Grade 5). Built on the shared game kit (game_kit.js).
    The scene is always a picture the child works on: the world grid, Egypt with its lines, the four relief units, the forces under the ground.
    Stage 1 (Warm Up): the grid of lines on the world map and Egypt's astronomical location (lesson 1, pages 8-13).
-   Stage 2 (Missions): time difference by longitude (1), the four relief units (2), faulting and folding (2).
+   Stage 2 (Missions): time difference by longitude (1), the four relief units (2), faulting and folding (2), seasons and climate regions (3), plants and wild animals (4).
    Stage 3 (Speed Round): longitude line or latitude circle, with the book's statements (lesson 1).
-   Lessons 3 and 4 (climate, plants and animals) are added when their pages arrive.
+   Lesson 3 (climate): where the sun's rays fall straight down in each season and the two climate regions (pages 22-27). Lesson 4 (plants and wild animals): the plants and animals of each environment, the dangers and the state's efforts (pages 30-33).
    Every T('English', 'عربي') has both languages. Names of places inside the pictures stay Arabic, as in the Arabic school book. */
 const T = SI.T, G = SI.G, A = S5ART, D = window.CH_DIAGRAMS;
 const P = (m, f) => G(m, f || m);
@@ -36,7 +36,7 @@ const PL = { pic: { plain: true } };
 /* a picture of w x h is centred in the 340 x 340 scene */
 const fit = (w, h) => { const k = Math.min(1, VW / w, VH / h); return { k, dx: (VW - w * k) / 2, dy: (VH - h * k) / 2 }; };
 const place = (f, inner) => `<g transform="translate(${A.f1(f.dx)} ${A.f1(f.dy)}) scale(${f.k})">${inner}</g>`;
-const FS = { globe: fit(340, 300), egypt: fit(340, 300), forces: fit(340, 250) };
+const FS = { globe: fit(340, 300), egypt: fit(340, 300), forces: fit(340, 250), rays: fit(340, 300) };
 const rr = (f, x, y, w, h, r = 10) => A.ringRect(f.dx + x * f.k, f.dy + y * f.k, w * f.k, h * f.k, r);
 const re = (f, cx, cy, rx, ry) => A.ringEl(f.dx + cx * f.k, f.dy + cy * f.k, rx * f.k, ry * f.k);
 
@@ -46,6 +46,8 @@ function render() {
   if (m === 'globe') s += place(FS.globe, bg + D.globeGrid(PL));
   else if (m === 'egyptGrid') s += place(FS.egypt, bg + D.egyptGrid(PL));
   else if (m === 'regions') s += place(FS.egypt, bg + D.egyptRegions(PL));
+  else if (m === 'rays') s += place(FS.rays, bg + D.sunRays(PL));
+  else if (m === 'climate') s += place(FS.egypt, bg + D.climateMap(PL));
   else if (m === 'forces') s += place(FS.forces, `<rect width="340" height="250" fill="${A.PAPER}"/>` + D.reliefForces(PL));
   else if (m === 'sign') s += `<text x="170" y="150" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="26" font-weight="900" fill="#1f3d57">${sc.note}</text>` +
     (sc.sub ? `<text x="170" y="190" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="18" font-weight="800" fill="#6b5a3a">${sc.sub}</text>` : '');
@@ -61,6 +63,8 @@ const globeRings = ids => ids.map(id => {
 });
 const regionRings = ids => { const r = D.egyptRegions.rings(), nm = { delta: 'الدلتا', valley: 'وادي النيل', fayoum: 'الفيوم', west: 'الصحراء الغربية', east: 'الصحراء الشرقية', sinai: 'سيناء' };
   return ids.map(id => ({ id, name: nm[id], ring: re(FS.egypt, r[id].cx, r[id].cy, r[id].rx, r[id].ry) })); };
+const rayRings = () => D.sunRays.rects().map(p => ({ id: p.id, name: p.id, ring: rr(FS.rays, p.x, p.y, p.w, p.h, 12) }));
+const climateRings = () => { const r = D.climateMap.rings(); return [{ id: 'med', name: 'إقليم البحر المتوسط', ring: rr(FS.egypt, r.med.x, r.med.y, r.med.w, r.med.h, 8) }, { id: 'desert', name: 'الإقليم الصحراوي الحار', ring: re(FS.egypt, r.desert.cx, r.desert.cy, r.desert.rx, r.desert.ry) }]; };
 const forceRings = () => [{ id: 'fault', name: 'الانكسار', ring: rr(FS.forces, 8, 8, 160, 234, 12) }, { id: 'fold', name: 'الالتواء', ring: rr(FS.forces, 172, 8, 160, 234, 12) }];
 
 const g = G4Game({ ch: 'sg5u1', logo: '🗺️', title: ['Egypt Explorer', 'مستكشف مصر'], sub: ['Unit 1 · A Distinguished Location and Varied Nature', 'الوحدة 1 · مصر موقع متميز وطبيعة متنوعة'],
@@ -133,7 +137,45 @@ async function mission3() {                 // lesson 2: forces
   await g.choice({ options: ['التعرية بفعل الرياح', 'التعرية المائية', 'الانكسارات', 'الالتواءات'], correct: 'التعرية بفعل الرياح', hint: T('An external factor that moves sand.', 'عامل خارجي بيحرّك الرمل.'),
     ok: T(`${kw('Wind erosion')} formed the dunes. ${kw('Water erosion')} formed the Nile valley and the dry wadis.`, `${kw('التعرية بفعل الرياح')} كوّنت الكثبان. و${kw('التعرية المائية')} كوّنت وادي النيل والأودية الجافة.`) });
 }
-async function stage2() { await mission1(); await mission2(); await mission3(); }
+async function mission4() {                 // lesson 3: the sun's rays, the seasons and the two climate regions
+  set('rays');
+  g.say(T('Mission 4: the seasons. Each picture shows where the sun’s rays fall straight down. Tap the picture of the <b>summer</b>, when the rays fall on the Tropic of Cancer.', 'المهمة ٤: الفصول. كل رسم بيوضح فين الشمس بتتعامد. اضغط على رسم <b>الصيف</b>، لما أشعة الشمس بتتعامد على مدار السرطان.'), 'point');
+  await g.spot(rayRings(), 'rayN', { hint: T('The Tropic of Cancer is the line north of the equator.', 'مدار السرطان هو الخط شمال الاستواء.'),
+    ok: T(`In ${kw('summer')} (21 June) the sun’s rays fall on the Tropic of Cancer.`, `في ${kw('الصيف')} (${L('21')} يونيو) بتتعامد الشمس على مدار السرطان.`) });
+  g.say(T('Now tap the picture of the <b>winter</b>, when the rays fall on the Tropic of Capricorn.', 'دلوقتي اضغط على رسم <b>الشتاء</b>، لما الشمس بتتعامد على مدار الجدي.'), 'think');
+  await g.spot(rayRings(), 'rayS', { hint: T('The Tropic of Capricorn is the line south of the equator.', 'مدار الجدي هو الخط جنوب الاستواء.'),
+    ok: T(`In ${kw('winter')} (21 December) the rays fall on the Tropic of Capricorn.`, `في ${kw('الشتاء')} (${L('21')} ديسمبر) بتتعامد الشمس على مدار الجدي.`) });
+  g.say(T('What makes the four seasons follow one another regularly?', 'إيه اللي بيخلّي الفصول الأربعة تتعاقب بانتظام؟'), 'think');
+  await g.choice({ options: ['دوران الأرض حول الشمس', 'دوران الأرض حول نفسها', 'ارتفاع الجبال', 'القرب من البحر'], correct: 'دوران الأرض حول الشمس', hint: T('It takes 365 and a quarter days.', 'بياخد ' + L('365') + ' يوم وربع.'),
+    ok: T(`The Earth goes round the Sun once every ${kw('365¼')} days: the annual cycle.`, `الأرض بتدور حول الشمس مرة كل ${kw(L('365'))} يوم وربع: الدورة السنوية.`) });
+  g.say(T('In which season do the Khamasin winds, carrying sand and dust, blow?', 'في أنهي فصل بتهب رياح الخماسين المحمّلة بالرمال والأتربة؟'), 'point');
+  await g.choice({ options: ['الربيع', 'الشتاء', 'الصيف', 'الخريف'], correct: 'الربيع', hint: T('The sun’s rays are on the equator and the weather is moderate.', 'الشمس على الاستواء والجو معتدل.'),
+    ok: T(`In ${kw('spring')}. The Khamasin winds can cause respiratory diseases and harm crops.`, `في ${kw('الربيع')}. والخماسين ممكن تسبب أمراض الجهاز التنفسي وتضر المحاصيل.`) });
+  set('climate');
+  g.say(T('Egypt has two climate regions. Tap the <b>Mediterranean</b> region in the north: hot dry summers and warm rainy winters.', 'مصر فيها إقليمين مناخيين. اضغط على إقليم <b>البحر المتوسط</b> في الشمال: صيفه حار جاف وشتاؤه دافئ ممطر.'), 'point');
+  await g.spot(climateRings(), 'med', { hint: T('It is the narrow strip on the north coast.', 'هو الشريط الضيق على الساحل الشمالي.'),
+    ok: T(`The ${kw('Mediterranean')} region is in the north. Farming there depends on winter rain.`, `إقليم ${kw('البحر المتوسط')} في الشمال. والزراعة فيه بتعتمد على أمطار الشتاء.`) });
+  g.say(T('Tap the region that covers most of Egypt, where rain is rare and may fall suddenly as floods.', 'اضغط على الإقليم اللي بيغطي معظم مصر، والأمطار فيه نادرة وممكن تسقط فجأة على شكل سيول.'), 'think');
+  await g.spot(climateRings(), 'desert', { hint: T('It is the big yellow area.', 'هو المساحة الصفراء الكبيرة.'),
+    ok: T(`The ${kw('Hot Desert')} region covers most of Egypt.`, `الإقليم ${kw('الصحراوي الحار')} بيغطي معظم أرض مصر.`) });
+}
+async function mission5() {                 // lesson 4: natural plants and wild animals
+  set('blank');
+  g.say(T('Mission 5: natural plants and wild animals. A water plant grows in the swamps and on the banks of the Nile, and the ancient Egyptians made paper from it. What is it?', 'المهمة ٥: النباتات الطبيعية والحيوانات البرية. نبات مائي بينمو في المستنقعات وعلى ضفاف النيل، وصنع منه المصريون القدماء الورق. إيه هو؟'), 'point');
+  await g.choice({ options: ['البردي', 'الصبار', 'المانجروف', 'النخيل'], correct: 'البردي', hint: T('It grows in the Nile valley and the delta.', 'بينمو في الوادي والدلتا.'),
+    ok: T(`${kw('Papyrus')} grows in the Nile valley, the delta and Fayoum.`, `${kw('البردي')} بينمو في وادي النيل والدلتا والفيوم.`) });
+  g.say(T('Which animals live in the Egyptian deserts and can bear hunger and thirst?', 'أنهي حيوانات بتعيش في الصحاري المصرية وبتتحمل الجوع والعطش؟'), 'think');
+  await g.choice({ options: ['الإبل والغزلان والزواحف', 'طائر النورس والأرانب البرية', 'أبو قردان والفئران', 'الثعالب والذئاب'], correct: 'الإبل والغزلان والزواحف', hint: T('Think of the desert.', 'فكّر في الصحراء.'),
+    ok: T(`${kw('Camels, gazelles and reptiles')} live in the deserts.`, `${kw('الإبل والغزلان والزواحف')} بتعيش في الصحاري.`) });
+  g.say(T('The mangrove tree and the seagull live in which environment?', 'شجر المانجروف وطائر النورس بيعيشوا في أنهي بيئة؟'), 'think');
+  await g.choice({ options: ['المناطق الساحلية', 'الوادي والدلتا', 'المناطق الصحراوية', 'منخفض الفيوم'], correct: 'المناطق الساحلية', hint: T('Their plants bear salty soil.', 'نباتاتها بتتحمل الملوحة.'),
+    ok: T(`The ${kw('coastal areas')}: their plants bear salt and sandy soil.`, `${kw('المناطق الساحلية')}: نباتاتها بتتحمل الأملاح والتربة الرملية.`) });
+  g.say(T('Which of these is a danger to wild animals?', 'أنهي من دول خطر على الحيوانات البرية؟'), 'point');
+  await g.choice({ options: ['الصيد الجائر', 'إنشاء المحميات الطبيعية', 'نشر الوعي', 'إصدار القوانين'], correct: 'الصيد الجائر', hint: T('It leads to extinction.', 'بيؤدي للانقراض.'),
+    ok: T(`${kw('Over-hunting')} leads to extinction. Nature reserves, laws and awareness are the state’s efforts to protect them.`, `${kw('الصيد الجائر')} بيؤدي لانقراض الحيوانات. أما المحميات والقوانين والتوعية فهي جهود الدولة لحمايتها.`) });
+  set('blank');
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
 
 /* ---------- Stage 3 · Speed Round: longitude line or latitude circle ---------- */
 const ST = [
@@ -157,10 +199,10 @@ async function stage3() {
 }
 
 g.run({
-  intro: T(`Hi, <b>${g.name()}</b>! Read the lines on the world map, place Egypt, and travel through its four land units. Three stages: Warm Up, Missions and a Speed Round.`,
-    `أهلًا يا <b>${g.name()}</b>! اقرأ الخطوط على خريطة العالم، وحدد مكان مصر، وسافر في وحداتها التضاريسية الأربع. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  intro: T(`Hi, <b>${g.name()}</b>! Read the lines on the world map, place Egypt, and travel through its four land units, its seasons, climate regions, plants and animals. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! اقرأ الخطوط على خريطة العالم، وحدد مكان مصر، وسافر في وحداتها التضاريسية الأربع وفصولها وأقاليمها المناخية ونباتاتها وحيواناتها. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
   stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
-  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can read the lines on a map, place Egypt and name its land units. Next, try the questions of this unit.', 'بقيت تقرأ الخطوط على الخريطة وتحدد مكان مصر وتسمّي وحداتها التضاريسية. جرّب دلوقتي أسئلة الوحدة.') }
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can read the lines on a map, place Egypt, follow its seasons and climate regions, and name its plants and animals. Next, try the questions of this unit.', 'بقيت تقرأ الخطوط على الخريطة وتحدد مكان مصر وتتابع فصولها وأقاليمها المناخية وتعرف نباتاتها وحيواناتها. جرّب دلوقتي أسئلة الوحدة.') }
 }).catch(err => console.error(err));
 })();
 </script>
