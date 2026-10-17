@@ -215,6 +215,7 @@ The Arabic track has its own Champions board (the board key includes the track).
 - New `build` style `sentence` ("Build the sentence"). Picture `fiveSenses` (tap ids `eye`, `ear`, `nose`, `tongue`, `palm`; `palm`, not `hand`, because the admin TAP map shares keys with Math). Pictures live in `english/g4_art.js`; maps and backgrounds: `node english/tools/make_e_maps.js`.
 - Review notes: the book's listening and audio tasks are asked as reading questions (no audio here). Open writing and speaking tasks are not asked. The self-assessment prints a phonetic symbol for the "o" in pot; the site avoids phonetic symbols. The "First" in the book's Tip box is struck through (a book glitch). "Goha paid a few coins" is false: he only shook his coins. Sorting comments into Praise / Advice is our own classification.
 - English is English-only on BOTH tracks: `SI.isAr()` is false while the English subject is chosen (`enSubject()` in `common.js`), so the Arabic track sees no Arabic interface, titles or explanations there; `titleAr` / `lessonsAr` stay in `chapters.js` for the owner pages only.
+- Units 2-6 (`eg4u2` My Community, `eg4u3` In Our World, `eg4u4` Egypt: My Homeland, `eg4u5` A Day at Work, `eg4u6` The Hundred Dresses; titles from the book's Term 1 scope and sequence) are locked placeholders (`ready: false`, empty `lessons`). Idea letters continue from F.
 - Other grades' English tab shows "Soon".
 
 ## Adding a subject (Math was the first)

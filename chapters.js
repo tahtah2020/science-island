@@ -264,7 +264,14 @@ window.CHAPTERS = [
     game: { href: 'english-senses.html', name: 'Senses Explorer', nameAr: 'مستكشف الحواس', icon: '👀', hint: 'Match the five senses to your body, follow Sarah’s healthy day and Goha’s soup, then race the Speed Round!', hintAr: 'اربط الحواس الخمس بجسمك، وتابع يوم سارة الصحي وحكاية جحا مع الشوربة، وبعدين جرّب جولة السرعة!' },
     map: { img: 'english/assets/map_eg4u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'english/assets/map_eg4u1.svg', quizBg: 'english/assets/bg_eg4u1.svg',
-    lessonsAr: ['ما الحواس الخمس؟', 'العادات الصحية', 'وقت الحكاية: وجبة جحا الرائعة', 'الكتابة: كلمات الترتيب', 'فكّر وابتكر: عرض تقديمي'] }
+    lessonsAr: ['ما الحواس الخمس؟', 'العادات الصحية', 'وقت الحكاية: وجبة جحا الرائعة', 'الكتابة: كلمات الترتيب', 'فكّر وابتكر: عرض تقديمي'] },
+
+  /* Units 2-6 of the book (scope and sequence, p. 3-5): locked until their pages arrive. Idea letters will continue from F. */
+  { id: 'eg4u2', subject: 'english', grade: 'g4', n: 2, title: 'My Community', titleAr: 'مجتمعي', icon: '🏘️', tint: '#fdebd5', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg4u3', subject: 'english', grade: 'g4', n: 3, title: 'In Our World', titleAr: 'في عالمنا', icon: '🐘', tint: '#e2f4dc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg4u4', subject: 'english', grade: 'g4', n: 4, title: 'Egypt: My Homeland', titleAr: 'مصر وطني', icon: '🏛️', tint: '#fbe9c8', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg4u5', subject: 'english', grade: 'g4', n: 5, title: 'A Day at Work', titleAr: 'يوم في العمل', icon: '👩‍⚕️', tint: '#e1effb', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg4u6', subject: 'english', grade: 'g4', n: 6, title: 'The Hundred Dresses', titleAr: 'الفساتين المائة', icon: '👗', tint: '#fbe3e8', ready: false, lessons: [], lessonsAr: [] }
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.

@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-17', title: 'English Grade 4: units 2-6 listed',
+    items: [
+      { text: 'The other five English units appear as locked \'Soon\' cards' }
+    ] },
   { date: '2026-10-17', title: 'English is shown in English only',
     items: [
       { text: 'The English subject now stays in English for the Arabic track too' }
