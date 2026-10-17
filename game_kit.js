@@ -103,6 +103,7 @@
 
     /* ---------- one big button: go on, or do the next thing ---------- */
     function next(label = T('Next ▸', 'التالي ◂')) {
+      if (skipping > 0) return Promise.resolve();
       return new Promise(res => {
         actions.innerHTML = '';
         const b = btn(label, 'primary'); b.dataset.next = '1';
@@ -233,8 +234,21 @@
     }
 
     /* ---------- start and finish ---------- */
+    /* ---------- leaving in the middle: the game keeps its place (stage, steps done in it, score) and offers to go on ---------- */
+    const RUN_DAYS = 3;
+    let stageNo = 0, stepNo = 0, skipping = 0;       // stage index, steps done in this stage, steps still to fast-forward
+    const runStore = {
+      load() { const r = SI.chProf(cfg.ch).gameRun; return r && r.at && Date.now() - r.at < RUN_DAYS * 864e5 && (r.stage > 0 || r.step > 0) ? r : null; },
+      save() { SI.updateChProf(c => { c.gameRun = { stage: stageNo, step: stepNo, score, mistakes, at: Date.now() }; }, cfg.ch); },
+      clear() { SI.updateChProf(c => { c.gameRun = null; }, cfg.ch); }
+    };
+    /* a step is one question the child answers (choice, spot, pick) or the whole Speed Round; while fast-forwarding to the saved place a step resolves at once */
+    const stepped = fn => (...a) => {
+      if (skipping > 0) { skipping--; stepNo++; return Promise.resolve(true); }
+      return fn(...a).then(r => { stepNo++; runStore.save(); return r; });
+    };
     const store = { load() { return Object.assign({}, SI.chProf(cfg.ch).game || {}); }, save(o) { SI.updateChProf(c => { c.game = o; }, cfg.ch); } };
-    function intro(text) {
+    function intro(text, saved) {
       return new Promise(res => {
         const s = store.load(), o = mk('div', 'overlay');
         o.innerHTML = `<div class="panel">
@@ -242,14 +256,17 @@
           <h2>${title}</h2>
           <p>${text}</p>
           ${s.best ? `<div class="stats"><span>${T('Best score', 'أعلى نتيجة')}: ${s.best}</span><span>${T('Stars', 'النجوم')}: ${'★'.repeat(s.stars || 0)}${'☆'.repeat(3 - (s.stars || 0))}</span></div>` : ''}
-          <div class="acts"><button class="btn primary big" id="start" type="button">${T('Start', G('ابدأ', 'ابدئي'))}</button></div>
+          ${saved ? `<p>${T(`You stopped in stage ${saved.stage + 1}. Go on from there?`, G(`إنت وقفت في المرحلة ${saved.stage + 1}. تكمّل من هنا؟`, `إنتي وقفتي في المرحلة ${saved.stage + 1}. تكمّلي من هنا؟`))}</p>` : ''}
+          <div class="acts">${saved ? `<button class="btn primary big" id="resume" type="button">${T('Continue where I stopped', 'كمّل من حيث وقفت')}</button>` : ''}<button class="btn ${saved ? '' : 'primary '}big" id="start" type="button">${saved ? T('Start again', 'ابدأ من الأول') : T('Start', G('ابدأ', 'ابدئي'))}</button></div>
         </div>`;
         document.body.appendChild(o);
-        const b = $('#start', o); b.focus();
-        b.onclick = () => { sfx.tick(); o.remove(); res(); };
+        const b = $('#start', o); (saved ? $('#resume', o) : b).focus();
+        b.onclick = () => { sfx.tick(); o.remove(); res(false); };
+        if (saved) $('#resume', o).onclick = () => { sfx.tick(); o.remove(); res(true); };
       });
     }
     function results(done) {
+      runStore.clear();
       const stars = mistakes <= 1 ? 3 : mistakes <= 4 ? 2 : 1, prev = store.load(), best = Math.max(prev.best || 0, score);
       store.save(Object.assign({}, prev, { best, stars: Math.max(prev.stars || 0, stars), plays: (prev.plays || 0) + 1 }));
       const gain = SI.addXP(score);
@@ -277,19 +294,26 @@
       paint(); setStage(1, stages[0].name);
       say(T('Hi! I’m Reesho the parrot.', 'أهلًا! أنا ريشو البغبغان.'), 'wave');
       const jump = +((/^#stage([23])$/.exec(location.hash) || [])[1] || 1);
-      await intro(introText);
+      const saved = jump === 1 ? runStore.load() : null;
+      const goOn = await intro(introText, saved);
+      let from = 0;
+      if (saved && goOn) { from = saved.stage; skipping = saved.step; score = saved.score || 0; mistakes = saved.mistakes || 0; $('#score').textContent = score; }
+      else if (saved) runStore.clear();
       for (let i = 0; i < stages.length; i++) {
-        if (i + 1 < jump) continue;
+        if (i + 1 < jump || i < from) continue;
+        stageNo = i; stepNo = 0;
         setStage(i + 1, stages[i].name);
-        if (i > 0) await banner(T(`Stage ${i + 1}`, `المرحلة ${i + 1}`), stages[i].name);
+        if (i > 0 && !(skipping > 0 && i === from)) await banner(T(`Stage ${i + 1}`, `المرحلة ${i + 1}`), stages[i].name);
         setTray(null); veil(null); gSpots.innerHTML = '';
+        if (skipping > 0) stepNo = 0;
         await stages[i].fn();
+        skipping = 0;
       }
       setTray(null);
       results(done);
     }
 
-    const g = { T, G, kw, sleep, shuffle, paint, tween, say, pose, next, choice, spot, pick, timedPick, speedRound, veil, setTray, banner, confetti, addScore, miss, run, sfx, reduceMotion,
+    const g = { T, G, kw, sleep, shuffle, paint, tween, say, pose, next, choice: stepped(choice), spot: stepped(spot), pick: stepped(pick), timedPick, speedRound: stepped(speedRound), veil, setTray, banner, confetti, addScore, miss, run, sfx, reduceMotion,
       name: () => SI.esc(SI.player().name), view: [VW, VH] };
     window.__g4 = { g, results, get score() { return score; }, get mistakes() { return mistakes; } };
     return g;
