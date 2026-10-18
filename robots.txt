@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /tools/
+Disallow: /shots/
+
+Sitemap: https://motafawek.com/sitemap.xml

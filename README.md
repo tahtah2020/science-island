@@ -236,3 +236,9 @@ All files of a chapter except its game page go in its subject's folder (`science
    For a chapter of another grade add `grade: 'g4'` and use an id that no other grade uses (`g4c4`).
    A Grade 4 game can be built on the kit: `G4Game({ ch, title, sub, render })`, then `g.run({ intro, stages, done })` (see `habitat.html`).
 4. For the Arabic track add `questions_chN_ar.js` (same ids) and `questionsAr`, `titleAr`, `game.nameAr`, `game.hintAr` in `chapters.js`; wrap the game page's text in `SI.T()` / `data-ar`.
+
+## SEO (Oct 2026)
+- Indexable pages: `index.html` and `contact.html` only (title, description, canonical, Open Graph, Twitter card; the home page also has JSON-LD `WebSite` + `Organization` and a static Arabic `#about` section so Google sees real text).
+- Every other page (chapters, map, quiz, champions, wardrobe and all game pages) carries `<meta name="robots" content="noindex,follow">`: without a player they redirect home, so they would look like thin duplicates. `admin.html` and `reviews.html` were already noindex. A new game page needs the same line after the viewport tag.
+- `robots.txt` (allows all, blocks `/tools/` and `/shots/`, points to the sitemap) and `sitemap.xml` (two URLs) sit at the root. Do not block noindex pages in `robots.txt`: Google must crawl them to see the tag. Add a URL to the sitemap only when the page is meant to appear in search.
+- Search Console: property `motafawek.com` (Domain, verified with a DNS TXT record in Cloudflare), then submit `https://motafawek.com/sitemap.xml`.
