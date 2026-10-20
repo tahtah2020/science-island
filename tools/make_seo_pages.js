@@ -30,7 +30,9 @@ const GRADE_ORDER = ['g4', 'g5', 'g6', 'p1', 'p2'];
 const UNIT_GRADES = { p1: true, p2: true };
 const subj = c => c.subject || 'science';
 const grade = c => c.grade || 'g5';
-const subjAr = id => ((SUBJECTS.find(s => s.id === id) || {}).titleAr) || id;
+/* people search "علوم الصف الخامس" (no «ال»), so titles use the subject the way a search is written */
+const SUBJ_SEARCH = { science: 'علوم', math: 'رياضيات', studies: 'دراسات اجتماعية', arabic: 'لغة عربية', english: 'لغة إنجليزية' };
+const subjAr = id => SUBJ_SEARCH[id] || ((SUBJECTS.find(s => s.id === id) || {}).titleAr) || id;
 const isUnits = c => !!UNIT_GRADES[grade(c)] || ['math', 'studies', 'english'].includes(subj(c));
 const unitWord = c => (isUnits(c) ? 'الوحدة' : 'الفصل');
 
@@ -145,11 +147,13 @@ fs.mkdirSync(out, { recursive: true });
 const pages = [];            // { url, priority }
 const hubs = {};             // 'subject-grade' -> { subject, grade, units: [...] }
 let skipped = [];
+const ideasByCh = {};        // chapter id -> its Arabic ideas (used by unit and monthly-test pages)
 
 for (const c of CHAPTERS) {
   if (!c.ready || subj(c) === 'english' || !c.questionsAr) continue;
   let IDEAS;
   try { IDEAS = load(c.questionsAr).IDEAS || []; } catch (e) { skipped.push(c.id + ' (' + e.message + ')'); continue; }
+  ideasByCh[c.id] = IDEAS;
   const lessons = c.lessonsAr || [];
   const g = grade(c), s = subj(c);
   const key = s + '-' + g;
@@ -173,8 +177,8 @@ for (const c of CHAPTERS) {
     unit.lessons.push({ n, name: lessonName, url });
 
     const gradeAr = GRADES[g], subAr = subjAr(s), uw = unitWord(c);
-    const title = `أسئلة على درس ${lessonName} ${subAr} ${gradeAr} بالإجابات | متفوّق`;
-    const desc = `أسئلة تدريبية بالإجابات على درس ${lessonName} من ${uw} ${c.titleAr} في ${subAr} ${gradeAr} (المنهج المصري)، ثم العب واختبر نفسك مع ريشو.`;
+    const title = `أسئلة على درس ${lessonName} ${subAr} ${gradeAr} ترم أول بالإجابات | متفوّق`;
+    const desc = `أسئلة تدريبية بالإجابات على درس ${lessonName} من ${uw} ${c.titleAr} في ${subAr} ${gradeAr} (المنهج المصري، الترم الأول)، ثم العب واختبر نفسك مع ريشو.`;
     const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [lessonName, null]];
 
     const qHtml = items.map((it, i) => `<section class="q">
@@ -186,7 +190,7 @@ ${it.why ? `<p class="why">${esc(it.why)}</p>` : ''}
 
     const sib = unit.lessons; // filled progressively; final nav added after the loop
     const body = `${crumbs(bc)}
-<h1>أسئلة على درس ${esc(lessonName)} ${esc(subAr)} ${esc(gradeAr)}</h1>
+<h1>أسئلة على درس ${esc(lessonName)} ${esc(subAr)} ${esc(gradeAr)} – ترم أول</h1>
 <p class="lead">هذه الصفحة للطالب وولي الأمر: أسئلة تدريبية بإجاباتها على درس <strong>${esc(lessonName)}</strong> من ${uw} «${esc(c.titleAr)}» في ${esc(subAr)} ${esc(gradeAr)}، للمنهج المصري. جرّب أن تجيب أولًا ثم اقرأ الإجابة.</p>
 <a class="cta" href="/index.html">العب هذا الدرس مع ريشو</a>
 ${concepts.length ? `<h2>أهم ما يغطيه الدرس</h2>\n<ul class="links">${concepts.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
@@ -206,12 +210,112 @@ ${qHtml}
   });
 }
 
+/* ---------- unit tests and monthly reviews: pages that match how people search ("اختبار على الفصل الأول", "مراجعة شهر أكتوبر") ---------- */
+const MAX_BIG = 15;
+const ORD_M = ['', 'الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع', 'الثامن', 'التاسع', 'العاشر'];
+const ORD_F = ['', 'الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة', 'السابعة', 'الثامنة', 'التاسعة', 'العاشرة'];
+
+function gatherItems(parts, max) {
+  const per = [];
+  for (const p of parts) {
+    const ideas = ideasByCh[p.ch], ch = CHAPTERS.find(x => x.id === p.ch);
+    if (!ideas || !ch) continue;
+    const only = p.lessons ? new Set(p.lessons) : null;
+    for (let n = 1; n <= (ch.lessonsAr || []).length; n++) {
+      if (only && !only.has(n)) continue;
+      const list = [];
+      for (const idea of ideas.filter(i => !i.bonus && i.lesson === n)) { const v = pick(idea); if (v) list.push(qa(v, p.ch + idea.id)); }
+      if (list.length) per.push(list);
+    }
+  }
+  const out = [];
+  for (let r = 0; out.length < max; r++) {
+    let any = false;
+    for (const l of per) { if (r < l.length) { out.push(l[r]); any = true; if (out.length >= max) break; } }
+    if (!any) break;
+  }
+  return out;
+}
+const renderQs = items => items.map((it, i) => `<section class="q">
+<h3>${i + 1}. ${esc(it.q)}</h3>
+${it.options ? '<ol>' + it.options.map(o => `<li>${esc(o)}</li>`).join('') + '</ol>' : ''}
+<div class="ans">الإجابة: ${esc(it.a)}</div>
+${it.why ? `<p class="why">${esc(it.why)}</p>` : ''}
+</section>`).join('\n');
+function writeBigPage({ slug, title, desc, h1, lead, bc, items, extra, about, priority }) {
+  const url = `/lessons/${slug}.html`;
+  const body = `${crumbs(bc)}
+<h1>${esc(h1)}</h1>
+<p class="lead">${lead}</p>
+<a class="cta" href="/index.html">العب واختبر نفسك مع ريشو</a>
+<h2>أسئلة تدريبية بالإجابات</h2>
+${renderQs(items)}
+<a class="cta" href="/index.html">أكمل التدريب باللعب: أسئلة يومية ومراجعة وامتحان شهري</a>
+${extra || ''}`;
+  const schema = [
+    { '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar' },
+    breadcrumbSchema(bc),
+    { '@type': 'WebPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY, about },
+    { '@type': 'FAQPage', mainEntity: items.map(it => ({ '@type': 'Question', name: it.q, acceptedAnswer: { '@type': 'Answer', text: it.a + (it.why ? ' — ' + it.why : '') } })) }
+  ];
+  fs.writeFileSync(path.join(out, slug + '.html'), shell({ title, desc, url, body, schema }));
+  pages.push({ url, priority: priority || '0.8' });
+  return url;
+}
+
+/* one test page per unit */
+for (const hub of Object.values(hubs)) {
+  const gradeAr = GRADES[hub.g], subAr = subjAr(hub.s), key = hub.s + '-' + hub.g;
+  hub.exams = [];
+  for (const unit of hub.units) {
+    const c = unit.c;
+    const items = gatherItems([{ ch: c.id }], MAX_BIG);
+    if (items.length < 8 || !unit.lessons.length) continue;
+    const uw = unitWord(c), ord = (uw === 'الوحدة' ? ORD_F : ORD_M)[c.n] || String(c.n);
+    const name = `اختبار على ${uw} ${ord} ${subAr} ${gradeAr}`;
+    const title = `${name} ترم أول بالإجابات | متفوّق`;
+    const desc = `${name} (المنهج المصري، الترم الأول) بأسئلة وإجابات على كل دروس ${uw} «${c.titleAr}»، مع ألعاب للمراجعة.`;
+    const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [`${uw} ${ord}`, null]];
+    const url = writeBigPage({
+      slug: `${key}-${c.id}`, title, desc, h1: `${name} – ترم أول`, bc, items,
+      lead: `اختبار تدريبي بالإجابات على ${uw} ${ord} «${esc(c.titleAr)}» في ${esc(subAr)} ${esc(gradeAr)}، يغطي دروس ${uw === 'الوحدة' ? 'الوحدة' : 'الفصل'} كلها. جرّب أن تجيب أولًا ثم اقرأ الإجابة.`,
+      extra: `<h2>دروس ${uw} «${esc(c.titleAr)}»</h2>\n<ul class="links">${unit.lessons.map(x => `<li><a href="${x.url}">${esc(x.name)}</a></li>`).join('')}</ul>`,
+      about: `${c.titleAr} - ${subAr} - ${gradeAr}`
+    });
+    unit.page = { url, name: `${name} – ترم أول` };
+  }
+}
+
+/* one monthly-review page per monthly test */
+for (const e of (W.EXAMS || [])) {
+  const s = e.subject || 'science', g = e.grade || 'g5';
+  if (s === 'english') continue;
+  const hub = hubs[s + '-' + g]; if (!hub) continue;
+  const parts = (e.parts || []).filter(p => ideasByCh[p.ch]);
+  const items = gatherItems(parts, MAX_BIG);
+  if (items.length < 8) { skipped.push(`exam ${e.id}: only ${items.length} usable questions`); continue; }
+  const gradeAr = GRADES[g], subAr = subjAr(s), key = s + '-' + g;
+  const label = /أكتوبر/.test(e.titleAr) ? 'مراجعة شهر أكتوبر' : 'مراجعة ' + e.titleAr;
+  const name = `${label} ${subAr} ${gradeAr}`;
+  const title = `${name} ترم أول بالإجابات | متفوّق`;
+  const desc = `${name} (المنهج المصري، الترم الأول): أسئلة تدريبية بالإجابات على المقرر، ثم العب واختبر نفسك قبل امتحان الشهر.`;
+  const covered = parts.map(p => { const ch = CHAPTERS.find(x => x.id === p.ch); const ls = (ch.lessonsAr || []).filter((_, i) => !p.lessons || p.lessons.includes(i + 1)); return `<li>${unitWord(ch)} «${esc(ch.titleAr)}»: ${ls.map(esc).join('، ')}</li>`; }).join('');
+  const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [label, null]];
+  const url = writeBigPage({
+    slug: `${key}-review-${e.id}`, title, desc, h1: `${name} – ترم أول`, bc, items,
+    lead: `مراجعة تدريبية بالإجابات للمقرر في ${esc(subAr)} ${esc(gradeAr)}. هذه أسئلة من إعدادنا وليست الامتحان الرسمي، والمقرر الرسمي تحدده مدرستك.`,
+    extra: `<h2>ما تغطيه هذه المراجعة</h2>\n<ul class="links">${covered}</ul>`,
+    about: `${label} - ${subAr} - ${gradeAr}`, priority: '0.9'
+  });
+  hub.exams.push({ url, name: `${label} – ${subAr} ${gradeAr}` });
+}
+
 /* previous / next links inside each unit, written after all lessons of the unit exist */
 for (const hub of Object.values(hubs)) {
   for (const unit of hub.units) {
     for (const l of unit.lessons) {
       const file = path.join(out, l.url.split('/').pop());
-      const nav = `<h2>دروس ${unitWord(unit.c)} «${esc(unit.c.titleAr)}»</h2>\n<ul class="links">${unit.lessons.map(x => `<li>${x.n === l.n ? '<strong>' + esc(x.name) + '</strong>' : `<a href="${x.url}">${esc(x.name)}</a>`}</li>`).join('')}</ul>\n<p><a href="/lessons/${hub.s}-${hub.g}.html">كل دروس ${esc(subjAr(hub.s))} ${esc(GRADES[hub.g])}</a></p>`;
+      const nav = `${unit.page ? `<p><a href="${unit.page.url}">${esc(unit.page.name)}</a></p>\n` : ''}<h2>دروس ${unitWord(unit.c)} «${esc(unit.c.titleAr)}»</h2>\n<ul class="links">${unit.lessons.map(x => `<li>${x.n === l.n ? '<strong>' + esc(x.name) + '</strong>' : `<a href="${x.url}">${esc(x.name)}</a>`}</li>`).join('')}</ul>\n<p><a href="/lessons/${hub.s}-${hub.g}.html">كل دروس ${esc(subjAr(hub.s))} ${esc(GRADES[hub.g])}</a></p>`;
       fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('<!--LESSON_NAV-->', nav));
     }
   }
@@ -226,7 +330,9 @@ for (const k of hubKeys) {
   const title = `أسئلة ${subAr} ${gradeAr} بالإجابات – كل الدروس | متفوّق`;
   const desc = `أسئلة تدريبية بالإجابات على دروس ${subAr} ${gradeAr} (المنهج المصري، الترم الأول) مرتبة حسب الكتاب المدرسي، مع ألعاب وامتحان شهري.`;
   const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, null]];
-  const list = units.filter(u => u.lessons.length).map(u => `<h2>${unitWord(u.c)} ${u.c.n}: ${esc(u.c.titleAr)}</h2>\n<ul class="links">${u.lessons.map(l => `<li><a href="${l.url}">${esc(l.name)}</a></li>`).join('')}</ul>`).join('\n');
+  const exams = hubs[k].exams || [];
+  const examHtml = exams.length ? `<h2>مراجعة قبل الامتحان</h2>\n<ul class="links">${exams.map(x => `<li><a href="${x.url}">${esc(x.name)}</a></li>`).join('')}</ul>\n` : '';
+  const list = examHtml + units.filter(u => u.lessons.length).map(u => `<h2>${unitWord(u.c)} ${u.c.n}: ${esc(u.c.titleAr)}</h2>\n<ul class="links">${u.page ? `<li><a href="${u.page.url}"><strong>${esc(u.page.name)}</strong></a></li>` : ''}${u.lessons.map(l => `<li><a href="${l.url}">${esc(l.name)}</a></li>`).join('')}</ul>`).join('\n');
   const body = `${crumbs(bc)}\n<h1>أسئلة ${esc(subAr)} ${esc(gradeAr)} بالإجابات</h1>\n<p class="lead">اختر الدرس لتجد أسئلة تدريبية بإجاباتها، ثم العب واختبر نفسك مع ريشو.</p>\n<a class="cta" href="/index.html">ابدأ اللعب</a>\n${list}`;
   const schema = [{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar' }, breadcrumbSchema(bc),
     { '@type': 'CollectionPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' } }];
