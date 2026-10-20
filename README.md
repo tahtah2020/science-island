@@ -242,3 +242,8 @@ All files of a chapter except its game page go in its subject's folder (`science
 - Every other page (chapters, map, quiz, champions, wardrobe and all game pages) carries `<meta name="robots" content="noindex,follow">`: without a player they redirect home, so they would look like thin duplicates. `admin.html` and `reviews.html` were already noindex. A new game page needs the same line after the viewport tag.
 - `robots.txt` (allows all, blocks `/tools/` and `/shots/`, points to the sitemap) and `sitemap.xml` (two URLs) sit at the root. Do not block noindex pages in `robots.txt`: Google must crawl them to see the tag. Add a URL to the sitemap only when the page is meant to appear in search.
 - Search Console: property `motafawek.com` (Domain, verified with a DNS TXT record in Cloudflare), then submit `https://motafawek.com/sitemap.xml`.
+
+## Search pages (SEO and GEO)
+- `node tools/make_seo_pages.js` builds static, indexable pages from `chapters.js` and each ready chapter's Arabic questions file: `lessons/<subject>-<grade>-<chapter>-l<N>.html` (one per lesson: title, key concepts, up to 8 practice questions with answers, FAQPage schema, button to the game), a hub per grade and subject (`lessons/<subject>-<grade>.html`), `lessons/index.html`, and it rewrites `sitemap.xml` and `llms.txt`.
+- The game pages are drawn by JavaScript, so search engines cannot read them; these pages are what Google can index. They hold our own practice questions and concept names, never the textbook's text.
+- Run it after every new chapter or unit goes `ready: true` (or after changing questions), commit `lessons/`, `sitemap.xml`, `llms.txt`, then ask Search Console to re-read the sitemap. English-track and English-subject pages are not generated yet.

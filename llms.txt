@@ -1,0 +1,19 @@
+# متفوّق · Motafawek
+
+> موقع للتعلم باللعب لطلاب المنهج المصري من الصف الرابع الابتدائي إلى الثاني الإعدادي: ألعاب وأسئلة تفاعلية في العلوم والرياضيات والدراسات الاجتماعية، مع ريشو البغبغان.
+
+## الدروس والأسئلة التدريبية بالإجابات
+- [كل الدروس](https://motafawek.com/lessons/)
+- [الرياضيات الصف الرابع الابتدائي](https://motafawek.com/lessons/math-g4.html)
+- [العلوم الصف الرابع الابتدائي](https://motafawek.com/lessons/science-g4.html)
+- [الدراسات الاجتماعية الصف الرابع الابتدائي](https://motafawek.com/lessons/studies-g4.html)
+- [الرياضيات الصف الخامس الابتدائي](https://motafawek.com/lessons/math-g5.html)
+- [العلوم الصف الخامس الابتدائي](https://motafawek.com/lessons/science-g5.html)
+- [الدراسات الاجتماعية الصف الخامس الابتدائي](https://motafawek.com/lessons/studies-g5.html)
+- [العلوم الصف السادس الابتدائي](https://motafawek.com/lessons/science-g6.html)
+- [العلوم الصف الأول الإعدادي](https://motafawek.com/lessons/science-p1.html)
+- [العلوم الصف الثاني الإعدادي](https://motafawek.com/lessons/science-p2.html)
+
+## الموقع
+- [الصفحة الرئيسية](https://motafawek.com/)
+- [أولياء الأمور والمعلمون](https://motafawek.com/contact.html)
