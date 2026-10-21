@@ -154,3 +154,32 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
     + tree(120, 640, 1.5, ['#96d47c', '#5fae58']) + tree(560, 620, 1.1) + tree(1500, 650, 1.3, ['#96d47c', '#5fae58']) + '</svg>';
   save('bg_g6c3.svg', b);
 })();
+
+/* ---------- Chapter 4 · Blood Circulation and Excretion: a heart sign, the blood loop and the kidneys ---------- */
+(function () {
+  seed = 77;
+  let inside = `<ellipse cx="300" cy="1010" rx="260" ry="150" fill="#f9d3d9" opacity=".6"/><ellipse cx="930" cy="1010" rx="250" ry="150" fill="#fbe3b8" opacity=".6"/><ellipse cx="930" cy="330" rx="280" ry="170" fill="#e8d8f2" opacity=".55"/>`;
+  for (let i = 0; i < 36; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040), '#9cc874');
+  let s = island([[0, '#f7d6dc'], [.5, '#fbeed6'], [1, '#e9dff4']], ['#f6e3ae', '#f2e8d6'], inside);
+  const heartSign = (x, y, k) => board(x, y, 200, 220, at(0, 28, k, B.heart({})));
+  /* 1 a heart sign and a stopwatch-like pulse bench */
+  s += heartSign(1000, 760, 1.5);
+  /* 2 the blood loop, on a sign */
+  s += board(905, 292, 220, 250, at(-82, -112, .55, B.loop({})));
+  /* 3 the kidneys and the bladder, on a sign */
+  s += board(232, 610, 200, 240, `<g clip-path="url(#signClip4)"><defs><clipPath id="signClip4"><rect x="-92" y="-108" width="184" height="216" rx="10"/></clipPath></defs>${at(0, -150, .8, B.body({ h: 380 }) + B.urinary({}))}</g>`);
+  s += tree(150, 1150, .9, ['#f19aa6', '#d9707f']) + tree(420, 1195, .8) + tree(770, 1190, .85, ['#f19aa6', '#d9707f']) + tree(1060, 1090, .9) + tree(1040, 560, .95, ['#f19aa6', '#d9707f']) + tree(400, 250, .7);
+  s += at(640, 1176, 1.3, B.heart({})) + at(1090, 420, 1, B.heart({})) + at(560, 480, .9, B.heart({}));
+  s += sunAt(1090, 140, 2.2) + cloud(140, 110, .8, .85) + cloud(930, 70, .7, .85) + '</svg>';
+  save('map_g6c4.svg', s);
+
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".5" stop-color="#fde3ea"/><stop offset=".56" stop-color="#f3dcc0"/><stop offset="1" stop-color="#e3dca8"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/><circle cx="1330" cy="190" r="92" fill="#ffd98a"/><circle cx="1330" cy="190" r="130" fill="#ffd98a" opacity=".3"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
+<path d="M0 560C200 510 420 536 640 524C900 510 1200 480 1600 534V1000H0Z" fill="#efd9c4"/><path d="M0 680C260 642 520 698 820 670C1100 644 1360 660 1600 640V1000H0Z" fill="#e3dca8"/>`;
+  for (let i = 0; i < 22; i++) b += tuft(f(40 + rnd() * 1520), f(620 + rnd() * 180), '#9cc874');
+  b += at(300, 880, 2.6, B.heart({})) + at(700, 880, 2, B.heart({})) + at(1180, 880, 2.4, B.heart({}))
+    + tree(120, 640, 1.5, ['#f19aa6', '#d9707f']) + tree(560, 620, 1.1) + tree(1500, 650, 1.3, ['#f19aa6', '#d9707f']) + '</svg>';
+  save('bg_g6c4.svg', b);
+})();

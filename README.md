@@ -191,6 +191,11 @@ A player who picks **Arabic** on the home page sees every page in Arabic, right 
 `common.js` gives `SI.isAr()`, `SI.T(en, ar)` and `SI.chTitle(chapter)`; static HTML carries `data-ar` (text), `data-ar-label` (aria-label/title) and `data-ar-ph` (placeholder).
 The Arabic track has its own Champions board (the board key includes the track). A chapter opens for Arabic players only when it has `questionsAr` in `chapters.js`.
 
+## Grade 6 Science, Chapter 4 (English book only)
+- `g6c4` «Blood Circulation and Excretion» (3 lessons: 4-1 Heart and Blood, 4-2 How the Kidneys Work, 4-3 Various Organs), `ready`. Only the English file exists (`science/questions_g6c4.js`, ideas H, K, M, bonus Z from the Enrichment Corner); the Arabic file waits for the Arabic book pages, so the chapter opens only in the Languages track. 27 ideas (23 core), 150 phrasings. Review notes are in the file header (Try / Exercise of pages 42-43 filed under lesson 2; blood carries oxygen and nutrients, carbon dioxide is collected).
+- Game `bloodtrip.html` (Blood Express), texts in English for both languages. Pictures in `science/g6_body.js`: `bloodLoop` (tap `heart`, `lungs`, `whole`; `pic.dot` puts a dot on one vessel), `urinary` (`kidneys`, `urtube`, `bladder`), `organsMap` (`lungs`, `heart`, `stomach`, `small`, `large`). Map and background: `node science/tools/make_g6_maps.js`.
+- Monthly test `g6oct` (official October scope: Chapter 4 only). `g6m1` (Chapters 1-3) is kept for the Arabic track.
+
 ## Math (math/)
 - Grade 5, Unit 1 `m5c1` «Place Value of Decimals and Operations» (11 lessons: decimals to thousandths, ×10 and ÷10, expanded form, comparing, rounding, estimating and modelling sums and differences, story problems). Game: `math-decimals.html` (Decimal Dock). Math chapters are called units («الوحدة») everywhere.
 - The school books print no answers, so every number answer is computed and checked by `tools/check_questions.js`.

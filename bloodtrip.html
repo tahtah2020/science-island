@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blood Express · Circulation and Excretion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261021d">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Blood Express.</noscript>
+<script src="firebase-config.js?v=20261021d"></script>
+<script src="chapters.js?v=20261021d"></script>
+<script src="common.js?v=20261021d"></script>
+<script src="science/g6_body.js?v=20261021d"></script>
+<script src="game_kit.js?v=20261021d"></script>
+<script>
+(() => {
+'use strict';
+/* Blood Express · the game of Grade 6, Chapter 4 "Blood Circulation and Excretion" (English book only). Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up): the pulse and the heart (book pages 35-37).
+   Stage 2 (Missions): 1) follow the blood around the body: oxygen, nutrients, carbon dioxide, waste, the lungs (page 35);
+                       2) the cleaning route of the body: kidneys, urine, bladder (page 39);
+                       3) where the organs are and how they work together (page 41).
+   Stage 3 (Speed Round): which organ is it?
+   The texts are English in both languages until the Arabic book is read (the chapter opens only in English). */
+const A = window.G6BODY, at = A.at;
+const T = en => SI.T(en, en);
+const RED = A.RED, BLUE = A.BLUE;
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'loop', hi: null, dot: null, names: [], drop: null };
+const WALL = '#eef6fb';
+const BX = 210, BY = 2;
+/* the blood loop: 300 × 300 drawn at .9, so it is 270 high; the words sit beside each part */
+const LK = .9, LX = 105, LY = 6, lx = x => +(LX + x * LK).toFixed(1), ly = y => +(LY + y * LK).toFixed(1);
+function loopScene() {
+  let dot = null;
+  if (sc.dot) { const p = A.loopPoint(sc.dot[0], sc.dot[1]); dot = [p[0], p[1], sc.dot[0] < 2 ? RED : BLUE]; }
+  const nm = (id, x, y, s) => sc.names.includes(id) ? A.text(x, y, s, 14, sc.hi === id ? '#1f7a52' : '#1f3d57') : '';
+  return `<rect width="420" height="280" fill="${WALL}"/>${at(LX, LY, LK, A.loop({ hi: sc.hi, dot }))}
+    ${nm('lungs', 62, ly(48), T('Lungs'))}${nm('heart', 62, ly(152), T('Heart'))}${nm('whole', 62, ly(264), T('Whole body'))}
+    ${sc.key ? `<g font-family="Nunito,Cairo,Arial,sans-serif" font-size="13" font-weight="800"><rect x="330" y="30" width="14" height="14" rx="3" fill="${RED}"/><text x="350" y="42" fill="#1f3d57">${T('Rich in oxygen')}</text><rect x="330" y="56" width="14" height="14" rx="3" fill="${BLUE}"/><text x="350" y="68" fill="#1f3d57">${T('Rich in carbon dioxide')}</text></g>` : ''}`;
+}
+/* the body: the kidneys and the bladder (scale .745), or all the organs (scale .66) */
+const KK = .745, kx = x => +(BX + x * KK).toFixed(1), ky = y => +(BY + y * KK).toFixed(1);
+const KLAB = { kidneys: ['r', 188, 40], urtube: ['l', 236, -20], bladder: ['r', 272, 20] };
+function kidneyScene() {
+  let labs = '';
+  sc.names.forEach(id => { const [side, y, ex] = KLAB[id], Y = ky(y), on = sc.hi === id, txt = { kidneys: T('Kidneys'), urtube: T('Tube where urine passes'), bladder: T('Urinary bladder') }[id];
+    labs += side === 'r' ? `<path d="M${kx(ex)} ${Y}H300" stroke="#1f3d57" stroke-width="1.8"/>${A.text(352, Y + 5, txt, 13.5, on ? '#1f7a52' : '#1f3d57')}`
+      : `<path d="M${kx(ex)} ${Y}H120" stroke="#1f3d57" stroke-width="1.8"/>${A.text(62, Y + 5, txt, 13.5, on ? '#1f7a52' : '#1f3d57')}`; });
+  return `<rect width="420" height="280" fill="${WALL}"/>${at(BX, BY, KK, A.body({ h: 372 }) + A.urinary({ hi: sc.hi, drop: sc.drop }))}${labs}`;
+}
+const OK_ = .66, ox = x => +(BX + x * OK_).toFixed(1), oy = y => +(BY + y * OK_).toFixed(1);
+const OLAB = { lungs: ['l', 150, -62], heart: ['r', 168, 20], stomach: ['r', 250, 60], small: ['l', 330, -40], large: ['r', 330, 60] };
+function organsScene() {
+  let labs = '';
+  sc.names.forEach(id => { const [side, y, ex] = OLAB[id], Y = oy(y), on = sc.hi === id, txt = { lungs: T('Lungs'), heart: T('Heart'), stomach: T('Stomach'), small: T('Small intestine'), large: T('Large intestine') }[id];
+    labs += side === 'r' ? `<path d="M${ox(ex)} ${Y}H300" stroke="#1f3d57" stroke-width="1.8"/>${A.text(352, Y + 5, txt, 13.5, on ? '#1f7a52' : '#1f3d57')}`
+      : `<path d="M${ox(ex)} ${Y}H120" stroke="#1f3d57" stroke-width="1.8"/>${A.text(62, Y + 5, txt, 13.5, on ? '#1f7a52' : '#1f3d57')}`; });
+  return `<rect width="420" height="280" fill="${WALL}"/>${at(BX, BY, OK_, A.body({ h: 420 }) + A.organs({ hi: sc.hi }))}${labs}`;
+}
+const render = () => ({ loop: loopScene, kidney: kidneyScene, organs: organsScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c4', logo: '❤️', title: ['Blood Express', 'Blood Express'], sub: ['Chapter 4 · Blood Circulation and Excretion', 'Chapter 4 · Blood Circulation and Excretion'],
+  bg: 'science/assets/bg_g6c4.svg', bgc: '#fde3ea', label: ['The blood on its way around the body', 'The blood on its way around the body'], render });
+const kw = g.kw;
+/* the white dot travels along one vessel of the blood loop */
+async function ride(seg) {
+  await g.tween(1100, k => { sc.dot = [seg, k]; });
+}
+const wait = async () => { await g.next(); };
+
+/* ---------- Stage 1 · Warm Up: the pulse and the heart ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'loop', hi: 'heart', dot: null, names: ['heart'], key: false }); g.paint();
+  g.say(T('Put your finger on your wrist, near the base of your thumb. Can you feel something beating? Let us find out what it is! Where do we feel the <b>pulse</b> in the experiment?'), 'think');
+  await g.choice({
+    options: [T('On the wrist, near the base of the thumb'), T('On the elbow'), T('On the knee')], correct: T('On the wrist, near the base of the thumb'),
+    hint: T('Think of the place where doctors often check it.'),
+    ok: T(`We feel the ${kw('pulse')} at the wrist, near the base of the thumb. You can also feel it at the neck or the ankle.`) });
+  g.say(T('Count the beats in 1 minute while sitting. Then jump lightly and count again. What happens to your pulse?'), 'think');
+  await g.choice({
+    options: [T('It becomes faster'), T('It becomes slower'), T('It stops')], correct: T('It becomes faster'),
+    hint: T('Your heart works harder when you exercise.'),
+    ok: T(`When you exercise, the heart beats ${kw('faster')}.`) });
+  g.say(T('Why does the pulse become faster after exercising?'), 'think');
+  await g.choice({
+    options: [T('To carry more oxygen and nutrients to the whole body quickly'), T('To allow the blood to rest slowly'), T('Because there are not enough nutrients')], correct: T('To carry more oxygen and nutrients to the whole body quickly'),
+    hint: T('The body needs more of them when it moves.'),
+    ok: T(`The heart beats faster to carry more ${kw('oxygen and nutrients')} to the whole body quickly.`) });
+  g.say(T('What do we call the movement of the heart during pumping out blood?'), 'think');
+  await g.choice({
+    options: [T('A heartbeat'), T('A pulse'), T('A breath')], correct: T('A heartbeat'),
+    hint: T('It is the beat of the heart. The pulse is what we feel at the wrist.'),
+    ok: T(`The movement of the heart during pumping out blood is a ${kw('heartbeat')}. It travels through the blood vessels and can be felt as a ${kw('pulse')} at the wrist.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1'), T('Follow the blood!'));
+  Object.assign(sc, { mode: 'loop', hi: null, dot: [0, 1], names: [], key: true }); g.paint();
+  g.say(T('Here is the blood loop. <b>Red</b> blood is rich in oxygen and <b>blue</b> blood is rich in carbon dioxide. Which organ works like a pump and sends the blood out to the whole body?'), 'point');
+  await g.choice({
+    options: [T('The heart'), T('The stomach'), T('The lungs')], correct: T('The heart'),
+    hint: T('It is constantly beating.'),
+    ok: T(`The ${kw('heart')} works like a pump. The blood is pumped out by the heart.`),
+    reveal: () => { sc.hi = 'heart'; if (!sc.names.includes('heart')) sc.names.push('heart'); g.paint(); } });
+  sc.hi = null; sc.dot = [1, 0]; g.paint();
+  await ride(1);
+  g.say(T('The blood travels to the whole body. What does it carry there?'), 'think');
+  await g.choice({
+    options: [T('Oxygen and nutrients'), T('Carbon dioxide and waste'), T('Muscles')], correct: T('Oxygen and nutrients'),
+    hint: T('Nutrients come from the small intestine, and oxygen from the lungs.'),
+    ok: T(`The blood carries ${kw('oxygen')} and ${kw('nutrients')} to the whole body.`),
+    reveal: () => { sc.hi = 'whole'; if (!sc.names.includes('whole')) sc.names.push('whole'); g.paint(); } });
+  sc.hi = null; sc.dot = [2, 0]; g.paint();
+  await ride(2);
+  g.say(T('On its way back, the blood is blue. What did it collect from the whole body?'), 'think');
+  await g.choice({
+    options: [T('Carbon dioxide and waste'), T('Oxygen and nutrients'), T('Food and water')], correct: T('Carbon dioxide and waste'),
+    hint: T('Blue means rich in carbon dioxide.'),
+    ok: T(`The blood collects ${kw('carbon dioxide')} and ${kw('waste')} produced in the body, and returns to the heart again.`) });
+  sc.dot = [3, 0]; g.paint();
+  await ride(3);
+  g.say(T('The blood that has returned to the heart is sent to the...'), 'think');
+  await g.choice({
+    options: [T('Lungs'), T('Kidneys'), T('Stomach')], correct: T('Lungs'),
+    hint: T('They are at the top of the picture.'),
+    ok: T(`It is sent to the ${kw('lungs')}.`),
+    reveal: () => { sc.hi = 'lungs'; if (!sc.names.includes('lungs')) sc.names.push('lungs'); g.paint(); } });
+  g.say(T('What does the blood do in the lungs?'), 'think');
+  await g.choice({
+    options: [T('Lets out carbon dioxide and takes in oxygen'), T('Lets out oxygen and takes in carbon dioxide'), T('Takes in nutrients')], correct: T('Lets out carbon dioxide and takes in oxygen'),
+    hint: T('After the lungs the blood becomes red again.'),
+    ok: T(`In the lungs, the blood lets out ${kw('carbon dioxide')} and takes in ${kw('oxygen')}.`),
+    reveal: async () => { sc.dot = [0, 0]; g.paint(); await ride(0); } });
+}
+async function mission2() {
+  await g.banner(T('Mission 2'), T('The cleaning route of the body'));
+  Object.assign(sc, { mode: 'kidney', hi: null, names: [], drop: null }); g.paint();
+  g.say(T('The blood carries the waste products produced in the body to two organs on the lower back. What are they?'), 'think');
+  await g.choice({
+    options: [T('The kidneys'), T('The lungs'), T('The stomach')], correct: T('The kidneys'),
+    hint: T('There are two of them, one on each side of the backbone.'),
+    ok: T(`The ${kw('kidneys')}: there are ${kw('two')} kidneys on the lower back on both sides of the backbone.`),
+    reveal: () => { sc.hi = 'kidneys'; sc.names.push('kidneys'); g.paint(); } });
+  g.say(T('What do the kidneys do with the blood?'), 'think');
+  await g.choice({
+    options: [T('They filter waste products and excess water out of it'), T('They pump it to the whole body'), T('They take in oxygen for it')], correct: T('They filter waste products and excess water out of it'),
+    hint: T('They keep the inside of the body clean.'),
+    ok: T(`The waste products and the excess water are ${kw('filtered out')} from the blood to become ${kw('urine')}.`) });
+  g.say(T('The urine passes through thin tubes. Where is it temporarily stored?'), 'think');
+  sc.hi = 'urtube'; sc.names.push('urtube'); g.paint();
+  await g.tween(900, k => { sc.drop = [+(-16 + k * 4).toFixed(1), +(214 + k * 36).toFixed(1)]; });
+  await g.choice({
+    options: [T('In the bladder'), T('In the heart'), T('In the stomach')], correct: T('In the bladder'),
+    hint: T('It is a small bag at the bottom.'),
+    ok: T(`The urine is temporarily stored in the ${kw('bladder')}.`),
+    reveal: () => { sc.hi = 'bladder'; sc.names.push('bladder'); sc.drop = [0, 276]; g.paint(); } });
+  g.say(T('And then? What happens to the urine after the bladder?'), 'think');
+  await g.choice({
+    options: [T('It is discharged out of the body'), T('It returns to the blood'), T('It goes to the lungs')], correct: T('It is discharged out of the body'),
+    hint: T('That is how the inside of the body is kept clean.'),
+    ok: T(`The urine is ${kw('discharged out of the body')}. The inside of the body is kept clean by discharging urine.`),
+    reveal: async () => { await g.tween(700, k => { sc.drop = [0, +(276 + k * 24).toFixed(1)]; }); sc.drop = null; g.paint(); } });
+}
+async function mission3() {
+  await g.banner(T('Mission 3'), T('Where are the organs?'));
+  Object.assign(sc, { mode: 'organs', hi: null, names: [] }); g.paint();
+  g.say(T('Many organs are lined up closely without gaps. Which two organs are in the chest, protected by the ribs? <b>Tap the right answer.</b>'), 'think');
+  await g.choice({
+    options: [T('Heart and lungs'), T('Stomach and small intestine'), T('Kidneys and bladder')], correct: T('Heart and lungs'),
+    hint: T('The lungs are on the left and right, and the other organ is sandwiched between them.'),
+    ok: T(`The ${kw('lungs')} are on the left and right, and the ${kw('heart')} is sandwiched between them.`),
+    reveal: () => { sc.hi = 'heart'; sc.names.push('lungs', 'heart'); g.paint(); } });
+  g.say(T('Which organ is at the top of the abdomen?'), 'think');
+  await g.choice({
+    options: [T('The stomach'), T('The small intestine'), T('The large intestine')], correct: T('The stomach'),
+    hint: T('It is the bag at the end of the food pipe.'),
+    ok: T(`The ${kw('stomach')} is at the top of the abdomen.`),
+    reveal: () => { sc.hi = 'stomach'; sc.names.push('stomach'); g.paint(); } });
+  g.say(T('The long organ below the stomach is the small intestine. Which organ is <b>around</b> it?'), 'think');
+  await g.choice({
+    options: [T('The large intestine'), T('The heart'), T('The kidney')], correct: T('The large intestine'),
+    hint: T('It is the wide tube.'),
+    ok: T(`The ${kw('large intestine')} is around the small intestine.`),
+    reveal: () => { sc.hi = 'large'; sc.names.push('small', 'large'); g.paint(); } });
+  g.say(T('What connects all the organs, so that the whole body works together?'), 'think');
+  await g.choice({
+    options: [T('Blood vessels'), T('The ribs'), T('The backbone')], correct: T('Blood vessels'),
+    hint: T('The blood flows through them.'),
+    ok: T(`All organs are connected by ${kw('blood vessels')}. The blood carries nutrients and oxygen and collects waste products.`),
+    reveal: () => { sc.hi = null; g.paint(); } });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: which organ? ---------- */
+const NAME = { heart: T('Heart'), lungs: T('Lungs'), kidneys: T('Kidneys'), bladder: T('Bladder') };
+const SPEED = [
+  { t: T('It works like a pump'), ans: 'heart' },
+  { t: T('It is constantly beating'), ans: 'heart' },
+  { t: T('It is sandwiched between the left and right lungs'), ans: 'heart' },
+  { t: T('The blood lets out carbon dioxide and takes in oxygen here'), ans: 'lungs' },
+  { t: T('There is a left one and a right one in the chest'), ans: 'lungs' },
+  { t: T('They filter waste products out of the blood'), ans: 'kidneys' },
+  { t: T('There are two, one on each side of the backbone'), ans: 'kidneys' },
+  { t: T('They make urine'), ans: 'kidneys' },
+  { t: T('Urine is temporarily stored here'), ans: 'bladder' },
+  { t: T('The urine is discharged out of the body after being stored here'), ans: 'bladder' }
+];
+async function stage3() {
+  Object.assign(sc, { mode: 'organs', hi: null, names: [] }); g.paint();
+  const some = (k, n) => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, n);
+  const show = it => { sc.hi = null; if (it && (it.ans === 'kidneys' || it.ans === 'bladder')) { sc.mode = 'kidney'; sc.names = []; } else { sc.mode = 'organs'; sc.names = []; } g.paint(); };
+  await g.speedRound({
+    items: some('heart', 2).concat(some('lungs', 2), some('kidneys', 2), some('bladder', 2)), rounds: 8,
+    buttons: [{ label: NAME.heart, value: 'heart', c: 0 }, { label: NAME.lungs, value: 'lungs', c: 1 }, { label: NAME.kidneys, value: 'kidneys', c: 3 }, { label: NAME.bladder, value: 'bladder', c: 2 }],
+    ask: T('Which organ is it?'),
+    intro: T('Speed Round! I will say something about one organ. Is it the <b>heart</b>, the <b>lungs</b>, the <b>kidneys</b> or the <b>bladder</b>? Press the right button before time runs out. 8 rounds!'),
+    think: T('Heart, lungs, kidneys or bladder?'),
+    show: it => show(it), reveal: it => { show(it); sc.hi = it.ans === 'kidneys' ? 'kidneys' : it.ans === 'bladder' ? 'bladder' : it.ans; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Today we follow the <b>blood</b> on its way around the body, find out how the kidneys clean it, and see where the organs are.`),
+  stages: [{ name: T('Warm Up'), fn: stage1 }, { name: T('Missions'), fn: stage2 }, { name: T('Speed Round'), fn: stage3 }],
+  done: { title: T('Blood expert!'),
+    text: T('The heart pumps the blood to the whole body. The blood carries <b>oxygen</b> and <b>nutrients</b>, collects <b>carbon dioxide</b> and waste, and goes to the lungs. The <b>kidneys</b> filter waste products out of the blood to make <b>urine</b>, which is stored in the <b>bladder</b>. All the organs are connected by blood vessels.') }
+}).catch(err => console.error(err));
+window.__bloodtrip = { sc, render };
+})();
+</script>
+</body>
+</html>

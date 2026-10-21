@@ -214,6 +214,83 @@
       ${hot('flat', T('The flat cloth', 'قطعة القماش المسطَّحة'), ringRect(12, 30, 158, 76))}${hot('loops', T('The cloth with many loop-like threads', 'قطعة القماش التي عليها خيوط على شكل حلقات'), ringRect(170, 30, 158, 76))}</svg>`;
   }
 
-  window.G6BODY = { at, text, arrow, bag, body, airways, exchange, fish, gut, GUTPOS, tube, beaker, dropper, wall, cloth, drop, bread, apple, rice, lungsSign, IODINE, C_O2, C_CO2 };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { breathBags, airways: airwaysPic, gasExchange, digestTract, salivaTubes, gutWalls, cloths });
+  /* ================= Chapter 4 · Blood Circulation and Excretion (English book only: the labels are English in both languages until the Arabic book is read) ================= */
+  const E = s => T(s, s);
+  const RED = '#e2404f', BLUE = '#4f7fd0';
+  /* a heart. Origin: its middle. About 50 wide, 70 tall with its two big vessels. hi: true = green outline */
+  function heart(o = {}) {
+    const st = o.hi ? `stroke="${OK}" stroke-width="5"` : 'stroke="#a8323a" stroke-width="2.4"';
+    return `<path d="M-12 -18C-12 -34 -8 -42 -8 -52" fill="none" stroke="${BLUE}" stroke-width="9" stroke-linecap="round"/>
+      <path d="M2 -20C0 -48 24 -52 24 -30" fill="none" stroke="${RED}" stroke-width="9" stroke-linecap="round"/>
+      <path d="M-20 -14C-20 -28 2 -30 16 -20C30 -8 26 14 10 28C2 34 -8 28 -14 16C-20 6 -20 -6 -20 -14Z" fill="#d9525e" ${st} stroke-linejoin="round"/>
+      <path d="M-4 -22C-8 -6 -2 12 6 26" fill="none" stroke="#a8323a" stroke-width="2" opacity=".5"/>`;
+  }
+  /* ---- the blood loop: lungs on top, heart in the middle, the whole body at the bottom. 300 × 300, origin top-left.
+     Red = blood rich in oxygen, blue = blood rich in carbon dioxide. Four vessels (each a cubic curve): lungs → heart, heart → whole body, whole body → heart, heart → lungs */
+  const SEG = [[204, 72, 226, 98, 206, 112, 170, 124, RED], [168, 176, 232, 184, 264, 224, 222, 254, RED], [80, 254, 36, 224, 66, 184, 132, 176, BLUE], [134, 124, 96, 112, 78, 96, 96, 72, BLUE]];
+  const bez = (s, k) => { const u = 1 - k, a = u * u * u, b = 3 * u * u * k, c = 3 * u * k * k, d = k * k * k; return [a * s[0] + b * s[2] + c * s[4] + d * s[6], a * s[1] + b * s[3] + c * s[5] + d * s[7]]; };
+  /* the point on the loop: seg 0 … 3 (the order lungs → heart → whole body → heart → lungs), k 0 … 1 */
+  const loopPoint = (seg, k) => bez(SEG[seg], k);
+  function loop(o = {}) {
+    const hi = o.hi;
+    let s = '';
+    SEG.forEach(v => {
+      const d = `M${v[0]} ${v[1]}C${v[2]} ${v[3]} ${v[4]} ${v[5]} ${v[6]} ${v[7]}`, p = bez(v, .96), q = bez(v, 1), a = Math.atan2(q[1] - p[1], q[0] - p[0]) * 180 / Math.PI;
+      s += `<path d="${d}" fill="none" stroke="${v[8]}" stroke-width="9" stroke-linecap="round" opacity=".92"/><path d="M0 0l-11 -7v14z" fill="${v[8]}" transform="translate(${f1(q[0])} ${f1(q[1])}) rotate(${f1(a)})"/>`;
+    });
+    const lungs = `<g ${hi === 'lungs' ? `stroke="${OK}" stroke-width="5"` : 'stroke="#7a8fb8" stroke-width="2.4"'}><ellipse cx="108" cy="44" rx="42" ry="30" fill="#bcd0f2"/><ellipse cx="192" cy="44" rx="42" ry="30" fill="#f4b6bc" stroke="${hi === 'lungs' ? OK : '#c9757d'}"/></g>
+      <g fill="none" stroke="#fff" stroke-width="2" opacity=".7"><path d="M80 34h24M82 48h22M96 56h14M196 34h24M196 48h22M190 58h16"/></g>`;
+    const whole = `<g ${hi === 'whole' ? `stroke="${OK}" stroke-width="5"` : 'stroke="#8a7a9f" stroke-width="2.4"'}><rect x="78" y="244" width="144" height="42" rx="21" fill="#e4d6f2"/></g>
+      <g fill="none" stroke-width="2.6" opacity=".85"><path d="M92 256h52M92 272h40" stroke="${BLUE}"/><path d="M156 256h52M168 272h40" stroke="${RED}"/><path d="M144 256l12 16" stroke="#9a6fb0"/></g>`;
+    return `${s}${lungs}${whole}${at(150, 150, 1.5, heart({ hi: hi === 'heart' }))}${o.dot ? `<circle cx="${f1(o.dot[0])}" cy="${f1(o.dot[1])}" r="9" fill="#fff" stroke="${o.dot[2] || '#1f3d57'}" stroke-width="4"/>` : ''}`;
+  }
+  /* ---- the organs of the body seen from the front: body({ h: 420 }) + this. Same origin as body().
+     hi: 'lungs' | 'heart' | 'stomach' | 'small' | 'large' | 'liver' = a green outline */
+  const LUNGL = 'M-9 112C-30 98 -60 118 -66 164C-70 196 -62 216 -42 216C-24 216 -9 206 -9 186Z', LUNGR = 'M9 112C30 98 60 118 66 164C70 196 62 216 42 216C30 216 22 210 16 200C24 190 20 178 9 172Z';
+  function organs(o = {}) {
+    const hi = o.hi, lc = id => (hi === id ? `stroke="${OK}" stroke-width="5"` : 'stroke="#d0707c" stroke-width="2.6"');
+    return `${at(0, 40, 1, gut({ hi, liver: true }))}
+      <g transform="translate(0 112) scale(.86) translate(0 -112)"><path d="${LUNGL}" fill="#f6b3b9" ${lc('lungs')} stroke-linejoin="round"/><path d="${LUNGR}" fill="#f6b3b9" ${lc('lungs')} stroke-linejoin="round"/></g>
+      ${at(5, 168, .9, heart({ hi: hi === 'heart' }).replace(/<path d="M-12 -18[^>]*>/, '').replace(/<path d="M2 -20[^>]*>/, ''))}`;
+  }
+  /* ---- the kidneys, the tubes and the urinary bladder, drawn over body({ h: 372 }). Same origin as body().
+     hi: 'kidneys' | 'tube' | 'bladder' = a green outline; drop: [x, y] = a drop of urine */
+  const KID = 'M-26 150C-48 148 -58 170 -54 192C-50 214 -32 220 -26 210C-22 202 -32 196 -30 184C-28 174 -20 168 -22 160C-22 154 -24 150 -26 150Z';
+  const URINEPOS = { kidneys: [-38, 186], tube: [-16, 232], bladder: [0, 270] };
+  function urinary(o = {}) {
+    const hi = o.hi, g_ = id => (hi === id ? `stroke="${OK}" stroke-width="5"` : null);
+    const kid = side => `<g transform="scale(${side} 1)"><path d="${KID}" fill="#c9576a" ${g_('kidneys') || 'stroke="#8e2f3c" stroke-width="2.4"'} stroke-linejoin="round"/><path d="M-30 186h-12" stroke="#fff" stroke-width="2.4" opacity=".5" stroke-linecap="round"/>
+      <path d="M-22 180H-6" stroke="${RED}" stroke-width="4" stroke-linecap="round"/><path d="M-22 192H-6" stroke="${BLUE}" stroke-width="4" stroke-linecap="round"/></g>`;
+    const ur = side => `<path d="M${side * -22} 202Q${side * -24} 236 ${side * -9} 256" fill="none" stroke="${hi === 'tube' ? OK : '#d8b05a'}" stroke-width="${hi === 'tube' ? 8 : 5}" stroke-linecap="round"/>`;
+    return `<path d="M-5 122V268" stroke="${BLUE}" stroke-width="6" stroke-linecap="round"/><path d="M5 122V268" stroke="${RED}" stroke-width="6" stroke-linecap="round"/>
+      ${ur(1)}${ur(-1)}${kid(1)}${kid(-1)}
+      <path d="M0 252C-20 252 -26 276 -17 290C-9 302 9 302 17 290C26 276 20 252 0 252Z" fill="#f4d97a" ${g_('bladder') || 'stroke="#c9a23a" stroke-width="2.6"'} stroke-linejoin="round"/>
+      ${o.drop ? `<path d="M${o.drop[0]} ${o.drop[1] - 8}c-5 8 -5 13 0 13c5 0 5 -5 0 -13z" fill="#f2c230" stroke="#b8860b" stroke-width="1.4"/>` : ''}`;
+  }
+
+  /* ---- the tap pictures of Chapter 4 ---- */
+  function bloodLoop(q) {
+    const pc = (q && q.pic) || {}, dot = pc.dot ? [...loopPoint(pc.dot[0], pc.dot[1]), SEG[pc.dot[0]][8]] : null;
+    return `${svgOpen(300, 300, E('A drawing of the blood loop: two organs at the top, a pump in the middle, a wide mesh of thin tubes at the bottom, joined by red and blue arrows'))}
+      ${frame(300, 300, '#fdf3dc')}${loop({ dot })}
+      ${hot('lungs', E('The two organs at the top'), ringRect(52, 8, 196, 70))}${hot('heart', E('The pump in the middle'), ringRect(108, 104, 84, 94))}${hot('whole', E('The mesh at the bottom'), ringRect(70, 238, 160, 54))}</svg>`;
+  }
+  function urinaryPic() {
+    const k = .9, X = 125, Y = -42, p = (x, y) => [f1(X + x * k), f1(Y + y * k)];
+    const r = (x, y, w, h) => { const [a, b] = p(x, y); return ringRect(a, b, f1(w * k), f1(h * k), 12); };
+    return `${svgOpen(250, 282, E('The lower body from the front: two bean-shaped organs near the back, thin tubes going down from them, and a small round bag at the bottom'))}
+      <defs><clipPath id="g6urinClip"><rect width="250" height="282" rx="14"/></clipPath></defs>${frame(250, 282, '#eef6fb')}<g clip-path="url(#g6urinClip)">${at(X, Y, k, body({ h: 372 }) + urinary({}))}</g>
+      ${hot('kidneys', E('The two bean-shaped organs'), r(-58, 146, 44, 80) + r(14, 146, 44, 80))}${hot('urtube', E('The thin tubes going down'), r(-34, 226, 20, 36) + r(14, 226, 20, 36))}${hot('bladder', E('The small round bag at the bottom'), r(-24, 250, 48, 56))}</svg>`;
+  }
+  function organsMap() {
+    const k = .66, X = 125, Y = -26, p = (x, y) => [f1(X + x * k), f1(Y + y * k)];
+    const r = (x, y, w, h) => { const [a, b] = p(x, y); return ringRect(a, b, f1(w * k), f1(h * k), 12); };
+    return `${svgOpen(250, 290, E('The inside of the body from the front: two pink organs at the top with a red organ between them, a bag below, a long coiled tube, and a wide tube around it'))}
+      <defs><clipPath id="g6orgClip"><rect width="250" height="290" rx="14"/></clipPath></defs>${frame(250, 290, '#eef6fb')}<g clip-path="url(#g6orgClip)">${at(X, Y, k, body({ h: 420 }) + organs({}))}</g>
+      ${hot('lungs', E('The two pink organs at the top'), r(-72, 106, 62, 90) + r(10, 106, 62, 90))}${hot('heart', E('The red organ between them'), r(-16, 134, 44, 56))}
+      ${hot('stomach', E('The bag below the red organ'), r(2, 218, 64, 70))}${hot('small', E('The long coiled tube'), r(-46, 275, 72, 96))}${hot('large', E('The wide tube around the coiled tube'), r(-66, 256, 134, 126))}</svg>`;
+  }
+
+  window.G6BODY = { at, text, arrow, bag, body, airways, exchange, fish, gut, GUTPOS, tube, beaker, dropper, wall, cloth, drop, bread, apple, rice, lungsSign, IODINE, C_O2, C_CO2, heart, loop, loopPoint, organs, urinary, URINEPOS, RED, BLUE };
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { breathBags, airways: airwaysPic, gasExchange, digestTract, salivaTubes, gutWalls, cloths, bloodLoop, urinary: urinaryPic, organsMap });
 })();

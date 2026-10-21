@@ -140,7 +140,11 @@ window.CHAPTERS = [
     map: { img: 'science/assets/map_g6c3.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'science/assets/map_g6c3.svg', quizBg: 'science/assets/bg_g6c3.svg' },
 
-  { id: 'g6c4', grade: 'g6', n: 4, title: 'Circulation and Excretion', titleAr: 'الدورة الدموية والإخراج', icon: '❤️', tint: '#fde3ea', ready: false,
+  { id: 'g6c4', grade: 'g6', n: 4, title: 'Circulation and Excretion', titleAr: 'الدورة الدموية والإخراج', icon: '❤️', tint: '#fde3ea', ready: true,
+    questions: 'science/questions_g6c4.js', art: 'science/g6_body.js',
+    game: { href: 'bloodtrip.html', name: "Blood Express", nameAr: "قطار الدم", icon: '❤️', hint: 'Follow the blood around the body, see how the kidneys clean it, and find where the organs are!', hintAr: 'تتبَّع الدم حول الجسم، واكتشف كيف تنظّفه الكليتان، وأين تقع الأعضاء!' },
+    map: { img: 'science/assets/map_g6c4.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g6c4.svg', quizBg: 'science/assets/bg_g6c4.svg',
     lessons: ['Heart and Blood', 'How the Kidneys Work', 'Various Organs'] },
 
   { id: 'g6c5', grade: 'g6', n: 5, title: 'Photosynthesis', titleAr: 'البناء الضوئي', icon: '🌿', tint: '#e3f3d0', ready: false,
@@ -335,6 +339,8 @@ window.EXAMS = [
     parts: [{ ch: 'sg4u1' }] },
   { id: 'g4m1', grade: 'g4', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'g4c3', lessons: [1] }] },
+  { id: 'g6oct', grade: 'g6', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'g6c4' }] },
   { id: 'g6m1', grade: 'g6', title: 'Monthly Test', titleAr: 'امتحان الشهر', icon: '📝',
     parts: [{ ch: 'g6c1' }, { ch: 'g6c2' }, { ch: 'g6c3' }] },
   { id: 'p1oct', grade: 'p1', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
