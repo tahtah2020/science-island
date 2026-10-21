@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Food Bank Packers · Divisibility, Factors, and Multiples</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261021c">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Food Bank Packers.</noscript>
+<script src="firebase-config.js?v=20261021c"></script>
+<script src="chapters.js?v=20261021c"></script>
+<script src="common.js?v=20261021c"></script>
+<script src="math/g6_art.js?v=20261021c"></script>
+<script src="game_kit.js?v=20261021c"></script>
+<script>
+(() => {
+'use strict';
+/* Food Bank Packers · the game of Unit 1, Divisibility, Factors, and Multiples (Math, Grade 6). Built on the shared game kit (game_kit.js).
+   The scene is the Food Bank: a donation box with a number on it, the Venn diagram of two numbers, boxes of grain bags and cheese, or bags of fruit (pictures of math/g6_art.js, plain mode).
+   Stage 1 (Warm Up): can it be shared equally? the divisibility rules (lesson 1, book pages 1-2).
+   Stage 2 (Missions): 1 prime factors, GCF and LCM with a Venn diagram (2) · 2 boxes and the GCF expression (3) · 3 fruit and the LCM as a common denominator (4).
+   Stage 3 (Speed Round): GCF or LCM? (lessons 2-4).
+   Every T('English', 'عربي') has both languages. Numbers stay left to right. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const INK = '#1f3d57';
+const D = () => window.CH_DIAGRAMS;
+const sc = { mode: 'box', n: '', cap: '', pic: null };
+const VW = 420, VH = 280;
+const num = (x, y, s, fs = 22, fill = INK) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" unicode-bidi="embed" font-size="${fs}" font-weight="900" fill="${fill}">${s}</text>`;
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  if (sc.mode === 'box') {                       // a donation box with a number on it
+    s += `<rect x="110" y="50" width="200" height="150" rx="14" fill="#f3dfb6" stroke="#8a5a28" stroke-width="5"/><path d="M110 88H310" stroke="#8a5a28" stroke-width="4"/><rect x="150" y="104" width="120" height="66" rx="10" fill="#fff" stroke="#c98b4a" stroke-width="3"/>`
+      + num(210, 152, sc.n, 44) + `<text x="210" y="76" text-anchor="middle" font-size="15" font-weight="900" fill="#8a5a28">${T('DONATION BOX', 'صندوق التبرعات')}</text>`;
+    if (sc.cap) s += num(210, 238, sc.cap, 17);
+  } else if (sc.pic) {                           // a picture of g6_art.js (plain), scaled into the scene
+    s += `<g transform="translate(${sc.dx || 6} ${sc.dy || 14}) scale(${sc.k || 1.2})">${D()[sc.pic.name]({ pic: Object.assign({ plain: true }, sc.pic.pic) })}</g>`;
+    if (sc.cap) s += num(210, 262, sc.cap, 17);
+  }
+  return s;
+}
+const g = G4Game({ ch: 'mg6u1', logo: '📦', title: ['Food Bank Packers', 'مُعبّئو بنك الطعام'], sub: ['Unit 1 · Divisibility, Factors, and Multiples', 'الوحدة 1 · القابلية للقسمة والعوامل والمضاعفات'],
+  bg: 'math/assets/bg_mg6u1.svg', bgc: '#ffe6cc', label: ['A donation box, a Venn diagram, boxes or fruit bags for each question', 'صندوق تبرعات أو شكل فن أو صناديق أو أكياس فاكهة لكل سؤال'], render });
+const pic = (name, p, o) => Object.assign(sc, { mode: 'pic', pic: { name, pic: p }, cap: '' }, o || {});
+
+/* ---------- Stage 1 · Warm Up: can it be shared equally? ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'box', n: '120', cap: '' }); g.paint();
+  g.say(T(`Welcome to the Food Bank! ${kw('120')} volunteers want to be put in teams of 6. Which rule tells you that 120 is divisible by 6?`, `أهلًا في بنك الطعام! عندنا ${kw(L('120'))} متطوع عايزين يتقسّموا فرق، كل فريق ٦. أنهي قاعدة بتقولك إن ${L('120')} بتتقسم على ٦؟`), 'point');
+  await g.choice({ options: [T('It is divisible by both 2 and 3', 'بتتقسم على ٢ وعلى ٣ مع بعض'), T('It ends in 0', 'آخرها صفر'), T('Its digits add up to 3 only', 'مجموع أرقامها ٣ بس'), T('It has three digits', 'ليها ٣ أرقام')],
+    correct: T('It is divisible by both 2 and 3', 'بتتقسم على ٢ وعلى ٣ مع بعض'), hint: T('6 = 2 × 3.', L('6 = 2 × 3') + '.'), ok: T('120 is even and 1 + 2 + 0 = 3, so it is divisible by 2 and by 3, so by 6.', `${L('120')} زوجي و${L('1 + 2 + 0 = 3')}، يعني بتتقسم على ٢ وعلى ٣، يعني على ٦.`) });
+  Object.assign(sc, { n: '254', cap: '254 → 5 buses' }); g.paint();
+  g.say(T(`A school brings ${kw('254')} students to the campaign. Can they sit equally in 5 buses?`, `مدرسة جابت ${kw(L('254'))} طالب للحملة. ينفع يتوزعوا بالتساوي على ٥ أتوبيسات؟`), 'think');
+  await g.choice({ options: [T('No: 254 does not end in 0 or 5', 'لأ: ٢٥٤ مش بتنتهي بـ٠ ولا ٥'), T('Yes: 254 is even', 'أيوه: ٢٥٤ زوجي'), T('Yes: 2 + 5 + 4 = 11', 'أيوه: ' + L('2 + 5 + 4 = 11'))], correct: T('No: 254 does not end in 0 or 5', 'لأ: ٢٥٤ مش بتنتهي بـ٠ ولا ٥'),
+    hint: T('Look at the ones digit.', 'بص على رقم الآحاد.'), ok: T('A number is divisible by 5 only when it ends in 0 or 5.', 'العدد بيتقسم على ٥ لما بينتهي بـ٠ أو ٥ بس.') });
+  Object.assign(sc, { n: '116', cap: '116 → 4 villages' }); g.paint();
+  g.say(T(`The Food Bank has ${kw('116')} food boxes for 4 villages. Is that equal sharing?`, `بنك الطعام عنده ${kw(L('116'))} صندوق لـ٤ قرى. يتوزعوا بالتساوي؟`), 'think');
+  await g.choice({ options: [T('Yes: 16 is divisible by 4', 'أيوه: ١٦ بتتقسم على ٤'), T('No: it does not end in 0 or 5', 'لأ: مش بتنتهي بـ٠ ولا ٥'), T('No: 116 is odd', 'لأ: ١١٦ فردي')], correct: T('Yes: 16 is divisible by 4', 'أيوه: ١٦ بتتقسم على ٤'),
+    hint: T('For 4, look at the last two digits.', 'لـ٤ بص على آخر رقمين.'), ok: T('116 ÷ 4 = 29: every village gets 29 boxes.', `${L('116 ÷ 4 = 29')}: كل قرية تاخد ${L('29')} صندوق.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 2: prime factors, GCF and LCM with a Venn diagram
+  pic('vennGCF', { a: 12, b: 18 }, { k: 1.2, dy: 22 }); g.paint();
+  g.say(T(`Mission 1: the Venn diagram shows the prime factors of ${kw('12')} and ${kw('18')}. What are the common prime factors, in the overlap?`, `المهمة ١: شكل فن بيوريك العوامل الأولية للعددين ${kw(L('12'))} و${kw(L('18'))}. إيه العوامل الأولية المشتركة اللي في التقاطع؟`), 'point');
+  await g.choice({ options: ['2, 3', '2, 2', '3, 3', '2, 2, 3, 3'], correct: '2, 3', hint: T('12 = 2 × 2 × 3 and 18 = 2 × 3 × 3. What do both have?', `${L('12 = 2 × 2 × 3')} و${L('18 = 2 × 3 × 3')}. إيه اللي في الاتنين؟`), ok: T('Both have one 2 and one 3.', 'الاتنين فيهم ٢ واحدة و٣ واحدة.') });
+  g.say(T('The GCF is the product of the common prime factors. What is the GCF of 12 and 18?', 'ع.م.أ هو حاصل ضرب العوامل الأولية المشتركة. كام ع.م.أ للعددين ' + L('12') + ' و' + L('18') + '؟'), 'think');
+  await g.choice({ options: ['6', '36', '5', '1'], correct: '6', hint: T('2 × 3.', L('2 × 3') + '.'), ok: T('GCF = 2 × 3 = 6.', `ع.م.أ = ${L('2 × 3 = 6')}.`) });
+  g.say(T('The LCM is the product of ALL the prime factors in the diagram, the common ones once. What is the LCM of 12 and 18?', 'المضاعف المشترك الأصغر هو حاصل ضرب كل العوامل الأولية في الشكل، والمشتركة مرة واحدة. كام م.م.أ للعددين ' + L('12') + ' و' + L('18') + '؟'), 'think');
+  await g.choice({ options: ['36', '6', '18', '72'], correct: '36', hint: T('2 × 2 × 3 × 3.', L('2 × 2 × 3 × 3') + '.'), ok: T('LCM = 2 × 2 × 3 × 3 = 36.', `م.م.أ = ${L('2 × 2 × 3 × 3 = 36')}.`) });
+}
+async function mission2() {                 // lesson 3: boxes and the GCF expression
+  pic('boxPack', { boxes: 4, g: 3, c: 2 }, { k: 1.2, dy: 40 }); g.paint();
+  g.say(T('Mission 2: a student has 12 grain bags and 8 packs of cheese. She wants the greatest number of identical boxes with nothing left over. How many boxes?', 'المهمة ٢: طالبة معاها ' + L('12') + ' كيس حبوب و' + L('8') + ' عبوات جبن. عايزة أكبر عدد صناديق متشابهة من غير ما يفضل حاجة. كام صندوق؟'), 'point');
+  await g.choice({ options: ['4', '2', '6', '8'], correct: '4', hint: T('Find the GCF of 12 and 8.', 'دوّر على ع.م.أ للعددين ' + L('12') + ' و' + L('8') + '.'), ok: T('GCF of 12 and 8 = 4: four boxes, each with 3 grain bags and 2 packs of cheese.', `ع.م.أ للعددين ${L('12')} و${L('8')} = ${L('4')}: ٤ صناديق، في كل صندوق ${L('3')} أكياس حبوب و${L('2')} عبوات جبن.`) });
+  g.say(T('Which expression gives all the items in the 4 boxes (3 grain bags and 2 cheese in each)?', 'أنهي عبارة بتدّي كل الحاجات في الـ٤ صناديق (في كل صندوق ' + L('3') + ' حبوب و' + L('2') + ' جبن)؟'), 'think');
+  await g.choice({ options: ['4(3 + 2)', '4 + 3 + 2', '4(3 × 2)', '4 + (3 × 2)'], correct: '4(3 + 2)', hint: T('4 boxes, each with 3 + 2 items.', '٤ صناديق، كل واحد فيه ' + L('3 + 2') + ' حاجة.'), ok: T('4(3 + 2) = (4 × 3) + (4 × 2) = 12 + 8: the distributive property.', `${L('4(3 + 2) = (4 × 3) + (4 × 2) = 12 + 8')}: خاصية التوزيع.`) });
+  Object.assign(sc, { pic: { name: 'boxPack', pic: { boxes: 4, g: 3, c: 2 } } });
+  g.say(T('Now 36 packs of cheese and 48 grain bags: the GCF is 12. What does 12(3 + 4) mean?', 'دلوقتي ' + L('36') + ' عبوة جبن و' + L('48') + ' كيس حبوب: ع.م.أ ' + L('12') + '. إيه معنى ' + L('12(3 + 4)') + '؟'), 'think');
+  await g.choice({ options: [T('12 baskets, each with 3 cheese and 4 grain bags', '١٢ سلة، في كل سلة ٣ جبن و٤ حبوب'), T('12 cheese and 3 grain bags', '١٢ جبن و٣ حبوب'), T('3 baskets with 12 items', '٣ سلال في كل واحدة ١٢ حاجة')],
+    correct: T('12 baskets, each with 3 cheese and 4 grain bags', '١٢ سلة، في كل سلة ٣ جبن و٤ حبوب'), hint: T('The number outside is the GCF: how many baskets.', 'العدد بره القوس هو ع.م.أ: عدد السلال.'), ok: T('12(3 + 4) = 36 + 48: the most baskets, nothing left over.', `${L('12(3 + 4) = 36 + 48')}: أكبر عدد سلال ومن غير ما يفضل حاجة.`) });
+}
+async function mission3() {                 // lesson 4: fruit and the LCM as a common denominator
+  pic('bagFrac', { bags: [{ n: 4, k: 3, name: '3/4' }, { n: 12, k: 7, name: '7/12', col: '#f2a24a' }] }, { k: 1.2, dx: 70, dy: 14 }); g.paint();
+  g.say(T('Mission 3: you have 3/4 of one package of fruit and 7/12 of another. How much fruit is that? First, which common denominator is best?', 'المهمة ٣: معاك ' + L('3/4') + ' من كيس فاكهة و' + L('7/12') + ' من كيس تاني. الفاكهة دي قد إيه؟ الأول، أنهي مقام مشترك أنسب؟'), 'point');
+  await g.choice({ options: ['12', '4', '16', '48'], correct: '12', hint: T('The LCM of 4 and 12.', 'م.م.أ للعددين ' + L('4') + ' و' + L('12') + '.'), ok: T('LCM of 4 and 12 = 12.', `م.م.أ للعددين ${L('4')} و${L('12')} = ${L('12')}.`) });
+  g.say(T('Write 3/4 with the denominator 12.', 'اكتب ' + L('3/4') + ' بمقام ' + L('12') + '.'), 'think');
+  await g.choice({ options: ['9/12', '3/12', '7/12', '12/4'], correct: '9/12', hint: T('4 × 3 = 12, so multiply the top by 3 as well.', `${L('4 × 3 = 12')}، يعني اضرب البسط في ${L('3')} كمان.`), ok: T('3/4 = 9/12.', `${L('3/4 = 9/12')}.`) });
+  g.say(T('Now add: 9/12 + 7/12 = ?', 'دلوقتي اجمع: ' + L('9/12 + 7/12') + ' = ؟'), 'think');
+  await g.choice({ options: ['16/12 = 1 1/3', '16/24', '10/12', '2/3'], correct: '16/12 = 1 1/3', hint: T('Add the tops, keep the bottom.', 'اجمع البسطين وسيب المقام.'), ok: T('9/12 + 7/12 = 16/12 = 1 1/3 packages.', `${L('9/12 + 7/12 = 16/12 = 1 1/3')} كيس.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: GCF or LCM? ---------- */
+const BT = [{ label: T('GCF', 'ع.م.أ'), value: 'g', c: 0 }, { label: T('LCM', 'م.م.أ'), value: 'l', c: 2 }];
+const WHY = { g: T('Sharing into the most equal groups, or taking a number out: the GCF.', 'أكبر عدد مجموعات متساوية أو إخراج عدد خارج القوس: ع.م.أ.'), l: T('A common denominator or a common multiple: the LCM.', 'مقام مشترك أو مضاعف مشترك: م.م.أ.') };
+const ITEMS = [['The most equal gift boxes from 12 and 8 items', 'g', 'أكبر عدد صناديق متساوية من ١٢ و٨ حاجة'], ['The common denominator for 1/4 + 1/12', 'l', 'المقام المشترك لـ ١/٤ + ١/١٢'], ['The most baskets from 36 cheese and 48 grain bags', 'g', 'أكبر عدد سلال من ٣٦ جبن و٤٨ حبوب'],
+  ['The common denominator for 1/5 + 1/8', 'l', 'المقام المشترك لـ ١/٥ + ١/٨'], ['The number outside: 12 + 8 = 4(3 + 2)', 'g', 'العدد بره القوس في ١٢ + ٨ = ٤(٣ + ٢)'], ['The smallest number that 4 and 6 both divide into', 'l', 'أصغر عدد بيتقسم عليه ٤ و٦'],
+  ['The greatest number that divides both 18 and 24', 'g', 'أكبر عدد بيقسم ١٨ و٢٤'], ['The smallest common multiple of 6 and 9', 'l', 'أصغر مضاعف مشترك لـ ٦ و٩'], ['The most boxes with nothing left over', 'g', 'أكبر عدد صناديق من غير ما يفضل حاجة'], ['The denominator to add 3/4 + 5/6', 'l', 'المقام لجمع ٣/٤ + ٥/٦']];
+async function stage3() {
+  Object.assign(sc, { mode: 'box', n: '?', cap: '' }); g.paint();
+  await g.speedRound({ items: ITEMS.map(([en, r, ar]) => ({ t: T(en, ar), ans: r, why: WHY[r] })), rounds: 8, ms: 12000, buttons: BT,
+    ask: T('GCF or LCM?', 'ع.م.أ ولا م.م.أ؟'), intro: T('Speed Round! A job comes in. Is it solved with the GCF (greatest common factor) or the LCM (least common multiple)?', 'جولة السرعة! هتظهرلك مهمة. بتتحل بـ ع.م.أ (أكبر عامل مشترك) ولا م.م.أ (أصغر مضاعف مشترك)؟'),
+    think: T('GCF or LCM?', 'ع.م.أ ولا م.م.أ؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! The Food Bank needs your help to share boxes, grain and fruit fairly. Use the divisibility rules, the GCF and the LCM. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! بنك الطعام محتاج مساعدتك علشان توزّع الصناديق والحبوب والفاكهة بالعدل. استخدم قواعد القابلية للقسمة وع.م.أ وم.م.أ. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can use the divisibility rules, the GCF and the LCM. Next, try the questions of this unit.', 'بقيت تستخدم قواعد القابلية للقسمة وع.م.أ وم.م.أ. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

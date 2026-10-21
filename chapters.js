@@ -233,6 +233,23 @@ window.CHAPTERS = [
     cover: 'math/assets/map_mg4u2.svg', quizBg: 'math/assets/bg_mg4u2.svg',
     lessonsAr: ['خواص عملية الجمع', 'الجمع مع إعادة التسمية', 'الطرح مع إعادة التسمية', 'النماذج الشريطية والمتغيرات والمسائل الكلامية', 'حل مسائل كلامية متعددة الخطوات باستخدام الجمع والطرح'] },
 
+  /* Grade 6 Math, first term 2026/2027. Source: the English school book (Primary 6, Math Term 1), Units 1 and 2 (the official October scope). Only the English file exists so far;
+     the Arabic titles and lesson names below are ours until the Arabic book is added. */
+  { id: 'mg6u1', subject: 'math', grade: 'g6', n: 1, title: 'Divisibility, Factors, and Multiples', titleAr: 'القابلية للقسمة والعوامل والمضاعفات', icon: '🧮', tint: '#ffe6cc', ready: true,
+    lessons: ['Divisibility', 'Factorizing a Number to Its Prime Factors', 'Writing Expressions Using the G.C.F.', 'Analyzing Least Common Multiples'],
+    questions: 'math/questions_mg6u1.js', art: 'math/g6_art.js', questMax: 24,
+    game: { href: 'math-boxes.html', name: "Food Bank Packers", nameAr: "مُعبّئو بنك الطعام", icon: '📦', hint: 'Share boxes equally, use the divisibility rules, the GCF with a Venn diagram, and the LCM to add fractions', hintAr: 'وزّع الصناديق بالتساوي واستخدم قواعد القابلية للقسمة وع.م.أ مع شكل فن وم.م.أ لجمع الكسور' },
+    map: { img: 'math/assets/map_mg6u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_mg6u1.svg', quizBg: 'math/assets/bg_mg6u1.svg',
+    lessonsAr: ['القابلية للقسمة', 'تحليل العدد إلى عوامله الأولية', 'كتابة العبارات باستخدام ع.م.أ', 'تحليل المضاعف المشترك الأصغر'] },
+  { id: 'mg6u2', subject: 'math', grade: 'g6', n: 2, title: 'Rational Numbers', titleAr: 'الأعداد النسبية', icon: '➖', tint: '#ffe6cc', ready: true,
+    lessons: ['Using a Number Line to Describe Data', 'Using a Number Line and Symbols to Compare Numbers', 'Analyzing Rational Numbers by Using Models', 'Comparing and Ordering Rational Numbers', 'Exploring Absolute Value', 'Comparing Absolute Values'],
+    questions: 'math/questions_mg6u2.js', art: 'math/g6_art.js', questMax: 28,
+    game: { href: 'math-climb.html', name: "Climb the Line", nameAr: "تسلّق خط الأعداد", icon: '🧗', hint: 'Climb the number line: opposites, the number sets, ordering and absolute value', hintAr: 'تسلّق خط الأعداد: الأعداد المتعاكسة ومجموعات الأعداد والترتيب والقيمة المطلقة' },
+    map: { img: 'math/assets/map_mg6u2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_mg6u2.svg', quizBg: 'math/assets/bg_mg6u2.svg',
+    lessonsAr: ['استخدام خط الأعداد لوصف البيانات', 'استخدام خط الأعداد والرموز لمقارنة الأعداد', 'تحليل الأعداد النسبية باستخدام النماذج', 'مقارنة الأعداد النسبية وترتيبها', 'استكشاف القيمة المطلقة', 'مقارنة القيم المطلقة'] },
+
   /* ---------- Social Studies (the school book «مصر في قلب العالم» 2026/2027, first term). Units, like Math (SI.isUnits).
      One Arabic book for both tracks: the subject's lang is { lang: 'ar', ar: 'ar' }, so every unit has only a questionsAr file.
      Grade 4: Unit 1 «اتجاهاتنا ترسم خطواتنا» (book pages 10-37), Unit 2 «مدينتنا وحياتنا اليومية», Unit 3 «مصر وطننا». Idea letters: A-D (unit 1). */
@@ -312,6 +329,8 @@ window.EXAMS = [
     parts: [{ ch: 'sg5u1', lessons: [1, 2, 3] }] },
   { id: 'sg6oct', subject: 'studies', grade: 'g6', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'sg6u1', lessons: [1, 2, 3] }] },
+  { id: 'mg6oct', subject: 'math', grade: 'g6', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'mg6u1' }, { ch: 'mg6u2' }] },
   { id: 'sg4oct', subject: 'studies', grade: 'g4', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'sg4u1' }] },
   { id: 'g4m1', grade: 'g4', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',

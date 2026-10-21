@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-21', title: 'Grade 6 Math (English): Units 1 and 2',
+    items: [
+      { text: 'Divisibility, Factors and Multiples and Rational Numbers: 429 questions with pictures, two games, October test' }
+    ] },
   { date: '2026-10-21', title: 'دراسات الصف السادس: الوحدة الأولى «وطننا العربي (خصائص وتحديات)»',
     items: [
       { text: 'أسئلة الدروس الأربعة بترتيب الكتاب (55 فكرة، 282 صيغة) مع شارة الدرس على كل سؤال', links: [{ label: 'معاينة الأسئلة', href: 'quiz.html#preview', ch: 'sg6u1' }] },

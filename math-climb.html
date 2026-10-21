@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Climb the Line · Rational Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261021c">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Climb the Line.</noscript>
+<script src="firebase-config.js?v=20261021c"></script>
+<script src="chapters.js?v=20261021c"></script>
+<script src="common.js?v=20261021c"></script>
+<script src="math/g6_art.js?v=20261021c"></script>
+<script src="game_kit.js?v=20261021c"></script>
+<script>
+(() => {
+'use strict';
+/* Climb the Line · the game of Unit 2, Rational Numbers (Math, Grade 6). Built on the shared game kit (game_kit.js).
+   The scene is always a number line or the circles of the number sets (pictures of math/g6_art.js, plain mode): the climbing wall, a line with points, or the sets inside each other.
+   Stage 1 (Warm Up): positions and opposites on the climbing wall (lessons 1-2, book pages 15-22).
+   Stage 2 (Missions): 1 which set does the number belong to? (3) · 2 order the points on the line (4) · 3 absolute value: how far from zero? (5-6).
+   Stage 3 (Speed Round): which symbol, <, > or =? (lessons 2 and 6).
+   Every T('English', 'عربي') has both languages. Numbers stay left to right. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const INK = '#1f3d57';
+const D = () => window.CH_DIAGRAMS;
+const sc = { pic: null, cap: '', dx: 6, dy: 14, k: 1.2 };
+const VW = 420, VH = 280;
+const num = (x, y, s, fs = 22, fill = INK) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" unicode-bidi="embed" font-size="${fs}" font-weight="900" fill="${fill}">${s}</text>`;
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  if (sc.pic) s += `<g transform="translate(${sc.dx} ${sc.dy}) scale(${sc.k})">${D()[sc.pic.name]({ pic: Object.assign({ plain: true }, sc.pic.pic) })}</g>`;
+  if (sc.cap) s += num(210, 266, sc.cap, 17);
+  return s;
+}
+const g = G4Game({ ch: 'mg6u2', logo: '🧗', title: ['Climb the Line', 'تسلّق خط الأعداد'], sub: ['Unit 2 · Rational Numbers', 'الوحدة 2 · الأعداد النسبية'],
+  bg: 'math/assets/bg_mg6u2.svg', bgc: '#ffe6cc', label: ['The climbing wall, a number line or the number sets for each question', 'حائط التسلّق أو خط أعداد أو مجموعات الأعداد لكل سؤال'], render });
+const wall = (pts, cap) => Object.assign(sc, { pic: { name: 'numLine6', pic: { min: -10, max: 10, vertical: true, pts } }, dx: 74, dy: 6, k: .8, cap: cap || '' });
+const line = (min, max, pts, o) => Object.assign(sc, { pic: { name: 'numLine6', pic: Object.assign({ min, max, pts }, o || {}) }, dx: 6, dy: 56, k: 1.2, cap: '' });
+const sets = cap => Object.assign(sc, { pic: { name: 'setsCircles', pic: {} }, dx: 14, dy: 2, k: 1.15, cap: cap || '' });
+const WALL = [{ v: -5, l: 'A' }, { v: 3, l: 'B' }, { v: -9, l: 'C' }, { v: -8, l: 'D' }, { v: -3, l: 'E' }];
+
+/* ---------- Stage 1 · Warm Up: the climbing wall ---------- */
+async function stage1() {
+  wall(WALL); g.paint();
+  g.say(T('Welcome to the climbing wall! The platform is 0. Climbers: A −5, B 3, C −9, D −8, E −3 (meters from the platform). Who is the farthest from the platform?', 'أهلًا في حائط التسلّق! المنصة هي ' + L('0') + '. المتسلقون: أ ' + L('−5') + '، ب ' + L('3') + '، ج ' + L('−9') + '، د ' + L('−8') + '، هـ ' + L('−3') + ' (بالأمتار من المنصة). مين أبعد واحد عن المنصة؟'), 'point');
+  await g.choice({ options: ['C (−9)', 'D (−8)', 'A (−5)', 'B (3)'], correct: 'C (−9)', hint: T('Count the units from 0.', 'عُد الوحدات من الصفر.'), ok: T('−9 is 9 units from 0: more than all the others.', `${L('−9')} بعيد ${L('9')} وحدات عن الصفر: أكتر من الباقيين.`) });
+  g.say(T('Climber E is at −3. Which climber is the same distance from the platform, on the other side?', 'المتسلق هـ على ' + L('−3') + '. مين المتسلق اللي نفس بُعده عن المنصة في الناحية التانية؟'), 'think');
+  await g.choice({ options: [T('Climber B (3)', 'المتسلق ب (٣)'), T('Climber A (−5)', 'المتسلق أ (−٥)'), T('Climber D (−8)', 'المتسلق د (−٨)')], correct: T('Climber B (3)', 'المتسلق ب (٣)'), hint: T('The opposite of −3.', 'عكس ' + L('−3') + '.'), ok: T('3 and −3 are opposites: the same distance from 0 on opposite sides.', `${L('3')} و${L('−3')} متعاكسين: نفس البُعد عن الصفر في ناحيتين مختلفتين.`) });
+  g.say(T('Which climber is below the platform but the closest to it?', 'مين المتسلق اللي تحت المنصة وأقرب واحد ليها؟'), 'think');
+  await g.choice({ options: ['E (−3)', 'A (−5)', 'D (−8)', 'C (−9)'], correct: 'E (−3)', hint: T('Negative = below. Which negative is closest to 0?', 'سالب = تحت. أنهي سالب أقرب للصفر؟'), ok: T('−3 is the negative number closest to 0.', `${L('−3')} هو أقرب عدد سالب للصفر.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 3: the sets of numbers
+  sets(); g.paint();
+  const Q = [['0', 'Natural numbers', 'الأعداد الطبيعية', 'Natural numbers start at 0, counting numbers at 1.', 'الأعداد الطبيعية بتبدأ من صفر وأعداد العدّ من ١.'], ['−7', 'Integers', 'الأعداد الصحيحة', 'A negative whole number is an integer.', 'العدد الصحيح السالب من الأعداد الصحيحة.'], ['0.02', 'Rational numbers', 'الأعداد النسبية', 'A decimal that is not a whole number is rational.', 'الكسر العشري غير الصحيح عدد نسبي.'], ['12,892', 'Counting numbers', 'أعداد العدّ', 'A positive whole number is a counting number.', 'العدد الصحيح الموجب من أعداد العدّ.']];
+  const all = [['Counting numbers', 'أعداد العدّ'], ['Natural numbers', 'الأعداد الطبيعية'], ['Integers', 'الأعداد الصحيحة'], ['Rational numbers', 'الأعداد النسبية']];
+  for (let i = 0; i < Q.length; i++) {
+    const [v, en, ar, okEn, okAr] = Q[i];
+    g.say(T(`Mission 1: sets inside sets. Which is the BEST (smallest) set for the number ${kw(v)}?`, `المهمة ١: مجموعات جوه مجموعات. أنهي أنسب (أصغر) مجموعة للعدد ${kw(L(v))}؟`), i ? 'think' : 'point');
+    await g.choice({ options: all.map(([e, a]) => T(e, a)), correct: T(en, ar), hint: T('Start from the middle circle and go out.', 'ابدأ من الدايرة اللي في النص وروح لبره.'), ok: T(okEn, okAr) });
+  }
+}
+async function mission2() {                 // lesson 4: order the points
+  const pts = [{ v: 2.1, l: 'A', show: '2.1' }, { v: 1.4, l: 'B', show: '1.4' }, { v: -3.25, l: 'C', show: '−3 1/4' }, { v: -1.875, l: 'D', show: '−1 7/8' }, { v: -2.5, l: 'E', show: '−2 1/2' }];
+  line(-4, 4, pts, { lab: 1 }); g.paint();
+  g.say(T('Mission 2: the points are 2.1, 1.4, −3 1/4, −1 7/8 and −2 1/2. Which point is the LEAST?', 'المهمة ٢: النقط هي ' + L('2.1') + ' و' + L('1.4') + ' و' + L('−3 1/4') + ' و' + L('−1 7/8') + ' و' + L('−2 1/2') + '. أنهي نقطة هي الأصغر؟'), 'point');
+  await g.choice({ options: [T('C (−3 1/4)', 'ج (' + L('−3 1/4') + ')'), T('E (−2 1/2)', 'هـ (' + L('−2 1/2') + ')'), T('D (−1 7/8)', 'د (' + L('−1 7/8') + ')'), T('B (1.4)', 'ب (' + L('1.4') + ')')], correct: T('C (−3 1/4)', 'ج (' + L('−3 1/4') + ')'), hint: T('The least is the one farthest to the left.', 'الأصغر هو اللي أبعد على الشمال.'), ok: T('The number farthest to the left is the least: −3 1/4.', `العدد اللي أبعد على الشمال هو الأصغر: ${L('−3 1/4')}.`) });
+  g.say(T('Now read the line from left to right. Which point is the third one from the left?', 'دلوقتي اقرا الخط من الشمال لليمين. أنهي نقطة هي التالتة من الشمال؟'), 'think');
+  await g.choice({ options: [T('D (−1 7/8)', 'د (' + L('−1 7/8') + ')'), T('E (−2 1/2)', 'هـ (' + L('−2 1/2') + ')'), T('B (1.4)', 'ب (' + L('1.4') + ')'), T('A (2.1)', 'أ (' + L('2.1') + ')')], correct: T('D (−1 7/8)', 'د (' + L('−1 7/8') + ')'), hint: T('From the left: −3 1/4, −2 1/2, …', 'من الشمال: ' + L('−3 1/4') + '، ' + L('−2 1/2') + '، …'), ok: T('In ascending order: −3 1/4, −2 1/2, −1 7/8, 1.4, 2.1.', `بالترتيب التصاعدي: ${L('−3 1/4, −2 1/2, −1 7/8, 1.4, 2.1')}.`) });
+  g.say(T('Which number lies between −2 1/2 and −1 7/8?', 'أنهي عدد بين ' + L('−2 1/2') + ' و' + L('−1 7/8') + '؟'), 'think');
+  await g.choice({ options: ['−2', '−3', '−1 3/4', '−2 3/4'], correct: '−2', hint: T('−2.5 < ? < −1.875', L('−2.5 < ? < −1.875')), ok: T('−2 is greater than −2.5 and less than −1.875.', `${L('−2')} أكبر من ${L('−2.5')} وأصغر من ${L('−1.875')}.`) });
+}
+async function mission3() {                 // lessons 5-6: absolute value
+  line(-10, 10, [{ v: -6, l: 'A' }, { v: 6, l: 'B' }], { arcs: [{ a: 0, b: -6, t: '?' }, { a: 0, b: 6, t: '?' }], lab: 2 }); g.paint();
+  g.say(T('Mission 3: the absolute value of a number is its distance from 0. How far from 0 is −6, so what is |−6|?', 'المهمة ٣: القيمة المطلقة للعدد هي بُعده عن الصفر. كام بُعد ' + L('−6') + ' عن الصفر، يعني كام ' + L('|−6|') + '؟'), 'point');
+  await g.choice({ options: ['6', '−6', '0', '12'], correct: '6', hint: T('Count the units from 0.', 'عُد الوحدات من الصفر.'), ok: T('|−6| = 6 and |6| = 6: opposites have the same absolute value.', `${L('|−6| = 6')} و${L('|6| = 6')}: المتعاكسين ليهم نفس القيمة المطلقة.`) });
+  line(-40, 0, [{ v: -33, l: 'B' }, { v: -17, l: 'A' }], { lab: 10 }); g.paint();
+  g.say(T('Freezer A is −17 °C and Freezer B is −33 °C. Which freezer is COLDER?', 'الفريزر أ على ' + L('−17 °C') + ' والفريزر ب على ' + L('−33 °C') + '. أنهي فريزر أبرد؟'), 'think');
+  await g.choice({ options: [T('Freezer B', 'الفريزر ب'), T('Freezer A', 'الفريزر أ'), T('The same', 'نفس الدرجة')], correct: T('Freezer B', 'الفريزر ب'), hint: T('Which one is farther below zero?', 'أنهي واحد أبعد تحت الصفر؟'), ok: T('−33 is farther below zero: it is the colder one (the greater absolute value) and also the lesser number.', `${L('−33')} أبعد تحت الصفر: هو الأبرد (قيمته المطلقة أكبر) وهو كمان العدد الأصغر.`) });
+  g.say(T('You borrowed 6.50 LE from Naglaa and 3.25 LE from Rawan. Rawan says −3.25 > 6.50, so you owe her more. Who is right?', 'استلفت ' + L('6.50') + ' جنيه من نجلاء و' + L('3.25') + ' جنيه من روان. روان بتقول ' + L('−3.25 > 6.50') + ' يعني مديون لها بأكتر. مين صح؟'), 'think');
+  await g.choice({ options: [T('No: you owe Naglaa more, 6.50 > 3.25', 'لأ: مديون لنجلاء بأكتر، ' + L('6.50 > 3.25')), T('Yes: −3.25 is greater', 'أيوه: ' + L('−3.25') + ' أكبر'), T('You owe both the same', 'مديون للاتنين بنفس القدر')],
+    correct: T('No: you owe Naglaa more, 6.50 > 3.25', 'لأ: مديون لنجلاء بأكتر، ' + L('6.50 > 3.25')), hint: T('Compare the amounts, their absolute values.', 'قارن المبالغ، يعني القيم المطلقة.'), ok: T('−3.25 < 6.50, and the amount owed is the absolute value: 6.50 is more than 3.25.', `${L('−3.25 < 6.50')}، والمبلغ المطلوب هو القيمة المطلقة: ${L('6.50')} أكتر من ${L('3.25')}.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: which symbol? ---------- */
+const BT = [{ label: '<', value: '<', c: 0 }, { label: '>', value: '>', c: 1 }, { label: '=', value: '=', c: 2 }];
+const ITEMS = [['−7 ? −3', '<'], ['|−4| ? |−3|', '>'], ['2 ? −9', '>'], ['−6 ? 0', '<'], ['|−2.71| ? 2.7', '>'], ['−1.4 ? |−1.4|', '<'], ['|−6| ? |6|', '='], ['−4.8 ? −4.88', '>'], ['|−5| ? 3', '>'], ['−33 ? −17', '<'], ['8 ? 0', '>']];
+const WHY = { '<': T('It is to the left, so it is less.', 'هو على الشمال، يعني أصغر.'), '>': T('It is to the right (or farther from 0 for absolute values), so it is greater.', 'هو على اليمين (أو أبعد عن الصفر في القيمة المطلقة)، يعني أكبر.'), '=': T('The same distance from 0: equal.', 'نفس البُعد عن الصفر: متساويين.') };
+async function stage3() {
+  Object.assign(sc, { pic: null, cap: '' }); g.paint();
+  await g.speedRound({ items: ITEMS.map(([t, r]) => ({ t: L(t), ans: r, why: WHY[r] })), rounds: 8, ms: 11000, buttons: BT,
+    ask: T('Which symbol?', 'أنهي علامة؟'), intro: T('Speed Round! Two numbers come in. Press the symbol that makes the statement true: <, > or =.', 'جولة السرعة! هيظهرلك عددين. اضغط على العلامة اللي بتخلّي الجملة صح: أصغر من، أكبر من أو يساوي.'),
+    think: T('Less, greater or equal?', 'أصغر ولا أكبر ولا يساوي؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Climb the line with Reesho: positions above and below zero, opposites, the number sets, ordering and absolute value. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! تسلّق خط الأعداد مع ريشو: المواقع فوق الصفر وتحته، والأعداد المتعاكسة، ومجموعات الأعداد، والترتيب، والقيمة المطلقة. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can compare, order and measure distance from zero with rational numbers. Next, try the questions of this unit.', 'بقيت تقارن وترتّب وتقيس البُعد عن الصفر بالأعداد النسبية. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
