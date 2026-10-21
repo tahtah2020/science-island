@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Arab Homeland Explorer · Our Arab Homeland: Features and Challenges</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261021b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Arab Homeland Explorer.</noscript>
+<script src="firebase-config.js?v=20261021b"></script>
+<script src="chapters.js?v=20261021b"></script>
+<script src="common.js?v=20261021b"></script>
+<script src="studies/g6_art.js?v=20261021b"></script>
+<script src="game_kit.js?v=20261021b"></script>
+<script>
+(() => {
+'use strict';
+/* Arab Homeland Explorer · the game of Unit 1, Our Arab Homeland: Features and Challenges (Social Studies, Grade 6). Built on the shared game kit (game_kit.js).
+   The scene is always a picture the child works on: the map of the Arab homeland (wings, borders, water passages, mountains, plateaus, climate), a landscape, a mountain in the rain, four environmental problems.
+   Stage 1 (Warm Up): the two wings, the sea between them, the natural borders (lesson 1, pages 8-10).
+   Stage 2 (Missions): the water passages and the importance of the location (1, pages 11-13), mountains and plateaus (2, pages 17-18), oases, dunes, dry valleys and plains (2, pages 19-21),
+   climate factors and regions (3, pages 24-27), environmental challenges (4, pages 30-34).
+   Stage 3 (Speed Round): African wing or Asian wing, country by country (lesson 1, page 9).
+   Every T('English', 'عربي') has both languages. Names of places stay Arabic, as in the Arabic school book. */
+const T = SI.T, G = SI.G, A = S6ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;      // a number inside Arabic text stays left to right
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 340;
+const sc = { mode: 'blank', note: '', sub: '' };
+const PL = { pic: { plain: true } };
+/* a picture of w x h is centred in the 340 x 340 scene */
+const fit = (w, h) => { const k = Math.min(1, VW / w, VH / h); return { k, dx: (VW - w * k) / 2, dy: (VH - h * k) / 2 }; };
+const place = (f, inner) => `<g transform="translate(${A.f1(f.dx)} ${A.f1(f.dy)}) scale(${f.k})">${inner}</g>`;
+const FM = fit(A.MW, A.MH), FL = fit(340, 250);
+const MAPS = { wings: 'arabWings', borders: 'arabBorders', straits: 'arabStraits', mountains: 'arabMountains', plateaus: 'arabPlateaus', plains: 'arabPlains', climate: 'arabClimate' };
+const SCENES = { land: 'landforms', rain: 'mountainRain', env: 'envProblems' };
+
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
+  const m = sc.mode;
+  if (MAPS[m]) s += place(FM, `<rect width="${A.MW}" height="${A.MH}" fill="${A.PAPER}"/>` + D[MAPS[m]](PL));
+  else if (SCENES[m]) s += place(FL, `<rect width="340" height="250" fill="${A.PAPER}"/>` + D[SCENES[m]](PL));
+  else if (m === 'sign') s += `<text x="170" y="150" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="24" font-weight="900" fill="#1f3d57">${sc.note}</text>` +
+    (sc.sub ? `<text x="170" y="190" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="17" font-weight="800" fill="#6b5a3a">${sc.sub}</text>` : '');
+  return s;
+}
+const set = (mode, o) => { Object.assign(sc, { mode, note: '', sub: '' }, o || {}); g.paint(); };
+
+/* tap rings, placed from each picture's own ring list */
+const NM = { afWing: 'الجناح الإفريقي', asWing: 'الجناح الآسيوي', redSea: 'البحر الأحمر', bAtl: 'المحيط الأطلنطي', bMed: 'البحر المتوسط', bTaurus: 'جبال طوروس', bZagros: 'جبال زاجروس', bGulf: 'الخليج العربي', bArabSea: 'بحر العرب', bIndian: 'المحيط الهندي', bSahara: 'الصحراء الكبرى',
+  sHormuz: 'مضيق هرمز', sSuez: 'قناة السويس', sGibraltar: 'مضيق جبل طارق', sMandeb: 'مضيق باب المندب', mAtlas: 'جبال أطلس', mRedSea: 'جبال البحر الأحمر', mHejaz: 'جبال الحجاز وعسير', mZagros: 'جبال زاجروس', mOman: 'جبال عمان',
+  pNafr: 'هضبة شمال إفريقيا', pSham: 'هضبة بادية الشام', pNajd: 'هضبة نجد', pHadra: 'هضبة حضرموت', plFlood: 'السهول الفيضية', plCoast: 'السهول الساحلية', plDesert: 'السهول الصحراوية', cMed: 'إقليم البحر المتوسط', cDesert: 'الإقليم الصحراوي', cTrop: 'الإقليم المداري',
+  lfMount: 'الجبل', lfPlat: 'الهضبة', lfOasis: 'الواحة', lfDunes: 'الكثبان الرملية', lfWadi: 'الوادي الجاف', lfPlain: 'السهل الفيضي', slopeWind: 'السفح المواجه للرياح', slopeLee: 'السفح الداخلي', peakSnow: 'القمة', eDrought: 'الجفاف', eDesertif: 'التصحر', ePollution: 'تلوث الهواء', eFlood: 'السيول' };
+const rings = (pic, f, ids) => { const r = D[pic].rings(); return ids.map(id => ({ id, name: NM[id], ring: A.ringEl(f.dx + r[id].cx * f.k, f.dy + r[id].cy * f.k, r[id].rx * f.k, r[id].ry * f.k, r[id].rot) })); };
+const envRings = () => D.envProblems.rects().map(p => ({ id: p.id, name: NM[p.id], ring: A.ringRect(FL.dx + p.x * FL.k, FL.dy + p.y * FL.k, p.w * FL.k, p.h * FL.k, 10) }));
+
+const g = G4Game({ ch: 'sg6u1', logo: '🌍', title: ['Arab Homeland Explorer', 'مستكشف الوطن العربي'], sub: ['Unit 1 · Our Arab Homeland: Features and Challenges', 'الوحدة 1 · وطننا العربي (خصائص وتحديات)'],
+  bg: 'studies/assets/bg_sg6u1.svg', bgc: '#e2f4dc', label: ['A map or a landscape for each question', 'خريطة أو منظر طبيعي لكل سؤال'], render, view: [VW, VH] });
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('wings');
+  g.say(T('Welcome, explorer! Our Arab homeland has 22 countries in two continents. Tap the <b>African wing</b>.', P('أهلًا يا مستكشف! وطننا العربي فيه ' + L('22') + ' دولة في قارتين. اضغط على <b>الجناح الإفريقي</b>.', 'أهلًا يا مستكشفة! وطننا العربي فيه ' + L('22') + ' دولة في قارتين. اضغطي على <b>الجناح الإفريقي</b>.')), 'point');
+  await g.spot(rings('arabWings', FM, ['afWing', 'asWing']), 'afWing', { hint: T('It is the bigger part, in the west.', 'هو الجزء الأكبر، في الغرب.'),
+    ok: T(`The ${kw('African wing')}: 10 countries and 72% of the area.`, `${kw('الجناح الإفريقي')}: ${L('10')} دول و${L('72%')} من المساحة.`) });
+  g.say(T('Now tap the sea that separates the two wings.', 'دلوقتي اضغط على البحر اللي بيفصل بين الجناحين.'), 'think');
+  await g.spot(rings('arabWings', FM, ['redSea', 'asWing', 'afWing']), 'redSea', { hint: T('A long narrow sea between Africa and Asia.', 'بحر طويل وضيق بين إفريقيا وآسيا.'),
+    ok: T(`The ${kw('Red Sea')} separates the two wings.`, `${kw('البحر الأحمر')} بيفصل بين جناحَي الوطن العربي.`) });
+  g.say(T('Which is the largest Arab country by area?', 'أنهي أكبر دولة عربية من حيث المساحة؟'), 'think');
+  await g.choice({ options: ['الجزائر', 'السعودية', 'مصر', 'البحرين'], correct: 'الجزائر', hint: T('It is in the African wing, west of Libya.', 'في الجناح الإفريقي، غرب ليبيا.'),
+    ok: T(`${kw('Algeria')} is the largest; ${kw('Bahrain')} is the smallest.`, `${kw('الجزائر')} الأكبر مساحة، و${kw('البحرين')} الأصغر.`) });
+
+  set('borders');
+  g.say(T('Natural borders surround our homeland. Tap the ocean on its <b>western</b> border.', 'حدود طبيعية بتحيط بوطننا. اضغط على المحيط اللي على حدوده <b>الغربية</b>.'), 'point');
+  await g.spot(rings('arabBorders', FM, ['bAtl', 'bMed', 'bIndian']), 'bAtl', { hint: T('Far to the west.', 'في أقصى الغرب.'),
+    ok: T(`The ${kw('Atlantic Ocean')} is the western border.`, `${kw('المحيط الأطلنطي')} هو الحد الغربي.`) });
+  g.say(T('Tap the mountains on the northern border.', 'اضغط على الجبال اللي على الحدود الشمالية.'), 'think');
+  await g.spot(rings('arabBorders', FM, ['bTaurus', 'bZagros']), 'bTaurus', { hint: T('North of Syria.', 'شمال سوريا.'),
+    ok: T(`The ${kw('Taurus mountains')} and the Mediterranean are the northern borders.`, `${kw('جبال طوروس')} والبحر المتوسط هما الحدود الشمالية.`) });
+  g.say(T('Which of these is on the southern border?', 'أنهي من دول من الحدود الجنوبية؟'), 'think');
+  await g.choice({ options: ['الصحراء الكبرى', 'جبال زاجروس', 'البحر المتوسط', 'خليج عُمان'], correct: 'الصحراء الكبرى', hint: T('The Indian Ocean and the Arabian Sea are too.', 'ومعاها المحيط الهندي وبحر العرب.'),
+    ok: T(`The ${kw('Great Sahara')}, the Indian Ocean and the Arabian Sea are in the south.`, `${kw('الصحراء الكبرى')} والمحيط الهندي وبحر العرب في الجنوب.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: water passages and importance
+  set('straits');
+  g.say(T('Mission 1: our homeland controls important water passages. Tap the one that links the Red Sea and the Mediterranean.', 'المهمة ١: وطننا بيتحكم في ممرات مائية مهمة. اضغط على الممر اللي بيربط البحر الأحمر بالبحر المتوسط.'), 'point');
+  await g.spot(rings('arabStraits', FM, ['sSuez', 'sMandeb', 'sHormuz', 'sGibraltar']), 'sSuez', { hint: T('It is in Egypt.', 'هو في مصر.'),
+    ok: T(`The ${kw('Suez Canal')} links the Red Sea and the Mediterranean.`, `${kw('قناة السويس')} بتربط البحرين الأحمر والمتوسط.`) });
+  g.say(T('Which strait do Yemen and Djibouti overlook?', 'أنهي مضيق بتشرف عليه اليمن وجيبوتي؟'), 'think');
+  await g.spot(rings('arabStraits', FM, ['sSuez', 'sMandeb', 'sHormuz', 'sGibraltar']), 'sMandeb', { hint: T('At the south end of the Red Sea.', 'عند الطرف الجنوبي للبحر الأحمر.'),
+    ok: T(`${kw('Bab el-Mandeb')}. Gibraltar links the Mediterranean and the Atlantic; Oman overlooks Hormuz.`, `${kw('مضيق باب المندب')}. وجبل طارق بيربط المتوسط بالأطلنطي، وعمان بتشرف على هرمز.`) });
+  g.say(T('Controlling these passages gives the Arab homeland which kind of importance?', 'التحكم في الممرات دي بيدّي الوطن العربي أهمية من أنهي نوع؟'), 'think');
+  await g.choice({ options: ['إستراتيجية', 'دينية', 'حضارية'], correct: 'إستراتيجية', hint: T('It matters a lot in times of war.', 'بتفرق جدًّا وقت الحروب.'),
+    ok: T(`${kw('Strategic')} importance, great in wars and international conflicts.`, `أهمية ${kw('إستراتيجية')}، كبيرة وقت الحروب والصراعات الدولية.`) });
+  g.say(T('The Kaaba, Al-Aqsa Mosque and the Church of the Nativity show which importance?', 'الكعبة المشرفة والمسجد الأقصى وكنيسة المهد بيدلّوا على أنهي أهمية؟'), 'point');
+  await g.choice({ options: ['دينية', 'اقتصادية', 'إستراتيجية'], correct: 'دينية', hint: T('The homeland is the cradle of three religions.', 'الوطن العربي مهد الديانات السماوية الثلاث.'),
+    ok: T(`${kw('Religious')} importance: the cradle of the three heavenly religions.`, `أهمية ${kw('دينية')}: مهد الديانات السماوية الثلاث.`) });
+}
+async function mission2() {                 // lesson 2: mountains and plateaus
+  set('mountains');
+  g.say(T('Mission 2: mountains. Tap the folded mountains that stretch over Tunisia, Algeria and Morocco.', 'المهمة ٢: الجبال. اضغط على الجبال الالتوائية اللي بتمتد في تونس والجزائر والمغرب.'), 'point');
+  await g.spot(rings('arabMountains', FM, ['mAtlas', 'mRedSea', 'mHejaz', 'mOman']), 'mAtlas', { hint: T('In the north-west.', 'في الشمال الغربي.'),
+    ok: T(`The ${kw('Atlas mountains')}; Mount Toubkal there is the highest in the Arab homeland.`, `${kw('جبال أطلس')}، وفيها جبل توبقال أعلى جبل في الوطن العربي.`) });
+  g.say(T('Tap the Red Sea mountains in Egypt and Sudan.', 'اضغط على جبال البحر الأحمر في مصر والسودان.'), 'think');
+  await g.spot(rings('arabMountains', FM, ['mAtlas', 'mRedSea', 'mHejaz', 'mZagros']), 'mRedSea', { hint: T('West of the Red Sea.', 'غرب البحر الأحمر.'),
+    ok: T(`They are ${kw('fault mountains')}, from fault movements in the crust.`, `دي ${kw('جبال انكسارية')}، نشأت من حركات انكسارية في القشرة الأرضية.`) });
+  set('plateaus');
+  g.say(T('Plateaus are the most widespread landform. Tap the largest plateau.', 'الهضاب أكثر مظاهر السطح انتشارًا. اضغط على أكبر هضبة.'), 'point');
+  await g.spot(rings('arabPlateaus', FM, ['pNafr', 'pNajd', 'pSham', 'pHadra']), 'pNafr', { hint: T('It covers North Africa.', 'بتغطي شمال إفريقيا.'),
+    ok: T(`The ${kw('North African plateau')}, from the Red Sea to the Atlantic.`, `${kw('هضبة شمال إفريقيا')}، من البحر الأحمر للمحيط الأطلنطي.`) });
+  g.say(T('Tap the plateau in the middle of the Arabian peninsula.', 'اضغط على الهضبة اللي في وسط شبه الجزيرة العربية.'), 'think');
+  await g.spot(rings('arabPlateaus', FM, ['pNajd', 'pSham', 'pHadra']), 'pNajd', { hint: T('Between the other two.', 'بين الاتنين التانيين.'),
+    ok: T(`${kw('Najd')}. Badiat al-Sham is in the north and Hadramout in the south.`, `${kw('هضبة نجد')}. وبادية الشام في الشمال وحضرموت في الجنوب.`) });
+}
+async function mission3() {                 // lesson 2: oases, dunes, dry valleys, plains
+  set('land');
+  g.say(T('Mission 3: on the plateaus. Tap the low land in the desert farmed with groundwater.', 'المهمة ٣: على الهضاب. اضغط على الأرض المنخفضة وسط الصحراء اللي بتتزرع بالمياه الجوفية.'), 'point');
+  await g.spot(rings('landforms', FL, ['lfOasis', 'lfDunes', 'lfWadi', 'lfPlat']), 'lfOasis', { hint: T('Look for palms and water.', 'دوّر على النخل والمية.'),
+    ok: T(`An ${kw('oasis')}, like Siwa in Egypt and Ain Salah in Algeria.`, `${kw('الواحة')}، زي سيوة في مصر وعين صالح في الجزائر.`) });
+  g.say(T('Tap the channel that was full of water long ago and then dried.', 'اضغط على المجرى اللي كانت المية مالياه زمان وبعدين جف.'), 'think');
+  await g.spot(rings('landforms', FL, ['lfOasis', 'lfDunes', 'lfWadi', 'lfPlain']), 'lfWadi', { hint: T('A winding dry line.', 'خط متعرج ناشف.'),
+    ok: T(`A ${kw('dry valley')}, like Wadi Allaqi; it is used as a road and to reach groundwater.`, `${kw('وادي جاف')} زي وادي العلاقي، بيُستخدم طريق للنقل ولاستخراج المياه الجوفية.`) });
+  g.say(T('What formed the sand dunes?', 'إيه اللي كوّن الكثبان الرملية؟'), 'think');
+  await g.choice({ options: ['التعرية الهوائية', 'التعرية المائية', 'الحركات الانكسارية'], correct: 'التعرية الهوائية', hint: T('Wind moves light sand.', 'الرياح بتحرك الرمل الخفيف.'),
+    ok: T(`${kw('Wind erosion')}; dry valleys come from ${kw('water erosion')}.`, `${kw('التعرية الهوائية')}، أما الأودية الجافة فمن ${kw('التعرية المائية')}.`) });
+  set('plains');
+  g.say(T('Tap the plains made by rivers depositing silt, where people gather.', 'اضغط على السهول اللي كوّنها إرساب الأنهار، واللي بيتركز فيها السكان.'), 'point');
+  await g.spot(rings('arabPlains', FM, ['plFlood', 'plCoast', 'plDesert']), 'plFlood', { hint: T('Green, along a river.', 'خضرا على جانبي نهر.'),
+    ok: T(`${kw('Flood plains')}: the Nile, and the Tigris and Euphrates.`, `${kw('السهول الفيضية')}: سهول النيل ودجلة والفرات.`) });
+}
+async function mission4() {                 // lesson 3: climate factors and regions
+  set('rain');
+  g.say(T('Mission 4: climate. Clouds come with the wind. Tap the slope that gets the most rain.', 'المهمة ٤: المناخ. السحب جاية مع الرياح. اضغط على السفح اللي بياخد مطر أكتر.'), 'point');
+  await g.spot(rings('mountainRain', FL, ['slopeWind', 'slopeLee']), 'slopeWind', { hint: T('The side that faces the wind.', 'الجنب اللي في وش الرياح.'),
+    ok: T(`The slope ${kw('facing the wind')} gets more rain, as in the Atlas mountains.`, `السفح ${kw('المواجه للرياح')} أغزر مطرًا، زي جبال أطلس.`) });
+  g.say(T('Why is the top white with snow?', 'ليه القمة بيضا ومغطية بالتلج؟'), 'think');
+  await g.choice({ options: ['تنخفض الحرارة درجة كل 150 مترًا ارتفاعًا', 'لأنها أقرب إلى الشمس', 'لأنها قريبة من البحر'], correct: 'تنخفض الحرارة درجة كل 150 مترًا ارتفاعًا', hint: T('Think of height.', 'فكّر في الارتفاع.'),
+    ok: T(`Every ${kw('150 m')} up, it is 1 °C colder; snow covers the Lebanon mountains.`, `كل ما نطلع ${kw(L('150'))} متر الحرارة تقل درجة؛ عشان كده التلج بيغطي جبال لبنان.`), reveal: () => set('sign', { note: '150 m ↑ = 1 °C ↓' }) });
+  set('climate');
+  g.say(T('Three climate regions. Tap the region of temperate forests, olives and cedars, with winter rain.', 'تلات أقاليم مناخية. اضغط على إقليم الغابات المعتدلة والزيتون والأرز، والمطر فيه شتاءً.'), 'point');
+  await g.spot(rings('arabClimate', FM, ['cMed', 'cDesert', 'cTrop']), 'cMed', { hint: T('In the northern parts.', 'في الأجزاء الشمالية.'),
+    ok: T(`The ${kw('Mediterranean')} region.`, `إقليم ${kw('البحر المتوسط')}.`) });
+  g.say(T('Tap the region of savanna, acacia trees, lions and elephants, with summer rain.', 'اضغط على إقليم السافانا وأشجار السنط والأسود والأفيال، والمطر فيه صيفًا.'), 'think');
+  await g.spot(rings('arabClimate', FM, ['cMed', 'cDesert', 'cTrop']), 'cTrop', { hint: T('In the far south.', 'في أقصى الجنوب.'),
+    ok: T(`The ${kw('tropical')} region; gum arabic comes from its acacia trees.`, `الإقليم ${kw('المداري')}، وأشجار السنط فيه بيُستخرج منها الصمغ العربي.`) });
+  g.say(T('And the region that covers most of the homeland?', 'والإقليم اللي بيغطي معظم الوطن العربي؟'), 'think');
+  await g.spot(rings('arabClimate', FM, ['cMed', 'cDesert', 'cTrop']), 'cDesert', { hint: T('The big yellow area.', 'المساحة الصفرا الكبيرة.'),
+    ok: T(`The ${kw('desert')} region: very hot days in summer, very cold nights in winter.`, `الإقليم ${kw('الصحراوي')}: حرارة شديدة صيفًا نهارًا، وبرودة شديدة شتاءً ليلًا.`) });
+}
+async function mission5() {                 // lesson 4: environmental challenges
+  set('env');
+  g.say(T('Mission 5: environmental challenges. Tap the problem we face with dams and flood channels.', 'المهمة ٥: التحديات البيئية. اضغط على المشكلة اللي بنواجهها بالسدود ومخرات السيول.'), 'point');
+  await g.spot(envRings(), 'eFlood', { hint: T('Sudden heavy rain flowing fast in valleys.', 'أمطار غزيرة فجائية بتجري بسرعة في الأودية.'),
+    ok: T(`${kw('Floods')}. The ancient Egyptians dug flood channels to protect temples and tombs.`, `${kw('السيول')}. والمصريين القدماء عملوا مخرات للسيول عشان يحموا المعابد والمقابر.`) });
+  g.say(T('Cutting trees and overgrazing lead to which problem?', 'قطع الأشجار والرعي الجائر بيؤدوا لأنهي مشكلة؟'), 'think');
+  await g.spot(envRings(), 'eDesertif', { hint: T('Farmland that can no longer produce.', 'أرض زراعية قدرتها على الإنتاج بتقل.'),
+    ok: T(`${kw('Desertification')}: farmland loses its ability to produce.`, `${kw('التصحر')}: تناقص قدرة الأراضي الزراعية على الإنتاج.`) });
+  g.say(T('Which solution faces air pollution?', 'أنهي حل بيواجه تلوث الهواء؟'), 'point');
+  await g.choice({ options: ['الاعتماد على الطاقة المتجددة', 'حرق النفايات', 'زيادة المصانع الملوثة'], correct: 'الاعتماد على الطاقة المتجددة', hint: T('Clean energy.', 'طاقة نظيفة.'),
+    ok: T(`${kw('Renewable energy')}, more green spaces, sustainable transport and recycling.`, `${kw('الطاقة المتجددة')}، وزيادة المساحات الخضراء، والنقل المستدام، وإعادة التدوير.`) });
+  g.say(T('How many trees did Egypt’s initiative plan to plant?', 'مبادرة مصر هدفها تزرع كام شجرة؟'), 'think');
+  await g.choice({ options: ['100 مليون شجرة', '450 مليون شجرة', '22 مليون شجرة'], correct: '100 مليون شجرة', hint: T('Saudi Arabia’s initiative is the bigger one.', 'مبادرة السعودية هي الأكبر.'),
+    ok: T(`${kw('100 million')} trees in Egypt; Saudi Arabia: 450 million in the Arab countries.`, `${kw(L('100'))} مليون شجرة في مصر، والسعودية ${L('450')} مليون في الدول العربية.`) });
+  set('env');
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
+
+/* ---------- Stage 3 · Speed Round: African wing or Asian wing ---------- */
+const ST = [['مصر', 'af'], ['السودان', 'af'], ['ليبيا', 'af'], ['تونس', 'af'], ['الجزائر', 'af'], ['المغرب', 'af'], ['موريتانيا', 'af'], ['جيبوتي', 'af'], ['الصومال', 'af'], ['جزر القُمر', 'af'],
+  ['فلسطين', 'as'], ['الأردن', 'as'], ['لبنان', 'as'], ['سوريا', 'as'], ['العراق', 'as'], ['الكويت', 'as'], ['السعودية', 'as'], ['البحرين', 'as'], ['قطر', 'as'], ['الإمارات', 'as'], ['عمان', 'as'], ['اليمن', 'as']];
+async function stage3() {
+  set('wings');
+  await g.speedRound({ items: ST.map(([a, r]) => ({ t: `<span dir="rtl" lang="ar">${a}</span>`, ans: r,
+      why: r === 'af' ? T('African wing.', 'من دول الجناح الإفريقي.') : T('Asian wing.', 'من دول الجناح الآسيوي.') })), rounds: 10, ms: 9000,
+    buttons: [{ label: T('African wing', 'الجناح الإفريقي'), value: 'af', c: 0 }, { label: T('Asian wing', 'الجناح الآسيوي'), value: 'as', c: 1 }],
+    ask: T('Which wing?', 'أنهي جناح؟'),
+    intro: T('Speed Round! A country comes in. Press its wing: African or Asian.', 'جولة السرعة! هتظهر دولة. اضغط على جناحها: الإفريقي ولا الآسيوي.'),
+    think: T('West or east of the Red Sea?', 'غرب البحر الأحمر ولا شرقه؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Explore the two wings of our Arab homeland, its borders and water passages, its landforms, climate regions and environmental challenges. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! استكشف جناحَي وطننا العربي وحدوده وممراته المائية وتضاريسه وأقاليمه المناخية وتحدياته البيئية. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can read the map of the Arab homeland, name its borders, water passages and landforms, tell its climate regions apart, and face its environmental challenges. Next, try the questions of this unit.', 'بقيت تقرأ خريطة الوطن العربي وتعرف حدوده وممراته المائية وتضاريسه وأقاليمه المناخية وتحدياته البيئية. جرّب دلوقتي أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

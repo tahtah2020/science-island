@@ -11,6 +11,7 @@
 - [علوم الصف الخامس الابتدائي](https://motafawek.com/lessons/science-g5.html)
 - [دراسات اجتماعية الصف الخامس الابتدائي](https://motafawek.com/lessons/studies-g5.html)
 - [علوم الصف السادس الابتدائي](https://motafawek.com/lessons/science-g6.html)
+- [دراسات اجتماعية الصف السادس الابتدائي](https://motafawek.com/lessons/studies-g6.html)
 - [علوم الصف الأول الإعدادي](https://motafawek.com/lessons/science-p1.html)
 - [علوم الصف الثاني الإعدادي](https://motafawek.com/lessons/science-p2.html)
 

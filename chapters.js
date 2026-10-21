@@ -267,6 +267,18 @@ window.CHAPTERS = [
     cover: 'studies/assets/map_sg5u1.svg', quizBg: 'studies/assets/bg_sg5u1.svg',
     lessonsAr: ['موقع مصر الفلكي', 'مظاهر سطح مصر', 'مناخ مصر', 'النباتات الطبيعية والحيوانات البرية'] },
 
+  /* Social Studies · Grade 6 · Term 1 (the school book of the Ministry 2026/2027). Units, one Arabic book for both tracks (lang { lang: 'ar', ar: 'ar' }).
+     Unit 1 «وطننا العربي (خصائص وتحديات)» (book pages 8-39): 1 وطننا العربي: الموقع والأهمية (8-15) · 2 تضاريس وطننا العربي (16-23) · 3 وطننا العربي: المناخ والنبات الطبيعي (24-29) · 4 التحديات البيئية في وطننا العربي (30-36) · تقييم الوحدة (37-39). Idea letters: A-D (one per lesson).
+     The questions follow the book (bookOrder) and every question carries its lesson badge. The monthly test «sg6oct» covers lessons 1-3 (the official October scope). */
+  { id: 'sg6u1', subject: 'studies', grade: 'g6', n: 1, title: 'Our Arab Homeland: Features and Challenges', titleAr: 'وطننا العربي (خصائص وتحديات)', icon: '🌍', tint: '#e2f4dc', ready: true,
+    lessons: ['Our Arab Homeland: Location and Importance', 'The Landforms of Our Arab Homeland', 'Our Arab Homeland: Climate and Natural Plants', 'Environmental Challenges in Our Arab Homeland'],
+    bookOrder: true,
+    questionsAr: 'studies/questions_sg6u1_ar.js', art: 'studies/g6_art.js', questMax: 32,
+    game: { href: 'studies-arab.html', name: "Arab Homeland Explorer", nameAr: "مستكشف الوطن العربي", icon: '🌍', hint: 'Explore the two wings of the Arab homeland, its borders and water passages, its mountains, plateaus and plains, its climate regions and its environmental challenges.', hintAr: 'استكشف جناحَي الوطن العربي وحدوده وممراته المائية وجباله وهضابه وسهوله وأقاليمه المناخية وتحدياته البيئية.' },
+    map: { img: 'studies/assets/map_sg6u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'studies/assets/map_sg6u1.svg', quizBg: 'studies/assets/bg_sg6u1.svg',
+    lessonsAr: ['وطننا العربي (الموقع - الأهمية)', 'تضاريس وطننا العربي', 'وطننا العربي (المناخ - النبات الطبيعي)', 'التحديات البيئية في وطننا العربي'] },
+
   /* English · Grade 4 · Term 1 (ministry book "English Primary 4", 2026/2027). One English book for both tracks:
      the subject's lang is { lang: 'en', ar: 'en' }, so every unit has only a questions file (no _ar file).
      Unit 1 "The Five Senses" (book pages 7-22). Idea letters: A-E (one per lesson). */
@@ -298,6 +310,8 @@ window.EXAMS = [
     parts: [{ ch: 'ch1' }, { ch: 'ch2' }, { ch: 'ch3' }, { ch: 'ch4', lessons: [1], max: 1, chance: .5 }] },
   { id: 'sg5oct', subject: 'studies', grade: 'g5', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'sg5u1', lessons: [1, 2, 3] }] },
+  { id: 'sg6oct', subject: 'studies', grade: 'g6', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'sg6u1', lessons: [1, 2, 3] }] },
   { id: 'sg4oct', subject: 'studies', grade: 'g4', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'sg4u1' }] },
   { id: 'g4m1', grade: 'g4', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',

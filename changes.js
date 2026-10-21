@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-21', title: 'دراسات الصف السادس: الوحدة الأولى «وطننا العربي (خصائص وتحديات)»',
+    items: [
+      { text: 'أسئلة الدروس الأربعة بترتيب الكتاب (55 فكرة، 282 صيغة) مع شارة الدرس على كل سؤال', links: [{ label: 'معاينة الأسئلة', href: 'quiz.html#preview', ch: 'sg6u1' }] },
+      { text: 'لعبة «مستكشف الوطن العربي»: الجناحان والحدود والممرات المائية والتضاريس والأقاليم المناخية والتحديات البيئية', links: [{ label: 'اللعبة', href: 'studies-arab.html', ch: 'sg6u1' }] },
+      { text: 'امتحان شهر أكتوبر للصف السادس (sg6oct) على الدروس 1 إلى 3', links: [{ label: 'الامتحان', href: 'quiz.html#exam=sg6oct', ch: 'sg6u1' }] }
+    ] },
   { date: '2026-10-20', title: 'اختبارات أكتوبر حسب مقرر المدرسة',
     items: [
       { text: 'علوم الصف الرابع: الدرس الأول من الفصل الثالث فقط' },
