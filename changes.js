@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-22', title: 'Grade 6 Science (Arabic): Chapter 4 Blood Circulation and Excretion',
+    items: [
+      { text: 'Arabic questions from the Arabic book, Arabic game, the October test now opens in Arabic too' }
+    ] },
   { date: '2026-10-21', title: 'Grade 6 Science (English): Chapter 4 Blood Circulation and Excretion',
     items: [
       { text: '150 questions with pictures, the game Blood Express, October test' }

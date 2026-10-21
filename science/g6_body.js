@@ -215,7 +215,8 @@
   }
 
   /* ================= Chapter 4 · Blood Circulation and Excretion (English book only: the labels are English in both languages until the Arabic book is read) ================= */
-  const E = s => T(s, s);
+  const AR4 = {"A drawing of the blood loop: two organs at the top, a pump in the middle, a wide mesh of thin tubes at the bottom, joined by red and blue arrows": "رسم لحلقة الدم: عضوان في الأعلى، ومضخة في المنتصف، وشبكة واسعة من الأنابيب الرفيعة في الأسفل، تربطها أسهم حمراء وزرقاء", "The two organs at the top": "العضوان في الأعلى", "The pump in the middle": "المضخة في المنتصف", "The mesh at the bottom": "الشبكة في الأسفل", "The lower body from the front: two bean-shaped organs near the back, thin tubes going down from them, and a small round bag at the bottom": "الجزء السفلي من الجسم من الأمام: عضوان على شكل حبة الفاصوليا قرب الظهر، وأنبوبتان رفيعتان تنزلان منهما، وكيس صغير مستدير في الأسفل", "The two bean-shaped organs": "العضوان على شكل حبة الفاصوليا", "The thin tubes going down": "الأنبوبتان الرفيعتان النازلتان", "The small round bag at the bottom": "الكيس الصغير المستدير في الأسفل", "The inside of the body from the front: two pink organs at the top with a red organ between them, a bag below, a long coiled tube, and a wide tube around it": "داخل الجسم من الأمام: عضوان ورديان في الأعلى بينهما عضو أحمر، وكيس أسفلهما، وأنبوبة طويلة ملتفة، وأنبوبة عريضة تحيط بها", "The two pink organs at the top": "العضوان الورديان في الأعلى", "The red organ between them": "العضو الأحمر بينهما", "The bag below the red organ": "الكيس أسفل العضو الأحمر", "The long coiled tube": "الأنبوبة الطويلة الملتفة", "The wide tube around the coiled tube": "الأنبوبة العريضة حول الأنبوبة الملتفة"};
+  const E = s => T(s, AR4[s] || s);
   const RED = '#e2404f', BLUE = '#4f7fd0';
   /* a heart. Origin: its middle. About 50 wide, 70 tall with its two big vessels. hi: true = green outline */
   function heart(o = {}) {
