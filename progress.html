@@ -8,90 +8,52 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261022b">
+<link rel="stylesheet" href="common.css?v=20261022c">
 <style>
-/* Owner's progress board: every subject, grade and unit, for both tracks (Languages and Arabic), on one page.
-   Everything is read live from chapters.js and the questions files, so the board is always up to date after a push.
-   Status of a track: ok = published (ready + file) · wip = file started, unit not open yet · miss = open on the other track only · none = not started. */
-:root{--ok:#2e9e6b;--okbg:#e4f6ec;--wip:#f2b134;--wipbg:#fff4d6;--miss:#e2603f;--missbg:#fde6df;--none:#9fb3c2;--nonebg:#eef3f6}
+/* Owner's progress board: the whole plan (every subject, Grade 1 to Prep 3, first term) in one table.
+   Each cell = one subject in one grade: units published out of the term's units, for the Languages track and the Arabic track.
+   Read live from chapters.js; PLAN below gives the number of units of a term that is not listed in chapters.js yet. */
+:root{--ok:#2e9e6b;--okbg:#e4f6ec;--wip:#f2b134;--no:#c9d6df;--nobg:#f1f5f8}
 body{font-family:"Cairo","Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:1240px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding:0 0 30px}
-.en{font-family:"Nunito","Cairo",system-ui,sans-serif;direction:ltr;unicode-bidi:isolate}
-h1{margin:0;font-size:24px;font-weight:900;color:var(--navy)}
-h2{margin:0 0 10px;font-size:20px;font-weight:900;color:var(--navy)}
-.lead{margin:2px 0 0;font-weight:700;color:var(--ink);font-size:14.5px}
+.wrap{max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding-bottom:30px}
 .box{background:rgba(255,250,240,.96);border:2px solid var(--line);border-radius:20px;padding:14px 16px}
-
-/* summary */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.stat{background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 12px}
-.stat .k{font-size:13.5px;font-weight:800;color:var(--ink)}
-.stat .v{font-size:28px;font-weight:900;line-height:1.2;color:var(--navy)}
-.stat .v small{font-size:15px;color:var(--ink);font-weight:800}
-.meter{height:9px;border-radius:99px;background:var(--nonebg);overflow:hidden;display:flex;margin-top:6px}
-.meter i{display:block;height:100%}
-.stat.ok{border-color:#bfe3cf}.stat.wip{border-color:#f4dc9c}.stat.miss{border-color:#f3c0b1}
-
-/* legend + filters */
-.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.chip{font:inherit;font-weight:800;font-size:14.5px;border:2px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:5px 14px;cursor:pointer;min-height:38px}
-.chip[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-weight:800;font-size:13.5px;color:var(--ink)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.dot{width:14px;height:14px;border-radius:5px;display:inline-block;flex:none}
-.dot.ok{background:var(--ok)}.dot.wip{background:var(--wip)}.dot.miss{background:var(--miss)}.dot.none{background:var(--none)}
-
-/* board */
-.grade{display:flex;flex-direction:column;gap:10px}
-.ghead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.ghead h2{margin:0}
-.gpct{font-weight:900;font-size:13.5px;border-radius:999px;padding:2px 10px;background:#e3f1f7;color:var(--primary-d)}
-.subj{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:start;padding:8px 0;border-top:2px dashed var(--line)}
-.subj:first-of-type{border-top:0}
-.sname{font-weight:900;font-size:16px;color:var(--navy);display:flex;flex-direction:column;gap:2px;padding-top:6px}
-.sname small{font-weight:800;font-size:12.5px;color:var(--ink)}
-.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:8px}
-.tile{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;min-width:0}
-.tile:hover,.tile:focus-visible{border-color:var(--primary);box-shadow:0 3px 0 #cfe9f4}
-.tile.all-ok{border-color:#bfe3cf;background:#f6fcf8}
-.tile .t1{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12.5px;font-weight:900;color:var(--ink)}
-.tile .ic{font-size:13px;letter-spacing:2px}
-.tile .tt{font-weight:900;font-size:14.5px;color:var(--navy);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.7em}
-.tr{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;border-radius:9px;padding:3px 7px}
-.tr b{font-weight:900;min-width:38px}
-.tr span{white-space:nowrap}
-.tr .st{margin-inline-start:auto;white-space:nowrap}
-.tr.ok{background:var(--okbg);color:#1d6e48}.tr.wip{background:var(--wipbg);color:#7a5600}
-.tr.miss{background:var(--missbg);color:#a63a1d}.tr.none{background:var(--nonebg);color:#5d7384}
-.empty{border:2px dashed var(--line);border-radius:14px;padding:10px 12px;font-weight:800;font-size:14px;color:var(--ink);background:rgba(255,255,255,.5)}
-
-/* to-do */
-.todo{display:grid;gap:12px}
-.todo h3{margin:0 0 6px;font-size:16.5px;font-weight:900;display:flex;align-items:center;gap:8px}
-.todo ul{margin:0;padding:0 20px 0 0;display:grid;gap:4px;font-weight:700;font-size:14.5px;line-height:1.6}
-.todo .n{font-size:12.5px;font-weight:900;border-radius:999px;padding:0 9px;background:var(--nonebg);color:var(--ink)}
-.muted{color:var(--ink);font-weight:700}
-
-/* details */
-dialog{border:0;border-radius:20px;padding:0;max-width:560px;width:calc(100% - 24px);box-shadow:0 20px 60px rgba(31,61,87,.35)}
+h1{margin:0 0 4px;font-size:23px;font-weight:900;color:var(--navy)}
+.lead{margin:0;font-weight:700;color:var(--ink);font-size:14.5px;line-height:1.7}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big .s{background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 14px}
+.big .k{font-weight:800;font-size:14px;color:var(--ink)}
+.big .v{font-weight:900;font-size:30px;color:var(--navy);line-height:1.2}
+.big .v small{font-size:16px;color:var(--ink)}
+.bar{height:10px;border-radius:99px;background:var(--nobg);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.scroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
+table.m{border-collapse:separate;border-spacing:6px;width:100%;min-width:640px}
+.m th{font-weight:900;font-size:14.5px;color:var(--navy);padding:4px;white-space:nowrap}
+.m th.g{text-align:start;font-size:15px}
+.m th.g small{display:block;font-size:12px;font-weight:800;color:var(--ink)}
+.cell{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;width:100%;min-height:62px;padding:7px 8px;border-radius:12px;background:#fff;border:2px solid var(--line);cursor:pointer}
+.cell:hover,.cell:focus-visible{border-color:var(--primary)}
+.cell.none{background:var(--nobg);border-style:dashed;cursor:default;align-items:center;justify-content:center;color:#8aa0b0;font-weight:900;font-size:13px}
+.cell.full{background:var(--okbg);border-color:#bfe3cf}
+.ln{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--ink)}
+.ln b{font-size:14.5px;font-weight:900;color:var(--navy);margin-inline-start:auto;direction:ltr}
+.ln .mini{flex:1;height:7px;border-radius:99px;background:var(--nobg);overflow:hidden;min-width:20px}
+.ln .mini i{display:block;height:100%;background:var(--ok)}
+.key{display:flex;flex-wrap:wrap;gap:6px 16px;font-weight:800;font-size:13.5px;color:var(--ink);margin-top:10px}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.sq{width:16px;height:16px;border-radius:5px;display:inline-block}
+dialog{border:0;border-radius:20px;padding:0;max-width:460px;width:calc(100% - 24px);box-shadow:0 20px 60px rgba(31,61,87,.35)}
 dialog::backdrop{background:rgba(31,61,87,.45)}
-.dlg{padding:16px 18px;display:flex;flex-direction:column;gap:10px;font-family:"Cairo","Nunito",sans-serif}
+.dlg{padding:16px 18px;display:flex;flex-direction:column;gap:12px;font-family:"Cairo","Nunito",sans-serif}
 .dlg h3{margin:0;font-size:19px;font-weight:900;color:var(--navy)}
-.dlg table{width:100%;border-collapse:collapse;font-size:14px;font-weight:700}
-.dlg th,.dlg td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:start;vertical-align:top}
-.dlg th{font-weight:900;color:var(--ink);font-size:13px}
-.dlg td.c{text-align:center;white-space:nowrap;font-weight:900}
-.dlg .c.z{color:var(--miss)}
-.dlg .rowb{display:flex;flex-wrap:wrap;gap:8px}
-.dlg .close{align-self:flex-start}
-.load{font-weight:800;color:var(--ink)}
-
-@media (max-width:720px){
-  .subj{grid-template-columns:1fr;gap:6px}
-  .sname{flex-direction:row;align-items:baseline;gap:8px;padding-top:0}
-  .tiles{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-  .stat .v{font-size:24px}
-}
+.trk{font-weight:900;font-size:15px;color:var(--navy);margin-bottom:6px}
+.units{display:flex;flex-wrap:wrap;gap:8px}
+.u{all:unset;box-sizing:border-box;width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;cursor:pointer;text-decoration:none}
+.u.ok{background:var(--ok);color:#fff}
+.u.wip{background:var(--wip);color:#4a3200}
+.u.no{background:var(--nobg);color:#8aa0b0;border:2px dashed var(--no);cursor:default}
+.hint{margin:0;font-weight:700;color:var(--ink);font-size:13.5px}
+@media (max-width:520px){ .big .v{font-size:24px} }
 </style>
 </head>
 <body>
@@ -101,7 +63,7 @@ dialog::backdrop{background:rgba(31,61,87,.45)}
       <div class="logo" aria-hidden="true">📋</div>
       <div><div class="name">لوحة المتابعة</div></div>
     </a>
-    <nav class="bar">
+    <nav class="bar" style="display:flex;gap:8px;height:auto;background:none">
       <a class="pill" href="admin.html">لوحة الأدمن</a>
       <a class="pill" href="index.html">الموقع</a>
     </nav>
@@ -109,190 +71,104 @@ dialog::backdrop{background:rgba(31,61,87,.45)}
 
   <main class="wrap">
     <section class="box">
-      <h1>ماذا تم وماذا بقي؟</h1>
-      <p class="lead">كل المواد وكل الصفوف في لوحة واحدة، لكل وحدة سطران: مسار اللغات والمسار العربي. البيانات تُقرأ مباشرة من ملفات الموقع، فتتحدث وحدها بعد كل نشر.</p>
+      <h1>خطة الترم الأول</h1>
+      <p class="lead">كل مادة في كل صف، من الأول الابتدائي إلى الثالث الإعدادي. الرقم يعني عدد الوحدات المنشورة من وحدات الترم، لمسار اللغات وللمسار العربي. اضغط أي خانة لترى أرقام الوحدات وتفتحها.</p>
     </section>
 
-    <section class="stats" id="stats"><div class="load">جاري التحميل…</div></section>
-
-    <section class="box" style="display:flex;flex-direction:column;gap:10px">
-      <div class="legend">
-        <span><i class="dot ok"></i>منشورة</span>
-        <span><i class="dot wip"></i>قيد العمل (لم تُفتح بعد)</span>
-        <span><i class="dot miss"></i>ناقصة: منشورة للمسار الآخر فقط</span>
-        <span><i class="dot none"></i>لم تبدأ</span>
-        <span>🎮 لها لعبة</span><span>📝 في امتحان شهري</span>
-      </div>
-      <div class="bar" id="fGrade" aria-label="الصف"></div>
-      <div class="bar" id="fSubj" aria-label="المادة"></div>
-    </section>
-
-    <div id="board" class="wrap" style="padding:0"></div>
+    <section class="big" id="big"></section>
 
     <section class="box">
-      <h2>المطلوب بعد ذلك</h2>
-      <div class="todo" id="todo"></div>
+      <div class="scroll"><table class="m" id="m"></table></div>
+      <div class="key">
+        <span><i class="sq" style="background:var(--ok)"></i>منشورة</span>
+        <span><i class="sq" style="background:var(--wip)"></i>قيد العمل</span>
+        <span><i class="sq" style="background:var(--nobg);border:2px dashed var(--no)"></i>لم تبدأ</span>
+      </div>
     </section>
   </main>
 </div>
 
 <dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
 
-<script src="chapters.js?v=20261022b"></script>
+<script src="firebase-config.js?v=20261022c"></script>
+<script src="chapters.js?v=20261022c"></script>
+<script src="common.js?v=20261022c"></script>
 <script>
 (() => {
-  const GRADES = [['g4', 'الصف الرابع'], ['g5', 'الصف الخامس'], ['g6', 'الصف السادس'], ['p1', 'الأول الإعدادي'], ['p2', 'الثاني الإعدادي']];
-  const GNAME = Object.fromEntries(GRADES);
-  const UNIT_GRADES = { p1: 1, p2: 1 }, UNIT_SUBJ = { math: 1, studies: 1, english: 1 };
-  const SUBJ = window.SUBJECTS || [], CH = window.CHAPTERS || [], EX = window.EXAMS || [];
+  /* Units in the first term of a subject and grade, when chapters.js does not list all of them yet: 'grade.subject': number.
+     Example: 'g1.arabic': 6. The larger of this number and the units listed in chapters.js is used. */
+  const PLAN = {};
+
+  const GRADES = [['g1', 'الأول الابتدائي'], ['g2', 'الثاني الابتدائي'], ['g3', 'الثالث الابتدائي'], ['g4', 'الرابع الابتدائي'], ['g5', 'الخامس الابتدائي'], ['g6', 'السادس الابتدائي'],
+                  ['p1', 'الأول الإعدادي'], ['p2', 'الثاني الإعدادي'], ['p3', 'الثالث الإعدادي']];
+  const SUBJ = window.SUBJECTS || [], CH = window.CHAPTERS || [];
   const sub = c => c.subject || 'science', gr = c => c.grade || 'g5';
-  const sById = id => SUBJ.find(s => s.id === id) || {};
   const lng = s => s.lang || { lang: 'en', ar: 'ar' };
-  const TRACKS = [['lang', 'لغات'], ['ar', 'عربي']];
-  const word = c => (UNIT_GRADES[gr(c)] || UNIT_SUBJ[sub(c)]) ? 'الوحدة' : 'الفصل';
-  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]);
-  const STATUS = { ok: 'منشورة', wip: 'قيد العمل', miss: 'ناقصة', none: 'لم تبدأ' };
+  const shared = s => lng(s).lang === lng(s).ar;          // one book for both tracks
+  const fileOf = (c, s, t) => (lng(s)[t] === 'ar' ? c.questionsAr : c.questions) || null;
+  const st = (c, s, t) => fileOf(c, s, t) ? (c.ready ? 'ok' : 'wip') : 'no';
 
-  const fileOf = (c, t) => (lng(sById(sub(c)))[t] === 'ar' ? c.questionsAr : c.questions) || null;
-  const shared = c => { const L = lng(sById(sub(c))); return L.lang === L.ar; };
-  const inExam = c => EX.some(e => (e.parts || []).some(p => p.ch === c.id));
-
-  // read every questions file once: ideas per lesson (bonus ideas not counted)
-  const cache = {};
-  async function readFile(f) {
-    if (!f) return null;
-    if (cache[f]) return cache[f];
-    cache[f] = fetch(f + '?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.text() : Promise.reject(r.status)).then(src => {
-      const w = {}; new Function('window', src)(w);
-      const by = {}; let total = 0;
-      (w.IDEAS || []).forEach(i => { if (i.bonus) return; total++; const l = i.lesson || 0; by[l] = (by[l] || 0) + 1; });
-      return { by, total };
-    }).catch(() => ({ by: {}, total: 0, err: true }));
-    return cache[f];
+  function cellData(g, s) {
+    const list = CH.filter(c => gr(c) === g && sub(c) === s.id).sort((a, b) => (a.n || 0) - (b.n || 0));
+    const total = Math.max(list.length, PLAN[g + '.' + s.id] || 0);
+    const tracks = (shared(s) ? [['lang', 'المساران']] : [['lang', 'لغات'], ['ar', 'عربي']])
+      .map(([t, label]) => ({ t, label, units: list.map(c => ({ c, st: st(c, s, t) })) }));
+    tracks.forEach(x => x.done = x.units.filter(u => u.st === 'ok').length);
+    return { list, total, tracks };
   }
 
-  const rows = [];   // one per chapter
-  function trackInfo(c, t, data) {
-    const f = fileOf(c, t), d = data[f];
-    const nL = ((t === 'ar' ? c.lessonsAr : c.lessons) || c.lessons || []).length || (c.lessons || []).length;
-    const covered = d ? Object.keys(d.by).filter(k => +k >= 1 && +k <= nL).length : 0;
-    let st;
-    if (f && c.ready) st = 'ok';
-    else if (f) st = 'wip';
-    else if (c.ready && fileOf(c, t === 'ar' ? 'lang' : 'ar')) st = 'miss';
-    else st = 'none';
-    return { f, st, nL, covered, ideas: d ? d.total : 0, by: d ? d.by : {} };
-  }
+  // summary per track (a shared book counts for both tracks)
+  const sum = { lang: [0, 0], ar: [0, 0] };
+  GRADES.forEach(([g]) => SUBJ.forEach(s => {
+    const d = cellData(g, s); if (!d.total) return;
+    ['lang', 'ar'].forEach(t => { const tr = d.tracks.find(x => x.t === t) || d.tracks[0]; sum[t][0] += tr.done; sum[t][1] += d.total; });
+  }));
+  const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+  document.getElementById('big').innerHTML = [['lang', 'مسار اللغات'], ['ar', 'المسار العربي']].map(([t, n]) =>
+    `<div class="s"><div class="k">${n}: الوحدات المنشورة</div><div class="v">${sum[t][0]} <small>من ${sum[t][1]} (${pct(...sum[t])}%)</small></div><div class="bar"><i style="width:${pct(...sum[t])}%"></i></div></div>`).join('');
 
-  let fG = 'all', fS = 'all';
-  function chips(el, list, get, set) {
-    el.innerHTML = list.map(([v, l]) => `<button class="chip" data-v="${v}" aria-pressed="${get() === v}">${esc(l)}</button>`).join('');
-    el.onclick = e => { const b = e.target.closest('.chip'); if (!b) return; set(b.dataset.v); render(); };
-  }
-
-  function trRow(label, i) {
-    const cov = (i.st === 'none' || i.st === 'miss') ? '' : (i.nL ? `${i.covered}/${i.nL} دروس` : 'الدروس غير مسجّلة');
-    return `<div class="tr ${i.st}"><b>${label}</b><span>${cov}</span><span class="st">${STATUS[i.st]}</span></div>`;
-  }
-
-  function tile(r) {
-    const c = r.c, allOk = r.tr.every(x => x.st === 'ok');
-    const lines = shared(c)
-      ? trRow('المساران', r.tr[0])
-      : trRow('لغات', r.tr[0]) + trRow('عربي', r.tr[1]);
-    return `<button class="tile${allOk ? ' all-ok' : ''}" data-id="${esc(c.id)}">
-      <span class="t1"><span>${word(c)} ${c.n || ''}</span><span class="ic">${c.game ? '🎮' : ''}${inExam(c) ? '📝' : ''}</span></span>
-      <span class="tt">${esc(c.titleAr || c.title)}</span>${lines}</button>`;
-  }
-
-  function render() {
-    chips(document.getElementById('fGrade'), [['all', 'كل الصفوف'], ...GRADES], () => fG, v => fG = v);
-    chips(document.getElementById('fSubj'), [['all', 'كل المواد'], ...SUBJ.map(s => [s.id, (s.icon || '') + ' ' + s.titleAr])], () => fS, v => fS = v);
-    const vis = rows.filter(r => (fG === 'all' || gr(r.c) === fG) && (fS === 'all' || sub(r.c) === fS));
-
-    // summary (for what the filters show)
-    const slots = []; vis.forEach(r => (shared(r.c) ? [r.tr[0]] : r.tr).forEach(t => slots.push(t)));
-    const cnt = k => slots.filter(t => t.st === k).length, N = slots.length || 1;
-    const perTrack = t => { const xs = vis.map(r => r.tr[t === 'lang' ? 0 : (shared(r.c) ? 0 : 1)]); return [xs.filter(x => x.st === 'ok').length, xs.length]; };
-    const [lo, lt] = perTrack('lang'), [ao, at] = perTrack('ar');
-    const meter = `<div class="meter">${['ok', 'wip', 'miss', 'none'].map(k => `<i style="width:${cnt(k) / N * 100}%;background:var(--${k})"></i>`).join('')}</div>`;
-    document.getElementById('stats').innerHTML = `
-      <div class="stat"><div class="k">مسار اللغات: وحدات منشورة</div><div class="v">${lo} <small>من ${lt}</small></div><div class="meter"><i style="width:${lt ? lo / lt * 100 : 0}%;background:var(--ok)"></i></div></div>
-      <div class="stat"><div class="k">المسار العربي: وحدات منشورة</div><div class="v">${ao} <small>من ${at}</small></div><div class="meter"><i style="width:${at ? ao / at * 100 : 0}%;background:var(--ok)"></i></div></div>
-      <div class="stat miss"><div class="k">ناقصة مسار واحد</div><div class="v">${cnt('miss')}</div>${meter}</div>
-      <div class="stat wip"><div class="k">قيد العمل</div><div class="v">${cnt('wip')}</div>${meter}</div>
-      <div class="stat"><div class="k">لم تبدأ</div><div class="v">${cnt('none')}</div>${meter}</div>`;
-
-    // board
-    const gList = GRADES.filter(([g]) => fG === 'all' || g === fG);
-    const sList = SUBJ.filter(s => fS === 'all' || s.id === fS);
-    document.getElementById('board').innerHTML = gList.map(([g, gname]) => {
-      const gRows = rows.filter(r => gr(r.c) === g);
-      const gs = []; gRows.forEach(r => (shared(r.c) ? [r.tr[0]] : r.tr).forEach(t => gs.push(t)));
-      const pct = gs.length ? Math.round(gs.filter(t => t.st === 'ok').length / gs.length * 100) : 0;
-      return `<section class="box grade"><div class="ghead"><h2>${gname}</h2><span class="gpct">${pct}% منشور</span></div>
-        ${sList.filter(s => gRows.some(r => sub(r.c) === s.id)).map(s => {
-          const sr = gRows.filter(r => sub(r.c) === s.id);
-          const note = s.hidden ? 'غير مفعّلة على الموقع' : (shared({ subject: s.id }) ? (lng(s).ar === 'ar' ? 'كتاب عربي للمسارين' : 'كتاب إنجليزي للمسارين') : 'كتابان: لغات وعربي');
-          const ex = EX.some(e => (e.subject || 'science') === s.id && (e.grade || 'g5') === g) ? ' · 📝 امتحان' : '';
-          return `<div class="subj"><div class="sname">${s.icon || ''} ${esc(s.titleAr)}<small>${note}${ex}</small></div>
-            ${sr.length ? `<div class="tiles">${sr.map(tile).join('')}</div>` : `<div class="empty">لا توجد وحدات مسجّلة لهذه المادة في هذا الصف بعد.</div>`}</div>`;
-        }).join('')}${(() => { const em = sList.filter(s => !gRows.some(r => sub(r.c) === s.id) && (!s.hidden || fS === s.id)); return em.length ? `<div class="empty">لا توجد وحدات مسجّلة بعد في: ${em.map(s => esc(s.titleAr)).join('، ')}</div>` : ''; })()}</section>`;
+  // the table
+  const head = `<tr><th></th>${SUBJ.map(s => `<th>${s.icon || ''} ${s.titleAr}</th>`).join('')}</tr>`;
+  const body = GRADES.map(([g, name]) => {
+    const cells = SUBJ.map(s => {
+      const d = cellData(g, s);
+      if (!d.total) return `<td><div class="cell none">لم يبدأ</div></td>`;
+      const full = d.tracks.every(x => x.done === d.total);
+      return `<td><button class="cell${full ? ' full' : ''}" data-g="${g}" data-s="${s.id}">${d.tracks.map(x =>
+        `<span class="ln">${x.label}<span class="mini"><i style="width:${pct(x.done, d.total)}%"></i></span><b>${x.done}/${d.total}</b></span>`).join('')}</button></td>`;
     }).join('');
+    const any = SUBJ.some(s => cellData(g, s).list.some(c => c.ready));
+    return `<tr><th class="g">${name}${any ? '' : '<small>لم نبدأ بعد</small>'}</th>${cells}</tr>`;
+  }).join('');
+  document.getElementById('m').innerHTML = head + body;
 
-    // to-do
-    const name = r => `${GNAME[gr(r.c)]} · ${sById(sub(r.c)).titleAr} · ${word(r.c)} ${r.c.n}: ${r.c.titleAr || r.c.title}`;
-    const miss = [], wip = [], none = {};
-    vis.forEach(r => {
-      const trs = shared(r.c) ? [['', r.tr[0]]] : [['لغات', r.tr[0]], ['عربي', r.tr[1]]];
-      trs.forEach(([tl, t]) => {
-        const tag = tl ? ` (${tl === 'لغات' ? 'مسار اللغات' : 'المسار العربي'})` : '';
-        if (t.st === 'miss') miss.push(`${esc(name(r))}: ${tl === 'عربي' ? 'الملف العربي' : 'ملف اللغات'} غير موجود`);
-        if (t.st === 'wip') wip.push(`${esc(name(r))}${tag}: ${t.nL ? `${t.covered} من ${t.nL} دروس لها أسئلة` : 'بدأت'}`);
-        if (t.st === 'none') { const k = `${GNAME[gr(r.c)]} · ${sById(sub(r.c)).titleAr}`; (none[k] = none[k] || new Set()).add(`${word(r.c)} ${r.c.n}`); }
-      });
-    });
-    const emptyCombos = [];
-    gList.forEach(([g, gname]) => sList.forEach(s => { if (!s.hidden && !rows.some(r => gr(r.c) === g && sub(r.c) === s.id)) emptyCombos.push(`${gname} · ${s.titleAr}`); }));
-    const hidden = sList.filter(s => s.hidden).map(s => s.titleAr);
-    const grp = (dot, title, items, hint) => `<div><h3><i class="dot ${dot}"></i>${title} <span class="n">${items.length}</span></h3>${items.length ? `<ul>${items.map(x => `<li>${x}</li>`).join('')}</ul>` : `<p class="muted">${hint}</p>`}</div>`;
-    document.getElementById('todo').innerHTML =
-      grp('miss', 'أكمل المسار الناقص (الوحدة منشورة لمسار واحد)', miss, 'لا شيء، كل وحدة منشورة موجودة للمسارين.') +
-      grp('wip', 'أكمل الوحدات قيد العمل ثم افتحها', wip, 'لا توجد وحدات قيد العمل.') +
-      grp('none', 'لم تبدأ بعد', Object.entries(none).map(([k, v]) => `${esc(k)}: ${[...v].join('، ')}`), 'كل الوحدات المسجّلة بدأت.') +
-      grp('none', 'صفوف لم تُسجَّل وحداتها في قائمة الموقع بعد', emptyCombos.map(esc), 'كل المواد لها وحدات مسجّلة في كل الصفوف.') +
-      (hidden.length ? `<p class="muted">مواد مخفية لم تبدأ: ${hidden.map(esc).join('، ')}.</p>` : '');
-  }
-
-  // details dialog
+  // a cell: the unit numbers of each track, each one opens the unit
   const dlg = document.getElementById('dlg');
-  document.getElementById('board').addEventListener('click', e => {
-    const b = e.target.closest('.tile'); if (!b) return;
-    const r = rows.find(x => x.c.id === b.dataset.id); if (!r) return;
-    const c = r.c, sh = shared(c), L = c.lessonsAr || c.lessons || [];
-    const head = sh ? '<th class="c">الأسئلة</th>' : '<th class="c">لغات</th><th class="c">عربي</th>';
-    const cell = (t, i) => { if (!t.f) return '<td class="c">—</td>'; const v = t.by[i + 1] || 0; return `<td class="c${v ? '' : ' z'}">${v}</td>`; };
-    const exams = EX.filter(x => (x.parts || []).some(p => p.ch === c.id)).map(x => { const p = x.parts.find(p => p.ch === c.id); return `${x.titleAr}${p.lessons ? ` (الدروس ${p.lessons.join('، ')})` : ''}`; });
-    document.getElementById('dlgBody').innerHTML = `
-      <h3>${esc(GNAME[gr(c)])} · ${esc(sById(sub(c)).titleAr)} · ${word(c)} ${c.n}</h3>
-      <div style="font-weight:900;font-size:16px">${esc(c.titleAr || '')}</div>
-      <div class="en muted" style="text-align:left">${esc(c.title || '')}</div>
-      <div>${sh ? trRow('المساران', r.tr[0]) : trRow('لغات', r.tr[0]) + '<div style="height:4px"></div>' + trRow('عربي', r.tr[1])}</div>
-      ${L.length ? `<table><thead><tr><th>الدرس</th>${head}</tr></thead><tbody>${L.map((l, i) => `<tr><td>${i + 1}. ${esc(l)}</td>${sh ? cell(r.tr[0], i) : cell(r.tr[0], i) + cell(r.tr[1], i)}</tr>`).join('')}</tbody></table>` : '<p class="muted">أسماء الدروس غير مسجّلة بعد.</p>'}
-      <p class="muted" style="margin:0">عدد الأسئلة لكل درس لا يشمل الأسئلة الإثرائية. الخانة الحمراء = درس بلا أسئلة.</p>
-      <p style="margin:0;font-weight:800">🎮 اللعبة: ${c.game ? esc(c.game.nameAr || c.game.name) : 'لا توجد بعد'}</p>
-      <p style="margin:0;font-weight:800">📝 الامتحانات: ${exams.length ? exams.map(esc).join('، ') : 'لا يوجد'}</p>
-      <div class="rowb">${c.game ? `<a class="btn" href="${esc(c.game.href)}">افتح اللعبة</a>` : ''}<button class="btn close" type="button">إغلاق</button></div>`;
+  document.getElementById('m').addEventListener('click', e => {
+    const b = e.target.closest('button.cell'); if (!b) return;
+    const s = SUBJ.find(x => x.id === b.dataset.s), g = b.dataset.g, d = cellData(g, s);
+    const gname = GRADES.find(x => x[0] === g)[1];
+    const sq = (u, t, i) => u.st === 'no'
+      ? `<span class="u no" title="لم تبدأ">${u.c.n || i + 1}</span>`
+      : `<a class="u ${u.st}" href="quiz.html#preview${lng(s)[t] === 'ar' ? '&lang=ar' : '&lang=en'}" data-ch="${u.c.id}" data-g="${g}" data-t="${t}" title="${u.st === 'ok' ? 'منشورة' : 'قيد العمل'}">${u.c.n || i + 1}</a>`;
+    const extra = Math.max(0, d.total - d.list.length);
+    document.getElementById('dlgBody').innerHTML = `<h3>${s.icon || ''} ${s.titleAr} · ${gname}</h3>
+      ${d.tracks.map(x => `<div><div class="trk">${x.label}: ${x.done} من ${d.total}</div><div class="units">${x.units.map((u, i) => sq(u, x.t, i)).join('')}${
+        Array.from({ length: extra }, (_, i) => `<span class="u no">${d.list.length + i + 1}</span>`).join('')}</div></div>`).join('')}
+      <p class="hint">اضغط رقم الوحدة لتراجع أسئلتها.</p>
+      <button class="btn close" type="button" style="align-self:flex-start">إغلاق</button>`;
     dlg.showModal();
   });
-  dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('.close')) dlg.close(); });
-
-  (async () => {
-    const files = [...new Set(CH.flatMap(c => [c.questions, c.questionsAr]).filter(Boolean))];
-    const data = {}; await Promise.all(files.map(async f => { data[f] = await readFile(f); }));
-    CH.forEach(c => rows.push({ c, tr: TRACKS.map(([t]) => trackInfo(c, t, data)) }));
-    render();
-  })();
+  dlg.addEventListener('click', e => {
+    if (e.target === dlg || e.target.closest('.close')) return dlg.close();
+    const a = e.target.closest('a.u'); if (!a) return;
+    // the preview needs a player of that grade and track, and the unit chosen
+    const want = { name: 'Admin', grade: a.dataset.g, track: a.dataset.t };
+    const all = SI.players ? SI.players() : {};
+    const id = Object.keys(all).find(k => all[k].name === want.name && all[k].grade === want.grade && all[k].track === want.track);
+    if (id && SI.usePlayer) SI.usePlayer(id); else SI.addPlayer(want);   // one Admin player per grade and track, reused
+    SI.setChapter(a.dataset.ch);
+  });
 })();
 </script>
 </body>
