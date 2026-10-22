@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261022c">
+<link rel="stylesheet" href="game_kit.css?v=20261022d">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Climb the Line.</noscript>
-<script src="firebase-config.js?v=20261022c"></script>
-<script src="chapters.js?v=20261022c"></script>
-<script src="common.js?v=20261022c"></script>
-<script src="math/g6_art.js?v=20261022c"></script>
-<script src="game_kit.js?v=20261022c"></script>
+<script src="firebase-config.js?v=20261022d"></script>
+<script src="chapters.js?v=20261022d"></script>
+<script src="common.js?v=20261022d"></script>
+<script src="math/g6_art.js?v=20261022d"></script>
+<script src="game_kit.js?v=20261022d"></script>
 <script>
 (() => {
 'use strict';
@@ -43,8 +43,9 @@ function render() {
 }
 const g = G4Game({ ch: 'mg6u2', logo: '🧗', title: ['Climb the Line', 'تسلّق خط الأعداد'], sub: ['Unit 2 · Rational Numbers', 'الوحدة 2 · الأعداد النسبية'],
   bg: 'math/assets/bg_mg6u2.svg', bgc: '#ffe6cc', label: ['The climbing wall, a number line or the number sets for each question', 'حائط التسلّق أو خط أعداد أو مجموعات الأعداد لكل سؤال'], render });
-const wall = (pts, cap) => Object.assign(sc, { pic: { name: 'numLine6', pic: { min: -10, max: 10, vertical: true, pts } }, dx: 74, dy: 6, k: .8, cap: cap || '' });
-const line = (min, max, pts, o) => Object.assign(sc, { pic: { name: 'numLine6', pic: Object.assign({ min, max, pts }, o || {}) }, dx: 6, dy: 56, k: 1.2, cap: '' });
+const ARL = pts => pts.map(p => Object.assign({}, p, SI.isAr() && p.l ? { t: { A: 'أ', B: 'ب', C: 'ج', D: 'د', E: 'هـ', F: 'و' }[p.l] } : {}));   // Arabic letters drawn for the Arabic track (the book's أ ب ج د هـ)
+const wall = (pts, cap) => Object.assign(sc, { pic: { name: 'numLine6', pic: { min: -10, max: 10, vertical: true, pts: ARL(pts) } }, dx: 74, dy: 6, k: .8, cap: cap || '' });
+const line = (min, max, pts, o) => Object.assign(sc, { pic: { name: 'numLine6', pic: Object.assign({ min, max, pts: ARL(pts) }, o || {}) }, dx: 6, dy: 56, k: 1.2, cap: '' });
 const sets = cap => Object.assign(sc, { pic: { name: 'setsCircles', pic: {} }, dx: 14, dy: 2, k: 1.15, cap: cap || '' });
 const WALL = [{ v: -5, l: 'A' }, { v: 3, l: 'B' }, { v: -9, l: 'C' }, { v: -8, l: 'D' }, { v: -3, l: 'E' }];
 

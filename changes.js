@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-22', title: 'رياضيات الصف السادس (عربي): الوحدتان الأولى والثانية',
+    items: [
+      { text: 'أسئلة الوحدة الأولى «قابلية القسمة والعوامل والمضاعفات» من الكتاب العربي (32 فكرة، 202 صيغة)', links: [{ label: 'معاينة الأسئلة', href: 'quiz.html#preview=A1.1&lang=ar', ch: 'mg6u1' }] },
+      { text: 'أسئلة الوحدة الثانية «الأعداد النسبية» من الكتاب العربي (38 فكرة، 227 صيغة)، والحروف على خط الأعداد عربية (أ ب ج د هـ)', links: [{ label: 'معاينة الأسئلة', href: 'quiz.html#preview=E1.1&lang=ar', ch: 'mg6u2' }] },
+      { text: 'امتحان أكتوبر للصف السادس يفتح الآن للمسار العربي أيضًا، والوحدات 3 إلى 7 مضافة بأسمائها (لم تبدأ بعد)' }
+    ] },
   { date: '2026-10-22', title: 'لوحة المتابعة',
     items: [
       { text: 'صفحة جديدة تعرض كل المواد والصفوف والوحدات للمسارين (اللغات والعربي): المنشور، قيد العمل، الناقص، وما لم يبدأ', links: [{ label: 'لوحة المتابعة', href: 'progress.html' }] }

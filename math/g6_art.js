@@ -7,6 +7,7 @@
              boxPack    (picture only)            q.pic = { boxes: 4, g: 3, c: 2 }  boxes of grain bags (g) and cheese packs (c)
              bagFrac    (picture only)            q.pic = { bags: [{ n: 4, k: 3, name: 'Persimmons', col: '#f2a24a' }] }  a bag of n pieces, k of them left
      Unit 2: numLine6   (lnA … lnF)               q.pic = { min: -10, max: 10, pts: [{ v: -3, l: 'A', show: true }], arcs: [{ a: 0, b: -2, t: '2' }], vertical: true, lab: 2 }
+                                                  pt.t = the letter drawn (Arabic أ ب ج د هـ), the tap id stays 'ln' + pt.l
              setsCircles (stRat | stInt | stNat | stCnt)   rational ⊃ integers ⊃ natural ⊃ counting numbers, q.pic = { samples: true }
    Numbers stay left to right, also for an Arabic player. Names read by screen readers describe what is drawn, never the answer. */
 (function () {
@@ -48,8 +49,8 @@
       });
       pts.forEach(pt => {
         const x = X(pt.v), dy = pt.dy != null ? pt.dy : 0, body = `<circle cx="${f1(x)}" cy="${Y}" r="6.5" fill="${pt.c || COL.coral}" stroke="${COL.ink}" stroke-width="2"/>`
-          + (pt.l ? num(x, Y - 16 + dy, pt.l, { fs: 14 }) : '') + (pt.show ? num(x, Y + 44, fmt(pt.show === true ? pt.v : pt.show), { fs: 11, fill: COL.coral }) : '');
-        s += tap ? hot('ln' + pt.l, T('Point ' + pt.l, 'النقطة ' + pt.l), body + `<circle class="ring" cx="${f1(x)}" cy="${Y}" r="15"/>`) : body;
+          + (pt.l ? num(x, Y - 16 + dy, pt.t || pt.l, { fs: 14 }) : '') + (pt.show ? num(x, Y + 44, fmt(pt.show === true ? pt.v : pt.show), { fs: 11, fill: COL.coral }) : '');
+        s += tap ? hot('ln' + pt.l, T('Point ' + pt.l, 'النقطة ' + (pt.t || pt.l)), body + `<circle class="ring" cx="${f1(x)}" cy="${Y}" r="15"/>`) : body;
       });
       return s + close_(q);
     }
@@ -63,8 +64,8 @@
       if (big) s += num(X - 14, y + 4.5, fmt(v), { fs: 12, anchor: 'end' });
     }
     pts.forEach(pt => {
-      const y = Yv(pt.v), body = `<circle cx="${X}" cy="${f1(y)}" r="6.5" fill="${pt.c || COL.coral}" stroke="${COL.ink}" stroke-width="2"/>` + (pt.l ? num(X + 22, y + 5, pt.l, { fs: 14, anchor: 'start' }) : '') + (pt.show ? num(X + 46, y + 5, fmt(pt.show === true ? pt.v : pt.show), { fs: 11, fill: COL.coral, anchor: 'start' }) : '');
-      s += tap ? hot('ln' + pt.l, T('Point ' + pt.l, 'النقطة ' + pt.l), body + `<circle class="ring" cx="${X}" cy="${f1(y)}" r="15"/>`) : body;
+      const y = Yv(pt.v), body = `<circle cx="${X}" cy="${f1(y)}" r="6.5" fill="${pt.c || COL.coral}" stroke="${COL.ink}" stroke-width="2"/>` + (pt.l ? num(X + 22, y + 5, pt.t || pt.l, { fs: 14, anchor: 'start' }) : '') + (pt.show ? num(X + 46, y + 5, fmt(pt.show === true ? pt.v : pt.show), { fs: 11, fill: COL.coral, anchor: 'start' }) : '');
+      s += tap ? hot('ln' + pt.l, T('Point ' + pt.l, 'النقطة ' + (pt.t || pt.l)), body + `<circle class="ring" cx="${X}" cy="${f1(y)}" r="15"/>`) : body;
     });
     return s + close_(q);
   }
