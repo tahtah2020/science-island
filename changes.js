@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-24', title: 'Chapter 4 game: picture-book screens',
+    items: [
+      { text: 'Growth Lab now opens with a cover, Key Concepts with pictures, and experiment step cards' },
+      { text: 'Check What You Know with picture questions, and a Great Job summary' }
+    ] },
   { date: '2026-10-24', title: 'Grade 5 Science: Chapters 4, 5 and 6',
     items: [
       { text: 'Chapter 4 Conditions for Growth: Growth Lab game, 13 ideas (English)' },
