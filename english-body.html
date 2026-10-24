@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024j">
+<link rel="stylesheet" href="game_kit.css?v=20261024i">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Healthy Body Hero.</noscript>
-<script src="firebase-config.js?v=20261024j"></script>
-<script src="chapters.js?v=20261024j"></script>
-<script src="common.js?v=20261024j"></script>
-<script src="english/g5_art.js?v=20261024j"></script>
-<script src="game_kit.js?v=20261024j"></script>
+<script src="firebase-config.js?v=20261024i"></script>
+<script src="chapters.js?v=20261024i"></script>
+<script src="common.js?v=20261024i"></script>
+<script src="english/g5_art.js?v=20261024i"></script>
+<script src="game_kit.js?v=20261024i"></script>
 <script>
 (() => {
 'use strict';
@@ -58,12 +58,6 @@ const wordSvg = () => BASE + `<rect x="30" y="60" width="280" height="170" rx="2
 const star = (x, y, r, c) => { const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; p.push((x + Math.cos(a) * rr).toFixed(1) + ' ' + (y + Math.sin(a) * rr).toFixed(1)); } return `<path d="M${p.join('L')}Z" fill="${c}" stroke="#c98a14" stroke-width="2"/>`; };
 const starsSvg = () => { let s = BASE + `<rect x="14" y="80" width="312" height="130" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`; for (let i = 0; i < 5; i++) s += star(50 + i * 60, 145, 26, i < sc.n ? '#f2b134' : '#e8e0cc'); return s + txt(170, 250, sc.word, { fs: 26 }); };
 
-const PHOTO = { heart: [173, 186], lungs: [174, 186], muscles: [181, 186], fist: [179, 186], vessels: [174, 186], bones: [157, 105], apple: [148, 148], water: [148, 148], dumbbell: [147, 148], pillow: [148, 148], toothbrush: [148, 148], football: [149, 148] };
-const photoSvg = () => {
-  const [w, h] = PHOTO[sc.sub] || [4, 3], k = Math.min(270 / w, 226 / h), pw = w * k, ph = h * k, x = (VW - pw) / 2, y = 34 + (232 - ph) / 2;
-  return BASE + `<rect x="${x - 8}" y="${y - 8}" width="${pw + 16}" height="${ph + 16}" rx="22" fill="#fff" stroke="#d8c9a6" stroke-width="3"/><clipPath id="phc"><rect x="${x}" y="${y}" width="${pw}" height="${ph}" rx="16"/></clipPath><image href="english/assets/body_${sc.sub}.jpg" x="${x}" y="${y}" width="${pw}" height="${ph}" clip-path="url(#phc)"/>`;
-};
-
 function render() {
   const m = sc.mode;
   if (m === 'set') return BASE + `<g transform="translate(0 25)">${D.bodyParts({ pic: { plain: true } })}</g>`;
@@ -71,7 +65,6 @@ function render() {
   if (m === 'plate') return plateSvg();
   if (m === 'word') return wordSvg();
   if (m === 'stars') return starsSvg();
-  if (m === 'photo') return photoSvg();
   return BASE;
 }
 const setRings = () => { const r = D.bodyParts.rings(); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.NAMES[id], ring: E.ringEl(x + w / 2, y + h / 2 + 25, w / 2, h / 2) }; }); };
@@ -111,23 +104,17 @@ async function stage1() {
   g.say(T('Football also helps your <b>muscles</b> grow. Tap them.', 'كرة القدم كمان بتخلّي <b>عضلاتك</b> تكبر. اضغط عليها.'), 'think');
   await g.spot(setRings(), 'muscle', { hint: T('They are the parts of your body that help you move.', 'هما الأجزاء في جسمك اللي بتساعدك تتحرك.'),
     ok: T(`${kw('Muscles')} are the parts of your body that help you move.`, `${L('Muscles are the parts of your body that help you move.')}`) });
-  set('photo', { sub: 'football' });
-  await ask('Which sport makes your heart strong and helps your muscles grow?', 'أنهي رياضة بتقوّي قلبك وبتكبّر عضلاتك؟', ['Football', 'Reading', 'Watching TV'], 'Football', 'Mazen asks about it first.', 'مازن سأل عنها الأول.', `${kw('Football')} makes your heart strong and helps your muscles grow.`, `${L('Football makes your heart strong and helps your muscles grow.')}`);
-  set('photo', { sub: 'apple' });
   await ask('You feel tired when you play sports. What can you do?', 'بتتعب لما بتلعب رياضة. تعمل إيه؟', ['Eat some fruit before you exercise', 'Stop all sports', 'Drink soda'], 'Eat some fruit before you exercise', 'It gives you more energy.', 'بتديك طاقة أكتر.',
     `Eat ${kw('some fruit')} before you exercise to get more energy.`, `${L('Eat some fruit before you exercise.')}`);
-  set('photo', { sub: 'pillow' });
   await ask('What does exercising regularly help you do?', 'التمرين المنتظم بيساعدك على إيه؟', ['Sleep better and reduce stress', 'Feel more stressed', 'Get weaker bones'], 'Sleep better and reduce stress', 'It is good for mental health.', 'ده كويس للصحة النفسية.',
     `Exercising regularly helps you ${kw('sleep better')} and reduces ${kw('stress')}.`, `${L('Exercising regularly helps you sleep better and reduces stress.')}`);
-  set('photo', { sub: 'bones' });
-  await ask('Exercise helps you lose weight and makes your ___ stronger.', 'التمرين بيخلّيك تخسّ وبيخلّي ___ أقوى.', ['bones', 'hair', 'ears'], 'bones', 'They are inside your body.', 'هي جوه جسمك.', `Exercise makes your ${kw('bones')} stronger.`, `${L('Exercise makes your bones stronger.')}`);
 }
 
 /* ---------- Stage 2 · Missions ---------- */
 async function mission1() {                 // lesson 1: health words
   g.say(T('Mission 1: health words. Choose the right meaning.', 'المهمة ١: كلمات الصحة. اختار المعنى الصح.'), 'point');
   await g.next();
-  set('photo', { sub: 'dumbbell' });
+  set('word', { word: 'fit' });
   await ask('What does “fit” mean?', 'يعني إيه “fit”؟', ['healthy and strong because you exercise', 'unhappy or tired', 'how you feel and think'], 'healthy and strong because you exercise', 'You become fit when you exercise.', 'بتبقى fit لما بتتمرن.', `${kw('Fit')} means healthy and strong because you exercise.`, `${L('Fit means healthy and strong because you exercise.')}`);
   set('word', { word: 'stressed' });
   await ask('What does “stressed” mean?', 'يعني إيه “stressed”؟', ['feeling unhappy or tired', 'healthy and strong', 'the organs that help you breathe'], 'feeling unhappy or tired', 'It is not a happy feeling.', 'ده مش إحساس سعيد.', `${kw('Stressed')} means feeling unhappy or tired.`, `${L('Stressed means feeling unhappy or tired.')}`);
@@ -185,23 +172,15 @@ async function mission6() {                 // lesson 4: healthcare heroes
   set('plate', { emoji: '📝', word: 'Non-fiction text' });
   await ask('Which sentence is an introductory sentence?', 'أنهي جملة هي جملة افتتاحية؟', ['My neighbor, Selim, is a doctor at our local hospital.', 'The work is tiring, but he’s proud to be a doctor.', 'He wears a white coat.'], 'My neighbor, Selim, is a doctor at our local hospital.', 'It introduces the person.', 'بتعرّفنا على الشخص.', `An ${kw('introductory sentence')} introduces the person.`, `${L('An introductory sentence introduces the person.')}`);
 }
-async function mission7() {                 // lesson 5: six healthy habits
-  set('photo', { sub: 'toothbrush' });
-  g.say(T('Mission 7: healthy habits for your poster.', 'المهمة ٧: عادات صحية لملصقك.'), 'point');
-  await g.next();
-  await fillCard(['Brush your teeth daily', 'with ___.'], ['toothpaste', 'soda', 'vitamins'], 'toothpaste', 'Choose the word.', 'اختار الكلمة.', 'You put it on a toothbrush.', 'بتحطها على الفرشاة.', `Brush your teeth daily with ${kw('toothpaste')}.`, `${L('Brush your teeth daily with toothpaste.')}`);
-  set('photo', { sub: 'water' });
-  await ask('Drink enough ___ daily.', 'اشرب ___ كفاية كل يوم.', ['water', 'soda', 'juice'], 'water', 'Drink water instead of soda.', 'اشرب مية بدل الصودا.', `Drink enough ${kw('water')} daily.`, `${L('Drink enough water daily.')}`);
-}
 async function stage2() {                 // ?m=5 in the address opens the missions from mission 5 (for the owner's checks)
   const from = Math.max(1, +new URLSearchParams(location.search).get('m') || 1);
-  const all = [mission1, mission2, mission3, mission4, mission5, mission6, mission7];
+  const all = [mission1, mission2, mission3, mission4, mission5, mission6];
   for (const m of all.slice(from - 1)) await m();
 }
 
 /* ---------- Stage 3 · Speed Round (lesson 5: six healthy habits) ---------- */
 async function stage3() {
-  set('photo', { sub: 'dumbbell' });
+  set('word', { word: '?' });
   const buttons = [{ label: '✅ Healthy', value: 'h', c: 1 }, { label: '❌ Not healthy', value: 'n', c: 3 }];
   const items = [
     { t: 'Wash your hands before eating', ans: 'h', why: 'Wash your hands before and after eating.' }, { t: 'Watch TV all day', ans: 'n', why: 'Watching TV all day is not healthy.' },
