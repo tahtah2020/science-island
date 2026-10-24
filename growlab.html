@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024c">
+<link rel="stylesheet" href="game_kit.css?v=20261024d">
 <style>
 .cs{width:100%;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:start}
 .cs h3{margin:0;font-size:clamp(17px,3.6vw,22px);font-weight:900;color:#fff;background:linear-gradient(#2f6ea8,#1f4f86);border-radius:999px;padding:6px 16px;text-align:center}
@@ -38,11 +38,11 @@
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Growth Lab.</noscript>
-<script src="firebase-config.js?v=20261024c"></script>
-<script src="chapters.js?v=20261024c"></script>
-<script src="common.js?v=20261024c"></script>
-<script src="science/ch4_art.js?v=20261024c"></script>
-<script src="game_kit.js?v=20261024c"></script>
+<script src="firebase-config.js?v=20261024d"></script>
+<script src="chapters.js?v=20261024d"></script>
+<script src="common.js?v=20261024d"></script>
+<script src="science/ch4_art.js?v=20261024d"></script>
+<script src="game_kit.js?v=20261024d"></script>
 <script>
 (() => {
 'use strict';
@@ -65,7 +65,7 @@ const XA = 125, XB = 295, GY = 238, K = 1.1;
 function checkScene() {
   const c = sc.chk;
   return `<rect width="${VW}" height="${VH}" fill="#e6f3f8"/><rect y="${GY}" width="${VW}" height="${VH - GY}" fill="#e4c394"/><rect y="${GY}" width="${VW}" height="7" fill="#d2ab78"/>
-    ${[['A', XA, c.ph[0]], ['B', XB, c.ph[1]]].map(([l, x, n]) => `<clipPath id="cp${l}"><rect x="${x - 78}" y="34" width="156" height="148" rx="12"/></clipPath><image href="science/assets/ch4/${n}.jpg" x="${x - 78}" y="34" width="156" height="148" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp${l})"/><circle cx="${x}" cy="212" r="17" fill="${l === 'A' ? '#2f74c9' : '#2e9e6b'}" stroke="#fff" stroke-width="3"/><text x="${x}" y="219" text-anchor="middle" font-family="Nunito,sans-serif" font-size="20" font-weight="900" fill="#fff">${l}</text>`).join('')}`;
+    ${[['A', XA, c.ph[0]], ['B', XB, c.ph[1]]].map(([l, x, n]) => `<clipPath id="cp${l}"><rect x="${x - 78}" y="34" width="156" height="148" rx="12"/></clipPath><image href="science/assets/ch4/${n}.jpg" x="${x - 78}" y="34" width="156" height="148" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp${l})"/><circle cx="${x}" cy="212" r="17" fill="${l === 'A' ? '#2f74c9' : '#2e9e6b'}" stroke="#fff" stroke-width="3"/><text x="${x}" y="219" text-anchor="middle" font-family="Nunito,sans-serif" font-size="20" font-weight="900" fill="#fff">${T(l, l === 'A' ? 'أ' : 'ب')}</text>`).join('')}`;
 }
 function render() {
   if (sc.mode === 'check') return checkScene();
@@ -76,9 +76,9 @@ function render() {
   const back = `<rect width="${VW}" height="${VH}" fill="#e6f3f8"/><rect y="${GY}" width="${VW}" height="${VH - GY}" fill="#e4c394"/><rect y="${GY}" width="${VW}" height="7" fill="#d2ab78"/>`;
   const sun = (sunny || fertM) && sc.sunOn ? `<g transform="translate(${sunny ? XA + 40 : 210} 46)">${A.sun(24)}</g>` : '';
   const beams = sunny && sc.sunOn ? `<path d="M${XA - 40} 84L${XA - 52} 120M${XA} 90V124M${XA + 40} 84L${XA + 52} 120" stroke="#ffd24a" stroke-width="4" stroke-linecap="round" opacity="${.35 + .4 * sc.glow}"/>` : '';
-  const pa = `<g transform="translate(${XA} ${GY}) scale(${K})">${A.pot(Object.assign({ label: 'A' }, a))}</g>`;
-  const pb = `<g transform="translate(${XB} ${GY}) scale(${K})">${A.pot(Object.assign({ label: 'B', fert: fertM && sc.fert, noPlant: sunny && sc.boxY > -120 }, b))}</g>`;
-  const box = sunny ? `<g transform="translate(${XB} ${GY + sc.boxY}) scale(${K})" opacity="${sc.boxY < -120 ? 0 : 1}">${A.box()}<circle cx="0" cy="-48" r="15" fill="#fff8ea" stroke="#8a6334" stroke-width="2.4"/><text x="0" y="-42" text-anchor="middle" font-family="Nunito,sans-serif" font-size="19" font-weight="900" fill="#1f3d57" direction="ltr">B</text></g>` : '';
+  const pa = `<g transform="translate(${XA} ${GY}) scale(${K})">${A.pot(Object.assign({ label: fertM ? T('A', 'B') : 'A' }, a))}</g>`;
+  const pb = `<g transform="translate(${XB} ${GY}) scale(${K})">${A.pot(Object.assign({ label: fertM ? T('B', 'A') : 'B', fert: fertM && sc.fert, noPlant: sunny && sc.boxY > -120 }, b))}</g>`;
+  const box = sunny ? `<g transform="translate(${XB} ${GY + sc.boxY}) scale(${K})" opacity="${sc.boxY < -120 ? 0 : 1}">${A.box()}<circle cx="0" cy="-48" r="15" fill="#fff8ea" stroke="#8a6334" stroke-width="2.4"/><text x="0" y="-42" text-anchor="middle" font-family="Nunito,sans-serif" font-size="19" font-weight="900" fill="#1f3d57" direction="ltr">${T('B', 'ب')}</text></g>` : '';
   const bag = fertM && sc.bag ? `<g transform="translate(210 ${GY}) scale(1.1)">${A.bag()}</g>` : '';
   const hi = sc.hi ? `<ellipse cx="${sc.hi === 'A' ? XA : XB}" cy="150" rx="74" ry="110" fill="rgba(46,158,107,.16)" stroke="#2e9e6b" stroke-width="4"/>` : '';
   return back + sun + beams + pa + pb + box + bag + hi;
@@ -102,9 +102,9 @@ const conceptsCard = () => `<div class="cs"><h3>${T('Key Concepts', 'المفا�
 const stepsCard = kind => {
   const sun = kind === 'sun', n = sun ? '1/2' : '2/2';
   const L = sun ? [[T('Prepare', 'جهّز'), T('2 kidney bean seedlings · a box like cardboard', 'شتلتين من الفاصوليا · صندوقًا مثل الكرتون')], [T('Change the condition', 'غيّر الشرط'), T('Pot A: lots of sunlight · Pot B: cover with a dark box', 'الإناء (أ): كثير من ضوء الشمس · الإناء (ب): غطِّه بصندوق مظلم')], [T('Observe', 'لاحظ'), T('Grow for about a week, keep water and temperature the same, then compare leaf color and stem thickness.', 'اتركهما حوالي أسبوع مع إبقاء الماء ودرجة الحرارة كما هما، ثم قارن لون الأوراق وسمك الساق.')]]
-    : [[T('Prepare', 'جهّز'), T('2 kidney bean seedlings · fertilizer', 'شتلتين من الفاصوليا · سمادًا')], [T('Change the condition', 'غيّر الشرط'), T('Pot A: water only · Pot B: water + a fixed amount of fertilizer', 'الإناء (أ): ماء فقط · الإناء (ب): ماء + كمية محددة من السماد')], [T('Keep the same', 'أبقِ كما هو'), T('Sunlight and temperature: put both in the same place.', 'ضوء الشمس ودرجة الحرارة: ضعهما في المكان نفسه.')], [T('Record the growth', 'سجّل النمو'), T('Measure plant height every few days and compare.', 'قِس ارتفاع النبات كل بضعة أيام وقارن.')]];
+    : [[T('Prepare', 'جهّز'), T('2 kidney bean seedlings · fertilizer', 'شتلتين من الفاصوليا · سمادًا')], [T('Change the condition', 'غيّر الشرط'), T('Pot A: water only · Pot B: water + a fixed amount of fertilizer', 'الإناء (أ): ماء + كمية ثابتة من السماد · الإناء (ب): ماء فقط')], [T('Keep the same', 'أبقِ كما هو'), T('Sunlight and temperature: put both in the same place.', 'ضوء الشمس ودرجة الحرارة: ضعهما في المكان نفسه.')], [T('Record the growth', 'سجّل النمو'), T('Measure plant height every few days and compare.', 'قِس ارتفاع النبات كل بضعة أيام وقارن.')]];
   return `<div class="cs"><h3>${sun ? '☀️' : '🌱'} ${sun ? T('Experiment: Sunlight', 'تجربة: ضوء الشمس') : T('Experiment: Fertilizer', 'تجربة: السماد')}<i>${n}</i></h3>
-    <div class="pair"><div>${sun ? IMG('exp_sun_a') : IMG('exp_fert_a')}Pot A ${sun ? T('(gets sunlight)', '(يصله ضوء الشمس)') : T('(water only)', '(ماء فقط)')}</div><div>${sun ? IMG('exp_sun_b') : IMG('exp_fert_b')}Pot B ${sun ? T('(blocked from sunlight)', '(محجوب عنه الضوء)') : T('(water + fertilizer)', '(ماء + سماد)')}</div></div>
+    <div class="pair"><div>${sun ? IMG('exp_sun_a') : IMG('exp_fert_a')}${sun ? T('Pot A (gets sunlight)', 'الإناء (أ) (يصله ضوء الشمس)') : T('Pot A (water only)', 'الإناء (ب) (ماء فقط)')}</div><div>${sun ? IMG('exp_sun_b') : IMG('exp_fert_b')}${sun ? T('Pot B (blocked from sunlight)', 'الإناء (ب) (محجوب عنه الضوء)') : T('Pot B (water + fertilizer)', 'الإناء (أ) (ماء + سماد)')}</div></div>
     <ol>${L.map((x, i) => `<li><b>${i + 1}</b><div>${x[0]}<br><span>${x[1]}</span></div></li>`).join('')}</ol>
     ${sun ? `<div class="note">${T('Note: If the soil gets dry, don’t forget to water them.', 'ملحوظة: إذا جفّت التربة فلا تنسَ أن تسقيها.')}</div>` : ''}</div>`;
 };
@@ -182,18 +182,18 @@ async function mission2() {
     correct: T('Presence or absence of fertilizer', 'وجود السماد أو عدم وجوده'),
     hint: T('We want to know what fertilizer does.', 'عايزين نعرف السماد بيعمل إيه.'),
     ok: T(`The condition to change is the ${kw('presence or absence of fertilizer')}.`, `الشرط الذي نغيّره هو ${kw('وجود السماد أو عدم وجوده')}.`) });
-  g.say(T('Pot A gets only water. What does pot B get?', 'الإناء (أ) يُسقى بالماء فقط. ماذا يُعطى الإناء (ب)؟'), 'think');
+  g.say(T('Pot A gets only water. What does pot B get?', 'الإناء (ب) يُسقى بالماء فقط. ماذا يُعطى الإناء (أ)؟'), 'think');
   await g.choice({
     options: [T('Water mixed with a fixed amount of fertilizer', 'ماء مخلوط بكمية محددة من السماد'), T('Only fertilizer, no water', 'سماد فقط بدون ماء'), T('A dark box', 'صندوقًا مظلمًا')],
     correct: T('Water mixed with a fixed amount of fertilizer', 'ماء مخلوط بكمية محددة من السماد'),
-    hint: T('Pot B gets everything pot A gets, plus one more thing.', 'الإناء (ب) بياخد كل اللي بياخده (أ) وحاجة زيادة.'),
-    ok: T('Pot B gets water mixed with a fixed amount of fertilizer.', 'الإناء (ب) يُعطى ماءً مخلوطًا بكمية محددة من السماد.'),
+    hint: T('Pot B gets everything pot A gets, plus one more thing.', 'الإناء (أ) بياخد كل اللي بياخده (ب) وحاجة زيادة.'),
+    ok: T('Pot B gets water mixed with a fixed amount of fertilizer.', 'الإناء (أ) يُعطى ماءً مخلوطًا بكمية ثابتة من السماد.'),
     reveal: () => { sc.fert = true; g.paint(); } });
   g.say(T('Put both pots in the same sunny place, measure the height every few days… and wait!', 'ضع الإناءين في نفس المكان المشمس، وقِس الارتفاع كل بضعة أيام… واستنَّ!'), 'point');
   await g.next(T('Wait ▸', P('استنى ◂', 'استني ◂')));
   sc.bag = false; await g.tween(1500, k => { sc.grow = k; });
   g.say(T('Which seedling grew much taller? Tap it!', P('أنهي شتلة طالت أكتر بكتير؟ اضغط عليها!', 'أنهي شتلة طالت أكتر بكتير؟ اضغطي عليها!')), 'think');
-  await g.spot([{ id: 'A', name: T('Pot A', 'الإناء (أ)'), ring: ring(XA, 160, 74, 100) }, { id: 'B', name: T('Pot B', 'الإناء (ب)'), ring: ring(XB, 120, 74, 124) }], 'B', {
+  await g.spot([{ id: 'A', name: T('Pot A', 'الإناء (ب)'), ring: ring(XA, 160, 74, 100) }, { id: 'B', name: T('Pot B', 'الإناء (أ)'), ring: ring(XB, 120, 74, 124) }], 'B', {
     hint: T('Which pot got fertilizer?', 'أنهي إناء أخد سماد؟'),
     ok: T(`The seedling with fertilizer is ${kw('taller, bigger and stronger')}. Plants absorb ${kw('nutrients')} from the fertilizer.`, `الشتلة التي أخذت السماد ${kw('أطول وأكبر وأقوى')}. تمتص النباتات ${kw('العناصر الغذائية')} من السماد.`) });
   g.say(T('Fertilizer is like a <b>supplement</b> for plants!', 'السماد مثل <b>المكمّل الغذائي</b> للنباتات!'), 'celebrate');
@@ -238,7 +238,7 @@ const SPEED = [
   { t: T('Gives plants nutrients', 'تعطي النباتات العناصر الغذائية'), ans: 'fert' },
   { t: T('Like a supplement for plants', 'مثل المكمّل الغذائي للنباتات'), ans: 'fert' },
   { t: T('The plant grows taller and bigger with it', 'ينمو النبات أطول وأكبر بها'), ans: 'fert' },
-  { t: T('Mixed with the water for pot B', 'تُخلط بماء الإناء (ب)'), ans: 'fert' }
+  { t: T('Mixed with the water for pot B', 'تُخلط بماء الإناء (أ)'), ans: 'fert' }
 ];
 async function stage3() {
   Object.assign(sc, { mode: 'fert', grow: 1, fert: true, bag: false, hi: null }); g.paint();

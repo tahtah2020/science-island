@@ -145,7 +145,7 @@
       ['stage', T('The platform', 'المنصة'), ring(0, -52, 64, 9)],
       ['reflector', T('The mirror at the bottom', 'المرآة في الأسفل'), ring(-14, -40, 32, 13)]
     ];
-    return `<svg class="diagram" viewBox="0 0 340 262" role="img" aria-label="${T('A microscope', 'ميكروسكوب')}">${back(340, 262)}
+    return `<svg class="diagram" viewBox="0 0 340 262" role="img" aria-label="${T('A microscope', 'مجهر')}">${back(340, 262)}
       <g transform="translate(${tx} ${ty}) scale(${k})">${microscope({ light: true })}</g>${H.map(([id, lab, r]) => hot(id, lab, r)).join('')}</svg>`;
   }
 
@@ -154,8 +154,8 @@
     return `<svg class="diagram" viewBox="0 0 340 230" role="img" aria-label="${T('Two female luffa flowers after a few days. Flower A got pollen from a male flower. Flower B did not. The swelling of A has grown into a fruit. Flower B has withered and has no fruit.', 'زهرتان مؤنثتان من اللوف بعد عدة أيام. الزهرة (أ) وضعنا عليها حبوب لقاح من زهرة مذكرة. الزهرة (ب) لم نضع عليها. انتفاخ (أ) نما وصار ثمرة. الزهرة (ب) ذبلت وليس بها ثمرة.')}">${back(340, 230)}
       <g transform="translate(${xa} ${y0 - 66}) scale(${k})">${flower({ sex: 'female', wither: true, fruit: 1 })}</g>
       <g transform="translate(${xb} ${y0 - 14}) scale(${k})">${flower({ sex: 'female', wither: true, fruit: 0 })}</g>
-      <circle cx="${xa}" cy="26" r="15" fill="#fff8ea" stroke="#cdb98f" stroke-width="2"/><text x="${xa}" y="32" text-anchor="middle" font-family="Nunito,sans-serif" font-size="18" font-weight="900" fill="#1f3d57" direction="ltr">A</text>
-      <circle cx="${xb}" cy="26" r="15" fill="#fff8ea" stroke="#cdb98f" stroke-width="2"/><text x="${xb}" y="32" text-anchor="middle" font-family="Nunito,sans-serif" font-size="18" font-weight="900" fill="#1f3d57" direction="ltr">B</text>
+      <circle cx="${xa}" cy="26" r="15" fill="#fff8ea" stroke="#cdb98f" stroke-width="2"/><text x="${xa}" y="32" text-anchor="middle" font-family="Nunito,sans-serif" font-size="18" font-weight="900" fill="#1f3d57" direction="ltr">${T('A', 'أ')}</text>
+      <circle cx="${xb}" cy="26" r="15" fill="#fff8ea" stroke="#cdb98f" stroke-width="2"/><text x="${xb}" y="32" text-anchor="middle" font-family="Nunito,sans-serif" font-size="18" font-weight="900" fill="#1f3d57" direction="ltr">${T('B', 'ب')}</text>
       ${hot('A', T('Flower A', 'الزهرة (أ)'), `<rect class="ring" x="${xa - 70}" y="46" width="140" height="170" rx="16"/>`)}
       ${hot('B', T('Flower B', 'الزهرة (ب)'), `<rect class="ring" x="${xb - 70}" y="46" width="140" height="170" rx="16"/>`)}</svg>`;
   }

@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024c">
+<link rel="stylesheet" href="game_kit.css?v=20261024d">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Flower Lab.</noscript>
-<script src="firebase-config.js?v=20261024c"></script>
-<script src="chapters.js?v=20261024c"></script>
-<script src="common.js?v=20261024c"></script>
-<script src="science/ch5_art.js?v=20261024c"></script>
-<script src="game_kit.js?v=20261024c"></script>
+<script src="firebase-config.js?v=20261024d"></script>
+<script src="chapters.js?v=20261024d"></script>
+<script src="common.js?v=20261024d"></script>
+<script src="science/ch5_art.js?v=20261024d"></script>
+<script src="game_kit.js?v=20261024d"></script>
 <script>
 (() => {
 'use strict';
@@ -53,8 +53,8 @@ function microScene() {
 function fruitScene() {
   return garden() + `<g transform="translate(125 178) scale(1.15)">${A.flower({ sex: 'female', wither: true, fruit: sc.fruit })}</g>
     <g transform="translate(295 236) scale(1.15)">${A.flower({ sex: 'female', wither: true, fruit: 0 })}</g>
-    <circle cx="125" cy="28" r="15" fill="#fff8ea" stroke="#cdb98f" stroke-width="2"/><text x="125" y="34" text-anchor="middle" font-family="Nunito,sans-serif" font-size="18" font-weight="900" fill="#1f3d57" direction="ltr">A</text>
-    <circle cx="295" cy="28" r="15" fill="#fff8ea" stroke="#cdb98f" stroke-width="2"/><text x="295" y="34" text-anchor="middle" font-family="Nunito,sans-serif" font-size="18" font-weight="900" fill="#1f3d57" direction="ltr">B</text>`;
+    <circle cx="125" cy="28" r="15" fill="#fff8ea" stroke="#cdb98f" stroke-width="2"/><text x="125" y="34" text-anchor="middle" font-family="Nunito,sans-serif" font-size="18" font-weight="900" fill="#1f3d57" direction="ltr">${T('A', 'أ')}</text>
+    <circle cx="295" cy="28" r="15" fill="#fff8ea" stroke="#cdb98f" stroke-width="2"/><text x="295" y="34" text-anchor="middle" font-family="Nunito,sans-serif" font-size="18" font-weight="900" fill="#1f3d57" direction="ltr">${T('B', 'ب')}</text>`;
 }
 const render = () => ({ plant: plantScene, micro: microScene, fruit: fruitScene })[sc.mode]();
 
@@ -66,14 +66,14 @@ const mring = (cx, cy, rx, ry) => ring(MX0 + cx * MK, MY0 + cy * MK, rx * MK, ry
 /* ---------- Stage 1 · Warm Up: the luffa flowers ---------- */
 async function stage1() {
   Object.assign(sc, { mode: 'plant', dots: true, bee: null, hi: null }); g.paint();
-  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('stamen · pistil · pollen · pollination · microscope', 'السداة · المدقة · حبوب اللقاح · التلقيح · الميكروسكوب')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
+  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('stamen · pistil · pollen · pollination · microscope', 'السداة · الكربلة · حبوب اللقاح · التلقيح · المجهر')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
   g.say(T(`Luffa and pumpkin plants have ${kw('two types of flowers')} on one plant. Let’s find out how they are different!`, `نباتات اللوف والقرع لها ${kw('نوعان من الزهور')} على النبات الواحد. يلّا نعرف إيه الفرق بينهما!`), 'wave');
   await g.next(T('Let’s look ▸', 'يلّا نشوف ◂'));
   g.veil(null);
   g.say(T('Tap the <b>female</b> flower: it has a small swelling at its base that will become a fruit.', P('اضغط على الزهرة <b>المؤنثة</b>: لها انتفاخ صغير عند قاعدتها سيصبح ثمرة.', 'اضغطي على الزهرة <b>المؤنثة</b>: لها انتفاخ صغير عند قاعدتها سيصبح ثمرة.')), 'think');
   await g.spot([{ id: 'female', name: T('The flower on the left', 'الزهرة التي على اليسار'), ring: rrect(FX - 70, 70, 140, 190) }, { id: 'male', name: T('The flower on the right', 'الزهرة التي على اليمين'), ring: rrect(MX - 70, 40, 140, 220) }], 'female', {
     hint: T('Look for the swelling just below the petals.', 'دوّر على الانتفاخ أسفل البتلات مباشرة.'),
-    ok: T(`The ${kw('female flower')} has a pistil in the center and a ${kw('swelling')} at its base that will become a fruit.`, `الزهرة ${kw('المؤنثة')} لها ${kw('مدقة')} في الوسط و${kw('انتفاخ')} عند القاعدة سيصبح ثمرة.`),
+    ok: T(`The ${kw('female flower')} has a pistil in the center and a ${kw('swelling')} at its base that will become a fruit.`, `الزهرة ${kw('المؤنثة')} لها ${kw('كربلة')} في الوسط و${kw('انتفاخ')} عند القاعدة سيصبح ثمرة.`),
     reveal: () => { sc.hi = 'swelling'; g.paint(); } });
   sc.hi = null; g.paint();
   g.say(T('Now the male flower. Tap the part in its center that makes yellow powder.', P('دلوقتي الزهرة المذكرة. اضغط على الجزء الذي في وسطها ويصنع المسحوق الأصفر.', 'دلوقتي الزهرة المذكرة. اضغطي على الجزء الذي في وسطها ويصنع المسحوق الأصفر.')), 'think');
@@ -84,7 +84,7 @@ async function stage1() {
   sc.hi = null; g.paint();
   g.say(T('What do we call the yellow powder?', 'ماذا نُسمّي المسحوق الأصفر؟'), 'think');
   await g.choice({
-    options: [T('Pollen', 'حبوب اللقاح'), T('Pistil', 'المدقة'), T('Sepal', 'السبلة')], correct: T('Pollen', 'حبوب اللقاح'),
+    options: [T('Pollen', 'حبوب اللقاح'), T('Pistil', 'الكربلة'), T('Sepal', 'السبلة')], correct: T('Pollen', 'حبوب اللقاح'),
     hint: T('It is made by the stamen.', 'بتتصنع في السداة.'),
     ok: T(`The yellow powder is called ${kw('pollen')}.`, `المسحوق الأصفر اسمه ${kw('حبوب اللقاح')}.`) });
   g.say(T('What will the swelling at the base of the female flower become in the future?', 'ماذا سيصبح الانتفاخ الذي عند قاعدة الزهرة المؤنثة في المستقبل؟'), 'think');
@@ -96,17 +96,17 @@ async function stage1() {
 
 /* ---------- Stage 2 · Missions ---------- */
 async function mission1() {
-  await g.banner(T('Mission 1', 'المهمة ١'), T('Use the microscope', 'استخدام الميكروسكوب'));
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Use the microscope', 'استخدام المجهر'));
   Object.assign(sc, { mode: 'micro', mag: null, slide: false, light: false, dx: 0 }); g.paint();
-  g.say(T('Pollen is tiny! A <b>microscope</b> makes it look bigger. First, put the microscope in a flat, bright place away from direct sunlight. Then tap the part you adjust to make the view bright.', P('حبوب اللقاح صغيرة جدًّا! <b>الميكروسكوب</b> يجعلها تبدو أكبر. أولًا، ضع الميكروسكوب في مكان مستوٍ ومضيء بعيدًا عن أشعة الشمس المباشرة. بعدين اضغط على الجزء الذي تضبطه ليصبح المجال مضيئًا.', 'حبوب اللقاح صغيرة جدًّا! <b>الميكروسكوب</b> يجعلها تبدو أكبر. أولًا، ضعي الميكروسكوب في مكان مستوٍ ومضيء بعيدًا عن أشعة الشمس المباشرة. بعدين اضغطي على الجزء الذي تضبطينه ليصبح المجال مضيئًا.')), 'think');
-  await g.spot([{ id: 'reflector', name: T('The mirror at the bottom', 'المرآة في الأسفل'), ring: mring(-14, -40, 32, 13) }, { id: 'stage', name: T('The platform', 'المنصة'), ring: mring(0, -57, 64, 10) }, { id: 'eyepiece', name: T('The lens at the top', 'العدسة العلوية'), ring: mring(0, -218, 20, 20) }], 'reflector', {
+  g.say(T('Pollen is tiny! A <b>microscope</b> makes it look bigger. First, put the microscope in a flat, bright place away from direct sunlight. Then tap the part you adjust to make the view bright.', P('حبوب اللقاح صغيرة جدًّا! <b>المجهر</b> يجعلها تبدو أكبر. أولًا، ضع المجهر في مكان مستوٍ ومضيء بعيدًا عن أشعة الشمس المباشرة. بعدين اضغط على الجزء الذي تضبطه ليصبح المجال مضيئًا.', 'حبوب اللقاح صغيرة جدًّا! <b>المجهر</b> يجعلها تبدو أكبر. أولًا، ضعي المجهر في مكان مستوٍ ومضيء بعيدًا عن أشعة الشمس المباشرة. بعدين اضغطي على الجزء الذي تضبطينه ليصبح المجال مضيئًا.')), 'think');
+  await g.spot([{ id: 'reflector', name: T('The mirror at the bottom', 'المرآة في الأسفل'), ring: mring(-14, -40, 32, 13) }, { id: 'stage', name: T('The platform', 'المنضدة'), ring: mring(0, -57, 64, 10) }, { id: 'eyepiece', name: T('The lens at the top', 'العدسة العلوية'), ring: mring(0, -218, 20, 20) }], 'reflector', {
     hint: T('Light comes from below.', 'الضوء بييجي من تحت.'),
     ok: T(`You adjust the angle of the ${kw('reflector')} to make the view bright.`, `تضبط زاوية ${kw('العاكس')} ليصبح المجال مضيئًا.`),
     reveal: () => { sc.light = true; g.paint(); } });
-  g.say(T('Now put the prepared slide with the pollen on a part of the microscope. Tap it.', P('دلوقتي ضع الشريحة المجهزة وعليها حبوب اللقاح على جزء من الميكروسكوب. اضغط عليه.', 'دلوقتي ضعي الشريحة المجهزة وعليها حبوب اللقاح على جزء من الميكروسكوب. اضغطي عليه.')), 'think');
-  await g.spot([{ id: 'stage', name: T('The platform', 'المنصة'), ring: mring(0, -57, 64, 10) }, { id: 'nosepiece', name: T('The disc that holds the lenses', 'القرص الذي يحمل العدسات'), ring: mring(0, -118, 34, 12) }, { id: 'arm', name: T('The curved handle', 'المقبض المنحني'), ring: mring(40, -170, 22, 30) }], 'stage', {
-    hint: T('It is the flat platform.', 'هي المنصة المسطحة.'),
-    ok: T(`The prepared slide goes on the ${kw('stage')}.`, `توضع الشريحة المجهزة على ${kw('المنصة')}.`),
+  g.say(T('Now put the prepared slide with the pollen on a part of the microscope. Tap it.', P('دلوقتي ضع الشريحة المحضَّرة وعليها حبوب اللقاح على جزء من المجهر. اضغط عليه.', 'دلوقتي ضعي الشريحة المحضَّرة وعليها حبوب اللقاح على جزء من المجهر. اضغطي عليه.')), 'think');
+  await g.spot([{ id: 'stage', name: T('The platform', 'المنضدة'), ring: mring(0, -57, 64, 10) }, { id: 'nosepiece', name: T('The disc that holds the lenses', 'القرص الذي يحمل العدسات'), ring: mring(0, -118, 34, 12) }, { id: 'arm', name: T('The curved handle', 'المقبض المنحني'), ring: mring(40, -170, 22, 30) }], 'stage', {
+    hint: T('It is the flat platform.', 'هي المنضدة المسطحة.'),
+    ok: T(`The prepared slide goes on the ${kw('stage')}.`, `توضع الشريحة المحضَّرة على ${kw('المنضدة')}.`),
     reveal: () => { sc.slide = true; g.paint(); } });
   g.say(T('Which objective lens do we set first?', 'أي عدسة شيئية نضبطها أولًا؟'), 'think');
   await g.choice({
@@ -114,24 +114,24 @@ async function mission1() {
     hint: T('At low magnification the view is wider.', 'مع التكبير المنخفض يكون المجال أوسع.'),
     ok: T(`Start with ${kw('low magnification')}: the view is wide and bright, so it is easier to find what you want to observe.`, `ابدأ بـ${kw('تكبير منخفض')}: المجال واسع ومضيء، فيسهل العثور على ما تريد ملاحظته.`),
     reveal: () => { sc.mag = 'low'; g.paint(); } });
-  g.say(T('Now turn the adjustment knob to bring the slide and the objective lens close together. Why do we look from the <b>side</b> while doing this?', 'دلوقتي لفّ عجلة الضبط لتقريب الشريحة من العدسة الشيئية. ليه ننظر من <b>الجانب</b> أثناء ذلك؟'), 'think');
+  g.say(T('Now turn the adjustment knob to bring the slide and the objective lens close together. Why do we look from the <b>side</b> while doing this?', 'دلوقتي لفّ قرص الضبط لتقريب الشريحة من العدسة الشيئية. ليه ننظر من <b>الجانب</b> أثناء ذلك؟'), 'think');
   await g.choice({
     options: [T('So the lens does not hit the slide and break it', 'حتى لا تصطدم العدسة بالشريحة فتنكسر'), T('To make the view brighter', 'لتصبح الصورة أكثر إضاءة'), T('To keep air bubbles out', 'لمنع دخول فقاعات الهواء')],
     correct: T('So the lens does not hit the slide and break it', 'حتى لا تصطدم العدسة بالشريحة فتنكسر'),
     hint: T('Think about two things that could touch each other.', 'فكّر في شيئين ممكن يلمسوا بعض.'),
-    ok: T('To prevent the objective lens from hitting the prepared slide and breaking it.', 'لمنع العدسة الشيئية من الاصطدام بالشريحة المجهزة وكسرها.') });
-  g.say(T('Then look through the eyepiece and adjust the focus while moving the lens <b>away</b> from the slide. The eyepiece lens is 10× and the objective lens is 40×. What is the magnification?', 'بعدين انظر من العدسة العينية واضبط الوضوح أثناء إبعاد العدسة <b>عن</b> الشريحة. العدسة العينية 10× والعدسة الشيئية 40×. كم تكبير الميكروسكوب؟'), 'think');
+    ok: T('To prevent the objective lens from hitting the prepared slide and breaking it.', 'لمنع العدسة الشيئية من الاصطدام بالشريحة المحضَّرة وكسرها.') });
+  g.say(T('Then look through the eyepiece and adjust the focus while moving the lens <b>away</b> from the slide. The eyepiece lens is 10× and the objective lens is 40×. What is the magnification?', 'بعدين انظر من العدسة العينية واضبط الوضوح أثناء إبعاد العدسة <b>عن</b> الشريحة. العدسة العينية 10× والعدسة الشيئية 40×. كم تكبير المجهر؟'), 'think');
   await g.choice({
     options: ['400×', '50×', '30×'], correct: '400×',
     hint: T('Magnification = eyepiece × objective.', 'التكبير = العدسة العينية × العدسة الشيئية.'),
-    ok: T(`${kw('10 × 40 = 400')}: the microscope magnifies 400 times.`, `${kw('١٠ × ٤٠ = ٤٠٠')}: يكبّر الميكروسكوب ٤٠٠ مرة.`) });
+    ok: T(`${kw('10 × 40 = 400')}: the microscope magnifies 400 times.`, `${kw('١٠ × ٤٠ = ٤٠٠')}: يكبّر المجهر ٤٠٠ مرة.`) });
   sc.mag = 'high'; g.paint();
   g.say(T('Now we changed to high magnification. How does the view look?', 'دلوقتي غيّرنا إلى تكبير عالٍ. كيف يبدو المجال؟'), 'think');
   await g.choice({
     options: [T('Narrow and dark', 'ضيق ومظلم'), T('Wide and bright', 'واسع ومضيء')], correct: T('Narrow and dark', 'ضيق ومظلم'),
     hint: T('Compare it with the low magnification picture.', 'قارنه بصورة التكبير المنخفض.'),
     ok: T(`High magnification: the view is ${kw('narrow')} and ${kw('dark')}. Low magnification: wide and bright.`, `التكبير العالي: المجال ${kw('ضيق')} و${kw('مظلم')}. التكبير المنخفض: واسع ومضيء.`) });
-  g.say(T('In a microscope, things look upside down and reversed left to right. You want the pollen to move to the right in the view. Which way do you move the slide?', 'في الميكروسكوب تظهر الأشياء مقلوبة ومعكوسة يمينًا ويسارًا. عايز حبوب اللقاح تتحرك لليمين في المجال. ناحية أنهي اتجاه تحرّك الشريحة؟'), 'think');
+  g.say(T('In a microscope, things look upside down and reversed left to right. You want the pollen to move to the right in the view. Which way do you move the slide?', 'في المجهر تظهر الأشياء مقلوبة ومعكوسة يمينًا ويسارًا. عايز حبوب اللقاح تتحرك لليمين في المجال. ناحية أنهي اتجاه تحرّك الشريحة؟'), 'think');
   await g.choice({
     options: [T('To the left: the opposite direction', 'لليسار: الاتجاه المعاكس'), T('To the right: the same direction', 'لليمين: نفس الاتجاه')], correct: T('To the left: the opposite direction', 'لليسار: الاتجاه المعاكس'),
     hint: T('The picture is reversed.', 'الصورة معكوسة.'),
@@ -147,11 +147,11 @@ async function mission2() {
     hint: T('Look at who is flying!', 'بصّ مين اللي بيطير!'),
     ok: T(`Bugs like ${kw('bees')} carry pollen to pollinate luffa flowers.`, `تحمل حشرات مثل ${kw('النحل')} حبوب اللقاح لتلقيح أزهار اللوف.`),
     reveal: async () => { await g.tween(1400, k => { sc.bee = { x: lerp(MX + 14, FX + 8, k), y: 112 - Math.sin(k * Math.PI) * 26 }; }); } });
-  g.say(T('The pollen from the male flower attached to the tip of the pistil in the female flower. What is this called?', 'حبوب اللقاح من الزهرة المذكرة التصقت بقمة المدقة في الزهرة المؤنثة. ماذا يُسمّى هذا؟'), 'think');
+  g.say(T('The pollen from the male flower attached to the tip of the pistil in the female flower. What is this called?', 'حبوب اللقاح من الزهرة المذكرة التصقت بقمة الكربلة في الزهرة المؤنثة. ماذا يُسمّى هذا؟'), 'think');
   await g.choice({
     options: [T('Pollination', 'التلقيح'), T('Germination', 'الإنبات'), T('Magnification', 'التكبير')], correct: T('Pollination', 'التلقيح'),
     hint: T('It starts with the same letters as pollen.', 'بتبدأ بنفس حروف حبوب اللقاح.'),
-    ok: T(`When pollen from a male flower attaches to the tip of a pistil in a female flower, it is called ${kw('pollination')}.`, `عندما تلتصق حبوب اللقاح من زهرة مذكرة بقمة المدقة في زهرة مؤنثة، يُسمّى ذلك ${kw('التلقيح')}.`) });
+    ok: T(`When pollen from a male flower attaches to the tip of a pistil in a female flower, it is called ${kw('pollination')}.`, `عندما تلتصق حبوب اللقاح من زهرة مذكرة بقمة الكربلة في زهرة مؤنثة، يُسمّى ذلك ${kw('التلقيح')}.`) });
   Object.assign(sc, { mode: 'fruit', fruit: 0 }); g.paint();
   g.say(T('Two female flowers had paper bags on them. Flower A got pollen from a male flower on its pistil. Flower B did not. After a few days, tap the flower that grew a <b>fruit</b>.', P('زهرتان مؤنثتان كان عليهما أكياس ورقية. الزهرة (أ) وضعنا على مدقتها حبوب لقاح من زهرة مذكرة. الزهرة (ب) لا. بعد أيام اضغط على الزهرة التي نمت لها <b>ثمرة</b>.', 'زهرتان مؤنثتان كان عليهما أكياس ورقية. الزهرة (أ) وضعنا على مدقتها حبوب لقاح من زهرة مذكرة. الزهرة (ب) لا. بعد أيام اضغطي على الزهرة التي نمت لها <b>ثمرة</b>.')), 'think');
   g.tween(1600, k => { sc.fruit = k; });
@@ -173,7 +173,7 @@ async function mission3() {
   await g.choice({
     options: [o1, T('Seeds are made inside the fruit → pollination → the swelling at the base grows', 'تتكوّن البذور داخل الثمرة ← التلقيح ← ينمو الانتفاخ الذي عند القاعدة'), T('The swelling at the base grows → seeds are made inside the fruit → pollination', 'ينمو الانتفاخ الذي عند القاعدة ← تتكوّن البذور داخل الثمرة ← التلقيح')], correct: o1, mix: true,
     hint: T('Pollination must come first.', 'لازم التلقيح يجي الأول.'),
-    ok: T(`After pollination, the base of the pistil becomes a ${kw('fruit')}, and ${kw('seeds')} are made inside. Then the seeds sprout and grow, passing on the plant’s life.`, `بعد التلقيح تصبح قاعدة المدقة ${kw('ثمرة')}، وتتكوّن ${kw('بذور')} بداخلها. بعد ذلك تنبت البذور وتنمو، فتنتقل حياة النبات إلى جيل جديد.`) });
+    ok: T(`After pollination, the base of the pistil becomes a ${kw('fruit')}, and ${kw('seeds')} are made inside. Then the seeds sprout and grow, passing on the plant’s life.`, `بعد التلقيح تصبح قاعدة الكربلة ${kw('ثمرة')}، وتتكوّن ${kw('بذور')} بداخلها. بعد ذلك تنبت البذور وتنمو، فتنتقل حياة النبات إلى جيل جديد.`) });
 }
 async function stage2() { await mission1(); await mission2(); await mission3(); }
 
@@ -183,7 +183,7 @@ const SPEED = [
   { t: T('It makes yellow pollen', 'يصنع حبوب اللقاح الصفراء'), ans: 'male' },
   { t: T('It has no swelling at its base', 'ليس له انتفاخ عند القاعدة'), ans: 'male' },
   { t: T('A bee takes pollen from it', 'تأخذ النحلة حبوب اللقاح منه'), ans: 'male' },
-  { t: T('It has a pistil in the center', 'لها مدقة في الوسط'), ans: 'female' },
+  { t: T('It has a pistil in the center', 'لها كربلة في الوسط'), ans: 'female' },
   { t: T('It has a swelling at its base', 'لها انتفاخ عند القاعدة'), ans: 'female' },
   { t: T('The swelling will become a fruit', 'الانتفاخ سيصبح ثمرة'), ans: 'female' },
   { t: T('Pollen attaches to the tip of its pistil', 'تلتصق حبوب اللقاح بقمة مدقتها'), ans: 'female' }
@@ -200,9 +200,9 @@ async function stage3() {
 }
 
 g.run({
-  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my Flower Lab. First we meet the <b>male</b> and <b>female</b> flowers of a luffa plant. Then we use a <b>microscope</b> to look at pollen, and find out how a flower becomes a <b>fruit</b>.`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في معمل الزهور. أولًا نتعرّف على الزهرة <b>المذكرة</b> والزهرة <b>المؤنثة</b> في نبات اللوف. بعدين نستخدم <b>الميكروسكوب</b> لنشوف حبوب اللقاح، ونعرف إزاي الزهرة بتتحوّل لـ<b>ثمرة</b>.`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في معمل الزهور. أولًا نتعرّف على الزهرة <b>المذكرة</b> والزهرة <b>المؤنثة</b> في نبات اللوف. بعدين نستخدم <b>الميكروسكوب</b> لنشوف حبوب اللقاح، ونعرف إزاي الزهرة بتتحوّل لـ<b>ثمرة</b>.`)),
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my Flower Lab. First we meet the <b>male</b> and <b>female</b> flowers of a luffa plant. Then we use a <b>microscope</b> to look at pollen, and find out how a flower becomes a <b>fruit</b>.`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في معمل الزهور. أولًا نتعرّف على الزهرة <b>المذكرة</b> والزهرة <b>المؤنثة</b> في نبات اللوف. بعدين نستخدم <b>المجهر</b> لنشوف حبوب اللقاح، ونعرف إزاي الزهرة بتتحوّل لـ<b>ثمرة</b>.`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في معمل الزهور. أولًا نتعرّف على الزهرة <b>المذكرة</b> والزهرة <b>المؤنثة</b> في نبات اللوف. بعدين نستخدم <b>المجهر</b> لنشوف حبوب اللقاح، ونعرف إزاي الزهرة بتتحوّل لـ<b>ثمرة</b>.`)),
   stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
-  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('The male flower has a <b>stamen</b> that makes yellow <b>pollen</b>. The female flower has a <b>pistil</b> and a swelling. When pollen attaches to the pistil, that is <b>pollination</b>, and the swelling becomes a <b>fruit</b>.', 'الزهرة المذكرة لها <b>سداة</b> تصنع <b>حبوب اللقاح</b> الصفراء. الزهرة المؤنثة لها <b>مدقة</b> وانتفاخ. وعندما تلتصق حبوب اللقاح بالمدقة يحدث <b>التلقيح</b>، ويصبح الانتفاخ <b>ثمرة</b>.') }
+  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('The male flower has a <b>stamen</b> that makes yellow <b>pollen</b>. The female flower has a <b>pistil</b> and a swelling. When pollen attaches to the pistil, that is <b>pollination</b>, and the swelling becomes a <b>fruit</b>.', 'الزهرة المذكرة لها <b>سداة</b> تصنع <b>حبوب اللقاح</b> الصفراء. الزهرة المؤنثة لها <b>كربلة</b> وانتفاخ. وعندما تلتصق حبوب اللقاح بالكربلة يحدث <b>التلقيح</b>، ويصبح الانتفاخ <b>ثمرة</b>.') }
 }).catch(err => console.error(err));
 window.__flowerlab = { sc, render };
 })();

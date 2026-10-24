@@ -62,17 +62,18 @@ window.CHAPTERS = [
     game: { href: 'growlab.html', name: "Growth Lab", nameAr: "معمل النمو", icon: '🌱', hint: 'Test sunlight and fertilizer on two pots of seedlings!', hintAr: 'جرّب ضوء الشمس والسماد على إناءين من الشتلات!' },
     map: { img: 'science/assets/map_ch4.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'science/assets/map_ch4.svg', quizBg: 'science/assets/bg_ch4.svg',
-    questions: 'science/questions_ch4.js' },   // first part only: used by the Exam Hall until the chapter opens (it still needs its game and map)
+    lessonsAr: ['ضوء الشمس والنمو', 'السماد والنمو'],
+    questions: 'science/questions_ch4.js', questionsAr: 'science/questions_ch4_ar.js' },
 
-  { id: 'ch5', n: 5, title: 'From Flower to Fruit', titleAr: 'من الزهرة إلى الثمرة', icon: '🌼', tint: '#fdf3c9', ready: true,
-    questions: 'science/questions_ch5.js', art: 'science/ch5_art.js',
+  { id: 'ch5', n: 5, title: 'From Flower to Fruit', titleAr: 'من الزهرة للثمرة', icon: '🌼', tint: '#fdf3c9', ready: true,
+    questions: 'science/questions_ch5.js', questionsAr: 'science/questions_ch5_ar.js', lessonsAr: ['تركيب زهرة نبات اللوف', 'كيف نستخدم المجهر؟', 'التلقيح وكيف تنمو الثمار'], art: 'science/ch5_art.js',
     game: { href: 'flowerlab.html', name: "Flower Lab", nameAr: "معمل الزهور", icon: '🌼', hint: 'Meet the luffa flowers, use a microscope and follow pollen to the fruit!', hintAr: 'تعرّف على أزهار اللوف، واستخدم الميكروسكوب، وتابع حبوب اللقاح حتى الثمرة!' },
     map: { img: 'science/assets/map_ch5.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'science/assets/map_ch5.svg', quizBg: 'science/assets/bg_ch5.svg',
     lessons: ['Structure of a Luffa Flower', 'How to Use a Microscope', 'Pollination and How Fruits Grow'] },
 
-  { id: 'ch6', n: 6, title: 'Human Growth and Reproduction', titleAr: 'نمو الإنسان وتكاثره', icon: '🧒', tint: '#fde3dc', ready: true,
-    questions: 'science/questions_ch6.js', art: 'science/ch6_art.js',
+  { id: 'ch6', n: 6, title: 'Human Growth and Reproduction', titleAr: 'نمو الإنسان والتكاثر', icon: '🧒', tint: '#fde3dc', ready: true,
+    questions: 'science/questions_ch6.js', questionsAr: 'science/questions_ch6_ar.js', lessonsAr: ['مراحل نمو الإنسان', 'أوجه التشابه بين الآباء والأبناء', 'شروط النمو الصحي'], art: 'science/ch6_art.js',
     game: { href: 'growthpath.html', name: "Growth Path", nameAr: "رحلة النمو", icon: '🧒', hint: 'Follow how humans grow, and learn what keeps us strong and healthy!', hintAr: 'تابع كيف ينمو الإنسان، وتعلّم ما يجعلنا أقوياء وأصحاء!' },
     map: { img: 'science/assets/map_ch6.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'science/assets/map_ch6.svg', quizBg: 'science/assets/bg_ch6.svg',

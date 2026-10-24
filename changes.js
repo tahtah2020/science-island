@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-24', title: 'الصف الخامس علوم بالعربي: الفصول ٤ و٥ و٦',
+    items: [
+      { text: 'أسئلة عربية من الكتاب للفصل ٤ (شروط النمو)، ٥ (من الزهرة للثمرة)، ٦ (نمو الإنسان والتكاثر)' },
+      { text: 'توحيد مصطلحات الألعاب مع الكتاب (المجهر، الكربلة) وحروف (أ) و(ب)' }
+    ] },
   { date: '2026-10-24', title: 'Chapter 4 game: picture-book screens',
     items: [
       { text: 'Growth Lab now opens with a cover, Key Concepts with pictures, and experiment step cards' },

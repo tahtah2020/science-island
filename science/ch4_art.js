@@ -12,6 +12,7 @@
 (function () {
   'use strict';
   const T = (en, ar) => (window.SI ? window.SI.T(en, ar) : en);
+  const lab = l => T(l, l === 'A' ? 'أ' : l === 'B' ? 'ب' : l);   // the Arabic book names the pots (أ) and (ب)
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const f1 = n => (Math.round(n * 10) / 10).toString();
   const hex2rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
@@ -40,7 +41,7 @@
     <path d="M-34 -50L-28 -2Q0 6 28 -2L34 -50Z" fill="#d98a5f" stroke="#a9623b" stroke-width="2.6" stroke-linejoin="round"/>
     <rect x="-39" y="-60" width="78" height="14" rx="6" fill="#e59b72" stroke="#a9623b" stroke-width="2.6"/>
     <ellipse cx="0" cy="-58" rx="33" ry="5" fill="#6b4a2a"/>
-    ${label ? `<circle cx="0" cy="-24" r="12" fill="#fff8ea" stroke="#a9623b" stroke-width="2"/><text x="0" y="-19" text-anchor="middle" font-family="Nunito,sans-serif" font-size="15" font-weight="900" fill="#1f3d57" direction="ltr">${label}</text>` : ''}`;
+    ${label ? `<circle cx="0" cy="-24" r="12" fill="#fff8ea" stroke="#a9623b" stroke-width="2"/><text x="0" y="-19" text-anchor="middle" font-family="Nunito,sans-serif" font-size="15" font-weight="900" fill="#1f3d57" direction="ltr">${lab(label)}</text>` : ''}`;
   const pellets = () => [[-18, -57, 0], [-6, -55, 1], [10, -58, 0], [20, -55, 1], [2, -61, 0], [-24, -60, 1]].map(([x, y, a]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${a ? '#fff' : '#f3ecd8'}" stroke="#cfc4a6" stroke-width=".8"/>`).join('');
   function pot(o = {}) {
     return `${potBody(o.label)}<g transform="translate(0 -58)">${o.noPlant ? '' : plant(o)}</g>${o.fert ? pellets() : ''}`;
@@ -71,7 +72,7 @@
   /* a pot in its place: the sun above it, or a dark box over it */
   function station(o = {}) {
     const light = o.sun ? `<g transform="translate(40 -150)">${sun(18)}</g><path d="M-30 -120L-22 -92M0 -126V-96M30 -120L22 -92" stroke="#ffd24a" stroke-width="3" stroke-linecap="round" opacity=".7"/>` : '';
-    if (o.box) return `<g>${box()}</g>${o.label ? `<circle cx="0" cy="-48" r="15" fill="#fff8ea" stroke="#8a6334" stroke-width="2.4"/><text x="0" y="-42" text-anchor="middle" font-family="Nunito,sans-serif" font-size="19" font-weight="900" fill="#1f3d57" direction="ltr">${o.label}</text>` : ''}`;
+    if (o.box) return `<g>${box()}</g>${o.label ? `<circle cx="0" cy="-48" r="15" fill="#fff8ea" stroke="#8a6334" stroke-width="2.4"/><text x="0" y="-42" text-anchor="middle" font-family="Nunito,sans-serif" font-size="19" font-weight="900" fill="#1f3d57" direction="ltr">${lab(o.label)}</text>` : ''}`;
     return `${light}${pot(o)}`;
   }
 
@@ -87,21 +88,25 @@
   /* ---------- tap pictures for the question pages ---------- */
   const hot = (id, label, inner) => `<g class="hot" data-id="${id}" role="button" tabindex="0" aria-label="${label}">${inner}</g>`;
   const bench = (w, h, y) => `<rect width="${w}" height="${h}" rx="14" fill="#eaf5fb"/><path d="M0 ${y}h${w}v${h - y - 14}a14 14 0 0 1-14 14h-${w - 28}a14 14 0 0 1-14-14z" fill="#e4c394"/><rect y="${y}" width="${w}" height="7" fill="#d2ab78"/>`;
-  const pots = (a, b, label, tall) => {
-    const ar = T(false, true), xa = ar ? 248 : 92, xb = ar ? 92 : 248;   // Arabic reads from the right: pot (أ) on the right, like the school book
+  const pots = (a, b, label, flip) => {
+    const ar = T(false, true); let xa = ar ? 248 : 92, xb = ar ? 92 : 248;   // Arabic reads from the right: pot (أ) on the right, like the school book
+    if (flip && ar) [xa, xb] = [xb, xa];   // the Arabic book gives the fertilizer to pot (أ): tap id B (fertilizer) stays the same, only its letter and place change
+    const na = flip && ar ? 'الإناء (ب)' : 'الإناء (أ)', nb = flip && ar ? 'الإناء (أ)' : 'الإناء (ب)';
     return `<svg class="diagram" viewBox="0 0 340 250" role="img" aria-label="${label}">${bench(340, 250, 212)}
       <g transform="translate(${xa} 220)">${a}</g><g transform="translate(${xb} 220)">${b}</g>
-      ${hot('A', T('Pot A', 'الإناء (أ)'), `<rect class="ring" x="${xa - 78}" y="10" width="156" height="226" rx="16"/>`)}
-      ${hot('B', T('Pot B', 'الإناء (ب)'), `<rect class="ring" x="${xb - 78}" y="10" width="156" height="226" rx="16"/>`)}</svg>`;
+      ${hot('A', T('Pot A', na), `<rect class="ring" x="${xa - 78}" y="10" width="156" height="226" rx="16"/>`)}
+      ${hot('B', T('Pot B', nb), `<rect class="ring" x="${xb - 78}" y="10" width="156" height="226" rx="16"/>`)}</svg>`;
   };
   const potsSun = () => pots(station({ label: 'A', sun: true, h: .3, leaf: 1, th: 1, big: .7 }), station({ label: 'B', box: true }),
     T('Pot A is in a place that gets a lot of sunlight. Pot B is covered with a dark box that blocks the sunlight.', 'الإناء (أ) في مكان يصله الكثير من ضوء الشمس. الإناء (ب) مغطى بصندوق مظلم يمنع ضوء الشمس.'));
   const plantsSun = () => pots(pot(Object.assign({ label: 'A' }, LOOK.sunA)), pot(Object.assign({ label: 'B' }, LOOK.sunB)),
     T('Two seedlings after about a week. Seedling A has dark green leaves and a thick stem. Seedling B has yellowish leaves and a thin, long stem.', 'نبتتان بعد حوالي أسبوع. للنبتة (أ) أوراق خضراء داكنة وساق سميكة. للنبتة (ب) أوراق مائلة للاصفرار وساق رفيعة وطويلة.'));
-  const potsFert = () => pots(`${pot({ label: 'A', h: .25, leaf: 1, th: .8, big: .5 })}<g transform="translate(66 0)"></g>`, `${pot({ label: 'B', h: .25, leaf: 1, th: .8, big: .5, fert: true })}`,
-    T('Both pots get sunlight. Pot A gets only water. Pot B gets water mixed with a fixed amount of fertilizer.', 'الإناءان يصلهما ضوء الشمس. الإناء (أ) يُسقى بالماء فقط. الإناء (ب) يُسقى بماء مخلوط بكمية محددة من السماد.'));
-  const plantsFert = () => pots(pot(Object.assign({ label: 'A' }, LOOK.fertA)), pot(Object.assign({ label: 'B', fert: true }, LOOK.fertB)),
-    T('Two seedlings in the same place. Seedling A is smaller. Seedling B is much taller and bigger.', 'نبتتان في نفس المكان. النبتة (أ) أصغر. النبتة (ب) أطول وأكبر بكثير.'));
+  /* English book: pot A water only, pot B fertilizer. Arabic book (page 47): pot (أ) gets the fertilizer, pot (ب) only water.
+     So for an Arabic player the fertilized pot (tap id B) is drawn on the right and lettered (أ). */
+  const potsFert = () => pots(pot({ label: T('A', 'B'), h: .25, leaf: 1, th: .8, big: .5 }), pot({ label: T('B', 'A'), h: .25, leaf: 1, th: .8, big: .5, fert: true }),
+    T('Both pots get sunlight. Pot A gets only water. Pot B gets water mixed with a fixed amount of fertilizer.', 'الإناءان يصلهما ضوء الشمس. الإناء (أ) يُسقى بماء مخلوط بكمية ثابتة من السماد. الإناء (ب) يُسقى بالماء فقط.'), true);
+  const plantsFert = () => pots(pot(Object.assign({ label: T('A', 'B') }, LOOK.fertA)), pot(Object.assign({ label: T('B', 'A'), fert: true }, LOOK.fertB)),
+    T('Two seedlings in the same place. Seedling A is smaller. Seedling B is much taller and bigger.', 'نبتتان في نفس المكان. النبتة (أ) أطول وأكبر بكثير. النبتة (ب) أصغر.'), true);
 
   window.CH4ART = { plant, pot, station, sun, box, bag, ruler, look, mix, leaf };
   window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { potsSun, plantsSun, potsFert, plantsFert });

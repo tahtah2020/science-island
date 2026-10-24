@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024c">
+<link rel="stylesheet" href="game_kit.css?v=20261024d">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Growth Path.</noscript>
-<script src="firebase-config.js?v=20261024c"></script>
-<script src="chapters.js?v=20261024c"></script>
-<script src="common.js?v=20261024c"></script>
-<script src="science/ch6_art.js?v=20261024c"></script>
-<script src="game_kit.js?v=20261024c"></script>
+<script src="firebase-config.js?v=20261024d"></script>
+<script src="chapters.js?v=20261024d"></script>
+<script src="common.js?v=20261024d"></script>
+<script src="science/ch6_art.js?v=20261024d"></script>
+<script src="game_kit.js?v=20261024d"></script>
 <script>
 (() => {
 'use strict';
@@ -110,11 +110,11 @@ async function mission1() {
     reveal: () => { sc.hi = 1; g.paint(); } });
   sc.hi = null; g.paint();
   g.say(T('Which is the correct order for the stages of human growth?', 'ما الترتيب الصحيح لمراحل نمو الإنسان؟'), 'think');
-  const ordT = T('Infancy → childhood → youth → adulthood → old age', 'الرضاعة ← الطفولة ← الشباب ← سن الرشد ← الشيخوخة');
+  const ordT = T('Infancy → childhood → youth → adulthood → old age', 'الرضاعة ← الطفولة ← الشباب ← الرشد ← الشيخوخة');
   await g.choice({
-    options: [ordT, T('Childhood → youth → infancy → adulthood → old age', 'الطفولة ← الشباب ← الرضاعة ← سن الرشد ← الشيخوخة'), T('Infancy → youth → childhood → adulthood → old age', 'الرضاعة ← الشباب ← الطفولة ← سن الرشد ← الشيخوخة')], correct: ordT,
+    options: [ordT, T('Childhood → youth → infancy → adulthood → old age', 'الطفولة ← الشباب ← الرضاعة ← الرشد ← الشيخوخة'), T('Infancy → youth → childhood → adulthood → old age', 'الرضاعة ← الشباب ← الطفولة ← الرشد ← الشيخوخة')], correct: ordT,
     hint: T('Look at the picture from the smallest to the oldest.', 'بصّ على الصورة من الأصغر للأكبر.'),
-    ok: T(`The order is ${kw('infancy, childhood, youth, adulthood, old age')}.`, `الترتيب هو ${kw('الرضاعة، الطفولة، الشباب، سن الرشد، الشيخوخة')}.`) });
+    ok: T(`The order is ${kw('infancy, childhood, youth, adulthood, old age')}.`, `الترتيب هو ${kw('الرضاعة، الطفولة، الشباب، الرشد، الشيخوخة')}.`) });
 }
 async function mission2() {
   await g.banner(T('Mission 2', 'المهمة ٢'), T('Parents and children', 'الآباء والأبناء'));
@@ -189,7 +189,7 @@ async function stage3() {
 g.run({
   intro: T(`Hi, <b>${g.name()}</b>! Welcome to the Growth Path. We will follow how humans <b>grow</b> from infancy to old age, see why children <b>look like their parents</b>, and learn the <b>3 conditions</b> for growing strong and healthy.`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في رحلة النمو. هنتابع إزاي الإنسان <b>ينمو</b> من الرضاعة للشيخوخة، ونعرف ليه الأبناء <b>بيشبهوا آباءهم</b>، ونتعلّم <b>٣ شروط</b> لننمو أقوياء وأصحاء.`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في رحلة النمو. هنتابع إزاي الإنسان <b>ينمو</b> من الرضاعة للشيخوخة، ونعرف ليه الأبناء <b>بيشبهوا آباءهم</b>، ونتعلّم <b>٣ شروط</b> لننمو أقوياء وأصحاء.`)),
   stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة') , fn: stage3 }],
-  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Humans grow through <b>infancy, childhood, youth, adulthood and old age</b>. Children <b>inherit</b> features from their parents. To grow strong and healthy we need a <b>healthy diet</b>, <b>enough sleep</b> and <b>proper exercise</b>.', 'ينمو الإنسان عبر <b>الرضاعة والطفولة والشباب وسن الرشد والشيخوخة</b>. ويرث الأبناء صفات من والديهم. ولننمو أقوياء وأصحاء نحتاج <b>غذاءً صحيًّا</b> و<b>نومًا كافيًا</b> و<b>رياضة مناسبة</b>.') }
+  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Humans grow through <b>infancy, childhood, youth, adulthood and old age</b>. Children <b>inherit</b> features from their parents. To grow strong and healthy we need a <b>healthy diet</b>, <b>enough sleep</b> and <b>proper exercise</b>.', 'ينمو الإنسان عبر <b>الرضاعة والطفولة والشباب والرشد والشيخوخة</b>. ويرث الأبناء صفات من والديهم. ولننمو أقوياء وأصحاء نحتاج <b>غذاءً صحيًّا</b> و<b>نومًا كافيًا</b> و<b>رياضة مناسبة</b>.') }
 }).catch(err => console.error(err));
 window.__growthpath = { sc, render };
 })();
