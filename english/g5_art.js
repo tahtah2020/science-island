@@ -104,6 +104,7 @@
     weatherSix: ['thunderstorm', 'sandstorm', 'flood', 'drought', 'wildfire', 'heatwave']
   };
   const R = 46;
+  const PHOTOS = { crocodile: 'croc', weeds: 'weeds', insect: 'insects', river: 'river' };
   const POS = {};
   Object.keys(SETS).forEach(k => SETS[k].forEach((id, i) => { POS[id] = SLOT[i]; }));
 
@@ -114,7 +115,10 @@
       let s = plain ? '' : `<rect width="340" height="250" rx="14" fill="#fbf6e6"/>`;
       ids.forEach(id => {
         const [x, y] = POS[id];
-        s += at(x, y, 1, `<circle r="${R}" fill="${TINT[id]}" stroke="#fff" stroke-width="3"/><circle r="${R}" fill="none" stroke="#d8c9a6" stroke-width="1.4"/><g transform="scale(.9)">${D[id]()}</g>`);
+        const ph = key === 'nileLife' && PHOTOS[id];   // the Nile set uses real pictures where we have them (fish and bird stay drawn)
+        s += at(x, y, 1, ph
+          ? `<clipPath id="e5ph-${id}"><circle r="${R}"/></clipPath><circle r="${R}" fill="${TINT[id]}"/><image href="english/assets/nile_${ph}.jpg" x="${-R}" y="${-R}" width="${R * 2}" height="${R * 2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#e5ph-${id})"/><circle r="${R}" fill="none" stroke="#fff" stroke-width="3"/><circle r="${R}" fill="none" stroke="#d8c9a6" stroke-width="1.4"/>`
+          : `<circle r="${R}" fill="${TINT[id]}" stroke="#fff" stroke-width="3"/><circle r="${R}" fill="none" stroke="#d8c9a6" stroke-width="1.4"/><g transform="scale(.9)">${D[id]()}</g>`);
       });
       if (!plain) ids.forEach(id => { const [x, y] = POS[id]; s += hot(id, NAMES[id], ringEl(x, y, R, R)); });
       return wrap(340, 250, label, s, plain);
