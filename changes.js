@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-24', title: 'Grade 5 Science: Chapters 4, 5 and 6',
+    items: [
+      { text: 'Chapter 4 Conditions for Growth: Growth Lab game, 13 ideas (English)' },
+      { text: 'Chapter 5 From Flower to Fruit: Flower Lab game with the microscope, 18 ideas (English)' },
+      { text: 'Chapter 6 Human Growth and Reproduction: Growth Path game, 15 ideas (English)' }
+    ] },
   { date: '2026-10-22', title: 'رياضيات الصف السادس (عربي): الوحدتان الأولى والثانية',
     items: [
       { text: 'أسئلة الوحدة الأولى «قابلية القسمة والعوامل والمضاعفات» من الكتاب العربي (32 فكرة، 202 صيغة)', links: [{ label: 'معاينة الأسئلة', href: 'quiz.html#preview=A1.1&lang=ar', ch: 'mg6u1' }] },

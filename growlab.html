@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Growth Lab · Conditions for Growth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261024a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Growth Lab.</noscript>
+<script src="firebase-config.js?v=20261024a"></script>
+<script src="chapters.js?v=20261024a"></script>
+<script src="common.js?v=20261024a"></script>
+<script src="science/ch4_art.js?v=20261024a"></script>
+<script src="game_kit.js?v=20261024a"></script>
+<script>
+(() => {
+'use strict';
+/* Growth Lab · the game of Chapter 4 "Conditions for Growth" (Grade 5). Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up): the sunlight experiment: pot A in the sun, pot B under a dark box, keep the water and temperature the same (book pages 44-45)
+   Stage 2 (Missions): 1) what sunlight does; 2) the fertilizer experiment (pages 46-47); 3) what plants need to grow (Exercise, page 49)
+   Stage 3 (Speed Round): sunlight or fertilizer?
+   Every T('English', 'عربي') has both languages. The Arabic wording is a first draft written from the English book: it needs the owner’s review against the Arabic book. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const A = window.CH4ART, lerp = (a, b, t) => a + (b - a) * t;
+const VW = 420, VH = 280;
+const sc = { mode: 'sun', boxY: -150, grow: 0, fert: false, bag: false, hi: null, sunOn: true, glow: 0 };
+const START = { h: .25, leaf: 1, th: .8, big: .5 };
+const mixLook = (to, k) => ({ h: lerp(START.h, to.h, k), leaf: lerp(START.leaf, to.leaf, k), th: lerp(START.th, to.th, k), big: lerp(START.big, to.big, k) });
+const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+const XA = 125, XB = 295, GY = 238, K = 1.1;
+
+function render() {
+  const sunny = sc.mode === 'sun', fertM = sc.mode === 'fert';
+  let a, b;
+  if (sunny) { a = mixLook(A.look('sunA'), sc.grow); b = mixLook(A.look('sunB'), sc.grow); }
+  else { a = mixLook(A.look('fertA'), sc.grow); b = mixLook(A.look('fertB'), sc.grow); }
+  const back = `<rect width="${VW}" height="${VH}" fill="#e6f3f8"/><rect y="${GY}" width="${VW}" height="${VH - GY}" fill="#e4c394"/><rect y="${GY}" width="${VW}" height="7" fill="#d2ab78"/>`;
+  const sun = (sunny || fertM) && sc.sunOn ? `<g transform="translate(${sunny ? XA + 40 : 210} 46)">${A.sun(24)}</g>` : '';
+  const beams = sunny && sc.sunOn ? `<path d="M${XA - 40} 84L${XA - 52} 120M${XA} 90V124M${XA + 40} 84L${XA + 52} 120" stroke="#ffd24a" stroke-width="4" stroke-linecap="round" opacity="${.35 + .4 * sc.glow}"/>` : '';
+  const pa = `<g transform="translate(${XA} ${GY}) scale(${K})">${A.pot(Object.assign({ label: 'A' }, a))}</g>`;
+  const pb = `<g transform="translate(${XB} ${GY}) scale(${K})">${A.pot(Object.assign({ label: 'B', fert: fertM && sc.fert, noPlant: sunny && sc.boxY > -120 }, b))}</g>`;
+  const box = sunny ? `<g transform="translate(${XB} ${GY + sc.boxY}) scale(${K})" opacity="${sc.boxY < -120 ? 0 : 1}">${A.box()}<circle cx="0" cy="-48" r="15" fill="#fff8ea" stroke="#8a6334" stroke-width="2.4"/><text x="0" y="-42" text-anchor="middle" font-family="Nunito,sans-serif" font-size="19" font-weight="900" fill="#1f3d57" direction="ltr">B</text></g>` : '';
+  const bag = fertM && sc.bag ? `<g transform="translate(210 ${GY}) scale(1.1)">${A.bag()}</g>` : '';
+  const hi = sc.hi ? `<ellipse cx="${sc.hi === 'A' ? XA : XB}" cy="150" rx="74" ry="110" fill="rgba(46,158,107,.16)" stroke="#2e9e6b" stroke-width="4"/>` : '';
+  return back + sun + beams + pa + pb + box + bag + hi;
+}
+
+const g = G4Game({ ch: 'ch4', logo: '🌱', title: ['Growth Lab', 'معمل النمو'], sub: ['Chapter 4 · Conditions for Growth', 'الفصل ٤ · شروط النمو'],
+  bg: 'science/assets/bg_ch4.svg', bgc: '#d9f2e4', label: ['Two pots of kidney bean seedlings, A and B', 'إناءان بهما شتلات فاصوليا، (أ) و(ب)'], render });
+const kw = g.kw;
+
+/* ---------- Stage 1 · Warm Up: the sunlight experiment ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'sun', boxY: -150, grow: 0, sunOn: false, glow: 0, hi: null }); g.paint();
+  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('sunlight · fertilizer · nutrients · leaf · stem', 'ضوء الشمس · السماد · العناصر الغذائية · الورقة · الساق')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
+  g.say(T(`Plants need ${kw('sunlight')} to grow healthy after they germinate. Do you think a plant can grow well without it? Let’s test it!`, `النباتات تحتاج إلى ${kw('ضوء الشمس')} لتنمو نموًّا صحيًّا بعد الإنبات. تفتكر النبات ينمو كويس من غيره؟ يلّا نجرّب!`), 'point');
+  await g.next(T('Let’s test ▸', 'يلّا نجرّب ◂'));
+  g.veil(null);
+  g.say(T('We prepare 2 seedlings of about the same size: pot A and pot B. What is the “condition to change” between the two pots?', 'جهّزنا شتلتين تقريبًا في نفس الحجم: الإناء (أ) والإناء (ب). ما «الشرط الذي نغيّره» بين الإناءين؟'), 'think');
+  await g.choice({
+    options: [T('Presence or absence of sunlight', 'وجود ضوء الشمس أو عدم وجوده'), T('Amount of water', 'كمية الماء'), T('Temperature', 'درجة الحرارة')],
+    correct: T('Presence or absence of sunlight', 'وجود ضوء الشمس أو عدم وجوده'),
+    hint: T('We want to know if plants need sunlight.', 'إحنا عايزين نعرف النبات محتاج ضوء الشمس ولا لأ.'),
+    ok: T(`The condition to change is the ${kw('presence or absence of sunlight')}.`, `الشرط الذي نغيّره هو ${kw('وجود ضوء الشمس أو عدم وجوده')}.`) });
+  g.say(T('Which conditions must we keep the same in both pots?', 'ما الشروط التي يجب أن نُبقيها كما هي في الإناءين؟'), 'think');
+  await g.choice({
+    options: [T('Water, air, temperature and fertilizer', 'الماء والهواء ودرجة الحرارة والسماد'), T('Sunlight', 'ضوء الشمس'), T('Nothing: change everything', 'لا شيء: نغيّر كل شيء')],
+    correct: T('Water, air, temperature and fertilizer', 'الماء والهواء ودرجة الحرارة والسماد'),
+    hint: T('Only ONE condition may change, or we will not know the cause.', 'شرط واحد بس هو اللي يتغيّر، وإلا مش هنعرف السبب.'),
+    ok: T(`We keep ${kw('water, air, temperature and fertilizer')} the same, and change only the sunlight.`, `نُبقي ${kw('الماء والهواء ودرجة الحرارة والسماد')} كما هي، ونغيّر ضوء الشمس فقط.`) });
+  sc.sunOn = true; g.paint();
+  g.say(T('Put pot A in a place that gets a lot of sunlight.', P('حط الإناء (أ) في مكان يصله الكثير من ضوء الشمس.', 'حطي الإناء (أ) في مكان يصله الكثير من ضوء الشمس.')), 'point');
+  await g.next(T('Put A in the sun ▸', 'ضع (أ) في الشمس ◂'));
+  await g.tween(600, k => { sc.glow = k; });
+  g.say(T('Now cover pot B with a dark box to block the sunlight.', P('دلوقتي غطّي الإناء (ب) بصندوق مظلم يمنع ضوء الشمس.', 'دلوقتي غطّي الإناء (ب) بصندوق مظلم يمنع ضوء الشمس.')), 'point');
+  await g.next(T('Cover B with the box ▸', 'غطِّ (ب) بالصندوق ◂'));
+  await g.tween(800, k => { sc.boxY = lerp(-150, 0, k); });
+  g.say(T('Water both pots the same. If the soil gets dry, don’t forget to water them! Now we wait about a week…', 'اسقِ الإناءين بنفس الكمية. وإذا جفّت التربة لا تنسَ أن تسقيها! دلوقتي نستنى حوالي أسبوع…'), 'point');
+  await g.next(T('Wait a week ▸', P('استنى أسبوع ◂', 'استني أسبوع ◂')));
+  await g.tween(1400, k => { sc.boxY = lerp(0, -150, Math.min(1, k * 2)); sc.grow = k; });
+  g.say(T('A week later! Tap the seedling that grew <b>without</b> sunlight.', P('بعد أسبوع! اضغط على الشتلة اللي نمت <b>بدون</b> ضوء الشمس.', 'بعد أسبوع! اضغطي على الشتلة اللي نمت <b>بدون</b> ضوء الشمس.')), 'think');
+  await g.spot([{ id: 'A', name: T('Pot A', 'الإناء (أ)'), ring: ring(XA, 150, 74, 110) }, { id: 'B', name: T('Pot B', 'الإناء (ب)'), ring: ring(XB, 150, 74, 110) }], 'B', {
+    hint: T('Which one has yellowish leaves?', 'أنهي واحدة أوراقها مائلة للاصفرار؟'),
+    ok: T(`Pot B was in the dark. Its leaves are ${kw('yellowish')} and its stem is ${kw('thin and long')}.`, `الإناء (ب) كان في الظلام. أوراقه ${kw('مائلة للاصفرار')} وساقه ${kw('رفيعة وطويلة')}.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('What does sunlight do?', 'ماذا يفعل ضوء الشمس؟'));
+  Object.assign(sc, { mode: 'sun', boxY: -150, grow: 1, sunOn: true, glow: 1, hi: 'A' }); g.paint();
+  g.say(T('Look at the healthy seedling in pot A. What do plants make by getting sunlight?', 'بصّ على الشتلة السليمة في الإناء (أ). ماذا تصنع النباتات عندما تحصل على ضوء الشمس؟'), 'think');
+  await g.choice({
+    options: [T('Their own food needed for growth', 'غذاءها الذي تحتاجه للنمو'), T('Water', 'الماء'), T('Fertilizer', 'السماد')],
+    correct: T('Their own food needed for growth', 'غذاءها الذي تحتاجه للنمو'),
+    hint: T('Plants cannot eat like us, so they make something themselves.', 'النبات مش بياكل زينا، فبيصنع حاجة بنفسه.'),
+    ok: T(`By getting sunlight, plants make their ${kw('own food')} needed for growth.`, `بالحصول على ضوء الشمس تصنع النباتات ${kw('غذاءها بنفسها')} الذي تحتاجه للنمو.`) });
+  g.say(T('What do plants that get sunlight look like?', 'كيف تبدو النباتات التي تحصل على ضوء الشمس؟'), 'think');
+  await g.choice({
+    options: [T('Dark green leaves and thick, strong stems', 'أوراق خضراء داكنة وسيقان سميكة وقوية'), T('Yellowish leaves and thin, weak stems', 'أوراق مائلة للاصفرار وسيقان رفيعة وضعيفة'), T('No leaves at all', 'بلا أوراق على الإطلاق')],
+    correct: T('Dark green leaves and thick, strong stems', 'أوراق خضراء داكنة وسيقان سميكة وقوية'),
+    hint: T('Look at pot A again.', 'بصّ على الإناء (أ) تاني.'),
+    ok: T(`Plants that get sunlight have ${kw('dark green leaves')} and grow ${kw('thick, strong stems')}.`, `النباتات التي تحصل على ضوء الشمس لها ${kw('أوراق خضراء داكنة')} وتنمو لها ${kw('سيقان سميكة وقوية')}.`) });
+  sc.hi = null; g.paint();
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('The fertilizer experiment', 'تجربة السماد'));
+  Object.assign(sc, { mode: 'fert', grow: 0, fert: false, bag: true, sunOn: true, hi: null }); g.paint();
+  g.say(T(`Do plants need ${kw('fertilizer')} to grow bigger? Both pots get sunlight. What is the “condition to change” now?`, `هل تحتاج النباتات إلى ${kw('السماد')} لتنمو أكبر؟ الإناءان يصلهما ضوء الشمس. ما «الشرط الذي نغيّره» الآن؟`), 'think');
+  await g.choice({
+    options: [T('Presence or absence of fertilizer', 'وجود السماد أو عدم وجوده'), T('Sunlight', 'ضوء الشمس'), T('Temperature', 'درجة الحرارة')],
+    correct: T('Presence or absence of fertilizer', 'وجود السماد أو عدم وجوده'),
+    hint: T('We want to know what fertilizer does.', 'عايزين نعرف السماد بيعمل إيه.'),
+    ok: T(`The condition to change is the ${kw('presence or absence of fertilizer')}.`, `الشرط الذي نغيّره هو ${kw('وجود السماد أو عدم وجوده')}.`) });
+  g.say(T('Pot A gets only water. What does pot B get?', 'الإناء (أ) يُسقى بالماء فقط. ماذا يُعطى الإناء (ب)؟'), 'think');
+  await g.choice({
+    options: [T('Water mixed with a fixed amount of fertilizer', 'ماء مخلوط بكمية محددة من السماد'), T('Only fertilizer, no water', 'سماد فقط بدون ماء'), T('A dark box', 'صندوقًا مظلمًا')],
+    correct: T('Water mixed with a fixed amount of fertilizer', 'ماء مخلوط بكمية محددة من السماد'),
+    hint: T('Pot B gets everything pot A gets, plus one more thing.', 'الإناء (ب) بياخد كل اللي بياخده (أ) وحاجة زيادة.'),
+    ok: T('Pot B gets water mixed with a fixed amount of fertilizer.', 'الإناء (ب) يُعطى ماءً مخلوطًا بكمية محددة من السماد.'),
+    reveal: () => { sc.fert = true; g.paint(); } });
+  g.say(T('Put both pots in the same sunny place, measure the height every few days… and wait!', 'ضع الإناءين في نفس المكان المشمس، وقِس الارتفاع كل بضعة أيام… واستنَّ!'), 'point');
+  await g.next(T('Wait ▸', P('استنى ◂', 'استني ◂')));
+  sc.bag = false; await g.tween(1500, k => { sc.grow = k; });
+  g.say(T('Which seedling grew much taller? Tap it!', P('أنهي شتلة طالت أكتر بكتير؟ اضغط عليها!', 'أنهي شتلة طالت أكتر بكتير؟ اضغطي عليها!')), 'think');
+  await g.spot([{ id: 'A', name: T('Pot A', 'الإناء (أ)'), ring: ring(XA, 160, 74, 100) }, { id: 'B', name: T('Pot B', 'الإناء (ب)'), ring: ring(XB, 120, 74, 124) }], 'B', {
+    hint: T('Which pot got fertilizer?', 'أنهي إناء أخد سماد؟'),
+    ok: T(`The seedling with fertilizer is ${kw('taller, bigger and stronger')}. Plants absorb ${kw('nutrients')} from the fertilizer.`, `الشتلة التي أخذت السماد ${kw('أطول وأكبر وأقوى')}. تمتص النباتات ${kw('العناصر الغذائية')} من السماد.`) });
+  g.say(T('Fertilizer is like a <b>supplement</b> for plants!', 'السماد مثل <b>المكمّل الغذائي</b> للنباتات!'), 'celebrate');
+  await g.next();
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('What do plants need?', 'ماذا تحتاج النباتات؟'));
+  Object.assign(sc, { mode: 'fert', grow: 1, fert: true, bag: false, hi: 'B' }); g.paint();
+  g.say(T('Let’s put it all together! Plants make nutrients by getting light from the ___.', 'يلّا نجمع كل حاجة! النباتات تصنع الغذاء بالحصول على الضوء من ___.'), 'think');
+  await g.choice({
+    options: [T('sun', 'الشمس'), T('soil', 'التربة'), T('box', 'الصندوق')], correct: T('sun', 'الشمس'),
+    hint: T('Where does sunlight come from?', 'ضوء الشمس بييجي منين؟'),
+    ok: T(`Plants make nutrients by getting light from the ${kw('sun')}.`, `تصنع النباتات الغذاء بالحصول على الضوء من ${kw('الشمس')}.`) });
+  g.say(T('And what do plants absorb to grow their bodies even bigger?', 'وماذا تمتص النباتات لتنمو أجسامها أكبر؟'), 'think');
+  await g.choice({
+    options: [T('Fertilizer', 'السماد'), T('Iodine', 'اليود'), T('Cotton', 'القطن')], correct: T('Fertilizer', 'السماد'),
+    hint: T('It is mixed with the water in the soil.', 'بيتخلط بالماء في التربة.'),
+    ok: T(`Plants absorb ${kw('fertilizer')} to grow their bodies even bigger.`, `تمتص النباتات ${kw('السماد')} لتنمو أجسامها أكبر.`) });
+  sc.hi = null; g.paint();
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: sunlight or fertilizer? ---------- */
+const SPEED = [
+  { t: T('Plants make their own food using it', 'تصنع النباتات غذاءها بها'), ans: 'sun' },
+  { t: T('Dark green leaves and thick, strong stems', 'أوراق خضراء داكنة وسيقان سميكة وقوية'), ans: 'sun' },
+  { t: T('A seedling without it has yellowish leaves', 'الشتلة التي بدونها أوراقها مائلة للاصفرار'), ans: 'sun' },
+  { t: T('A dark box blocks it', 'صندوق مظلم يمنعه'), ans: 'sun' },
+  { t: T('Gives plants nutrients', 'تعطي النباتات العناصر الغذائية'), ans: 'fert' },
+  { t: T('Like a supplement for plants', 'مثل المكمّل الغذائي للنباتات'), ans: 'fert' },
+  { t: T('The plant grows taller and bigger with it', 'ينمو النبات أطول وأكبر بها'), ans: 'fert' },
+  { t: T('Mixed with the water for pot B', 'تُخلط بماء الإناء (ب)'), ans: 'fert' }
+];
+async function stage3() {
+  Object.assign(sc, { mode: 'fert', grow: 1, fert: true, bag: false, hi: null }); g.paint();
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Sunlight ☀️', 'ضوء الشمس ☀️'), value: 'sun', c: 1 }, { label: T('Fertilizer 🌱', 'السماد 🌱'), value: 'fert', c: 0 }],
+    ask: T('Sunlight or fertilizer?', 'ضوء الشمس أم السماد؟'),
+    intro: T('Speed Round! I will describe one thing plants need. Is it <b>sunlight</b> or <b>fertilizer</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هوصف حاجة بتحتاجها النباتات. هي <b>ضوء الشمس</b> ولا <b>السماد</b>؟ اضغط الزر الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هوصف حاجة بتحتاجها النباتات. هي <b>ضوء الشمس</b> ولا <b>السماد</b>؟ اضغطي الزر الصح قبل ما الوقت يخلص. ٨ جولات!')),
+    think: T('Which one is it?', 'أيهما هو؟')
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my Growth Lab. We will run two experiments with kidney bean seedlings: one about <b>sunlight</b> and one about <b>fertilizer</b>. Change only one condition at a time!`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في معمل النمو. هنعمل تجربتين على شتلات الفاصوليا: واحدة عن <b>ضوء الشمس</b> وواحدة عن <b>السماد</b>. غيّر شرطًا واحدًا بس في كل مرة!`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في معمل النمو. هنعمل تجربتين على شتلات الفاصوليا: واحدة عن <b>ضوء الشمس</b> وواحدة عن <b>السماد</b>. غيّري شرطًا واحدًا بس في كل مرة!`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Plants make their own food by getting <b>sunlight</b>: dark green leaves and thick, strong stems. <b>Fertilizer</b> gives plants nutrients: bigger and stronger growth.', 'تصنع النباتات غذاءها بنفسها بالحصول على <b>ضوء الشمس</b>: أوراق خضراء داكنة وسيقان سميكة وقوية. و<b>السماد</b> يعطي النباتات العناصر الغذائية: نمو أكبر وأقوى.') }
+}).catch(err => console.error(err));
+window.__growlab = { sc, render };
+})();
+</script>
+</body>
+</html>
