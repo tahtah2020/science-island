@@ -10,6 +10,7 @@
 - [رياضيات الصف الخامس الابتدائي](https://motafawek.com/lessons/math-g5.html)
 - [علوم الصف الخامس الابتدائي](https://motafawek.com/lessons/science-g5.html)
 - [دراسات اجتماعية الصف الخامس الابتدائي](https://motafawek.com/lessons/studies-g5.html)
+- [رياضيات الصف السادس الابتدائي](https://motafawek.com/lessons/math-g6.html)
 - [علوم الصف السادس الابتدائي](https://motafawek.com/lessons/science-g6.html)
 - [دراسات اجتماعية الصف السادس الابتدائي](https://motafawek.com/lessons/studies-g6.html)
 - [علوم الصف الأول الإعدادي](https://motafawek.com/lessons/science-p1.html)
@@ -18,3 +19,6 @@
 ## الموقع
 - [الصفحة الرئيسية](https://motafawek.com/)
 - [أولياء الأمور والمعلمون](https://motafawek.com/contact.html)
+
+## نسخة كاملة
+- [كل الأسئلة بالإجابات كنص واحد](https://motafawek.com/llms-full.txt)
