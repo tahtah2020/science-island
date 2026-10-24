@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024b">
+<link rel="stylesheet" href="game_kit.css?v=20261024c">
 <style>
 .cs{width:100%;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:start}
 .cs h3{margin:0;font-size:clamp(17px,3.6vw,22px);font-weight:900;color:#fff;background:linear-gradient(#2f6ea8,#1f4f86);border-radius:999px;padding:6px 16px;text-align:center}
@@ -32,17 +32,17 @@
 .cs .pair div{min-width:0}.cs .pair svg{display:block;margin:0 auto;width:auto;max-width:100%;height:clamp(70px,16vh,150px)}
 @media (max-height:520px){.cs .pair svg{height:70px}.cs .row svg{width:56px}.cs ol{gap:3px}.cs ol li{padding:2px 8px}.cs h3{margin:0 0 4px}}
 .cs .learn{display:flex;gap:8px}.cs .learn div{flex:1;background:#fffdf4;border:2px solid #e8dcb4;border-radius:12px;padding:6px;text-align:center;font-weight:800;font-size:clamp(11px,2.6vw,14px);color:#1f3d57}
-.cs img{display:block;margin:0 auto;border-radius:10px;max-width:100%}.cs .row img{width:96px;height:auto}.cs .pair img{width:100%;height:clamp(70px,16vh,130px);object-fit:cover;margin-bottom:3px}.cs .learn img{width:96px;height:auto}.cs .cover img{width:min(440px,100%);height:auto;border-radius:14px}
+.cs img{display:block;margin:0 auto;border-radius:10px;max-width:100%}.cs .row img{width:120px;height:auto}.cs .pair img{width:100%;height:clamp(70px,16vh,130px);object-fit:cover;margin-bottom:3px}.cs .learn img{width:120px;height:auto}.cs .cover img{width:min(440px,100%);height:auto;border-radius:14px}.cs .cover .cg{display:flex;gap:8px;align-items:center;margin-top:8px}.cs .cover .cg img{width:34%;flex:0 0 34%}.cs .cover .cg p{margin:0;background:#fff;border:2px solid #cfe3ee;border-radius:16px;padding:8px 10px;font-weight:800;font-size:clamp(12px,2.9vw,15px);color:#1f3d57;text-align:left}
 .cs .learn svg{width:70px;height:auto;max-height:84px}
 </style>
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Growth Lab.</noscript>
-<script src="firebase-config.js?v=20261024b"></script>
-<script src="chapters.js?v=20261024b"></script>
-<script src="common.js?v=20261024b"></script>
-<script src="science/ch4_art.js?v=20261024b"></script>
-<script src="game_kit.js?v=20261024b"></script>
+<script src="firebase-config.js?v=20261024c"></script>
+<script src="chapters.js?v=20261024c"></script>
+<script src="common.js?v=20261024c"></script>
+<script src="science/ch4_art.js?v=20261024c"></script>
+<script src="game_kit.js?v=20261024c"></script>
 <script>
 (() => {
 'use strict';
@@ -94,7 +94,7 @@ const POTS = {
   sunA: thumb(A.pot(Object.assign({}, A.look('sunA')))), sunB: thumb(A.pot(Object.assign({}, A.look('sunB')))),
   fertB: thumb(A.pot(Object.assign({ fert: true }, A.look('fertB'))), '-50 -215 100 225'), fertA: thumb(A.pot(Object.assign({}, A.look('fertA'))), '-50 -215 100 225')
 };
-const coverCard = () => LANG_EN ? `<div class="cs"><div class="cover">${IMG('cover')}</div></div>` : `<div class="cs"><div class="sign"><b>${T('Sunlight and Growth', 'ضوء الشمس والنمو')}</b><u>${T('Conditions for Growth', 'شروط النمو')}</u><em>${T('Chapter 4', 'الفصل ٤')}</em></div></div>`;
+const coverCard = () => LANG_EN ? `<div class="cs"><div class="cover">${IMG('cover')}<div class="cg">${IMG('girl')}<p>${T('Let’s explore how <b>sunlight</b> and <b>fertilizer</b> help plants grow!', '')}</p></div></div></div>` : `<div class="cs"><div class="sign"><b>${T('Sunlight and Growth', 'ضوء الشمس والنمو')}</b><u>${T('Conditions for Growth', 'شروط النمو')}</u><em>${T('Chapter 4', 'الفصل ٤')}</em></div></div>`;
 const conceptsCard = () => `<div class="cs"><h3>${T('Key Concepts', 'المفاهيم الأساسية')}</h3>
   <div class="row sun"><div><h4>☀️ ${T('Sunlight', 'ضوء الشمس')}</h4><ul><li>${T('Plants make their own food using sunlight.', 'تصنع النباتات غذاءها بنفسها باستخدام ضوء الشمس.')}</li><li>${T('Plants that get sunlight have dark green leaves and grow thick, strong stems.', 'النباتات التي تحصل على ضوء الشمس لها أوراق خضراء داكنة وسيقان سميكة وقوية.')}</li></ul></div><figure>${IMG('sun_plant')}${T('With sunlight', 'مع ضوء الشمس')}</figure></div>
   <div class="row fert"><div><h4>🌱 ${T('Fertilizer', 'السماد')}</h4><ul><li>${T('Provides nutrients for plants.', 'يعطي النباتات العناصر الغذائية.')}</li><li>${T('Helps leaves and stems grow bigger and stronger.', 'يساعد الأوراق والسيقان على النمو أكبر وأقوى.')}</li></ul></div><figure>${IMG('fert_plant')}${T('With fertilizer', 'مع السماد')}</figure></div>
