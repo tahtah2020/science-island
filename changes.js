@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-24', title: 'English Grade 5: check link',
+    items: [
+      { text: 'Games open from a chosen mission with ?m=N' }
+    ] },
   { date: '2026-10-24', title: 'English Grade 5: Nile pictures',
     items: [
       { text: 'The Nile tap picture uses the real pictures for the crocodile, water weeds, insect and river' }

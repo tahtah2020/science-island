@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024h">
+<link rel="stylesheet" href="game_kit.css?v=20261024i">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Nile Explorer.</noscript>
-<script src="firebase-config.js?v=20261024h"></script>
-<script src="chapters.js?v=20261024h"></script>
-<script src="common.js?v=20261024h"></script>
-<script src="english/g5_art.js?v=20261024h"></script>
-<script src="game_kit.js?v=20261024h"></script>
+<script src="firebase-config.js?v=20261024i"></script>
+<script src="chapters.js?v=20261024i"></script>
+<script src="common.js?v=20261024i"></script>
+<script src="english/g5_art.js?v=20261024i"></script>
+<script src="game_kit.js?v=20261024i"></script>
 <script>
 (() => {
 'use strict';
@@ -220,7 +220,11 @@ async function mission6() {                 // lesson 5: flyer
   await fillCard(['FOOD MENU is the', 'main ___ of the flyer.'], ['heading', 'image', 'menu'], 'heading', 'Choose the word.', 'اختار الكلمة.', 'It is the big title.', 'هو العنوان الكبير.', `The ${kw('main heading')} is the big title.`, `${L('main heading')} هو العنوان الكبير.`);
   await fillCard(['“For more information', 'visit our website” is a call to ___.'], ['action', 'menu', 'image'], 'action', 'Choose the word.', 'اختار الكلمة.', 'It is an invitation.', 'ده دعوة.', `A ${kw('call to action')} is an invitation.`, `${L('call to action')} يعني دعوة.`);
 }
-async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
+async function stage2() {                 // ?m=5 in the address opens the missions from mission 5 (for the owner's checks)
+  const from = Math.max(1, +new URLSearchParams(location.search).get('m') || 1);
+  const all = [mission1, mission2, mission3, mission4, mission5, mission6];
+  for (const m of all.slice(from - 1)) await m();
+}
 
 /* ---------- Stage 3 · Speed Round (lesson 2: adverbs of frequency) ---------- */
 async function stage3() {
