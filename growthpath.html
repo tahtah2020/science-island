@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Growth Path · Human Growth and Reproduction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261024a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Growth Path.</noscript>
+<script src="firebase-config.js?v=20261024a"></script>
+<script src="chapters.js?v=20261024a"></script>
+<script src="common.js?v=20261024a"></script>
+<script src="science/ch6_art.js?v=20261024a"></script>
+<script src="game_kit.js?v=20261024a"></script>
+<script>
+(() => {
+'use strict';
+/* Growth Path · the game of Chapter 6 "Human Growth and Reproduction" (Grade 5). Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up): reproduction and growth (book page 65)
+   Stage 2 (Missions): 1) the stages of human growth (pages 64-65); 2) parents and children (pages 66-67); 3) the 3 conditions for healthy growth (pages 68-69)
+   Stage 3 (Speed Round): healthy diet, enough sleep or proper exercise?
+   The book prints features only for infancy and childhood, so the game asks only about those two stages.
+   Every T('English', 'عربي') has both languages. The Arabic wording is a first draft written from the English book: it needs the owner’s review against the Arabic book. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const A = window.CH6ART;
+const VW = 420, VH = 280;
+const sc = { mode: 'path', shown: 5, hi: null, heart: false };
+const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+const rrect = (x, y, w, h) => `<rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="14"/>`;
+
+const AGES = ['infant', 'child', 'youth', 'adult', 'old'], IDS = ['infancy', 'childhood', 'youth', 'adulthood', 'oldage'];
+const SHIRT = ['#fff', '#f2b134', '#9a7fd1', '#4fa3c7', '#6fb48a'];
+const ar = SI.T(false, true);
+const PX = [50, 128, 206, 286, 368].map(x => ar ? 420 - x : x), PY = 236;
+const sky = `<rect width="${VW}" height="${VH}" fill="#fff4ec"/><circle cx="352" cy="46" r="26" fill="#ffd24a" opacity=".85"/><rect y="${PY}" width="${VW}" height="${VH - PY}" fill="#f7d9c2"/>
+  <path d="M0 ${PY + 14}H${VW}" stroke="#e8c09f" stroke-width="3" stroke-dasharray="10 12"/>`;
+
+function pathScene() {
+  let s = sky;
+  for (let i = 0; i < sc.shown; i++) {
+    s += `<g transform="translate(${PX[i]} ${PY})">${A.person({ age: AGES[i], shirt: SHIRT[i], f: i === 3 })}</g>`;
+    if (i > 0 && i < sc.shown) { const a = PX[i - 1] + (PX[i] - PX[i - 1]) * .5; s += `<path d="M${a - 6 * (ar ? -1 : 1)} ${PY + 28}l${12 * (ar ? -1 : 1)} 0" stroke="#e2603f" stroke-width="3" stroke-linecap="round" opacity="0"/>`; }
+  }
+  if (sc.hi != null) s += `<ellipse cx="${PX[sc.hi]}" cy="${PY - A.SIZE[AGES[sc.hi]] / 2}" rx="40" ry="${A.SIZE[AGES[sc.hi]] / 2 + 18}" fill="rgba(46,158,107,.16)" stroke="#2e9e6b" stroke-width="4"/>`;
+  return s;
+}
+function familyScene() {
+  const hair = '#5b3b26';
+  return sky + `<g transform="translate(110 ${PY})">${A.person({ age: 'adult', f: true, hair, shirt: '#e86f8f' })}</g><g transform="translate(300 ${PY})">${A.person({ age: 'adult', hair, shirt: '#4fa3c7' })}</g>
+    <g transform="translate(176 ${PY})">${A.person({ age: 'child', f: true, hair, shirt: '#f2b134' })}</g><g transform="translate(236 ${PY})">${A.person({ age: 'child', hair, shirt: '#6fb48a' })}</g>
+    ${sc.heart ? `<path d="M206 70c-10 -18 -34 -6 -22 14c6 10 22 22 22 22s16 -12 22 -22c12 -20 -12 -32 -22 -14z" fill="#e2603f" stroke="#a9432b" stroke-width="3" stroke-linejoin="round"/>` : ''}`;
+}
+function habitsScene() {
+  const h = sc.hi;
+  return `<rect width="${VW}" height="${VH}" fill="#fff4ec"/><rect y="${PY}" width="${VW}" height="${VH - PY}" fill="#f7d9c2"/>
+    <g transform="translate(${ar ? 350 : 64} 222) scale(1)">${A.food()}</g><g transform="translate(215 228) scale(1.1)">${A.bed()}</g><g transform="translate(${ar ? 70 : 350} 222) scale(1.5)">${A.ball()}</g>
+    ${h === 'diet' ? rrectHl(ar ? 292 : 8, 120, 128, 112) : h === 'sleep' ? rrectHl(140, 72, 150, 160) : h === 'exercise' ? rrectHl(ar ? 22 : 306, 118, 92, 112) : ''}`;
+}
+const rrectHl = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="rgba(46,158,107,.16)" stroke="#2e9e6b" stroke-width="4"/>`;
+const render = () => ({ path: pathScene, family: familyScene, habits: habitsScene })[sc.mode]();
+
+const g = G4Game({ ch: 'ch6', logo: '🧒', title: ['Growth Path', 'رحلة النمو'], sub: ['Chapter 6 · Human Growth and Reproduction', 'الفصل ٦ · نمو الإنسان وتكاثره'],
+  bg: 'science/assets/bg_ch6.svg', bgc: '#fde3dc', label: ['People of different ages in a row', 'أشخاص من أعمار مختلفة في صف'], render });
+const kw = g.kw;
+
+/* ---------- Stage 1 · Warm Up: reproduction and growth ---------- */
+async function stage1() {
+  Object.assign(sc, { mode: 'path', shown: 5, hi: null }); g.paint();
+  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('reproduction · growth · infancy · childhood · youth', 'التكاثر · النمو · الرضاعة · الطفولة · الشباب')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
+  g.say(T(`Look at all these people, from babies to seniors! Humans ${kw('live')}, ${kw('grow')} and ${kw('reproduce')}.`, `بصّ على كل الناس دي، من الأطفال الرضّع لكبار السن! الإنسان ${kw('يعيش')} و${kw('ينمو')} و${kw('يتكاثر')}.`), 'wave');
+  await g.next(T('Let’s learn ▸', 'يلّا نتعلّم ◂'));
+  g.veil(null);
+  g.say(T('Why is reproduction important?', 'لماذا التكاثر مهم؟'), 'think');
+  await g.choice({
+    options: [T('It lets life continue and the species be preserved', 'يجعل الحياة تستمر وتُحفظ الأنواع'), T('It makes our body bigger', 'يجعل جسمنا أكبر'), T('It helps us sleep', 'يساعدنا على النوم')],
+    correct: T('It lets life continue and the species be preserved', 'يجعل الحياة تستمر وتُحفظ الأنواع'),
+    hint: T('Think about life across generations.', 'فكّر في الحياة عبر الأجيال.'),
+    ok: T(`${kw('Reproduction')} is one of the ways for life to continue and for the species to be preserved. Through it, humans remain on Earth.`, `${kw('التكاثر')} إحدى طرق استمرار الحياة وحفظ الأنواع. وبه يبقى البشر على الأرض.`) });
+  g.say(T(`${kw('Growth')} is a change that happens to humans, animals and plants. As time passes, the body gets bigger, stronger and more ___.`, `${kw('النمو')} تغيّر يحدث للإنسان والحيوان والنبات. مع مرور الوقت يصبح الجسم أكبر وأقوى وأكثر ___.`), 'think');
+  await g.choice({
+    options: [T('complex', 'تعقيدًا'), T('simple', 'بساطة'), T('tiny', 'صغرًا')], correct: T('complex', 'تعقيدًا'),
+    hint: T('The body does not stay simple.', 'الجسم مبيفضلش بسيط.'),
+    ok: T(`As time passes, the body becomes bigger, stronger and more ${kw('complex')}.`, `مع مرور الوقت يصبح الجسم أكبر وأقوى وأكثر ${kw('تعقيدًا')}.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('The stages of growth', 'مراحل النمو'));
+  Object.assign(sc, { mode: 'path', shown: 5, hi: null }); g.paint();
+  g.say(T('The human body continues to change through clearly defined stages. Tap the stage that starts at <b>birth</b>.', P('جسم الإنسان يستمر في التغيّر عبر مراحل محددة بوضوح. اضغط على المرحلة التي تبدأ عند <b>الولادة</b>.', 'جسم الإنسان يستمر في التغيّر عبر مراحل محددة بوضوح. اضغطي على المرحلة التي تبدأ عند <b>الولادة</b>.')), 'think');
+  await g.spot(IDS.map((id, i) => ({ id, name: [T('The baby', 'الرضيع'), T('The child with a school bag', 'الطفل الذي يحمل حقيبة'), T('The young person', 'الشاب'), T('The grown-up', 'الشخص البالغ'), T('The grown-up with a stick', 'الشخص صاحب العصا')][i], ring: rrect(PX[i] - 34, PY - A.SIZE[AGES[i]] - 14, 68, A.SIZE[AGES[i]] + 24) })), 'infancy', {
+    hint: T('It is the smallest one.', 'هو الأصغر.'),
+    ok: T(`${kw('Infancy')} starts at birth. Infants are very small and completely depend on their mothers for food, care and protection.`, `${kw('الرضاعة')} تبدأ عند الولادة. الرضّع صغار جدًّا ويعتمدون تمامًا على أمهاتهم في الغذاء والرعاية والحماية.`),
+    reveal: () => { sc.hi = 0; g.paint(); } });
+  sc.hi = null; g.paint();
+  g.say(T('How long does a baby spend inside the mother’s body before birth?', 'كم يقضي الجنين داخل جسم الأم قبل الولادة؟'), 'think');
+  await g.choice({
+    options: [T('About 9 months', 'حوالي ٩ شهور'), T('About 9 weeks', 'حوالي ٩ أسابيع'), T('About 9 years', 'حوالي ٩ سنوات')], correct: T('About 9 months', 'حوالي ٩ شهور'),
+    hint: T('It is less than a year, but more than a few weeks.', 'أقل من سنة، لكن أكتر من كام أسبوع.'),
+    ok: T(`Infancy starts at birth, after about ${kw('9 months')} inside the mother’s body.`, `تبدأ الرضاعة عند الولادة، بعد حوالي ${kw('٩ شهور')} داخل جسم الأم.`) });
+  g.say(T('Now tap the stage when humans start <b>walking, talking and going to school</b>.', P('دلوقتي اضغط على المرحلة التي يبدأ فيها الإنسان <b>المشي والكلام والذهاب إلى المدرسة</b>.', 'دلوقتي اضغطي على المرحلة التي يبدأ فيها الإنسان <b>المشي والكلام والذهاب إلى المدرسة</b>.')), 'think');
+  await g.spot(IDS.map((id, i) => ({ id, name: [T('The baby', 'الرضيع'), T('The child with a school bag', 'الطفل الذي يحمل حقيبة'), T('The young person', 'الشاب'), T('The grown-up', 'الشخص البالغ'), T('The grown-up with a stick', 'الشخص صاحب العصا')][i], ring: rrect(PX[i] - 34, PY - A.SIZE[AGES[i]] - 14, 68, A.SIZE[AGES[i]] + 24) })), 'childhood', {
+    hint: T('This stage has a school bag.', 'المرحلة دي عندها شنطة مدرسة.'),
+    ok: T(`In ${kw('childhood')}, humans start walking, talking and going to school. Their bones and muscles get stronger.`, `في ${kw('الطفولة')} يبدأ الإنسان المشي والكلام والذهاب إلى المدرسة، وتزداد عظامه وعضلاته قوة.`),
+    reveal: () => { sc.hi = 1; g.paint(); } });
+  sc.hi = null; g.paint();
+  g.say(T('Which is the correct order for the stages of human growth?', 'ما الترتيب الصحيح لمراحل نمو الإنسان؟'), 'think');
+  const ordT = T('Infancy → childhood → youth → adulthood → old age', 'الرضاعة ← الطفولة ← الشباب ← سن الرشد ← الشيخوخة');
+  await g.choice({
+    options: [ordT, T('Childhood → youth → infancy → adulthood → old age', 'الطفولة ← الشباب ← الرضاعة ← سن الرشد ← الشيخوخة'), T('Infancy → youth → childhood → adulthood → old age', 'الرضاعة ← الشباب ← الطفولة ← سن الرشد ← الشيخوخة')], correct: ordT,
+    hint: T('Look at the picture from the smallest to the oldest.', 'بصّ على الصورة من الأصغر للأكبر.'),
+    ok: T(`The order is ${kw('infancy, childhood, youth, adulthood, old age')}.`, `الترتيب هو ${kw('الرضاعة، الطفولة، الشباب، سن الرشد، الشيخوخة')}.`) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Parents and children', 'الآباء والأبناء'));
+  Object.assign(sc, { mode: 'family', heart: false }); g.paint();
+  g.say(T('Why do family members look alike? Who does a human life begin from?', 'لماذا يتشابه أفراد الأسرة؟ ممَّن تبدأ حياة الإنسان؟'), 'think');
+  await g.choice({
+    options: [T('A father and a mother', 'أب وأم'), T('Brothers and sisters', 'الإخوة والأخوات'), T('Teachers and friends', 'المعلمون والأصدقاء')], correct: T('A father and a mother', 'أب وأم'),
+    hint: T('Look at the two grown-ups in the picture.', 'بصّ على الشخصين الكبار في الصورة.'),
+    ok: T(`Every human life begins from a ${kw('father and a mother')}.`, `كل حياة إنسان تبدأ من ${kw('أب وأم')}.`) });
+  g.say(T('What is the important role parents play for their children?', 'ما الدور المهم الذي يقوم به الآباء تجاه أبنائهم؟'), 'think');
+  await g.choice({
+    options: [T('Take care of and protect them until they grow up', 'رعايتهم وحمايتهم حتى يكبروا'), T('Go far away before they grow up', 'الابتعاد قبل أن يكبروا'), T('Go to school instead of them', 'الذهاب إلى المدرسة بدلًا منهم')],
+    correct: T('Take care of and protect them until they grow up', 'رعايتهم وحمايتهم حتى يكبروا'),
+    hint: T('Parents are always there for their children.', 'الآباء دايمًا موجودين لأبنائهم.'),
+    ok: T(`Parents take good ${kw('care')} of their children and ${kw('protect')} them until they grow up.`, `يرعى الآباء أبناءهم جيدًا و${kw('يحمونهم')} حتى يكبروا.`) });
+  sc.heart = true; g.paint();
+  g.say(T('Have you ever been told, “You look like your father or mother”? Why do children look like their parents?', 'هل قيل لك يومًا: «إنت شبه أبوك أو أمك»؟ لماذا يشبه الأبناء آباءهم؟'), 'think');
+  await g.choice({
+    options: [T('Because they inherit features from their parents', 'لأنهم يرثون صفات من والديهم'), T('Because they always live together', 'لأنهم يعيشون معًا دائمًا'), T('Because they eat the same things', 'لأنهم يأكلون الأطعمة نفسها')],
+    correct: T('Because they inherit features from their parents', 'لأنهم يرثون صفات من والديهم'),
+    hint: T('The features come from the father and the mother.', 'الصفات بتيجي من الأب والأم.'),
+    ok: T(`Children look like their parents because they ${kw('inherit')} features from their father and mother.`, `يشبه الأبناء آباءهم لأنهم ${kw('يرثون')} صفات من أبيهم وأمهم.`) });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Healthy growth', 'النمو الصحي'));
+  Object.assign(sc, { mode: 'habits', hi: null }); g.paint();
+  g.say(T('To grow strong and healthy, we need <b>3 conditions</b>. Tap the one that gives your body <b>nutrients</b>: milk, vegetables and fruits.', P('لننمو أقوياء وأصحاء نحتاج <b>٣ شروط</b>. اضغط على الشرط الذي يعطي جسمك <b>العناصر الغذائية</b>: اللبن والخضراوات والفاكهة.', 'لننمو أقوياء وأصحاء نحتاج <b>٣ شروط</b>. اضغطي على الشرط الذي يعطي جسمك <b>العناصر الغذائية</b>: اللبن والخضراوات والفاكهة.')), 'think');
+  const spots = [{ id: 'diet', name: T('Milk, an apple and a carrot', 'لبن وتفاحة وجزرة'), ring: rrect(ar ? 292 : 8, 120, 128, 112) }, { id: 'sleep', name: T('A bed under the moon', 'سرير تحت القمر'), ring: rrect(140, 72, 150, 160) }, { id: 'exercise', name: T('A ball', 'كرة'), ring: rrect(ar ? 22 : 306, 118, 92, 112) }];
+  await g.spot(spots, 'diet', {
+    hint: T('What do we eat and drink?', 'إيه اللي بناكله ونشربه؟'),
+    ok: T(`A ${kw('healthy diet')}: get the nutrients your body needs by drinking milk and eating vegetables and fruits.`, `${kw('الغذاء الصحي')}: احصل على العناصر الغذائية التي يحتاجها جسمك بشرب اللبن وأكل الخضراوات والفاكهة.`),
+    reveal: () => { sc.hi = 'diet'; g.paint(); } });
+  sc.hi = null; g.paint();
+  g.say(T('Now tap the one where your <b>brain rests</b> and your <b>body is built</b>.', P('دلوقتي اضغط على الشرط الذي <b>يرتاح</b> فيه مخّك و<b>يُبنى</b> فيه جسمك.', 'دلوقتي اضغطي على الشرط الذي <b>يرتاح</b> فيه مخّك و<b>يُبنى</b> فيه جسمك.')), 'think');
+  await g.spot(spots, 'sleep', {
+    hint: T('It happens at night.', 'بيحصل بالليل.'),
+    ok: T(`${kw('Enough sleep')}: while you sleep, your brain rests and your body is built.`, `${kw('النوم الكافي')}: أثناء نومك يرتاح مخّك ويُبنى جسمك.`),
+    reveal: () => { sc.hi = 'sleep'; g.paint(); } });
+  sc.hi = null; g.paint();
+  g.say(T('Last one: tap the one that makes your <b>heart and muscles stronger</b>.', P('آخر واحد: اضغط على الشرط الذي يجعل <b>قلبك وعضلاتك أقوى</b>.', 'آخر واحد: اضغطي على الشرط الذي يجعل <b>قلبك وعضلاتك أقوى</b>.')), 'think');
+  await g.spot(spots, 'exercise', {
+    hint: T('You move your body.', 'بتحرّك جسمك.'),
+    ok: T(`${kw('Proper exercise')}: moving your body makes your heart and muscles stronger.`, `${kw('الرياضة المناسبة')}: تحريك جسمك يجعل قلبك وعضلاتك أقوى.`),
+    reveal: () => { sc.hi = 'exercise'; g.paint(); } });
+  sc.hi = null; g.paint();
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: diet, sleep or exercise? ---------- */
+const SPEED = [
+  { t: T('Drinking milk', 'شرب اللبن'), ans: 'diet' },
+  { t: T('Eating vegetables and fruits', 'أكل الخضراوات والفاكهة'), ans: 'diet' },
+  { t: T('Getting the nutrients your body needs', 'الحصول على العناصر الغذائية التي يحتاجها جسمك'), ans: 'diet' },
+  { t: T('The brain rests and the body is built', 'يرتاح المخ ويُبنى الجسم'), ans: 'sleep' },
+  { t: T('Resting well at night', 'الراحة الجيدة في الليل'), ans: 'sleep' },
+  { t: T('Going to bed on time', 'النوم في الموعد المناسب'), ans: 'sleep' },
+  { t: T('Makes the heart and muscles stronger', 'يجعل القلب والعضلات أقوى'), ans: 'exercise' },
+  { t: T('Moving your body', 'تحريك جسمك'), ans: 'exercise' }
+];
+async function stage3() {
+  Object.assign(sc, { mode: 'habits', hi: null }); g.paint();
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Healthy diet 🥛', 'غذاء صحي 🥛'), value: 'diet', c: 0 }, { label: T('Enough sleep 🌙', 'نوم كافٍ 🌙'), value: 'sleep', c: 1 }, { label: T('Proper exercise ⚽', 'رياضة مناسبة ⚽'), value: 'exercise', c: 2 }],
+    ask: T('Which condition for healthy growth?', 'أي شرط من شروط النمو الصحي؟'),
+    intro: T('Speed Round! I will say something that helps you grow. Is it a <b>healthy diet</b>, <b>enough sleep</b> or <b>proper exercise</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هقول حاجة بتساعدك تنمو. هي <b>غذاء صحي</b> ولا <b>نوم كافٍ</b> ولا <b>رياضة مناسبة</b>؟ اضغط الزر الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هقول حاجة بتساعدك تنمو. هي <b>غذاء صحي</b> ولا <b>نوم كافٍ</b> ولا <b>رياضة مناسبة</b>؟ اضغطي الزر الصح قبل ما الوقت يخلص. ٨ جولات!')),
+    think: T('Which condition is it?', 'أي شرط هو؟'),
+    show: it => { sc.hi = null; g.paint(); }, reveal: it => { sc.hi = it.ans; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to the Growth Path. We will follow how humans <b>grow</b> from infancy to old age, see why children <b>look like their parents</b>, and learn the <b>3 conditions</b> for growing strong and healthy.`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في رحلة النمو. هنتابع إزاي الإنسان <b>ينمو</b> من الرضاعة للشيخوخة، ونعرف ليه الأبناء <b>بيشبهوا آباءهم</b>، ونتعلّم <b>٣ شروط</b> لننمو أقوياء وأصحاء.`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في رحلة النمو. هنتابع إزاي الإنسان <b>ينمو</b> من الرضاعة للشيخوخة، ونعرف ليه الأبناء <b>بيشبهوا آباءهم</b>، ونتعلّم <b>٣ شروط</b> لننمو أقوياء وأصحاء.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة') , fn: stage3 }],
+  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Humans grow through <b>infancy, childhood, youth, adulthood and old age</b>. Children <b>inherit</b> features from their parents. To grow strong and healthy we need a <b>healthy diet</b>, <b>enough sleep</b> and <b>proper exercise</b>.', 'ينمو الإنسان عبر <b>الرضاعة والطفولة والشباب وسن الرشد والشيخوخة</b>. ويرث الأبناء صفات من والديهم. ولننمو أقوياء وأصحاء نحتاج <b>غذاءً صحيًّا</b> و<b>نومًا كافيًا</b> و<b>رياضة مناسبة</b>.') }
+}).catch(err => console.error(err));
+window.__growthpath = { sc, render };
+})();
+</script>
+</body>
+</html>
