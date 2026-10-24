@@ -8,6 +8,33 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="game_kit.css?v=20261024a">
+<style>
+.cs{width:100%;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:start}
+.cs h3{margin:0;font-size:clamp(17px,3.6vw,22px);font-weight:900;color:#fff;background:linear-gradient(#2f6ea8,#1f4f86);border-radius:999px;padding:6px 16px;text-align:center}
+.cs h3 i{font-style:normal;float:inline-end;background:#fff;color:#1f4f86;border-radius:999px;padding:0 10px;font-size:.8em}
+.cs .sign{background:linear-gradient(#b98b57,#8a6334);border:4px solid #6b4a24;border-radius:14px;padding:10px 14px;text-align:center;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.cs .sign b{display:block;font-size:clamp(26px,6vw,40px);line-height:1.1;font-weight:900;color:#ffd24a;-webkit-text-stroke:1px #7a4f1c;text-shadow:0 2px 0 #7a4f1c}
+.cs .sign em{display:inline-block;margin-top:6px;font-style:normal;font-weight:900;background:#ffd24a;color:#7a4f1c;border-radius:10px;padding:2px 12px;font-size:clamp(13px,3vw,17px)}
+.cs .sign u{display:block;text-decoration:none;font-weight:800;color:#fff;font-size:clamp(13px,3vw,16px);margin-top:4px}
+.cs .row{display:flex;gap:10px;align-items:center;background:#fffdf4;border:2px solid #e8dcb4;border-radius:14px;padding:6px 10px}
+.cs .row.sun{background:#fff6cf}.cs .row.fert{background:#e6f6ec}
+.cs .row ul{margin:0;padding:0 0 0 16px;font-weight:800;font-size:clamp(12px,2.7vw,15px);color:#1f3d57;flex:1}
+.cs .row h4{margin:0 0 2px;font-size:clamp(14px,3.2vw,18px);font-weight:900;color:#1f3d57}
+.cs .row figure{margin:0;text-align:center;font-size:11px;font-weight:800;color:#1f3d57;flex:0 0 auto}
+.cs .row svg{width:76px;height:auto;max-height:90px;display:block;margin:auto}
+.cs .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.cs .chips b{background:#fff;border:2px solid #9fc4d6;border-radius:999px;padding:1px 10px;font-size:13px;color:#1f3d57}
+.cs ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.cs ol li{display:flex;gap:8px;align-items:flex-start;background:#eaf7ee;border:2px solid #bfe3cc;border-radius:12px;padding:5px 10px;font-weight:800;font-size:clamp(12px,2.8vw,15px);color:#1f3d57}
+.cs ol li b{flex:0 0 24px;height:24px;border-radius:50%;background:#2e9e6b;color:#fff;display:grid;place-items:center;font-size:13px}
+.cs ol li span{color:#1f3d57;font-size:inherit;font-weight:700}
+.cs .note{background:#fff3c4;border-radius:10px;padding:4px 10px;font-weight:800;font-size:clamp(12px,2.7vw,14px);color:#7a4f1c}
+.cs .pair{display:flex;gap:8px}.cs .pair div{flex:1;text-align:center;background:#fffdf4;border:2px solid #e8dcb4;border-radius:12px;padding:4px;font-weight:800;font-size:12px;color:#1f3d57}
+.cs .pair div{min-width:0}.cs .pair svg{display:block;margin:0 auto;width:auto;max-width:100%;height:clamp(70px,16vh,150px)}
+@media (max-height:520px){.cs .pair svg{height:70px}.cs .row svg{width:56px}.cs ol{gap:3px}.cs ol li{padding:2px 8px}.cs h3{margin:0 0 4px}}
+.cs .learn{display:flex;gap:8px}.cs .learn div{flex:1;background:#fffdf4;border:2px solid #e8dcb4;border-radius:12px;padding:6px;text-align:center;font-weight:800;font-size:clamp(11px,2.6vw,14px);color:#1f3d57}
+.cs img{display:block;margin:0 auto;border-radius:10px;max-width:100%}.cs .row img{width:96px;height:auto}.cs .pair img{width:100%;height:clamp(70px,16vh,130px);object-fit:cover;margin-bottom:3px}.cs .learn img{width:96px;height:auto}.cs .cover img{width:min(440px,100%);height:auto;border-radius:14px}
+.cs .learn svg{width:70px;height:auto;max-height:84px}
+</style>
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Growth Lab.</noscript>
@@ -25,6 +52,7 @@
    Stage 3 (Speed Round): sunlight or fertilizer?
    Every T('English', 'عربي') has both languages. The Arabic wording is a first draft written from the English book: it needs the owner’s review against the Arabic book. */
 const T = SI.T, G = SI.G;
+const LANG_EN = T('1', '0') === '1';
 const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
 const A = window.CH4ART, lerp = (a, b, t) => a + (b - a) * t;
 const VW = 420, VH = 280;
@@ -34,7 +62,13 @@ const mixLook = (to, k) => ({ h: lerp(START.h, to.h, k), leaf: lerp(START.leaf, 
 const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
 const XA = 125, XB = 295, GY = 238, K = 1.1;
 
+function checkScene() {
+  const c = sc.chk;
+  return `<rect width="${VW}" height="${VH}" fill="#e6f3f8"/><rect y="${GY}" width="${VW}" height="${VH - GY}" fill="#e4c394"/><rect y="${GY}" width="${VW}" height="7" fill="#d2ab78"/>
+    ${[['A', XA, c.ph[0]], ['B', XB, c.ph[1]]].map(([l, x, n]) => `<clipPath id="cp${l}"><rect x="${x - 78}" y="34" width="156" height="148" rx="12"/></clipPath><image href="science/assets/ch4/${n}.jpg" x="${x - 78}" y="34" width="156" height="148" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp${l})"/><circle cx="${x}" cy="212" r="17" fill="${l === 'A' ? '#2f74c9' : '#2e9e6b'}" stroke="#fff" stroke-width="3"/><text x="${x}" y="219" text-anchor="middle" font-family="Nunito,sans-serif" font-size="20" font-weight="900" fill="#fff">${l}</text>`).join('')}`;
+}
 function render() {
+  if (sc.mode === 'check') return checkScene();
   const sunny = sc.mode === 'sun', fertM = sc.mode === 'fert';
   let a, b;
   if (sunny) { a = mixLook(A.look('sunA'), sc.grow); b = mixLook(A.look('sunB'), sc.grow); }
@@ -53,12 +87,40 @@ function render() {
 const g = G4Game({ ch: 'ch4', logo: '🌱', title: ['Growth Lab', 'معمل النمو'], sub: ['Chapter 4 · Conditions for Growth', 'الفصل ٤ · شروط النمو'],
   bg: 'science/assets/bg_ch4.svg', bgc: '#d9f2e4', label: ['Two pots of kidney bean seedlings, A and B', 'إناءان بهما شتلات فاصوليا، (أ) و(ب)'], render });
 const kw = g.kw;
+/* ---------- the picture-book screens (cover, key concepts, experiment steps, "you learned that") ---------- */
+const thumb = (inner, vb = '-50 -185 100 195') => `<svg viewBox="${vb}" aria-hidden="true">${inner}</svg>`;
+const IMG = n => `<img src="science/assets/ch4/${n}.jpg" alt="" draggable="false">`;
+const POTS = {
+  sunA: thumb(A.pot(Object.assign({}, A.look('sunA')))), sunB: thumb(A.pot(Object.assign({}, A.look('sunB')))),
+  fertB: thumb(A.pot(Object.assign({ fert: true }, A.look('fertB'))), '-50 -215 100 225'), fertA: thumb(A.pot(Object.assign({}, A.look('fertA'))), '-50 -215 100 225')
+};
+const coverCard = () => LANG_EN ? `<div class="cs"><div class="cover">${IMG('cover')}</div></div>` : `<div class="cs"><div class="sign"><b>${T('Sunlight and Growth', 'ضوء الشمس والنمو')}</b><u>${T('Conditions for Growth', 'شروط النمو')}</u><em>${T('Chapter 4', 'الفصل ٤')}</em></div></div>`;
+const conceptsCard = () => `<div class="cs"><h3>${T('Key Concepts', 'المفاهيم الأساسية')}</h3>
+  <div class="row sun"><div><h4>☀️ ${T('Sunlight', 'ضوء الشمس')}</h4><ul><li>${T('Plants make their own food using sunlight.', 'تصنع النباتات غذاءها بنفسها باستخدام ضوء الشمس.')}</li><li>${T('Plants that get sunlight have dark green leaves and grow thick, strong stems.', 'النباتات التي تحصل على ضوء الشمس لها أوراق خضراء داكنة وسيقان سميكة وقوية.')}</li></ul></div><figure>${IMG('sun_plant')}${T('With sunlight', 'مع ضوء الشمس')}</figure></div>
+  <div class="row fert"><div><h4>🌱 ${T('Fertilizer', 'السماد')}</h4><ul><li>${T('Provides nutrients for plants.', 'يعطي النباتات العناصر الغذائية.')}</li><li>${T('Helps leaves and stems grow bigger and stronger.', 'يساعد الأوراق والسيقان على النمو أكبر وأقوى.')}</li></ul></div><figure>${IMG('fert_plant')}${T('With fertilizer', 'مع السماد')}</figure></div>
+  <div class="chips"><b>${T('sunlight', 'ضوء الشمس')}</b><b>${T('fertilizer', 'السماد')}</b><b>${T('nutrients', 'العناصر الغذائية')}</b><b>${T('leaf', 'الورقة')}</b><b>${T('stem', 'الساق')}</b></div></div>`;
+const stepsCard = kind => {
+  const sun = kind === 'sun', n = sun ? '1/2' : '2/2';
+  const L = sun ? [[T('Prepare', 'جهّز'), T('2 kidney bean seedlings · a box like cardboard', 'شتلتين من الفاصوليا · صندوقًا مثل الكرتون')], [T('Change the condition', 'غيّر الشرط'), T('Pot A: lots of sunlight · Pot B: cover with a dark box', 'الإناء (أ): كثير من ضوء الشمس · الإناء (ب): غطِّه بصندوق مظلم')], [T('Observe', 'لاحظ'), T('Grow for about a week, keep water and temperature the same, then compare leaf color and stem thickness.', 'اتركهما حوالي أسبوع مع إبقاء الماء ودرجة الحرارة كما هما، ثم قارن لون الأوراق وسمك الساق.')]]
+    : [[T('Prepare', 'جهّز'), T('2 kidney bean seedlings · fertilizer', 'شتلتين من الفاصوليا · سمادًا')], [T('Change the condition', 'غيّر الشرط'), T('Pot A: water only · Pot B: water + a fixed amount of fertilizer', 'الإناء (أ): ماء فقط · الإناء (ب): ماء + كمية محددة من السماد')], [T('Keep the same', 'أبقِ كما هو'), T('Sunlight and temperature: put both in the same place.', 'ضوء الشمس ودرجة الحرارة: ضعهما في المكان نفسه.')], [T('Record the growth', 'سجّل النمو'), T('Measure plant height every few days and compare.', 'قِس ارتفاع النبات كل بضعة أيام وقارن.')]];
+  return `<div class="cs"><h3>${sun ? '☀️' : '🌱'} ${sun ? T('Experiment: Sunlight', 'تجربة: ضوء الشمس') : T('Experiment: Fertilizer', 'تجربة: السماد')}<i>${n}</i></h3>
+    <div class="pair"><div>${sun ? IMG('exp_sun_a') : IMG('exp_fert_a')}Pot A ${sun ? T('(gets sunlight)', '(يصله ضوء الشمس)') : T('(water only)', '(ماء فقط)')}</div><div>${sun ? IMG('exp_sun_b') : IMG('exp_fert_b')}Pot B ${sun ? T('(blocked from sunlight)', '(محجوب عنه الضوء)') : T('(water + fertilizer)', '(ماء + سماد)')}</div></div>
+    <ol>${L.map((x, i) => `<li><b>${i + 1}</b><div>${x[0]}<br><span>${x[1]}</span></div></li>`).join('')}</ol>
+    ${sun ? `<div class="note">${T('Note: If the soil gets dry, don’t forget to water them.', 'ملحوظة: إذا جفّت التربة فلا تنسَ أن تسقيها.')}</div>` : ''}</div>`;
+};
+const learnedCard = () => `<div class="learn"><div>${IMG('learn_sun')}☀️ ${T('Sunlight helps plants make their own food.', 'ضوء الشمس يساعد النباتات على صنع غذائها بنفسها.')}<br>${T('Dark green leaves and thick stems', 'أوراق خضراء داكنة وسيقان سميكة')}</div><div>${IMG('learn_fert')}🌱 ${T('Fertilizer gives plants nutrients.', 'السماد يعطي النباتات العناصر الغذائية.')}<br>${T('Bigger and stronger growth', 'نمو أكبر وأقوى')}</div></div>`;
 
 /* ---------- Stage 1 · Warm Up: the sunlight experiment ---------- */
 async function stage1() {
   Object.assign(sc, { mode: 'sun', boxY: -150, grow: 0, sunOn: false, glow: 0, hi: null }); g.paint();
-  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('sunlight · fertilizer · nutrients · leaf · stem', 'ضوء الشمس · السماد · العناصر الغذائية · الورقة · الساق')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
-  g.say(T(`Plants need ${kw('sunlight')} to grow healthy after they germinate. Do you think a plant can grow well without it? Let’s test it!`, `النباتات تحتاج إلى ${kw('ضوء الشمس')} لتنمو نموًّا صحيًّا بعد الإنبات. تفتكر النبات ينمو كويس من غيره؟ يلّا نجرّب!`), 'point');
+  g.veil(coverCard());
+  g.say(T('Plants need the right conditions to grow healthy. Let’s explore how <b>sunlight</b> and <b>fertilizer</b> help plants grow!', 'النباتات تحتاج إلى الظروف المناسبة لتنمو نموًّا صحيًّا. يلّا نكتشف إزاي <b>ضوء الشمس</b> و<b>السماد</b> بيساعدوا النباتات على النمو!'), 'wave');
+  await g.next(T('Start ▸', 'ابدأ ◂'));
+  g.veil(conceptsCard());
+  g.say(T('These are the key ideas of the chapter. Read them, then we will test them with experiments!', 'دي الأفكار الأساسية في الفصل. اقرأها، وبعدين هنختبرها بالتجارب!'), 'point');
+  await g.next(T('Next ▸', 'التالي ◂'));
+  g.veil(stepsCard('sun'));
+  g.say(T('Do plants need sunlight to grow healthy? Compare the growth of two seedlings. Keep the water and temperature the same.', 'هل تحتاج النباتات إلى ضوء الشمس لتنمو نموًّا صحيًّا؟ قارن نمو شتلتين، وأبقِ الماء ودرجة الحرارة كما هما.'), 'think');
   await g.next(T('Let’s test ▸', 'يلّا نجرّب ◂'));
   g.veil(null);
   g.say(T('We prepare 2 seedlings of about the same size: pot A and pot B. What is the “condition to change” between the two pots?', 'جهّزنا شتلتين تقريبًا في نفس الحجم: الإناء (أ) والإناء (ب). ما «الشرط الذي نغيّره» بين الإناءين؟'), 'think');
@@ -110,6 +172,10 @@ async function mission1() {
 async function mission2() {
   await g.banner(T('Mission 2', 'المهمة ٢'), T('The fertilizer experiment', 'تجربة السماد'));
   Object.assign(sc, { mode: 'fert', grow: 0, fert: false, bag: true, sunOn: true, hi: null }); g.paint();
+  g.veil(stepsCard('fert'));
+  g.say(T('Now the second experiment: do plants need fertilizer to grow bigger?', 'دلوقتي التجربة التانية: هل تحتاج النباتات إلى السماد لتنمو أكبر؟'), 'think');
+  await g.next(T('Let’s test ▸', 'يلّا نجرّب ◂'));
+  g.veil(null);
   g.say(T(`Do plants need ${kw('fertilizer')} to grow bigger? Both pots get sunlight. What is the “condition to change” now?`, `هل تحتاج النباتات إلى ${kw('السماد')} لتنمو أكبر؟ الإناءان يصلهما ضوء الشمس. ما «الشرط الذي نغيّره» الآن؟`), 'think');
   await g.choice({
     options: [T('Presence or absence of fertilizer', 'وجود السماد أو عدم وجوده'), T('Sunlight', 'ضوء الشمس'), T('Temperature', 'درجة الحرارة')],
@@ -148,7 +214,20 @@ async function mission3() {
     ok: T(`Plants absorb ${kw('fertilizer')} to grow their bodies even bigger.`, `تمتص النباتات ${kw('السماد')} لتنمو أجسامها أكبر.`) });
   sc.hi = null; g.paint();
 }
-async function stage2() { await mission1(); await mission2(); await mission3(); }
+async function check() {
+  await g.banner(T('Check What You Know', 'اختبر معلوماتك'), T('3 quick questions', '٣ أسئلة سريعة'));
+  const Q = [
+    { ph: ['chk_a', 'chk_b'], a: A.look('sunB'), b: A.look('sunA'), fa: false, fb: false, q: T('<b>1/3</b> Which plant has dark green leaves and thick, strong stems?', '<b>١/٣</b> أي نبات له أوراق خضراء داكنة وسيقان سميكة وقوية؟'), ans: 'B', hint: T('Dark green and thick means it got sunlight.', 'الأخضر الداكن والسميك معناه إنه أخد ضوء الشمس.'), ok: T(`The plant that got ${kw('sunlight')} has dark green leaves and thick, strong stems.`, `النبات الذي حصل على ${kw('ضوء الشمس')} له أوراق خضراء داكنة وسيقان سميكة وقوية.`) },
+    { ph: ['exp_fert_b', 'exp_fert_a'], a: A.look('fertB'), b: A.look('fertA'), fa: true, fb: false, q: T('<b>2/3</b> Both plants get sunlight. Which one is very tall because of fertilizer?', '<b>٢/٣</b> النباتان يصلهما ضوء الشمس. أيهما طويل جدًّا بسبب السماد؟'), ans: 'A', hint: T('Fertilizer helps plants grow bigger and stronger.', 'السماد يساعد النباتات على النمو أكبر وأقوى.'), ok: T(`The plant with ${kw('fertilizer')} is taller, bigger and stronger.`, `النبات الذي أخذ ${kw('السماد')} أطول وأكبر وأقوى.`) },
+    { ph: ['chk_b', 'chk_a'], a: A.look('sunA'), b: A.look('sunB'), fa: false, fb: false, q: T('<b>3/3</b> Which seedling grew <b>without</b> sunlight?', '<b>٣/٣</b> أي شتلة نمت <b>بدون</b> ضوء الشمس؟'), ans: 'B', hint: T('Look for yellowish leaves and a thin, long stem.', 'دوّر على الأوراق المائلة للاصفرار والساق الرفيعة الطويلة.'), ok: T(`Without sunlight the leaves become ${kw('yellowish')} and the stem grows ${kw('thin and long')}.`, `بدون ضوء الشمس تصبح الأوراق ${kw('مائلة للاصفرار')} وتنمو الساق ${kw('رفيعة وطويلة')}.`) }
+  ];
+  for (const c of Q) {
+    Object.assign(sc, { mode: 'check', chk: c, hi: null }); g.paint();
+    g.say(c.q, 'think');
+    await g.spot([{ id: 'A', name: T('Plant A', 'النبات (أ)'), ring: ring(XA, 150, 74, 110) }, { id: 'B', name: T('Plant B', 'النبات (ب)'), ring: ring(XB, 150, 74, 110) }], c.ans, { hint: c.hint, ok: c.ok });
+  }
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await check(); }
 
 /* ---------- Stage 3 · Speed Round: sunlight or fertilizer? ---------- */
 const SPEED = [
@@ -175,7 +254,7 @@ async function stage3() {
 g.run({
   intro: T(`Hi, <b>${g.name()}</b>! Welcome to my Growth Lab. We will run two experiments with kidney bean seedlings: one about <b>sunlight</b> and one about <b>fertilizer</b>. Change only one condition at a time!`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في معمل النمو. هنعمل تجربتين على شتلات الفاصوليا: واحدة عن <b>ضوء الشمس</b> وواحدة عن <b>السماد</b>. غيّر شرطًا واحدًا بس في كل مرة!`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في معمل النمو. هنعمل تجربتين على شتلات الفاصوليا: واحدة عن <b>ضوء الشمس</b> وواحدة عن <b>السماد</b>. غيّري شرطًا واحدًا بس في كل مرة!`)),
   stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
-  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Plants make their own food by getting <b>sunlight</b>: dark green leaves and thick, strong stems. <b>Fertilizer</b> gives plants nutrients: bigger and stronger growth.', 'تصنع النباتات غذاءها بنفسها بالحصول على <b>ضوء الشمس</b>: أوراق خضراء داكنة وسيقان سميكة وقوية. و<b>السماد</b> يعطي النباتات العناصر الغذائية: نمو أكبر وأقوى.') }
+  done: { title: T('Great Job!', 'أحسنت!'), text: `<b>${T('You learned that:', 'لقد تعلّمت أن:')}</b><div class="cs">${learnedCard()}</div>` }
 }).catch(err => console.error(err));
 window.__growlab = { sc, render };
 })();

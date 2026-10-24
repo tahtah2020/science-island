@@ -88,8 +88,8 @@ html[dir=rtl] .bubble::before{left:auto;right:-12px;border-left:0;border-bottom:
 .hot:focus{outline:none}
 .hot.good .ring{fill:rgba(46,158,107,.34);stroke:var(--ok);stroke-dasharray:none}
 .hot.bad .ring{fill:rgba(226,96,63,.3);stroke:var(--coral);stroke-dasharray:none}
-.veil{position:absolute;inset:0;display:grid;place-items:center;padding:12px;background:rgba(255,248,234,.92);border-radius:16px}
-.veilCard{text-align:center;display:flex;flex-direction:column;gap:8px;max-width:520px;align-items:center}
+.veil{position:absolute;inset:0;display:flex;overflow:auto;padding:12px;background:rgba(255,248,234,.92);border-radius:16px}
+.veilCard{margin:auto;text-align:center;display:flex;flex-direction:column;gap:8px;max-width:520px;align-items:center}
 .veilCard small{font-weight:900;color:var(--ink);font-size:13px}
 .veilCard strong{font-size:clamp(19px,4.2vw,28px);font-weight:900;line-height:1.35}
 .veilCard span{font-weight:800;color:#b45309;font-size:15px}
