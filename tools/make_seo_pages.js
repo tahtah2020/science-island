@@ -136,6 +136,8 @@ var s=document.createElement('script');s.async=true;s.src='https://www.googletag
 `;
 }
 
+const ORG = { '@type': 'Organization', '@id': SITE + '/#org', name: 'متفوّق · Motafawek', url: SITE + '/', logo: SITE + '/assets/parrot_wave.png', sameAs: ['https://t.me/motafawek'] };
+const EDU = { educationalUse: 'practice', learningResourceType: 'أسئلة تدريبية بالإجابات', audience: { '@type': 'EducationalAudience', educationalRole: 'student' }, isAccessibleForFree: true, publisher: { '@id': SITE + '/#org' }, educationalAlignment: { '@type': 'AlignmentObject', alignmentType: 'educationalSubject', targetName: 'المنهج المصري - الترم الأول 2026/2027' } };
 const crumbs = list => '<nav class="crumbs" aria-label="مسار التصفح">' + list.map(([n, u]) => (u ? `<a href="${u}">${esc(n)}</a>` : esc(n))).join(' › ') + '</nav>';
 const breadcrumbSchema = list => ({ '@type': 'BreadcrumbList', itemListElement: list.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + (u || '') })).filter(x => x.item !== SITE) });
 
@@ -144,6 +146,7 @@ const out = path.join(ROOT, 'lessons');
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
 
+const FULL = [];             // every page's Q&A, written to llms-full.txt
 const pages = [];            // { url, priority }
 const hubs = {};             // 'subject-grade' -> { subject, grade, units: [...] }
 let skipped = [];
@@ -177,7 +180,7 @@ for (const c of CHAPTERS) {
     unit.lessons.push({ n, name: lessonName, url });
 
     const gradeAr = GRADES[g], subAr = subjAr(s), uw = unitWord(c);
-    const title = `أسئلة على درس ${lessonName} ${subAr} ${gradeAr} ترم أول بالإجابات | متفوّق`;
+    const title = `أسئلة على درس ${lessonName} ${subAr} ${gradeAr} ترم أول 2027 بالإجابات | متفوّق`;
     const desc = `أسئلة تدريبية بالإجابات على درس ${lessonName} من ${uw} ${c.titleAr} في ${subAr} ${gradeAr} (المنهج المصري، الترم الأول)، ثم العب واختبر نفسك مع ريشو.`;
     const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [lessonName, null]];
 
@@ -193,6 +196,7 @@ ${it.why ? `<p class="why">${esc(it.why)}</p>` : ''}
 <h1>أسئلة على درس ${esc(lessonName)} ${esc(subAr)} ${esc(gradeAr)} – ترم أول</h1>
 <p class="lead">هذه الصفحة للطالب وولي الأمر: أسئلة تدريبية بإجاباتها على درس <strong>${esc(lessonName)}</strong> من ${uw} «${esc(c.titleAr)}» في ${esc(subAr)} ${esc(gradeAr)}، للمنهج المصري. جرّب أن تجيب أولًا ثم اقرأ الإجابة.</p>
 <a class="cta" href="/index.html">العب هذا الدرس مع ريشو</a>
+${items.length ? `<p class="lead"><strong>الخلاصة:</strong> ${esc(items[0].filled || (items[0].q + ' الإجابة: ' + items[0].a))}.</p>` : ''}
 ${concepts.length ? `<h2>أهم ما يغطيه الدرس</h2>\n<ul class="links">${concepts.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
 <h2>أسئلة تدريبية بالإجابات</h2>
 ${qHtml}
@@ -200,13 +204,14 @@ ${qHtml}
 <!--LESSON_NAV-->`;
 
     const schema = [
-      { '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar' },
+      { '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG,
       breadcrumbSchema(bc),
-      { '@type': 'WebPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY, about: `${lessonName} - ${subAr} - ${gradeAr}` },
+      { '@type': 'WebPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY, about: `${lessonName} - ${subAr} - ${gradeAr}`, ...EDU, educationalLevel: gradeAr, teaches: concepts },
       { '@type': 'FAQPage', mainEntity: items.map(it => ({ '@type': 'Question', name: it.q, acceptedAnswer: { '@type': 'Answer', text: it.a + (it.why ? ' — ' + it.why : '') } })) }
     ];
     fs.writeFileSync(path.join(out, slug + '.html'), shell({ title, desc, url, body, schema }));
     pages.push({ url, priority: '0.7' });
+    FULL.push({ title, url, items });
   });
 }
 
@@ -253,13 +258,14 @@ ${renderQs(items)}
 <a class="cta" href="/index.html">أكمل التدريب باللعب: أسئلة يومية ومراجعة وامتحان شهري</a>
 ${extra || ''}`;
   const schema = [
-    { '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar' },
+    { '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG,
     breadcrumbSchema(bc),
-    { '@type': 'WebPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY, about },
+    { '@type': 'WebPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY, about, ...EDU },
     { '@type': 'FAQPage', mainEntity: items.map(it => ({ '@type': 'Question', name: it.q, acceptedAnswer: { '@type': 'Answer', text: it.a + (it.why ? ' — ' + it.why : '') } })) }
   ];
   fs.writeFileSync(path.join(out, slug + '.html'), shell({ title, desc, url, body, schema }));
   pages.push({ url, priority: priority || '0.8' });
+  FULL.push({ title, url, items });
   return url;
 }
 
@@ -273,7 +279,7 @@ for (const hub of Object.values(hubs)) {
     if (items.length < 8 || !unit.lessons.length) continue;
     const uw = unitWord(c), ord = (uw === 'الوحدة' ? ORD_F : ORD_M)[c.n] || String(c.n);
     const name = `اختبار على ${uw} ${ord} ${subAr} ${gradeAr}`;
-    const title = `${name} ترم أول بالإجابات | متفوّق`;
+    const title = `${name} ترم أول 2027 بالإجابات | متفوّق`;
     const desc = `${name} (المنهج المصري، الترم الأول) بأسئلة وإجابات على كل دروس ${uw} «${c.titleAr}»، مع ألعاب للمراجعة.`;
     const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [`${uw} ${ord}`, null]];
     const url = writeBigPage({
@@ -297,7 +303,7 @@ for (const e of (W.EXAMS || [])) {
   const gradeAr = GRADES[g], subAr = subjAr(s), key = s + '-' + g;
   const label = /أكتوبر/.test(e.titleAr) ? 'مراجعة شهر أكتوبر' : 'مراجعة ' + e.titleAr;
   const name = `${label} ${subAr} ${gradeAr}`;
-  const title = `${name} ترم أول بالإجابات | متفوّق`;
+  const title = `${name} ترم أول 2027 بالإجابات | متفوّق`;
   const desc = `${name} (المنهج المصري، الترم الأول): أسئلة تدريبية بالإجابات على المقرر، ثم العب واختبر نفسك قبل امتحان الشهر.`;
   const covered = parts.map(p => { const ch = CHAPTERS.find(x => x.id === p.ch); const ls = (ch.lessonsAr || []).filter((_, i) => !p.lessons || p.lessons.includes(i + 1)); return `<li>${unitWord(ch)} «${esc(ch.titleAr)}»: ${ls.map(esc).join('، ')}</li>`; }).join('');
   const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [label, null]];
@@ -334,7 +340,7 @@ for (const k of hubKeys) {
   const examHtml = exams.length ? `<h2>مراجعة قبل الامتحان</h2>\n<ul class="links">${exams.map(x => `<li><a href="${x.url}">${esc(x.name)}</a></li>`).join('')}</ul>\n` : '';
   const list = examHtml + units.filter(u => u.lessons.length).map(u => `<h2>${unitWord(u.c)} ${u.c.n}: ${esc(u.c.titleAr)}</h2>\n<ul class="links">${u.page ? `<li><a href="${u.page.url}"><strong>${esc(u.page.name)}</strong></a></li>` : ''}${u.lessons.map(l => `<li><a href="${l.url}">${esc(l.name)}</a></li>`).join('')}</ul>`).join('\n');
   const body = `${crumbs(bc)}\n<h1>أسئلة ${esc(subAr)} ${esc(gradeAr)} بالإجابات</h1>\n<p class="lead">اختر الدرس لتجد أسئلة تدريبية بإجاباتها، ثم العب واختبر نفسك مع ريشو.</p>\n<a class="cta" href="/index.html">ابدأ اللعب</a>\n${list}`;
-  const schema = [{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar' }, breadcrumbSchema(bc),
+  const schema = [{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG, breadcrumbSchema(bc),
     { '@type': 'CollectionPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' } }];
   fs.writeFileSync(path.join(out, k + '.html'), shell({ title, desc, url, body, schema }));
   pages.push({ url, priority: '0.8' });
@@ -349,7 +355,7 @@ for (const k of hubKeys) {
     return `<h2>${esc(GRADES[g])}</h2>\n<ul class="grid">${ks.map(k => `<li><a href="/lessons/${k}.html">${esc(subjAr(hubs[k].s))} – ${esc(GRADES[g])}</a></li>`).join('')}</ul>`;
   }).join('\n');
   const body = `${crumbs(bc)}\n<h1>أسئلة وألعاب لكل دروس المنهج المصري</h1>\n<p class="lead">متفوّق موقع للتعلم باللعب. اختر صفك ومادتك لتصل إلى أسئلة كل درس بالإجابات.</p>\n${byGrade}`;
-  const schema = [{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar' }, breadcrumbSchema(bc),
+  const schema = [{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG, breadcrumbSchema(bc),
     { '@type': 'CollectionPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' } }];
   fs.writeFileSync(path.join(out, 'index.html'), shell({ title, desc, url, body, schema }));
   pages.push({ url, priority: '0.9' });
@@ -372,7 +378,29 @@ ${hubKeys.map(k => `- [${subjAr(hubs[k].s)} ${GRADES[hubs[k].g]}](${SITE}/lesson
 ## الموقع
 - [الصفحة الرئيسية](${SITE}/)
 - [أولياء الأمور والمعلمون](${SITE}/contact.html)
+
+## نسخة كاملة
+- [كل الأسئلة بالإجابات كنص واحد](${SITE}/llms-full.txt)
 `);
+
+/* llms-full.txt: every practice question with its answer, as plain text for AI assistants */
+fs.writeFileSync(path.join(ROOT, 'llms-full.txt'), `# متفوّق · Motafawek: الأسئلة التدريبية بالإجابات (المنهج المصري، الترم الأول 2026/2027)\n\n> أسئلة تدريبية من إعدادنا مرتبطة بدروس الكتاب المدرسي. المصدر: ${SITE}/lessons/\n\n` +
+  FULL.map(f => `## ${f.title.replace(/ \| متفوّق$/, '')}\n${SITE}${f.url}\n\n` + f.items.map((it, i) => `${i + 1}. ${it.q}${it.options ? '\n   الاختيارات: ' + it.options.join(' / ') : ''}\n   الإجابة: ${it.a}${it.why ? '\n   التوضيح: ' + it.why : ''}`).join('\n')).join('\n\n') + '\n');
+
+/* home page: crawlable links to every grade/subject hub (between the SEO_LINKS markers in index.html) */
+{
+  const f = path.join(ROOT, 'index.html'), h = fs.readFileSync(f, 'utf8');
+  const block = `<!--SEO_LINKS-->
+    <h3>أسئلة بالإجابات على كل درس</h3>
+    <ul>
+      <li><a href="/lessons/">كل الدروس والأسئلة التدريبية بالإجابات</a></li>
+${hubKeys.map(k => `      <li><a href="/lessons/${k}.html">${esc(subjAr(hubs[k].s))} ${esc(GRADES[hubs[k].g])}</a></li>`).join('\n')}
+    </ul>
+    <!--/SEO_LINKS-->`;
+  const re = /<!--SEO_LINKS-->[\s\S]*?<!--\/SEO_LINKS-->/;
+  if (re.test(h)) fs.writeFileSync(f, h.replace(re, () => block));
+  else console.log('index.html: SEO_LINKS markers missing, home links not written');
+}
 
 console.log(`lesson pages: ${pages.filter(p => p.priority === '0.7').length}, hubs: ${hubKeys.length} + index, sitemap urls: ${urls.length}`);
 if (skipped.length) console.log('skipped:\n  ' + skipped.join('\n  '));
