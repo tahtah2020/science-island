@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024e">
+<link rel="stylesheet" href="game_kit.css?v=20261024g">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Healthy Body Hero.</noscript>
-<script src="firebase-config.js?v=20261024e"></script>
-<script src="chapters.js?v=20261024e"></script>
-<script src="common.js?v=20261024e"></script>
-<script src="english/g5_art.js?v=20261024e"></script>
-<script src="game_kit.js?v=20261024e"></script>
+<script src="firebase-config.js?v=20261024g"></script>
+<script src="chapters.js?v=20261024g"></script>
+<script src="common.js?v=20261024g"></script>
+<script src="english/g5_art.js?v=20261024g"></script>
+<script src="game_kit.js?v=20261024g"></script>
 <script>
 (() => {
 'use strict';
@@ -42,9 +42,9 @@ const BASE = `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf1ec"/>`;
 const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 24}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
 const cardSvg = () => {
   let s = BASE + `<rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
-  const n = sc.lines.length, y0 = 150 - (n - 1) * 20;
+  const n = sc.lines.length, step = n > 4 ? 34 : 40, y0 = 154 - (n - 1) * step / 2;
   sc.lines.forEach((line, i) => {
-    const parts = String(line).split('___'), y = y0 + i * 40;
+    const parts = String(line).split('___'), y = y0 + i * step;
     const len = parts.join(sc.fill || '_____').length, fs = Math.min(23, Math.floor(284 / (len * .58)));   // a long line gets a smaller font, so it stays inside the card
     if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
     const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
@@ -122,12 +122,14 @@ async function mission1() {                 // lesson 1: health words
   await ask('What is “mental health”?', 'إيه هي “mental health”؟', ['how you feel and think', 'how strong your muscles are', 'how well your body moves'], 'how you feel and think', 'It is about your mind.', 'ده عن عقلك.', `${kw('Mental health')} is how you feel and think.`, `${L('Mental health is how you feel and think.')}`);
 }
 async function mission2() {                 // lesson 2: Adam then and now
+  set('plate', { emoji: '📅', word: 'Then and now' });
   g.say(T('Mission 2: Adam’s habits then and now. In the past, Adam woke up late and watched TV all day. Is each habit from the past or now?', 'المهمة ٢: عادات آدم زمان ودلوقتي. زمان كان آدم بيصحى متأخر وبيتفرج على التلفزيون طول اليوم. العادة دي من زمان ولا دلوقتي؟'), 'point');
   await g.next();
   const buttons = [{ label: T('In the past', 'In the past'), value: 'p', c: 3 }, { label: T('Now', 'Now'), value: 'n', c: 1 }];
   await sortCards(buttons, [['Wakes up late', 'p', 'In the past, Adam woke up late on weekends.', '😴'], ['Exercises every morning', 'n', 'Now, Adam wakes up early and exercises every morning.', '🏃'],
     ['Eats burgers and chips', 'p', 'Before, Adam loved chips, burgers and sweets.', '🍔'], ['Eats fruits and vegetables', 'n', 'Now, Adam eats more fruits and vegetables.', '🥦'],
     ['Drinks soda', 'p', 'In the past, Adam drank soda. Now he drinks water.', '🥤'], ['Plays football on Saturday', 'n', 'Now, Adam plays football with friends every Saturday.', '⚽']], 'plate');
+  set('plate', { emoji: '🍳', word: 'Cooking' });
   await ask('How does Adam’s family cook now?', 'عيلة آدم بتطبخ إزاي دلوقتي؟', ['They grill or bake', 'They fry', 'They never cook'], 'They grill or bake', 'They fried food in the past.', 'كانوا بيقلوا الأكل زمان.', `Adam’s family ${kw('grill or bake')} food instead of frying.`, `${L('Adam’s family grill or bake food instead of frying.')}`);
 }
 async function mission3() {                 // lesson 2: a/an/some/any
@@ -151,6 +153,7 @@ async function mission4() {                 // lesson 3: heart and blood
   await ask('Which habit keeps your heart strong?', 'أنهي عادة بتحافظ على قوة قلبك؟', ['Eating good food, sleeping well and exercising', 'Too much stress', 'Not drinking water'], 'Eating good food, sleeping well and exercising', 'Stress can hurt your heart.', 'الضغط العصبي ممكن يضر قلبك.', `Good food, sleep, water and ${kw('exercise')} keep your heart strong.`, `${L('Good food, sleep, water and exercise keep your heart strong.')}`);
 }
 async function mission5() {                 // lesson 3: syllables
+  set('plate', { emoji: '👏', word: 'Clap it out!' });
   g.say(T('Mission 5: syllables. A syllable is a word part with one vowel sound. Clap once for each vowel sound. How many syllables does each word have?', 'المهمة ٥: المقاطع. المقطع جزء من الكلمة فيه صوت متحرك واحد. صقّف مرة لكل صوت متحرك. كام مقطع في كل كلمة؟'), 'point');
   await g.next();
   const buttons = [{ label: T('One syllable', 'One syllable'), value: 'one', c: 1 }, { label: T('More than one', 'More than one'), value: 'more', c: 3 }];
@@ -158,6 +161,7 @@ async function mission5() {                 // lesson 3: syllables
     ['flag', 'one', 'flag has one vowel sound.'], ['elephant', 'more', 'el-e-phant has three syllables.'], ['pot', 'one', 'pot has one vowel sound.'], ['basket', 'more', 'bas-ket has two syllables.'], ['leaf', 'one', 'leaf has one vowel sound.']], 'word');
 }
 async function mission6() {                 // lesson 4: healthcare heroes
+  set('plate', { emoji: '🏥', word: 'Healthcare heroes' });
   g.say(T('Mission 6: Healthcare Heroes. Who does each job?', 'المهمة ٦: أبطال الرعاية الصحية. مين بيعمل كل شغلانة؟'), 'point');
   await g.next();
   const buttons = [{ label: T('Doctor', 'Doctor'), value: 'd', c: 0 }, { label: T('Nurse', 'Nurse'), value: 'n', c: 1 }, { label: T('Pharmacist', 'Pharmacist'), value: 'ph', c: 2 }, { label: T('Paramedic', 'Paramedic'), value: 'pa', c: 3 }];
@@ -165,6 +169,7 @@ async function mission6() {                 // lesson 4: healthcare heroes
     ['Cares for patients around the clock', 'n', 'Nurses often work around the clock to give support and care.', '💉'],
     ['Makes sure patients get the correct medicine', 'ph', 'Pharmacists make sure patients receive the correct medicine.', '💊'],
     ['Helps on the spot in emergencies', 'pa', 'Paramedics respond quickly in emergencies and take patients to hospitals.', '🚑']], 'plate');
+  set('plate', { emoji: '📝', word: 'Non-fiction text' });
   await ask('Which sentence is an introductory sentence?', 'أنهي جملة هي جملة افتتاحية؟', ['My neighbor, Selim, is a doctor at our local hospital.', 'The work is tiring, but he’s proud to be a doctor.', 'He wears a white coat.'], 'My neighbor, Selim, is a doctor at our local hospital.', 'It introduces the person.', 'بتعرّفنا على الشخص.', `An ${kw('introductory sentence')} introduces the person.`, `${L('An introductory sentence introduces the person.')}`);
 }
 async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }

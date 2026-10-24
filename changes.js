@@ -3,6 +3,14 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-24', title: 'English Grade 5: Nile photos',
+    items: [
+      { text: 'Nile Explorer shows the Nile pictures (water weeds, river, insects, crocodile hunting) in its questions' }
+    ] },
+  { date: '2026-10-24', title: 'English Grade 5: picture fixes',
+    items: [
+      { text: 'English Grade 5 games: a drawn Koshari bowl and Giving Tree, each mission shows its own picture, and no picture gives away the answer' }
+    ] },
   { date: '2026-10-24', title: 'English Grade 5: Units 1-3',
     items: [
       { text: 'Grade 5 English (both tracks): Food, Nature, and Culture, My Healthy Body and When Nature Changes, with three games and the October test' }

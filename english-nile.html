@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024e">
+<link rel="stylesheet" href="game_kit.css?v=20261024g">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Nile Explorer.</noscript>
-<script src="firebase-config.js?v=20261024e"></script>
-<script src="chapters.js?v=20261024e"></script>
-<script src="common.js?v=20261024e"></script>
-<script src="english/g5_art.js?v=20261024e"></script>
-<script src="game_kit.js?v=20261024e"></script>
+<script src="firebase-config.js?v=20261024g"></script>
+<script src="chapters.js?v=20261024g"></script>
+<script src="common.js?v=20261024g"></script>
+<script src="english/g5_art.js?v=20261024g"></script>
+<script src="game_kit.js?v=20261024g"></script>
 <script>
 (() => {
 'use strict';
@@ -42,9 +42,9 @@ const BASE = `<rect width="${VW}" height="${VH}" rx="14" fill="#f1f8ec"/>`;
 const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 24}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
 const cardSvg = () => {
   let s = BASE + `<rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
-  const n = sc.lines.length, y0 = 150 - (n - 1) * 20;
+  const n = sc.lines.length, step = n > 4 ? 34 : 40, y0 = 154 - (n - 1) * step / 2;
   sc.lines.forEach((line, i) => {
-    const parts = String(line).split('___'), y = y0 + i * 40;
+    const parts = String(line).split('___'), y = y0 + i * step;
     const len = parts.join(sc.fill || '_____').length, fs = Math.min(23, Math.floor(284 / (len * .58)));   // a long line gets a smaller font, so it stays inside the card
     if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
     const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
@@ -58,6 +58,35 @@ const wordSvg = () => BASE + `<rect x="30" y="60" width="280" height="170" rx="2
 const star = (x, y, r, c) => { const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; p.push((x + Math.cos(a) * rr).toFixed(1) + ' ' + (y + Math.sin(a) * rr).toFixed(1)); } return `<path d="M${p.join('L')}Z" fill="${c}" stroke="#c98a14" stroke-width="2"/>`; };
 const starsSvg = () => { let s = BASE + `<rect x="14" y="80" width="312" height="130" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`; for (let i = 0; i < 5; i++) s += star(50 + i * 60, 145, 26, i < sc.n ? '#f2b134' : '#e8e0cc'); return s + txt(170, 250, sc.word, { fs: 26 }); };
 
+const koshariSvg = () => {
+  let s = BASE + `<ellipse cx="170" cy="252" rx="124" ry="14" fill="#000" opacity=".1"/><path d="M48 128Q48 252 170 252Q292 252 292 128Z" fill="#c9a15c" stroke="#8a5a28" stroke-width="4"/><path d="M70 196Q170 226 270 196" fill="none" stroke="#a97d3c" stroke-width="3"/>`
+    + `<ellipse cx="170" cy="128" rx="122" ry="40" fill="#fff6e0" stroke="#8a5a28" stroke-width="4"/>`;
+  let r = 7;
+  const rnd = () => (r = (r * 16807) % 2147483647) / 2147483647;
+  const inBowl = () => { for (;;) { const x = 70 + rnd() * 200, y = 100 + rnd() * 56; if (((x - 170) / 108) ** 2 + ((y - 128) / 30) ** 2 < 1) return [x, y]; } };
+  for (let i = 0; i < 34; i++) { const [x, y] = inBowl(); s += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="5" ry="2.2" fill="#fffdf5" stroke="#e6dcc0" stroke-width=".8" transform="rotate(${(rnd() * 180).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`; }       // rice
+  for (let i = 0; i < 16; i++) { const [x, y] = inBowl(); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="#7a4a24"/>`; }                                                                                                                                  // lentils
+  for (let i = 0; i < 12; i++) { const [x, y] = inBowl(); s += `<rect x="${(x - 7).toFixed(1)}" y="${(y - 2.6).toFixed(1)}" width="14" height="5.2" rx="2.6" fill="#e8c27a" stroke="#c99a46" stroke-width="1" transform="rotate(${(rnd() * 180).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`; }  // pasta
+  for (let i = 0; i < 9; i++) { const [x, y] = inBowl(); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#e9b94a" stroke="#c4902a" stroke-width="1.4"/>`; }                                                                                                                  // chickpeas
+  s += `<ellipse cx="170" cy="124" rx="52" ry="15" fill="#d9472b" opacity=".92"/>`;                                                                                                                                                                                                                                        // red sauce
+  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2, x = 170 + Math.cos(a) * (14 + (i % 3) * 8), y = 116 + Math.sin(a) * (5 + (i % 3) * 3); s += `<path d="M${(x - 7).toFixed(1)} ${y.toFixed(1)}q7 -7 14 0" fill="none" stroke="#b9772a" stroke-width="3.2" stroke-linecap="round"/>`; }   // crispy onions
+  return s + txt(170, 288, 'Koshari', { fs: 26 });
+};
+const PHOTO = { weeds: [362, 365], river: [375, 370], insects: [354, 369], hunt: [514, 372], croc: [514, 374] };
+const photoSvg = () => {
+  const [w, h] = PHOTO[sc.sub] || [4, 3], k = Math.min(290 / w, 230 / h), pw = w * k, ph = h * k, x = (VW - pw) / 2, y = 34 + (232 - ph) / 2;
+  return BASE + `<rect x="${x - 8}" y="${y - 8}" width="${pw + 16}" height="${ph + 16}" rx="22" fill="#fff" stroke="#d8c9a6" stroke-width="3"/><clipPath id="phc"><rect x="${x}" y="${y}" width="${pw}" height="${ph}" rx="16"/></clipPath><image href="english/assets/nile_${sc.sub}.jpg" x="${x}" y="${y}" width="${pw}" height="${ph}" clip-path="url(#phc)"/>`;
+};
+const treeSvg = () => {
+  const sad = sc.sub === 'sad';
+  let s = BASE + `<ellipse cx="170" cy="258" rx="90" ry="12" fill="#000" opacity=".1"/><path d="M152 258L158 150H182L188 258Z" fill="#8a5a28" stroke="#6b4420" stroke-width="3"/><path d="M164 176L130 140M176 170L214 134" stroke="#8a5a28" stroke-width="9" stroke-linecap="round"/>`;
+  const leaf = sad ? '#a7b36a' : '#4f9f52', dy = sad ? 14 : 0;
+  [[170, 92 + dy, 56], [118, 122 + dy, 42], [222, 122 + dy, 42], [150, 128 + dy, 40], [192, 128 + dy, 40]].forEach(([x, y, r]) => { s += `<circle cx="${x}" cy="${y}" r="${r}" fill="${leaf}" stroke="${sad ? '#85904c' : '#3a7d3e'}" stroke-width="3"/>`; });
+  if (sad) { [[110, 168], [134, 178], [208, 176], [236, 164]].forEach(([x, y]) => { s += `<path d="M${x} ${y}q4 14 -2 24q-8 -8 2 -24Z" fill="#a7b36a" stroke="#85904c" stroke-width="2"/>`; }); s += `<path d="M150 200q20 -12 40 0" fill="none" stroke="#6b4420" stroke-width="4" stroke-linecap="round"/><circle cx="154" cy="188" r="3.4" fill="#6b4420"/><circle cx="186" cy="188" r="3.4" fill="#6b4420"/>`; }
+  else [[140, 104], [196, 88], [168, 128], [118, 134], [226, 122]].forEach(([x, y]) => { s += `<circle cx="${x}" cy="${y}" r="9" fill="#e2603f" stroke="#b24428" stroke-width="2"/>`; });
+  return s;
+};
+
 function render() {
   const m = sc.mode;
   if (m === 'set') return BASE + `<g transform="translate(0 25)">${D.nileLife({ pic: { plain: true } })}</g>`;
@@ -65,6 +94,9 @@ function render() {
   if (m === 'plate') return plateSvg();
   if (m === 'word') return wordSvg();
   if (m === 'stars') return starsSvg();
+  if (m === 'koshari') return koshariSvg();
+  if (m === 'tree') return treeSvg();
+  if (m === 'photo') return photoSvg();
   return BASE;
 }
 const setRings = () => { const r = D.nileLife.rings(); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.NAMES[id], ring: E.ringEl(x + w / 2, y + h / 2 + 25, w / 2, h / 2) }; }); };
@@ -107,9 +139,13 @@ async function stage1() {
   g.say(T('Tap the <b>bird</b> that eats small fish, insects and plants.', 'اضغط على <b>الطائر</b> اللي بياكل سمك صغير وحشرات ونباتات.'), 'point');
   await g.spot(setRings(), 'bird', { hint: T('It has wings and a beak.', 'عنده جناحين ومنقار.'),
     ok: T(`Birds eat both plants and ${kw('insects')}.`, `${L('Birds eat both plants and insects.')}`) });
+  set('photo', { sub: 'croc' });
   await ask('Not many animals hunt crocodiles. So what are crocodiles called?', 'مفيش حيوانات كتير بتصطاد التماسيح. فبيتسموا إيه؟',
     ['The kings of the Nile', 'The babies of the Nile', 'The weeds of the Nile'], 'The kings of the Nile', 'They are strong and dangerous.', 'هما قوية وخطيرة.',
     `Crocodiles are ${kw('the kings of the Nile')}.`, `${L('Crocodiles are the kings of the Nile.')}`);
+  set('photo', { sub: 'hunt' });
+  await ask('Some animals, like crocodiles, ___ to get food.', 'بعض الحيوانات، زي التماسيح، ___ عشان تاخد أكلها.', ['hunt', 'sail', 'keep'], 'hunt', 'The crocodile is watching another animal.', 'التمساح بيراقب حيوان تاني.',
+    `Crocodiles ${kw('hunt')} to get food.`, `${L('Crocodiles hunt to get food.')}`);
 }
 
 /* ---------- Stage 2 · Missions ---------- */
@@ -117,21 +153,29 @@ async function mission1() {                 // lesson 1: who eats what
   set('set');
   g.say(T('Mission 1: the Nile food chain. Who eats what? Read each question.', 'المهمة ١: السلسلة الغذائية في النيل. مين بياكل إيه؟ اقرا كل سؤال.'), 'point');
   await g.next();
+  set('photo', { sub: 'weeds' });
   await ask('What do small fish eat?', 'السمك الصغير بياكل إيه؟', ['Water weeds', 'Crocodiles', 'Big animals'], 'Water weeds', 'They are plants in the water.', 'نباتات في المية.', `Small fish eat ${kw('water weeds')}.`, `${L('Small fish eat water weeds.')}`);
+  set('photo', { sub: 'river' });
   await ask('What do big fish eat?', 'السمك الكبير بياكل إيه؟', ['Smaller fish, insects and tiny creatures', 'Big animals', 'Only water weeds'], 'Smaller fish, insects and tiny creatures', 'Think of a big fish and a small fish.', 'فكّر في سمكة كبيرة وسمكة صغيرة.',
     `Big fish eat ${kw('smaller fish, insects and tiny creatures')}.`, `${L('Big fish eat smaller fish, insects and tiny creatures.')}`);
+  set('photo', { sub: 'insects' });
+  await ask('Birds eat small fish, plants and ___ near the river.', 'الطيور بتاكل سمك صغير ونباتات و___ جنب النهر.', ['insects', 'crocodiles', 'rocks'], 'insects', 'Tiny animals with wings and legs.', 'حيوانات صغيرة بأجنحة ورجلين.', `Birds eat ${kw('insects')}.`, `${L('Birds eat insects near the river.')}`);
+  set('photo', { sub: 'river' });
   await ask('Each animal plays an important role. What must we do?', 'كل حيوان له دور مهم. إيه اللي لازم نعمله؟', ['Protect the river', 'Hunt the crocodiles', 'Leave the river'], 'Protect the river', 'The river is home to all of them.', 'النهر بيت ليهم كلهم.',
     `We must ${kw('protect the river')}.`, `${L('We must protect the river.')}`);
 }
 async function mission2() {                 // lesson 2: desert animals
+  set('plate', { emoji: '🏜️', word: 'The desert' });
   g.say(T('Mission 2: Food in the Hot Desert. The desert is hot and dry, but many animals live there. What does each animal eat?', 'المهمة ٢: الأكل في الصحراء الحارة. الصحراء حارة وجافة، بس حيوانات كتير بتعيش فيها. كل حيوان بياكل إيه؟'), 'point');
   await g.next();
   const buttons = [{ label: T('Plants', 'Plants'), value: 'p', c: 1 }, { label: T('Small animals', 'Small animals'), value: 's', c: 3 }, { label: T('Insects', 'Insects'), value: 'i', c: 0 }];
   await sortCards(buttons, [['Camel', 'p', 'Camels eat plants to stay strong.', '🐪'], ['Snake', 's', 'Snakes often eat small animals like rats or lizards.', '🐍'], ['Lizard', 'i', 'Lizards eat insects, which give them energy.', '🦎']], 'plate');
+  set('plate', { emoji: '🪨', word: 'Under the rocks' });
   await ask('Some animals hide under rocks. Why?', 'بعض الحيوانات بتستخبى تحت الصخور. ليه؟', ['To stay cool during the day', 'To catch fish', 'To find water weeds'], 'To stay cool during the day', 'The desert is very hot.', 'الصحراء حارة جدًا.',
     `They hide under rocks ${kw('to stay cool')} during the day. Owls come out at night.`, `${L('They hide under rocks to stay cool.')} والبوم بيطلع بالليل.`);
 }
 async function mission3() {                 // lesson 2: adverbs of frequency
+  set('card', { lines: ['always · 100%', 'usually · 90%', 'often · 70%', 'sometimes · 50%', 'rarely · 20%', 'never · 0%'] });
   g.say(T('Mission 3: adverbs of frequency tell us how often something happens: always 100%, usually 90%, often 70%, sometimes 50%, rarely 20%, never 0%.', 'المهمة ٣: ظروف التكرار بتقول الحاجة بتحصل كام مرة: always ١٠٠٪ وusually ٩٠٪ وoften ٧٠٪ وsometimes ٥٠٪ وrarely ٢٠٪ وnever صفر٪.'), 'point');
   await g.next();
   await fillCard(['Snakes ___', 'eat plants. (0%)'], ['never', 'always', 'usually'], 'never', 'Choose the adverb.', 'اختار الكلمة.', 'Zero percent means no time at all.', 'صفر٪ يعني ولا مرة.',
@@ -144,32 +188,34 @@ async function mission3() {                 // lesson 2: adverbs of frequency
     `${kw('Usually')} means 90%.`, `${L('Usually')} يعني ٩٠٪.`);
 }
 async function mission4() {                 // lesson 3: The Giving Tree
+  set('tree');
   g.say(T('Mission 4: Story Time: The Giving Tree. Tom loved a big apple tree, but he was selfish. Choose the word that matches each meaning.', 'المهمة ٤: وقت الحكاية: الشجرة المعطاءة. توم كان بيحب شجرة تفاح كبيرة، بس كان أناني. اختار الكلمة اللي تناسب كل معنى.'), 'point');
   await g.next();
-  set('word', { word: 'trunk' });
+  set('tree');
   await ask('Which word means: the main, thick part of a tree?', 'أنهي كلمة معناها: الجزء الرئيسي السميك من الشجرة؟', ['trunk', 'crown', 'shade'], 'trunk', 'It supports the branches and leaves.', 'بيشيل الأغصان والورق.', `The ${kw('trunk')} is the main, thick part of a tree.`, `${L('The trunk is the main, thick part of a tree.')}`);
-  set('word', { word: 'shade' });
+  set('tree');
   await ask('Which word means: a dark shadow created when sunlight is blocked?', 'أنهي كلمة معناها: ظل غامق بيتكوّن لما حاجة بتحجب الشمس؟', ['shade', 'branch', 'crown'], 'shade', 'We rest in it on a hot day.', 'بنرتاح فيه في يوم حر.', `${kw('Shade')} is a dark shadow created when sunlight is blocked.`, `${L('Shade is a dark shadow created when sunlight is blocked.')}`);
-  set('word', { word: 'selfish' });
+  set('tree');
   await ask('Tom never thought about the tree’s needs. What was he?', 'توم عمره ما فكّر في احتياجات الشجرة. كان إيه؟', ['selfish', 'careful', 'kind'], 'selfish', 'It means caring for oneself only.', 'يعني بيهتم بنفسه بس.', `${kw('Selfish')} means caring for oneself only.`, `${L('Selfish means caring for oneself only.')}`);
-  set('word', { word: 'sad' });
+  set('tree', { sub: 'sad' });
   await ask('When Tom came back, how did the tree look?', 'لما توم رجع، الشجرة كانت شكلها إيه؟', ['sad', 'happy', 'full of apples'], 'sad', 'Its leaves bent and its branches were weak.', 'ورقها اتحنى وأغصانها ضعيفة.', `The tree looked ${kw('sad')}. Tom realized he had been selfish and started to care for it.`, `الشجرة كانت ${L('sad')}. وتوم عرف إنه كان أناني وبدأ يهتم بيها.`);
   await fillCard(['A consonant ___ has two', 'or more consonants.'], ['cluster', 'trunk', 'crown'], 'cluster', 'Choose the word.', 'اختار الكلمة.', 'str- in strong is one.', 'str- في strong مثال.', `A consonant ${kw('cluster')} is two or more consonant sounds without vowels, like “tree” or “black”.`, `${L('consonant cluster')} يعني حرفين ساكنين أو أكتر ورا بعض، زي ${L('tree')} و${L('black')}.`);
 }
 async function mission5() {                 // lesson 4: recipe
+  set('koshari');
   g.say(T('Mission 5: Let’s make Koshari! Sequence words show the order of the steps: First, Then, Next, After that and Finally.', 'المهمة ٥: يلا نعمل كشري! كلمات الترتيب بتوضّح ترتيب الخطوات: First وThen وNext وAfter that وFinally.'), 'point');
   await g.next();
   await fillCard(['___, you need to cook', 'rice in a pot.'], ['First', 'Finally', 'Next'], 'First', 'Which word starts the recipe?', 'أنهي كلمة بتبدأ الوصفة؟', 'It comes at the beginning.', 'بتيجي في البداية.', `We start with ${kw('First')}.`, `بنبدأ بـ ${L('First')}.`);
   await fillCard(['First, cook the rice. ___,', 'boil lentils in water.'], ['Then', 'Finally', 'First'], 'Then', 'Which word comes next?', 'أنهي كلمة بتيجي بعد كده؟', 'It comes in the middle.', 'بتيجي في النص.', `${kw('Then')} comes after First.`, `${L('Then')} بتيجي بعد ${L('First')}.`);
   await fillCard(['___, pour the red sauce', 'all over it.'], ['Finally', 'First', 'Next'], 'Finally', 'Which word ends the recipe?', 'أنهي كلمة بتنهي الوصفة؟', 'It comes at the end.', 'بتيجي في الآخر.', `${kw('Finally')} ends the steps.`, `${L('Finally')} بتنهي الخطوات.`);
-  set('plate', { emoji: '🍲', word: 'Koshari' });
+  set('koshari');
   await ask('What does Koshari have in one bowl?', 'الكشري فيه إيه في طبق واحد؟', ['Rice, lentils, pasta and chickpeas', 'Only rice', 'Fish and bread'], 'Rice, lentils, pasta and chickpeas', 'It has many simple ingredients.', 'فيه مكونات بسيطة كتير.', `Koshari is a tasty Egyptian meal with ${kw('many simple ingredients')} in one bowl.`, `الكشري وجبة مصرية لذيذة فيها ${L('many simple ingredients')} في طبق واحد.`);
 }
 async function mission6() {                 // lesson 5: flyer
-  set('stars', { n: 5, word: 'excellent' });
+  set('stars', { n: 5, word: '' });
   g.say(T('Mission 6: A flyer. Stars show feedback. What do <b>5 stars</b> mean?', 'المهمة ٦: فلاير. النجوم بتوضّح الرأي. إيه معنى <b>٥ نجوم</b>؟'), 'point');
   await g.choice({ options: ['excellent', 'poor', 'fair'], correct: 'excellent', hint: T('It is the best mark.', 'ده أعلى تقدير.'), ok: T(`5 stars = ${kw('excellent')}.`, `${L('5 stars = excellent')}.`) });
-  set('stars', { n: 1, word: '?' });
+  set('stars', { n: 1, word: '' });
   await ask('And <b>1 star</b>?', 'و<b>نجمة واحدة</b>؟', ['poor', 'good', 'very good'], 'poor', 'It is the lowest mark.', 'ده أقل تقدير.', `1 star = ${kw('poor')}.`, `${L('1 star = poor')}.`);
   await fillCard(['FOOD MENU is the', 'main ___ of the flyer.'], ['heading', 'image', 'menu'], 'heading', 'Choose the word.', 'اختار الكلمة.', 'It is the big title.', 'هو العنوان الكبير.', `The ${kw('main heading')} is the big title.`, `${L('main heading')} هو العنوان الكبير.`);
   await fillCard(['“For more information', 'visit our website” is a call to ___.'], ['action', 'menu', 'image'], 'action', 'Choose the word.', 'اختار الكلمة.', 'It is an invitation.', 'ده دعوة.', `A ${kw('call to action')} is an invitation.`, `${L('call to action')} يعني دعوة.`);

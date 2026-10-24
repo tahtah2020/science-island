@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261024e">
+<link rel="stylesheet" href="game_kit.css?v=20261024g">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Weather Watch.</noscript>
-<script src="firebase-config.js?v=20261024e"></script>
-<script src="chapters.js?v=20261024e"></script>
-<script src="common.js?v=20261024e"></script>
-<script src="english/g5_art.js?v=20261024e"></script>
-<script src="game_kit.js?v=20261024e"></script>
+<script src="firebase-config.js?v=20261024g"></script>
+<script src="chapters.js?v=20261024g"></script>
+<script src="common.js?v=20261024g"></script>
+<script src="english/g5_art.js?v=20261024g"></script>
+<script src="game_kit.js?v=20261024g"></script>
 <script>
 (() => {
 'use strict';
@@ -42,9 +42,9 @@ const BASE = `<rect width="${VW}" height="${VH}" rx="14" fill="#eef5fb"/>`;
 const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 24}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
 const cardSvg = () => {
   let s = BASE + `<rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
-  const n = sc.lines.length, y0 = 150 - (n - 1) * 20;
+  const n = sc.lines.length, step = n > 4 ? 34 : 40, y0 = 154 - (n - 1) * step / 2;
   sc.lines.forEach((line, i) => {
-    const parts = String(line).split('___'), y = y0 + i * 40;
+    const parts = String(line).split('___'), y = y0 + i * step;
     const len = parts.join(sc.fill || '_____').length, fs = Math.min(23, Math.floor(284 / (len * .58)));   // a long line gets a smaller font, so it stays inside the card
     if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
     const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
@@ -127,15 +127,18 @@ async function mission1() {                 // lesson 1: Mazen and Dina
   await fillCard(['To save our ___,', 'we must keep it clean.'], ['planet', 'news', 'stuck'], 'planet', 'Choose the word.', 'اختار الكلمة.', 'It is the Earth we live on.', 'هي الأرض اللي بنعيش عليها.', `We must keep our ${kw('planet')} clean.`, `لازم نحافظ على ${L('planet')} نضيف.`);
 }
 async function mission2() {                 // lesson 2: Ancient Egypt
+  set('plate', { emoji: '🏛️', word: 'Ancient Egypt' });
   g.say(T('Mission 2: The Weather in Ancient Egypt. The Nile gave water and rich soil, but weather also brought problems. How did the Ancient Egyptians solve them?', 'المهمة ٢: الطقس في مصر القديمة. النيل كان بيدي ميّة وتربة غنية، بس الطقس كمان جاب مشاكل. القدماء المصريين حلّوها إزاي؟'), 'point');
   await g.next();
   const buttons = [{ label: T('Canals and basins', 'Canals and basins'), value: 'f', c: 1 }, { label: T('Irrigation systems', 'Irrigation systems'), value: 'd', c: 2 }, { label: T('Thick mud bricks', 'Thick mud bricks'), value: 's', c: 3 }];
   await sortCards(buttons, [['Floods were too strong', 'f', 'They built canals and basins to control the water.', '🌊'], ['Droughts: not enough rain', 'd', 'They made irrigation systems to bring water to their fields.', '🏜️'],
     ['Sandstorms (Khamsin)', 's', 'They built their homes with thick mud bricks to protect themselves.', '🌪️']], 'plate');
+  set('plate', { emoji: '🌾', word: 'The Nile fields' });
   await ask('What did the Nile’s floods bring to the land?', 'فيضانات النيل جابت إيه للأرض؟', ['Rich soil', 'Sand', 'Rocks'], 'Rich soil', 'It helped crops grow.', 'ساعدت المحاصيل تنمو.', `The water brought ${kw('rich soil')}, which helped crops grow.`, `المية جابت ${L('rich soil')} ساعدت المحاصيل تنمو.`);
   await ask('The Ancient Egyptians didn’t have modern machines. What did they find?', 'القدماء المصريين مكانش عندهم آلات حديثة. لقوا إيه؟', ['Smart ways to survive', 'No way to farm', 'A way to stop the Nile'], 'Smart ways to survive', 'They worked hard and used simple tools.', 'اشتغلوا بجد واستخدموا أدوات بسيطة.', `They found ${kw('smart ways to survive')}.`, `لقوا ${L('smart ways to survive')}.`);
 }
 async function mission3() {                 // lesson 2: past simple
+  set('card', { lines: ['Past simple', 'didn’t + verb', 'Did … ?', 'was / were'] });
   g.say(T('Mission 3: the past simple. We use it for finished actions in the past. Negative: didn’t + the verb. Questions: Did …? With “to be”: was / were.', 'المهمة ٣: الماضي البسيط. بنستخدمه للحاجات اللي خلصت في الماضي. النفي: didn’t + الفعل. الأسئلة: Did …؟ ومع to be: was / were.'), 'point');
   await g.next();
   await fillCard(['They ___ the zoo', 'last weekend.'], ['visited', 'visit', 'visiting'], 'visited', 'Choose the word.', 'اختار الكلمة.', 'It happened in the past.', 'حصل في الماضي.', `We add -ed: ${kw('visited')}.`, `بنزوّد ${L('-ed')}: ${L('visited')}.`);
@@ -145,6 +148,7 @@ async function mission3() {                 // lesson 2: past simple
   await fillCard(['They ___ at the club', 'a week ago. (negative)'], ['weren’t', 'didn’t', 'wasn’t'], 'weren’t', 'Choose the word.', 'اختار الكلمة.', 'With “to be” we put not after was / were.', 'مع to be بنحط not بعد was / were.', `With “to be”, we put not after ${kw('were')}: weren’t.`, `مع ${L('to be')} بنحط ${L('not')} بعد ${L('were')}.`);
 }
 async function mission4() {                 // lesson 3: The Two Frogs
+  set('plate', { emoji: '🐸', word: 'The Two Frogs' });
   g.say(T('Mission 4: Story Time: The Two Frogs. Two best friends lived in a small pond. One hot summer, the pond started to dry up.', 'المهمة ٤: وقت الحكاية: الضفدعتان. صاحبين مقرّبين كانوا عايشين في بركة صغيرة. في صيف حار البركة بدأت تنشف.'), 'point');
   await g.next();
   await ask('Where was the pond?', 'البركة كانت فين؟', ['Near the edge of the village', 'In the city', 'On a mountain'], 'Near the edge of the village', 'It was a small and quiet village.', 'كانت قرية صغيرة وهادية.', `The pond was ${kw('near the edge of the village')}.`, `${L('The pond was near the edge of the village.')}`);
@@ -161,13 +165,15 @@ async function mission5() {                 // lesson 3: vowel digraphs
   await fillCard(['The ___ sailed', 'across the lake.'], ['boat', 'meet', 'weak'], 'boat', 'Choose the word.', 'اختار الكلمة.', 'It floats on water.', 'بتطفو على المية.', `A ${kw('boat')} sails across the lake.`, `${L('boat')} بتبحر عبر البحيرة.`);
 }
 async function mission6() {                 // lesson 4: fiction
+  set('plate', { emoji: '☁️', word: 'Lily’s story' });
   g.say(T('Mission 6: Once Upon My Imagination. A fiction story is made up from the imagination. Lily’s story: the clouds are floating upside down, so how will her flowers get sunshine?', 'المهمة ٦: كان يا ما كان في خيالي. القصة الخيالية بتتألف من الخيال. قصة ليلي: السحب بتطفو مقلوبة، فإزاي زهورها هتاخد شمس؟'), 'point');
   await g.next();
   const buttons = [{ label: T('Beginning', 'Beginning'), value: 'b', c: 0 }, { label: T('Problem', 'Problem'), value: 'p', c: 3 }, { label: T('Middle', 'Middle'), value: 'm', c: 2 }, { label: T('Ending', 'Ending'), value: 'e', c: 1 }];
   await sortCards(buttons, [['Lily lives in a cozy little house', 'b', 'The beginning meets the characters and setting.', '🏠'], ['The clouds are upside down', 'p', 'The problem is when something goes wrong.', '☁️'],
     ['Lily whispers to the clouds', 'm', 'In the middle, the character tries to fix it.', '🗣️'], ['The sun shines and the flowers smile', 'e', 'In the ending, the problem is solved.', '🌻']], 'plate');
+  set('plate', { emoji: '🌟', word: 'The plot' });
   await ask('What is the most exciting part of a story called?', 'اسم أكتر جزء مثير في القصة إيه؟', ['The climax', 'The beginning', 'The ending'], 'The climax', 'It comes before the ending.', 'بتيجي قبل النهاية.', `The most exciting part is the ${kw('climax')}.`, `أكتر جزء مثير اسمه ${L('climax')}.`);
-  set('stars', { n: 3, word: 'good' });
+  set('stars', { n: 3, word: '' });
   await ask('Collage time! A friend gives your collage 3 stars. What does that mean?', 'وقت الكولاج! صاحبك أداك ٣ نجوم. يعني إيه؟', ['good', 'poor', 'excellent'], 'good', '1 = poor, 2 = fair, 3 = …', '1 = poor و2 = fair و3 = …', `3 stars = ${kw('good')}.`, `${L('3 stars = good')}.`);
 }
 async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
