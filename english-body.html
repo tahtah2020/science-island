@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Healthy Body Hero · Unit 2 · My Healthy Body</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261024e">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Healthy Body Hero.</noscript>
+<script src="firebase-config.js?v=20261024e"></script>
+<script src="chapters.js?v=20261024e"></script>
+<script src="common.js?v=20261024e"></script>
+<script src="english/g5_art.js?v=20261024e"></script>
+<script src="game_kit.js?v=20261024e"></script>
+<script>
+(() => {
+'use strict';
+/* Healthy Body Hero · the game of English Grade 5, Unit 2 · My Healthy Body (ministry book "English Primary 5", term 1, pages 26-40). Built on the shared game kit (game_kit.js).
+   The scene is the picture the child works on: six round body pictures to tap, a card with a sentence, a plate, a word.
+   Stage 1 (Warm Up): tap the lungs, heart and muscles; tired and stress (lesson 1, pages 26-27).
+   Stage 2 (Missions): health words; Adam then and now (lesson 2, pages 28-29); a / an / some / any on a card (page 30); the heart and blood (lesson 3, pages 31-32);
+                       one-syllable words (page 33); healthcare heroes and a non-fiction text (lesson 4, pages 34-37).
+   Stage 3 (Speed Round): healthy or not healthy habits (lesson 5, page 38).
+   The English book is the same for both tracks, so the English words stay English; Reesho's Arabic helps around them. Every T('English', 'عربي') has both languages. */
+const T = SI.T, G = SI.G, E = E5ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;      // an English word inside Arabic text stays left to right
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300;
+const FONT = 'Nunito, Cairo, sans-serif';
+const INK = '#1f3d57';
+const sc = { mode: 'set', fill: '', lines: [], emoji: '', word: '', n: 0, sub: '' };
+const set = (mode, o) => { Object.assign(sc, { mode, fill: '', lines: [], emoji: '', word: '', n: 0, sub: '' }, o || {}); g.paint(); };
+const BASE = `<rect width="${VW}" height="${VH}" rx="14" fill="#fbf1ec"/>`;
+
+/* ---------- scene pieces ---------- */
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 24}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const cardSvg = () => {
+  let s = BASE + `<rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, y0 = 150 - (n - 1) * 20;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 40;
+    const len = parts.join(sc.fill || '_____').length, fs = Math.min(23, Math.floor(284 / (len * .58)));   // a long line gets a smaller font, so it stays inside the card
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+};
+const plateSvg = () => BASE + `<ellipse cx="170" cy="150" rx="118" ry="104" fill="#fff" stroke="#d8c9a6" stroke-width="4"/><ellipse cx="170" cy="150" rx="86" ry="74" fill="#fff0e8" stroke="#eadcb8" stroke-width="3"/>`
+  + `<text x="170" y="184" text-anchor="middle" font-size="96">${sc.emoji}</text>` + txt(170, 286, sc.word, { fs: Math.min(26, Math.floor(320 / (sc.word.length * .58))) });
+const wordSvg = () => BASE + `<rect x="30" y="60" width="280" height="170" rx="24" fill="#fff" stroke="#d8c9a6" stroke-width="4"/>` + txt(170, 160, sc.word, { fs: Math.min(72, Math.floor(250 / (sc.word.length * .6))), w: 900, fill: '#23799f' }) + (sc.sub ? txt(170, 206, sc.sub, { fs: 20, w: 700, fill: '#8a97a3' }) : '');
+const star = (x, y, r, c) => { const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; p.push((x + Math.cos(a) * rr).toFixed(1) + ' ' + (y + Math.sin(a) * rr).toFixed(1)); } return `<path d="M${p.join('L')}Z" fill="${c}" stroke="#c98a14" stroke-width="2"/>`; };
+const starsSvg = () => { let s = BASE + `<rect x="14" y="80" width="312" height="130" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`; for (let i = 0; i < 5; i++) s += star(50 + i * 60, 145, 26, i < sc.n ? '#f2b134' : '#e8e0cc'); return s + txt(170, 250, sc.word, { fs: 26 }); };
+
+function render() {
+  const m = sc.mode;
+  if (m === 'set') return BASE + `<g transform="translate(0 25)">${D.bodyParts({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  if (m === 'plate') return plateSvg();
+  if (m === 'word') return wordSvg();
+  if (m === 'stars') return starsSvg();
+  return BASE;
+}
+const setRings = () => { const r = D.bodyParts.rings(); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.NAMES[id], ring: E.ringEl(x + w / 2, y + h / 2 + 25, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg5u2', logo: '🫀', title: ['Healthy Body Hero', 'بطل الجسم الصحي'], sub: ['Unit 2 · My Healthy Body', 'الوحدة 2 · جسمي الصحي'],
+  bg: 'english/assets/bg_eg5u2.svg', bgc: '#fde6e6', label: ['Sports, healthy habits, the heart and healthcare heroes', 'الرياضة والعادات الصحية والقلب وأبطال الرعاية الصحية'], render, view: [VW, VH] });
+
+/* a sentence on a card with a gap; the child chooses the word. The gap is filled with the right word when the answer is known */
+async function fillCard(lines, options, correct, sayEn, sayAr, hintEn, hintAr, okEn, okAr) {
+  set('card', { lines });
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { sc.fill = correct; g.paint(); } });
+}
+/* a question asked on the current scene */
+async function ask(sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr) });
+}
+/* a quick sort: one card at a time, two or more buttons */
+async function sortCards(buttons, cards, scene) {
+  for (const [word, side, why, emoji] of g.shuffle(cards)) {
+    set(scene || "word", { word: emoji ? word : word, emoji: emoji || word });
+    await g.pick({ buttons, correct: side, ok: T(`Yes! ${why}`, `صح! ${L(why)}`), no: T(`Not quite. ${why}`, `قرّبت. ${L(why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up (lesson 1: Sports for Better Health) ---------- */
+async function stage1() {
+  set('set');
+  g.say(T('Welcome to Healthy Body Hero! Sports make our bodies stronger. Tap the <b>lungs</b>. Swimming makes them strong.', P('أهلًا في بطل الجسم الصحي! الرياضة بتخلّي جسمنا أقوى. اضغط على <b>الرئتين</b>. السباحة بتقوّيهم.')), 'point');
+  await g.spot(setRings(), 'lungs', { hint: T('They are the organs in your chest that help you breathe.', 'هما الأعضاء في صدرك اللي بتساعدك تتنفّس.'),
+    ok: T(`${kw('Lungs')} are the organs in your chest that help you breathe.`, `${L('Lungs are the organs in your chest that help you breathe.')}`) });
+  g.say(T('Football makes your <b>heart</b> strong. Tap it.', 'كرة القدم بتقوّي <b>قلبك</b>. اضغط عليه.'), 'think');
+  await g.spot(setRings(), 'heart', { hint: T('It pumps blood to all parts of your body.', 'بيضخ الدم لكل جسمك.'),
+    ok: T(`Football makes your ${kw('heart')} strong.`, `${L('Football makes your heart strong.')}`) });
+  g.say(T('Football also helps your <b>muscles</b> grow. Tap them.', 'كرة القدم كمان بتخلّي <b>عضلاتك</b> تكبر. اضغط عليها.'), 'think');
+  await g.spot(setRings(), 'muscle', { hint: T('They are the parts of your body that help you move.', 'هما الأجزاء في جسمك اللي بتساعدك تتحرك.'),
+    ok: T(`${kw('Muscles')} are the parts of your body that help you move.`, `${L('Muscles are the parts of your body that help you move.')}`) });
+  await ask('You feel tired when you play sports. What can you do?', 'بتتعب لما بتلعب رياضة. تعمل إيه؟', ['Eat some fruit before you exercise', 'Stop all sports', 'Drink soda'], 'Eat some fruit before you exercise', 'It gives you more energy.', 'بتديك طاقة أكتر.',
+    `Eat ${kw('some fruit')} before you exercise to get more energy.`, `${L('Eat some fruit before you exercise.')}`);
+  await ask('What does exercising regularly help you do?', 'التمرين المنتظم بيساعدك على إيه؟', ['Sleep better and reduce stress', 'Feel more stressed', 'Get weaker bones'], 'Sleep better and reduce stress', 'It is good for mental health.', 'ده كويس للصحة النفسية.',
+    `Exercising regularly helps you ${kw('sleep better')} and reduces ${kw('stress')}.`, `${L('Exercising regularly helps you sleep better and reduces stress.')}`);
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: health words
+  g.say(T('Mission 1: health words. Choose the right meaning.', 'المهمة ١: كلمات الصحة. اختار المعنى الصح.'), 'point');
+  await g.next();
+  set('word', { word: 'fit' });
+  await ask('What does “fit” mean?', 'يعني إيه “fit”؟', ['healthy and strong because you exercise', 'unhappy or tired', 'how you feel and think'], 'healthy and strong because you exercise', 'You become fit when you exercise.', 'بتبقى fit لما بتتمرن.', `${kw('Fit')} means healthy and strong because you exercise.`, `${L('Fit means healthy and strong because you exercise.')}`);
+  set('word', { word: 'stressed' });
+  await ask('What does “stressed” mean?', 'يعني إيه “stressed”؟', ['feeling unhappy or tired', 'healthy and strong', 'the organs that help you breathe'], 'feeling unhappy or tired', 'It is not a happy feeling.', 'ده مش إحساس سعيد.', `${kw('Stressed')} means feeling unhappy or tired.`, `${L('Stressed means feeling unhappy or tired.')}`);
+  set('word', { word: 'mental health' });
+  await ask('What is “mental health”?', 'إيه هي “mental health”؟', ['how you feel and think', 'how strong your muscles are', 'how well your body moves'], 'how you feel and think', 'It is about your mind.', 'ده عن عقلك.', `${kw('Mental health')} is how you feel and think.`, `${L('Mental health is how you feel and think.')}`);
+}
+async function mission2() {                 // lesson 2: Adam then and now
+  g.say(T('Mission 2: Adam’s habits then and now. In the past, Adam woke up late and watched TV all day. Is each habit from the past or now?', 'المهمة ٢: عادات آدم زمان ودلوقتي. زمان كان آدم بيصحى متأخر وبيتفرج على التلفزيون طول اليوم. العادة دي من زمان ولا دلوقتي؟'), 'point');
+  await g.next();
+  const buttons = [{ label: T('In the past', 'In the past'), value: 'p', c: 3 }, { label: T('Now', 'Now'), value: 'n', c: 1 }];
+  await sortCards(buttons, [['Wakes up late', 'p', 'In the past, Adam woke up late on weekends.', '😴'], ['Exercises every morning', 'n', 'Now, Adam wakes up early and exercises every morning.', '🏃'],
+    ['Eats burgers and chips', 'p', 'Before, Adam loved chips, burgers and sweets.', '🍔'], ['Eats fruits and vegetables', 'n', 'Now, Adam eats more fruits and vegetables.', '🥦'],
+    ['Drinks soda', 'p', 'In the past, Adam drank soda. Now he drinks water.', '🥤'], ['Plays football on Saturday', 'n', 'Now, Adam plays football with friends every Saturday.', '⚽']], 'plate');
+  await ask('How does Adam’s family cook now?', 'عيلة آدم بتطبخ إزاي دلوقتي؟', ['They grill or bake', 'They fry', 'They never cook'], 'They grill or bake', 'They fried food in the past.', 'كانوا بيقلوا الأكل زمان.', `Adam’s family ${kw('grill or bake')} food instead of frying.`, `${L('Adam’s family grill or bake food instead of frying.')}`);
+}
+async function mission3() {                 // lesson 2: a/an/some/any
+  g.say(T('Mission 3: a, an, some and any. Use <b>a</b> before a consonant sound and <b>an</b> before a vowel sound. Use <b>some</b> in positive sentences and <b>any</b> in negatives and questions.', 'المهمة ٣: a وan وsome وany. استخدم <b>a</b> قبل صوت ساكن و<b>an</b> قبل صوت متحرك. واستخدم <b>some</b> في الجمل المثبتة و<b>any</b> في النفي والأسئلة.'), 'point');
+  await g.next();
+  await fillCard(['I eat ___ banana', 'every day.'], ['a', 'an', 'some'], 'a', 'Choose the word.', 'اختار الكلمة.', 'Banana starts with a consonant sound.', 'banana بتبدأ بصوت ساكن.', `We use ${kw('a')} before a consonant sound: a banana.`, `بنستخدم ${L('a')} قبل الصوت الساكن: ${L('a banana')}.`);
+  await fillCard(['She eats ___ egg', 'in the morning.'], ['an', 'a', 'any'], 'an', 'Choose the word.', 'اختار الكلمة.', 'Egg starts with a vowel sound.', 'egg بتبدأ بصوت متحرك.', `We use ${kw('an')} before a vowel sound: an egg.`, `بنستخدم ${L('an')} قبل الصوت المتحرك: ${L('an egg')}.`);
+  await fillCard(['I have ___ apples.'], ['some', 'any', 'an'], 'some', 'Choose the word.', 'اختار الكلمة.', 'It is a positive sentence.', 'الجملة مثبتة.', `We use ${kw('some')} in positive sentences.`, `بنستخدم ${L('some')} في الجمل المثبتة.`);
+  await fillCard(['Do you have ___', 'water?'], ['any', 'some', 'a'], 'any', 'Choose the word.', 'اختار الكلمة.', 'It is a question.', 'ده سؤال.', `We use ${kw('any')} in questions: Do you have any water?`, `بنستخدم ${L('any')} في الأسئلة.`);
+  await fillCard(['There aren’t ___', 'apples left.'], ['any', 'some', 'an'], 'any', 'Choose the word.', 'اختار الكلمة.', 'It is a negative sentence.', 'الجملة منفية.', `We use ${kw('any')} in negative sentences.`, `بنستخدم ${L('any')} في الجمل المنفية.`);
+}
+async function mission4() {                 // lesson 3: heart and blood
+  set('set');
+  g.say(T('Mission 4: Our Body’s Super Pump! Tap the <b>blood vessels</b>: the small tubes that carry blood.', 'المهمة ٤: مضخة الجسم الخارقة! اضغط على <b>الأوعية الدموية</b>: الأنابيب الصغيرة اللي بتشيل الدم.'), 'point');
+  await g.spot(setRings(), 'vessels', { hint: T('They look like small tubes.', 'شكلها زي أنابيب صغيرة.'),
+    ok: T(`The heart pumps blood through ${kw('blood vessels')}, which are like small tubes.`, `${L('The heart pumps blood through blood vessels.')}`) });
+  g.say(T('The heart is about the size of your <b>fist</b>. Tap the fist.', 'القلب حجمه تقريبًا زي <b>قبضة إيدك</b>. اضغط على القبضة.'), 'think');
+  await g.spot(setRings(), 'fist', { hint: T('It is your closed hand.', 'ده إيدك المقفولة.'),
+    ok: T(`The heart is about the size of your ${kw('fist')}.`, `${L('The heart is about the size of your fist.')}`) });
+  await ask('What does blood carry to every cell?', 'الدم بيوصّل إيه لكل خلية؟', ['Oxygen and nutrients', 'Only waste', 'Only water'], 'Oxygen and nutrients', 'It also takes away carbon dioxide.', 'وكمان بياخد ثاني أكسيد الكربون.', `Blood carries ${kw('oxygen and nutrients')} to every cell and takes away waste like carbon dioxide.`, `${L('Blood carries oxygen and nutrients to every cell.')}`);
+  await ask('Which habit keeps your heart strong?', 'أنهي عادة بتحافظ على قوة قلبك؟', ['Eating good food, sleeping well and exercising', 'Too much stress', 'Not drinking water'], 'Eating good food, sleeping well and exercising', 'Stress can hurt your heart.', 'الضغط العصبي ممكن يضر قلبك.', `Good food, sleep, water and ${kw('exercise')} keep your heart strong.`, `${L('Good food, sleep, water and exercise keep your heart strong.')}`);
+}
+async function mission5() {                 // lesson 3: syllables
+  g.say(T('Mission 5: syllables. A syllable is a word part with one vowel sound. Clap once for each vowel sound. How many syllables does each word have?', 'المهمة ٥: المقاطع. المقطع جزء من الكلمة فيه صوت متحرك واحد. صقّف مرة لكل صوت متحرك. كام مقطع في كل كلمة؟'), 'point');
+  await g.next();
+  const buttons = [{ label: T('One syllable', 'One syllable'), value: 'one', c: 1 }, { label: T('More than one', 'More than one'), value: 'more', c: 3 }];
+  await sortCards(buttons, [['bread', 'one', 'bread has five letters but one vowel sound.'], ['jump', 'one', 'jump has one vowel sound.'], ['banana', 'more', 'ba-na-na has three claps.'],
+    ['flag', 'one', 'flag has one vowel sound.'], ['elephant', 'more', 'el-e-phant has three syllables.'], ['pot', 'one', 'pot has one vowel sound.'], ['basket', 'more', 'bas-ket has two syllables.'], ['leaf', 'one', 'leaf has one vowel sound.']], 'word');
+}
+async function mission6() {                 // lesson 4: healthcare heroes
+  g.say(T('Mission 6: Healthcare Heroes. Who does each job?', 'المهمة ٦: أبطال الرعاية الصحية. مين بيعمل كل شغلانة؟'), 'point');
+  await g.next();
+  const buttons = [{ label: T('Doctor', 'Doctor'), value: 'd', c: 0 }, { label: T('Nurse', 'Nurse'), value: 'n', c: 1 }, { label: T('Pharmacist', 'Pharmacist'), value: 'ph', c: 2 }, { label: T('Paramedic', 'Paramedic'), value: 'pa', c: 3 }];
+  await sortCards(buttons, [['Checks patients and diagnoses diseases', 'd', 'Doctors check patients, diagnose diseases and provide treatments.', '🩺'],
+    ['Cares for patients around the clock', 'n', 'Nurses often work around the clock to give support and care.', '💉'],
+    ['Makes sure patients get the correct medicine', 'ph', 'Pharmacists make sure patients receive the correct medicine.', '💊'],
+    ['Helps on the spot in emergencies', 'pa', 'Paramedics respond quickly in emergencies and take patients to hospitals.', '🚑']], 'plate');
+  await ask('Which sentence is an introductory sentence?', 'أنهي جملة هي جملة افتتاحية؟', ['My neighbor, Selim, is a doctor at our local hospital.', 'The work is tiring, but he’s proud to be a doctor.', 'He wears a white coat.'], 'My neighbor, Selim, is a doctor at our local hospital.', 'It introduces the person.', 'بتعرّفنا على الشخص.', `An ${kw('introductory sentence')} introduces the person.`, `${L('An introductory sentence introduces the person.')}`);
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
+
+/* ---------- Stage 3 · Speed Round (lesson 5: six healthy habits) ---------- */
+async function stage3() {
+  set('word', { word: '?' });
+  const buttons = [{ label: '✅ Healthy', value: 'h', c: 1 }, { label: '❌ Not healthy', value: 'n', c: 3 }];
+  const items = [
+    { t: 'Wash your hands before eating', ans: 'h', why: 'Wash your hands before and after eating.' }, { t: 'Watch TV all day', ans: 'n', why: 'Watching TV all day is not healthy.' },
+    { t: 'Drink enough water daily', ans: 'h', why: 'Drink enough water daily.' }, { t: 'Eat chips and burgers every day', ans: 'n', why: 'Chips and burgers are not the best food.' },
+    { t: 'Exercise regularly', ans: 'h', why: 'Exercise regularly.' }, { t: 'Sleep early and get enough rest', ans: 'h', why: 'Sleep early and get enough rest.' },
+    { t: 'Brush your teeth daily', ans: 'h', why: 'Brush your teeth daily with toothpaste.' }, { t: 'Drink soda instead of water', ans: 'n', why: 'Drink water instead of soda.' },
+    { t: 'Eat fruits and vegetables', ans: 'h', why: 'Eat fruits and vegetables regularly.' }];
+  await g.speedRound({ items, buttons, rounds: 8,
+    ask: T('Healthy or not?', 'صحي ولا لأ؟'), intro: T('Speed Round! I say a habit. Press Healthy or Not healthy. Be quick!', 'جولة السرعة! هقولك عادة، واضغط صحي أو مش صحي. بسرعة!'),
+    think: T('Healthy or not?', 'صحي ولا لأ؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Play sports, follow Adam’s new habits, listen to the heart and meet the healthcare heroes. Three stages: Warm Up, Missions and a Speed Round.`, `أهلًا يا <b>${g.name()}</b>! العب رياضة، وتابع عادات آدم الجديدة، واسمع القلب، وقابل أبطال الرعاية الصحية. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T(`You know health words, a / an / some / any, the heart and the healthcare heroes. Next, try the questions of this unit.`, `بقيت تعرف كلمات الصحة وa وan وsome وany والقلب وأبطال الرعاية الصحية. بعد كده جرّب أسئلة الوحدة.`) }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

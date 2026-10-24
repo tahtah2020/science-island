@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Weather Watch · Unit 3 · When Nature Changes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261024e">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Weather Watch.</noscript>
+<script src="firebase-config.js?v=20261024e"></script>
+<script src="chapters.js?v=20261024e"></script>
+<script src="common.js?v=20261024e"></script>
+<script src="english/g5_art.js?v=20261024e"></script>
+<script src="game_kit.js?v=20261024e"></script>
+<script>
+(() => {
+'use strict';
+/* Weather Watch · the game of English Grade 5, Unit 3 · When Nature Changes (ministry book "English Primary 5", term 1, pages 41-60). Built on the shared game kit (game_kit.js).
+   The scene is the picture the child works on: six round weather pictures to tap, a card with a sentence, a plate, a word, stars.
+   Stage 1 (Warm Up): tap the six weather pictures (lesson 1, pages 42-44).
+   Stage 2 (Missions): Mazen and Dina (lesson 1, pages 43-44); weather in Ancient Egypt (lesson 2, pages 45-46); past simple on a card (page 47); The Two Frogs (lesson 3, pages 48-50);
+                       vowel digraphs (page 51); fiction and plot, then the collage stars (lessons 4 and 5, pages 52-54).
+   Stage 3 (Speed Round): which weather is described (lesson 1).
+   The English book is the same for both tracks, so the English words stay English; Reesho's Arabic helps around them. Every T('English', 'عربي') has both languages. */
+const T = SI.T, G = SI.G, E = E5ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;      // an English word inside Arabic text stays left to right
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300;
+const FONT = 'Nunito, Cairo, sans-serif';
+const INK = '#1f3d57';
+const sc = { mode: 'set', fill: '', lines: [], emoji: '', word: '', n: 0, sub: '' };
+const set = (mode, o) => { Object.assign(sc, { mode, fill: '', lines: [], emoji: '', word: '', n: 0, sub: '' }, o || {}); g.paint(); };
+const BASE = `<rect width="${VW}" height="${VH}" rx="14" fill="#eef5fb"/>`;
+
+/* ---------- scene pieces ---------- */
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 24}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const cardSvg = () => {
+  let s = BASE + `<rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, y0 = 150 - (n - 1) * 20;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 40;
+    const len = parts.join(sc.fill || '_____').length, fs = Math.min(23, Math.floor(284 / (len * .58)));   // a long line gets a smaller font, so it stays inside the card
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+};
+const plateSvg = () => BASE + `<ellipse cx="170" cy="150" rx="118" ry="104" fill="#fff" stroke="#d8c9a6" stroke-width="4"/><ellipse cx="170" cy="150" rx="86" ry="74" fill="#eaf3fb" stroke="#eadcb8" stroke-width="3"/>`
+  + `<text x="170" y="184" text-anchor="middle" font-size="96">${sc.emoji}</text>` + txt(170, 286, sc.word, { fs: Math.min(26, Math.floor(320 / (sc.word.length * .58))) });
+const wordSvg = () => BASE + `<rect x="30" y="60" width="280" height="170" rx="24" fill="#fff" stroke="#d8c9a6" stroke-width="4"/>` + txt(170, 160, sc.word, { fs: Math.min(72, Math.floor(250 / (sc.word.length * .6))), w: 900, fill: '#23799f' }) + (sc.sub ? txt(170, 206, sc.sub, { fs: 20, w: 700, fill: '#8a97a3' }) : '');
+const star = (x, y, r, c) => { const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; p.push((x + Math.cos(a) * rr).toFixed(1) + ' ' + (y + Math.sin(a) * rr).toFixed(1)); } return `<path d="M${p.join('L')}Z" fill="${c}" stroke="#c98a14" stroke-width="2"/>`; };
+const starsSvg = () => { let s = BASE + `<rect x="14" y="80" width="312" height="130" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`; for (let i = 0; i < 5; i++) s += star(50 + i * 60, 145, 26, i < sc.n ? '#f2b134' : '#e8e0cc'); return s + txt(170, 250, sc.word, { fs: 26 }); };
+
+function render() {
+  const m = sc.mode;
+  if (m === 'set') return BASE + `<g transform="translate(0 25)">${D.weatherSix({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  if (m === 'plate') return plateSvg();
+  if (m === 'word') return wordSvg();
+  if (m === 'stars') return starsSvg();
+  return BASE;
+}
+const setRings = () => { const r = D.weatherSix.rings(); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.NAMES[id], ring: E.ringEl(x + w / 2, y + h / 2 + 25, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg5u3', logo: '⛈️', title: ['Weather Watch', 'مراقب الطقس'], sub: ['Unit 3 · When Nature Changes', 'الوحدة 3 · لما الطبيعة بتتغيّر'],
+  bg: 'english/assets/bg_eg5u3.svg', bgc: '#e3eefb', label: ['Extreme weather, Ancient Egypt, the two frogs and fiction stories', 'الطقس القاسي ومصر القديمة والضفدعتان والقصص الخيالية'], render, view: [VW, VH] });
+
+/* a sentence on a card with a gap; the child chooses the word. The gap is filled with the right word when the answer is known */
+async function fillCard(lines, options, correct, sayEn, sayAr, hintEn, hintAr, okEn, okAr) {
+  set('card', { lines });
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { sc.fill = correct; g.paint(); } });
+}
+/* a question asked on the current scene */
+async function ask(sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr) });
+}
+/* a quick sort: one card at a time, two or more buttons */
+async function sortCards(buttons, cards, scene) {
+  for (const [word, side, why, emoji] of g.shuffle(cards)) {
+    set(scene || "word", { word: emoji ? word : word, emoji: emoji || word });
+    await g.pick({ buttons, correct: side, ok: T(`Yes! ${why}`, `صح! ${L(why)}`), no: T(`Not quite. ${why}`, `قرّبت. ${L(why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up (lesson 1: Weather Wonders and Warnings!) ---------- */
+async function stage1() {
+  set('set');
+  g.say(T('Welcome to Weather Watch! Extreme weather is stronger and more dangerous than the usual weather. Tap the <b>sandstorm</b>.', P('أهلًا في مراقب الطقس! الطقس القاسي أقوى وأخطر من الطقس العادي. اضغط على <b>العاصفة الرملية</b>.')), 'point');
+  await g.spot(setRings(), 'sandstorm', { hint: T('It is a severe wind that carries sand and dust.', 'ريح شديدة بتشيل الرمل والتراب.'),
+    ok: T(`A ${kw('sandstorm')} is a severe wind that carries sand and dust through the air, making it hard to breathe.`, `${L('A sandstorm is a severe wind that carries sand and dust.')}`) });
+  g.say(T('Tap the <b>flood</b>: too much water covering dry land.', 'اضغط على <b>الفيضان</b>: ميّة كتير بتغطي أرض ناشفة.'), 'think');
+  await g.spot(setRings(), 'flood', { hint: T('Water covers the streets and houses.', 'المية بتغطي الشوارع والبيوت.'),
+    ok: T(`A ${kw('flood')} is too much water covering dry land.`, `${L('A flood is too much water covering dry land.')}`) });
+  g.say(T('Tap the <b>drought</b>: no rain for a long time.', 'اضغط على <b>الجفاف</b>: مفيش مطر من وقت طويل.'), 'think');
+  await g.spot(setRings(), 'drought', { hint: T('The land is dry and cracked.', 'الأرض ناشفة ومشقّقة.'),
+    ok: T(`A ${kw('drought')} happens when there is no rain for a long time.`, `${L('A drought happens when there is no rain for a long time.')}`) });
+  g.say(T('Tap the <b>wildfire</b> that burns through forests and homes.', 'اضغط على <b>حريق الغابات</b> اللي بيحرق الغابات والبيوت.'), 'point');
+  await g.spot(setRings(), 'wildfire', { hint: T('There are flames and smoke.', 'فيه نار ودخان.'),
+    ok: T(`A ${kw('wildfire')} burns through forests and homes.`, `${L('A wildfire burns through forests and homes.')}`) });
+  g.say(T('Tap the <b>heat wave</b>: the temperature is dangerously high for days.', 'اضغط على <b>موجة الحر</b>: الحرارة عالية جدًا لأيام.'), 'think');
+  await g.spot(setRings(), 'heatwave', { hint: T('The sun is very hot.', 'الشمس حارة جدًا.'),
+    ok: T(`In a ${kw('heat wave')}, the temperature is dangerously high for days.`, `${L('In a heat wave, the temperature is dangerously high for days.')}`) });
+  g.say(T('Last, tap the <b>thunderstorm</b>.', 'وأخيرًا اضغط على <b>العاصفة الرعدية</b>.'), 'think');
+  await g.spot(setRings(), 'thunderstorm', { hint: T('There is lightning in the dark clouds.', 'فيه برق في السحب الغامقة.'),
+    ok: T(`In a ${kw('thunderstorm')}, children are afraid of the lightning.`, `${L('In a thunderstorm, children are afraid of the lightning.')}`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: Mazen and Dina
+  set('set');
+  g.say(T('Mission 1: When Nature Strikes! Mazen and Dina talk about extreme weather. Read each question.', 'المهمة ١: لما الطبيعة تضرب! مازن ودينا بيتكلموا عن الطقس القاسي. اقرا كل سؤال.'), 'point');
+  await g.next();
+  await ask('What happened in Mazen and Dina’s city last week?', 'إيه اللي حصل في مدينة مازن ودينا الأسبوع اللي فات؟', ['There was a flood', 'There was a drought', 'There was a sandstorm'], 'There was a flood', 'The water covered the streets.', 'المية غطّت الشوارع.', `There was a ${kw('flood')}. Many cars got stuck.`, `كان فيه ${L('flood')} وعربيات كتير علقت.`);
+  await ask('Why can’t farmers grow crops in a drought?', 'ليه الفلاحين مبيقدروش يزرعوا في الجفاف؟', ['There is no water', 'There is too much water', 'The cars are stuck'], 'There is no water', 'There is no rain for months.', 'مفيش مطر لشهور.', `Farmers can’t grow crops because there’s ${kw('no water')}.`, `الفلاحين مبيقدروش يزرعوا لأن مفيش ${L('water')}.`);
+  await ask('Why does the wildfire spread quickly?', 'ليه حريق الغابات بينتشر بسرعة؟', ['It is dry and the winds are strong', 'It rains a lot', 'The forest is wet'], 'It is dry and the winds are strong', 'Think about dry trees and wind.', 'فكّر في الشجر الناشف والريح.', `It spreads quickly because it’s ${kw('dry')} and the winds are ${kw('strong')}.`, `بينتشر بسرعة لأن الجو ${L('dry')} والريح ${L('strong')}.`);
+  await fillCard(['I was ___ in my car', 'during the flood.'], ['stuck', 'damaged', 'spread'], 'stuck', 'Choose the word.', 'اختار الكلمة.', 'I couldn’t move.', 'مكنتش أقدر أتحرك.', `${kw('Stuck')} means I couldn’t move.`, `${L('stuck')} يعني معرفتش أتحرك.`);
+  await fillCard(['To save our ___,', 'we must keep it clean.'], ['planet', 'news', 'stuck'], 'planet', 'Choose the word.', 'اختار الكلمة.', 'It is the Earth we live on.', 'هي الأرض اللي بنعيش عليها.', `We must keep our ${kw('planet')} clean.`, `لازم نحافظ على ${L('planet')} نضيف.`);
+}
+async function mission2() {                 // lesson 2: Ancient Egypt
+  g.say(T('Mission 2: The Weather in Ancient Egypt. The Nile gave water and rich soil, but weather also brought problems. How did the Ancient Egyptians solve them?', 'المهمة ٢: الطقس في مصر القديمة. النيل كان بيدي ميّة وتربة غنية، بس الطقس كمان جاب مشاكل. القدماء المصريين حلّوها إزاي؟'), 'point');
+  await g.next();
+  const buttons = [{ label: T('Canals and basins', 'Canals and basins'), value: 'f', c: 1 }, { label: T('Irrigation systems', 'Irrigation systems'), value: 'd', c: 2 }, { label: T('Thick mud bricks', 'Thick mud bricks'), value: 's', c: 3 }];
+  await sortCards(buttons, [['Floods were too strong', 'f', 'They built canals and basins to control the water.', '🌊'], ['Droughts: not enough rain', 'd', 'They made irrigation systems to bring water to their fields.', '🏜️'],
+    ['Sandstorms (Khamsin)', 's', 'They built their homes with thick mud bricks to protect themselves.', '🌪️']], 'plate');
+  await ask('What did the Nile’s floods bring to the land?', 'فيضانات النيل جابت إيه للأرض؟', ['Rich soil', 'Sand', 'Rocks'], 'Rich soil', 'It helped crops grow.', 'ساعدت المحاصيل تنمو.', `The water brought ${kw('rich soil')}, which helped crops grow.`, `المية جابت ${L('rich soil')} ساعدت المحاصيل تنمو.`);
+  await ask('The Ancient Egyptians didn’t have modern machines. What did they find?', 'القدماء المصريين مكانش عندهم آلات حديثة. لقوا إيه؟', ['Smart ways to survive', 'No way to farm', 'A way to stop the Nile'], 'Smart ways to survive', 'They worked hard and used simple tools.', 'اشتغلوا بجد واستخدموا أدوات بسيطة.', `They found ${kw('smart ways to survive')}.`, `لقوا ${L('smart ways to survive')}.`);
+}
+async function mission3() {                 // lesson 2: past simple
+  g.say(T('Mission 3: the past simple. We use it for finished actions in the past. Negative: didn’t + the verb. Questions: Did …? With “to be”: was / were.', 'المهمة ٣: الماضي البسيط. بنستخدمه للحاجات اللي خلصت في الماضي. النفي: didn’t + الفعل. الأسئلة: Did …؟ ومع to be: was / were.'), 'point');
+  await g.next();
+  await fillCard(['They ___ the zoo', 'last weekend.'], ['visited', 'visit', 'visiting'], 'visited', 'Choose the word.', 'اختار الكلمة.', 'It happened in the past.', 'حصل في الماضي.', `We add -ed: ${kw('visited')}.`, `بنزوّد ${L('-ed')}: ${L('visited')}.`);
+  await fillCard(['Malik ___ watch TV', 'early last night.'], ['didn’t', 'wasn’t', 'doesn’t'], 'didn’t', 'Choose the word for the negative.', 'اختار الكلمة للنفي.', 'After it comes the plain verb.', 'بعدها الفعل العادي.', `${kw('Didn’t')} + the plain verb: Malik didn’t watch TV.`, `${L('didn’t')} + الفعل العادي: ${L('Malik didn’t watch TV')}.`);
+  await fillCard(['I ___ so excited', 'two days ago.'], ['was', 'am', 'were'], 'was', 'Choose the word.', 'اختار الكلمة.', 'The past of “am” is “was”.', 'ماضي am هو was.', `The past of “am” is ${kw('was')}.`, `ماضي ${L('am')} هو ${L('was')}.`);
+  await fillCard(['___ the teacher give us', 'homework last Monday?'], ['Did', 'Do', 'Was'], 'Did', 'Choose the word for the question.', 'اختار الكلمة للسؤال.', 'A past question starts with Did.', 'السؤال في الماضي بيبدأ بـ Did.', `A past question starts with ${kw('Did')}.`, `السؤال في الماضي بيبدأ بـ ${L('Did')}.`);
+  await fillCard(['They ___ at the club', 'a week ago. (negative)'], ['weren’t', 'didn’t', 'wasn’t'], 'weren’t', 'Choose the word.', 'اختار الكلمة.', 'With “to be” we put not after was / were.', 'مع to be بنحط not بعد was / were.', `With “to be”, we put not after ${kw('were')}: weren’t.`, `مع ${L('to be')} بنحط ${L('not')} بعد ${L('were')}.`);
+}
+async function mission4() {                 // lesson 3: The Two Frogs
+  g.say(T('Mission 4: Story Time: The Two Frogs. Two best friends lived in a small pond. One hot summer, the pond started to dry up.', 'المهمة ٤: وقت الحكاية: الضفدعتان. صاحبين مقرّبين كانوا عايشين في بركة صغيرة. في صيف حار البركة بدأت تنشف.'), 'point');
+  await g.next();
+  await ask('Where was the pond?', 'البركة كانت فين؟', ['Near the edge of the village', 'In the city', 'On a mountain'], 'Near the edge of the village', 'It was a small and quiet village.', 'كانت قرية صغيرة وهادية.', `The pond was ${kw('near the edge of the village')}.`, `${L('The pond was near the edge of the village.')}`);
+  await ask('Why did the frogs leave the pond?', 'ليه الضفدعتين سابوا البركة؟', ['There wasn’t enough water', 'They were tired of flies', 'A flood came'], 'There wasn’t enough water', 'The weather became extremely hot.', 'الجو بقى حار جدًا.', `There wasn’t ${kw('enough water')}, so they looked for a new home.`, `مكانش فيه ${L('enough water')} فدوّروا على بيت جديد.`);
+  await ask('Why did the frogs decide not to live in the well?', 'ليه الضفدعتين قرروا ميعيشوش في البئر؟', ['It could dry up and they would get stuck', 'The water was too cold', 'It was too small'], 'It could dry up and they would get stuck', 'The other frog thought about the future.', 'الضفدع التاني فكّر في المستقبل.', `The well could ${kw('dry up')} and they would get stuck at the bottom.`, `البئر ممكن ${L('dry up')} وهيعلقوا في القاع.`);
+  await ask('What does the story tell us?', 'الحكاية بتقولنا إيه؟', ['Think before we make a decision', 'Always live in a well', 'Never leave home'], 'Think before we make a decision', 'The frogs thought carefully.', 'الضفدعتين فكّروا كويس.', `The story tells us to ${kw('think before we make a decision')}.`, `${L('Think before we make a decision.')}`);
+}
+async function mission5() {                 // lesson 3: vowel digraphs
+  g.say(T('Mission 5: vowel digraphs. Two vowels together make one sound: “ea” in leap, “oo” in flood, “oa” in boat. Which digraph is in each word?', 'المهمة ٥: حروف العلة المزدوجة. حرفين علة مع بعض بيطلّعوا صوت واحد: ea في leap وoo في flood وoa في boat. أنهي زوج في كل كلمة؟'), 'point');
+  await g.next();
+  const buttons = [{ label: 'ea', value: 'ea', c: 1 }, { label: 'oo', value: 'oo', c: 3 }, { label: 'oa', value: 'oa', c: 0 }];
+  await sortCards(buttons, [['leap', 'ea', 'leap has “ea”: the long e sound.'], ['flood', 'oo', 'flood has “oo”: the short u sound.'], ['boat', 'oa', 'boat has “oa”: the long o sound.'],
+    ['goat', 'oa', 'goat has “oa”.'], ['book', 'oo', 'book has “oo”.'], ['read', 'ea', 'read has “ea”.'], ['foot', 'oo', 'foot has “oo”.'], ['peas', 'ea', 'peas has “ea”.']], 'word');
+  await fillCard(['The ___ sailed', 'across the lake.'], ['boat', 'meet', 'weak'], 'boat', 'Choose the word.', 'اختار الكلمة.', 'It floats on water.', 'بتطفو على المية.', `A ${kw('boat')} sails across the lake.`, `${L('boat')} بتبحر عبر البحيرة.`);
+}
+async function mission6() {                 // lesson 4: fiction
+  g.say(T('Mission 6: Once Upon My Imagination. A fiction story is made up from the imagination. Lily’s story: the clouds are floating upside down, so how will her flowers get sunshine?', 'المهمة ٦: كان يا ما كان في خيالي. القصة الخيالية بتتألف من الخيال. قصة ليلي: السحب بتطفو مقلوبة، فإزاي زهورها هتاخد شمس؟'), 'point');
+  await g.next();
+  const buttons = [{ label: T('Beginning', 'Beginning'), value: 'b', c: 0 }, { label: T('Problem', 'Problem'), value: 'p', c: 3 }, { label: T('Middle', 'Middle'), value: 'm', c: 2 }, { label: T('Ending', 'Ending'), value: 'e', c: 1 }];
+  await sortCards(buttons, [['Lily lives in a cozy little house', 'b', 'The beginning meets the characters and setting.', '🏠'], ['The clouds are upside down', 'p', 'The problem is when something goes wrong.', '☁️'],
+    ['Lily whispers to the clouds', 'm', 'In the middle, the character tries to fix it.', '🗣️'], ['The sun shines and the flowers smile', 'e', 'In the ending, the problem is solved.', '🌻']], 'plate');
+  await ask('What is the most exciting part of a story called?', 'اسم أكتر جزء مثير في القصة إيه؟', ['The climax', 'The beginning', 'The ending'], 'The climax', 'It comes before the ending.', 'بتيجي قبل النهاية.', `The most exciting part is the ${kw('climax')}.`, `أكتر جزء مثير اسمه ${L('climax')}.`);
+  set('stars', { n: 3, word: 'good' });
+  await ask('Collage time! A friend gives your collage 3 stars. What does that mean?', 'وقت الكولاج! صاحبك أداك ٣ نجوم. يعني إيه؟', ['good', 'poor', 'excellent'], 'good', '1 = poor, 2 = fair, 3 = …', '1 = poor و2 = fair و3 = …', `3 stars = ${kw('good')}.`, `${L('3 stars = good')}.`);
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
+
+/* ---------- Stage 3 · Speed Round (lesson 1: the six weather words) ---------- */
+async function stage3() {
+  set('set');
+  const buttons = [{ label: '⛈️ Thunderstorm', value: 'th', c: 0 }, { label: '🌪️ Sandstorm', value: 'sa', c: 1 }, { label: '🌊 Flood', value: 'fl', c: 2 }, { label: '🏜️ Drought', value: 'dr', c: 3 }, { label: '🔥 Wildfire', value: 'wi', c: 4 }, { label: '☀️ Heat wave', value: 'he', c: 0 }];
+  const items = [
+    { t: 'No rain for a long time', ans: 'dr', why: 'A drought is no rain for a long time.' }, { t: 'Too much water covering dry land', ans: 'fl', why: 'A flood is too much water covering dry land.' },
+    { t: 'Burns through forests and homes', ans: 'wi', why: 'A wildfire burns through forests and homes.' }, { t: 'Sand and dust fill the air', ans: 'sa', why: 'A sandstorm carries sand and dust through the air.' },
+    { t: 'Dangerously high temperature for days', ans: 'he', why: 'In a heat wave, the temperature is dangerously high for days.' }, { t: 'Lightning and dark clouds', ans: 'th', why: 'In a thunderstorm, children are afraid of the lightning.' },
+    { t: 'Farmers can’t grow crops: no water', ans: 'dr', why: 'A drought can prevent farmers from growing food.' }, { t: 'Cars got stuck in the streets', ans: 'fl', why: 'In a flood, the water covers the streets.' }];
+  await g.speedRound({ items, buttons, rounds: 8,
+    ask: T('Which weather?', 'أنهي طقس؟'), intro: T('Speed Round! I describe the weather. Press the right weather word. Be quick!', 'جولة السرعة! هوصف الطقس، واضغط على الكلمة الصح. بسرعة!'),
+    think: T('Which weather?', 'أنهي طقس؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Watch six kinds of extreme weather, see how Ancient Egypt survived them, follow the two frogs and write a story. Three stages: Warm Up, Missions and a Speed Round.`, `أهلًا يا <b>${g.name()}</b>! راقب ٦ أنواع من الطقس القاسي، واعرف إزاي مصر القديمة عاشت معاها، وتابع الضفدعتين، واكتب قصة. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T(`You know extreme weather words, the past simple, the two frogs and fiction stories. Next, try the questions of this unit.`, `بقيت تعرف كلمات الطقس القاسي والماضي البسيط وحكاية الضفدعتين والقصص الخيالية. بعد كده جرّب أسئلة الوحدة.`) }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

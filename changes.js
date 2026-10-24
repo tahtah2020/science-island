@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-24', title: 'English Grade 5: Units 1-3',
+    items: [
+      { text: 'Grade 5 English (both tracks): Food, Nature, and Culture, My Healthy Body and When Nature Changes, with three games and the October test' }
+    ] },
   { date: '2026-10-24', title: 'الصف الخامس علوم بالعربي: الفصول ٤ و٥ و٦',
     items: [
       { text: 'أسئلة عربية من الكتاب للفصل ٤ (شروط النمو)، ٥ (من الزهرة للثمرة)، ٦ (نمو الإنسان والتكاثر)' },

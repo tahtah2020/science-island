@@ -345,7 +345,34 @@ window.CHAPTERS = [
   { id: 'eg4u3', subject: 'english', grade: 'g4', n: 3, title: 'In Our World', titleAr: 'في عالمنا', icon: '🐘', tint: '#e2f4dc', ready: false, lessons: [], lessonsAr: [] },
   { id: 'eg4u4', subject: 'english', grade: 'g4', n: 4, title: 'Egypt: My Homeland', titleAr: 'مصر وطني', icon: '🏛️', tint: '#fbe9c8', ready: false, lessons: [], lessonsAr: [] },
   { id: 'eg4u5', subject: 'english', grade: 'g4', n: 5, title: 'A Day at Work', titleAr: 'يوم في العمل', icon: '👩‍⚕️', tint: '#e1effb', ready: false, lessons: [], lessonsAr: [] },
-  { id: 'eg4u6', subject: 'english', grade: 'g4', n: 6, title: 'The Hundred Dresses', titleAr: 'الفساتين المائة', icon: '👗', tint: '#fbe3e8', ready: false, lessons: [], lessonsAr: [] }
+  { id: 'eg4u6', subject: 'english', grade: 'g4', n: 6, title: 'The Hundred Dresses', titleAr: 'الفساتين المائة', icon: '👗', tint: '#fbe3e8', ready: false, lessons: [], lessonsAr: [] },
+  /* English · Grade 5 · Term 1 (ministry book "English Primary 5", 2026/2027). One English book for both tracks (lang { lang: 'en', ar: 'en' }): a questions file only.
+     Units 1-3 (book pages 7-60, with Review 1) are written: ids A-E, F-J and K-O (one letter per lesson); the questions follow the book (bookOrder).
+     Units 4-6 (scope and sequence) are locked until their pages arrive; their idea letters will continue from P. */
+  { id: 'eg5u1', subject: 'english', grade: 'g5', n: 1, title: 'Food, Nature, and Culture', titleAr: 'الطعام والطبيعة والثقافة', icon: '🐊', tint: '#dff3e4', ready: true,
+    lessons: ['Life Along the Nile', 'Food in the Hot Desert', 'Story Time: The Giving Tree', 'Writing: Let’s Make a Recipe!', 'Think and Create: A Flyer'],
+    questions: 'english/questions_eg5u1.js', art: 'english/g5_art.js', bookOrder: true,
+    game: { href: 'english-nile.html', name: "Nile Explorer", nameAr: "مستكشف النيل", icon: '🐊', hint: 'Tap the animals of the Nile, find out what desert animals eat, read the Giving Tree and cook Koshari, then race the Speed Round!', hintAr: 'اضغط على حيوانات النيل، واعرف أكل حيوانات الصحراء، واقرأ حكاية الشجرة المعطاءة، واعمل كشري، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg5u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg5u1.svg', quizBg: 'english/assets/bg_eg5u1.svg',
+    lessonsAr: ['الحياة على ضفاف النيل', 'الطعام في الصحراء الحارة', 'وقت الحكاية: الشجرة المعطاءة', 'الكتابة: لنصنع وصفة طعام!', 'فكّر وابتكر: منشور إعلاني'] },
+  { id: 'eg5u2', subject: 'english', grade: 'g5', n: 2, title: 'My Healthy Body', titleAr: 'جسمي الصحي', icon: '🫀', tint: '#fbe3e8', ready: true,
+    lessons: ['Sports for Better Health', 'My Habits: Then and Now', 'Heart and Blood', 'Writing: Life Savers in Action', 'Think and Create: A Poster'],
+    questions: 'english/questions_eg5u2.js', art: 'english/g5_art.js', bookOrder: true,
+    game: { href: 'english-body.html', name: "Healthy Body Hero", nameAr: "بطل الجسم الصحي", icon: '🫀', hint: 'Play sports, follow Adam’s new habits, listen to the heart and meet the healthcare heroes, then race the Speed Round!', hintAr: 'العب رياضة، وتابع عادات آدم الجديدة، واسمع القلب، وقابل أبطال الرعاية الصحية، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg5u2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg5u2.svg', quizBg: 'english/assets/bg_eg5u2.svg',
+    lessonsAr: ['الرياضة من أجل صحة أفضل', 'عاداتي: قبل وبعد', 'القلب والدم', 'الكتابة: منقذو الحياة في العمل', 'فكّر وابتكر: ملصق'] },
+  { id: 'eg5u3', subject: 'english', grade: 'g5', n: 3, title: 'When Nature Changes', titleAr: 'عندما تتغير الطبيعة', icon: '⛈️', tint: '#e1effb', ready: true,
+    lessons: ['Weather Wonders and Warnings!', 'Extreme Weather in Ancient Egypt', 'Story Time: The Two Frogs', 'Writing: Once Upon My Imagination', 'Think and Create: A Collage'],
+    questions: 'english/questions_eg5u3.js', art: 'english/g5_art.js', bookOrder: true,
+    game: { href: 'english-weather.html', name: "Weather Watch", nameAr: "مراقب الطقس", icon: '⛈️', hint: 'Spot six kinds of extreme weather, see how Ancient Egypt survived them, follow the two frogs, then race the Speed Round!', hintAr: 'اكتشف ٦ أنواع من الطقس القاسي، واعرف إزاي مصر القديمة عاشت معاها، وتابع الضفدعتين، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg5u3.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg5u3.svg', quizBg: 'english/assets/bg_eg5u3.svg',
+    lessonsAr: ['عجائب الطقس وتحذيراته!', 'الطقس القاسي في مصر القديمة', 'وقت الحكاية: الضفدعان', 'الكتابة: كان يا ما كان في خيالي', 'فكّر وابتكر: كولاج'] },
+  { id: 'eg5u4', subject: 'english', grade: 'g5', n: 4, title: 'My Community', titleAr: 'مجتمعي', icon: '🏘️', tint: '#fdebd5', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg5u5', subject: 'english', grade: 'g5', n: 5, title: 'Our World, Our Resources', titleAr: 'عالمنا ومواردنا', icon: '🌍', tint: '#e2f4dc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg5u6', subject: 'english', grade: 'g5', n: 6, title: 'The Talking Earth', titleAr: 'الأرض المتحدثة', icon: '🐊', tint: '#fbe9c8', ready: false, lessons: [], lessonsAr: [] }
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.
@@ -376,6 +403,8 @@ window.EXAMS = [
     parts: [{ ch: 'p1u1', lessons: [1, 2, 3] }] },
   { id: 'eg4oct', subject: 'english', grade: 'g4', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'eg4u1' }] },
+  { id: 'eg5oct', subject: 'english', grade: 'g5', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
+    parts: [{ ch: 'eg5u1', lessons: [1, 2, 3] }, { ch: 'eg5u2', lessons: [1, 2, 3] }, { ch: 'eg5u3', lessons: [1, 2, 3] }] },
   { id: 'p2oct', grade: 'p2', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'p2u1', lessons: [1, 2, 3] }] }
 ];
