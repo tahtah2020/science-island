@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-24', title: 'English Grade 5 Unit 2: real pictures',
+    items: [
+      { text: 'Healthy Body Hero and the body tap picture use the real pictures (heart, lungs, muscle, fist, vessels, football, apple, pillow, bones, dumbbell, toothbrush, water)' }
+    ] },
   { date: '2026-10-24', title: 'English Grade 5: check link',
     items: [
       { text: 'Games open from a chosen mission with ?m=N' }
