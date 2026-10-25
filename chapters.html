@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261025c">
+<link rel="stylesheet" href="common.css?v=20261025e">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -96,6 +96,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
           <div class="xpbar" aria-hidden="true"><i id="lvlBar"></i></div>
           <small id="lvlNext"></small>
         </div>
+        <div id="codeBox"></div>
       </div>
     </div>
     <div class="subj" id="subj" role="group" aria-label="Subject" data-ar-label="المادة"></div>
@@ -105,8 +106,8 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261025c"></script>
-<script src="common.js?v=20261025c"></script>
+<script src="chapters.js?v=20261025e"></script>
+<script src="common.js?v=20261025e"></script>
 <script>
 (() => {
   'use strict';
@@ -129,6 +130,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
     });
   }
 
+  SI.sync.chip($('#codeBox'));   // the child's recovery code (appears once the progress is saved online)
   const lv = SI.levelInfo(SI.xp());
   $('#lvlTitle').textContent = `${T('Level', 'المستوى')} ${lv.n} · ${lv.title}`;
   $('#lvlXp').textContent = `${lv.xp} XP`;

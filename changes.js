@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'حفظ التقدم على الإنترنت ورمز الاستعادة',
+    items: [
+      { text: 'كل طفل له رمز استعادة من ٨ حروف وأرقام يظهر في صفحة الفصول', links: [{ label: 'صفحة الفصول', href: 'chapters.html' }] },
+      { text: 'زر «عندي رمز استعادة» في الصفحة الأولى يعيد كل التقدم على أي جهاز', links: [{ label: 'الصفحة الأولى', href: 'index.html' }] },
+      { text: 'دمج ذكي بين نسخة الجهاز ونسخة الخادم يحتفظ بالأعلى في كل وحدة' }
+    ] },
   { date: '2026-10-25', title: 'Weather Watch fixes',
     items: [
       { text: 'Sorting games: a wrong first answer now gives a second try' },

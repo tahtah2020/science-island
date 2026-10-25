@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261025c">
+<link rel="stylesheet" href="common.css?v=20261025e">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -68,6 +68,9 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 .gpick .ar{font-size:16px;color:var(--ink)}
 .field input{flex:1;min-width:0;font:inherit;font-size:22px;font-weight:800;padding:12px 16px;border-radius:16px;border:3px solid var(--line);color:var(--navy);background:#fff}
 .field input:focus{outline:none;border-color:var(--primary)}
+.codeLink{display:block;margin:12px auto 0;border:0;background:none;color:var(--primary);font:inherit;font-weight:800;font-size:15px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px}
+.codeLink:focus-visible{outline:3px solid #f7b267;border-radius:8px}
+#codeInput{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:2px;text-transform:uppercase}
 .err{color:#b42318;font-weight:800;font-size:14.5px;margin:8px 0 0;min-height:1em;white-space:pre-line}
 .back{background:none;border:0;font:inherit;font-weight:800;color:var(--primary);cursor:pointer;padding:8px 0 0}
 .players{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
@@ -113,8 +116,8 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261025c">
-      <img src="assets/banner.jpg?v=20261025c" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261025e">
+      <img src="assets/banner.jpg?v=20261025e" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
@@ -126,6 +129,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
     <button class="btn primary big cont" type="button" id="continueBtn" hidden><span>▶ Continue · أكمل</span><small id="contSub"></small></button>
     <div class="players" id="playerList"></div>
     <button class="btn" type="button" id="newPlayer">＋ New player · لاعب جديد</button>
+    <button class="codeLink" type="button" data-code>🔑 I have a recovery code · عندي رمز استعادة</button>
   </section>
 
   <!-- step 1: grade -->
@@ -138,6 +142,21 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
       <button class="choice" type="button" data-grade="p1"><span class="ic">1</span><span class="tx"><b>Prep 1</b><span class="ar">الصف الأول الإعدادي</span></span><span class="go">›</span></button>
       <button class="choice" type="button" data-grade="p2"><span class="ic">2</span><span class="tx"><b>Prep 2</b><span class="ar">الصف الثاني الإعدادي</span></span><span class="go">›</span></button>
     </div>
+    <button class="codeLink" type="button" data-code>🔑 I have a recovery code · عندي رمز استعادة</button>
+  </section>
+
+  <!-- recovery code: brings back a player and all progress after the browser was cleared or on a new device -->
+  <section class="step" id="stepCode" hidden>
+    <h2>Recovery code <span class="ar">رمز الاستعادة</span></h2>
+    <p class="hint">Type the 8-letter code from your page. All your progress comes back. <span class="ar">اكتب الرمز المكوّن من ٨ حروف وأرقام، وكل تقدّمك هيرجع</span></p>
+    <form id="codeForm" novalidate>
+      <div class="field">
+        <input id="codeInput" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="ABCD-2345" aria-label="Recovery code · رمز الاستعادة" dir="ltr">
+        <button class="btn primary" type="submit" id="codeGo">Restore ▸</button>
+      </div>
+      <p class="err" id="codeErr" role="alert"></p>
+    </form>
+    <button class="back" type="button" id="codeBack">‹ Back</button>
   </section>
 
   <!-- step 2: track -->
@@ -216,18 +235,18 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <p class="foot"><a href="contact.html">For parents and teachers <span class="ar">لأولياء الأمور والمعلمين</span></a>
     <a class="tg" href="https://t.me/motafawek" target="_blank" rel="noopener" data-tg="home"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.6c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.5-.6-.2L6.2 13.3l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>What is new, on Telegram <span class="ar">الجديد على تليجرام</span></a></p>
 </main>
-<script src="firebase-config.js?v=20261025c"></script>
-<script src="common.js?v=20261025c"></script>
-<script src="chapters.js?v=20261025c"></script>
+<script src="firebase-config.js?v=20261025e"></script>
+<script src="common.js?v=20261025e"></script>
+<script src="chapters.js?v=20261025e"></script>
 <script>
 (() => {
   'use strict';
   const $ = s => document.querySelector(s);
   const MAP = SI.CHAPTERS_PAGE;   // players choose a chapter first
-  const steps = ['stepWho', 'stepGrade', 'stepTrack', 'stepGender', 'stepName'];
+  const steps = ['stepWho', 'stepGrade', 'stepTrack', 'stepGender', 'stepName', 'stepCode'];
   /* usage statistics (GA4): where new players stop. One event per step, once per visit; no names. */
   const ga = (n, p) => { try { if (window.gtag) window.gtag('event', n, p || {}); } catch (e) {} };
-  const STEP_EVENT = { stepWho: 'onboarding_who', stepGrade: 'onboarding_grade', stepTrack: 'onboarding_track', stepGender: 'onboarding_gender', stepName: 'onboarding_name' }, seen = new Set();
+  const STEP_EVENT = { stepWho: 'onboarding_who', stepGrade: 'onboarding_grade', stepTrack: 'onboarding_track', stepGender: 'onboarding_gender', stepName: 'onboarding_name', stepCode: 'onboarding_code' }, seen = new Set();
   const show = id => { if (!seen.has(id)) { seen.add(id); ga(STEP_EVENT[id]); } steps.forEach(s => $('#' + s).hidden = s !== id); const f = $('#' + id).querySelector('button:not(:disabled), input'); if (f) f.focus({ preventScroll: true }); };
   const choice = { grade: 'g5', track: 'lang', g: '' };
   let fixId = null;   // an existing player who has not said boy or girl yet
@@ -258,6 +277,25 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   } else show('stepGrade');
 
   $('#newPlayer').onclick = () => { SI.sfx.tick(); show('stepGrade'); };
+  /* recovery code: the server copy comes back on this device (merged with it if the player is already here) */
+  let codeFrom = 'stepGrade';
+  document.querySelectorAll('[data-code]').forEach(b => b.onclick = () => { SI.sfx.tick(); codeFrom = list.length ? 'stepWho' : 'stepGrade'; $('#codeErr').textContent = ''; show('stepCode'); });
+  $('#codeBack').onclick = () => show(codeFrom);
+  $('#codeForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const raw = $('#codeInput').value, btn = $('#codeGo');
+    if (!SI.sync.valid(SI.sync.clean(raw))) { $('#codeErr').textContent = 'The code has 8 letters and numbers.\nالرمز ٨ حروف وأرقام'; SI.sfx.bad(); return; }
+    btn.disabled = true; $('#codeErr').textContent = 'Looking for your progress… · بندوّر على تقدّمك…';
+    const r = await SI.sync.restore(raw);
+    btn.disabled = false;
+    if (!r.ok) {
+      $('#codeErr').textContent = r.why === 'unknown' ? 'This code was not found. Check it and try again.\nالرمز ده مش موجود. راجعه وجرّب تاني'
+        : 'No internet connection, try again.\nمفيش اتصال بالإنترنت، جرّب تاني';
+      SI.sfx.bad(); return;
+    }
+    ga('recovery_done'); SI.sfx.ok();
+    if (!r.g) { fixId = r.id; $('#genderBack').hidden = true; show('stepGender'); } else enter();
+  });
   document.querySelectorAll('[data-grade]').forEach(b => b.onclick = () => { choice.grade = b.dataset.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade] || ''; SI.sfx.tick(); show('stepTrack'); });
   document.querySelectorAll('[data-track]').forEach(b => b.onclick = () => { choice.track = b.dataset.track; SI.sfx.tick(); show('stepName'); });
   document.querySelectorAll('[data-g]').forEach(b => b.onclick = () => {

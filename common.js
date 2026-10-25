@@ -1,4 +1,4 @@
-/* Motafawek · shared helpers: storage, player, chapters, XP levels, daily streak, sounds, Arabic voice, Champions board */
+/* Motafawek · shared helpers: storage, online progress + recovery code, player, chapters, XP levels, daily streak, sounds, Arabic voice, Champions board */
 (function () {
   'use strict';
   const HOME = 'index.html', CHAPTERS_PAGE = 'chapters.html';
@@ -217,7 +217,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return { n: i + 1, title: nm(i), xp, from: LEVELS[i][0], to: nxt ? nxt[0] : null, pct: nxt ? (xp - LEVELS[i][0]) / (nxt[0] - LEVELS[i][0]) : 1, next: nxt ? nm(i + 1) : null };
   }
   const xp = () => prof().xp || 0;
-  function addXP(n) { let b = 0, a = 0; updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; }); return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
+  function addXP(n) { let b = 0, a = 0; updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; }); sync.dirty(); return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
 
   /* ---------- gems «جواهر» and Reesho's wardrobe ----------
      One gem for every GEM_XP points of XP. XP only grows, so the balance is floor(xp / GEM_XP) - spent: nothing extra is stored
@@ -234,6 +234,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       if (w.owned.includes(id) || price < 0 || Math.floor((p.xp || 0) / GEM_XP) - w.spent < price) return;
       w.spent += price; w.owned.push(id); ok = true;
     });
+    if (ok) sync.dirty();
     return ok;
   }
   /* wear an owned item in its slot, or take the slot off with id = null */
@@ -546,6 +547,208 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       return i < 0 ? null : { score: rows[i].score, rank: i + 1, online: false };
     }
   };
+
+  /* ---------- progress saved online + recovery code «رمز الاستعادة» ----------
+     The device save (localStorage si.v2) stays the main copy; each player is also mirrored to Firestore
+     `progress/{id}`, where id = the first 32 hex letters of SHA-256("motafawek:" + code). The code
+     (8 letters, shown as XXXX-XXXX) is the only key: rules allow `get` of one document, never `list`,
+     so nobody can see another child's file without that child's code. The same code will open the
+     parent page later (sync.fetch(code) reads a file without touching this device).
+     Writes: once when a player gets a code, then once after each finished game, quest, Daily 5, review
+     or exam (addXP marks the save dirty) and after a wardrobe purchase. A page opened with nothing new
+     only reads, once per browser session, to pick up progress made on another device.
+     Merge (local × server): numbers keep the higher value, lists are joined, dates keep the later one,
+     Review cards keep the higher box, unfinished runs keep the newer one; XP adds what each side earned
+     since the last sync. Choices of this device (current chapter, subject, worn items) stay local. */
+  const CODE_ABC = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';               // no 0/O, 1/I/L: easy to read aloud and copy
+  const SYNC_SKIP_PAGES = /(^|\/)(admin|reviews|progress)\.html$/;
+  const sync = {
+    _busy: null, _t: 0,
+    enabled() {
+      if (window.SI_SYNC_OFF) return false;
+      if (window.SI_SYNC_FORCE) return true;
+      return location.protocol === 'https:' && !/^(localhost|127\.)/.test(location.hostname) && !SYNC_SKIP_PAGES.test(location.pathname);
+    },
+    newCode() {
+      const a = new Uint32Array(8); crypto.getRandomValues(a);
+      return Array.from(a, n => CODE_ABC[n % CODE_ABC.length]).join('');
+    },
+    /* what a child types: spaces, dashes, lowercase and Arabic digits are fine */
+    clean(raw) {
+      return String(raw || '').replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).toUpperCase().replace(/[^0-9A-Z]/g, '');
+    },
+    valid(code) { return code.length === 8 && [...code].every(ch => CODE_ABC.includes(ch)); },
+    show(code) { return code ? code.slice(0, 4) + '-' + code.slice(4) : ''; },
+    async docId(code) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('motafawek:' + code));
+      return Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
+    },
+    async ref(code) {
+      const db = await LB.ready(); if (!db || !(window.crypto && crypto.subtle)) return null;
+      return LB._fs.doc(db, 'progress', await this.docId(code));
+    },
+    code() { return (player() || {}).code || ''; },
+    /* ---- merge ---- */
+    merge(L, S, baseXp) {
+      L = L || {}; S = S || {};
+      const out = mergeVal(L, S, '', '');
+      const lx = L.xp || 0, sx = S.xp || 0, b = baseXp == null ? Math.min(lx, sx) : baseXp;
+      out.xp = Math.max(lx, sx, sx + lx - b);
+      return out;
+    },
+    pack(p, profile) { return { v: 1, name: p.name, grade: p.grade || 'g5', track: p.track || 'lang', g: p.g || '', data: JSON.stringify(profile || {}) }; },
+    unpack(d) { let prof = {}; try { prof = JSON.parse(d.data || '{}') || {}; } catch (e) {} return { name: d.name || '', grade: d.grade || 'g5', track: d.track || 'lang', g: d.g || '', prof }; },
+    dirty() { store.update(s => { const p = (s.players || {})[s.current]; if (p) p.dirty = 1; }); this.soon(); },
+    soon() { if (!this.enabled()) return; clearTimeout(this._t); this._t = setTimeout(() => this.run(), 400); },
+    /* one sync of the current player: give a code if missing, read the server copy, merge, write only when something is new */
+    run() {
+      if (this._busy) return this._busy.then(() => this.run());
+      const go = (async () => {
+        const id = store.load().current, p = player();
+        if (!p || !p.name || p.name === 'Admin' || !this.enabled()) return { ok: false };
+        const db = await LB.ready(); if (!db || !(window.crypto && crypto.subtle)) return { ok: false };
+        const fs = LB._fs, local = JSON.parse(JSON.stringify(prof()));
+        let code = p.code, merged = null, wrote = false;
+        if (!code) {                                                  // first time: a new code and the whole device save
+          for (let i = 0; i < 4 && !merged; i++) {
+            const c = this.newCode(), r = await this.ref(c);
+            await fs.runTransaction(db, async tx => {
+              const snap = await tx.get(r); if (snap.exists()) return;   // taken (very unlikely): try another code
+              tx.set(r, Object.assign(this.pack(p, local), { at: fs.serverTimestamp() }));
+              merged = local; code = c; wrote = true;
+            });
+          }
+          if (!merged) return { ok: false };
+        } else {
+          const r = await this.ref(code);
+          await fs.runTransaction(db, async tx => {
+            const snap = await tx.get(r);
+            const server = snap.exists() ? this.unpack(snap.data()).prof : null;
+            merged = server ? this.merge(local, server, p.sb) : local;
+            const same = server && JSON.stringify(merged) === JSON.stringify(server) && snap.data().name === p.name && snap.data().grade === (p.grade || 'g5') && snap.data().track === (p.track || 'lang') && (snap.data().g || '') === (p.g || '');
+            wrote = !same;
+            if (wrote) tx.set(r, Object.assign(this.pack(p, merged), { at: fs.serverTimestamp() }));
+          });
+        }
+        /* back into the device save; anything earned while we were away is kept */
+        store.update(s => {
+          const q = (s.players || {})[id]; if (!q) return;
+          s.profiles = s.profiles || {};
+          const now = s.profiles[id] || {}, extra = (now.xp || 0) - (local.xp || 0);
+          const next = mergeVal(now, merged, '', '');
+          next.xp = (merged.xp || 0) + Math.max(0, extra);
+          s.profiles[id] = next;
+          q.code = code; q.sb = merged.xp || 0; delete q.dirty;
+        });
+        try { sessionStorage.setItem('si.synced.' + id, '1'); } catch (e) {}
+        document.dispatchEvent(new CustomEvent('si-sync', { detail: { code, wrote } }));
+        return { ok: true, code, wrote };
+      })().catch(e => { console.warn('Progress sync:', e); return { ok: false }; });
+      this._busy = go.finally(() => { this._busy = null; });
+      return go;
+    },
+    /* on page open: sync when this player has no code yet, has unsent progress, or was not read in this browser session */
+    auto() {
+      if (!this.enabled()) return;
+      const s = store.load(), p = (s.players || {})[s.current];
+      if (!p || !p.name || p.name === 'Admin') return;
+      let seen = false; try { seen = sessionStorage.getItem('si.synced.' + s.current) === '1'; } catch (e) {}
+      if (!p.code || p.dirty || !seen) setTimeout(() => this.run(), 1200);
+    },
+    /* read a file by its code without changing this device (recovery screen now, parent page later) */
+    async fetch(raw) {
+      const code = this.clean(raw);
+      if (!this.valid(code)) return { ok: false, why: 'format' };
+      const r = await this.ref(code); if (!r) return { ok: false, why: 'offline' };
+      try {
+        const snap = await Promise.race([LB._fs.getDoc(r), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 10000))]);
+        if (!snap.exists()) return { ok: false, why: 'unknown' };
+        return Object.assign({ ok: true, code }, this.unpack(snap.data()));
+      } catch (e) { console.warn(e); return { ok: false, why: 'offline' }; }
+    },
+    /* the recovery code typed on a device: the child comes back with all progress, merged with what this device has */
+    async restore(raw) {
+      const f = await this.fetch(raw); if (!f.ok) return f;
+      let id = Object.keys(players()).find(k => players()[k].code === f.code);
+      store.update(s => {
+        s.players = s.players || {}; s.profiles = s.profiles || {};
+        if (!id) {                                                  // a returning child: Reesho says «welcome back», not his introduction
+          const y = new Date(Date.now() - 864e5), seen = `${y.getFullYear()}-${pad(y.getMonth() + 1)}-${pad(y.getDate())}`;
+          id = rid(); s.players[id] = { name: f.name, grade: f.grade, track: f.track, g: f.g, code: f.code, sb: f.prof.xp || 0, seen }; s.profiles[id] = f.prof;
+        }
+        else {
+          const q = s.players[id];
+          s.profiles[id] = this.merge(s.profiles[id] || {}, f.prof, q.sb);
+          q.sb = f.prof.xp || 0; q.dirty = 1;
+        }
+        s.current = id;
+      });
+      if (players()[id].dirty) this.run();
+      return Object.assign({ ok: true }, player());
+    }
+  };
+  const SYNC_NEWER = new Set(['run', 'gameRun']);                     // unfinished runs: the newer one
+  const SYNC_LOCAL = new Set(['cur', 'subj', 'worn', 'lastVar']);    // this device's choices
+  const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  function mergeVal(a, b, key, parent) {
+    if (a === undefined) return b === undefined ? undefined : JSON.parse(JSON.stringify(b));
+    if (b === undefined || b === null) return a;
+    if (a === null) return SYNC_NEWER.has(key) ? null : JSON.parse(JSON.stringify(b));   // a run finished here stays finished
+    if (SYNC_LOCAL.has(key)) return a;
+    if (SYNC_NEWER.has(key)) return (b.at || 0) > (a.at || 0) ? b : a;
+    if (key === 'daily' && typeof a === 'object') {
+      const la = a.last || '', lb = b.last || '';
+      return la > lb ? a : lb > la ? b : Object.assign({}, a, { streak: Math.max(a.streak || 0, b.streak || 0) });
+    }
+    if (parent === 'cards' && typeof a === 'object') return (b.box || 0) > (a.box || 0) ? b : a;   // Review: the higher box
+    if (Array.isArray(a) && Array.isArray(b)) return Array.from(new Set(a.concat(b)));
+    if (typeof a === 'number' && typeof b === 'number') return Math.max(a, b);
+    if (typeof a === 'string' && typeof b === 'string') return DATE_RE.test(a) && DATE_RE.test(b) ? (a > b ? a : b) : a;
+    if (typeof a === 'object' && typeof b === 'object' && !Array.isArray(a) && !Array.isArray(b)) {
+      const o = {};
+      new Set(Object.keys(a).concat(Object.keys(b))).forEach(k => { const v = mergeVal(a[k], b[k], k, key); if (v !== undefined) o[k] = v; });
+      return o;
+    }
+    return a;
+  }
+  /* the code shown to the child: a small chip; tapping it explains what to do with it */
+  const SYNC_CSS = `
+.si-code{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 12px;border:0;border-radius:999px;background:#e3f1f7;color:#1f3d57;font:800 13px "Nunito","Cairo",system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 6px rgba(31,61,87,.12)}
+.si-code b{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:1px;font-size:14px;direction:ltr;unicode-bidi:isolate}
+.si-code:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.si-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.si-codebig{font:900 30px ui-monospace,Menlo,Consolas,monospace;letter-spacing:3px;direction:ltr;margin:10px 0;color:#23799f;user-select:all}`;
+  function codeCss() { if (!document.getElementById('siCodeCss')) { const st = document.createElement('style'); st.id = 'siCodeCss'; st.textContent = RATE_CSS + SYNC_CSS; document.head.appendChild(st); } }
+  function codeChip(box) {
+    if (!box) return;
+    const paint = () => {
+      const c = sync.code(); let b = box.querySelector('.si-code');
+      if (!c) { if (b) b.remove(); return; }
+      codeCss();
+      if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'si-code'; box.appendChild(b); b.onclick = () => { sfx.tick(); codeInfo(); }; }
+      b.innerHTML = `🔑 ${T('Recovery code', 'رمز الاستعادة')} <b>${esc(sync.show(c))}</b>`;
+      b.setAttribute('aria-label', T('Recovery code ', 'رمز الاستعادة ') + sync.show(c));
+    };
+    paint(); document.addEventListener('si-sync', paint);
+  }
+  function codeInfo() {
+    codeCss();
+    const c = sync.show(sync.code()), o = document.createElement('div');
+    o.className = 'rt-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true');
+    if (isAr()) o.dir = 'rtl';
+    o.innerHTML = `<div class="rt-p"><h2 style="margin:4px 0 6px;font-size:20px">🔑 ${T('Your recovery code', G('رمز الاستعادة بتاعك', 'رمز الاستعادة بتاعك'))}</h2>
+      <div class="si-codebig">${esc(c)}</div>
+      <p style="margin:6px 0 14px;line-height:1.6">${T('Your progress is saved online. Ask Mum or Dad to write this code down or take a photo of it. On a new phone, or if the browser is cleared, tap «I have a recovery code» on the first page and type it to get everything back.',
+        'تقدّمك محفوظ على الإنترنت. خلّي بابا أو ماما يكتبوا الرمز ده أو يصوّروه. لو غيّرت الجهاز أو اتمسح المتصفح، اضغط «عندي رمز استعادة» في الصفحة الأولى واكتبه، وكل حاجة هترجع.')}</p>
+      <div class="si-acts"><button class="btn" type="button" data-k="copy">📋 ${T('Copy', 'نسخ')}</button><button class="btn primary" type="button" data-k="ok">${T('OK', 'تمام')}</button></div></div>`;
+    document.body.appendChild(o);
+    const close = () => o.remove();
+    o.querySelector('[data-k="ok"]').onclick = close;
+    o.addEventListener('click', e => { if (e.target === o) close(); });
+    o.querySelector('[data-k="copy"]').onclick = e => { try { navigator.clipboard.writeText(c); e.currentTarget.textContent = '✓ ' + T('Copied', 'اتنسخ'); } catch (er) {} };
+    o.querySelector('[data-k="ok"]').focus({ preventScroll: true });
+  }
+  sync.chip = codeChip; sync.info = codeInfo;
 
   /* ---------- small UI helpers ---------- */
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -942,7 +1145,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
-    weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
+    weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT };
   applyLang();
+  sync.auto();
 })();

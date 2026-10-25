@@ -43,12 +43,24 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `tools/check_questions.js`: run `node tools/check_questions.js` before a release: it checks every questions file (answers, tap targets, ids) and that each Arabic file mirrors its English one
 - `ch2_art.js`: Chapter 2's drawings made in code (the luffa through the year, the lizard, the rock scene). The game uses them, and so do the chapter's tap pictures (`plantYear`, `lizardSummer`, `lizardWinter`)
 - `assets/map_ch2.svg`, `assets/bg_ch2.svg`: Chapter 2's map and page background, drawn by `science/tools/make_ch2_map.js` (run `node science/tools/make_ch2_map.js` after changing it)
-- `common.js` / `common.css`: shared player profiles, chapters, XP levels, streaks, sounds, Arabic voice, Champions board
+- `common.js` / `common.css`: shared player profiles, online progress + recovery code (see below), chapters, XP levels, streaks, sounds, Arabic voice, Champions board
 - Visitor statistics: Google Analytics 4, loaded from `common.js` (`GA_ID`); page views and approximate location only, no player names
 - `firebase-config.js`: paste the Firebase web config here to make the Champions board online
 - `assets/voice/`: Reesho's Arabic voice clips: `ok1`–`ok8`, `bad1`–`bad4`, `streak`, `boss`, `box`, `finish`, `hello`, `level`, `champion` (all `.mp3`; the phrases are listed in `VOICE_TEXT` in `common.js`)
 
 Progress is saved per player on each device, separately for each chapter (XP and the daily streak are shared). Several children can share one device.
+
+## Online progress and recovery code «رمز الاستعادة» (25 Oct 2026)
+- The device save (`localStorage` `si.v2`) stays the main copy. Each player is mirrored to Firestore `progress/{id}` (`common.js`, `SI.sync`).
+- Each child gets an 8-letter code (letters/digits without 0 O 1 I L, shown `XXXX-XXXX`), stored as `players[id].code`. The document id is the first 32 hex letters of SHA-256(`"motafawek:" + code`): the code itself is never stored on the server.
+- Document: `{ v: 1, name, grade, track, g, data: JSON string of the player's profile, at: server time }`.
+- The code shows as a chip «🔑 رمز الاستعادة» on `chapters.html` (under the level bar); tapping it explains what to do. Home page: «🔑 I have a recovery code · عندي رمز استعادة» (on the first screen and on the players list) opens step `stepCode`; the code brings the player back with all progress (merged with the device copy if the player is already there). A restored player is greeted «welcome back».
+- When it writes (free quota): once when a player gets a code (first page opened), then once after each finished game, quest, Daily 5, review or exam (`addXP` marks the save dirty) and after a wardrobe purchase. Each write is a transaction (1 read + 1 write) and is skipped when the server already has the same data. Opening pages with nothing new reads once per browser session (to pick up progress from another device). Unsent progress (offline) is sent on the next page.
+- Merge (`mergeVal`): numbers keep the higher value (best score, stars, plays, exam best), lists are joined (wardrobe owned), dates keep the later one, Review cards keep the higher box, unfinished runs (`run`, `gameRun`) keep the newer, `daily` keeps the later day; the device's own choices (`cur`, `subj`, `worn`, `lastVar`) stay local. XP adds what each side earned since the last sync (`players[id].sb` = XP at the last sync).
+- Not synced: players called «Admin» (owner previews), `admin.html`, `reviews.html`, `progress.html`, local copies (`http://localhost`). Tests: `window.SI_SYNC_FORCE = true` turns it on locally, `window.SI_SYNC_OFF = true` turns it off.
+- Rules: `firestore-progress.rules` is the block to add in the Firebase console (get one document only, never list, fixed fields, size cap, server time, no delete). The Champions, feedback, showcase and messages rules are unchanged.
+- Parent page (later): `SI.sync.fetch(code)` reads a child's file by code without touching the device (returns `{ ok, code, name, grade, track, g, prof }`).
+- Not merged automatically: a child who cleared the browser, made a NEW player, then typed the old code ends up with two players on the device (the new one keeps its own code).
 
 ## Grades
 A player belongs to one grade (`players[id].grade`: `g4`, `g5`, `g6`, `p1`, `p2`), chosen on the home page, and sees that grade's chapters and monthly test only.

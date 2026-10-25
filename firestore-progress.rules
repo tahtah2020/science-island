@@ -1,0 +1,31 @@
+// Motafawek · Firestore rules for online progress (recovery code).
+// ADD this block inside the existing `match /databases/{database}/documents { ... }`
+// of the project's rules (Firebase console → Firestore Database → Rules), next to the
+// existing `boards`, `feedback`, `showcase` and `messages` rules. Do not remove those.
+//
+// One document per child: progress/{id}, id = first 32 hex letters of SHA-256("motafawek:" + code).
+// - get one document by its id: allowed (the code is the key)
+// - list / query the collection: never (nobody can see the list of children)
+// - create / update: only the expected fields, a capped size, server time
+// - delete: never from the site
+
+    match /progress/{id} {
+      function validId() {
+        return id.matches('^[0-9a-f]{32}$');
+      }
+      function validDoc() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['v', 'name', 'grade', 'track', 'g', 'data', 'at'])
+          && d.keys().hasAll(['v', 'name', 'grade', 'track', 'data', 'at'])
+          && d.v is int && d.v >= 1 && d.v <= 9
+          && d.name is string && d.name.size() >= 1 && d.name.size() <= 20
+          && d.grade is string && d.grade.size() <= 4
+          && d.track is string && d.track.size() <= 4
+          && (!('g' in d) || (d.g is string && d.g.size() <= 1))
+          && d.data is string && d.data.size() <= 400000
+          && d.at == request.time;
+      }
+      allow get: if validId();
+      allow list, delete: if false;
+      allow create, update: if validId() && validDoc();
+    }
