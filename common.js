@@ -43,7 +43,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   /* the owner signed in on admin.html on this device (kept 30 days): unlocks quiz.html#preview */
   const OWNER_KEY = 'si.owner';
   function isOwner() { try { return +localStorage.getItem(OWNER_KEY) > Date.now(); } catch (e) { return false; } }
-  function setOwner(v) { try { v ? localStorage.setItem(OWNER_KEY, String(Date.now() + 30 * 864e5)) : localStorage.removeItem(OWNER_KEY); } catch (e) {} }
+  function setOwner(v) { try { if (v) { localStorage.setItem(OWNER_KEY, String(Date.now() + 30 * 864e5)); localStorage.setItem('si.notrack', '1'); } else localStorage.removeItem(OWNER_KEY); } catch (e) {} }   // the owner's device stays out of the statistics even after signing out
   function applyLang() {
     const h = document.documentElement;
     if (!isAr() || h.hasAttribute('data-bilingual')) return;   // the home page stays bilingual
@@ -765,22 +765,59 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   ['wave', 'think', 'celebrate', 'thumbs', 'sad', 'point'].forEach(p => { const i = new Image(); i.src = `assets/parrot_${p}.png`; });
 
   /* ---------- visitor statistics (Google Analytics 4) ----------
-     Counts page views with approximate location only. No player names are sent, and the data
-     is not used for advertising. Runs on the published site only, not on local copies. */
+     Counts page views with approximate location (city) only. No player names, no codes and no typed text are
+     sent, and the data is not used for advertising. Runs on the published site only, not on local copies.
+     Every hit carries the player's grade, track, subject and the number of players on the device (user properties
+     and event parameters), so the owner can split the numbers by grade or subject.
+     The owner's own visits are NOT counted: a device signed in on admin.html, a player named «Admin», the owner
+     pages, and any device opened once with ?notrack=1 (undo with ?notrack=0) send nothing.
+     Events (SI.ga): question_answer (every question: chapter, idea id, lesson, correct first try 1/0, mode),
+     quiz_start / quiz_complete (+ seconds), game_start / game_complete (+ seconds, mistakes), game_mistake. */
   const GA_ID = 'G-XP595P45PX';
+  const NOTRACK_KEY = 'si.notrack';
+  const OWNER_PAGES = /^(admin|reviews|progress)\.html$/;
   const PAGE_NAMES = { 'english-weather.html': "Weather Watch", 'english-body.html': "Healthy Body Hero", 'english-nile.html': "Nile Explorer", 'growthpath.html': "Growth Path", 'flowerlab.html': "Flower Lab", 'growlab.html': "Growth Lab", 'bloodtrip.html': "Blood Express", 'math-climb.html': "Climb the Line", 'math-boxes.html': "Food Bank Packers", 'studies-arab.html': "Arab Homeland Explorer", 'english-senses.html': "Senses Explorer", 'studies-city.html': "City Planner", 'studies-compass.html': 'Compass Trail', 'studies-egypt.html': 'Egypt Explorer', 'math-addsub.html': "Ant Colony Count", 'math-placevalue.html': "Place Value Nest", 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'heatlab.html': 'Heat Lab', 'math-decimals.html': 'Decimal Dock', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'wardrobe.html': 'Reesho wardrobe', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
     'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=eg4oct': 'Exam Hall', 'quiz.html#exam=eg5oct': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall', 'quiz.html#exam=sg4oct': 'Exam Hall', 'quiz.html#exam=sg5oct': 'Exam Hall', 'quiz.html#exam=sg6oct': 'Exam Hall', 'quiz.html#exam=mg6oct': 'Exam Hall', 'quiz.html#exam=g6oct': 'Exam Hall', 'quiz.html#exam=g6m1': 'Exam Hall', 'quiz.html#exam=p1oct': 'Exam Hall', 'quiz.html#exam=p2oct': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
     return PAGE_NAMES[file + location.hash] || PAGE_NAMES[file] || document.title;
   }
+  function pageName() {
+    const file = location.pathname.split('/').pop() || 'index.html';
+    return PAGE_NAMES[file + location.hash] || PAGE_NAMES[file] || document.title;
+  }
+  function trackingOff() {
+    try {
+      if (/[?&]notrack=1\b/.test(location.search)) localStorage.setItem(NOTRACK_KEY, '1');
+      if (/[?&]notrack=0\b/.test(location.search)) localStorage.removeItem(NOTRACK_KEY);
+      const file = location.pathname.split('/').pop() || 'index.html';
+      return localStorage.getItem(NOTRACK_KEY) === '1' || isOwner() || OWNER_PAGES.test(file) || /^admin$/i.test(((player() || {}).name || '').trim());
+    } catch (e) { return false; }
+  }
+  /* what every hit says about the player (no name) */
+  function gaContext() {
+    const p = player() || {}, c = chapterById(prof().cur);
+    return { grade: p.grade || 'none', track: p.track || 'none', gender: p.g || 'none', subject: p.grade ? subjectId() : 'none',
+      chapter: (c && c.id) || 'none', players_on_device: String(Object.keys(players()).length) };
+  }
+  const GA_ON = (() => { try { return !!GA_ID && location.protocol === 'https:' && !/^(localhost|127\.)/.test(location.hostname) && !trackingOff(); } catch (e) { return false; } })();
+  function ga(name, params) {
+    try {
+      if (!GA_ON || !window.gtag || trackingOff()) return;
+      const x = gaContext();
+      window.gtag('set', 'user_properties', { grade: x.grade, track: x.track, gender: x.gender, players_on_device: x.players_on_device });
+      window.gtag('event', name, Object.assign(x, params || {}));
+    } catch (e) {}
+  }
   try {
-    if (GA_ID && location.protocol === 'https:' && !/^(localhost|127\.)/.test(location.hostname)) {
+    if (GA_ON) {
+      const x = gaContext();
       window.dataLayer = window.dataLayer || [];
       window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
       window.gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'granted' });
       window.gtag('js', new Date());
-      window.gtag('config', GA_ID, { page_title: pageName(), allow_google_signals: false, allow_ad_personalization_signals: false });
+      window.gtag('set', 'user_properties', { grade: x.grade, track: x.track, gender: x.gender, players_on_device: x.players_on_device });
+      window.gtag('config', GA_ID, Object.assign({ page_title: pageName(), allow_google_signals: false, allow_ad_personalization_signals: false }, x));
       const g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
       document.head.appendChild(g);
     }
@@ -955,7 +992,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       s.fb = (s.fb || []).slice(-29);                                // the document id is random, so it cannot be guessed from the Champions board
       s.fb.push({ id: rid(), rating: choice.v, label: choice.en, text: rateText(text), wants: (wants || []).join(','), chapter: id, grade: p.grade || 'g5', track: p.track || 'lang', name: p.name || '', from: from || '' });
     });
-    try { if (window.gtag) window.gtag('event', 'chapter_rating', { rating: choice.v, rating_label: choice.en, chapter: id }); } catch (e) {}   // number only, no name and no text
+    ga('chapter_rating', { rating: choice.v, rating_label: choice.en, chapter: id });   // number only, no name and no text
     rateFlush();
   }
   let rateOpen = null;
@@ -1089,7 +1126,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
 .tg-note{margin:10px 2px 0;font-size:13px;font-weight:700;color:#5d7a8f;line-height:1.4}`;
   const tgState = () => store.load().tg || {};
   const tgMark = k => store.update(s => { s.tg = s.tg || {}; s.tg[k] = today(); });
-  const tgEvent = (name, from) => { try { if (window.gtag) window.gtag('event', name, { from: from || '' }); } catch (e) {} };
+  const tgEvent = (name, from) => ga(name, { from: from || '' });
   const tgJoined = () => !!tgState().go;
   function tgDue() { const t = tgState(), d = today(); return !t.go && !(t.seen && dayDiff(t.seen, d) < 7) && !(t.no && dayDiff(t.no, d) < 30); }
   document.addEventListener('click', e => {
@@ -1155,7 +1192,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
-    weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner,
+    weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT };
   applyLang();
   sync.auto();

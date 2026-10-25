@@ -391,9 +391,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261025f"></script>
-<script src="chapters.js?v=20261025f"></script>
-<script src="common.js?v=20261025f"></script>
+<script src="firebase-config.js?v=20261025g"></script>
+<script src="chapters.js?v=20261025g"></script>
+<script src="common.js?v=20261025g"></script>
 <script>
 (() => {
 'use strict';
@@ -1167,7 +1167,7 @@ async function playList(list, label, resume) {
     window.__cur = q;
     const r = await ask(q);
     hideTimer();
-    if (label !== 'retry') recordCard(q.id, r.firstTry);
+    if (label !== 'retry') { recordCard(q.id, r.firstTry); trackAnswer(q, r, label); }
     results[i] = r.firstTry;
     const ex = $('#explain');
     if (r.correct) {
@@ -1250,7 +1250,15 @@ function levelBlock(gain) {
 
 /* usage statistics (GA4): quiz_start when the player taps Start, quiz_complete at the results screen.
    Mode, chapter id and grade only; never a name. Silent when Analytics is not loaded (local copies). */
-const track = (name, params) => { try { const pl = SI.player() || {}; if (window.gtag) window.gtag('event', name, Object.assign({ grade: pl.grade || '' }, params)); } catch (e) {} };
+let gaT0 = Date.now();   // when this quiz started (for quiz_complete.seconds)
+const track = (name, params) => {
+  if (/^quiz_(start|resume)$/.test(name)) gaT0 = Date.now();
+  if (name === 'quiz_complete') params = Object.assign({ seconds: Math.round((Date.now() - gaT0) / 1000) }, params);
+  SI.ga(name, params);   // grade, track, subject are added by SI.ga; nothing is sent for the owner
+};
+/* one event per question: which idea, which lesson, right on the first try or not (the owner's "most common mistakes") */
+const trackAnswer = (q, r, mode) => SI.ga('question_answer', { mode, chapter: q.ch || CH.id || '', q_id: (q.ch || CH.id || '') + ':' + String(q.id || '').split('.')[0],
+  lesson: q.lesson || 0, level: q.level || '', correct: r.firstTry ? 1 : 0, timeout: r.timeout ? 1 : 0 });
 
 async function results(kind, res, total, extraXP = 0) {
   const acc = total ? res.firstRight / total : 0;
@@ -1392,7 +1400,7 @@ async function playExam(paper) {
     header(q, i, flat.length, dots); window.__cur = q;
     const r = await ask(q);
     hideTimer();
-    recordCard(q.id, r.firstTry, q.ch);
+    recordCard(q.id, r.firstTry, q.ch); trackAnswer(q, r, 'exam');
     const got = r.firstTry ? full : (r.correct && full > 1 ? 1 : 0);
     marks += got; perQ[q.exam.q - 1] += got; dots[i] = got === full;
     const pc = perCh[q.ch] = perCh[q.ch] || { got: 0, of: 0 }; pc.got += got; pc.of += full;

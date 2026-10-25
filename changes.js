@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'Real statistics, owner excluded',
+    items: [
+      { text: 'Every visit now carries grade, track, subject and chapter, so the numbers split by grade and subject' },
+      { text: 'Every question sends right/wrong on the first try (most common mistakes); quizzes and games send their duration' },
+      { text: 'The owner\'s visits are no longer counted (admin sign-in, Admin player, or ?notrack=1)' }
+    ] },
   { date: '2026-10-25', title: '«أكمل» يبدأ من آخر مكان توقف فيه الطفل',
     items: [
       { text: 'مكان التوقف (الفصل والسؤال) يُحفظ على الخادم عند الانتقال لصفحة أخرى أو إغلاق الصفحة، فيكمل الطفل من نفس المكان على أي جهاز' }

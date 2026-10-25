@@ -85,7 +85,9 @@
       const p = $('#scorePill'); p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop');
       const f = mk('span', 'float', '+' + n); p.appendChild(f); setTimeout(() => f.remove(), 1000);
     }
-    const miss = () => { mistakes++; };
+    /* a mistake: counted for the stars, and sent to the statistics with its stage and step (most missed missions) */
+    const oops = () => { mistakes++; SI.ga('game_mistake', { game: (location.pathname.split('/').pop() || ''), chapter: cfg.ch, stage: stageNo + 1, step: stepNo }); };
+    const miss = () => { oops(); };
     function setStage(n, name) { $('#stagePill').innerHTML = T(`Stage ${n}<span class="long"> of 3 · ${name}</span>`, `المرحلة ${n}<span class="long"> من ٣ · ${name}</span>`); }
     function confetti(n = 32) {
       if (reduceMotion) return;
@@ -126,7 +128,7 @@
             tries++;
             if (right) { done = true; b.classList.add('good'); sfx.ok(); addScore(tries === 1 ? points : 5); say(ok, 'thumbs'); finish(tries === 1); }
             else {
-              b.classList.add('bad'); b.disabled = true; sfx.bad(); mistakes++;
+              b.classList.add('bad'); b.disabled = true; sfx.bad(); oops();
               if (tries >= 2 || options.length <= 2) { done = true; bs.forEach(x => { if (x.dataset.right) x.classList.add('good'); }); say(T(`The answer is <b>${correct}</b>. ${ok}`, `الإجابة هي <b>${correct}</b>. ${ok}`), 'think'); finish(false); }
               else say(hint, 'sad');
             }
@@ -155,7 +157,7 @@
           if (done || h.classList.contains('bad')) return;
           tries++;
           if (h.dataset.id === correct) { done = true; finish(true); }
-          else { mistakes++; h.classList.add('bad'); sfx.bad(); if (tries >= 2 || spots.length <= 2) { done = true; finish(false); } else say(hint, 'sad'); }
+          else { oops(); h.classList.add('bad'); sfx.bad(); if (tries >= 2 || spots.length <= 2) { done = true; finish(false); } else say(hint, 'sad'); }
         };
         hots.forEach(h => {
           h.addEventListener('click', () => tap(h));
@@ -188,7 +190,7 @@
         bs.forEach(b => { b.onclick = () => {
           if (done || b.disabled) return; tries++;
           if (b.dataset.v === String(correct)) return finish(true);
-          b.classList.add('bad'); b.disabled = true; sfx.bad(); mistakes++;
+          b.classList.add('bad'); b.disabled = true; sfx.bad(); oops();
           if (tries >= 2 || bs.length <= 2) return finish(false);
           say(hint || T('Not quite. Try again!', 'قرّبت. حاول تاني!'), 'sad');
         }; });
@@ -232,7 +234,7 @@
           streak++; addScore(10 + Math.round(r.left * 10) + (streak >= 3 ? 5 : 0)); sfx.ok();
           say(T(`Correct! ${streak >= 3 ? `<b class="kw">Streak ×${streak}</b> ` : ''}${verdict}`, `صح! ${streak >= 3 ? `<b class="kw">سلسلة ×${streak}</b> ` : ''}${verdict}`), 'thumbs');
         } else {
-          streak = 0; mistakes++; sfx.bad();
+          streak = 0; oops(); sfx.bad();
           say(T(`${r.timeout ? 'Time’s up!' : 'Not quite.'} ${verdict}`, `${r.timeout ? 'الوقت خلص!' : G('قرّبت!', 'قرّبتي!')} ${verdict}`), 'sad');
         }
         await sleep(reduceMotion ? 1200 : 2500);
@@ -304,6 +306,8 @@
       const saved = jump === 1 ? runStore.load() : null;
       const goOn = await intro(introText, saved);
       let from = 0;
+      const gaT0 = Date.now();
+      SI.ga(saved && goOn ? 'game_resume' : 'game_start', { game: (location.pathname.split('/').pop() || ''), chapter: cfg.ch });
       if (saved && goOn) { from = saved.stage; skipping = saved.step; score = saved.score || 0; mistakes = saved.mistakes || 0; $('#score').textContent = score; }
       else if (saved) runStore.clear();
       for (let i = 0; i < stages.length; i++) {
@@ -317,6 +321,7 @@
         skipping = 0;
       }
       setTray(null);
+      SI.ga('game_complete', { game: (location.pathname.split('/').pop() || ''), chapter: cfg.ch, seconds: Math.round((Date.now() - gaT0) / 1000), score, mistakes });
       results(done);
     }
 

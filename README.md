@@ -44,7 +44,11 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `ch2_art.js`: Chapter 2's drawings made in code (the luffa through the year, the lizard, the rock scene). The game uses them, and so do the chapter's tap pictures (`plantYear`, `lizardSummer`, `lizardWinter`)
 - `assets/map_ch2.svg`, `assets/bg_ch2.svg`: Chapter 2's map and page background, drawn by `science/tools/make_ch2_map.js` (run `node science/tools/make_ch2_map.js` after changing it)
 - `common.js` / `common.css`: shared player profiles, online progress + recovery code (see below), chapters, XP levels, streaks, sounds, Arabic voice, Champions board
-- Visitor statistics: Google Analytics 4, loaded from `common.js` (`GA_ID`); page views and approximate location only, no player names
+- Visitor statistics: Google Analytics 4, loaded from `common.js` (`GA_ID`); page views and approximate location only, no player names.
+  - Send events with `SI.ga(name, params)` only (never `gtag` directly): it adds `grade`, `track`, `gender`, `subject`, `chapter`, `players_on_device` to every event, sets them as user properties, and sends nothing for the owner.
+  - **Owner excluded:** a device signed in on `admin.html` (sets `si.notrack` for good), a player named «Admin», the pages `admin.html`, `reviews.html`, `progress.html`, and any device opened once with `?notrack=1` (undo: `?notrack=0`).
+  - Events: `question_answer` (`q_id` = chapter:idea, `lesson`, `level`, `mode`, `correct` 1/0 first try, `timeout`), `quiz_start` / `quiz_resume` / `quiz_complete` (+ `seconds`), `game_start` / `game_resume` / `game_complete` (`seconds`, `score`, `mistakes`), `game_mistake` (`game`, `stage`, `step`), `chapter_rating`, onboarding and Telegram events.
+  - GA4 custom dimensions to register once (Admin → Custom definitions): user-scoped `grade`, `track`, `gender`, `players_on_device`; event-scoped `subject`, `chapter`, `q_id`, `lesson`, `correct`, `mode`, `game`, `stage`; metric `seconds`. GA4 never shows visitor IP addresses; `players_on_device` (children sharing one device) is the closest measure.
 - `firebase-config.js`: paste the Firebase web config here to make the Champions board online
 - `assets/voice/`: Reesho's Arabic voice clips: `ok1`–`ok8`, `bad1`–`bad4`, `streak`, `boss`, `box`, `finish`, `hello`, `level`, `champion` (all `.mp3`; the phrases are listed in `VOICE_TEXT` in `common.js`)
 
