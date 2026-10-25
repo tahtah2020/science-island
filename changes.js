@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'Social Studies Grade 5: Unit 2 The Ancient Egyptian Civilization',
+    items: [
+      { text: '42 ideas in four lessons, from the factors of the civilization to the Ptolemies and the Romans' },
+      { text: 'Game Time Trip to Ancient Egypt' },
+      { text: 'The owner\'s 12 pictures in the tap pictures and the game', links: [{ label: 'Time Trip to Ancient Egypt', href: 'studies-civ.html', ch: 'sg5u2' }] }
+    ] },
   { date: '2026-10-25', title: 'English Grade 5: Units 4, 5 and 6',
     items: [
       { text: 'Unit 4 My Community: 22 ideas, game Town and Village Tour' },

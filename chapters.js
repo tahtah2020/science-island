@@ -329,6 +329,13 @@ window.CHAPTERS = [
     map: { img: 'studies/assets/map_sg5u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'studies/assets/map_sg5u1.svg', quizBg: 'studies/assets/bg_sg5u1.svg',
     lessonsAr: ['موقع مصر الفلكي', 'مظاهر سطح مصر', 'مناخ مصر', 'النباتات الطبيعية والحيوانات البرية'] },
+  { id: 'sg5u2', subject: 'studies', grade: 'g5', n: 2, title: 'The Ancient Egyptian Civilization', titleAr: 'الحضارة المصرية القديمة', icon: '🏺', tint: '#fbe9c8', ready: true, bookOrder: true,
+    lessons: ['Factors Behind the Ancient Egyptian Civilization', 'Life of the Ancient Egyptian: Prehistoric Ages', 'Life of the Ancient Egyptian: Historical Ages', 'Egypt in the Ptolemaic and Roman Ages'],
+    questionsAr: 'studies/questions_sg5u2_ar.js', art: 'studies/g5_art.js',
+    game: { href: 'studies-civ.html', name: "Time Trip to Ancient Egypt", nameAr: "رحلة إلى مصر القديمة", icon: '🏺', hint: 'Sort the factors of the civilization, tap the tools of the prehistoric ages and the monuments of the pharaohs, then race the Speed Round!', hintAr: 'صنّف عوامل قيام الحضارة، واضغط على أدوات عصور ما قبل التاريخ وآثار الملوك، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'studies/assets/map_sg5u2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'studies/assets/map_sg5u2.svg', quizBg: 'studies/assets/bg_sg5u2.svg',
+    lessonsAr: ['عوامل قيام الحضارة المصرية القديمة', 'حياة المصري القديم «عصور ما قبل التاريخ»', 'حياة المصري القديم «العصور التاريخية»', 'مصر في عصري البطالمة والرومان'] },
 
   /* Social Studies · Grade 6 · Term 1 (the school book of the Ministry 2026/2027). Units, one Arabic book for both tracks (lang { lang: 'ar', ar: 'ar' }).
      Unit 1 «وطننا العربي (خصائص وتحديات)» (book pages 8-39): 1 وطننا العربي: الموقع والأهمية (8-15) · 2 تضاريس وطننا العربي (16-23) · 3 وطننا العربي: المناخ والنبات الطبيعي (24-29) · 4 التحديات البيئية في وطننا العربي (30-36) · تقييم الوحدة (37-39). Idea letters: A-D (one per lesson).

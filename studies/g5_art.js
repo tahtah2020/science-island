@@ -9,6 +9,10 @@
      sunRays       (tap) ids rayEq1 · rayS · rayN · rayEq2                                         four Earths, each with an arrow (a sun ray) falling straight on one latitude circle: equator, Tropic of Capricorn, Tropic of Cancer, equator; no season or date is written
      dunes         (fig) no tap targets                                                          sand dunes under the sun, no wind arrows, so the picture never gives the answer
      habitats      (tap) ids envNile · envDesert · envCoast                                       three stacked scenes: a canal bank (papyrus, reeds, white bird), a desert (aloe, prickly pear, palm, camel), a coast (fig tree, mangrove, gull); no word
+   Unit 2 «الحضارة المصرية القديمة» (the owner's pictures, 25 Oct 2026, studies/assets/civ_*.jpg, 16 px cropped on every side to remove the generator's corner mark, no captions):
+     civEarly   (tap) ids axe · mudbrick · chisel · bardi · nileriver · narmer          a stone tool, a mud-brick house, a metal chisel, a green plant, a river with palms, a carved stone slab
+     civGreat   (tap) ids steppyr · khufu · sphinx · lahun · theater · qamh              a step pyramid, a smooth pyramid, a lion with a king's head, a dam with arches, a half-round theatre, an ear of grain
+     Six round photos, three on top and three below, in a 340 x 250 card; q.pic.plain = the inner markup only (games).
    Texts are Arabic (the book is Arabic for both tracks). Screen-reader names describe the picture, never the answer.
    window.S5ART = the pieces the game and the map script reuse. */
 (function () {
@@ -226,6 +230,35 @@
   }
   habitats.rects = () => ENV.map(p => ({ id: p.id, x: 8, y: p.y, w: 324, h: 92 }));
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, dunes, habitats, dunes, habitats });
-  window.S5ART = { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, txt, hot, ringRect, ringEl, wrap, path, f1, esc, mx, my, poly, line, EGYPT, NILE, DELTA, SINAI, WEST, EAST, UNIT, INK, PAPER, FONT, GX, GY };
+
+  /* ================= Unit 2 · the owner's photos in two six-picture cards (340 x 250) ================= */
+  const CIV = {
+    civEarly: ['axe', 'mudbrick', 'chisel', 'bardi', 'nileriver', 'narmer'],
+    civGreat: ['steppyr', 'khufu', 'sphinx', 'lahun', 'theater', 'qamh']
+  };
+  const CIVNAME = { axe: 'حجر رمادي مدبب الطرف', mudbrick: 'بيت صغير من الطين له باب', chisel: 'أداة لها مقبض وطرف معدني مسطح', bardi: 'نبات أخضر له ساق طويلة وأوراق كالريش', nileriver: 'نهر أزرق بين ضفتين خضراوين عليهما نخيل', narmer: 'لوح حجري رمادي منقوش عليه ملك يرفع يده',
+    steppyr: 'هرم من درجات فوق بعضها', khufu: 'هرم كبير أملس الجوانب وعند قاعدته أشخاص صغار', sphinx: 'تمثال جسمه جسم أسد ورأسه رأس ملك', lahun: 'بناء له فتحات مقوسة تتدفق منها المياه', theater: 'مدرجات حجرية على شكل نصف دائرة وأعمدة', qamh: 'سنبلة صفراء لها حبوب' };
+  const CIVTINT = { axe: '#f3e7d8', mudbrick: '#dff1f7', chisel: '#fdf3c8', bardi: '#fbe3e8', nileriver: '#f6f1df', narmer: '#e1f3ec', steppyr: '#e1effb', khufu: '#dff1f7', sphinx: '#fbe6d4', lahun: '#e8e6fb', theater: '#fdf6d4', qamh: '#e8e6fb' };
+  const CSLOT = [[62, 66], [170, 66], [278, 66], [62, 184], [170, 184], [278, 184]], CR = 46;
+  function civSet(key, label) {
+    const ids = CIV[key];
+    function pic(q) {
+      const plain = !!(q && q.pic && q.pic.plain);
+      let s = plain ? '' : `<rect width="340" height="250" rx="14" fill="#fbf6e6"/>`;
+      ids.forEach((id, i) => {
+        const [x, y] = CSLOT[i];
+        s += `<g transform="translate(${x} ${y})"><clipPath id="s5c-${id}"><circle r="${CR}"/></clipPath><circle r="${CR}" fill="${CIVTINT[id]}"/>`
+          + `<image href="studies/assets/civ_${id}.jpg" x="${-CR}" y="${-CR}" width="${CR * 2}" height="${CR * 2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#s5c-${id})"/>`
+          + `<circle r="${CR}" fill="none" stroke="#fff" stroke-width="3"/><circle r="${CR}" fill="none" stroke="#d8c9a6" stroke-width="1.4"/></g>`;
+      });
+      if (!plain) ids.forEach((id, i) => { const [x, y] = CSLOT[i]; s += hot(id, CIVNAME[id], ringEl(x, y, CR, CR)); });
+      return wrap(340, 250, label, s, plain);
+    }
+    pic.rings = () => { const o = {}; ids.forEach((id, i) => { o[id] = [CSLOT[i][0], CSLOT[i][1], CR]; }); return o; };
+    return pic;
+  }
+  const civEarly = civSet('civEarly', 'ست صور مستديرة: أداة حجرية وبيت من الطين وأداة معدنية ونبات أخضر ونهر ولوح حجري منقوش');
+  const civGreat = civSet('civGreat', 'ست صور مستديرة: هرم مدرج وهرم أملس وتمثال وسد ومسرح وسنبلة');
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, dunes, habitats, civEarly, civGreat });
+  window.S5ART = { CIV, CIVNAME, civEarly, civGreat, globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, txt, hot, ringRect, ringEl, wrap, path, f1, esc, mx, my, poly, line, EGYPT, NILE, DELTA, SINAI, WEST, EAST, UNIT, INK, PAPER, FONT, GX, GY };
 })();
