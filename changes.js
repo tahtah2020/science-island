@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'Grade 5 Science · Chapter 7 Animal Growth and Reproduction',
+    items: [
+      { text: 'New chapter 7 (English track): 20 ideas from pages 72-79 with the owner\'s 12 animal pictures' },
+      { text: 'New game Animal Nursery (nursery.html)', links: [{ label: 'Animal Nursery', href: 'nursery.html', ch: 'ch7' }] }
+    ] },
   { date: '2026-10-25', title: 'Real statistics, owner excluded',
     items: [
       { text: 'Every visit now carries grade, track, subject and chapter, so the numbers split by grade and subject' },

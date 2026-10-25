@@ -12,6 +12,8 @@ const TAPS = { bloodLoop: ['heart', 'lungs', 'whole'], urinary: ['kidneys', 'urt
   luffaFlowers: ['male', 'female'], flowerParts: ['stamen', 'pollen', 'pistil', 'swelling', 'petal', 'sepal'], pollinationBags: ['A', 'B'],
   microscope: ['eyepiece', 'tube', 'arm', 'knob', 'nosepiece', 'objective', 'clips', 'stage', 'reflector'],
   lifeStages: ['infancy', 'childhood', 'youth', 'adulthood', 'oldage'], healthyHabits: ['diet', 'sleep', 'exercise'],
+  /* Grade 5 chapter 7 (ch7_art.js, the owner's pictures) */
+  ch7Kittens: ['c7cat', 'c7kitten'], ch7Six: ['c7dog', 'c7camel', 'c7gazelle', 'c7fox', 'c7chicken', 'c7fish'], ch7Hatch: ['c7fish', 'c7eggs'], ch7Reserves: ['c7coral', 'c7gazelle'],
   /* Grade 6 (g6_art.js, g6_body.js) */
   breathBags: ['milky', 'clear'], airways: ['nose', 'windpipe', 'lungs'], gasExchange: ['toBlood', 'toAir'],
   digestTract: ['foodpipe', 'stomach', 'liver', 'small', 'large'], salivaTubes: ['blue', 'same'], gutWalls: ['villi', 'flat'], cloths: ['loops', 'flat'],

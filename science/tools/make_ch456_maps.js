@@ -1,4 +1,4 @@
-/* Owner tool (not part of the game): draws the maps and page backgrounds of Grade 5 Chapters 4, 5 and 6 from the chapters' own drawing functions.
+/* Owner tool (not part of the game): draws the maps and page backgrounds of Grade 5 Chapters 4, 5, 6 and 7 from the chapters' own drawing functions.
    Run from the site folder:  node science/tools/make_ch456_maps.js
    ->  science/assets/map_ch4.svg, bg_ch4.svg · map_ch5.svg, bg_ch5.svg · map_ch6.svg, bg_ch6.svg
    STOPS are the five stops in map pixels (1224 x 1285); keep them in step with map.stops in chapters.js (percent), the same as Chapter 3. */
@@ -60,6 +60,20 @@ const s5 = () => at(250, 1130, 2.3, A5.flower({ sex: 'female' })) + at(1010, 940
 const s6 = () => at(140, 1160, 2.2, A6.person({ age: 'infant' })) + at(300, 1190, 1.6, A6.person({ age: 'child', shirt: '#f2b134' })) + at(960, 1010, 1.5, A6.person({ age: 'youth', shirt: '#9a7fd1' })) + at(1060, 1020, 1.5, A6.person({ age: 'adult', shirt: '#4fa3c7' }))
   + at(1000, 560, 1.6, A6.person({ age: 'old', shirt: '#6fb48a' })) + at(230, 640, 1.8, A6.bed()) + at(1010, 780, 2, A6.ball()) + at(620, 440, 1.8, A6.food()) + tree(118, 950, 1.05, GREEN) + tree(170, 470, 1, GREEN2) + tree(900, 260, .95, GREEN) + tree(760, 1185, .8, GREEN);
 
+/* ---------- Chapter 7: a nest with eggs, a pond with a fish and eggs, paw prints, a milk bowl (drawn in code: an SVG map cannot load the photos) ---------- */
+const nest7 = () => `<ellipse cx="0" cy="8" rx="66" ry="14" fill="#000" opacity=".1"/><path d="M-62 -6Q-60 22 0 24Q60 22 62 -6Z" fill="#b98b57" stroke="#8a6334" stroke-width="4"/>
+  <path d="M-58 0q14 8 28 0t28 0t28 0t28 0M-50 12q14 8 28 0t28 0t28 0" stroke="#8a6334" stroke-width="3" fill="none"/>
+  <ellipse cx="-24" cy="-14" rx="17" ry="22" fill="#fffaf0" stroke="#d9cdb0" stroke-width="3"/><ellipse cx="6" cy="-18" rx="17" ry="22" fill="#fff3dc" stroke="#d9cdb0" stroke-width="3"/><ellipse cx="34" cy="-12" rx="16" ry="21" fill="#fffaf0" stroke="#d9cdb0" stroke-width="3"/>`;
+const fish7 = c => `<path d="M-40 0Q-10 -26 26 -6L44 -20V20L26 6Q-10 26 -40 0Z" fill="${c}" stroke="#2f6f8e" stroke-width="3.4" stroke-linejoin="round"/><circle cx="-24" cy="-4" r="4" fill="#1f3d57"/><path d="M-6 -12q6 12 0 24" stroke="#2f6f8e" stroke-width="2.6" fill="none"/>`;
+const pond7 = () => `<ellipse cx="0" cy="0" rx="150" ry="74" fill="#8fd3ee" stroke="#5fb3d6" stroke-width="5"/><ellipse cx="-30" cy="-16" rx="80" ry="22" fill="#fff" opacity=".25"/>`
+  + at(-40, 6, 1, fish7('#f59a3a')) + [[60, 20], [74, 30], [86, 18], [70, 6], [94, 34], [100, 12]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7" fill="#fffbe8" stroke="#d9cdb0" stroke-width="2"/><circle cx="${x + 1}" cy="${y}" r="2.2" fill="#3a4a5a"/>`).join('');
+const paw7 = () => `<g fill="#8a6a4a" opacity=".55"><ellipse cx="0" cy="0" rx="14" ry="12"/><circle cx="-14" cy="-16" r="6"/><circle cx="-4" cy="-22" r="6"/><circle cx="8" cy="-22" r="6"/><circle cx="17" cy="-14" r="6"/></g>`;
+const bowl7 = () => `<ellipse cx="0" cy="6" rx="52" ry="10" fill="#000" opacity=".1"/><path d="M-46 -14H46Q42 14 0 16Q-42 14 -46 -14Z" fill="#e2603f" stroke="#a9432b" stroke-width="4"/><ellipse cx="0" cy="-14" rx="46" ry="10" fill="#fffdf6" stroke="#a9432b" stroke-width="4"/>`;
+const s7 = () => at(220, 1140, 1.9, nest7()) + at(1000, 960, 1.5, pond7()) + at(250, 650, 1.7, bowl7()) + at(1010, 560, 1.9, nest7())
+  + [[620, 1150, -20], [680, 1110, -10], [740, 1150, 0], [430, 420, 10], [490, 380, 20]].map(([x, y, r]) => at(x, y, 1.3, paw7(), r)).join('')
+  + tree(118, 950, 1.05, GREEN) + tree(170, 470, 1, GREEN2) + tree(900, 260, .95, GREEN) + tree(760, 1185, .8, GREEN);
+const eggBg = k => at(k.x, k.y, .7, `<ellipse cx="0" cy="-18" rx="14" ry="19" fill="#fffaf0" stroke="#d9cdb0" stroke-width="3"/>`);
+
 /* ---------- page background: a soft landscape under a light veil ---------- */
 function bg(sky, hill1, hill2, ground, plantFn, kind) {
   seed = 9;
@@ -79,3 +93,5 @@ write('map_ch5.svg', island(s5, ['#d6e8a0', '#e6efb0', '#f6f0c6']));
 write('bg_ch5.svg', bg(['#c9ecf8', '#f4f6dc'], '#d3ebb0', '#bfe090', '#b88a52', petalBg, 'flower'));
 write('map_ch6.svg', island(s6, ['#f1d6b8', '#f6e3cc', '#fbf0e4']));
 write('bg_ch6.svg', bg(['#fbd9c8', '#fdf0e6'], '#f3ddc4', '#ebcca8', '#d9b48a', kidBg, 'kids'));
+write('map_ch7.svg', island(s7, ['#f6e3a8', '#f8ecc4', '#fcf4dc']));
+write('bg_ch7.svg', bg(['#fde8bf', '#fff6e3'], '#f3e3b2', '#e9d394', '#cfa96a', eggBg, 'eggs'));

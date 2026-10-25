@@ -79,8 +79,12 @@ window.CHAPTERS = [
     cover: 'science/assets/map_ch6.svg', quizBg: 'science/assets/bg_ch6.svg',
     lessons: ['Stages of Human Growth', 'Similarities between Parents and Children', 'Conditions for Healthy Growth'] },
 
-  { id: 'ch7', n: 7, title: 'Animal Growth and Reproduction', titleAr: 'نمو الحيوانات وتكاثرها', icon: '🐣', tint: '#fff0cf', ready: false,
-    lessons: ['Animals that Give Birth', 'Animals that Lay Eggs', 'Comparing Animals and Preserving the Species'] },
+  { id: 'ch7', n: 7, title: 'Animal Growth and Reproduction', titleAr: 'نمو الحيوانات وتكاثرها', icon: '🐣', tint: '#fff0cf', ready: true,
+    questions: 'science/questions_ch7.js', art: 'science/ch7_art.js',
+    game: { href: 'nursery.html', name: "Animal Nursery", nameAr: "حضانة الحيوانات", icon: '🐣', hint: 'Meet baby animals: who is born, who hatches, and how we protect them!', hintAr: 'تعرّف على صغار الحيوانات: مين بيتولد ومين بيفقس، وإزاي نحميهم!' },
+    map: { img: 'science/assets/map_ch7.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_ch7.svg', quizBg: 'science/assets/bg_ch7.svg',
+    lessons: ['Animals that Give Birth to Babies', 'Animals that Lay Eggs', 'Comparing Animals and Preserving the Species'], lessonsAr: ['حيوانات تلد صغارها', 'حيوانات تضع البيض', 'مقارنة الحيوانات والحفاظ على النوع'], bookOrder: true },
 
   { id: 'ch8', n: 8, title: 'Changes in Weather', titleAr: 'تغيرات الطقس', icon: '⛅', tint: '#e3ecfb', ready: false,
     lessons: ['Clouds and Weather', 'Clouds Movement', 'Weather Forecast'] },

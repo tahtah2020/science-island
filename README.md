@@ -39,6 +39,7 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `questions_ch2.js` / `questions_ch2_ar.js`: Chapter 2 "Changes in the Seasons", 15 ideas from the school book (lessons 2-1 and 2-2, pages 20-25) plus 3 bonus ideas from the Column "Desert Wisdom" (pages 26-27)
 - `questions_ch3.js` / `questions_ch3_ar.js`: Chapter 3 "Conditions for Germination", 22 ideas from the school book (lessons 3-1 to 3-5, pages 28-42), 3 bonus ideas ("Let's Expand" and the Column "The Magic Seeds") and 3 exam extras from the outside guide. The Arabic file follows the Arabic school book's wording (الفلقة، الجنين، محلول اليود، الشرط الذي نغيّره…); the cups are (أ) and (ب), and for an Arabic player cup (أ) is drawn on the right, as in the book
 - `questions_ch4.js`, `questions_ch5.js`, `questions_ch6.js` (+ `_ar` files): Grade 5 Chapters 4 to 6, see "Grade 5 · Chapters 4 to 6" below
+- `questions_ch7.js` (English only so far): Grade 5 Chapter 7, see "Grade 5 · Chapter 7" below
 - `ch3_art.js`: Chapter 3's drawings made in code (the kidney bean and its parts, the cups, the refrigerator, the dark box) and its tap pictures (`seedParts`, `iodineSeeds`, `cupsWater`, `cupsAir`, `cupsTemp`). `assets/map_ch3.svg`, `assets/bg_ch3.svg` are drawn by `science/tools/make_ch3_map.js`
 - `tools/check_questions.js`: run `node tools/check_questions.js` before a release: it checks every questions file (answers, tap targets, ids) and that each Arabic file mirrors its English one
 - `ch2_art.js`: Chapter 2's drawings made in code (the luffa through the year, the lizard, the rock scene). The game uses them, and so do the chapter's tap pictures (`plantYear`, `lizardSummer`, `lizardWinter`)
@@ -83,7 +84,15 @@ From the school book, pages 44-71 (page 72 is only the opening of Chapter 7, whi
 - Maps and backgrounds `science/assets/map_ch4..6.svg`, `bg_ch4..6.svg`: `node science/tools/make_ch456_maps.js`.
 - The game pages hold Arabic text first drafted from the English book; the names were checked against the Arabic book on 24 Oct 2026 (see above). The owner should still read the games' Egyptian-colloquial lines once.
 - Notes for the science review: the result of the pollination experiment (flower A grows a fruit) is derived from "pollination is necessary" and Exercise 2(2); the heights of the seedlings are not printed in the book (the pictures follow the Check page: dark green and thick with sunlight, yellowish, thin and long without; taller and bigger with fertilizer); the book prints features only for infancy and childhood, so nothing is asked about the features of youth, adulthood or old age; the open activities and Exercise 5 of page 71 are not asked.
-- Chapter 7 "Animal Growth and Reproduction" is still listed as soon (only its opening page 72 was sent).
+- Chapter 7: see "Grade 5 · Chapter 7" below.
+
+## Grade 5 · Chapter 7 "Animal Growth and Reproduction" (English, 25 Oct 2026)
+From the English school book, pages 72-79 (three lessons, Try and Exercise). Arabic file not made yet (the Arabic book of this chapter was not sent): the chapter opens for the Languages track only.
+- `science/questions_ch7.js`: 20 core ideas. Every letter A-Z was already used in Grade 5, so ids number on from 11: B11-B17 lesson 1 (birth), E11-E16 lesson 2 (eggs), P11-P17 lesson 3 (preserving). `bookOrder: true`.
+- Pictures: the owner's sheet of 12 pictures (25 Oct 2026), cropped without captions → `science/assets/ch7_*.jpg` (catkit, kitten, dog, camel, gazelle, fox, fish, fisheggs, chicken, frog, eagle, coral). `science/ch7_art.js` (`window.CH7ART`: `photo`, `card`) draws them; tap pictures `ch7Kittens`, `ch7Six`, `ch7Hatch`, `ch7Reserves` (ids `c7…`).
+- Game `nursery.html` (Animal Nursery): Warm Up born or hatched; Mission 1 cats (inside the body, mother's milk, look like parents, reproduction); Mission 2 fish (eggs in water, hatching, why so many eggs); Mission 3 comparing (chicken lays eggs on land, dog like the cat), nature reserves, Ras Mohammed and White Desert, preserving the species; Speed Round "gives birth or lays eggs?" with the photos. Its Arabic text is a first draft from the English book.
+- Map and background `science/assets/map_ch7.svg`, `bg_ch7.svg` (drawn in code by `science/tools/make_ch456_maps.js`: an SVG map cannot load photos).
+- Review notes: the fish "lives in water" (empty cell in the table, page 77) comes from page 75; Try 5 (camel, snake, cat, frog) has no printed answer except the cat: camel = birth, snake and frog = eggs is asked as the expected answer; the game's Speed Round also uses the gazelle, fox and eagle pictures (shown on page 76, not grouped in the book). Not asked: the open Warm Up questions, "do baby fish look like their parents?", the empty "similar animal" cell for the fish and the pupil's own 4th row.
 
 ## Grade 4
 Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2026/2027 (both books have the same pages):

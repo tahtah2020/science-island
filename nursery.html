@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animal Nursery · Animal Growth and Reproduction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261025h">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Animal Nursery.</noscript>
+<script src="firebase-config.js?v=20261025h"></script>
+<script src="chapters.js?v=20261025h"></script>
+<script src="common.js?v=20261025h"></script>
+<script src="science/ch7_art.js?v=20261025h"></script>
+<script src="game_kit.js?v=20261025h"></script>
+<script>
+(() => {
+'use strict';
+/* Animal Nursery · the game of Chapter 7 "Animal Growth and Reproduction" (Grade 5). Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up): born as babies or hatched from eggs (book pages 72-73)
+   Stage 2 (Missions): 1) cats give birth and feed milk (pages 72-73); 2) fish lay eggs, hatching (pages 74-75); 3) comparing animals, nature reserves (pages 76-77)
+   Stage 3 (Speed Round): gives birth or lays eggs? (the gazelle, the fox and the eagle are the owner's pictures; the book shows them on page 76 but does not group them)
+   Pictures: the owner's pictures (science/assets/ch7_*.jpg) through window.CH7ART.
+   Every T('English', 'عربي') has both languages. The Arabic is a first draft from the English book (the Arabic book of this chapter was not sent yet). */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const A = window.CH7ART;
+const VW = 420, VH = 280;
+const sc = { mode: 'two', hi: null, eggs: false, one: null };
+const ar = SI.T(false, true);
+const X = x => (ar ? VW - x : x);           // mirror left/right for Arabic
+const rrect = (x, y, w, h) => `<rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="18"/>`;
+const hl = (x, y, w, h) => `<rect x="${x - 6}" y="${y - 6}" width="${w + 12}" height="${h + 12}" rx="22" fill="none" stroke="#2e9e6b" stroke-width="5"/>`;
+const ground = `<rect width="${VW}" height="${VH}" fill="#fff8ea"/><rect y="236" width="${VW}" height="44" fill="#f6e3ae"/><path d="M0 250H${VW}" stroke="#e8cf92" stroke-width="3" stroke-dasharray="10 12"/>`;
+
+/* two big photos side by side: left box and right box */
+const BOX = [[24, 34, 176, 176], [220, 34, 176, 176]].map(([x, y, w, h]) => [ar ? VW - x - w : x, y, w, h]);
+function pair(a, b) {
+  let s = ground + A.card(a, ...BOX[0]) + (b ? A.card(b, ...BOX[1]) : `<rect x="${BOX[1][0]}" y="${BOX[1][1]}" width="176" height="176" rx="16" fill="#fdf1d6" stroke="#ead7a8" stroke-width="3" stroke-dasharray="8 8"/><text x="${BOX[1][0] + 88}" y="${BOX[1][1] + 104}" text-anchor="middle" font-family="Nunito, Cairo, sans-serif" font-size="46" font-weight="900" fill="#e0c88f">?</text>`);
+  if (sc.hi != null) s += hl(...BOX[sc.hi]);
+  return s;
+}
+/* four round photos in a row */
+const ROW = ['c7camel', 'c7dog', 'c7chicken', 'c7fish'], RX = [62, 164, 266, 368].map(X), RY = 136, RR = 46;
+function row() {
+  let s = ground;
+  ROW.forEach((id, i) => { s += A.photo(id, RX[i], RY, RR); });
+  if (sc.hi != null) s += `<circle cx="${RX[sc.hi]}" cy="${RY}" r="${RR + 7}" fill="none" stroke="#2e9e6b" stroke-width="5"/>`;
+  return s;
+}
+const one = () => ground + (sc.one ? A.card(sc.one, 120, 30, 180, 180) : '');
+const render = () => ({
+  two: () => pair('c7cat', 'c7fish'),
+  cat: () => pair('c7cat', 'c7kitten'),
+  fish: () => pair('c7fish', sc.eggs ? 'c7eggs' : null),
+  row, reserve: () => pair('c7coral', 'c7gazelle'), one
+})[sc.mode]();
+
+const g = G4Game({ ch: 'ch7', logo: '🐣', title: ['Animal Nursery', 'حضانة الحيوانات'], sub: ['Chapter 7 · Animal Growth and Reproduction', 'الفصل ٧ · نمو الحيوانات وتكاثرها'],
+  bg: 'science/assets/bg_ch7.svg', bgc: '#fff0cf', label: ['Pictures of animals and their babies', 'صور حيوانات وصغارها'], render });
+const kw = g.kw;
+const set = o => { Object.assign(sc, { hi: null }, o); g.paint(); };
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set({ mode: 'two' });
+  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('babies · mother’s milk · eggs · hatching · reproduction · nature reserves', 'الصغار · لبن الأم · البيض · الفقس · التكاثر · المحميات الطبيعية')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
+  g.say(T('Look! A mother cat with her kittens, and a fish in the water. How are animal babies born?', 'بصّ! قطة أم مع صغارها، وسمكة في الماء. إزاي بتتولد صغار الحيوانات؟'), 'wave');
+  await g.next(T('Let’s find out ▸', 'يلّا نعرف ◂'));
+  g.veil(null);
+  g.say(T('Do all animals hatch from eggs?', 'هل كل الحيوانات تفقس من البيض؟'), 'think');
+  const ok1 = T('No. Some are born as babies, and some hatch from eggs', 'لا. بعضها يولد صغارًا، وبعضها يفقس من البيض');
+  await g.choice({
+    options: [ok1, T('Yes, all animals hatch from eggs', 'نعم، كل الحيوانات تفقس من البيض'), T('No, all animals are born as babies', 'لا، كل الحيوانات تولد صغارًا')], correct: ok1,
+    hint: T('Look at the two pictures. Are they the same?', 'بصّ على الصورتين. هما زي بعض؟'),
+    ok: T(`The way new life is born ${kw('differs')} depending on the animal. Some animals are born as babies, and some hatch from eggs.`, `طريقة ولادة الحياة الجديدة ${kw('تختلف')} حسب الحيوان. بعض الحيوانات تولد صغارًا، وبعضها يفقس من البيض.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Animals that give birth', 'حيوانات تلد صغارها'));
+  set({ mode: 'cat' });
+  g.say(T('How do cats have their babies?', 'إزاي القطط بتجيب صغارها؟'), 'think');
+  await g.choice({
+    options: [T('They give birth to babies', 'تلد صغارًا'), T('They lay eggs', 'تضع البيض'), T('They grow from seeds', 'تنمو من البذور')], correct: T('They give birth to babies', 'تلد صغارًا'),
+    hint: T('Kittens do not come out of eggs.', 'القطط الصغيرة مبتطلعش من بيض.'),
+    ok: T(`Cats belong to a group of animals that ${kw('give birth to babies')} and feed their young with their milk.`, `القطط من مجموعة الحيوانات التي ${kw('تلد صغارها')} وترضعها من لبنها.`) });
+  g.say(T('Where does the mother cat carry her babies until they are ready to be born?', 'فين القطة الأم بتحمل صغارها لحد ما يكونوا جاهزين للولادة؟'), 'think');
+  await g.choice({
+    options: [T('Inside her own body', 'داخل جسمها'), T('In the water', 'في الماء'), T('In the soil', 'في التربة')], correct: T('Inside her own body', 'داخل جسمها'),
+    hint: T('She protects them very close to her.', 'بتحميهم قريب منها جدًّا.'),
+    ok: T(`The mother cat carries her babies ${kw('inside her body')} for a certain period of time, and gives birth to them when they are ready.`, `القطة الأم تحمل صغارها ${kw('داخل جسمها')} فترة من الوقت، وتلدهم عندما يكونون جاهزين.`) });
+  g.say(T('After birth, the mother gently raises her kittens. Tap the picture where the kittens get their <b>warm mother’s milk</b>.', P('بعد الولادة الأم بتربّي صغارها بلطف. اضغط على الصورة اللي فيها الصغار بياخدوا <b>لبن الأم الدافئ</b>.', 'بعد الولادة الأم بتربّي صغارها بلطف. اضغطي على الصورة اللي فيها الصغار بياخدوا <b>لبن الأم الدافئ</b>.')), 'think');
+  await g.spot(['c7cat', 'c7kitten'].map((id, i) => ({ id, name: A.nameOf(id), ring: rrect(...BOX[i]) })), 'c7cat', {
+    hint: T('Find the mother.', 'دوّر على الأم.'),
+    ok: T(`After birth, the mother cat cleans the kittens’ bodies and gives them warm ${kw('mother’s milk')} until their bodies become strong.`, `بعد الولادة تنظّف القطة الأم أجسام صغارها وتعطيهم ${kw('لبن الأم')} الدافئ حتى تقوى أجسامهم.`),
+    reveal: () => { sc.hi = 0; g.paint(); } });
+  set({ mode: 'cat' });
+  g.say(T('Kittens are very small at first. Who do they look like?', 'القطط الصغيرة بتكون صغيرة جدًّا في الأول. بتشبه مين؟'), 'think');
+  await g.choice({
+    options: [T('Exactly like their father and mother', 'تشبه أباها وأمها تمامًا'), T('Like a fish', 'تشبه السمكة'), T('Like nobody at all', 'لا تشبه أحدًا')], correct: T('Exactly like their father and mother', 'تشبه أباها وأمها تمامًا'),
+    hint: T('Look at the kitten and the mother.', 'بصّ على القطة الصغيرة والأم.'),
+    ok: T(`Kittens look exactly like their ${kw('father and mother')}. Then, they grow as time passes.`, `القطط الصغيرة تشبه ${kw('أباها وأمها')} تمامًا، ثم تكبر مع مرور الوقت.`) });
+  g.say(T('Animal babies are born from a father (male) and a mother (female) through a process called ___.', 'صغار الحيوانات تولد من أب (ذكر) وأم (أنثى) من خلال عملية اسمها ___.'), 'think');
+  await g.choice({
+    options: [T('reproduction', 'التكاثر'), T('hatching', 'الفقس'), T('germination', 'الإنبات')], correct: T('reproduction', 'التكاثر'),
+    hint: T('It keeps life going on Earth.', 'هي اللي بتخلّي الحياة مستمرة على الأرض.'),
+    ok: T(`${kw('Reproduction')} is very important to preserve each type of animal and human, and to continue life on Earth.`, `${kw('التكاثر')} مهم جدًّا للحفاظ على كل نوع من الحيوانات والإنسان، ولاستمرار الحياة على الأرض.`) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Animals that lay eggs', 'حيوانات تضع البيض'));
+  set({ mode: 'fish', eggs: false });
+  g.say(T('Unlike cats, fish do not raise their babies inside their bodies. Where does a mother fish put her eggs?', 'على عكس القطط، الأسماك مبتحملش صغارها جوه جسمها. السمكة الأم بتحط بيضها فين؟'), 'think');
+  await g.choice({
+    options: [T('She releases many eggs into the water', 'تطلق بيضًا كثيرًا في الماء'), T('She keeps one egg inside her body', 'تحتفظ ببيضة واحدة داخل جسمها'), T('She buries the eggs in the soil', 'تدفن البيض في التربة')],
+    correct: T('She releases many eggs into the water', 'تطلق بيضًا كثيرًا في الماء'),
+    hint: T('Fish live in the water.', 'السمك عايش في الماء.'),
+    ok: T(`A mother fish releases many ${kw('eggs')} into the water.`, `السمكة الأم تطلق ${kw('بيضًا')} كثيرًا في الماء.`) });
+  set({ mode: 'fish', eggs: true });
+  g.say(T('A certain period of time passes… Tap the picture where very small fish are coming out of their eggs.', P('بتعدّي فترة من الوقت… اضغط على الصورة اللي فيها أسماك صغيرة جدًّا خارجة من البيض.', 'بتعدّي فترة من الوقت… اضغطي على الصورة اللي فيها أسماك صغيرة جدًّا خارجة من البيض.')), 'think');
+  await g.spot(['c7fish', 'c7eggs'].map((id, i) => ({ id, name: A.nameOf(id), ring: rrect(...BOX[i]) })), 'c7eggs', {
+    hint: T('Look for small round eggs.', 'دوّر على بيض صغير مدوّر.'),
+    ok: T('Very small fish come out of the eggs and start swimming.', 'أسماك صغيرة جدًّا تخرج من البيض وتبدأ في السباحة.'),
+    reveal: () => { sc.hi = 1; g.paint(); } });
+  set({ mode: 'fish', eggs: true });
+  g.say(T('What do you call it when baby fish come out of eggs?', 'إيه اسم خروج صغار السمك من البيض؟'), 'think');
+  await g.choice({
+    options: [T('Hatching', 'الفقس'), T('Giving birth', 'الولادة'), T('Swimming', 'السباحة')], correct: T('Hatching', 'الفقس'),
+    hint: T('Chicks do it too.', 'الكتاكيت كمان بتعمل كده.'),
+    ok: T(`Babies come out of the eggs released in the water. This is called ${kw('hatching')}.`, `الصغار تخرج من البيض الموجود في الماء، وهذا يسمى ${kw('الفقس')}.`) });
+  g.say(T('Why does a mother fish release a <b>huge</b> amount of eggs?', 'ليه السمكة الأم بتطلق كمية <b>كبيرة جدًّا</b> من البيض؟'), 'think');
+  const ok2 = T('So that many small fish can survive in the open water', 'لكي يعيش كثير من الأسماك الصغيرة في المياه المفتوحة');
+  await g.choice({
+    options: [ok2, T('Because the water is safe, so raising many is easy', 'لأن الماء آمن فيسهل تربية الكثير'), T('To give them as a present to other fish', 'لتهديها لأسماك أخرى')], correct: ok2,
+    hint: T('The open water is not easy for small fish.', 'المياه المفتوحة مش سهلة على السمك الصغير.'),
+    ok: T(`This is to make sure that many small fish can ${kw('survive')} even in the open water.`, `ذلك لضمان أن يعيش ${kw('وينجو')} كثير من الأسماك الصغيرة حتى في المياه المفتوحة.`) });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Comparing and protecting', 'المقارنة والحماية'));
+  set({ mode: 'row' });
+  const spots = ROW.map((id, i) => ({ id, name: A.nameOf(id), ring: `<circle class="ring" cx="${RX[i]}" cy="${RY}" r="${RR + 4}"/>` }));
+  g.say(T('Let’s compare the animals around us. Tap the animal that <b>lays eggs</b> and lives <b>on land</b>.', P('يلّا نقارن الحيوانات اللي حوالينا. اضغط على الحيوان اللي <b>يضع البيض</b> ويعيش <b>على اليابسة</b>.', 'يلّا نقارن الحيوانات اللي حوالينا. اضغطي على الحيوان اللي <b>يضع البيض</b> ويعيش <b>على اليابسة</b>.')), 'think');
+  await g.spot(spots, 'c7chicken', {
+    hint: T('Its babies are small yellow chicks.', 'صغارها كتاكيت صفراء صغيرة.'),
+    ok: T(`The ${kw('chicken')} lays eggs and lives on land. A similar animal is the duck.`, `${kw('الدجاجة')} تضع البيض وتعيش على اليابسة، ومن الحيوانات المشابهة لها البطة.`),
+    reveal: () => { sc.hi = 2; g.paint(); } });
+  set({ mode: 'row' });
+  g.say(T('Now tap the animal that the book puts with the <b>cat</b>: it gives birth to babies and lives on land.', P('دلوقتي اضغط على الحيوان اللي الكتاب حطّه مع <b>القطة</b>: بيلد صغاره وعايش على اليابسة.', 'دلوقتي اضغطي على الحيوان اللي الكتاب حطّه مع <b>القطة</b>: بيلد صغاره وعايش على اليابسة.')), 'think');
+  await g.spot(spots, 'c7dog', {
+    hint: T('It is a pet, like the cat.', 'حيوان أليف زي القطة.'),
+    ok: T(`The ${kw('dog')} gives birth to babies and lives on land, like the cat.`, `${kw('الكلب')} يلد صغاره ويعيش على اليابسة مثل القطة.`),
+    reveal: () => { sc.hi = 1; g.paint(); } });
+  set({ mode: 'reserve' });
+  g.say(T('To stop important animals from decreasing, countries protect special places where animals can safely pass on life. What are they called?', 'علشان الحيوانات المهمة متقلّش، الدول بتحمي أماكن مخصوصة تقدر الحيوانات تتكاثر فيها بأمان. اسمها إيه؟'), 'think');
+  await g.choice({
+    options: [T('Nature reserves', 'المحميات الطبيعية'), T('Amusement parks', 'الملاهي'), T('Museums', 'المتاحف')], correct: T('Nature reserves', 'المحميات الطبيعية'),
+    hint: T('They reserve nature for the animals.', 'أماكن بتحمي الطبيعة للحيوانات.'),
+    ok: T(`Countries set up ${kw('nature reserves')} to protect animals so they can safely pass on life and increase their numbers.`, `تنشئ الدول ${kw('المحميات الطبيعية')} لحماية الحيوانات حتى تتكاثر بأمان وتزيد أعدادها.`) });
+  g.say(T('Which of these is a nature reserve in Egypt?', 'أي واحد من دول محمية طبيعية في مصر؟'), 'think');
+  await g.choice({
+    options: [T('Ras Mohammed National Park', 'محمية رأس محمد'), T('The Cairo Tower', 'برج القاهرة'), T('The Egyptian Museum', 'المتحف المصري')], correct: T('Ras Mohammed National Park', 'محمية رأس محمد'),
+    hint: T('It is a place where animals live safely, not a building.', 'مكان بتعيش فيه الحيوانات بأمان، مش مبنى.'),
+    ok: T(`${kw('Ras Mohammed National Park')} and ${kw('White Desert National Park')} are nature reserves in Egypt.`, `${kw('محمية رأس محمد')} و${kw('محمية الصحراء البيضاء')} من المحميات الطبيعية في مصر.`) });
+  g.say(T('Last one! Passing on life through reproduction leads to ___.', 'آخر سؤال! انتقال الحياة عن طريق التكاثر يؤدي إلى ___.'), 'think');
+  await g.choice({
+    options: [T('preserving the species', 'الحفاظ على النوع'), T('animals decreasing', 'نقص الحيوانات'), T('hatching only', 'الفقس فقط')], correct: T('preserving the species', 'الحفاظ على النوع'),
+    hint: T('Each kind of animal stays on Earth.', 'كل نوع من الحيوانات بيفضل على الأرض.'),
+    ok: T(`Living organisms passing on life through reproduction leads to ${kw('preserving the species')}.`, `انتقال الحياة بين الكائنات الحية عن طريق التكاثر يؤدي إلى ${kw('الحفاظ على النوع')}.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); }
+
+/* ---------- Stage 3 · Speed Round: gives birth or lays eggs? ---------- */
+const SPEED = [
+  { id: 'c7cat', t: T('Cat', 'القطة'), ans: 'birth' },
+  { id: 'c7dog', t: T('Dog', 'الكلب'), ans: 'birth' },
+  { id: 'c7camel', t: T('Camel', 'الجمل'), ans: 'birth' },
+  { id: 'c7gazelle', t: T('Gazelle', 'الغزال'), ans: 'birth' },
+  { id: 'c7fox', t: T('Fox', 'الثعلب'), ans: 'birth' },
+  { id: 'c7chicken', t: T('Chicken', 'الدجاجة'), ans: 'eggs' },
+  { id: 'c7fish', t: T('Fish', 'السمكة'), ans: 'eggs' },
+  { id: 'c7frog', t: T('Frog', 'الضفدع'), ans: 'eggs' },
+  { id: 'c7eagle', t: T('Eagle', 'النسر'), ans: 'eggs' }
+].map(it => Object.assign(it, { box: '0 0 140 140', pic: A.card(it.id, 8, 8, 124, 124, 18) }));
+async function stage3() {
+  set({ mode: 'one', one: null });
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Gives birth 🍼', 'يلد 🍼'), value: 'birth', c: 0 }, { label: T('Lays eggs 🥚', 'يضع البيض 🥚'), value: 'eggs', c: 2 }],
+    ask: T('Gives birth or lays eggs?', 'يلد ولا يضع البيض؟'),
+    intro: T('Speed Round! I will show you an animal. Does it <b>give birth to babies</b> or <b>lay eggs</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هوريك حيوان. هو <b>يلد صغاره</b> ولا <b>يضع البيض</b>؟ اضغط الزر الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هوريكي حيوان. هو <b>يلد صغاره</b> ولا <b>يضع البيض</b>؟ اضغطي الزر الصح قبل ما الوقت يخلص. ٨ جولات!')),
+    think: T('Gives birth or lays eggs?', 'يلد ولا يضع البيض؟'),
+    show: it => { sc.one = it.id; g.paint(); }, reveal: () => {}
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to the Animal Nursery. We will see how <b>kittens</b> are born and fed, how baby <b>fish hatch</b> from eggs, and how we <b>protect</b> animals so life goes on.`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في حضانة الحيوانات. هنشوف إزاي <b>القطط الصغيرة</b> بتتولد وبترضع، وإزاي صغار <b>السمك بتفقس</b> من البيض، وإزاي <b>بنحمي</b> الحيوانات علشان الحياة تستمر.`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في حضانة الحيوانات. هنشوف إزاي <b>القطط الصغيرة</b> بتتولد وبترضع، وإزاي صغار <b>السمك بتفقس</b> من البيض، وإزاي <b>بنحمي</b> الحيوانات علشان الحياة تستمر.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Some animals <b>give birth</b> to babies and feed them <b>mother’s milk</b>; others <b>lay eggs</b> that <b>hatch</b>. Reproduction leads to <b>preserving the species</b>, and <b>nature reserves</b> protect animals.', 'بعض الحيوانات <b>تلد</b> صغارها وترضعها <b>لبن الأم</b>، وبعضها <b>يضع البيض</b> الذي <b>يفقس</b>. التكاثر يؤدي إلى <b>الحفاظ على النوع</b>، و<b>المحميات الطبيعية</b> تحمي الحيوانات.') }
+}).catch(err => console.error(err));
+window.__nursery = { sc, render };
+})();
+</script>
+</body>
+</html>
