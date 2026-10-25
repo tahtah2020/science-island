@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'الفصل التاسع «دورة الماء» بالعربي',
+    items: [
+      { text: 'أسئلة الفصل التاسع للمسار العربي بكلمات الكتاب: ٣٠ فكرة' },
+      { text: 'نص لعبة «رحلة قطرة الماء» بمصطلحات الكتاب العربي', links: [{ label: 'رحلة قطرة الماء', href: 'waterlab.html', ch: 'ch9' }] }
+    ] },
   { date: '2026-10-25', title: 'الفصل التاسع «دورة الماء» للصف الخامس',
     items: [
       { text: 'أسئلة الفصل التاسع بالإنجليزية: ٤ دروس و٣٠ فكرة' },

@@ -41,7 +41,7 @@ Players pick their grade once, then a chapter; every chapter has its own map, ga
 - `questions_ch4.js`, `questions_ch5.js`, `questions_ch6.js` (+ `_ar` files): Grade 5 Chapters 4 to 6, see "Grade 5 · Chapters 4 to 6" below
 - `questions_ch7.js` (+ `_ar`): Grade 5 Chapter 7, see "Grade 5 · Chapter 7" below
 - `questions_ch8.js` + `questions_ch8_ar.js` (Arabic, same ids): Grade 5 Chapter 8, see "Grade 5 · Chapter 8" below
-- `questions_ch9.js` (English only so far): Grade 5 Chapter 9, see "Grade 5 · Chapter 9" below
+- `questions_ch9.js` + `questions_ch9_ar.js` (Arabic, same ids): Grade 5 Chapter 9, see "Grade 5 · Chapter 9" below
 - `ch3_art.js`: Chapter 3's drawings made in code (the kidney bean and its parts, the cups, the refrigerator, the dark box) and its tap pictures (`seedParts`, `iodineSeeds`, `cupsWater`, `cupsAir`, `cupsTemp`). `assets/map_ch3.svg`, `assets/bg_ch3.svg` are drawn by `science/tools/make_ch3_map.js`
 - `tools/check_questions.js`: run `node tools/check_questions.js` before a release: it checks every questions file (answers, tap targets, ids) and that each Arabic file mirrors its English one
 - `ch2_art.js`: Chapter 2's drawings made in code (the luffa through the year, the lizard, the rock scene). The game uses them, and so do the chapter's tap pictures (`plantYear`, `lizardSummer`, `lizardWinter`)
@@ -315,13 +315,18 @@ All files of a chapter except its game page go in its subject's folder (`science
 ## Favicon (25 Oct 2026)
 Reesho's head (from `assets/parrot_wave.png`) on a mint rounded square: `favicon.ico` (16/32/48), `favicon-32.png`, `apple-touch-icon.png` (180), `icon-192.png`, `icon-512.png` at the repo root. Every page links the first three in its `<head>`; a new page needs the same three `<link>` lines. Rebuild: crop 300×300 around (212,150) of `parrot_wave.png`, mint #bfe8d6 background, rounded corners 22%.
 
-## Grade 5 · Chapter 9 "Water Cycle" (English, 25 Oct 2026)
-From the English school book, pages 92-107 (three lessons with Try and Exercise, the Column "The Nile's Water Cycle" and the skills pages "How to Do Science"). Languages track only: the Arabic book of this chapter was not sent yet (`chapters.js` has no `questionsAr`).
+## Grade 5 · Chapter 9 "Water Cycle" (English + Arabic, 25 Oct 2026)
+From the English school book, pages 92-107 (three lessons with Try and Exercise, the Column "The Nile's Water Cycle" and the skills pages "How to Do Science"). Both tracks (Arabic file below).
 - `science/questions_ch9.js`: 25 core ideas + 5 bonus (the Column, `bonus: true`). Ids number on from 21: E21-E26 lesson 1 (evaporation), N21-N27 lesson 2 (condensation), W21-W26 lesson 3 (water cycle), S21-S26 lesson 4 «How to Do Science» (pages 104-107: fair test, microscope review, recording plant growth, the 6 steps of inquiry), bonus W31-W35. `bookOrder: true`. Bosses E26, N27, W26, S26.
 - Pictures: the owner's 12 pictures (25 Oct 2026, "Gemini Notebook" mark cropped away) → `science/assets/ch9_*.jpg`: laundry, puddle, beaker, glass, icejar, dew, mtrain, river, dam, felucca, micro, sprout. `science/ch9_art.js` (`window.CH9ART`: `photo`, `card`, `cycle` = the water cycle drawn in code, options `vapor`, `arrows`, `rain`); tap pictures `ch9Two`, `ch9Lab`, `ch9Tools`, `ch9Four`, `ch9Cycle` (ids `c9…`, cycle parts `w9sea`, `w9cloud`, `w9rain`, `w9river`), figures `ch9Photo` (`q.p` = photo id) and `ch9CycleFig`.
 - Game `waterlab.html` (Water Journey): Warm Up the puddle after the rain; Mission 1 evaporation; Mission 2 condensation (cold glass, ice jar, desert plant); Mission 3 a drop travels sea → sky → cloud → rain → river; Mission 4 how to do science (fair test, microscope, inquiry); Speed Round "evaporation or condensation?". Arabic text is a first draft. Every question frame was checked against its picture.
 - Map and background `science/assets/map_ch9.svg`, `bg_ch9.svg` (`science/tools/make_ch456_maps.js`).
 - Review notes: the lid experiment's result (page 93) is not printed, only its setup is asked; "Why doesn't the sea overflow?" has no printed answer; the Column says the Ethiopian rain comes from water evaporated from the Mediterranean and the Red Sea, which the scientific sources do not support (moist air from the Atlantic/Congo basin and the Indian Ocean), so only "rain on the mountains of Ethiopia and Sudan → river → Egypt" is asked.
+
+### Chapter 9 · Arabic track (25 Oct 2026)
+- `science/questions_ch9_ar.js`: same 30 ideas and 94 phrasings as the English file (same ids, types, answers), in the Ministry Arabic book's words (pages 92-107): التبخر، بخار ماء غير مرئي، التكثف، دورة الماء، التجربة العادلة، المجهر، خطوات الاستقصاء العلمي. Lessons: تبخر الماء · بخار الماء في الهواء · إلى أين يذهب الماء؟ · كيف تمارس العلم؟ (`lessonsAr`).
+- Arabic book differences: Try 1(2) p96 option A says "high temperature and a very cloudy sky" (contradicts the lesson rule "sunny" and the English book): the Arabic file writes "high temperature and sunny". Page 98's question is a copy of 9-2's by mistake: not asked. The Column says the water evaporates from the Indian Ocean and the Red Sea (English: Mediterranean and Red Sea) and the Aswan dam stores water for farming all year (no "calculating evaporation"); W34 follows the Arabic text.
+- `waterlab.html` Arabic text now uses the book terms (بخار الماء في الهواء، المجهر، التجربة العادلة، اطرح سؤالًا … استخلص النتيجة).
 
 ## Grade 5 · Chapter 8 "Changes in Weather" (English + Arabic, 25 Oct 2026)
 From the English school book, pages 80-91 (three lessons with Try and Exercise, Let's Expand! and the Column "Reading the Desert Sky"). Languages track only: the Arabic book of this chapter was not sent yet (`chapters.js` has no `questionsAr`).

@@ -8,18 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261025n">
+<link rel="stylesheet" href="game_kit.css?v=20261025o">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Water Journey.</noscript>
-<script src="firebase-config.js?v=20261025n"></script>
-<script src="chapters.js?v=20261025n"></script>
-<script src="common.js?v=20261025n"></script>
-<script src="science/ch9_art.js?v=20261025n"></script>
-<script src="game_kit.js?v=20261025n"></script>
+<script src="firebase-config.js?v=20261025o"></script>
+<script src="chapters.js?v=20261025o"></script>
+<script src="common.js?v=20261025o"></script>
+<script src="science/ch9_art.js?v=20261025o"></script>
+<script src="game_kit.js?v=20261025o"></script>
 <script>
 (() => {
 'use strict';
@@ -29,7 +29,7 @@
    Stage 3 (Speed Round): evaporation or condensation? (pages 93, 95, 102)
    Pictures: the owner's pictures (science/assets/ch9_*.jpg) through window.CH9ART; the water cycle is drawn in code.
    The scene is set before EVERY question and never shows the answer in words.
-   English book only so far; every T('English', 'عربي') has both languages but the Arabic is a first draft and the chapter opens only in English. */
+   Both tracks: the Arabic text uses the Ministry Arabic book's terms (التبخر، التكثف، دورة الماء، التجربة العادلة، المجهر، خطوات الاستقصاء العلمي). */
 const T = SI.T, G = SI.G;
 const P = (m, f) => G(m, f || m);
 const A = window.CH9ART;
@@ -108,7 +108,7 @@ async function mission1() {
     ok: T(`We compare ${kw('the amount of water')} after 2-3 days. Only one thing is different: the lid.`, `نقارن ${kw('كمية الماء')} بعد يومين أو ثلاثة. حاجة واحدة بس مختلفة: الغطاء.`) });
 }
 async function mission2() {
-  await g.banner(T('Mission 2', 'المهمة ٢'), T('Water in the air', 'الماء في الهواء'));
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Water in the air', 'بخار الماء في الهواء'));
   set({ mode: 'photo', one: 'c9glass' });
   g.say(T('The outside of this cold glass is wet! Did the water inside pass through the glass?', 'الكوب البارد ده من بره مبلول! هو الماء اللي جوه عدّى من الزجاج؟'), 'think');
   const vap = T('No, the water vapor in the air was cooled', 'لا، بخار الماء في الهواء برد');
@@ -171,25 +171,25 @@ async function mission3() {
     ok: T(`The journey of water going around “Sea → Sky → Land → Sea” is called the ${kw('water cycle')}. Water is always traveling while changing its state!`, `رحلة الماء «بحر ← سماء ← يابسة ← بحر» تسمى ${kw('دورة الماء')}. الماء دايمًا مسافر وهو بيغيّر حالته!`) });
 }
 async function mission4() {
-  await g.banner(T('Mission 4', 'المهمة ٤'), T('How to do science', 'كيف نمارس العلوم'));
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('How to do science', 'كيف تمارس العلم؟'));
   set({ mode: 'photo', one: 'c9beaker' });
-  g.say(T('In the lid experiment, both beakers had the same amount of water. Only one had a lid. Which condition did we test?', 'في تجربة الغطاء الكأسين فيهم نفس كمية الماء، وواحد بس عليه غطاء. اختبرنا أنهي شرط؟'), 'think');
+  g.say(T('In the lid experiment, both beakers had the same amount of water. Only one had a lid. Which condition did we test?', 'في تجربة الغطاء الكأسين فيهم نفس كمية الماء، وواحد بس عليه غطاء. اختبرنا أنهي عامل؟'), 'think');
   const lid = T('The lid', 'الغطاء');
   await g.choice({ options: [lid, T('The amount of water', 'كمية الماء'), T('Nothing', 'ولا حاجة')], correct: lid,
     hint: T('What is different between the two beakers?', 'إيه المختلف بين الكأسين؟'),
-    ok: T(`A ${kw('fair test')}: change only the condition you want to test and keep all other conditions the same.`, `${kw('الاختبار العادل')}: غيّر الشرط اللي عايز تختبره بس، وثبّت باقي الشروط.`) });
+    ok: T(`A ${kw('fair test')}: change only the condition you want to test and keep all other conditions the same.`, `${kw('التجربة العادلة')}: غيّر العامل اللي عايز تختبره بس، وأبقِ جميع العوامل الأخرى ثابتة.`) });
   set({ mode: 'photo', one: 'c9micro' });
-  g.say(T('Before using the microscope, which magnification do we set the objective lens to?', 'قبل ما نستخدم الميكروسكوب، بنضبط العدسة الشيئية على أنهي قوة تكبير؟'), 'think');
+  g.say(T('Before using the microscope, which magnification do we set the objective lens to?', 'قبل ما نستخدم المجهر، بنضبط العدسة الشيئية على أنهي قوة تكبير؟'), 'think');
   const low = T('The lowest', 'الأقل');
   await g.choice({ options: [low, T('The highest', 'الأعلى')], correct: low,
     hint: T('Start small.', 'ابدأ بالصغير.'),
     ok: T(`Set the objective lens to ${kw('the lowest')} magnification, in a flat, bright place away from direct sunlight.`, `اضبط العدسة الشيئية على ${kw('أقل')} قوة تكبير، في مكان مستوٍ ومضيء بعيدًا عن ضوء الشمس المباشر.`) });
   set({ mode: 'photo', one: 'c9sprout' });
-  g.say(T('We ask: “Does a seed need water to sprout?” That is the Question step. What comes next?', 'سألنا: «هل البذرة محتاجة ماء علشان تنبت؟» دي خطوة السؤال. إيه اللي بعدها؟'), 'think');
-  const pred = T('Prediction: make a guess', 'التوقع: نخمّن الإجابة');
-  await g.choice({ options: [pred, T('Conclusion', 'الاستنتاج'), T('Data (Results)', 'البيانات (النتائج)')], correct: pred,
+  g.say(T('We ask: “Does a seed need water to sprout?” That is the Question step. What comes next?', 'سألنا: «هل البذور تحتاج إلى الماء لتنبت؟» دي خطوة «اطرح سؤالًا». إيه اللي بعدها؟'), 'think');
+  const pred = T('Prediction: make a guess', 'ضع توقعًا: خمّن الإجابة');
+  await g.choice({ options: [pred, T('Conclusion', 'استخلص النتيجة'), T('Data (Results)', 'نظّم البيانات (النتائج)')], correct: pred,
     hint: T('Before the experiment, we guess.', 'قبل التجربة بنخمّن.'),
-    ok: T(`The 6 steps of inquiry: Question → ${kw('Prediction')} → Plan → Experiment & Observation → Data → Conclusion.`, `خطوات البحث الست: السؤال ← ${kw('التوقع')} ← الخطة ← التجربة والملاحظة ← البيانات ← الاستنتاج.`) });
+    ok: T(`The 6 steps of inquiry: Question → ${kw('Prediction')} → Plan → Experiment & Observation → Data → Conclusion.`, `خطوات الاستقصاء العلمي الست: اطرح سؤالًا ← ${kw('ضع توقعًا')} ← خطّط ← أجرِ التجربة وسجّل الملاحظات ← نظّم البيانات ← استخلص النتيجة.`) });
 }
 async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); }
 
