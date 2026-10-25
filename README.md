@@ -2,6 +2,10 @@
 
 Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math has started (Grade 4 Units 1 and 2, Grade 5 Unit 1, Grade 6 Units 1 and 2, both tracks), Social Studies has started (Grade 4 Units 1 and 2, Grade 5 Unit 1, Grade 6 Unit 1), English has started (Grade 4 Unit 1, Grade 5 Units 1-3), then Arabic.
 
+## Hosting (since 24 Oct 2026)
+- The live site is on **Cloudflare Pages** (project `motafawek`, domain motafawek.com), not GitHub Pages: the GitHub account was flagged and Pages stopped. GitHub stays the code store, but pushing does NOT publish.
+- To publish: zip the repo without `.git/`, `tools/`, `*/tools/`, `shots/` and `README.md`, then in Cloudflare open Workers & Pages → motafawek → Create deployment → upload the zip.
+
 ## Subjects and folders
 - The path of a player: grade (home page) → subject (tabs on `chapters.html`) → chapter or unit → map, game, questions.
 - `window.SUBJECTS` in `chapters.js`: `id`, `title` / `titleAr`, `icon`, `tint`, `dir` (its folder), `soon` (tab shows "Soon" and the Telegram invitation), `hidden`, and `lang`: which questions file each track reads (`{ lang: 'en', ar: 'ar' }` by default; `{ lang: 'ar', ar: 'ar' }` for a subject taught in Arabic on both tracks, such as Arabic or Social Studies; `{ lang: 'en', ar: 'en' }` for English).
