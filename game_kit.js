@@ -172,18 +172,25 @@
       return buttons.map((x, i) => { const b = btn(x.label, 'pick c' + (x.c == null ? i : x.c)); b.dataset.v = x.value; if (x.value === correct) b.dataset.right = '1'; tray.appendChild(b); return b; });
     }
     /* sort one thing: press its button. One try; the right button is then shown */
-    function pick({ buttons, correct, ok, no, points = 10, reveal }) {
+    /* a wrong first try lets the child try again (hint, no answer); a second wrong try shows the answer. Two buttons = one try */
+    function pick({ buttons, correct, ok, no, hint, points = 10, reveal }) {
       return new Promise(res => {
-        const bs = setTray(buttons, correct); let done = false;
+        const bs = setTray(buttons, correct); let done = false, tries = 0;
         actions.innerHTML = '';
-        bs.forEach(b => { b.onclick = async () => {
-          if (done) return; done = true;
-          const right = b.dataset.v === String(correct);
+        const finish = async right => {
+          done = true;
           bs.forEach(x => { x.disabled = true; if (x.dataset.right) x.classList.add('good'); });
           if (reveal) reveal(right);
-          if (right) { sfx.ok(); addScore(points); say(ok, 'thumbs'); await sleep(reduceMotion ? 700 : 1500); }
-          else { b.classList.add('bad'); sfx.bad(); mistakes++; say(no || ok, 'think'); await next(); }
-          res(right);
+          if (right) { sfx.ok(); addScore(tries === 1 ? points : 5); say(ok, 'thumbs'); await sleep(reduceMotion ? 700 : 1500); }
+          else { say(no || ok, 'think'); await next(); }
+          res(right && tries === 1);
+        };
+        bs.forEach(b => { b.onclick = () => {
+          if (done || b.disabled) return; tries++;
+          if (b.dataset.v === String(correct)) return finish(true);
+          b.classList.add('bad'); b.disabled = true; sfx.bad(); mistakes++;
+          if (tries >= 2 || bs.length <= 2) return finish(false);
+          say(hint || T('Not quite. Try again!', 'قرّبت. حاول تاني!'), 'sad');
         }; });
       });
     }

@@ -8,18 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261025b">
+<link rel="stylesheet" href="game_kit.css?v=20261025c">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Weather Watch.</noscript>
-<script src="firebase-config.js?v=20261025b"></script>
-<script src="chapters.js?v=20261025b"></script>
-<script src="common.js?v=20261025b"></script>
-<script src="english/g5_art.js?v=20261025b"></script>
-<script src="game_kit.js?v=20261025b"></script>
+<script src="firebase-config.js?v=20261025c"></script>
+<script src="chapters.js?v=20261025c"></script>
+<script src="common.js?v=20261025c"></script>
+<script src="english/g5_art.js?v=20261025c"></script>
+<script src="game_kit.js?v=20261025c"></script>
 <script>
 (() => {
 'use strict';
@@ -95,10 +95,11 @@ async function ask(sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
   await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr) });
 }
 /* a quick sort: one card at a time, two or more buttons */
-async function sortCards(buttons, cards, scene) {
+async function sortCards(buttons, cards, scene, prompt) {
   for (const [word, side, why, emoji] of g.shuffle(cards)) {
     if (emoji && emoji[0] === '@') set('photo', { word, sub: emoji.slice(1) });   // '@name' = the owner's photo wx_name.jpg
     else set(scene || "word", { word, emoji: emoji || word });
+    g.say(prompt || T('Choose the right button.', 'اختار الزرار الصح.'), 'think');   // a fresh line for every card, never the last card's answer
     await g.pick({ buttons, correct: side, ok: T(`Yes! ${why}`, `صح! ${L(why)}`), no: T(`Not quite. ${why}`, `قرّبت. ${L(why)}`) });
   }
   g.setTray(null);
@@ -145,8 +146,9 @@ async function mission2() {                 // lesson 2: Ancient Egypt
   g.say(T('Mission 2: The Weather in Ancient Egypt. The Nile gave water and rich soil, but weather also brought problems. How did the Ancient Egyptians solve them?', 'المهمة ٢: الطقس في مصر القديمة. النيل كان بيدي ميّة وتربة غنية، بس الطقس كمان جاب مشاكل. القدماء المصريين حلّوها إزاي؟'), 'point');
   await g.next();
   const buttons = [{ label: T('Canals and basins', 'Canals and basins'), value: 'f', c: 1 }, { label: T('Irrigation systems', 'Irrigation systems'), value: 'd', c: 2 }, { label: T('Thick mud bricks', 'Thick mud bricks'), value: 's', c: 3 }];
-  await sortCards(buttons, [['Floods were too strong', 'f', 'They built canals and basins to control the water.', '@floodcar'], ['Droughts: not enough rain', 'd', 'They made irrigation systems to bring water to their fields.', '@drought'],
-    ['Sandstorms (Khamsin)', 's', 'They built their homes with thick mud bricks to protect themselves.', '@sandstorm2']], 'plate');
+  await sortCards(buttons, [['Floods were too strong', 'f', 'They built canals and basins to control the water.'], ['Droughts: not enough rain', 'd', 'They made irrigation systems to bring water to their fields.', '@drought'],
+    ['Sandstorms (Khamsin)', 's', 'They built their homes with thick mud bricks to protect themselves.', '@sandstorm2']], 'word',
+    T('How did the Ancient Egyptians solve this problem?', 'القدماء المصريين حلّوا المشكلة دي إزاي؟'));
   set('photo', { sub: 'boatsea', word: 'The Nile' });
   await ask('What did the Nile’s floods bring to the land?', 'فيضانات النيل جابت إيه للأرض؟', ['Rich soil', 'Sand', 'Rocks'], 'Rich soil', 'It helped crops grow.', 'ساعدت المحاصيل تنمو.', `The water brought ${kw('rich soil')}, which helped crops grow.`, `المية جابت ${L('rich soil')} ساعدت المحاصيل تنمو.`);
   set('photo', { sub: 'mudhouse' });
@@ -181,7 +183,7 @@ async function mission5() {                 // lesson 3: vowel digraphs
   await g.next();
   const buttons = [{ label: 'ea', value: 'ea', c: 1 }, { label: 'oo', value: 'oo', c: 3 }, { label: 'oa', value: 'oa', c: 0 }];
   await sortCards(buttons, [['leap', 'ea', 'leap has “ea”: the long e sound.'], ['flood', 'oo', 'flood has “oo”: the short u sound.'], ['boat', 'oa', 'boat has “oa”: the long o sound.'],
-    ['goat', 'oa', 'goat has “oa”.'], ['book', 'oo', 'book has “oo”.'], ['read', 'ea', 'read has “ea”.'], ['foot', 'oo', 'foot has “oo”.'], ['peas', 'ea', 'peas has “ea”.']], 'word');
+    ['goat', 'oa', 'goat has “oa”.'], ['book', 'oo', 'book has “oo”.'], ['read', 'ea', 'read has “ea”.'], ['foot', 'oo', 'foot has “oo”.'], ['peas', 'ea', 'peas has “ea”.']], 'word', T('Which digraph is in this word?', 'أنهي زوج حروف في الكلمة دي؟'));
   set('photo', { sub: 'boat' });
   await ask('Look at the picture. Which word has “oa”, the long o sound?', 'بص على الصورة. أنهي كلمة فيها oa بصوت o الطويل؟', ['boat', 'book', 'leap'], 'boat', 'It sails across the lake.', 'بتبحر عبر البحيرة.', `${kw('boat')} has “oa”: the long o sound.`, `${L('boat')} فيها ${L('oa')}.`);
   await fillCard(['The ___ sailed', 'across the lake.'], ['boat', 'meet', 'weak'], 'boat', 'Choose the word.', 'اختار الكلمة.', 'It floats on water.', 'بتطفو على المية.', `A ${kw('boat')} sails across the lake.`, `${L('boat')} بتبحر عبر البحيرة.`);
@@ -192,7 +194,7 @@ async function mission6() {                 // lesson 4: fiction
   await g.next();
   const buttons = [{ label: T('Beginning', 'Beginning'), value: 'b', c: 0 }, { label: T('Problem', 'Problem'), value: 'p', c: 3 }, { label: T('Middle', 'Middle'), value: 'm', c: 2 }, { label: T('Ending', 'Ending'), value: 'e', c: 1 }];
   await sortCards(buttons, [['Lily lives in a cozy little house', 'b', 'The beginning meets the characters and setting.', '🏠'], ['The clouds are upside down', 'p', 'The problem is when something goes wrong.', '☁️'],
-    ['Lily whispers to the clouds', 'm', 'In the middle, the character tries to fix it.', '🗣️'], ['The sun shines and the flowers smile', 'e', 'In the ending, the problem is solved.', '🌻']], 'plate');
+    ['Lily whispers to the clouds', 'm', 'In the middle, the character tries to fix it.', '🗣️'], ['The sun shines and the flowers smile', 'e', 'In the ending, the problem is solved.', '🌻']], 'plate', T('Which part of the story is this?', 'ده أنهي جزء من القصة؟'));
   set('plate', { emoji: '🌟', word: 'The plot' });
   await ask('What is the most exciting part of a story called?', 'اسم أكتر جزء مثير في القصة إيه؟', ['The climax', 'The beginning', 'The ending'], 'The climax', 'It comes before the ending.', 'بتيجي قبل النهاية.', `The most exciting part is the ${kw('climax')}.`, `أكتر جزء مثير اسمه ${L('climax')}.`);
   set('stars', { n: 3, word: '' });

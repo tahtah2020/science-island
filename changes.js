@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'Weather Watch fixes',
+    items: [
+      { text: 'Sorting games: a wrong first answer now gives a second try' },
+      { text: 'Reesho asks a fresh question for every card' },
+      { text: 'Ancient Egypt flood card: modern car picture removed' }
+    ] },
   { date: '2026-10-25', title: 'English Grade 5 Unit 3: the owner’s pictures',
     items: [
       { text: 'The weather tap picture uses the owner’s pictures (thunderstorm, sandstorm, flood, drought, wildfire, heat wave), cropped without their captions', links: [{ label: 'K2', href: 'quiz.html#preview=K2.1&lang=en', ch: 'eg5u3' }] },
