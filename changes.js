@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'Grade 5 Science · Chapter 7 for the Arabic track',
+    items: [
+      { text: 'Chapter 7 «نمو الحيوانات وتكاثرها» now opens for the Arabic track: 20 ideas from the Arabic book, pages 72-79' },
+      { text: 'The game «حضانة الحيوانات» uses the Arabic book\'s terms (حليب الأم، قيد الحياة، محمية الواحات البيضاء الوطنية)', links: [{ label: 'حضانة الحيوانات', href: 'nursery.html', ch: 'ch7' }] }
+    ] },
   { date: '2026-10-25', title: 'Grade 5 Science · Chapter 7 Animal Growth and Reproduction',
     items: [
       { text: 'New chapter 7 (English track): 20 ideas from pages 72-79 with the owner\'s 12 animal pictures' },
