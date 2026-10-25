@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'دراسات الصف الخامس: الوحدة الثالثة «كنوز مصر»',
+    items: [
+      { text: 'الوحدة الثالثة كاملة: الثروة المعدنية ومصادر الطاقة، موارد المياه، المشروعات القومية (53 فكرة / 210 صياغة)' },
+      { text: 'لعبة جديدة «رحلة كنوز مصر» بصور صاحب الموقع', links: [{ label: 'رحلة كنوز مصر', href: 'studies-treasures.html', ch: 'sg5u3' }] }
+    ] },
   { date: '2026-10-25', title: 'Social Studies Grade 5: Unit 2 The Ancient Egyptian Civilization',
     items: [
       { text: '42 ideas in four lessons, from the factors of the civilization to the Ptolemies and the Romans' },

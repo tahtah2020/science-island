@@ -336,6 +336,14 @@ window.CHAPTERS = [
     map: { img: 'studies/assets/map_sg5u2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'studies/assets/map_sg5u2.svg', quizBg: 'studies/assets/bg_sg5u2.svg',
     lessonsAr: ['عوامل قيام الحضارة المصرية القديمة', 'حياة المصري القديم «عصور ما قبل التاريخ»', 'حياة المصري القديم «العصور التاريخية»', 'مصر في عصري البطالمة والرومان'] },
+  /* Unit 3 «كنوز مصر» (book pages 67-92): 1 الثروة المعدنية ومصادر الطاقة (68-75) · 2 موارد المياه (76-82) · 3 المشروعات القومية «رؤية مصر للمستقبل» (83-90) · تقييم الوحدة (91-92). Idea letters I, J, K. */
+  { id: 'sg5u3', subject: 'studies', grade: 'g5', n: 3, title: 'Egypt’s Treasures', titleAr: 'كنوز مصر', icon: '💎', tint: '#dcefe9', ready: true, bookOrder: true,
+    lessons: ['Mineral Wealth and Energy Sources', 'Water Resources', 'National Projects (Egypt’s Vision for the Future)'],
+    questionsAr: 'studies/questions_sg5u3_ar.js', art: 'studies/g5_art.js',
+    game: { href: 'studies-treasures.html', name: "Egypt’s Treasure Hunt", nameAr: "رحلة كنوز مصر", icon: '💎', hint: 'Sort renewable and non-renewable energy, tap the minerals and the energy sources, sort fresh and salt water, then race the national projects!', hintAr: 'صنّف الطاقة المتجددة وغير المتجددة، واضغط على المعادن ومصادر الطاقة، وفرّق بين المياه العذبة والمالحة، وبعدين سابق في المشروعات القومية!' },
+    map: { img: 'studies/assets/map_sg5u3.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'studies/assets/map_sg5u3.svg', quizBg: 'studies/assets/bg_sg5u3.svg',
+    lessonsAr: ['الثروة المعدنية ومصادر الطاقة', 'موارد المياه', 'المشروعات القومية «رؤية مصر للمستقبل»'] },
 
   /* Social Studies · Grade 6 · Term 1 (the school book of the Ministry 2026/2027). Units, one Arabic book for both tracks (lang { lang: 'ar', ar: 'ar' }).
      Unit 1 «وطننا العربي (خصائص وتحديات)» (book pages 8-39): 1 وطننا العربي: الموقع والأهمية (8-15) · 2 تضاريس وطننا العربي (16-23) · 3 وطننا العربي: المناخ والنبات الطبيعي (24-29) · 4 التحديات البيئية في وطننا العربي (30-36) · تقييم الوحدة (37-39). Idea letters: A-D (one per lesson).

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>رحلة كنوز مصر · الوحدة 3 · كنوز مصر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261025r">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>من فضلك شغّل JavaScript لتلعب رحلة كنوز مصر.</noscript>
+<script src="firebase-config.js?v=20261025r"></script>
+<script src="chapters.js?v=20261025r"></script>
+<script src="common.js?v=20261025r"></script>
+<script src="studies/g5_art.js?v=20261025r"></script>
+<script src="game_kit.js?v=20261025r"></script>
+<script>
+(() => {
+'use strict';
+/* Egypt's Treasure Hunt · the game of Unit 3, Egypt's Treasures (Social Studies, Grade 5, book pages 67-92). Built on the shared game kit (game_kit.js).
+   Pictures: the owner's illustrations (studies/assets/tr_*.jpg) in the six-picture cards trEnergy / trWorks of studies/g5_art.js, or one photo at a time.
+   Stage 1 (Warm Up): renewable or non-renewable energy? (lesson 1, page 71).
+   Stage 2 (Missions): 1 the minerals (lesson 1, pages 68-70) · 2 the energy sources (lesson 1, pages 71-73) · 3 water resources and their problems (lesson 2, pages 76-80)
+                       4 the national projects (lesson 3, pages 83-88).
+   Stage 3 (Speed Round): which field is this project in? (lessons 2-3). The book is Arabic for both tracks; every T('English', 'عربي') has both languages.
+   Rule (owner, 25 Oct 2026): the scene is set right before every question, and it never shows the answer. */
+const T = SI.T, G = SI.G, A = S5ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, FONT = 'Cairo, Nunito, sans-serif', INK = '#1f3d57';
+const sc = { mode: 'set', key: 'trEnergy', lines: [], word: '', sub: '' };
+const BASE = `<rect width="${VW}" height="${VH}" rx="14" fill="#eaf5ef"/>`;
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="rtl" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${esc(s)}</text>`;
+function render() {
+  const m = sc.mode;
+  if (m === 'set') return BASE + `<g transform="translate(0 25)">${D[sc.key]({ pic: { plain: true } })}</g>`;
+  if (m === 'card') {
+    let s = BASE + `<rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#bcd9c9" stroke-width="3"/>`;
+    const n = sc.lines.length, step = n > 3 ? 36 : 44, y0 = 158 - (n - 1) * step / 2;
+    sc.lines.forEach((line, i) => { s += txt(170, y0 + i * step, line, { fs: Math.min(24, Math.floor(290 / (String(line).length * .52))) }); });
+    return s;
+  }
+  if (m === 'photo') {
+    const k = sc.word ? 196 : 236, x = (VW - k) / 2, y = sc.word ? 30 : 32;
+    return BASE + `<rect x="${x - 8}" y="${y - 8}" width="${k + 16}" height="${k + 16}" rx="24" fill="#fff" stroke="#bcd9c9" stroke-width="3"/><clipPath id="phc"><rect x="${x}" y="${y}" width="${k}" height="${k}" rx="18"/></clipPath>`
+      + `<image href="studies/assets/tr_${sc.sub}.jpg" x="${x}" y="${y}" width="${k}" height="${k}" clip-path="url(#phc)"/>` + (sc.word ? txt(170, 280, sc.word, { fs: Math.min(22, Math.floor(320 / (sc.word.length * .5))) }) : '');
+  }
+  return BASE;
+}
+const g = G4Game({ ch: 'sg5u3', logo: '💎', title: ['Egypt’s Treasure Hunt', 'رحلة كنوز مصر'], sub: ['Unit 3 · Egypt’s Treasures', 'الوحدة 3 · كنوز مصر'],
+  bg: 'studies/assets/bg_sg5u3.svg', bgc: '#dcefe9', label: ['A picture or a card for each question', 'صورة أو بطاقة لكل سؤال'], render, view: [VW, VH] });
+const set = (mode, o) => { Object.assign(sc, { mode, key: sc.key, lines: [], word: '', sub: '' }, o || {}); g.paint(); };
+const rings = key => { const r = D[key].rings(); return Object.keys(r).map(id => { const [x, y, R] = r[id]; return { id, name: A.CIVNAME[id], ring: A.ringEl(x, y + 25, R, R) }; }); };
+async function spotSet(key, id, sayEn, sayAr, hintEn, hintAr, okEn, okAr) {
+  set('set', { key });
+  g.say(T(sayEn, sayAr), 'think');
+  await g.spot(rings(key), id, { hint: T(hintEn, hintAr), ok: T(okEn, okAr) });
+}
+async function ask(sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr) });
+}
+/* a quick sort: one card at a time ([lines, value, why, '@photo'?]) */
+async function sortCards(buttons, cards, prompt) {
+  for (const [lines, side, why, pic] of g.shuffle(cards)) {
+    if (pic && pic[0] === '@') set('photo', { sub: pic.slice(1), word: Array.isArray(lines) ? lines.join(' ') : lines });
+    else set('card', { lines: Array.isArray(lines) ? lines : [lines] });
+    g.say(prompt, 'think');
+    await g.pick({ buttons, correct: side, ok: T(`Yes! ${why[0]}`, `صح! ${why[1]}`), no: T(`Not quite. ${why[0]}`, `${G('قرّبت!', 'قرّبتي!')} ${why[1]}`) });
+  }
+  g.setTray(null);
+}
+const op = (ar, en) => T(en, ar);   // an option: the Arabic book's words, English for the English interface
+
+/* ---------- Stage 1 · Warm Up: renewable or non-renewable? (lesson 1, page 71) ---------- */
+async function stage1() {
+  set('set', { key: 'trEnergy' });
+  g.say(T('Welcome, treasure hunter! God gave Egypt many sources of energy. Renewable energy is clean and never runs out; non-renewable energy pollutes and can run out. Sort them!', P('أهلًا يا صياد الكنوز! ربنا وهب مصر مصادر طاقة متنوعة. الطاقة المتجددة نظيفة ومش بتخلص، وغير المتجددة ملوثة وممكن تخلص. يلا نصنّفها!', 'أهلًا يا صيادة الكنوز! ربنا وهب مصر مصادر طاقة متنوعة. الطاقة المتجددة نظيفة ومش بتخلص، وغير المتجددة ملوثة وممكن تخلص. يلا نصنّفها!')), 'point');
+  await g.next();
+  const buttons = [{ label: T('Renewable', 'متجددة'), value: 'r', c: 2 }, { label: T('Non-renewable', 'غير متجددة'), value: 'n', c: 1 }];
+  await sortCards(buttons, [
+    ['الطاقة الشمسية', 'r', ['Solar energy is renewable.', 'الطاقة الشمسية متجددة.'], '@solar'], ['طاقة الرياح', 'r', ['Wind energy is renewable.', 'طاقة الرياح متجددة.'], '@wind'],
+    ['الطاقة الكهرومائية', 'r', ['Hydroelectric energy is renewable.', 'الطاقة الكهرومائية متجددة.'], '@highdam'], ['الفحم', 'n', ['Coal is non-renewable.', 'الفحم غير متجدد.'], '@coal'],
+    ['البترول', 'n', ['Petroleum is non-renewable.', 'البترول غير متجدد.']], ['الغاز الطبيعي', 'n', ['Natural gas is non-renewable.', 'الغاز الطبيعي غير متجدد.']]],
+    T('Renewable or non-renewable?', 'متجددة ولا غير متجددة؟'));
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: the minerals (pages 68-70)
+  set('card', { lines: ['الثروة المعدنية', 'تتوزع بشكل غير متساوٍ'] });
+  g.say(T('Mission 1: Egypt has huge amounts of mineral wealth, spread unevenly. Mining means taking minerals and energy sources out of the ground.', 'المهمة ١: مصر عندها كميات هائلة من الثروة المعدنية، متوزعة بشكل غير متساوٍ. والتعدين هو استخراج المعادن ومصادر الطاقة من باطن الأرض.'), 'point');
+  await g.next();
+  await spotSet('trEnergy', 'iron', 'Iron is the base of modern industry, used in railways and heavy machines. Tap the iron ore.', 'الحديد أساس الصناعة الحديثة، وبيدخل في السكك الحديدية والآلات الثقيلة. اضغط على خام الحديد.', 'A red-brown rock.', 'صخرة بني مائلة للأحمر.', 'Iron comes from the Bahariya Oasis.', `الحديد بيُستخرج من ${kw('الواحات البحرية')}.`);
+  set('photo', { sub: 'iron' });
+  await ask('Where is iron taken out in Egypt?', 'الحديد بيُستخرج منين في مصر؟', [op('الواحات البحرية', 'The Bahariya Oasis'), op('واحة سيوة', 'The Siwa Oasis'), op('منجم السكري', 'The Sukari mine')], op('الواحات البحرية', 'The Bahariya Oasis'),
+    'An oasis in the Western Desert, not Siwa.', 'واحة في الصحراء الغربية، مش سيوة.', 'The Bahariya Oasis in the Western Desert.', `${kw('الواحات البحرية')} بالصحراء الغربية.`);
+  await spotSet('trEnergy', 'gold', 'Gold is a rare mineral, used for jewelry and in treating some diseases. Tap the gold.', 'الذهب معدن نادر، بيُستخدم في صناعة الحلي وفي علاج بعض الأمراض. اضغط على الذهب.', 'The shiny yellow lump.', 'الكتلة الصفرا اللامعة.', 'Gold comes from the Sukari mine.', `الذهب من ${kw('منجم السكري')} بالصحراء الشرقية.`);
+  set('photo', { sub: 'gold' });
+  await ask('Which mine gives us gold?', 'أنهي منجم بيطلع منه الذهب؟', [op('منجم السكري', 'The Sukari mine'), op('أم بجمة', 'Umm Bogma'), op('أبو طرطور', 'Abu Tartur')], op('منجم السكري', 'The Sukari mine'),
+    'It is in the Eastern Desert.', 'في الصحراء الشرقية.', 'The Sukari mine.', `${kw('منجم السكري')} بالصحراء الشرقية.`);
+  const buttons = [{ label: T('Copper', 'النحاس'), value: 'c', c: 0 }, { label: T('Phosphate', 'الفوسفات'), value: 'p', c: 2 }, { label: T('Manganese', 'المنجنيز'), value: 'm', c: 3 }];
+  await sortCards(buttons, [
+    ['أسلاك الكهرباء والسبائك', 'c', ['Copper makes electric wires and alloys.', 'النحاس في أسلاك الكهرباء والسبائك.']], ['محافظة البحر الأحمر', 'c', ['Copper comes from the Red Sea Governorate.', 'النحاس من محافظة البحر الأحمر.']],
+    [['الأسمدة الكيماوية', 'والمبيدات الحشرية'], 'p', ['Phosphate makes fertilizers and pesticides.', 'الفوسفات في الأسمدة والمبيدات.']], ['منطقة أبو طرطور', 'p', ['Phosphate comes from Abu Tartur.', 'الفوسفات من أبو طرطور.']],
+    ['الصلب والدهانات', 'm', ['Manganese is used in steel and paints.', 'المنجنيز في الصلب والدهانات.']], ['أم بجمة بسيناء', 'm', ['Manganese comes from Umm Bogma.', 'المنجنيز من أم بجمة.']]],
+    T('Which mineral?', 'ده أنهي معدن؟'));
+  set('card', { lines: ['ترشيد استهلاك المعادن', 'حق للأجيال القادمة'] });
+  await ask('Why should we save minerals for the coming generations?', 'ليه لازم نرشّد استهلاك المعادن للأجيال الجاية؟', [op('لأنها موارد غير متجددة', 'They are non-renewable'), op('لأنها لا تنفد', 'They never run out'), op('لأنها رخيصة', 'They are cheap')], op('لأنها موارد غير متجددة', 'They are non-renewable'),
+    'Can minerals grow back?', 'المعادن بتتجدد؟', 'Minerals are non-renewable.', `لأنها ${kw('موارد غير متجددة')}.`);
+}
+async function mission2() {                 // lesson 1: the energy sources (pages 71-73)
+  set('photo', { sub: 'felucca' });
+  g.say(T('Mission 2: the story of energy began with fire. The Ancient Egyptians cooked and kept warm with fire, used the wind to sail boats for trade, and were among the first to warm their houses with the sun.', 'المهمة ٢: قصة الطاقة بدأت بالنار. المصريين القدماء طبخوا واتدفوا بالنار، واستغلوا الرياح في تسيير المراكب الشراعية للتجارة، وكانوا من أوائل الشعوب اللي استفادت من الشمس في تدفئة بيوتهم.'), 'point');
+  await g.next();
+  set('photo', { sub: 'felucca' });
+  await ask('What did the Ancient Egyptians use to move this sailing boat?', 'المصري القديم استغل إيه علشان يسيّر المركب الشراعي ده؟', [op('طاقة الرياح', 'Wind energy'), op('الغاز الطبيعي', 'Natural gas'), op('الكهرباء', 'Electricity')], op('طاقة الرياح', 'Wind energy'),
+    'Look at the sail.', 'بص على الشراع.', 'Wind energy, which made trade easier.', `${kw('طاقة الرياح')}، وده سهّل التجارة.`);
+  await spotSet('trEnergy', 'solar', 'Benban in Aswan and Kuraymat in Giza make electricity from the sun. Tap the solar panels.', 'محطة بنبان بأسوان والكريمات بالجيزة بيولدوا الكهربا من الشمس. اضغط على الألواح الشمسية.', 'A blue panel under the sun.', 'لوح أزرق تحت الشمس.', 'Solar energy.', `${kw('الطاقة الشمسية')}.`);
+  set('card', { lines: ['مصر', 'وإنتاج الطاقة الشمسية'] });
+  await ask('Why is Egypt one of the best countries for solar energy?', 'ليه مصر من أكتر الدول المناسبة لإنتاج الطاقة الشمسية؟', [op('لسطوع الشمس طوال العام', 'The sun shines all year'), op('لكثرة الأمطار', 'Lots of rain'), op('لكثرة الثلوج', 'Lots of snow')], op('لسطوع الشمس طوال العام', 'The sun shines all year'),
+    'Think of Egypt’s sunny sky.', 'فكّر في سما مصر المشمسة.', 'The sun shines on Egypt all year.', `${kw('لسطوع الشمس على أرضها طوال العام')}.`);
+  await spotSet('trEnergy', 'wind', 'Gebel El Zeit and Zafarana in the Red Sea Governorate make electricity from the wind. Tap what turns in the wind.', 'محطة جبل الزيت والزعفرانة بمحافظة البحر الأحمر بيولدوا الكهربا من الرياح. اضغط على اللي بيلف مع الهوا.', 'A tall tower with three blades.', 'برج طويل بتلات ريشات.', 'Wind energy.', `${kw('طاقة الرياح')}.`);
+  set('photo', { sub: 'highdam' });
+  await ask('The High Dam makes electricity from falling water. What is this energy called?', 'السد العالي بيولّد الكهربا من المساقط المائية. اسم الطاقة دي إيه؟', [op('الطاقة الكهرومائية', 'Hydroelectric energy'), op('الطاقة الشمسية', 'Solar energy'), op('طاقة الرياح', 'Wind energy')], op('الطاقة الكهرومائية', 'Hydroelectric energy'),
+    'Electricity from water.', 'كهربا من المية.', 'Hydroelectric energy, from the High Dam and the Aswan Reservoir.', `${kw('الطاقة الكهرومائية')}: السد العالي وخزان أسوان.`);
+  set('photo', { sub: 'oilrig' });
+  await ask('Zohr, in the Mediterranean north of Port Said, is a famous field of…', 'حقل ظُهر في البحر المتوسط شمال بورسعيد من أشهر حقول…', [op('الغاز الطبيعي', 'Natural gas'), op('الفحم', 'Coal'), op('الذهب', 'Gold')], op('الغاز الطبيعي', 'Natural gas'),
+    'We use it at home and to make electricity.', 'بنستخدمه في البيت وفي توليد الكهربا.', 'Natural gas.', `${kw('الغاز الطبيعي')}.`);
+  set('card', { lines: ['البنزين والسولار', 'والبلاستيك'] });
+  await ask('Petrol, diesel and plastics come from which source?', 'البنزين والسولار والبلاستيك جايين من أنهي مصدر؟', [op('البترول', 'Petroleum'), op('الفحم', 'Coal'), op('الفوسفات', 'Phosphate')], op('البترول', 'Petroleum'),
+    'It comes from the Gulf of Suez.', 'بيُستخرج من خليج السويس.', 'Petroleum and its products.', `من مشتقات ${kw('البترول')}.`);
+  const buttons = [{ label: T('The State', 'دور الدولة'), value: 's', c: 3 }, { label: T('Citizens', 'دور المواطنين'), value: 'c', c: 2 }];
+  await sortCards(buttons, [
+    [['سن القوانين لحماية', 'الثروة المعدنية'], 's', ['Laws are the State’s role.', 'سن القوانين دور الدولة.']], ['البحث عن بدائل للمعادن', 's', ['Searching for alternatives is the State’s role.', 'البحث عن بدائل دور الدولة.']],
+    ['ترشيد استهلاك الطاقة', 'c', ['Saving energy is the citizens’ role.', 'ترشيد الاستهلاك دور المواطنين.']], ['دعم استخدام الطاقة المتجددة', 'c', ['Supporting renewable energy is the citizens’ role.', 'دعم الطاقة المتجددة دور المواطنين.']]],
+    T('The State’s role or the citizens’ role?', 'دور الدولة ولا دور المواطنين؟'));
+}
+async function mission3() {                 // lesson 2: water resources and their problems (pages 76-80)
+  set('card', { lines: ['الماء أساس الحياة'] });
+  g.say(T('Mission 3: water is the base of life. Egypt’s water is fresh water and salt water.', 'المهمة ٣: الماء أساس الحياة. وموارد المياه في مصر نوعين: مياه عذبة ومياه مالحة.'), 'point');
+  await g.next();
+  const buttons = [{ label: T('Fresh', 'مياه عذبة'), value: 'f', c: 2 }, { label: T('Salt', 'مياه مالحة'), value: 's', c: 1 }];
+  await sortCards(buttons, [
+    ['نهر النيل', 'f', ['The Nile is fresh water.', 'نهر النيل مياه عذبة.']], ['بحيرة ناصر', 'f', ['Lake Nasser is fresh water.', 'بحيرة ناصر مياه عذبة.']],
+    ['الأمطار الشتوية', 'f', ['Winter rain is fresh water.', 'الأمطار الشتوية مياه عذبة.']], ['البحر الأحمر', 's', ['The Red Sea is salt water.', 'البحر الأحمر مياه مالحة.']],
+    ['بحيرة البردويل', 's', ['Lake Bardawil is salt water.', 'بحيرة البردويل مياه مالحة.']], ['بحيرة المنزلة', 's', ['Lake Manzala is salt water.', 'بحيرة المنزلة مياه مالحة.']]],
+    T('Fresh water or salt water?', 'مياه عذبة ولا مالحة؟'));
+  await spotSet('trWorks', 'well', 'Life in the oases depends on fresh groundwater under the ground. Tap the well.', 'الحياة في الواحات بتعتمد على المياه الجوفية العذبة اللي في باطن الأرض. اضغط على البئر.', 'Stones in a circle and a bucket.', 'حجارة على شكل دايرة ودلو.', 'Groundwater for the oases.', `${kw('المياه الجوفية العذبة')} في الواحات.`);
+  set('card', { lines: ['المصدر الأساسي', 'للمياه العذبة في مصر'] });
+  await ask('What is the main source of fresh water in Egypt?', 'إيه المصدر الأساسي للمياه العذبة في مصر؟', [op('نهر النيل', 'The Nile'), op('الأمطار', 'Rain'), op('البحر المتوسط', 'The Mediterranean')], op('نهر النيل', 'The Nile'),
+    'Herodotus called Egypt its gift.', 'هيرودوت قال إن مصر هبته.', 'The Nile, with its branches Damietta and Rosetta.', `${kw('نهر النيل')} وفرعاه دمياط ورشيد.`);
+  set('card', { lines: ['ندرة المياه العذبة'] });
+  await ask('Which of these is a cause of fresh water shortage?', 'أنهي واحد من دول سبب لندرة المياه العذبة؟', [op('تزايد عدد السكان', 'A growing population'), op('كثرة الأمطار', 'Too much rain'), op('محطات التحلية', 'Desalination plants')], op('تزايد عدد السكان', 'A growing population'),
+    'More people, more water used.', 'ناس أكتر، مية أكتر.', 'More people, little rain, and dams at the sources of the Nile.', `${kw('تزايد عدد السكان')}، وقلة الأمطار، والسدود على منابع النيل.`);
+  set('card', { lines: ['تلوث المياه'] });
+  await ask('What pollutes the water in Egypt?', 'إيه اللي بيلوّث المية في مصر؟', [op('مخلفات المصانع والسفن', 'Waste from factories and ships'), op('الأمطار الشتوية', 'Winter rain'), op('الأسماك', 'Fish')], op('مخلفات المصانع والسفن', 'Waste from factories and ships'),
+    'Things thrown into the water without treatment.', 'حاجات بتترمي في المية من غير معالجة.', 'Waste from factories, ships and farm drainage.', `${kw('مخلفات المصانع والسفن والصرف الزراعي')} دون معالجة.`);
+  set('card', { lines: ['محطة العين السخنة', 'بمحافظة السويس'] });
+  await ask('What does the Ain Sokhna plant do?', 'محطة العين السخنة بتعمل إيه؟', [op('تحلية مياه البحر', 'Removes salt from sea water'), op('تدوير مياه الصرف الزراعي', 'Recycles farm drainage water'), op('توليد الكهرباء من الرياح', 'Makes electricity from wind')], op('تحلية مياه البحر', 'Removes salt from sea water'),
+    'It turns sea water into water people can use.', 'بتحوّل مية البحر لمية صالحة للاستخدام.', 'Desalination: one of the largest plants in the world.', `${kw('تحلية مياه البحر')}، ومن أكبر محطات التحلية في العالم.`);
+  set('card', { lines: ['محطة بحر البقر'] });
+  await ask('What does the Bahr El-Baqar plant do?', 'محطة بحر البقر بتعمل إيه؟', [op('تدوير مياه الصرف الزراعي', 'Recycles farm drainage water'), op('تحلية مياه البحر', 'Removes salt from sea water'), op('استخراج الملح', 'Takes out salt')], op('تدوير مياه الصرف الزراعي', 'Recycles farm drainage water'),
+    'It treats water used in farming.', 'بتعالج المية اللي اتستخدمت في الزراعة.', 'It treats farm drainage water to use it again.', `${kw('تدوير مياه الصرف الزراعي')} ومعالجتها.`);
+}
+async function mission4() {                 // lesson 3: the national projects (pages 83-88)
+  set('card', { lines: ['رؤية مصر 2030', 'التنمية الشاملة والمستدامة'] });
+  g.say(T('Mission 4: Egypt’s Vision 2030 is a plan for comprehensive, sustainable development: using resources for people’s needs without harming the coming generations.', 'المهمة ٤: رؤية مصر 2030 خطة للتنمية الشاملة والمستدامة: استثمار الموارد لاحتياجات الناس من غير ما نضر حقوق الأجيال الجاية.'), 'point');
+  await g.next();
+  set('card', { lines: ['الدلتا الجديدة', 'غرب الدلتا'] });
+  await ask('What is a goal of the New Delta project?', 'إيه من أهداف مشروع الدلتا الجديدة؟', [op('زراعة القمح وتحقيق الأمن الغذائي', 'Growing wheat for food security'), op('توليد الكهرباء من الشمس', 'Making solar electricity'), op('تحلية مياه البحر', 'Desalination')], op('زراعة القمح وتحقيق الأمن الغذائي', 'Growing wheat for food security'),
+    'It is a huge farming project.', 'مشروع زراعي عملاق.', 'Strategic crops like wheat, food security and fewer imports.', `${kw('زراعة المحاصيل الإستراتيجية مثل القمح')} وتحقيق الأمن الغذائي.`);
+  await spotSet('trWorks', 'fishfarm', 'Berket Ghalioun in Kafr El-Sheikh is one of the largest fish farming projects in the world. Tap the fish farm.', 'بركة غليون في كفر الشيخ من أكبر مشاريع الاستزراع السمكي في العالم. اضغط على مزرعة السمك.', 'A fish over a round tank.', 'سمكة فوق حوض مستدير.', 'Fish farming: more fish and a surplus to export.', `${kw('الاستزراع السمكي')}: إنتاج سمكي أكتر وفائض للتصدير.`);
+  set('card', { lines: ['العاصمة الإدارية الجديدة', 'مدينة ذكية'] });
+  await ask('Where is the New Administrative Capital?', 'العاصمة الإدارية الجديدة فين؟', [op('شرق محافظة القاهرة', 'East of Cairo'), op('غرب الدلتا', 'West of the Delta'), op('في أسوان', 'In Aswan')], op('شرق محافظة القاهرة', 'East of Cairo'),
+    'It eases the crowding of Cairo.', 'بتخفف الزحام عن القاهرة.', 'East of Cairo; the Iconic Tower there is the tallest in Africa.', `${kw('شرق محافظة القاهرة')}، وفيها البرج الأيقوني أطول برج في إفريقيا.`);
+  await spotSet('trWorks', 'train', 'The fast electric train is sustainable transport: fewer cars and less traffic. Tap the train.', 'القطار الكهربائي السريع نقل مستدام: عربيات أقل وزحمة أقل. اضغط على القطار.', 'White and fast.', 'أبيض وسريع.', 'The fast electric train.', `${kw('القطار الكهربائي السريع')}.`);
+  await spotSet('trWorks', 'bridge', 'The State built many bridges and axes, like the Tahya Misr bridge. Tap the bridge.', 'الدولة عملت كباري ومحاور كتير زي كوبري تحيا مصر. اضغط على الكوبري.', 'Cables over the river.', 'حبال فوق النهر.', 'Bridges ease moving between cities.', `${kw('الكباري والمحاور')} بتسهّل الانتقال بين المدن.`);
+  set('card', { lines: ['قناة السويس الجديدة', '2015 م'] });
+  await ask('Why was the New Suez Canal dug?', 'ليه اتحفرت قناة السويس الجديدة؟', [op('لتسيير السفن في الاتجاهين', 'For ships to sail both ways'), op('لري الأراضي', 'To water farmland'), op('لصيد الأسماك', 'For fishing')], op('لتسيير السفن في الاتجاهين', 'For ships to sail both ways'),
+    'Think of ships passing.', 'فكّر في المراكب اللي بتعدي.', 'Ships go both ways: shorter crossing and more national income.', `${kw('لتسيير السفن في الاتجاهين')}، فيقل زمن العبور ويزيد الدخل القومي.`);
+  set('card', { lines: ['قرية بنبان', 'محافظة أسوان'] });
+  await ask('Why was Benban village in Aswan chosen for a huge solar project?', 'ليه اختاروا قرية بنبان بأسوان لمشروع طاقة شمسية ضخم؟', [op('لسطوع الشمس بها معظم العام', 'The sun shines there most of the year'), op('لقربها من البحر', 'It is near the sea'), op('لكثرة الرياح', 'It is very windy')], op('لسطوع الشمس بها معظم العام', 'The sun shines there most of the year'),
+    'Aswan is very sunny.', 'أسوان مشمسة جدًا.', 'The sun shines there most of the year.', `${kw('لسطوع الشمس بها معظم العام')}.`);
+}
+async function stage2() {
+  const from = Math.max(1, +new URLSearchParams(location.search).get('m') || 1);   // ?m=N opens the missions at mission N (owner's checks)
+  const all = [mission1, mission2, mission3, mission4];
+  for (const m of all.slice(from - 1)) await m();
+}
+
+/* ---------- Stage 3 · Speed Round: which field? (lessons 2-3) ---------- */
+async function stage3() {
+  set('set', { key: 'trWorks' });
+  const items = [
+    { t: 'الدلتا الجديدة', ans: 'a', why: T('Farming.', 'مشروع زراعي.') }, { t: 'بركة غليون', ans: 'a', why: T('Fish farming.', 'استزراع سمكي.') },
+    { t: 'محطة بنبان', ans: 'e', why: T('Solar energy.', 'طاقة شمسية.') }, { t: 'محطة جبل الزيت', ans: 'e', why: T('Wind energy.', 'طاقة رياح.') },
+    { t: 'القطار الكهربائي السريع', ans: 't', why: T('Transport.', 'نقل ومواصلات.') }, { t: 'محور روض الفرج', ans: 't', why: T('Transport.', 'نقل ومواصلات.') },
+    { t: 'محطة العين السخنة', ans: 'w', why: T('Desalination of sea water.', 'تحلية مياه البحر.') }, { t: 'محطة بحر البقر', ans: 'w', why: T('Recycling drainage water.', 'تدوير مياه الصرف.') }];
+  await g.speedRound({ items, rounds: 8, ms: 12000,
+    buttons: [{ label: T('Farming & fish', 'زراعي وسمكي'), value: 'a', c: 2 }, { label: T('Energy', 'طاقة'), value: 'e', c: 1 }, { label: T('Transport', 'نقل'), value: 't', c: 3 }, { label: T('Water', 'مياه'), value: 'w', c: 0 }],
+    ask: T('Which field?', 'أنهي مجال؟'), intro: T('Speed Round! A project comes in. Press its field. Be quick!', 'جولة السرعة! هيظهر مشروع، اضغط على مجاله. بسرعة!'),
+    think: T('Which field?', 'أنهي مجال؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Hunt for Egypt’s treasures: its minerals and energy, its water, and its national projects. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! يلا ندوّر على كنوز مصر: معادنها وطاقتها، ومياهها، ومشروعاتها القومية. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know Egypt’s minerals and energy sources, its water resources and their problems, and its national projects. Next, try the questions of this unit.', 'بقيت تعرف معادن مصر ومصادر الطاقة فيها، وموارد المياه ومشكلاتها، والمشروعات القومية. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

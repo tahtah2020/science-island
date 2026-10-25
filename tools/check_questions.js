@@ -37,6 +37,8 @@ const TAPS = { bloodLoop: ['heart', 'lungs', 'whole'], urinary: ['kidneys', 'urt
   storyThings: ['pond', 'well', 'fly', 'frog', 'boat', 'mudhouse'],
   civEarly: ['axe', 'mudbrick', 'chisel', 'bardi', 'nileriver', 'narmer'],
   civGreat: ['steppyr', 'khufu', 'sphinx', 'lahun', 'theater', 'qamh'],
+  trEnergy: ['coal', 'gold', 'iron', 'oilrig', 'solar', 'wind'],
+  trWorks: ['highdam', 'felucca', 'well', 'train', 'fishfarm', 'bridge'],
   places6: ['restaurant', 'coffeeshop', 'bakery', 'supermarket', 'club', 'themepark'],
   village6: ['field', 'cottage', 'commcenter', 'barn', 'mainsquare', 'cow'],
   resources6: ['sunlight', 'fossilfuel', 'soil', 'minerals', 'freshwater', 'wind'],

@@ -12,6 +12,9 @@
    Unit 2 «الحضارة المصرية القديمة» (the owner's pictures, 25 Oct 2026, studies/assets/civ_*.jpg, 16 px cropped on every side to remove the generator's corner mark, no captions):
      civEarly   (tap) ids axe · mudbrick · chisel · bardi · nileriver · narmer          a stone tool, a mud-brick house, a metal chisel, a green plant, a river with palms, a carved stone slab
      civGreat   (tap) ids steppyr · khufu · sphinx · lahun · theater · qamh              a step pyramid, a smooth pyramid, a lion with a king's head, a dam with arches, a half-round theatre, an ear of grain
+   Unit 3 «كنوز مصر» (the owner's pictures, 25 Oct 2026, studies/assets/tr_*.jpg, 44 px cropped on every side of the 1024 px sheet pictures (removes the generator's corner mark), 480 px, no captions):
+     trEnergy   (tap) ids coal · gold · iron · oilrig · solar · wind                     a black lump, a shiny yellow lump, a red-brown rock, an offshore rig, a solar panel, a wind turbine
+     trWorks    (tap) ids highdam · felucca · well · train · fishfarm · bridge           a dam with water rushing out, a sailing boat, a stone well with a bucket, a fast electric train, a fish over a round tank, a cable bridge
      Six round photos, three on top and three below, in a 340 x 250 card; q.pic.plain = the inner markup only (games).
    Texts are Arabic (the book is Arabic for both tracks). Screen-reader names describe the picture, never the answer.
    window.S5ART = the pieces the game and the map script reuse. */
@@ -234,11 +237,17 @@
   /* ================= Unit 2 · the owner's photos in two six-picture cards (340 x 250) ================= */
   const CIV = {
     civEarly: ['axe', 'mudbrick', 'chisel', 'bardi', 'nileriver', 'narmer'],
-    civGreat: ['steppyr', 'khufu', 'sphinx', 'lahun', 'theater', 'qamh']
+    civGreat: ['steppyr', 'khufu', 'sphinx', 'lahun', 'theater', 'qamh'],
+    trEnergy: ['coal', 'gold', 'iron', 'oilrig', 'solar', 'wind'],
+    trWorks: ['highdam', 'felucca', 'well', 'train', 'fishfarm', 'bridge']
   };
+  const PFX = { civEarly: 'civ', civGreat: 'civ', trEnergy: 'tr', trWorks: 'tr' };
   const CIVNAME = { axe: 'حجر رمادي مدبب الطرف', mudbrick: 'بيت صغير من الطين له باب', chisel: 'أداة لها مقبض وطرف معدني مسطح', bardi: 'نبات أخضر له ساق طويلة وأوراق كالريش', nileriver: 'نهر أزرق بين ضفتين خضراوين عليهما نخيل', narmer: 'لوح حجري رمادي منقوش عليه ملك يرفع يده',
-    steppyr: 'هرم من درجات فوق بعضها', khufu: 'هرم كبير أملس الجوانب وعند قاعدته أشخاص صغار', sphinx: 'تمثال جسمه جسم أسد ورأسه رأس ملك', lahun: 'بناء له فتحات مقوسة تتدفق منها المياه', theater: 'مدرجات حجرية على شكل نصف دائرة وأعمدة', qamh: 'سنبلة صفراء لها حبوب' };
-  const CIVTINT = { axe: '#f3e7d8', mudbrick: '#dff1f7', chisel: '#fdf3c8', bardi: '#fbe3e8', nileriver: '#f6f1df', narmer: '#e1f3ec', steppyr: '#e1effb', khufu: '#dff1f7', sphinx: '#fbe6d4', lahun: '#e8e6fb', theater: '#fdf6d4', qamh: '#e8e6fb' };
+    steppyr: 'هرم من درجات فوق بعضها', khufu: 'هرم كبير أملس الجوانب وعند قاعدته أشخاص صغار', sphinx: 'تمثال جسمه جسم أسد ورأسه رأس ملك', lahun: 'بناء له فتحات مقوسة تتدفق منها المياه', theater: 'مدرجات حجرية على شكل نصف دائرة وأعمدة', qamh: 'سنبلة صفراء لها حبوب',
+    coal: 'كتلة صخرية سوداء لامعة', gold: 'كتلة صفراء لامعة تبرق', iron: 'صخرة بنية مائلة إلى الحمرة', oilrig: 'منصة حفر عالية فوق البحر', solar: 'لوح أزرق مائل تحت الشمس', wind: 'برج أبيض طويل له ثلاث ريشات',
+    highdam: 'سد ضخم تندفع المياه من فتحاته', felucca: 'مركب خشبي بشراع أبيض فوق الماء', well: 'بئر من الحجارة ودلو فيه ماء', train: 'قطار أبيض سريع بخط أحمر', fishfarm: 'سمكة تقفز من حوض ماء مستدير', bridge: 'جسر فوق نهر تشده حبال من برج' };
+  const CIVTINT = { axe: '#f3e7d8', mudbrick: '#dff1f7', chisel: '#fdf3c8', bardi: '#fbe3e8', nileriver: '#f6f1df', narmer: '#e1f3ec', steppyr: '#e1effb', khufu: '#dff1f7', sphinx: '#fbe6d4', lahun: '#e8e6fb', theater: '#fdf6d4', qamh: '#e8e6fb',
+    coal: '#fbe3cf', gold: '#fdf3d6', iron: '#d6f0e2', oilrig: '#e3ebef', solar: '#d6ecf6', wind: '#e2e2fb', highdam: '#d6f0ef', felucca: '#f6ebd9', well: '#fbe7b8', train: '#e3e6ec', fishfarm: '#d6f2e2', bridge: '#d9eff9' };
   const CSLOT = [[62, 66], [170, 66], [278, 66], [62, 184], [170, 184], [278, 184]], CR = 46;
   function civSet(key, label) {
     const ids = CIV[key];
@@ -248,7 +257,7 @@
       ids.forEach((id, i) => {
         const [x, y] = CSLOT[i];
         s += `<g transform="translate(${x} ${y})"><clipPath id="s5c-${id}"><circle r="${CR}"/></clipPath><circle r="${CR}" fill="${CIVTINT[id]}"/>`
-          + `<image href="studies/assets/civ_${id}.jpg" x="${-CR}" y="${-CR}" width="${CR * 2}" height="${CR * 2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#s5c-${id})"/>`
+          + `<image href="studies/assets/${PFX[key]}_${id}.jpg" x="${-CR}" y="${-CR}" width="${CR * 2}" height="${CR * 2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#s5c-${id})"/>`
           + `<circle r="${CR}" fill="none" stroke="#fff" stroke-width="3"/><circle r="${CR}" fill="none" stroke="#d8c9a6" stroke-width="1.4"/></g>`;
       });
       if (!plain) ids.forEach((id, i) => { const [x, y] = CSLOT[i]; s += hot(id, CIVNAME[id], ringEl(x, y, CR, CR)); });
@@ -259,6 +268,8 @@
   }
   const civEarly = civSet('civEarly', 'ست صور مستديرة: أداة حجرية وبيت من الطين وأداة معدنية ونبات أخضر ونهر ولوح حجري منقوش');
   const civGreat = civSet('civGreat', 'ست صور مستديرة: هرم مدرج وهرم أملس وتمثال وسد ومسرح وسنبلة');
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, dunes, habitats, civEarly, civGreat });
-  window.S5ART = { CIV, CIVNAME, civEarly, civGreat, globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, txt, hot, ringRect, ringEl, wrap, path, f1, esc, mx, my, poly, line, EGYPT, NILE, DELTA, SINAI, WEST, EAST, UNIT, INK, PAPER, FONT, GX, GY };
+  const trEnergy = civSet('trEnergy', 'ست صور مستديرة: كتلة سوداء وكتلة صفراء وصخرة بنية ومنصة في البحر ولوح أزرق تحت الشمس وبرج بريشات');
+  const trWorks = civSet('trWorks', 'ست صور مستديرة: سد تندفع منه المياه ومركب بشراع وبئر وقطار ومزرعة سمك وجسر');
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, dunes, habitats, civEarly, civGreat, trEnergy, trWorks });
+  window.S5ART = { CIV, CIVNAME, PFX, civEarly, civGreat, trEnergy, trWorks, globeGrid, egyptGrid, egyptRegions, reliefForces, climateMap, sunRays, txt, hot, ringRect, ringEl, wrap, path, f1, esc, mx, my, poly, line, EGYPT, NILE, DELTA, SINAI, WEST, EAST, UNIT, INK, PAPER, FONT, GX, GY };
 })();
