@@ -1,4 +1,4 @@
-/* Owner tool (not part of the game): draws the maps and page backgrounds of Grade 5 Chapters 4, 5, 6 and 7 from the chapters' own drawing functions.
+/* Owner tool (not part of the game): draws the maps and page backgrounds of Grade 5 Chapters 4, 5, 6, 7 and 8 from the chapters' own drawing functions.
    Run from the site folder:  node science/tools/make_ch456_maps.js
    ->  science/assets/map_ch4.svg, bg_ch4.svg · map_ch5.svg, bg_ch5.svg · map_ch6.svg, bg_ch6.svg
    STOPS are the five stops in map pixels (1224 x 1285); keep them in step with map.stops in chapters.js (percent), the same as Chapter 3. */
@@ -74,6 +74,16 @@ const s7 = () => at(220, 1140, 1.9, nest7()) + at(1000, 960, 1.5, pond7()) + at(
   + tree(118, 950, 1.05, GREEN) + tree(170, 470, 1, GREEN2) + tree(900, 260, .95, GREEN) + tree(760, 1185, .8, GREEN);
 const eggBg = k => at(k.x, k.y, .7, `<ellipse cx="0" cy="-18" rx="14" ry="19" fill="#fffaf0" stroke="#d9cdb0" stroke-width="3"/>`);
 
+/* ---------- Chapter 8: clouds, rain, the sun, a compass and a tower (drawn in code) ---------- */
+const cloud8 = (c, st) => `<g fill="${c}" stroke="${st}" stroke-width="4"><ellipse cx="0" cy="12" rx="62" ry="24"/><ellipse cx="-30" cy="-4" rx="32" ry="26"/><ellipse cx="12" cy="-18" rx="38" ry="32"/><ellipse cx="42" cy="4" rx="26" ry="21"/></g>`;
+const drops8 = () => [-34, -8, 18, 44].map((x, i) => `<path d="M${x} ${44 + (i % 2) * 14}q-7 12 0 18q7 -6 0 -18z" fill="#8fc6ea" stroke="#4f93c0" stroke-width="3"/>`).join('');
+const sun8 = () => { let r = ''; for (let a = 0; a < 12; a++) { const an = a * 30 * Math.PI / 180; r += `M${f(Math.cos(an) * 46)} ${f(Math.sin(an) * 46)}L${f(Math.cos(an) * 66)} ${f(Math.sin(an) * 66)}`; } return `<path d="${r}" stroke="#ffd24a" stroke-width="9" stroke-linecap="round"/><circle r="38" fill="#ffd24a" stroke="#f2b134" stroke-width="5"/>`; };
+const compass8 = () => `<circle r="50" fill="#fdf3d6" stroke="#f2b134" stroke-width="9"/><path d="M0 -38L10 0L0 38L-10 0Z" fill="#e2603f" stroke="#a9432b" stroke-width="3" transform="rotate(35)"/><path d="M0 0L10 0L0 38L-10 0Z" fill="#4fa3c7" stroke="#2f6f8e" stroke-width="3" transform="rotate(35)"/><circle r="6" fill="#f2b134"/>`;
+const tower8 = () => `<ellipse cx="0" cy="6" rx="44" ry="10" fill="#000" opacity=".1"/><path d="M-30 0L-22 -90H22L30 0Z" fill="#cdb98a" stroke="#8a7347" stroke-width="4"/><path d="M-30 -92H30V-128H-30Z" fill="#9fc4d6" stroke="#5f8aa0" stroke-width="4"/><path d="M-38 -128L0 -160L38 -128Z" fill="#b98b57" stroke="#8a6334" stroke-width="4"/><path d="M-8 -30a8 8 0 0 1 16 0V0H-8Z" fill="#8a6334"/>`;
+const s8 = () => at(230, 1150, 1.8, cloud8('#fff', '#9fb9d4')) + at(1000, 960, 1.7, cloud8('#7f95b0', '#4a5f7a') + drops8()) + at(250, 650, 1.6, compass8()) + at(1010, 560, 1.7, tower8()) + at(560, 430, 1.4, cloud8('#fff', '#9fb9d4')) + at(1100, 300, 1.2, sun8()) + at(720, 1160, 1.3, cloud8('#e8f0f8', '#9fb9d4'))
+  + tree(118, 950, 1.05, GREEN) + tree(170, 470, 1, GREEN2) + tree(900, 260, .95, GREEN) + tree(760, 1185, .8, GREEN);
+const dropBg = k => at(k.x, k.y, .8, `<path d="M0 -8q-12 20 0 28q12 -8 0 -28z" fill="#9fd0ee" stroke="#5aa0cc" stroke-width="3"/>`);
+
 /* ---------- page background: a soft landscape under a light veil ---------- */
 function bg(sky, hill1, hill2, ground, plantFn, kind) {
   seed = 9;
@@ -95,3 +105,5 @@ write('map_ch6.svg', island(s6, ['#f1d6b8', '#f6e3cc', '#fbf0e4']));
 write('bg_ch6.svg', bg(['#fbd9c8', '#fdf0e6'], '#f3ddc4', '#ebcca8', '#d9b48a', kidBg, 'kids'));
 write('map_ch7.svg', island(s7, ['#f6e3a8', '#f8ecc4', '#fcf4dc']));
 write('bg_ch7.svg', bg(['#fde8bf', '#fff6e3'], '#f3e3b2', '#e9d394', '#cfa96a', eggBg, 'eggs'));
+write('map_ch8.svg', island(s8, ['#c9e3f5', '#dcebf8', '#eef5fc']));
+write('bg_ch8.svg', bg(['#bfdcf3', '#eef5fc'], '#d4e6d0', '#c2dcb8', '#9fb590', dropBg, 'rain'));

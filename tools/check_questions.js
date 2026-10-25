@@ -13,6 +13,7 @@ const TAPS = { bloodLoop: ['heart', 'lungs', 'whole'], urinary: ['kidneys', 'urt
   microscope: ['eyepiece', 'tube', 'arm', 'knob', 'nosepiece', 'objective', 'clips', 'stage', 'reflector'],
   lifeStages: ['infancy', 'childhood', 'youth', 'adulthood', 'oldage'], healthyHabits: ['diet', 'sleep', 'exercise'],
   /* Grade 5 chapter 7 (ch7_art.js, the owner's pictures) */
+  ch8Sky: ['c8sun', 'c8clouds', 'c8rain', 'c8snow'], ch8Refs: ['c8tower', 'c8palm', 'c8boat', 'c8compass'], ch8Tools: ['c8sat', 'c8radar'], ch8Dust: ['c8sand', 'c8clouds'], ch8Grid: [],
   ch7Kittens: ['c7cat', 'c7kitten'], ch7Six: ['c7dog', 'c7camel', 'c7gazelle', 'c7fox', 'c7chicken', 'c7fish'], ch7Hatch: ['c7fish', 'c7eggs'], ch7Reserves: ['c7coral', 'c7gazelle'],
   /* Grade 6 (g6_art.js, g6_body.js) */
   breathBags: ['milky', 'clear'], airways: ['nose', 'windpipe', 'lungs'], gasExchange: ['toBlood', 'toAir'],
