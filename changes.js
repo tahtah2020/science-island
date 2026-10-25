@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'Weather Station fix',
+    items: [
+      { text: 'Mission 2: the 15-minute question now shows the reference point and clouds instead of the palm tree', links: [{ label: 'Weather Station', href: 'weatherlab.html?m=2', ch: 'ch8' }] }
+    ] },
   { date: '2026-10-25', title: 'الفصل ٨ تغيرات الطقس بالعربي',
     items: [
       { text: 'أسئلة الفصل ٨ بالعربي بلغة كتاب الوزارة (٧٦ سؤالًا)' },
