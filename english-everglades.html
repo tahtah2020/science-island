@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Everglades Journey · Unit 6 · The Talking Earth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261025p">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Everglades Journey.</noscript>
+<script src="firebase-config.js?v=20261025p"></script>
+<script src="chapters.js?v=20261025p"></script>
+<script src="common.js?v=20261025p"></script>
+<script src="english/g5_art.js?v=20261025p"></script>
+<script src="game_kit.js?v=20261025p"></script>
+<script src="english/e5_game.js?v=20261025p"></script>
+<script>
+(() => {
+'use strict';
+/* Everglades Journey · the game of English Grade 5, Unit 6 · The Talking Earth (ministry book "English Primary 5", term 1, pages 92-105). Built on the game kit and english/e5_game.js.
+   Pictures: the owner's illustrations (english/assets/eg_*.jpg). No picture of Billie or her tribe: the book's characters are not copied.
+   Stage 1 (Warm Up): tap the six story words (page 93).
+   Stage 2 (Missions): 1 Billie Wind (page 95) · 2 the elders send her to the Everglades (page 96) · 3 alone in the swamp (page 97)
+                       4 learning from the animals (page 98) · 5 the Earth did talk, beginning / middle / end (pages 99, 102, 104) · 6 story words (pages 94, 101).
+   Stage 3 (Speed Round): who is it? Billie Wind, Billie's family or the elders (page 100). Every T('English', 'عربي') has both languages. */
+const K = E5Game({ ch: 'eg5u6', logo: '🐊', title: ['Everglades Journey', 'رحلة الإيفرجليدز'], sub: ['Unit 6 · The Talking Earth', 'الوحدة 6 · الأرض المتحدثة'],
+  bg: 'english/assets/bg_eg5u6.svg', bgc: '#fbe9c8', label: ['Billie Wind’s journey in the Everglades', 'رحلة بيلي ويند في الإيفرجليدز'], setKey: 'everglades6', base: '#eef6ec' });
+const { g, T, L, kw, set, spotSet, ask, fillCard, sortCards, P } = K;
+
+/* ---------- Stage 1 · Warm Up (Story Vocabulary) ---------- */
+async function stage1() {
+  set('set', { key: 'everglades6' });
+  g.say(T('Welcome to the Everglades, a wild, wet National Park in Florida. Let’s meet the words of the story.', P('أهلًا في الإيفرجليدز، حديقة وطنية برية مليانة مية في فلوريدا. يلا نتعرف على كلمات الحكاية.')), 'point');
+  await g.next();
+  await spotSet('everglades6', 'canoe', 'Tap the canoe: Billie packed it to go into the Everglades.', 'اضغط على القارب الصغير (الكانو).', 'Look for a long narrow boat.', 'دوّر على قارب طويل ورفيع.', `Billie packed her ${kw('canoe')}.`, `${L('canoe')} = قارب صغير.`);
+  await spotSet('everglades6', 'swamp', 'Tap the swamp: a wet, muddy land with a lot of water, trees and plants.', 'اضغط على المستنقع.', 'Look for trees standing in water.', 'دوّر على شجر واقف في المية.', `A ${kw('swamp')} is a wet, muddy area of land with water, trees and plants.`, `${L('swamp')} = مستنقع.`);
+  await spotSet('everglades6', 'alligator', 'Tap the alligator.', 'اضغط على التمساح.', 'It is long and green.', 'طويل وأخضر.', `At night, Billie heard ${kw('alligators')} splashing in the water.`, `${L('alligator')} = تمساح.`);
+  await spotSet('everglades6', 'owl', 'Tap the owl: it hoots in the trees.', 'اضغط على البومة.', 'It has big round eyes.', 'عينيها كبيرة ومدوّرة.', `A hoot is the sound an ${kw('owl')} makes.`, `${L('owl')} = بومة.`);
+  await spotSet('everglades6', 'turtle', 'Tap the animal that hides in its shell.', 'اضغط على الحيوان اللي بيستخبى في صدفته.', 'It has a hard round shell.', 'عنده درع ناشف مدوّر.', `The ${kw('turtles')} hid in their shells when danger was near.`, `${L('turtle')} = سلحفاة.`);
+  await spotSet('everglades6', 'splash', 'Last one: tap the splash.', 'آخر واحد: اضغط على رشّة المية.', 'Water jumps up in drops.', 'المية بتطير نقط.', `A ${kw('splash')}: water jumping up.`, `${L('splash')} = رشّة مية.`);
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // page 95: Billie Wind
+  set('card', { lines: ['The Talking Earth', 'by Jean Craighead George'] });
+  g.say(T('Mission 1: Meet Billie Wind, a young Native American girl who lived in Florida.', 'المهمة ١: اتعرّف على بيلي ويند، بنت صغيرة من سكان أمريكا الأصليين عايشة في فلوريدا.'), 'point');
+  await g.next();
+  set('card', { lines: ['Billie loved science.', 'She dreamed of becoming a…'] });
+  await ask('What did Billie dream of becoming?', 'بيلي كانت بتحلم تبقى إيه؟', ['A scientist', 'A driver', 'A firefighter'], 'A scientist', 'She loved science.', 'كانت بتحب العلوم.', `She dreamed of becoming a ${kw('scientist')}.`, `${L('a scientist')}.`);
+  set('card', { lines: ['Billie’s family believed', 'that the Earth could…'] });
+  await ask('What did Billie’s family believe?', 'عيلة بيلي كانت مصدّقة إيه؟', ['The Earth could talk and share wisdom', 'The Earth was flat', 'Animals could not teach'], 'The Earth could talk and share wisdom', 'The wind, the water and the animals had something to teach.', 'الريح والمية والحيوانات عندهم حاجة يعلّموها.', `They believed the Earth could ${kw('“talk” and share wisdom')}.`, `${L('The Earth could talk.')}`);
+  set('card', { lines: ['Did Billie believe it?'] });
+  await ask('What did Billie think?', 'بيلي كانت شايفة إيه؟', ['They were just old stories with no real meaning', 'It was true science', 'It was a new game'], 'They were just old stories with no real meaning', 'She did not believe it.', 'مكانتش مصدّقة.', `She thought these were ${kw('just old stories with no real meaning')}.`, `${L('just old stories')}.`);
+}
+async function mission2() {                 // page 96: the elders
+  set('card', { lines: ['The elders of the tribe'] });
+  g.say(T('Mission 2: One day, Billie told the elders of her tribe that she did not believe that the Earth could talk.', 'المهمة ٢: في يوم، بيلي قالت لكبار القبيلة إنها مش مصدّقة إن الأرض بتتكلم.'), 'point');
+  await g.next();
+  set('card', { lines: ['Elders: older people', 'who are wise and respected'] });
+  await ask('How did the elders feel?', 'الكبار حسّوا بإيه؟', ['Disappointed', 'Happy', 'Excited'], 'Disappointed', 'Sad because something didn’t happen as expected.', 'زعلانين عشان حاجة محصلتش زي ما اتوقعوا.', `The elders were ${kw('disappointed')}.`, `${L('disappointed')}.`);
+  set('photo', { sub: 'swamp', word: 'Everglades National Park' });
+  await ask('Why did the elders send Billie into the Everglades alone?', 'ليه الكبار بعتوا بيلي للإيفرجليدز لوحدها؟', ['To listen to the Earth', 'To catch alligators', 'To become a scientist'], 'To listen to the Earth', 'Only then would she understand.', 'ساعتها بس هتفهم.', `They told her to go and ${kw('listen to the Earth')}.`, `${L('listen to the Earth')}.`);
+  set('photo', { sub: 'swamp' });
+  await ask('What did Billie pack to go into the Everglades?', 'بيلي جهّزت إيه عشان تروح الإيفرجليدز؟', ['Her canoe', 'Her bicycle', 'A big ship'], 'Her canoe', 'A long narrow boat.', 'قارب طويل ورفيع.', `She packed her ${kw('canoe')} and went into the Everglades.`, `${L('canoe')}.`);
+}
+async function mission3() {                 // page 97: alone in the swamp
+  set('photo', { sub: 'swamp' });
+  g.say(T('Mission 3: At first, Billie struggled to survive. She had no shelter, no food and no one to help her.', 'المهمة ٣: في الأول بيلي اتعبت عشان تعيش. مكانش معاها مأوى ولا أكل ولا حد يساعدها.'), 'point');
+  await g.next();
+  set('photo', { sub: 'swamp' });
+  await ask('The swamp was full of strange sounds. How did Billie feel?', 'المستنقع كان مليان أصوات غريبة. بيلي حسّت بإيه؟', ['Afraid', 'Bored', 'Proud'], 'Afraid', 'She wished she was back home, safe and warm.', 'اتمنّت ترجع البيت.', `She felt ${kw('afraid')}.`, `${L('afraid')} = خايفة.`);
+  set('photo', { sub: 'splash' });
+  await ask('At night, what did Billie hear splashing in the water?', 'بالليل بيلي سمعت إيه بيرشّ في المية؟', ['Alligators', 'Hippos', 'Owls'], 'Alligators', 'A long green animal.', 'حيوان طويل وأخضر.', `She heard ${kw('alligators')} splashing in the water.`, `${L('alligators')}.`);
+  set('photo', { sub: 'owl' });
+  await ask('What were the owls doing in the trees?', 'البوم كان بيعمل إيه في الشجر؟', ['Hooting', 'Splashing', 'Packing'], 'Hooting', 'A hoot is the sound an owl makes.', 'ده صوت البومة.', `She heard owls ${kw('hooting')} in the trees.`, `${L('hooting')}.`);
+}
+async function mission4() {                 // page 98: learning from the animals
+  set('card', { lines: ['She watched the animals', 'closely.'] });
+  g.say(T('Mission 4: Billie watched the animals closely and saw how they survived. Which animal did this?', 'المهمة ٤: بيلي راقبت الحيوانات كويس وشافت إزاي بيعيشوا. أنهي حيوان عمل كده؟'), 'point');
+  await g.next();
+  const buttons = [{ label: T('Alligators', 'Alligators'), value: 'a', c: 2 }, { label: T('Turtles', 'Turtles'), value: 't', c: 3 }, { label: T('Birds', 'Birds'), value: 'b', c: 1 }];
+  await sortCards(buttons, [[['waited patiently for their food', 'instead of wasting energy'], 'a', 'The alligators waited patiently for their food.'], [['hid in their shells', 'when danger was near'], 't', 'The turtles hid in their shells.'],
+    [['warned each other', 'when an animal came to attack'], 'b', 'The birds warned each other.']], 'card', T('Which animal did this?', 'أنهي حيوان عمل كده؟'));
+  set('card', { lines: ['Nature had its own way', 'of teaching.'] });
+  await ask('What did Billie learn to do, just like the animals?', 'بيلي اتعلمت تعمل إيه زي الحيوانات؟', ['Catch fish, make a fire and find shelter', 'Fly and hoot', 'Build a big city'], 'Catch fish, make a fire and find shelter', 'She learned to survive.', 'اتعلمت تعيش.', `She learned how to ${kw('catch fish, make a fire, and find shelter')}.`, `${L('catch fish, make a fire, find shelter')}.`);
+}
+async function mission5() {                 // page 99 and the events (pages 102, 104)
+  set('card', { lines: ['After many days', 'in the wild…'] });
+  g.say(T('Mission 5: After many days in the wild, Billie was no longer afraid. She learned how to listen.', 'المهمة ٥: بعد أيام كتير في البرية، بيلي مبقتش خايفة، واتعلمت تسمع.'), 'point');
+  await g.next();
+  set('card', { lines: ['The Earth did talk,', 'not with words, but…'] });
+  await ask('How did the Earth talk?', 'الأرض اتكلمت إزاي؟', ['Through the wind, the animals and the land', 'With words', 'On the radio'], 'Through the wind, the animals and the land', 'Not with words.', 'مش بالكلام.', `Through ${kw('the sounds of the wind, the movements of animals and the changes in the land')}.`, `${L('through nature')}.`);
+  set('card', { lines: ['Everything in nature', 'was connected.'] });
+  await ask('What should people do to help nature?', 'الناس لازم تعمل إيه عشان تساعد الطبيعة؟', ['Take care of everything in nature', 'Harm nature', 'All be scientists'], 'Take care of everything in nature', 'If people do not, the balance would be broken.', 'لو محافظوش عليها التوازن هيتكسر.', `People should ${kw('take care of everything in nature')}.`, `${L('take care of nature')}.`);
+  const buttons = [{ label: T('Beginning', 'Beginning'), value: 'b', c: 0 }, { label: T('Middle', 'Middle'), value: 'm', c: 2 }, { label: T('End', 'End'), value: 'e', c: 1 }];
+  await sortCards(buttons, [[['Billie didn’t believe that', 'the Earth could talk.'], 'b', 'At the beginning, Billie didn’t believe it.'], [['Billie went into', 'the Everglades alone.'], 'm', 'In the middle, she went into the Everglades.'],
+    [['She was scared, then she', 'watched the animals.'], 'm', 'In the middle, she learned from the animals.'], [['Billie understood that', 'nature could talk.'], 'e', 'At the end, she understood.']], 'card', T('Beginning, middle or end?', 'البداية ولا النص ولا النهاية؟'));
+}
+async function mission6() {                 // pages 94, 101: story words
+  set('card', { lines: ['Story words'] });
+  g.say(T('Mission 6: story words. Choose the word for each sentence.', 'المهمة ٦: كلمات الحكاية. اختار الكلمة لكل جملة.'), 'point');
+  await g.next();
+  await fillCard(['Billie had no ___', 'from the bad weather.'], ['shelter', 'tribe', 'wisdom'], 'shelter', 'Choose the word.', 'اختار الكلمة.', 'A safe place that protects you.', 'مكان أمان بيحميك.', `${kw('Shelter')}: a safe place that protects someone from bad weather or danger.`, `${L('shelter')} = مأوى.`);
+  await fillCard(['She struggled to ___', 'in the Everglades.'], ['survive', 'attack', 'pack'], 'survive', 'Choose the word.', 'اختار الكلمة.', 'To stay alive.', 'تفضل عايشة.', `${kw('Survive')}: to stay alive, especially in dangerous situations.`, `${L('survive')} = تنجو.`);
+  await fillCard(['The ___ are older people', 'who are wise and respected.'], ['elders', 'natives', 'owls'], 'elders', 'Choose the word.', 'اختار الكلمة.', 'They sent Billie to the Everglades.', 'هما اللي بعتوا بيلي.', `The ${kw('elders')} are older people who are wise and respected.`, `${L('elders')} = الكبار.`);
+  await fillCard(['___ is using what you know', 'to make good choices.'], ['Wisdom', 'Struggle', 'Shelter'], 'Wisdom', 'Choose the word.', 'اختار الكلمة.', 'The Earth shares it.', 'الأرض بتشاركها.', `${kw('Wisdom')}: using what you know to make good choices.`, `${L('wisdom')} = حكمة.`);
+}
+async function stage2() {
+  const all = [mission1, mission2, mission3, mission4, mission5, mission6];
+  for (const m of all.slice(K.missionFrom() - 1)) await m();
+}
+
+/* ---------- Stage 3 · Speed Round (page 100: the characters) ---------- */
+async function stage3() {
+  set('set', { key: 'everglades6' });
+  const buttons = [{ label: 'Billie Wind', value: 'bw', c: 0 }, { label: 'Billie’s family', value: 'fa', c: 2 }, { label: 'The elders', value: 'el', c: 3 }];
+  const items = [
+    { t: 'She loved science.', ans: 'bw', why: 'Billie loved science and dreamed of becoming a scientist.' }, { t: 'They believed that the Earth could talk and share wisdom.', ans: 'fa', why: 'Billie’s family believed it.' },
+    { t: 'They told Billie to go into the Everglades alone.', ans: 'el', why: 'The elders sent her to listen to the Earth.' }, { t: 'She learned how to catch fish and make a fire.', ans: 'bw', why: 'Billie learned from the animals.' },
+    { t: 'They were disappointed.', ans: 'el', why: 'The elders were disappointed.' }, { t: 'They said the wind, the water and the animals had something to teach.', ans: 'fa', why: 'Billie’s family said this.' },
+    { t: 'She packed her canoe.', ans: 'bw', why: 'Billie packed her canoe.' }, { t: 'Older people who are wise and respected.', ans: 'el', why: 'That is what elders means.' }];
+  await g.speedRound({ items, buttons, rounds: 8,
+    ask: T('Who is it?', 'مين ده؟'), intro: T('Speed Round! Who is it: Billie Wind, Billie’s family or the elders? Be quick!', 'جولة السرعة! مين: بيلي ولا عيلتها ولا الكبار؟ بسرعة!'),
+    think: T('Who is it?', 'مين ده؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Go with Billie Wind into the Everglades, meet the animals of the swamp and find out how the Earth talks. Three stages: Warm Up, Missions and a Speed Round.`, `أهلًا يا <b>${g.name()}</b>! روح مع بيلي ويند للإيفرجليدز، واتعرف على حيوانات المستنقع، واعرف الأرض بتتكلم إزاي. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know the story words, the characters and how Billie learned to listen to the Earth. Next, try the questions of this unit.', 'بقيت تعرف كلمات الحكاية وشخصياتها وإزاي بيلي اتعلمت تسمع الأرض. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

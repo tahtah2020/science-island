@@ -383,9 +383,21 @@ window.CHAPTERS = [
     map: { img: 'english/assets/map_eg5u3.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'english/assets/map_eg5u3.svg', quizBg: 'english/assets/bg_eg5u3.svg',
     lessonsAr: ['عجائب الطقس وتحذيراته!', 'الطقس القاسي في مصر القديمة', 'وقت الحكاية: الضفدعان', 'الكتابة: كان يا ما كان في خيالي', 'فكّر وابتكر: كولاج'] },
-  { id: 'eg5u4', subject: 'english', grade: 'g5', n: 4, title: 'My Community', titleAr: 'مجتمعي', icon: '🏘️', tint: '#fdebd5', ready: false, lessons: [], lessonsAr: [] },
-  { id: 'eg5u5', subject: 'english', grade: 'g5', n: 5, title: 'Our World, Our Resources', titleAr: 'عالمنا ومواردنا', icon: '🌍', tint: '#e2f4dc', ready: false, lessons: [], lessonsAr: [] },
-  { id: 'eg5u6', subject: 'english', grade: 'g5', n: 6, title: 'The Talking Earth', titleAr: 'الأرض المتحدثة', icon: '🐊', tint: '#fbe9c8', ready: false, lessons: [], lessonsAr: [] }
+  { id: 'eg5u4', subject: 'english', grade: 'g5', n: 4, title: 'My Community', titleAr: 'مجتمعي', icon: '🏘️', tint: '#fdebd5', ready: true, bookOrder: true, lessons: ['Places in Our Community', 'Egyptian Villages', 'Multiply It with Words!', 'Writing: The New Administrative Capital'], lessonsAr: ['أماكن في مجتمعنا', 'القرى المصرية', 'اضرب بالكلمات!', 'الكتابة: العاصمة الإدارية الجديدة'],     questions: 'english/questions_eg5u4.js', art: 'english/g5_art.js',
+    game: { href: 'english-town.html', name: "Town and Village Tour", nameAr: "جولة المدينة والقرية", icon: '🏘️', hint: 'Tap the places of our community, visit an Egyptian village, sort at / in / on and trigraphs, then race the Speed Round!', hintAr: 'اضغط على أماكن مجتمعنا، وزور قرية مصرية، ورتّب at وin وon والحروف الثلاثية، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg5u4.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg5u4.svg', quizBg: 'english/assets/bg_eg5u4.svg',
+},
+  { id: 'eg5u5', subject: 'english', grade: 'g5', n: 5, title: 'Our World, Our Resources', titleAr: 'عالمنا ومواردنا', icon: '🌍', tint: '#e2f4dc', ready: true, bookOrder: true, lessons: ['The Gifts of Nature', 'Metals and Minerals in Our World', 'Story Time: Just Watch!', 'Writing: Who Am I?', 'Think and Create: A Poster'], lessonsAr: ['هدايا الطبيعة', 'المعادن في عالمنا', 'وقت الحكاية: فقط شاهد!', 'الكتابة: من أنا؟', 'فكّر وابتكر: ملصق'],     questions: 'english/questions_eg5u5.js', art: 'english/g5_art.js',
+    game: { href: 'english-resources.html', name: "Resource Rangers", nameAr: "حراس الموارد", icon: '🌍', hint: 'Find the gifts of nature, sort gold, copper and iron, help the little digger, then race the Speed Round!', hintAr: 'لاقي هدايا الطبيعة، وصنّف الدهب والنحاس والحديد، وساعد الحفّار الصغير، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg5u5.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg5u5.svg', quizBg: 'english/assets/bg_eg5u5.svg',
+},
+  { id: 'eg5u6', subject: 'english', grade: 'g5', n: 6, title: 'The Talking Earth', titleAr: 'الأرض المتحدثة', icon: '🐊', tint: '#fbe9c8', ready: true, bookOrder: true, lessons: ['Story Words and Characters', 'The Story and Its Events'], lessonsAr: ['كلمات القصة وشخصياتها', 'القصة وأحداثها'],     questions: 'english/questions_eg5u6.js', art: 'english/g5_art.js',
+    game: { href: 'english-everglades.html', name: "Everglades Journey", nameAr: "رحلة الإيفرجليدز", icon: '🐊', hint: 'Go with Billie Wind into the Everglades, learn from the animals of the swamp, then race the Speed Round!', hintAr: 'روح مع بيلي ويند للإيفرجليدز، واتعلم من حيوانات المستنقع، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg5u6.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg5u6.svg', quizBg: 'english/assets/bg_eg5u6.svg',
+}
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Resource Rangers · Unit 5 · Our World, Our Resources</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261025p">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Resource Rangers.</noscript>
+<script src="firebase-config.js?v=20261025p"></script>
+<script src="chapters.js?v=20261025p"></script>
+<script src="common.js?v=20261025p"></script>
+<script src="english/g5_art.js?v=20261025p"></script>
+<script src="game_kit.js?v=20261025p"></script>
+<script src="english/e5_game.js?v=20261025p"></script>
+<script>
+(() => {
+'use strict';
+/* Resource Rangers · the game of English Grade 5, Unit 5 · Our World, Our Resources (ministry book "English Primary 5", term 1, pages 77-91). Built on the game kit and english/e5_game.js.
+   Pictures: the owner's illustrations (english/assets/res_*.jpg).
+   Stage 1 (Warm Up): tap the six natural resources (lesson 1, page 78).
+   Stage 2 (Missions): 1 Treasures of Egypt (lesson 1, pages 79-80) · 2 Hidden Treasures: gold, copper, iron (lesson 2, pages 81-82) · 3 comparative adjectives (page 83)
+                       4 Story Time: "Just Watch!" (lesson 3, pages 84-85) · 5 prefixes dis- bi- mis- (page 86) · 6 Who Am I? and the "My Gold" poster (lessons 4-5, pages 87-89).
+   Stage 3 (Speed Round): which natural resource? (lesson 1). Every T('English', 'عربي') has both languages. */
+const K = E5Game({ ch: 'eg5u5', logo: '🌍', title: ['Resource Rangers', 'حراس الموارد'], sub: ['Unit 5 · Our World, Our Resources', 'الوحدة 5 · عالمنا ومواردنا'],
+  bg: 'english/assets/bg_eg5u5.svg', bgc: '#e2f4dc', label: ['Natural resources, minerals, comparatives and the little digger', 'الموارد الطبيعية والمعادن والمقارنة والحفّار الصغير'], setKey: 'resources6', base: '#eef7ea' });
+const { g, T, L, kw, set, spotSet, ask, fillCard, sortCards, P } = K;
+
+/* ---------- Stage 1 · Warm Up (lesson 1: The Gifts of Nature) ---------- */
+async function stage1() {
+  set('set', { key: 'resources6' });
+  g.say(T('Welcome, Resource Ranger! Natural resources are things from nature that help us live. Let’s find six of them.', P('أهلًا يا حارس الموارد! الموارد الطبيعية حاجات من الطبيعة بتساعدنا نعيش. يلا نلاقي ٦ منها.')), 'point');
+  await g.next();
+  await spotSet('resources6', 'sunlight', 'Tap the sunlight: light from the sun, important for life.', 'اضغط على ضوء الشمس.', 'It is bright and yellow.', 'أصفر ومنوّر.', `${kw('Sunlight')} is light from the sun, important for life.`, `${L('sunlight')} = ضوء الشمس.`);
+  await spotSet('resources6', 'freshwater', 'Tap the water.', 'اضغط على المية.', 'It runs over stones.', 'بتجري على الحجارة.', `${kw('Water')}: the Nile gives us water for drinking and farming.`, `${L('water')} = مية.`);
+  await spotSet('resources6', 'soil', 'Tap the soil: the top layer of earth in which plants grow.', 'اضغط على التربة.', 'Look for dark earth with small shoots.', 'دوّر على تراب غامق فيه زرع صغير.', `${kw('Soil')} is the top layer of earth in which plants grow.`, `${L('soil')} = تربة.`);
+  await spotSet('resources6', 'wind', 'Tap the wind: moving air that can be used for energy.', 'اضغط على الرياح.', 'Look for moving leaves.', 'دوّر على ورق بيتحرك.', `${kw('Wind')} is moving air that can be used for energy.`, `${L('wind')} = رياح.`);
+  await spotSet('resources6', 'minerals', 'Tap the minerals: crystals and metals found in the earth.', 'اضغط على المعادن.', 'Look for shiny crystals.', 'دوّر على بلورات لامعة.', `${kw('Minerals')} are crystals and metals, like gold and copper.`, `${L('minerals')} = معادن.`);
+  await spotSet('resources6', 'fossilfuel', 'Last one: tap the fossil fuel, like coal and oil.', 'آخر واحد: اضغط على الوقود الأحفوري.', 'Look for black lumps and a can.', 'دوّر على كتل سودا وجركن.', `${kw('Fossil fuels')} are fuels like coal and oil formed from ancient remains.`, `${L('fossil fuel')} = وقود أحفوري.`);
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: Treasures of Egypt (pages 79-80)
+  set('card', { lines: ['Treasures of Egypt', 'Mr. Hani, Ali and Mona'] });
+  g.say(T('Mission 1: Treasures of Egypt. Mr. Hani and his students talk about the natural resources of Egypt.', 'المهمة ١: كنوز مصر. أستاذ هاني وتلاميذه بيتكلموا عن موارد مصر الطبيعية.'), 'point');
+  await g.next();
+  set('photo', { sub: 'freshwater' });
+  await ask('What does the Nile River provide?', 'نهر النيل بيدّينا إيه؟', ['Water for drinking and farming', 'Oil and gas', 'Gold and iron'], 'Water for drinking and farming', 'It is the most important water resource in Egypt.', 'هو أهم مصدر مية في مصر.', `The Nile provides ${kw('water for drinking and farming')}.`, `${L('water for drinking and farming')}.`);
+  set('photo', { sub: 'fossilfuel' });
+  await ask('Oil and natural gas are used to make…', 'البترول والغاز الطبيعي بيتعمل منهم…', ['fuel and electricity', 'jewelry', 'fabric'], 'fuel and electricity', 'Ali’s uncle works for an oil company.', 'عم علي بيشتغل في شركة بترول.', `Oil and natural gas are used to make ${kw('fuel and electricity')}.`, `${L('fuel and electricity')}.`);
+  set('photo', { sub: 'wheat' });
+  await ask('What helps us grow food along the Nile and in the Delta?', 'إيه اللي بيساعدنا نزرع جنب النيل وفي الدلتا؟', ['The fertile land', 'The deserts', 'The oil'], 'The fertile land', 'Fertile land has rich soil.', 'الأرض الخصبة تربتها غنية.', `The ${kw('fertile land')} along the Nile and in the Delta helps us grow food.`, `${L('fertile land')} = أرض خصبة.`);
+  set('photo', { sub: 'cotton' });
+  await ask('Cotton is a soft, white plant. What is it used to make?', 'القطن نبات أبيض ناعم. بيتعمل منه إيه؟', ['Fabric', 'Electricity', 'Jewelry'], 'Fabric', 'Think of clothes.', 'فكّر في الهدوم.', `Cotton is used to make ${kw('fabric')}.`, `${L('fabric')} = قماش.`);
+  set('photo', { sub: 'gold' });
+  await ask('Where can we find gold in Egypt?', 'نلاقي الدهب فين في مصر؟', ['In Egypt’s deserts', 'In the Nile', 'In the Delta fields'], 'In Egypt’s deserts', 'Mr. Hani: “Egypt’s … contain gold, iron and other minerals.”', 'أستاذ هاني قال إنه في الصحاري.', `${kw('Egypt’s deserts')} contain gold, iron and other minerals.`, `${L('Egypt’s deserts')}.`);
+}
+async function mission2() {                 // lesson 2: Hidden Treasures (pages 81-82)
+  set('photo', { sub: 'minerals', word: 'Hidden Treasures' });
+  g.say(T('Mission 2: Hidden Treasures. Under the earth we find gold, diamond, copper and iron. What is each one used for?', 'المهمة ٢: كنوز مستخبية. تحت الأرض فيه دهب وألماظ ونحاس وحديد. كل واحد بيُستخدم في إيه؟'), 'point');
+  await g.next();
+  const buttons = [{ label: T('Gold', 'Gold'), value: 'g', c: 1 }, { label: T('Copper', 'Copper'), value: 'c', c: 3 }, { label: T('Iron', 'Iron'), value: 'i', c: 2 }];
+  await sortCards(buttons, [['coins and jewelry', 'g', 'Gold is soft, shiny and easy to shape: coins and jewelry.'], ['electrical wires', 'c', 'Copper is used for electrical wires, pipes and tools.'],
+    ['cars and bridges', 'i', 'Iron is super strong: cars, ships, airplanes and bridges.'], ['pipes and tools', 'c', 'Copper: wires, pipes and tools.'], ['ships and airplanes', 'i', 'Iron helps make ships and airplanes.']], 'card',
+    T('Gold, copper or iron?', 'دهب ولا نحاس ولا حديد؟'));
+  set('photo', { sub: 'minerals' });
+  await ask('Minerals take millions of years to form. So they are…', 'المعادن بتاخد ملايين السنين عشان تتكوّن. يبقى هي…', ['non-renewable', 'renewable', 'cheap'], 'non-renewable', 'We can’t make more quickly.', 'مش بنقدر نعمل غيرها بسرعة.', `Minerals are ${kw('non-renewable')}, so we must use them wisely.`, `${L('non-renewable')} = غير متجددة.`);
+  set('card', { lines: ['How can we save', 'non-renewable resources?'] });
+  await ask('How can we save non-renewable resources?', 'إزاي نوفّر الموارد غير المتجددة؟', ['Switch off unused lights, fans and chargers', 'Leave the lights on', 'Dig more and more'], 'Switch off unused lights, fans and chargers', 'Save energy.', 'وفّر الطاقة.', `We can ${kw('switch off unused lights, fans and chargers')} to save energy.`, `${L('switch off unused lights')}.`);
+}
+async function mission3() {                 // lesson 2: comparative adjectives (page 83)
+  set('card', { lines: ['short: cheap → cheaper than', '-y: happy → happier than', 'long: more valuable than', 'good → better · bad → worse'] });
+  g.say(T('Mission 3: comparative adjectives. We use them to compare two people, things or animals.', 'المهمة ٣: صفات المقارنة. بنستخدمها عشان نقارن بين اتنين.'), 'point');
+  await g.next();
+  await fillCard(['Gold is ___ than diamond.', '(cheap)'], ['cheaper', 'more cheap', 'cheapest'], 'cheaper', 'Choose the right form.', 'اختار الصيغة الصح.', 'cheap is a short word.', 'cheap كلمة قصيرة.', `Short adjective + -er: ${kw('cheaper')} than.`, `${L('cheaper')}.`);
+  await fillCard(['Amira is ___ than Mohamed.', '(happy)'], ['happier', 'happyer', 'more happy'], 'happier', 'Choose the right form.', 'اختار الصيغة الصح.', 'Change y to i and add -er.', 'غيّر y لـ i وزوّد er.', `happy → ${kw('happier')}.`, `${L('happier')}.`);
+  await fillCard(['Diamond is ___ valuable', 'than gold.'], ['more', 'most', 'much'], 'more', 'Choose the word.', 'اختار الكلمة.', 'valuable is a long word.', 'valuable كلمة طويلة.', `Long adjective: ${kw('more')} valuable than.`, `${L('more valuable')}.`);
+  await fillCard(['This test is ___ than', 'the last one. (good)'], ['better', 'gooder', 'more good'], 'better', 'Choose the right form.', 'اختار الصيغة الصح.', 'good is irregular.', 'good شاذة.', `good → ${kw('better')} than.`, `${L('better')}.`);
+  await fillCard(['He is ___ at math', 'than his sister. (bad)'], ['worse', 'badder', 'more bad'], 'worse', 'Choose the right form.', 'اختار الصيغة الصح.', 'bad is irregular.', 'bad شاذة.', `bad → ${kw('worse')} than.`, `${L('worse')}.`);
+}
+async function mission4() {                 // lesson 3: Story Time "Just Watch!" (pages 84-85)
+  set('photo', { sub: 'digger', word: 'Just Watch!' });
+  g.say(T('Mission 4: Story Time: “Just Watch!” The little digger tells the story. It was not big, not popular, but always ready to help.', 'المهمة ٤: وقت الحكاية: «بس اتفرّج!». الحفّار الصغير بيحكي. مكانش كبير ولا مشهور، بس دايمًا مستعد يساعد.'), 'point');
+  await g.next();
+  set('photo', { sub: 'ship' });
+  await ask('Why did the big ship come close to shore?', 'ليه المركب الكبيرة قرّبت من الشط؟', ['To load some cargo', 'To meet the digger', 'To fish'], 'To load some cargo', 'Cargo is goods carried by a large ship.', 'البضاعة اللي بتشيلها المركب.', `It came close to shore ${kw('to load some cargo')}.`, `${L('to load some cargo')}.`);
+  set('photo', { sub: 'ship' });
+  await ask('Why did the big ship get stuck?', 'ليه المركب الكبيرة علقت؟', ['It got too close and got stuck in thick, heavy mud', 'A storm broke it', 'It had no cargo'], 'It got too close and got stuck in thick, heavy mud', 'Think about the shore.', 'فكّر في الشط.', `It got too close and got stuck in the ${kw('thick, heavy mud')}.`, `${L('thick, heavy mud')}.`);
+  set('photo', { sub: 'digger' });
+  await ask('Why did the big machines laugh at the little digger?', 'ليه الآلات الكبيرة ضحكت على الحفّار الصغير؟', ['Because it was so small', 'Because it was so big', 'Because the ship was free'], 'Because it was so small', '“You? You’re so …!”', '«انت؟ انت …!»', `They laughed: “You’re ${kw('so small')}!”`, `${L('so small')}.`);
+  set('photo', { sub: 'path' });
+  await ask('What did the little digger do?', 'الحفّار الصغير عمل إيه؟', ['It dug around the ship and cleared the mud', 'It gave up', 'It pulled the ship with a rope'], 'It dug around the ship and cleared the mud', 'Finally, the path was clear.', 'في الآخر الطريق اتفتح.', `It ${kw('dug carefully around the ship and cleared the mud')}. The path was clear!`, `${L('It cleared the mud.')}`);
+  set('card', { lines: ['“Size doesn’t matter.”'] });
+  await ask('What matters, says the little digger?', 'الحفّار الصغير بيقول إيه المهم؟', ['Using your strength to help others', 'Being big and popular', 'Sailing across the ocean'], 'Using your strength to help others', 'Read the last line of the story.', 'اقرا آخر سطر في الحكاية.', `What matters is ${kw('using your strength to help others')}.`, `${L('using your strength to help others')}.`);
+}
+async function mission5() {                 // lesson 3: prefixes (page 86)
+  set('card', { lines: ['dis- = not', 'bi- = two', 'mis- = wrongly'] });
+  g.say(T('Mission 5: prefixes. A prefix is a group of letters added before a word to change its meaning.', 'المهمة ٥: البادئات. حروف بنحطها قبل الكلمة عشان تغيّر معناها.'), 'point');
+  await g.next();
+  const buttons = [{ label: 'not', value: 'dis', c: 0 }, { label: 'two', value: 'bi', c: 2 }, { label: 'wrongly', value: 'mis', c: 3 }];
+  await sortCards(buttons, [['dislike', 'dis', 'dis- means “not”: dislike = not like.'], ['bicycle', 'bi', 'bi- means “two”: a bicycle has two wheels.'], ['misspell', 'mis', 'mis- means “wrongly”: misspell = spell wrongly.'],
+    ['misplace', 'mis', 'misplace = put in the wrong place.']], 'word', T('What does the prefix mean?', 'البادئة معناها إيه؟'));
+  await fillCard(['I ___ my book.', 'Now, I can’t find it.'], ['misplaced', 'disliked', 'misspelled'], 'misplaced', 'Choose the word.', 'اختار الكلمة.', 'I can’t find it.', 'مش لاقيه.', `I ${kw('misplaced')} my book.`, `${L('misplaced')}.`);
+  await fillCard(['She ___ traveling by plane.', 'She is scared of heights.'], ['dislikes', 'misplaces', 'misspells'], 'dislikes', 'Choose the word.', 'اختار الكلمة.', 'She is scared.', 'هي خايفة.', `She ${kw('dislikes')} traveling by plane.`, `${L('dislikes')}.`);
+}
+async function mission6() {                 // lessons 4-5: Who Am I? and the poster (pages 87-89)
+  set('card', { lines: ['Who Am I?'] });
+  g.say(T('Mission 6: Who Am I? In an object-perspective narrative, a non-living thing speaks: “I”, “me”, “my”.', 'المهمة ٦: أنا مين؟ في الكتابة دي حاجة مش حيّة بتتكلم عن نفسها.'), 'point');
+  await g.next();
+  set('card', { lines: ['“I sleep in lakes', 'and dance in the rain.”', 'Who am I?'] });
+  await ask('Who am I?', 'أنا مين؟', ['Water', 'Gold', 'Wind'], 'Water', 'People drink me when they’re thirsty.', 'الناس بتشربني لما تعطش.', `I am ${kw('water')}. I have no shape, but I can shape the world.`, `${L('I am water.')}`);
+  set('card', { lines: ['“I sit in the crowns of kings', 'and the rings of queens.”', 'Who am I?'] });
+  await ask('Who am I?', 'أنا مين؟', ['Gold', 'Water', 'Soil'], 'Gold', 'I sleep deep under the earth.', 'بنام تحت الأرض.', `I am ${kw('gold')}. I am treasured because I am valuable.`, `${L('I am gold.')}`);
+  set('card', { lines: ['Object-perspective', 'narratives'] });
+  await ask('In the ending of an object-perspective narrative, we say…', 'في نهاية الكتابة دي بنقول…', ['why we are important', 'what time it is', 'our phone number'], 'why we are important', 'The last part says what makes you special.', 'آخر جزء بيقول إيه اللي يميّزك.', `Ending: ${kw('why are you important?')}`, `${L('Why are you important?')}`);
+  set('card', { lines: ['Art Time!', 'A poster: “My Gold”'] });
+  await ask('What do you put on the “My Gold” poster?', 'بتحط إيه على ملصق «My Gold»؟', ['The people and things that are valuable to you', 'Gold coins only', 'A recipe'], 'The people and things that are valuable to you', 'Family? Friends? Pets? Teachers?', 'العيلة؟ الصحاب؟ الحيوانات؟ المدرسين؟', `Draw or glue pictures of ${kw('the people and things that are valuable to you')}.`, `${L('the people and things that are valuable to you')}.`);
+}
+async function stage2() {
+  const all = [mission1, mission2, mission3, mission4, mission5, mission6];
+  for (const m of all.slice(K.missionFrom() - 1)) await m();
+}
+
+/* ---------- Stage 3 · Speed Round (lesson 1: which natural resource?) ---------- */
+async function stage3() {
+  set('set', { key: 'resources6' });
+  const buttons = [{ label: 'Sunlight', value: 'su', c: 0 }, { label: 'Fossil fuel', value: 'fo', c: 1 }, { label: 'Soil', value: 'so', c: 2 }, { label: 'Minerals', value: 'mi', c: 3 }, { label: 'Water', value: 'wa', c: 4 }, { label: 'Wind', value: 'wi', c: 0 }];
+  const items = [
+    { t: 'Light from the sun, important for life', ans: 'su', why: 'Sunlight is light from the sun.' }, { t: 'Fuels like coal and oil', ans: 'fo', why: 'Fossil fuels are fuels like coal and oil.' },
+    { t: 'The top layer of earth where plants grow', ans: 'so', why: 'Soil is the top layer of earth in which plants grow.' }, { t: 'Crystals and metals, like gold and copper', ans: 'mi', why: 'Minerals are crystals and metals.' },
+    { t: 'The Nile gives it for drinking and farming', ans: 'wa', why: 'The Nile is the most important water resource in Egypt.' }, { t: 'Moving air used for energy', ans: 'wi', why: 'Wind is moving air that can be used for energy.' },
+    { t: 'It is used to generate electricity: ___ fuel', ans: 'fo', why: 'Fossil fuel is used to generate electricity.' }, { t: 'Gold, iron and copper are found under the earth', ans: 'mi', why: 'They are mineral resources.' }];
+  await g.speedRound({ items, buttons, rounds: 8,
+    ask: T('Which natural resource?', 'أنهي مورد طبيعي؟'), intro: T('Speed Round! I describe a natural resource. Press the right one. Be quick!', 'جولة السرعة! هوصف مورد طبيعي، واضغط على الصح. بسرعة!'),
+    think: T('Which natural resource?', 'أنهي مورد طبيعي؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Find the gifts of nature, discover Egypt’s hidden treasures, compare things, help the little digger and write as water. Three stages: Warm Up, Missions and a Speed Round.`, `أهلًا يا <b>${g.name()}</b>! لاقي هدايا الطبيعة، واكتشف كنوز مصر المستخبية، وقارن بين الحاجات، وساعد الحفّار الصغير. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know natural resources, minerals, comparative adjectives, the little digger and prefixes. Next, try the questions of this unit.', 'بقيت تعرف الموارد الطبيعية والمعادن وصفات المقارنة وحكاية الحفّار والبادئات. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

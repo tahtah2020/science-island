@@ -5,6 +5,14 @@
                                         storyThings (tap) ids pond · well · fly · frog · boat · mudhouse (lessons 2-3)
    Unit 3 pictures are the owner's own illustrations (sheet sent 25 Oct 2026), cropped one by one WITHOUT their captions
    (the sheet's captions had mistakes and would give the answer away): english/assets/wx_*.jpg.
+   Unit 4 "My Community":               places6  (tap) ids restaurant · coffeeshop · bakery · supermarket · club · themepark
+                                        village6 (tap) ids field · cottage · commcenter · barn · mainsquare · cow
+   Unit 5 "Our World, Our Resources":   resources6 (tap) ids sunlight · fossilfuel · soil · minerals · freshwater · wind
+                                        gifts6     (tap) ids cotton · wheat · gold · ship · digger · path
+   Unit 6 "The Talking Earth":          everglades6 (tap) ids alligator · canoe · owl · splash · swamp · turtle
+   Units 4-6 pictures are the owner's illustrations (sheet "unit_illustrations.zip", 25 Oct 2026): english/assets/town_*.jpg, res_*.jpg, eg_*.jpg,
+   cropped 16 px on every side (removes the generator's corner mark; the pictures have no captions) and shrunk to 480 px.
+   The drawings mapShop … mapTurtle are only for the island maps (an <img> SVG cannot load photos).
    Each picture is six round badges (three on top, three below) in a 340 x 250 card.
    q.pic = { plain: true } draws the inner markup only (no frame and no tap rings) for the game scenes.
    Screen-reader names say what is drawn ("a long green animal with sharp teeth"), as the question itself asks for the name.
@@ -88,17 +96,47 @@
     heatwave: () => `<circle cx="-8" cy="-2" r="17" fill="#f2b134" stroke="#c98a14" stroke-width="2.4"/><path d="M-8 -28V-22M-8 22V28M-34 -2H-28M12 -2H18M-26 -20L-22 -16M10 -20L6 -16M-26 16L-22 12M10 16L6 12" stroke="#f2b134" stroke-width="3.4" stroke-linecap="round"/>`
       + `<rect x="24" y="-26" width="12" height="46" rx="6" fill="#fff" stroke="${INK}" stroke-width="2.4"/><circle cx="30" cy="24" r="9" fill="#e2603f" stroke="${INK}" stroke-width="2.4"/><rect x="27.4" y="-8" width="5.2" height="32" rx="2.6" fill="#e2603f"/>`
       + `<path d="M24 -16h-5M24 -6h-5M24 4h-5" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>`
+    ,
+    /* ----- map-only drawings for units 4-6 (the quiz and games use the owner's photos) ----- */
+    mapShop: () => `<rect x="-30" y="-6" width="60" height="38" fill="#fffaf0" stroke="#8a5a28" stroke-width="2.4"/><path d="M-36 -6L-30 -24H30L36 -6Z" fill="#e2603f" stroke="#a8341c" stroke-width="2.4" stroke-linejoin="round"/>`
+      + `<path d="M-18 -24L-20 -6M0 -24V-6M18 -24L20 -6" stroke="#fff" stroke-width="5"/><rect x="-24" y="4" width="20" height="16" fill="#bfe3f4" stroke="#8a5a28" stroke-width="2"/><rect x="6" y="2" width="16" height="30" fill="#b9805a" stroke="#8a5a28" stroke-width="2"/>`,
+    mapCottage: () => `<path d="M-32 0L0 -28L32 0Z" fill="#d9a85c" stroke="#8a5a28" stroke-width="2.4" stroke-linejoin="round"/><rect x="-26" y="0" width="52" height="32" fill="#fbe3b8" stroke="#8a5a28" stroke-width="2.4"/>`
+      + `<rect x="-6" y="12" width="12" height="20" fill="#8a5a28"/><rect x="-21" y="8" width="11" height="10" fill="#bfe3f4" stroke="#8a5a28" stroke-width="1.6"/><rect x="10" y="8" width="11" height="10" fill="#bfe3f4" stroke="#8a5a28" stroke-width="1.6"/>`,
+    mapBarn: () => `<path d="M-30 -4L-20 -24H20L30 -4V32H-30Z" fill="#d9534f" stroke="#8f1d24" stroke-width="2.4" stroke-linejoin="round"/><rect x="-12" y="6" width="24" height="26" fill="#fff" stroke="#8f1d24" stroke-width="2"/>`
+      + `<path d="M-12 6L12 32M12 6L-12 32" stroke="#8f1d24" stroke-width="2"/><rect x="-6" y="-16" width="12" height="9" fill="#fff" stroke="#8f1d24" stroke-width="1.6"/>`,
+    mapSun: () => `<circle r="17" fill="#f2b134" stroke="#c98a14" stroke-width="2.4"/><path d="M0 -32V-24M0 24V32M-32 0H-24M24 0H32M-23 -23L-17 -17M23 -23L17 -17M-23 23L-17 17M23 23L17 17" stroke="#f2b134" stroke-width="4" stroke-linecap="round"/>`,
+    mapGem: () => `<path d="M-26 -8L-14 -24H14L26 -8L0 28Z" fill="#8fd3ee" stroke="#3b88b8" stroke-width="2.4" stroke-linejoin="round"/><path d="M-26 -8H26M-14 -24L-6 -8L0 28L6 -8L14 -24" fill="none" stroke="#3b88b8" stroke-width="1.8" stroke-linejoin="round"/>`,
+    mapWheat: () => `<path d="M0 32V-26M-12 32Q-10 0 -14 -20M12 32Q10 0 14 -20" fill="none" stroke="#c98a14" stroke-width="3" stroke-linecap="round"/>`
+      + [-26, -16, -6, 4].map(y => `<ellipse cx="-5" cy="${y}" rx="5" ry="8" transform="rotate(-30 -5 ${y})" fill="#f2b134" stroke="#c98a14" stroke-width="1.4"/><ellipse cx="5" cy="${y}" rx="5" ry="8" transform="rotate(30 5 ${y})" fill="#f2b134" stroke="#c98a14" stroke-width="1.4"/>`).join(''),
+    mapCanoe: () => `<path d="M-40 4Q0 30 40 4Q20 12 0 12T-40 4Z" fill="#b9805a" stroke="#8a5a28" stroke-width="2.4" stroke-linejoin="round"/><path d="M-42 20q10 -7 21 0t21 0t21 0t21 0" fill="none" stroke="#4f9bd8" stroke-width="3" stroke-linecap="round"/>`
+      + `<path d="M10 -26L-6 16" stroke="#8a5a28" stroke-width="3" stroke-linecap="round"/><ellipse cx="-8" cy="20" rx="5" ry="8" transform="rotate(20 -8 20)" fill="#b9805a"/>`,
+    mapOwl: () => `<ellipse cx="0" cy="4" rx="22" ry="26" fill="#b9805a" stroke="#6b4320" stroke-width="2.4"/><path d="M-20 -14L-14 -28L-6 -18M20 -14L14 -28L6 -18" fill="#b9805a" stroke="#6b4320" stroke-width="2.2" stroke-linejoin="round"/>`
+      + `<circle cx="-9" cy="-6" r="8" fill="#fff" stroke="#6b4320" stroke-width="1.8"/><circle cx="9" cy="-6" r="8" fill="#fff" stroke="#6b4320" stroke-width="1.8"/><circle cx="-9" cy="-6" r="3.4" fill="${INK}"/><circle cx="9" cy="-6" r="3.4" fill="${INK}"/>`
+      + `<path d="M-4 2L0 8L4 2Z" fill="#f2b134"/><path d="M-26 30H26" stroke="#6b4320" stroke-width="4" stroke-linecap="round"/>`,
+    mapTurtle: () => `<ellipse cx="0" cy="6" rx="28" ry="18" fill="#7cb86a" stroke="#3f6b34" stroke-width="2.4"/><path d="M-14 -6L0 4L14 -6M0 4V22M-22 10L0 4L22 10" fill="none" stroke="#3f6b34" stroke-width="2"/>`
+      + `<circle cx="34" cy="6" r="8" fill="#a8d08a" stroke="#3f6b34" stroke-width="2.2"/><circle cx="36" cy="4" r="1.8" fill="${INK}"/><path d="M-18 22l-4 8M18 22l4 8" stroke="#3f6b34" stroke-width="5" stroke-linecap="round"/>`
   };
   const NAMES = {
     crocodile: 'a long green animal with sharp teeth', weeds: 'green round leaves floating on water', insect: 'a small flying animal with four thin wings', fish: 'an orange animal with a tail, swimming', bird: 'a blue animal with a beak and two wings', river: 'a wide band of water with a boat between sandy banks',
     heart: 'a red heart shape', lungs: 'two pink shapes joined to a tube', muscle: 'a bent arm with a round bump', blood: 'a red drop', vessels: 'thin red and blue tubes that branch', fist: 'a closed hand',
     thunderstorm: 'a dark cloud with a yellow zigzag', sandstorm: 'a wall of brown swirling sand', flood: 'a house with water up to its door', drought: 'cracked dry ground and a bare plant', wildfire: 'big orange flames next to trees', heatwave: 'a bright sun next to a hot thermometer',
+    restaurant: 'a two-floor building with a striped roof over tables outside', coffeeshop: 'a small shop with a striped roof, a sun umbrella and chairs outside', bakery: 'a small house with a big window full of brown loaves', supermarket: 'a large shop with glass doors and a shopping cart', club: 'a house next to a green sports field with a goal', themepark: 'a round ride with painted horses',
+    field: 'rows of green plants with a man in a straw hat', cottage: 'a small house with a brown roof and flowers', commcenter: 'a big cream building with a straw roof and blue windows', barn: 'a big red wooden building with large doors', mainsquare: 'a market stall full of fruit and vegetables', cow: 'a black and white animal with horns',
+    sunlight: 'a smiling yellow sun', fossilfuel: 'black lumps next to a grey can', soil: 'a pile of dark brown earth with small green shoots', minerals: 'a heap of shiny coloured crystals', freshwater: 'clear water running over round stones', wind: 'blue swirls moving palm leaves',
+    cotton: 'a green plant with soft white balls', wheat: 'a bundle of golden stalks tied with a ribbon', gold: 'a shiny yellow lump on a grey stone', ship: 'a big red ship carrying many coloured boxes', digger: 'a yellow machine with a long arm and a bucket', path: 'a brown winding way through green grass',
+    alligator: 'a long green animal with bumpy skin, lying on grass', canoe: 'a long narrow wooden boat on water', owl: 'a brown bird with big round eyes on a branch', splash: 'water jumping up in drops', swamp: 'tall trees standing in green, wet water', turtle: 'an animal with a hard round shell',
     pond: 'a small round water with green leaves and a flower', well: 'a round stone hole with a wooden roof and a bucket rope', fly: 'a small dark insect with two clear wings', frog: 'a small green animal sitting on a leaf', boat: 'a wooden boat with a white sail on water', mudhouse: 'a brown house with small windows'
   };
   const TINT = {
     crocodile: '#e1f3e0', weeds: '#e2f1d6', insect: '#e1effb', fish: '#fdeee0', bird: '#e1ebfb', river: '#dff1f7',
     heart: '#fbe3e8', lungs: '#fde6e8', muscle: '#fdeee0', blood: '#fbe0e2', vessels: '#e8e6fb', fist: '#f6ecd9',
     thunderstorm: '#e6eaf3', sandstorm: '#f8ecd0', flood: '#dff1f7', drought: '#f6e8cf', wildfire: '#fbe3d6', heatwave: '#fdf0cf',
+    restaurant: '#e2f4dc', coffeeshop: '#fdf0e0', bakery: '#e1ebfb', supermarket: '#fdf6d4', club: '#fde4cf', themepark: '#ece2fb',
+    field: '#fdf6d4', cottage: '#dff1f7', commcenter: '#ece2fb', barn: '#e2f4dc', mainsquare: '#fde4cf', cow: '#fdf3c8',
+    sunlight: '#fdf0cf', fossilfuel: '#e6e8ec', soil: '#e2f4dc', minerals: '#fbe3e8', freshwater: '#dff1f7', wind: '#d9f4f2',
+    cotton: '#e1f3ec', wheat: '#fdf0cf', gold: '#ece2fb', ship: '#e1effb', digger: '#e1ebfb', path: '#e6f6dc',
+    alligator: '#fdf6d4', canoe: '#d9f4f2', owl: '#e1ebfb', splash: '#e1effb', swamp: '#e2f4dc', turtle: '#e6f6dc',
+    mapShop: '#fde4cf', mapCottage: '#dff1f7', mapBarn: '#e2f4dc', mapSun: '#fdf0cf', mapGem: '#e1effb', mapWheat: '#fdf6d4', mapCanoe: '#d9f4f2', mapOwl: '#e1ebfb', mapTurtle: '#e6f6dc',
     pond: '#e2f4dc', well: '#e8e6fb', fly: '#e1effb', frog: '#e2f4dc', boat: '#fbe3e8', mudhouse: '#efe6fb'
   };
   /* positions of the six badges in the 340 x 250 card: three on top, three below */
@@ -107,13 +145,23 @@
     nileLife: ['crocodile', 'weeds', 'insect', 'fish', 'bird', 'river'],
     bodyParts: ['heart', 'lungs', 'muscle', 'blood', 'vessels', 'fist'],
     weatherSix: ['thunderstorm', 'sandstorm', 'flood', 'drought', 'wildfire', 'heatwave'],
-    storyThings: ['pond', 'well', 'fly', 'frog', 'boat', 'mudhouse']
+    storyThings: ['pond', 'well', 'fly', 'frog', 'boat', 'mudhouse'],
+    places6: ['restaurant', 'coffeeshop', 'bakery', 'supermarket', 'club', 'themepark'],
+    village6: ['field', 'cottage', 'commcenter', 'barn', 'mainsquare', 'cow'],
+    resources6: ['sunlight', 'fossilfuel', 'soil', 'minerals', 'freshwater', 'wind'],
+    gifts6: ['cotton', 'wheat', 'gold', 'ship', 'digger', 'path'],
+    everglades6: ['alligator', 'canoe', 'owl', 'splash', 'swamp', 'turtle']
   };
   const R = 46;
   const PHOTOS = { nileLife: { crocodile: 'nile_croc', weeds: 'nile_weeds', insect: 'nile_insects', river: 'nile_river' },   // the owner's pictures (ids without one stay drawn)
     bodyParts: { heart: 'body_heart', lungs: 'body_lungs', muscle: 'body_muscles', fist: 'body_fist', vessels: 'body_vessels' },
     weatherSix: { thunderstorm: 'wx_thunderstorm', sandstorm: 'wx_sandstorm', flood: 'wx_flood', drought: 'wx_drought', wildfire: 'wx_wildfire', heatwave: 'wx_heatwave' },
     storyThings: { pond: 'wx_pond', well: 'wx_well', fly: 'wx_fly', frog: 'wx_frog', boat: 'wx_boat', mudhouse: 'wx_mudhouse' } };
+  /* units 4-6: every picture is the owner's; the file name is the prefix + the id (freshwater -> res_water) */
+  [['places6', 'town_'], ['village6', 'town_'], ['resources6', 'res_'], ['gifts6', 'res_'], ['everglades6', 'eg_']].forEach(([k, pre]) => {
+    PHOTOS[k] = {}; SETS[k].forEach(id => { PHOTOS[k][id] = pre + (id === 'freshwater' ? 'water' : id); });
+  });
+  const PHOTO = id => { for (const k in PHOTOS) if (PHOTOS[k][id]) return PHOTOS[k][id]; return ''; };   // file of a picture, for the games
   const POS = {};
   Object.keys(SETS).forEach(k => SETS[k].forEach((id, i) => { POS[id] = SLOT[i]; }));
 
@@ -140,7 +188,12 @@
     nileLife: makeSet('nileLife', 'Six round pictures: a crocodile, water weeds, an insect, a fish, a bird and a river'),
     bodyParts: makeSet('bodyParts', 'Six round pictures: a heart, lungs, a muscle, a drop of blood, blood vessels and a fist'),
     weatherSix: makeSet('weatherSix', 'Six round pictures of weather: a thunderstorm, a sandstorm, a flood, a drought, a wildfire and a heat wave'),
-    storyThings: makeSet('storyThings', 'Six round pictures: a pond, a well, a fly, a frog, a boat and a house')
+    storyThings: makeSet('storyThings', 'Six round pictures: a pond, a well, a fly, a frog, a boat and a house'),
+    places6: makeSet('places6', 'Six round pictures of places in a town'),
+    village6: makeSet('village6', 'Six round pictures of a village'),
+    resources6: makeSet('resources6', 'Six round pictures from nature'),
+    gifts6: makeSet('gifts6', 'Six round pictures: a plant, golden stalks, a shiny lump, a ship, a machine and a way through grass'),
+    everglades6: makeSet('everglades6', 'Six round pictures of a wet wild place and its animals')
   });
-  window.E5ART = { D, POS, SETS, TINT, R, NAMES, at, hot, ringEl, INK, f1, esc, FONT };
+  window.E5ART = { D, POS, SETS, TINT, R, NAMES, at, hot, ringEl, INK, f1, esc, FONT, PHOTO };
 })();

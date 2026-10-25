@@ -1,5 +1,5 @@
 /* Owner tool (not part of the game): draws the map and page background of the English units from english/g4_art.js and the shared shapes of science/g4_art.js.
-   Run from the site folder:  node english/tools/make_e_maps.js   ->  english/assets/map_eg4u1.svg, bg_eg4u1.svg, and the same for eg5u1, eg5u2, eg5u3 (grade 5 uses english/g5_art.js and a palette per unit)
+   Run from the site folder:  node english/tools/make_e_maps.js   ->  english/assets/map_eg4u1.svg, bg_eg4u1.svg, and the same for eg5u1 … eg5u6 (grade 5 uses english/g5_art.js and a palette per unit)
    STOPS are the five stops in map pixels (1224 x 1285); keep them in step with map.stops in chapters.js (percent). */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const ROOT = path.join(__dirname, '..', '..');
@@ -86,3 +86,14 @@ build('eg5u2', b5(130, 880, 1.4, 'heart') + b5(1010, 270, 1.4, 'lungs') + b5(200
   `${b5(300, 760, 1.9, 'heart')}${b5(760, 770, 1.7, 'lungs')}${b5(1180, 770, 1.8, 'muscle')}${heartDeco(520, 810, 2)}`, BODY);
 build('eg5u3', b5(130, 880, 1.4, 'thunderstorm') + b5(1010, 270, 1.4, 'sandstorm') + b5(200, 340, 1.4, 'flood') + b5(660, 1150, 1.3, 'drought') + b5(1060, 640, 1.4, 'wildfire') + raindrop(1000, 1040, 1.8) + cactus(140, 620, 1.3),
   `${b5(300, 760, 1.9, 'sandstorm')}${b5(760, 770, 1.7, 'thunderstorm')}${b5(1180, 770, 1.8, 'heatwave')}${raindrop(520, 810, 2)}`, WEATHER);
+
+/* ---------- grade 5, units 4-6 (25 Oct 2026): the quiz and games use the owner's photos; the maps use the code drawings map* of g5_art.js ---------- */
+const TOWN = { blobs: ['#fde4cf', '#e2f4dc', '#fdf0cf', '#ece2fb'], land: [[0, '#fde9d6'], [.5, '#eef3cf'], [1, '#f8e4cf']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#fde4cf', '#fdf6e4', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#f6cfa8'] };
+const RES = { blobs: ['#e2f4dc', '#fdf0cf', '#dff1f7', '#ece2fb'], land: [[0, '#dff3d6'], [.5, '#eef3cf'], [1, '#f6ead0']], sand: ['#f0e4c0', '#f4eed8'], sky: ['#d9f0dc', '#fdf6e0', '#d9efb8'], hill: ['#a9d6a0', '#92c888', '#d9c89a'] };
+const GLADES = { blobs: ['#d6efe2', '#cfe9c9', '#dff1f7', '#e6f2cc'], land: [[0, '#d3ecd9'], [.5, '#dfedc6'], [1, '#e9eccd']], sand: ['#e6e2bb', '#eff0d8'], sky: ['#cfeadf', '#f3f6e2', '#cfe6bd'], hill: ['#96c98e', '#7fb97a', '#a8d4c4'] };
+build('eg5u4', b5(130, 880, 1.4, 'mapShop') + b5(1010, 270, 1.4, 'mapCottage') + b5(200, 340, 1.4, 'mapBarn') + b5(660, 1150, 1.3, 'mapWheat') + b5(1060, 640, 1.4, 'mapShop') + reed(1000, 1040, 1.6) + reed(140, 610, 1.3),
+  `${b5(300, 760, 1.9, 'mapCottage')}${b5(760, 770, 1.7, 'mapShop')}${b5(1180, 770, 1.8, 'mapBarn')}${reed(520, 820, 2)}`, TOWN);
+build('eg5u5', b5(130, 880, 1.4, 'mapSun') + b5(1010, 270, 1.4, 'mapGem') + b5(200, 340, 1.4, 'mapWheat') + b5(660, 1150, 1.3, 'mapGem') + b5(1060, 640, 1.4, 'mapSun') + raindrop(1000, 1040, 1.8) + reed(140, 610, 1.3),
+  `${b5(300, 760, 1.9, 'mapGem')}${b5(760, 770, 1.7, 'mapSun')}${b5(1180, 770, 1.8, 'mapWheat')}${raindrop(520, 810, 2)}`, RES);
+build('eg5u6', b5(130, 880, 1.4, 'crocodile') + b5(1010, 270, 1.4, 'mapOwl') + b5(200, 340, 1.4, 'mapCanoe') + b5(660, 1150, 1.3, 'mapTurtle') + b5(1060, 640, 1.4, 'bird') + reed(1000, 1040, 1.6) + reed(140, 610, 1.3),
+  `${b5(300, 760, 1.9, 'mapCanoe')}${b5(760, 770, 1.7, 'crocodile')}${b5(1180, 770, 1.8, 'mapOwl')}${reed(520, 820, 2)}`, GLADES);

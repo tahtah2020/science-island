@@ -35,6 +35,11 @@ const TAPS = { bloodLoop: ['heart', 'lungs', 'whole'], urinary: ['kidneys', 'urt
   bodyParts: ['heart', 'lungs', 'muscle', 'blood', 'vessels', 'fist'],
   weatherSix: ['thunderstorm', 'sandstorm', 'flood', 'drought', 'wildfire', 'heatwave'],
   storyThings: ['pond', 'well', 'fly', 'frog', 'boat', 'mudhouse'],
+  places6: ['restaurant', 'coffeeshop', 'bakery', 'supermarket', 'club', 'themepark'],
+  village6: ['field', 'cottage', 'commcenter', 'barn', 'mainsquare', 'cow'],
+  resources6: ['sunlight', 'fossilfuel', 'soil', 'minerals', 'freshwater', 'wind'],
+  gifts6: ['cotton', 'wheat', 'gold', 'ship', 'digger', 'path'],
+  everglades6: ['alligator', 'canoe', 'owl', 'splash', 'swamp', 'turtle'],
   /* Grade 4 (g4_art.js) */
   hidePlaces: ['grass', 'stone', 'rock', 'sand'], nileDesert: ['nile', 'desert'], fennec: ['ears', 'feet', 'tail'], desertDay: ['hole', 'sand', 'dune'],
   butterflyStages: ['egg', 'larva', 'pupa', 'adult'], insectBody: ['head', 'thorax', 'abdomen'], insectSide: ['antennae', 'wings', 'legs'], whoIsInsect: ['grasshopper', 'spider', 'pillbug'],

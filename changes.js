@@ -3,6 +3,13 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'English Grade 5: Units 4, 5 and 6',
+    items: [
+      { text: 'Unit 4 My Community: 22 ideas, game Town and Village Tour' },
+      { text: 'Unit 5 Our World, Our Resources: 26 ideas, game Resource Rangers' },
+      { text: 'Unit 6 The Talking Earth: 15 ideas, game Everglades Journey' },
+      { text: 'The owner\'s 30 pictures in the tap pictures and the games', links: [{ label: 'Town and Village Tour', href: 'english-town.html', ch: 'eg5u4' }, { label: 'Resource Rangers', href: 'english-resources.html', ch: 'eg5u5' }, { label: 'Everglades Journey', href: 'english-everglades.html', ch: 'eg5u6' }] }
+    ] },
   { date: '2026-10-25', title: 'الفصل التاسع «دورة الماء» بالعربي',
     items: [
       { text: 'أسئلة الفصل التاسع للمسار العربي بكلمات الكتاب: ٣٠ فكرة' },

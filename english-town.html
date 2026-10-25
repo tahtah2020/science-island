@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Town and Village Tour · Unit 4 · My Community</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261025p">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Town and Village Tour.</noscript>
+<script src="firebase-config.js?v=20261025p"></script>
+<script src="chapters.js?v=20261025p"></script>
+<script src="common.js?v=20261025p"></script>
+<script src="english/g5_art.js?v=20261025p"></script>
+<script src="game_kit.js?v=20261025p"></script>
+<script src="english/e5_game.js?v=20261025p"></script>
+<script>
+(() => {
+'use strict';
+/* Town and Village Tour · the game of English Grade 5, Unit 4 · My Community (ministry book "English Primary 5", term 1, pages 61-76). Built on the game kit and english/e5_game.js.
+   Pictures: the owner's illustrations (english/assets/town_*.jpg).
+   Stage 1 (Warm Up): tap the six places of the community (lesson 1, page 62).
+   Stage 2 (Missions): 1 Tamer and Adel (lesson 1, pages 63-64) · 2 Egyptian villages (lesson 2, pages 65-66) · 3 at / in / on (page 67)
+                       4 Multiply It with Words! (page 68) · 5 trigraphs (page 69) · 6 The New Administrative Capital (lesson 4, pages 70-71).
+   Stage 3 (Speed Round): which place? (lesson 1). Every T('English', 'عربي') has both languages. */
+const K = E5Game({ ch: 'eg5u4', logo: '🏘️', title: ['Town and Village Tour', 'جولة المدينة والقرية'], sub: ['Unit 4 · My Community', 'الوحدة 4 · مجتمعي'],
+  bg: 'english/assets/bg_eg5u4.svg', bgc: '#fdebd5', label: ['Places in town, village life, prepositions of time and trigraphs', 'أماكن المدينة وحياة القرية وحروف الجر الزمنية'], setKey: 'places6', base: '#fdf5ea' });
+const { g, T, L, kw, set, spotSet, ask, fillCard, sortCards, P } = K;
+
+/* ---------- Stage 1 · Warm Up (lesson 1: Places in Our Community) ---------- */
+async function stage1() {
+  set('set', { key: 'places6' });
+  g.say(T('Welcome to the Town and Village Tour! Let’s visit the places in our community.', P('أهلًا في جولة المدينة والقرية! يلا نزور أماكن مجتمعنا.')), 'point');
+  await g.next();
+  await spotSet('places6', 'club', 'Where do we play sports? Tap it.', 'بنلعب رياضة فين؟ اضغط عليه.', 'Look for a sports field.', 'دوّر على ملعب.', `The ${kw('club')} is a place where people play sports.`, `${L('The club is a place where people play sports.')}`);
+  await spotSet('places6', 'bakery', 'Tap the place where bread, cakes and pastries are made.', 'اضغط على المكان اللي بيتعمل فيه العيش والكيك.', 'Look for loaves in the window.', 'دوّر على العيش في الشباك.', `A ${kw('bakery')} is where bread, cakes and pastries are made.`, `${L('bakery')} = مخبز.`);
+  await spotSet('places6', 'supermarket', 'Tap the large store where people buy groceries.', 'اضغط على المحل الكبير اللي بنشتري منه البقالة.', 'Look for a shopping cart.', 'دوّر على عربية التسوق.', `A ${kw('supermarket')} is a large store where people buy groceries.`, `${L('supermarket')} = سوبر ماركت.`);
+  await spotSet('places6', 'themepark', 'Tap the place with rides and games for fun.', 'اضغط على المكان اللي فيه ألعاب وملاهي.', 'Look for a ride.', 'دوّر على لعبة بتلف.', `A ${kw('theme park')} has rides and games for fun.`, `${L('theme park')} = مدينة ملاهي.`);
+  await spotSet('places6', 'coffeeshop', 'Tap the place to relax and drink coffee.', 'اضغط على المكان اللي بنرتاح فيه ونشرب قهوة.', 'Look for a sun umbrella and small tables.', 'دوّر على شمسية وترابيزات صغيرة.', `A ${kw('coffee shop')} is a place to relax and drink coffee.`, `${L('coffee shop')} = كافيه.`);
+  await spotSet('places6', 'restaurant', 'Last one: tap the place where people go to eat food.', 'آخر واحد: اضغط على المكان اللي الناس بتروحه تاكل.', 'It is the only one left.', 'هو الوحيد اللي فاضل.', `A ${kw('restaurant')} is a place where people go to eat food.`, `${L('restaurant')} = مطعم.`);
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: Let's Go Out! (pages 63-64)
+  set('card', { lines: ['Tamer and Adel', 'Let’s Go Out!'] });
+  g.say(T('Mission 1: Let’s Go Out! Tamer and Adel talk about places in their neighborhood.', 'المهمة ١: يلا نخرج! تامر وعادل بيتكلموا عن الأماكن اللي في حيّهم.'), 'point');
+  await g.next();
+  set('photo', { sub: 'club' });
+  await ask('What does Adel do at the club?', 'عادل بيعمل إيه في النادي؟', ['Plays sports and video games with friends', 'Buys fresh bread', 'Picks out groceries'], 'Plays sports and video games with friends', 'He hangs out with his friends there.', 'بيقعد مع صحابه هناك.', `Adel goes to the club to ${kw('play sports, video games, and hang out')} with his friends.`, `${L('Adel plays sports and video games at the club.')}`);
+  set('photo', { sub: 'supermarket' });
+  await ask('Who does Tamer go to the supermarket with?', 'تامر بيروح السوبر ماركت مع مين؟', ['With his family', 'Alone', 'With Adel’s uncle'], 'With his family', 'They have fun picking out groceries together.', 'بيتبسطوا وهما بيختاروا البقالة.', `Tamer usually goes to the supermarket ${kw('with his family')}.`, `${L('with his family')}.`);
+  set('photo', { sub: 'restaurant' });
+  await ask('Where does Tamer usually go for dinner?', 'تامر بيتعشى فين عادةً؟', ['To restaurants', 'To the club', 'To the bakery'], 'To restaurants', 'His family tries different places every weekend.', 'عيلته بتجرب أماكن مختلفة كل ويك إند.', `They often go to ${kw('restaurants')} for dinner.`, `${L('restaurants')}.`);
+  set('photo', { sub: 'coffeeshop' });
+  await ask('What does Adel like to have at the coffee shop?', 'عادل بيحب ياخد إيه في الكافيه؟', ['Coffee and cake', 'Fresh bread', 'Dinner'], 'Coffee and cake', 'He says it’s so relaxing.', 'بيقول إنه مريح جدًا.', `Adel likes going to the coffee shop for ${kw('coffee and cake')}.`, `${L('coffee and cake')}.`);
+  set('photo', { sub: 'bakery' });
+  await ask('When will Tamer and Adel go to the bakery?', 'تامر وعادل هيروحوا المخبز إمتى؟', ['This afternoon', 'Every weekend', 'At night'], 'This afternoon', 'Tamer says: “Let’s go …”', 'تامر قال: Let’s go …', `“Let’s go ${kw('this afternoon')}.”`, `${L('this afternoon')}.`);
+  const buttons = [{ label: T('Food and Drink', 'Food and Drink'), value: 'f', c: 1 }, { label: T('Play', 'Play'), value: 'p', c: 2 }];
+  await sortCards(buttons, [['restaurant', 'f', 'We eat food at a restaurant.', '@restaurant'], ['coffee shop', 'f', 'We drink coffee at a coffee shop.', '@coffeeshop'],
+    ['theme park', 'p', 'We go on rides at a theme park.', '@themepark'], ['club', 'p', 'We play sports at a club.', '@club']], 'word',
+    T('A place for food and drink, or a place for play?', 'مكان للأكل والشرب ولا مكان للعب؟'));
+}
+async function mission2() {                 // lesson 2: Egyptian Villages (pages 65-66)
+  set('set', { key: 'village6' });
+  g.say(T('Mission 2: Life in My Village. A village is a small community: green fields, cozy cottages and friendly people.', 'المهمة ٢: الحياة في قريتي. القرية مجتمع صغير: غيطان خضرا وبيوت دافية وناس طيبين.'), 'point');
+  await g.next();
+  await spotSet('village6', 'field', 'Where do farmers grow food? Tap it.', 'الفلاحين بيزرعوا فين؟ اضغط عليه.', 'Look for rows of green plants.', 'دوّر على صفوف زرع أخضر.', `Farmers grow food in the ${kw('fields')}.`, `${L('field')} = غيط.`);
+  await spotSet('village6', 'barn', 'Where do farmers keep animals like cows, sheep and chickens? Tap it.', 'الفلاحين بيحطوا البهايم فين؟ اضغط عليه.', 'Look for a big wooden building with large doors.', 'دوّر على مبنى خشب كبير بباب واسع.', `Farmers keep animals in the ${kw('barns')}.`, `${L('barn')} = حظيرة.`);
+  await spotSet('village6', 'cottage', 'The family lives in a cozy, small house. Tap it.', 'العيلة عايشة في بيت صغير دافي. اضغط عليه.', 'It is small, with flowers.', 'صغير وجنبه ورد.', `They live in a cozy ${kw('cottage')}.`, `${L('cottage')} = كوخ.`);
+  await spotSet('village6', 'mainsquare', 'People shop at the market in the busiest place. Tap the market.', 'الناس بتشتري من السوق في أزحم مكان. اضغط على السوق.', 'Look for fruit and vegetables.', 'دوّر على الفاكهة والخضار.', `The market is in the ${kw('main square')}, the busiest place.`, `${L('main square')} = الميدان الرئيسي.`);
+  set('photo', { sub: 'mainsquare' });
+  await ask('When do people meet in the main square to shop at the market?', 'الناس بتتقابل في الميدان إمتى عشان تشتري من السوق؟', ['On Saturdays', 'On Thursdays', 'At night'], 'On Saturdays', 'It is a day of the week at the start of the text.', 'يوم في الأسبوع.', `${kw('On Saturdays')}, people meet there to shop at the market.`, `${L('On Saturdays')}.`);
+  set('photo', { sub: 'commcenter' });
+  await ask('What does the writer do at the community center every Thursday?', 'الكاتب بيعمل إيه في المركز المجتمعي كل خميس؟', ['Meets friends and plays games', 'Feeds the animals', 'Shops at the market'], 'Meets friends and plays games', 'The community center is a fun place.', 'المركز مكان ممتع.', `I ${kw('meet my friends and play games')} there every Thursday.`, `${L('I meet my friends and play games there.')}`);
+  set('photo', { sub: 'field' });
+  await ask('What is the village like at night?', 'القرية بتبقى عاملة إزاي بالليل؟', ['Quiet', 'Busy', 'Noisy'], 'Quiet', 'The writer walks near the fields and looks at the stars.', 'الكاتب بيتمشى جنب الغيطان ويبص على النجوم.', `At night, the village is ${kw('quiet')}.`, `${L('quiet')} = هادية.`);
+}
+async function mission3() {                 // lesson 2: prepositions of time (page 67)
+  set('card', { lines: ['at  6 a.m. · lunchtime · night', 'in  the evening · summer · 2020', 'on  Saturdays · June 8th'] });
+  g.say(T('Mission 3: prepositions of time. “at” with clock times and mealtimes, “in” with parts of the day, months, seasons and years, “on” with days and dates.', 'المهمة ٣: حروف الجر الزمنية. at مع الساعة والوجبات، وin مع أجزاء اليوم والشهور والفصول والسنين، وon مع الأيام والتواريخ.'), 'point');
+  await g.next();
+  const buttons = [{ label: 'at', value: 'at', c: 0 }, { label: 'in', value: 'in', c: 2 }, { label: 'on', value: 'on', c: 3 }];
+  await sortCards(buttons, [['___ 3 p.m.', 'at', '“at” with clock times: at 3 p.m.'], ['___ March', 'in', '“in” with months: in March.'], ['___ Friday', 'on', '“on” with days: on Friday.'],
+    ['___ lunchtime', 'at', '“at” with mealtimes: at lunchtime.'], ['___ summer', 'in', '“in” with seasons: in summer.'], ['___ August 14th', 'on', '“on” with dates: on August 14th.'],
+    ['___ 2012', 'in', '“in” with years: in 2012.'], ['___ night', 'at', 'We say “at night”.']], 'card', T('at, in or on?', 'at ولا in ولا on؟'));
+  await fillCard(['I like to relax', '___ the evening.'], ['in', 'on', 'at'], 'in', 'Choose the preposition.', 'اختار حرف الجر.', 'The evening is a part of the day.', 'المسا جزء من اليوم.', `“in” with parts of the day: ${kw('in')} the evening.`, `${L('in the evening')}.`);
+}
+async function mission4() {                 // lesson 3: Multiply It with Words! (page 68)
+  set('card', { lines: ['4 boxes of apples', '32 apples in each box', 'How many in total?'] });
+  g.say(T('Mission 4: Multiply It with Words! A farmer has 4 boxes of apples. Each box has 32 apples.', 'المهمة ٤: اضرب بالكلمات! فلاح عنده ٤ صناديق تفاح، في كل صندوق ٣٢ تفاحة.'), 'point');
+  await g.next();
+  await ask('Which problem do we write?', 'هنكتب أنهي مسألة؟', ['32 x 4', '32 + 4', '32 − 4'], '32 x 4', 'Each box has the same number: we multiply.', 'كل صندوق فيه نفس العدد: بنضرب.', `Problem: ${kw('32 x 4')}.`, `${L('32 x 4')}.`);
+  set('card', { lines: ['32 x 4', 'ones: 2 x 4 = 8', 'tens: 3 x 4 = 12'] });
+  await ask('So, how many apples does the farmer have?', 'يبقى الفلاح عنده كام تفاحة؟', ['128 apples', '36 apples', '96 apples'], '128 apples', '12 tens and 8 ones.', '١٢ عشرة و٨ آحاد.', `32 x 4 = ${kw('128')} apples.`, `${L('128 apples')}.`);
+  set('card', { lines: ['3 baskets', '22 oranges in each basket', 'How many in total?'] });
+  await ask('Now you try. How many oranges does the farmer have?', 'جرّب انت. الفلاح عنده كام برتقانة؟', ['66 oranges', '25 oranges', '62 oranges'], '66 oranges', '22 x 3 = ?', '٢٢ × ٣ = ؟', `22 x 3 = ${kw('66')} oranges.`, `${L('66 oranges')}.`);
+}
+async function mission5() {                 // lesson 3: trigraphs (page 69)
+  set('card', { lines: ['dge → “j”  bridge', 'tch → “ch”  match', 'igh → “i”  right'] });
+  g.say(T('Mission 5: trigraphs. A trigraph is three letters that make one sound. Which trigraph completes each word?', 'المهمة ٥: الحروف الثلاثية. ٣ حروف بيطلّعوا صوت واحد. أنهي ثلاثي يكمّل كل كلمة؟'), 'point');
+  await g.next();
+  const buttons = [{ label: 'dge', value: 'dge', c: 0 }, { label: 'tch', value: 'tch', c: 2 }, { label: 'igh', value: 'igh', c: 3 }];
+  await sortCards(buttons, [['bri___', 'dge', 'bridge: “dge” sounds like “j”.'], ['ma___', 'tch', 'match: “tch” sounds like “ch”.'], ['r___t', 'igh', 'right: “igh” sounds like “i”.'],
+    ['fl___t', 'igh', 'flight has “igh”.'], ['fri___', 'dge', 'fridge has “dge”.'], ['wa___', 'tch', 'watch has “tch”.']], 'word', T('Which trigraph completes the word?', 'أنهي ثلاثي يكمّل الكلمة؟'));
+}
+async function mission6() {                 // lesson 4: The New Administrative Capital (pages 70-71)
+  set('card', { lines: ['Egypt’s New City', 'The New Administrative Capital'] });
+  g.say(T('Mission 6: Egypt’s New City. A girl tells us about the city where she lives, in the first person: “I”, “me”, “my”.', 'المهمة ٦: مدينة مصر الجديدة. بنت بتحكي عن المدينة اللي عايشة فيها بصيغة المتكلم.'), 'point');
+  await g.next();
+  set('card', { lines: ['The New Administrative Capital', 'Where is it?'] });
+  await ask('Where is the New Administrative Capital?', 'العاصمة الإدارية الجديدة فين؟', ['45 km east of Cairo', 'Near Aswan', 'In the Delta'], '45 km east of Cairo', 'It helps reduce crowding in Cairo.', 'بتقلل الزحمة في القاهرة.', `It is ${kw('45 km east of Cairo')}.`, `${L('45 km east of Cairo')}.`);
+  set('card', { lines: ['The city is very smart.', 'Modern technology is used to…'] });
+  await ask('What is modern technology used for there?', 'التكنولوجيا الحديثة بتُستخدم في إيه هناك؟', ['To manage roads, water and energy', 'To feed animals', 'To dig for gold'], 'To manage roads, water and energy', 'Think of a smart city.', 'فكّر في مدينة ذكية.', `Technology is used to ${kw('manage roads, water, energy')} and almost everything.`, `${L('roads, water, energy')}.`);
+  set('card', { lines: ['The Iconic Tower', 'the tallest building in Africa'] });
+  await ask('How tall is the Iconic Tower?', 'البرج الأيقوني طوله قد إيه؟', ['385 meters', '80 meters', '45 meters'], '385 meters', 'It has 80 floors.', 'فيه ٨٠ دور.', `The Iconic Tower is ${kw('385 meters')} high and has 80 floors.`, `${L('385 meters')}.`);
+  await fillCard(['Builders often use', 'strong ___ to build towers.'], ['steel', 'cotton', 'soil'], 'steel', 'Choose the word.', 'اختار الكلمة.', 'The tower is made of strong glass and …', 'البرج معمول من زجاج و…', `The tower is made of strong glass and ${kw('steel')}.`, `${L('steel')} = صلب.`);
+  set('card', { lines: ['Writing a narrative', 'in the first person'] });
+  await ask('Which words do we use in a first-person narrative?', 'بنستخدم أنهي كلمات في قصة بصيغة المتكلم؟', ['I, me, my', 'he, him, his', 'they, them, their'], 'I, me, my', 'The writer tells the story about herself.', 'الكاتب بيحكي عن نفسه.', `First person: ${kw('I, me, my')}.`, `${L('I, me, my')}.`);
+}
+async function stage2() {
+  const all = [mission1, mission2, mission3, mission4, mission5, mission6];
+  for (const m of all.slice(K.missionFrom() - 1)) await m();
+}
+
+/* ---------- Stage 3 · Speed Round (lesson 1: which place?) ---------- */
+async function stage3() {
+  set('set', { key: 'places6' });
+  const buttons = [{ label: 'Restaurant', value: 're', c: 0 }, { label: 'Coffee shop', value: 'co', c: 1 }, { label: 'Bakery', value: 'ba', c: 2 }, { label: 'Supermarket', value: 'su', c: 3 }, { label: 'Club', value: 'cl', c: 4 }, { label: 'Theme park', value: 'th', c: 0 }];
+  const items = [
+    { t: 'We eat dinner here', ans: 're', why: 'A restaurant is a place where people go to eat food.' }, { t: 'We relax and drink coffee here', ans: 'co', why: 'A coffee shop is a place to relax and drink coffee.' },
+    { t: 'We buy bread and cakes here', ans: 'ba', why: 'Bread, cakes and pastries are made at a bakery.' }, { t: 'We buy groceries here', ans: 'su', why: 'A supermarket is a large store where people buy groceries.' },
+    { t: 'We play sports here', ans: 'cl', why: 'A club is a place where people play sports.' }, { t: 'We go on rides here', ans: 'th', why: 'A theme park has rides and games for fun.' },
+    { t: 'I train here every weekend', ans: 'cl', why: 'I train at the club every weekend.' }, { t: 'My mom shops here', ans: 'su', why: 'My mom shops at the supermarket.' }];
+  await g.speedRound({ items, buttons, rounds: 8,
+    ask: T('Which place?', 'أنهي مكان؟'), intro: T('Speed Round! I say what we do. Press the right place. Be quick!', 'جولة السرعة! هقولك بنعمل إيه، واضغط على المكان الصح. بسرعة!'),
+    think: T('Which place?', 'أنهي مكان؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Visit the places of our community and a happy Egyptian village, learn at / in / on, solve a word problem and visit Egypt’s new city. Three stages: Warm Up, Missions and a Speed Round.`, `أهلًا يا <b>${g.name()}</b>! زور أماكن مجتمعنا وقرية مصرية، واتعلم at وin وon، وحل مسألة كلامية، وزور مدينة مصر الجديدة. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know the places of the community, village words, prepositions of time and trigraphs. Next, try the questions of this unit.', 'بقيت تعرف أماكن المجتمع وكلمات القرية وحروف الجر الزمنية والحروف الثلاثية. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
