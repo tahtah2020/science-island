@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-26', title: 'رياضيات الصف الخامس · الوحدة 4 القسمة على أعداد صحيحة (المساران)',
+    items: [
+      { text: 'فتح الوحدة 4: 5 دروس و23 فكرة و100 صياغة بالعربي والإنجليزي (الأفكار Y11-Y55)، بترتيب الكتاب وعلامة الدرس على كل سؤال', links: [{ label: 'الأسئلة', href: 'quiz.html#preview=m5c4.1', ch: 'm5c4' }] },
+      { text: 'لعبة جديدة «مُعبّئو مخبز السوق»: القسمة بالأجزاء في نموذج المساحة، والخوارزمية، وخطأ أيمن، والتحقق بالضرب، ومعنى الباقي، وجولة سرعة لعدد أرقام خارج القسمة', links: [{ label: 'اللعبة', href: 'math-bakery.html', ch: 'm5c4' }] },
+      { text: 'رسوم جديدة: نموذج مساحة المستطيل للقسمة، والقسمة المطوّلة' }
+    ] },
   { date: '2026-10-26', title: 'رياضيات الصف الخامس · الوحدة 3 ضرب الأعداد الصحيحة (المساران)',
     items: [
       { text: 'فتح الوحدة 3: 5 دروس و28 فكرة و141 صياغة بالعربي والإنجليزي (الأفكار T-X)، بترتيب الكتاب وعلامة الدرس على كل سؤال', links: [{ label: 'الأسئلة', href: 'quiz.html#preview=m5c3.1', ch: 'm5c3' }] },

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Market Bakery Packers · Division with Whole Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261026d">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Market Bakery Packers.</noscript>
+<script src="firebase-config.js?v=20261026d"></script>
+<script src="chapters.js?v=20261026d"></script>
+<script src="common.js?v=20261026d"></script>
+<script src="math/m5_art.js?v=20261026d"></script>
+<script src="game_kit.js?v=20261026d"></script>
+<script>
+(() => {
+'use strict';
+/* Market Bakery Packers · the game of Unit 4, Division with Whole Numbers (Math, Grade 5). Built on the shared game kit (game_kit.js).
+   The scene is a market bakery (the unit opener: bread and a market): an awning, baskets of bread, and a panel with the area model of division,
+   a long division, or a sign.
+   The core move is CHUNKING: the child divides with the area model by picking, step by step, the biggest chunk of the quotient that fits
+   (hundreds, then tens, then ones); each right pick fills a cell with "left − divisor × chunk = new left", until what is left is smaller than the divisor.
+   Stage 1 (Warm Up): patterns and mental division with zeros (lessons 1-2, book p81, p83).
+   Stage 2 (Missions): 1 chunk 2,207 ÷ 7 (lesson 1, p81) · 2 chunk 1,625 ÷ 13 and the 2,852 ÷ 24 mistake (lesson 1, p81-82) · 3 estimating quotients, Winner Takes All (lesson 2, p83-84)
+                       · 4 the standard algorithm 1,376 ÷ 43 and Rana's cookies (lesson 3, p85-86) · 5 Ayman's mistake, checking with multiplication, Ziad's buttons (lesson 4, p87-88)
+                       · 6 what the remainder means, the steel problem (lesson 5, p89-90).
+   Stage 3 (Speed Round): how many digits will the quotient have? (estimation).
+   The scene is set again before EVERY question, so the picture always belongs to the question asked, and it never shows the answer.
+   Every T('English', 'عربي') has both languages. Numbers and expressions stay left to right (isolates in SVG text). */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr" style="white-space:nowrap">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const INK = '#1f3d57';
+const D = () => window.CH_DIAGRAMS;
+const fmt = n => Number(n).toLocaleString('en-US');
+const sc = { mode: 'sign', n: '', cap: '' };
+const VW = 420, VH = 280;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+/* Arabic text keeps each number or expression in one left-to-right piece (isolates) */
+const iso = s => String(s).replace(/[\d(][\d,.\s×÷+−=()?]*[\d)?]|\d/g, m => '⁦' + m + '⁩');
+const txt = (x, y, s, fs = 22, fill = INK) => { const ar = /[؀-ۿ]/.test(s); return `<text x="${x}" y="${y}" text-anchor="middle" direction="${ar ? 'rtl' : 'ltr'}" unicode-bidi="embed" font-size="${fs}" font-weight="900" fill="${fill}">${esc(ar ? iso(s) : s)}</text>`; };
+/* the market bakery: a striped awning, the counter, baskets of round bread */
+const loaf = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx="0" cy="0" rx="16" ry="9" fill="#e2a85a"/><ellipse cx="-3" cy="-2" rx="9" ry="4" fill="#f3c98b"/><circle cx="5" cy="-1" r="1.6" fill="#a8692c"/><circle cx="-6" cy="2" r="1.4" fill="#a8692c"/></g>`;
+const basket = x => `<g transform="translate(${x} 206)"><path d="M-30 0H30L24 22H-24Z" fill="#c98b4a" stroke="#8a5a28" stroke-width="3"/>${loaf(-12, -4, .8)}${loaf(10, -6, .8)}${loaf(0, -12, .8)}</g>`;
+let aw = ''; for (let i = 0; i < 14; i++) aw += `<path d="M${i * 30} 0h30v34q-15 12 -30 0Z" fill="${i % 2 ? '#fffaf0' : '#e2603f'}"/>`;
+const BAKERY = `<rect width="${VW}" height="${VH}" fill="#fdf0d8"/><rect y="34" width="${VW}" height="170" fill="#f6dfb4"/>${aw}`
+  + `<rect y="204" width="${VW}" height="76" fill="#b9824a"/><rect y="204" width="${VW}" height="8" fill="#8a5a28"/>${basket(40)}${basket(380)}`;
+function render() {
+  let s = BAKERY;
+  if (sc.mode === 'sign') {
+    s += `<rect x="60" y="58" width="300" height="136" rx="16" fill="#fffaf0" stroke="#a8834f" stroke-width="7"/>` + txt(210, sc.cap ? 128 : 138, sc.n, sc.fs || Math.min(34, Math.round(560 / String(sc.n).length)));
+    if (sc.cap) s += txt(210, 170, sc.cap, Math.min(16, Math.round(520 / String(sc.cap).length)), '#8a5a28');
+  } else if (sc.pic) {
+    s += `<rect x="20" y="${sc.py || 40}" width="380" height="${sc.ph || 200}" rx="16" fill="#fffaf0" stroke="#a8834f" stroke-width="5"/>`
+      + `<g transform="translate(${sc.dx || 40} ${sc.dy || 60}) scale(${sc.k || 1})">${D()[sc.pic.name]({ pic: Object.assign({ plain: true }, sc.pic.pic) })}</g>`;
+    if (sc.cap) s += txt(210, (sc.py || 40) + (sc.ph || 200) - 12, sc.cap, Math.min(16, Math.round(560 / String(sc.cap).length)));
+  }
+  return s;
+}
+const g = G4Game({ ch: 'm5c4', logo: '🥖', title: ['Market Bakery Packers', 'مُعبّئو مخبز السوق'], sub: ['Unit 4 · Division with Whole Numbers', 'الوحدة 4 · القسمة على أعداد صحيحة'],
+  bg: 'math/assets/bg_m5c4.svg', bgc: '#dcebf7', label: ['A market bakery with an area model of division, a long division or a sign for each question', 'مخبز في السوق وعليه نموذج مساحة للقسمة أو قسمة مطوّلة أو لافتة لكل سؤال'], render });
+const sign = (n, cap, fs) => { Object.assign(sc, { mode: 'sign', n, cap: cap || '', fs: fs || 0, pic: null }); g.paint(); };
+const pic = (name, p, o) => { Object.assign(sc, { mode: 'pic', pic: { name, pic: p }, cap: '', dx: 40, dy: 60, k: 1, py: 40, ph: 200 }, o || {}); g.paint(); };
+const model = (div, top, cells, o) => pic('divModel', { div, top: top.slice(), cells: cells.map(c => c && c.slice()), hi: o && o.hi }, Object.assign({ dx: 37, dy: 70, k: 1.02 }, o || {}));
+const ldiv = (p, o) => pic('longDiv', p, Object.assign({ dx: 20, dy: 46 + (4 - (p.steps || []).length) * 13, k: 1.05 }, o || {}));   // fewer steps: lower on the panel
+const W = o => (/[؀-ۿ]/.test(o) || /^<span/.test(o) ? o : L(o));
+const choice = o => g.choice(Object.assign({}, o, { options: o.options.map(W), correct: W(o.correct) }));
+
+/* CHUNKING: divide with the area model. plan = the chunks of the quotient (biggest that fits at each place).
+   For each step the tray offers the right chunk, a chunk one place-unit bigger (does not fit) and one place-unit smaller (fits, but is not the biggest). */
+async function chunk(dividend, div, plan) {
+  const n = s => Number(String(s).replace(/,/g, '')), d = n(div);
+  let left = n(dividend); const top = plan.map(() => ''), cells = plan.map(() => null);
+  for (let i = 0; i < plan.length; i++) {
+    const c = plan[i], unit = 10 ** Math.floor(Math.log10(c)), placeAr = ['الآحاد', 'العشرات', 'المئات', 'الآلاف'][Math.log10(unit)], placeEn = ['ones', 'tens', 'hundreds', 'thousands'][Math.log10(unit)];
+    top[i] = '?'; cells[i] = [fmt(left), '', ''];
+    model(div, top, cells, { hi: i });
+    const smaller = c - unit > 0 ? c - unit : c * 10;
+    const buttons = [c, c + unit, smaller].map(v => ({ label: L(fmt(v)), value: String(v) })).sort(() => Math.random() - 0.5);
+    g.say(T(`${kw(fmt(left))} is left. What is the biggest chunk of ${placeEn} of ${L(div)}s that fits?`, `متبقي ${kw(L(fmt(left)))}. إيه أكبر جزء من ${placeAr} يدخل فيه ${L(div)}؟`), 'think');
+    const nl = left - d * c;
+    await g.pick({ buttons, correct: String(c), points: 10,
+      ok: T(`${L(div + ' × ' + fmt(c) + ' = ' + fmt(d * c))}, and ${L(fmt(left) + ' − ' + fmt(d * c) + ' = ' + fmt(nl))}.`, `${L(div + ' × ' + fmt(c) + ' = ' + fmt(d * c))}، و${L(fmt(left) + ' − ' + fmt(d * c) + ' = ' + fmt(nl))}.`),
+      no: T(`The biggest that fits is ${L(fmt(c))}: ${L(div + ' × ' + fmt(c) + ' = ' + fmt(d * c))}.`, `أكبر جزء يدخل هو ${L(fmt(c))}: ${L(div + ' × ' + fmt(c) + ' = ' + fmt(d * c))}.`),
+      hint: T(`Multiply ${div} by each chunk. Is it more than ${fmt(left)}? Is there a bigger one that still fits?`, `اضرب ${L(div)} في كل جزء. أكبر من ${L(fmt(left))}؟ فيه جزء أكبر لسه يدخل؟`),
+      reveal: () => { top[i] = fmt(c); cells[i] = [fmt(left), fmt(d * c), fmt(nl)]; model(div, top, cells); } });
+    left = nl; top[i] = fmt(c); cells[i] = [fmt(n(dividend) - plan.slice(0, i).reduce((a, b) => a + b, 0) * d), fmt(d * c), fmt(left)];
+  }
+  g.setTray(null);
+  model(div, top, cells);
+  return left;
+}
+
+/* ---------- Stage 1 · Warm Up (lessons 1-2) ---------- */
+async function stage1() {
+  sign('3 × 500 = ?');
+  g.say(T(`Welcome to the market bakery! Today we pack bread with division. Warm up: ${kw(L('3 × 5 = 15'))}, so ${kw(L('3 × 500'))} = ?`, `أهلًا بيك في مخبز السوق! النهارده هنعبّي العيش بالقسمة. نسخّن: ${kw(L('3 × 5 = 15'))}، يبقى ${kw(L('3 × 500'))} = ؟`), 'point');
+  await choice({ options: ['1,500', '150', '15,000'], correct: '1,500', hint: T('500 has two zeros: the product gets two zeros.', L('500') + ' فيها صفرين: الناتج ياخد صفرين.'), ok: T('3 × 500 = 1,500.', `${L('3 × 500 = 1,500')}.`) });
+  sign('5,600 ÷ 70 = ?');
+  g.say(T(`${kw(L('5,600 ÷ 70'))} = ? Cross out one zero from each number.`, `${kw(L('5,600 ÷ 70'))} = ؟ اشطب صفر من كل عدد.`), 'think');
+  await choice({ options: ['80', '8', '800'], correct: '80', hint: T('560 ÷ 7.', L('560 ÷ 7') + '.'), ok: T('5,600 ÷ 70 = 560 ÷ 7 = 80.', `${L('5,600 ÷ 70 = 560 ÷ 7 = 80')}.`) });
+  sign('2,400 ÷ 80 = ?');
+  g.say(T(`${kw(L('2,400 ÷ 80'))} = ?`, `${kw(L('2,400 ÷ 80'))} = ؟`), 'think');
+  await choice({ options: ['30', '300', '3'], correct: '30', hint: T('240 ÷ 8.', L('240 ÷ 8') + '.'), ok: T('2,400 ÷ 80 = 240 ÷ 8 = 30.', `${L('2,400 ÷ 80 = 240 ÷ 8 = 30')}.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: 2,207 ÷ 7 with the area model
+  sign('2,207 ÷ 7', T('2,207 rolls · 7 in each bag', '2,207 رغيف صغير · 7 في كل كيس'));
+  g.say(T(`Mission 1: the bakery made ${kw(L('2,207'))} small rolls and packs ${L('7')} in each bag. Let's divide ${kw(L('2,207 ÷ 7'))} with the area model, taking big chunks first.`, `المهمة ١: المخبز عمل ${kw(L('2,207'))} رغيف صغير وبيحط ${L('7')} في كل كيس. يلّا نقسم ${kw(L('2,207 ÷ 7'))} بنموذج المساحة، ونبدأ بالأجزاء الكبيرة.`), 'point');
+  await g.next();
+  const left = await chunk('2,207', '7', [300, 10, 5]);
+  g.say(T(`The chunks on top are ${L('300 + 10 + 5')}, and ${L(String(left))} is left. What is ${L('2,207 ÷ 7')}?`, `الأجزاء فوق ${L('300 + 10 + 5')}، ومتبقي ${L(String(left))}. ${L('2,207 ÷ 7')} = ؟`), 'think');
+  await choice({ options: [T('315 R 2', '315 والباقي 2'), T('317', '317'), T('2 R 315', '2 والباقي 315')], correct: T('315 R 2', '315 والباقي 2'),
+    hint: T('Add the chunks on top; what is left is the remainder.', 'اجمع الأجزاء اللي فوق؛ واللي متبقي هو الباقي.'), ok: T('315 full bags and 2 rolls left.', `${L('315')} كيس كامل ويتبقى ${L('2')} رغيف.`) });
+}
+async function mission2() {                 // lesson 1: 1,625 ÷ 13, the 2,852 ÷ 24 mistake
+  sign('1,625 ÷ 13', T('1,625 loaves · 13 in each crate', '1,625 رغيف · 13 في كل قفص'));
+  g.say(T(`Mission 2: ${kw(L('1,625'))} loaves go into crates of ${L('13')}. Chunk it!`, `المهمة ٢: ${kw(L('1,625'))} رغيف هيتحطوا في أقفاص كل قفص ${L('13')}. قسّمها بالأجزاء!`), 'point');
+  await g.next();
+  await chunk('1,625', '13', [100, 20, 5]);
+  g.say(T(`${L('100 + 20 + 5')} and nothing left. ${L('1,625 ÷ 13')} = ?`, `${L('100 + 20 + 5')} ومفيش باقي. ${L('1,625 ÷ 13')} = ؟`), 'think');
+  await choice({ options: ['125', '1,250', '25'], correct: '125', hint: T('Add the chunks on top.', 'اجمع الأجزاء اللي فوق.'), ok: T('1,625 ÷ 13 = 125.', `${L('1,625 ÷ 13 = 125')}.`) });
+  model('24', ['10', '5', '100', '3'], [['2,852', '240', '2,612'], ['2,612', '120', '2,492'], ['2,492', '2,400', '92'], ['92', '72', '20']], { cap: T('A student: 2,852 ÷ 24 = 20', 'تلميذ: 2,852 ÷ 24 = 20'), dx: 37, dy: 66 });
+  g.say(T(`A student divided ${kw(L('2,852 ÷ 24'))} and wrote ${L('20')}. What went wrong?`, `تلميذ قسم ${kw(L('2,852 ÷ 24'))} وكتب ${L('20')}. إيه الغلط؟`), 'point');
+  const R = T('20 is the remainder; the quotient is 10 + 5 + 100 + 3', '20 هو الباقي؛ وخارج القسمة 10 + 5 + 100 + 3');
+  await choice({ options: [R, T('24 × 100 is not 2,400', '24 × 100 مش 2,400'), T('He subtracted 120 wrongly', 'غلط في طرح 120')], correct: R,
+    hint: T('Look at where 20 is: at the bottom of the last cell.', 'بص الـ ' + L('20') + ' فين: تحت في آخر خانة.'), ok: T('The quotient is 118, and 20 is left: 118 R 20.', `خارج القسمة ${L('118')} والباقي ${L('20')}.`) });
+}
+async function mission3() {                 // lesson 2: estimating quotients
+  sign('5,814 ÷ 47', T('Estimate with compatible numbers', 'قدّر بأعداد لها قيمة مميزة'));
+  g.say(T(`Mission 3: a big order of ${kw(L('5,814'))} pieces in boxes of ${L('47')}. Estimate first with compatible numbers.`, `المهمة ٣: طلبية كبيرة ${kw(L('5,814'))} قطعة في علب كل علبة ${L('47')}. قدّر الأول بأعداد لها قيمة مميزة.`), 'point');
+  await choice({ options: ['6,000 ÷ 50 = 120', '5,814 ÷ 7 = 830', '600 ÷ 5 = 12'], correct: '6,000 ÷ 50 = 120', hint: T('Round 47 to 50 and 5,814 to a number that divides by 50 easily.', 'قرّب ' + L('47') + ' لـ ' + L('50') + ' و' + L('5,814') + ' لعدد يتقسم على ' + L('50') + ' بسهولة.'), ok: T('About 120 boxes. The exact answer is 123 R 33.', `حوالي ${L('120')} علبة. الإجابة الدقيقة ${L('123')} والباقي ${L('33')}.`) });
+  sign('2,207 ÷ 7 · 8,014 ÷ 46', T('Winner Takes All: which card wins?', 'الفوز بكل البطاقات: أنهي بطاقة تكسب؟'), 26);
+  g.say(T(`Winner Takes All! Two cards: ${L('2,207 ÷ 7')} and ${L('8,014 ÷ 46')}. The greater estimated quotient wins. Which card?`, `لعبة الفوز بكل البطاقات! بطاقتين: ${L('2,207 ÷ 7')} و${L('8,014 ÷ 46')}. خارج القسمة التقديري الأكبر يكسب. أنهي بطاقة؟`), 'think');
+  await choice({ options: ['2,207 ÷ 7', '8,014 ÷ 46'], correct: '2,207 ÷ 7', hint: T('2,100 ÷ 7 and 8,000 ÷ 40.', L('2,100 ÷ 7') + ' و' + L('8,000 ÷ 40') + '.'), ok: T('About 300 beats about 200.', `حوالي ${L('300')} أكبر من حوالي ${L('200')}.`) });
+}
+async function mission4() {                 // lesson 3: the standard algorithm
+  ldiv({ div: '43', num: '1,376' });
+  g.say(T(`Mission 4: Rana's coffee shop uses the standard algorithm: ${kw(L('1,376 ÷ 43'))}. ${L('43')} does not go into ${L('1')} or ${L('13')}. Which part do we divide first?`, `المهمة ٤: مقهى رنا بيستخدم الخوارزمية المعيارية: ${kw(L('1,376 ÷ 43'))}. ${L('43')} ما يدخلش في ${L('1')} ولا ${L('13')}. نبدأ بأنهي جزء؟`), 'point');
+  await choice({ options: ['137', '1,376', '76'], correct: '137', hint: T('Take digits from the left until the number is at least 43.', 'خد أرقام من الشمال لحد ما العدد يبقى ' + L('43') + ' أو أكتر.'), ok: T('137 ÷ 43 = 3, because 43 × 3 = 129.', `${L('137 ÷ 43 = 3')}، لأن ${L('43 × 3 = 129')}.`) });
+  ldiv({ div: '43', num: '1,376', quo: '3?', steps: [['129', 1], ['86', 0]] });
+  g.say(T(`${L('137 − 129 = 8')}; bring down ${L('6')}: ${L('86')}. How many 43s in ${L('86')}?`, `${L('137 − 129 = 8')}؛ ننزل ${L('6')}: ${L('86')}. ${L('86')} فيها كام ${L('43')}؟`), 'think');
+  await choice({ options: ['2', '3', '1'], correct: '2', hint: T('43 × 2 = ?', L('43 × 2') + ' = ؟'), ok: T('43 × 2 = 86, so 1,376 ÷ 43 = 32 with nothing left.', `${L('43 × 2 = 86')}، يبقى ${L('1,376 ÷ 43 = 32')} ومفيش باقي.`) });
+  sign('350 ÷ 12', T("Rana's cookies · 12 in each bag", 'كعكات رنا · 12 في كل كيس'));
+  g.say(T(`Rana got ${L('350')} cookies and packs ${L('12')} in each bag. How many full bags, and how many cookies are left?`, `رنا جالها ${L('350')} كعكة وبتحط ${L('12')} في كل كيس. كام كيس كامل، وكام كعكة تفضل؟`), 'think');
+  await choice({ options: [T('29 bags, 2 left', '29 كيس وتفضل 2'), T('30 bags, 0 left', '30 كيس ومفيش باقي'), T('29 bags, 12 left', '29 كيس وتفضل 12')], correct: T('29 bags, 2 left', '29 كيس وتفضل 2'),
+    hint: T('12 × 29 = 348.', L('12 × 29 = 348') + '.'), ok: T('350 ÷ 12 = 29 R 2: 12 × 29 = 348 and 350 − 348 = 2.', `${L('350 ÷ 12 = 29')} والباقي ${L('2')}: ${L('12 × 29 = 348')} و${L('350 − 348 = 2')}.`) });
+}
+async function mission5() {                 // lesson 4: Ayman, checking with multiplication, Ziad
+  ldiv({ div: '43', num: '8,858', quo: '26', steps: [['86', 2], ['258', 0], ['258', 0], ['0', 0]] });
+  g.say(T(`Mission 5: Ayman says ${kw(L('8,858 ÷ 43 = 26'))}. Check with multiplication: ${L('43 × 26 = 1,118')}, not ${L('8,858')}. What did he forget?`, `المهمة ٥: أيمن بيقول ${kw(L('8,858 ÷ 43 = 26'))}. اتأكد بالضرب: ${L('43 × 26 = 1,118')} مش ${L('8,858')}. نسي إيه؟`), 'point');
+  const R = T('A 0 in the quotient: the answer is 206', 'صفر في خارج القسمة: الإجابة 206');
+  await choice({ options: [R, T('To subtract 258', 'يطرح 258'), T('The remainder 2', 'الباقي 2')], correct: R,
+    hint: T('After 88 − 86 = 2 he brought down 5: is 25 big enough for 43?', 'بعد ' + L('88 − 86 = 2') + ' نزّل ' + L('5') + ': ' + L('25') + ' تكفي ' + L('43') + '؟'), ok: T('25 is smaller than 43, so we write 0. 8,858 ÷ 43 = 206, and 43 × 206 = 8,858.', `${L('25')} أصغر من ${L('43')} فنكتب ${L('0')}. ${L('8,858 ÷ 43 = 206')}، و${L('43 × 206 = 8,858')}.`) });
+  sign('200 ÷ 17 = 11 R 13', T('Keep the Leftovers: check it!', 'احتفظ بالباقي: اتأكد!'), 28);
+  g.say(T(`Keep the Leftovers: ${kw(L('200 ÷ 17 = 11 R 13'))}. Which check proves it?`, `لعبة احتفظ بالباقي: ${kw(L('200 ÷ 17'))} = ${L('11')} والباقي ${L('13')}. أنهي تحقق يثبتها؟`), 'think');
+  await choice({ options: ['17 × 11 + 13 = 200', '17 + 11 + 13 = 200', '200 × 11 = 17'], correct: '17 × 11 + 13 = 200', hint: T('Divisor × quotient + remainder = dividend.', 'المقسوم عليه × خارج القسمة + الباقي = المقسوم.'), ok: T('17 × 11 = 187 and 187 + 13 = 200.', `${L('17 × 11 = 187')} و${L('187 + 13 = 200')}.`) });
+  sign('100 ÷ 16', T("Ziad's buttons · 16 for each shirt", 'أزرار زياد · 16 لكل قميص'));
+  g.say(T(`Ziad has ${L('100')} buttons and needs ${L('16')} for each shirt. He thinks: ${L('6')} shirts and ${L('4')} buttons left. Is he right?`, `زياد معاه ${L('100')} زرار ومحتاج ${L('16')} لكل قميص. بيقول: ${L('6')} قمصان ويفضل ${L('4')} زراير. كلامه صح؟`), 'think');
+  await choice({ options: [T('Yes', 'أيوه'), T('No', 'لأ')], correct: T('Yes', 'أيوه'), hint: T('16 × 6 + 4 = ?', L('16 × 6 + 4') + ' = ؟'), ok: T('16 × 6 = 96 and 96 + 4 = 100: Ziad is right.', `${L('16 × 6 = 96')} و${L('96 + 4 = 100')}: زياد صح.`) });
+}
+async function mission6() {                 // lesson 5: remainders in stories, multistep
+  sign('140 ÷ 12 = 11 R 8', T('Baklava · 12 pieces on each tray', 'بقلاوة · 12 قطعة في كل صينية'), 28);
+  g.say(T(`Mission 6: the baker made ${L('140')} pieces of baklava, ${L('12')} on each tray. ${L('140 ÷ 12 = 11 R 8')}. How many trays does he need for ALL the baklava?`, `المهمة ٦: الخباز عمل ${L('140')} قطعة بقلاوة، ${L('12')} في كل صينية. ${L('140 ÷ 12')} = ${L('11')} والباقي ${L('8')}. محتاج كام صينية لكل البقلاوة؟`), 'point');
+  await choice({ options: ['12', '11', '8'], correct: '12', hint: T('Where do the 8 pieces left go?', 'الـ ' + L('8') + ' قطع اللي فاضلين هيروحوا فين؟'), ok: T('11 full trays and one more for the 8 pieces: 12 trays.', `${L('11')} صينية مليانة وواحدة كمان للـ ${L('8')} قطع: ${L('12')} صينية.`) });
+  sign('12 − 2 = 10 · 10 ÷ 4', T('Balah el sham for 4 children', 'بلح الشام لـ 4 أطفال'), 28);
+  g.say(T(`Mom baked ${L('12')} balah el sham, ${L('2')} fell on the floor, and ${L('4')} children share the rest equally. How many does each child get?`, `ماما خبزت ${L('12')} قطعة بلح الشام، وقعت ${L('2')} على الأرض، و${L('4')} أطفال قسموا الباقي بالتساوي. كل طفل ياخد كام؟`), 'think');
+  await choice({ options: ['2', '3', '2.5'], correct: '2', hint: T('10 ÷ 4 = 2 R 2: the 2 left can not be shared equally as whole pieces.', `${L('10 ÷ 4')} = ${L('2')} والباقي ${L('2')}.`), ok: T('Each child gets 2, and 2 pieces are left.', `كل طفل ياخد ${L('2')}، ويفضل ${L('2')}.`) });
+  sign(T('15 t of steel', '15 طن صلب'), T('5 t for 100,000 LE · 3 t for 70,000 LE', '5 أطنان بـ 100,000 جنيه · 3 أطنان بـ 70,000 جنيه'));
+  g.say(T(`An architect needs ${L('15')} t of steel. Mighty Steel: ${L('5')} t for ${L('100,000')} LE. Silver Strong Steel: ${L('3')} t for ${L('70,000')} LE. How much does Mighty Steel save?`, `مهندس محتاج ${L('15')} طن صلب. شركة الصلب القوي: ${L('5')} أطنان بـ ${L('100,000')} جنيه. شركة الصلب الفضي: ${L('3')} أطنان بـ ${L('70,000')} جنيه. الصلب القوي يوفّر كام؟`), 'think');
+  await choice({ options: [T('50,000 LE', '50,000 جنيه'), T('30,000 LE', '30,000 جنيه'), T('300,000 LE', '300,000 جنيه')], correct: T('50,000 LE', '50,000 جنيه'),
+    hint: T('15 ÷ 5 = 3 groups, 15 ÷ 3 = 5 groups.', `${L('15 ÷ 5 = 3')} مجموعات، ${L('15 ÷ 3 = 5')} مجموعات.`), ok: T('3 × 100,000 = 300,000 and 5 × 70,000 = 350,000: it saves 50,000 LE.', `${L('3 × 100,000 = 300,000')} و${L('5 × 70,000 = 350,000')}: يوفّر ${L('50,000')} جنيه.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
+
+/* ---------- Stage 3 · Speed Round: how many digits will the quotient have? ---------- */
+const BT = [{ label: T('1 digit', 'رقم واحد'), value: '1', c: 0 }, { label: T('2 digits', 'رقمان'), value: '2', c: 1 }, { label: T('3 digits', '3 أرقام'), value: '3', c: 2 }];
+const QS = [['192 ÷ 32', '6'], ['543 ÷ 65', '8'], ['140 ÷ 20', '7'], ['756 ÷ 22', '34'], ['1,376 ÷ 43', '32'], ['350 ÷ 12', '29'], ['5,600 ÷ 70', '80'], ['200 ÷ 17', '11'],
+  ['8,014 ÷ 46', '174'], ['9,234 ÷ 81', '114'], ['1,625 ÷ 13', '125'], ['2,852 ÷ 24', '118'], ['3,600 ÷ 9', '400'], ['8,858 ÷ 43', '206']];
+async function stage3() {
+  sign('?');
+  await g.speedRound({ items: QS.map(([e, q]) => ({ t: L(e), ans: String(String(q).length), e,
+      why: T(`The quotient is ${q}.`, `خارج القسمة ${L(q)}.`) })),
+    rounds: 8, ms: 15000, buttons: BT, show: it => sign(it.e),
+    ask: T('How many digits in the quotient?', 'خارج القسمة كام رقم؟'), intro: T('Speed Round! A division appears on the sign. Estimate: how many digits will the quotient have?', 'جولة السرعة! هتظهر قسمة على اللافتة. قدّر: خارج القسمة هيبقى كام رقم؟'),
+    think: T('1, 2 or 3 digits?', 'رقم ولا رقمين ولا ٣؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Help the market bakery pack its bread: divide with big chunks, use the standard algorithm, and check with multiplication. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! ساعد مخبز السوق يعبّي العيش: اقسم بالأجزاء الكبيرة واستخدم الخوارزمية واتأكد بالضرب. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can divide with the area model and the standard algorithm, estimate quotients, check with multiplication and use the remainder. Next, try the questions of this unit.', 'بقيت تقسم بنموذج المساحة والخوارزمية وتقدّر خارج القسمة وتتأكد بالضرب وتفهم الباقي. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

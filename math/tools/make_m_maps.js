@@ -158,3 +158,28 @@ ${fort(1280, 700, 1.6)}${boat(420, 760, 1.3)}${lampPost(160, 840, 1.4)}${lampPos
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_m5c3.svg', b);
 })();
+
+/* ---------- Grade 5 · Unit 4 · Market Bakery Packers: a market island with striped stalls, bread baskets, crates and an area-model board ---------- */
+(function () {
+  seed = 41;
+  const D = ctx.window.CH_DIAGRAMS;
+  const stall = (x, y, k, c) => { let a = ''; for (let i = 0; i < 6; i++) a += `<path d="M${-90 + i * 30} -90h30v26q-15 10 -30 0Z" fill="${i % 2 ? '#fffaf0' : c}"/>`;
+    return `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-80 -64V0M80 -64V0" stroke="#8a5a28" stroke-width="7"/>${a}<rect x="-90" y="-20" width="180" height="26" rx="4" fill="#c98b4a" stroke="#8a5a28" stroke-width="4"/></g>`; };
+  const loaves = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-40 0H40L32 26H-32Z" fill="#c98b4a" stroke="#8a5a28" stroke-width="4"/><ellipse cx="-16" cy="-4" rx="18" ry="10" fill="#e2a85a"/><ellipse cx="14" cy="-6" rx="18" ry="10" fill="#e2a85a"/><ellipse cx="0" cy="-16" rx="18" ry="10" fill="#f0bf78"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#f6dfb0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#f3d6b8" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#e8e0f0" opacity=".5"/>`;
+  for (let i = 0; i < 22; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#f7e2b8'], [.5, '#f1dcc0'], [1, '#f4dcae']], ['#f3e6b8', '#f6efd2'], inside);
+  s += stall(260, 420, 1.1, '#e2603f') + stall(930, 330, 1, '#4ea5d9') + stall(980, 980, 1, '#79c69a');
+  s += loaves(250, 470, 1.1) + loaves(930, 370, 1) + loaves(560, 1150, 1) + loaves(200, 900, 1.2);
+  s += board(600, 640, 290, 150, '<g transform="translate(-140 -58) scale(.82)">' + D.divModel({ pic: { plain: true, div: '7', top: ['300', '10', '5'], cells: [['2,207', '2,100', '107'], ['107', '70', '37'], ['37', '35', '2']] } }) + '</g>');
+  s += crate(400, 1150, 1, '÷') + crate(458, 1162, .9, '12') + crate(512, 1154, .8, 'R');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_m5c4.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fdf0d8"/><stop offset="1" stop-color="#f1d6b0"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#e8c88a"/>${stall(260, 820, 2.2, '#e2603f')}${stall(1320, 820, 2, '#4ea5d9')}${loaves(800, 900, 2)}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_m5c4.svg', b);
+})();

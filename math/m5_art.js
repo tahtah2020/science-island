@@ -14,7 +14,9 @@
      Unit 3: areaModel   (picture only)                       q.pic = { top: ['200','30','4'], left: ['20','7'], cells: [[…],[…]], hi: [r, c], fill }  ('' empty, '?' unknown)
              unitGrid    (picture only)                       q.pic = { rows: 8, parts: [5, 4] }  (the distributive property)
              longMult    (picture only)                       q.pic = { a: '76', b: '24', parts: ['304', '1,520'], total: '1,824', carry: '1' }  ('?' = an empty box)
-   Every Unit 2 and Unit 3 picture honours q.pic.plain (inner markup only, for the game scene).
+     Unit 4: divModel    (picture only)                       q.pic = { div: '31', top: ['100','10','6'], cells: [['3,622','3,100','522'], …], hi: c }  (each cell: what is left, − product, new remainder)
+             longDiv     (picture only)                       q.pic = { div: '43', num: '8,858', quo: '26', steps: [['86', 1], ['258', 0], …], r: 'R 2' }
+   Every Unit 2, 3 and 4 picture honours q.pic.plain (inner markup only, for the game scene).
    The numbers on every picture stay left to right, also for an Arabic player (as in the school book).
    The names read by screen readers describe what is drawn, never the answer. */
 (function () {
@@ -293,6 +295,59 @@
     return s + close2(q);
   }
 
+  /* ================= Unit 4 ================= */
+  /* the area model of division (book p81-82): the divisor at the side, a chunk of the quotient on top of each cell,
+     and in each cell "what is left − divisor × chunk = new remainder". q.pic = { div: '31', top: ['100','10','6'], cells: [['3,622','3,100','522'], …] }
+     a value '?' is the unknown, '' is empty; a cell can be left out (null) to draw an empty box */
+  function divModel(q) {
+    const p = (q && q.pic) || { div: '31', top: ['100', '10', '6'], cells: [['3,622', '3,100', '522'], ['522', '310', '212'], ['212', '186', '26']] };
+    const n = p.top.length, x0 = 44, w = 340 - x0 - 10, cw = w / n, y0 = 30, h = 82, H = y0 + h + 14;
+    const fs = s => (String(s).length > 5 ? 12.5 : 14.5);
+    let s = open2(q, H, T('An area model of division: chunks of the quotient on top, the divisor at the side', 'نموذج مساحة المستطيل للقسمة: أجزاء خارج القسمة في الأعلى والمقسوم عليه في الجانب'));
+    s += num(x0 - 20, y0 + h / 2 + 6, p.div || '?', { fs: 16, fill: p.div === '?' ? C3.q : C3.headD });
+    p.top.forEach((t, c) => {
+      const x = x0 + c * cw, cell = (p.cells || [])[c];
+      s += num(x + cw / 2, y0 - 9, t, { fs: 15, fill: t === '?' ? C3.q : C3.headD });
+      s += `<rect x="${f1(x)}" y="${y0}" width="${f1(cw)}" height="${h}" fill="${p.hi === c ? C3.hi : '#fff'}" stroke="${p.hi === c ? C3.hiD : C3.line}" stroke-width="${p.hi === c ? 3.5 : 2}"/>`;
+      if (!cell) return;
+      const [a, b, r] = cell, cx = x + cw / 2 + 6;
+      const col = z => (z === '?' ? C3.q : COL.ink);
+      if (a) s += num(cx, y0 + 24, a, { fs: fs(a), fill: col(a) });
+      if (b) s += num(cx - 4, y0 + 46, '− ' + b, { fs: fs(b), fill: col(b) }) + `<path d="M${f1(x + 10)} ${y0 + 53}H${f1(x + cw - 8)}" stroke="${COL.ink}" stroke-width="1.6"/>`;
+      if (r) s += num(cx, y0 + 70, r, { fs: fs(r), fill: col(r) });
+    });
+    return s + close2(q);
+  }
+  /* long division written the school way (book p85-89): q.pic = { div: '43', num: '8,858', quo: '26', steps: [['86', 1], ['258', 0], ['258', 0], ['0', 0]] }
+     each step = [text, how many digits of the dividend are to its right]; steps at even places are subtracted (a − sign and a line under them).
+     A '?' in quo or a step is drawn as an empty box. Commas of the dividend take no column. */
+  function longDiv(q) {
+    const p = (q && q.pic) || { div: '43', num: '1,376' }, digits = String(p.num).replace(/,/g, ''), st = 15, steps = p.steps || [];
+    const xr = 250, H = 64 + steps.length * 24 + 8, yN = 52;
+    let s = open2(q, H, T('A long division written in columns', 'عملية قسمة مطوّلة مكتوبة رأسيًا'));
+    const colX = i => xr - (digits.length - 1 - i) * st;          // x of the i-th digit of the dividend
+    const put = (str, xRight, y, col) => {                         // right-aligned digits, '?' = box
+      const ch = String(str).replace(/,/g, '').split(''); let x = xRight;
+      for (let i = ch.length - 1; i >= 0; i--) {
+        if (ch[i] === '?') s += `<rect x="${f1(x - 8)}" y="${y - 16}" width="16" height="20" rx="3" fill="#fff" stroke="${C3.q}" stroke-width="2" stroke-dasharray="4 3"/>`;
+        else s += num(x, y, ch[i], { fs: 18, fill: col || COL.ink, fw: 800 });
+        x -= st;
+      }
+    };
+    put(digits, xr, yN);
+    const x0 = colX(0) - 12;
+    s += `<path d="M${f1(x0)} ${yN + 8}Q${f1(x0 + 8)} ${yN - 6} ${f1(x0)} ${yN - 22}H${xr + 12}" fill="none" stroke="${COL.ink}" stroke-width="2.4"/>`;
+    s += num(x0 - 10, yN, String(p.div), { fs: 18, fw: 800, anchor: 'end' });
+    if (p.quo != null) put(p.quo, xr, yN - 30, '#2e7d5b');
+    steps.forEach(([t, r], i) => {
+      const y = yN + 26 + i * 24, xR = xr - r * st;
+      put(t, xR, y);
+      if (i % 2 === 0) { const len = String(t).replace(/,/g, '').length; s += num(xR - len * st - 2, y, '−', { fs: 18, fw: 800 }) + `<path d="M${f1(xR - len * st - 6)} ${y + 6}H${f1(xR + 9)}" stroke="${COL.ink}" stroke-width="1.8"/>`; }
+    });
+    if (p.r) s += lab(xr + 30, yN - 34, p.r, { fs: 12, fw: 900, fill: C3.q });
+    return s + close2(q);
+  }
+
   window.M5ART = { COL, T, f1, esc, at, num, lab, hot, ringRect, svgOpen, grid100, slices, PLACES, digitsOf, chart, chartHots, line, isPrime };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeChart, numLine, gridShade, gridModel, barModel, factorTree, multVenn, skipLine, areaModel, unitGrid, longMult });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeChart, numLine, gridShade, gridModel, barModel, factorTree, multVenn, skipLine, areaModel, unitGrid, longMult, divModel, longDiv });
 })();
