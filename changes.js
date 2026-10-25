@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'الفصل التاسع «دورة الماء» للصف الخامس',
+    items: [
+      { text: 'أسئلة الفصل التاسع بالإنجليزية: ٤ دروس و٣٠ فكرة' },
+      { text: 'لعبة «رحلة قطرة الماء» بصور المالك', links: [{ label: 'رحلة قطرة الماء', href: 'waterlab.html', ch: 'ch9' }] }
+    ] },
   { date: '2026-10-25', title: 'Scientific term questions are now multiple choice',
     items: [
       { text: 'Every «write the scientific term» question shows the right term and 3 wrong ones to choose from (all subjects, both languages)', links: [{ label: 'Chapter Quest', href: 'map.html', ch: 'ch1' }] }

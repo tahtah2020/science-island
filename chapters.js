@@ -93,8 +93,13 @@ window.CHAPTERS = [
     cover: 'science/assets/map_ch8.svg', quizBg: 'science/assets/bg_ch8.svg',
     lessons: ['Clouds and Weather', 'Clouds Movement', 'Weather Forecast'], lessonsAr: ['السحب والطقس', 'حركة السحب', 'التنبؤ بالطقس'] },
 
-  { id: 'ch9', n: 9, title: 'Water Cycle', titleAr: 'دورة الماء', icon: '💧', tint: '#d8eefb', ready: false,
-    lessons: ['Water Evaporation', 'Water in the Air', 'Where Does Water Go?'] },
+  { id: 'ch9', n: 9, title: 'Water Cycle', titleAr: 'دورة الماء', icon: '💧', tint: '#d8eefb', ready: true,
+    questions: 'science/questions_ch9.js', art: 'science/ch9_art.js', bookOrder: true,
+    game: { href: 'waterlab.html', name: 'Water Journey', nameAr: 'رحلة قطرة الماء', icon: '💧', hint: 'Follow a water drop from the sea to the sky and back again!', hintAr: 'تابع قطرة الماء من البحر للسماء وترجع تاني!' },
+    map: { img: 'science/assets/map_ch9.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_ch9.svg', quizBg: 'science/assets/bg_ch9.svg',
+    lessons: ['Water Evaporation', 'Water in the Air', 'Where Does Water Go?', 'How to Do Science'],
+    lessonsAr: ['تبخر الماء', 'الماء في الهواء', 'إلى أين يذهب الماء؟', 'كيف نمارس العلوم'] },
 
   /* ---------- Grade 4 (school book 2026/2027, 8 chapters in the first term) ---------- */
   { id: 'g4c1', grade: 'g4', n: 1, title: 'Nature in Our Surroundings', titleAr: 'الطبيعة من حولنا', icon: '🦊', tint: '#f6e7c4', ready: true,

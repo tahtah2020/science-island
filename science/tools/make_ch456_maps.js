@@ -82,6 +82,12 @@ const compass8 = () => `<circle r="50" fill="#fdf3d6" stroke="#f2b134" stroke-wi
 const tower8 = () => `<ellipse cx="0" cy="6" rx="44" ry="10" fill="#000" opacity=".1"/><path d="M-30 0L-22 -90H22L30 0Z" fill="#cdb98a" stroke="#8a7347" stroke-width="4"/><path d="M-30 -92H30V-128H-30Z" fill="#9fc4d6" stroke="#5f8aa0" stroke-width="4"/><path d="M-38 -128L0 -160L38 -128Z" fill="#b98b57" stroke="#8a6334" stroke-width="4"/><path d="M-8 -30a8 8 0 0 1 16 0V0H-8Z" fill="#8a6334"/>`;
 const s8 = () => at(230, 1150, 1.8, cloud8('#fff', '#9fb9d4')) + at(1000, 960, 1.7, cloud8('#7f95b0', '#4a5f7a') + drops8()) + at(250, 650, 1.6, compass8()) + at(1010, 560, 1.7, tower8()) + at(560, 430, 1.4, cloud8('#fff', '#9fb9d4')) + at(1100, 300, 1.2, sun8()) + at(720, 1160, 1.3, cloud8('#e8f0f8', '#9fb9d4'))
   + tree(118, 950, 1.05, GREEN) + tree(170, 470, 1, GREEN2) + tree(900, 260, .95, GREEN) + tree(760, 1185, .8, GREEN);
+/* Chapter 9 (Water Cycle): a pond with rising vapor, rain clouds, big water drops, a sailboat, the sun */
+const drop9 = (c = '#7fc3ea', e = '#3d8fc9') => `<path d="M0 -40q-30 46 0 62q30 -16 0 -62z" fill="${c}" stroke="${e}" stroke-width="4"/><ellipse cx="-8" cy="4" rx="5" ry="9" fill="#fff" opacity=".6"/>`;
+const pond9 = () => `<ellipse cx="0" cy="0" rx="90" ry="34" fill="#7fc3ea" stroke="#3d8fc9" stroke-width="4"/><path d="M-50 -4q12 -6 24 0M10 6q12 -6 24 0" stroke="#d6eef9" stroke-width="4" fill="none" stroke-linecap="round"/><g stroke="#9ccbe6" stroke-width="5" fill="none" stroke-linecap="round"><path d="M-30 -30q-10 -14 0 -28t0 -28"/><path d="M0 -36q-10 -14 0 -28t0 -28"/><path d="M30 -30q-10 -14 0 -28t0 -28"/></g>`;
+const sail9 = () => `<path d="M-50 10H50L36 28H-36Z" fill="#b48a62" stroke="#7a5a3a" stroke-width="3"/><path d="M0 8V-80L44 4Z" fill="#fff" stroke="#9fb9d4" stroke-width="3"/>`;
+const s9 = () => at(230, 1140, 1.6, pond9()) + at(1000, 960, 1.7, cloud8('#7f95b0', '#4a5f7a') + drops8()) + at(260, 660, 1.4, drop9()) + at(1020, 570, 1.5, sail9()) + at(560, 430, 1.4, cloud8('#fff', '#9fb9d4')) + at(1100, 300, 1.2, sun8()) + at(740, 1170, 1.1, drop9('#a9daf3'))
+  + tree(118, 950, 1.05, GREEN) + tree(170, 470, 1, GREEN2) + tree(900, 260, .95, GREEN) + tree(780, 1060, .8, GREEN2);
 const dropBg = k => at(k.x, k.y, .8, `<path d="M0 -8q-12 20 0 28q12 -8 0 -28z" fill="#9fd0ee" stroke="#5aa0cc" stroke-width="3"/>`);
 
 /* ---------- page background: a soft landscape under a light veil ---------- */
@@ -107,3 +113,5 @@ write('map_ch7.svg', island(s7, ['#f6e3a8', '#f8ecc4', '#fcf4dc']));
 write('bg_ch7.svg', bg(['#fde8bf', '#fff6e3'], '#f3e3b2', '#e9d394', '#cfa96a', eggBg, 'eggs'));
 write('map_ch8.svg', island(s8, ['#c9e3f5', '#dcebf8', '#eef5fc']));
 write('bg_ch8.svg', bg(['#bfdcf3', '#eef5fc'], '#d4e6d0', '#c2dcb8', '#9fb590', dropBg, 'rain'));
+write('map_ch9.svg', island(s9, ['#bfe6f2', '#d6eff8', '#ecf7fc']));
+write('bg_ch9.svg', bg(['#b8e0f4', '#ecf7fc'], '#cfe8d8', '#b9dcc6', '#93b6a0', dropBg, 'water'));

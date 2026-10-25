@@ -14,6 +14,7 @@ const TAPS = { bloodLoop: ['heart', 'lungs', 'whole'], urinary: ['kidneys', 'urt
   lifeStages: ['infancy', 'childhood', 'youth', 'adulthood', 'oldage'], healthyHabits: ['diet', 'sleep', 'exercise'],
   /* Grade 5 chapter 7 (ch7_art.js, the owner's pictures) */
   ch8Sky: ['c8sun', 'c8clouds', 'c8rain', 'c8snow'], ch8Refs: ['c8tower', 'c8palm', 'c8boat', 'c8compass'], ch8Tools: ['c8sat', 'c8radar'], ch8Dust: ['c8sand', 'c8clouds'], ch8Grid: [],
+  ch9Two: ['c9puddle', 'c9icejar'], ch9Lab: ['c9beaker', 'c9icejar'], ch9Tools: ['c9micro', 'c9sprout'], ch9Four: ['c9laundry', 'c9glass', 'c9mtrain', 'c9river'], ch9Cycle: ['w9sea', 'w9cloud', 'w9rain', 'w9river'], ch9CycleFig: [], ch9Photo: [],
   ch7Kittens: ['c7cat', 'c7kitten'], ch7Six: ['c7dog', 'c7camel', 'c7gazelle', 'c7fox', 'c7chicken', 'c7fish'], ch7Hatch: ['c7fish', 'c7eggs'], ch7Reserves: ['c7coral', 'c7gazelle'],
   /* Grade 6 (g6_art.js, g6_body.js) */
   breathBags: ['milky', 'clear'], airways: ['nose', 'windpipe', 'lungs'], gasExchange: ['toBlood', 'toAir'],

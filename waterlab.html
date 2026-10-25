@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Water Journey · Water Cycle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261025n">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Water Journey.</noscript>
+<script src="firebase-config.js?v=20261025n"></script>
+<script src="chapters.js?v=20261025n"></script>
+<script src="common.js?v=20261025n"></script>
+<script src="science/ch9_art.js?v=20261025n"></script>
+<script src="game_kit.js?v=20261025n"></script>
+<script>
+(() => {
+'use strict';
+/* Water Journey · the game of Chapter 9 "Water Cycle" (Grade 5). Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up): the puddle after the rain (book page 93)
+   Stage 2 (Missions): 1) evaporation (pages 92-93); 2) condensation (pages 94-97, the desert plant from the Column page 102); 3) the water cycle, following a drop (pages 98-101); 4) how to do science (pages 104-107)
+   Stage 3 (Speed Round): evaporation or condensation? (pages 93, 95, 102)
+   Pictures: the owner's pictures (science/assets/ch9_*.jpg) through window.CH9ART; the water cycle is drawn in code.
+   The scene is set before EVERY question and never shows the answer in words.
+   English book only so far; every T('English', 'عربي') has both languages but the Arabic is a first draft and the chapter opens only in English. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const A = window.CH9ART;
+const VW = 420, VH = 280, OX = 40, OY = 15;
+const sc = { mode: 'photo', one: 'c9puddle', ids: [], hi: null, drop: null };
+const ground = `<rect width="${VW}" height="${VH}" fill="#eaf5fb"/><rect y="238" width="${VW}" height="42" fill="#d6ecdc"/><path d="M0 252H${VW}" stroke="#b6d9c2" stroke-width="3" stroke-dasharray="10 12"/>`;
+const circ = (cx, cy, r) => `<circle class="ring" cx="${cx}" cy="${cy}" r="${r}"/>`;
+/* the drop that travels around the cycle: a small blue drop with a face */
+const DROP = { sea: [96, 196], sky: [150, 96], cloud: [236, 70], rain: [302, 136], river: [250, 210] };
+const dropMark = (x, y) => `<g transform="translate(${x} ${y})"><path d="M0 -22q-18 26 0 34q18 -8 0 -34z" fill="#4aa8e0" stroke="#1f3d57" stroke-width="2.6"/><circle cx="-5" cy="2" r="2.2" fill="#1f3d57"/><circle cx="5" cy="2" r="2.2" fill="#1f3d57"/><path d="M-4 7q4 3 8 0" stroke="#1f3d57" stroke-width="2" fill="none" stroke-linecap="round"/></g>`;
+const slots = n => n === 2 ? [[120, 125], [300, 125]] : [[62, 125], [162, 125], [262, 125], [362, 125]];
+const rad = n => n === 2 ? 78 : 46;
+const render = () => ({
+  photo: () => ground + (sc.one ? A.card(sc.one, 120, 30, 180, 180) : ''),
+  row: () => ground + sc.ids.map((id, i) => A.photo(id, slots(sc.ids.length)[i][0], slots(sc.ids.length)[i][1], rad(sc.ids.length))).join('')
+    + (sc.hi != null ? `<circle cx="${slots(sc.ids.length)[sc.hi][0]}" cy="125" r="${rad(sc.ids.length) + 8}" fill="none" stroke="#2e9e6b" stroke-width="5"/>` : ''),
+  cycle: () => `<rect width="${VW}" height="${VH}" fill="#e3f2fb"/>` + A.cycle(OX, OY, 1, { vapor: sc.vapor !== false, arrows: sc.arrows !== false, rain: sc.rain !== false })
+    + (sc.hi ? (([cx, cy, r]) => `<circle cx="${cx + OX}" cy="${cy + OY}" r="${r + 6}" fill="none" stroke="#2e9e6b" stroke-width="5"/>`)(A.PARTS[sc.hi]) : '')
+    + (sc.drop ? dropMark(DROP[sc.drop][0], DROP[sc.drop][1]) : '')
+})[sc.mode]();
+
+const g = G4Game({ ch: 'ch9', logo: '💧', title: ['Water Journey', 'رحلة قطرة الماء'], sub: ['Chapter 9 · Water Cycle', 'الفصل ٩ · دورة الماء'],
+  bg: 'science/assets/bg_ch9.svg', bgc: '#d8eefb', label: ['Pictures of water, the sun and the sky', 'صور للماء والشمس والسماء'], render });
+const kw = g.kw;
+const set = o => { Object.assign(sc, { hi: null, drop: null, vapor: true, arrows: true, rain: true }, o); g.paint(); };
+const rowSpots = ids => ids.map((id, i) => ({ id, name: A.nameOf(id), ring: circ(slots(ids.length)[i][0], 125, rad(ids.length) + 4) }));
+const cycleSpots = ids => ids.map(id => { const [cx, cy, r] = A.PARTS[id]; return { id, name: A.nameOf(id), ring: circ(cx + OX, cy + OY, r) }; });
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set({ mode: 'photo', one: 'c9puddle' });
+  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('evaporation · water vapor · condensation · water cycle', 'التبخر · بخار الماء · التكثف · دورة الماء')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
+  g.say(T('I’m a little water drop, and I love to travel! Today you will follow my journey.', 'أنا قطرة ماء صغيرة وبحب السفر! النهارده هتتابع رحلتي.'), 'wave');
+  await g.next(T('Let’s go ▸', 'يلّا بينا ◂'));
+  g.veil(null);
+  set({ mode: 'photo', one: 'c9puddle' });
+  g.say(T('After the rain, the sun comes out over this puddle. What happens to the puddle after a while?', 'بعد المطر الشمس طلعت على البركة دي. إيه اللي بيحصل للبركة بعد شوية؟'), 'think');
+  const dry = T('It dries up', 'بتنشف');
+  await g.choice({ options: [dry, T('It gets bigger', 'بتكبر'), T('It turns into ice', 'بتتحول لثلج')], correct: dry,
+    hint: T('Think of the floor after the rain on a sunny day.', 'افتكر الأرض بعد المطر في يوم مشمس.'),
+    ok: T('The puddle dries up. But the water does not just disappear… let’s find out where it goes!', 'البركة بتنشف. بس الماء مش بيختفي كده وخلاص… يلّا نعرف بيروح فين!') });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Water evaporation', 'تبخر الماء'));
+  set({ mode: 'photo', one: 'c9laundry' });
+  g.say(T('This shirt was soaking wet a moment ago, and now it is dry! Where did the water go?', 'القميص ده كان مبلول خالص من شوية ودلوقتي ناشف! الماء راح فين؟'), 'think');
+  const air = T('It changed into water vapor and went into the air', 'اتحول لبخار ماء وراح في الهواء');
+  await g.choice({ options: [air, T('It disappeared forever', 'اختفى للأبد'), T('It went into the clothes peg', 'دخل في المشبك')], correct: air,
+    hint: T('Water changes its state.', 'الماء بيغيّر حالته.'),
+    ok: T('The water in the laundry doesn’t just disappear; it changes its state and is released into the air.', 'الماء في الغسيل لا يختفي، بل يغيّر حالته وينطلق في الهواء.') });
+  set({ mode: 'photo', one: 'c9puddle' });
+  g.say(T('What do we call the process of water changing into water vapor from its surface?', 'إيه اسم عملية تحوّل الماء لبخار ماء من سطحه؟'), 'think');
+  const ev = T('Evaporation', 'التبخر');
+  await g.choice({ options: [ev, T('Condensation', 'التكثف'), T('Freezing', 'التجمد')], correct: ev,
+    hint: T('The water goes up into the air as vapor.', 'الماء بيطلع في الهواء على شكل بخار.'),
+    ok: T(`The process of water changing into invisible water vapor from its surface is called ${kw('evaporation')}.`, `تحوّل الماء إلى بخار ماء غير مرئي من سطحه يسمى ${kw('التبخر')}.`) });
+  set({ mode: 'photo', one: 'c9puddle' });
+  g.say(T('Can we see the water vapor that goes into the air?', 'نقدر نشوف بخار الماء اللي بيطلع في الهواء؟'), 'think');
+  const inv = T('No, water vapor is invisible', 'لا، بخار الماء غير مرئي');
+  await g.choice({ options: [inv, T('Yes, it is white and easy to see', 'أيوه، لونه أبيض وسهل نشوفه')], correct: inv,
+    hint: T('The water seems to “disappear”.', 'الماء بيبان كأنه «اختفى».'),
+    ok: T(`Water vapor is ${kw('invisible')}.`, `بخار الماء ${kw('غير مرئي')}.`) });
+  set({ mode: 'photo', one: 'c9laundry' });
+  g.say(T('On which day does the laundry dry quickly?', 'في أنهي يوم الغسيل بينشف بسرعة؟'), 'think');
+  const hot = T('A hot, sunny, windy day', 'يوم حار ومشمس وفيه رياح');
+  await g.choice({ options: [hot, T('A cold, heavily cloudy day', 'يوم بارد وغائم جدًّا'), T('A rainy day', 'يوم ممطر')], correct: hot,
+    hint: T('Heat, sun and wind help water evaporate.', 'الحرارة والشمس والرياح بيساعدوا الماء يتبخر.'),
+    ok: T(`Evaporation happens faster when ${kw('the temperature is high')}, when it is ${kw('sunny')}, and when there is ${kw('wind')}.`, `يحدث التبخر أسرع عندما تكون ${kw('درجة الحرارة مرتفعة')}، وعندما يكون الجو ${kw('مشمسًا')}، وعندما توجد ${kw('رياح')}.`) });
+  set({ mode: 'photo', one: 'c9beaker' });
+  g.say(T('Experiment! We put the same amount of water into two beakers and cover only one with plastic wrap and a rubber band. What do we compare after 2-3 days?', 'تجربة! حطينا نفس كمية الماء في كأسين وغطّينا واحد بس بغلاف بلاستيكي ورباط مطاطي. بنقارن إيه بعد يومين أو ٣؟'), 'think');
+  const amt = T('The amount of water', 'كمية الماء');
+  await g.choice({ options: [amt, T('The color of the beakers', 'لون الكأسين'), T('The rubber bands', 'الأربطة المطاطية')], correct: amt,
+    hint: T('Has some water evaporated?', 'هل جزء من الماء اتبخر؟'),
+    ok: T(`We compare ${kw('the amount of water')} after 2-3 days. Only one thing is different: the lid.`, `نقارن ${kw('كمية الماء')} بعد يومين أو ثلاثة. حاجة واحدة بس مختلفة: الغطاء.`) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Water in the air', 'الماء في الهواء'));
+  set({ mode: 'photo', one: 'c9glass' });
+  g.say(T('The outside of this cold glass is wet! Did the water inside pass through the glass?', 'الكوب البارد ده من بره مبلول! هو الماء اللي جوه عدّى من الزجاج؟'), 'think');
+  const vap = T('No, the water vapor in the air was cooled', 'لا، بخار الماء في الهواء برد');
+  await g.choice({ options: [vap, T('Yes, it leaked through the glass', 'أيوه، رشح من الزجاج')], correct: vap,
+    hint: T('The air has invisible water vapor in it.', 'الهواء فيه بخار ماء غير مرئي.'),
+    ok: T('The air contains invisible water vapor, and when it is cooled, it turns into water. The drops come from the air around the glass.', 'يحتوي الهواء على بخار ماء غير مرئي، وعندما يبرد يتحول إلى ماء. القطرات جاية من الهواء حوالين الكوب.') });
+  set({ mode: 'photo', one: 'c9icejar' });
+  g.say(T('What do we call water vapor in the air cooling and changing into liquid water?', 'إيه اسم تحوّل بخار الماء في الهواء لما يبرد إلى ماء سائل؟'), 'think');
+  const cd = T('Condensation', 'التكثف');
+  await g.choice({ options: [cd, T('Evaporation', 'التبخر'), T('Melting', 'الانصهار')], correct: cd,
+    hint: T('It is the opposite journey of evaporation.', 'هي الرحلة العكسية للتبخر.'),
+    ok: T(`The process of invisible water vapor in the air cooling and changing into liquid water is called ${kw('condensation')}.`, `تحوّل بخار الماء غير المرئي في الهواء عندما يبرد إلى ماء سائل يسمى ${kw('التكثف')}.`) });
+  set({ mode: 'photo', one: 'c9icejar' });
+  g.say(T('Water vapor in the air appears as water drops when the temperature…', 'بخار الماء في الهواء بيظهر على شكل قطرات لما درجة الحرارة…'), 'think');
+  const falls = T('falls', 'تنخفض');
+  await g.choice({ options: [falls, T('rises', 'ترتفع'), T('stays the same', 'تفضل زي ما هي')], correct: falls,
+    hint: T('The ice makes the beaker cold.', 'الثلج بيخلي الكأس بارد.'),
+    ok: T(`The invisible water vapor appears as water drops when the temperature ${kw('falls')}.`, `يظهر بخار الماء غير المرئي على شكل قطرات عندما ${kw('تنخفض')} درجة الحرارة.`) });
+  set({ mode: 'row', ids: ['c9puddle', 'c9icejar'] });
+  g.say(T('Tap the picture where water vapor in the air is changing into water drops.', P('اضغط على الصورة اللي فيها بخار الماء في الهواء بيتحول لقطرات.', 'اضغطي على الصورة اللي فيها بخار الماء في الهواء بيتحول لقطرات.')), 'think');
+  await g.spot(rowSpots(['c9puddle', 'c9icejar']), 'c9icejar', {
+    hint: T('Look for something cold.', 'دوّر على حاجة باردة.'),
+    ok: T('The ice cools the air around the jar, and drops form on its surface: condensation.', 'الثلج بيبرّد الهواء حوالين البرطمان فتتكون قطرات على سطحه: تكثف.'), reveal: () => { sc.hi = 1; g.paint(); } });
+  set({ mode: 'photo', one: 'c9dew' });
+  g.say(T('In the desert, the nights get very cold. In the morning, tiny water drops are on this plant. Where did they come from?', 'في الصحراء الليل بيبقى برد جدًّا. الصبح لقينا قطرات ماء صغيرة على النبات ده. جت منين؟'), 'think');
+  const dew = T('Water vapor in the cold air condensed on the plant', 'بخار الماء في الهواء البارد تكثّف على النبات');
+  await g.choice({ options: [dew, T('The plant poured water out of its leaves', 'النبات طلّع ماء من أوراقه'), T('The hot sand melted', 'الرمل السخن داب')], correct: dew,
+    hint: T('Cold air, water vapor… what happens?', 'هواء بارد وبخار ماء… إيه اللي بيحصل؟'),
+    ok: T(`The water vapor in the cooled air turns into tiny water drops on plants: ${kw('condensation')}. It is a very important source of drinking water for the little living things in the desert.`, `بخار الماء في الهواء البارد يتحول إلى قطرات صغيرة على النباتات: ${kw('تكثف')}. وهي مصدر مهم جدًّا لماء الشرب للكائنات الصغيرة في الصحراء.`) });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Where does water go?', 'إلى أين يذهب الماء؟'));
+  set({ mode: 'cycle', drop: 'sea', vapor: false, arrows: false });
+  g.say(T('Here I am in the sea! The sun is warming the water. What happens to me?', 'أنا هنا في البحر! الشمس بتدفّي الماء. هيحصل لي إيه؟'), 'think');
+  const up = T('I evaporate from the surface and go up as invisible water vapor', 'أتبخر من السطح وأطلع لفوق بخار ماء غير مرئي');
+  await g.choice({ options: [up, T('I sink to the bottom of the sea', 'أنزل لقاع البحر'), T('I go up as hard ice', 'أطلع لفوق ثلج صلب')], correct: up,
+    hint: T('Heat from the sun is needed for evaporation.', 'حرارة الشمس لازمة للتبخر.'),
+    ok: T(`Water in the sea and rivers is warmed by the sun, evaporates from the ${kw('surface')}, and goes up into the sky.`, `يسخن الماء في البحار والأنهار بالشمس فيتبخر من ${kw('السطح')} ويصعد إلى السماء.`), reveal: () => { sc.drop = 'sky'; sc.vapor = true; g.paint(); } });
+  set({ mode: 'cycle', drop: 'sky', arrows: false });
+  g.say(T('High in the sky, it is cold. Tap the place where water vapor is cooled and becomes clouds.', P('فوق في السماء الجو بارد. اضغط على المكان اللي بخار الماء بيبرد فيه ويبقى سحب.', 'فوق في السماء الجو بارد. اضغطي على المكان اللي بخار الماء بيبرد فيه ويبقى سحب.')), 'think');
+  await g.spot(cycleSpots(['w9sea', 'w9cloud', 'w9river']), 'w9cloud', {
+    hint: T('Look up, high in the sky.', 'بُص لفوق في السماء.'),
+    ok: T('The water vapor is cooled high in the sky to become clouds.', 'يبرد بخار الماء عاليًا في السماء فيصبح سحبًا.'), reveal: () => { sc.hi = 'w9cloud'; sc.drop = 'cloud'; g.paint(); } });
+  set({ mode: 'cycle', drop: 'cloud', arrows: false, rain: false });
+  g.say(T('Now I’m in a cloud over the mountain. How do I get down to the ground?', 'دلوقتي أنا في سحابة فوق الجبل. هنزل للأرض إزاي؟'), 'think');
+  const rain = T('I fall as rain', 'أنزل مطر');
+  await g.choice({ options: [rain, T('I stay in the cloud forever', 'أفضل في السحابة على طول'), T('I turn into sand', 'أتحول لرمل')], correct: rain,
+    hint: T('Look at the mountain.', 'بُص على الجبل.'),
+    ok: T(`The clouds eventually fall to the ground as ${kw('rain')}.`, `في النهاية تسقط السحب على الأرض ${kw('مطرًا')}.`), reveal: () => { sc.drop = 'rain'; sc.rain = true; g.paint(); } });
+  set({ mode: 'cycle', drop: 'rain', arrows: false });
+  g.say(T('I fell on the ground. Tap the way I go back to the sea.', P('نزلت على الأرض. اضغط على الطريق اللي هرجع منه للبحر.', 'نزلت على الأرض. اضغطي على الطريق اللي هرجع منه للبحر.')), 'think');
+  await g.spot(cycleSpots(['w9sea', 'w9cloud', 'w9river']), 'w9river', {
+    hint: T('Water flows down from the mountain.', 'الماء بينزل من الجبل.'),
+    ok: T('The water that falls on the ground becomes a river and returns to the sea.', 'الماء الذي يسقط على الأرض يصبح نهرًا ويعود إلى البحر.'), reveal: () => { sc.hi = 'w9river'; sc.drop = 'river'; g.paint(); } });
+  set({ mode: 'cycle' });
+  g.say(T('Sea → Sky → Land → Sea. What do we call this journey of water?', 'بحر ← سماء ← يابسة ← بحر. إيه اسم رحلة الماء دي؟'), 'think');
+  const cyc = T('The water cycle', 'دورة الماء');
+  await g.choice({ options: [cyc, T('Water evaporation only', 'تبخر الماء فقط'), T('The water level', 'مستوى الماء')], correct: cyc,
+    hint: T('It goes around and around.', 'بتلف وترجع تاني.'),
+    ok: T(`The journey of water going around “Sea → Sky → Land → Sea” is called the ${kw('water cycle')}. Water is always traveling while changing its state!`, `رحلة الماء «بحر ← سماء ← يابسة ← بحر» تسمى ${kw('دورة الماء')}. الماء دايمًا مسافر وهو بيغيّر حالته!`) });
+}
+async function mission4() {
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('How to do science', 'كيف نمارس العلوم'));
+  set({ mode: 'photo', one: 'c9beaker' });
+  g.say(T('In the lid experiment, both beakers had the same amount of water. Only one had a lid. Which condition did we test?', 'في تجربة الغطاء الكأسين فيهم نفس كمية الماء، وواحد بس عليه غطاء. اختبرنا أنهي شرط؟'), 'think');
+  const lid = T('The lid', 'الغطاء');
+  await g.choice({ options: [lid, T('The amount of water', 'كمية الماء'), T('Nothing', 'ولا حاجة')], correct: lid,
+    hint: T('What is different between the two beakers?', 'إيه المختلف بين الكأسين؟'),
+    ok: T(`A ${kw('fair test')}: change only the condition you want to test and keep all other conditions the same.`, `${kw('الاختبار العادل')}: غيّر الشرط اللي عايز تختبره بس، وثبّت باقي الشروط.`) });
+  set({ mode: 'photo', one: 'c9micro' });
+  g.say(T('Before using the microscope, which magnification do we set the objective lens to?', 'قبل ما نستخدم الميكروسكوب، بنضبط العدسة الشيئية على أنهي قوة تكبير؟'), 'think');
+  const low = T('The lowest', 'الأقل');
+  await g.choice({ options: [low, T('The highest', 'الأعلى')], correct: low,
+    hint: T('Start small.', 'ابدأ بالصغير.'),
+    ok: T(`Set the objective lens to ${kw('the lowest')} magnification, in a flat, bright place away from direct sunlight.`, `اضبط العدسة الشيئية على ${kw('أقل')} قوة تكبير، في مكان مستوٍ ومضيء بعيدًا عن ضوء الشمس المباشر.`) });
+  set({ mode: 'photo', one: 'c9sprout' });
+  g.say(T('We ask: “Does a seed need water to sprout?” That is the Question step. What comes next?', 'سألنا: «هل البذرة محتاجة ماء علشان تنبت؟» دي خطوة السؤال. إيه اللي بعدها؟'), 'think');
+  const pred = T('Prediction: make a guess', 'التوقع: نخمّن الإجابة');
+  await g.choice({ options: [pred, T('Conclusion', 'الاستنتاج'), T('Data (Results)', 'البيانات (النتائج)')], correct: pred,
+    hint: T('Before the experiment, we guess.', 'قبل التجربة بنخمّن.'),
+    ok: T(`The 6 steps of inquiry: Question → ${kw('Prediction')} → Plan → Experiment & Observation → Data → Conclusion.`, `خطوات البحث الست: السؤال ← ${kw('التوقع')} ← الخطة ← التجربة والملاحظة ← البيانات ← الاستنتاج.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); }
+
+/* ---------- Stage 3 · Speed Round: evaporation or condensation? ---------- */
+const item = (t, ans, id) => ({ t, ans, id, box: '0 0 140 90', pic: A.photo(id, 70, 45, 40) });
+const SPEED = [
+  item(T('A puddle dries up in the sun', 'بركة ماء تنشف في الشمس'), 'ev', 'c9puddle'),
+  item(T('A wet shirt dries on the line', 'قميص مبلول ينشف على الحبل'), 'ev', 'c9laundry'),
+  item(T('The Nile’s water level goes down gradually', 'مستوى ماء النيل ينخفض تدريجيًّا'), 'ev', 'c9felucca'),
+  item(T('Drops form on the outside of a cold glass', 'قطرات تتكون على كوب بارد من بره'), 'cd', 'c9glass'),
+  item(T('Drops form on a jar full of ice', 'قطرات تتكون على برطمان مليان ثلج'), 'cd', 'c9icejar'),
+  item(T('Tiny drops form on desert plants on a cold night', 'قطرات صغيرة تتكون على نباتات الصحراء في ليلة باردة'), 'cd', 'c9dew')
+];
+async function stage3() {
+  set({ mode: 'photo', one: null });
+  await g.speedRound({
+    items: SPEED, rounds: 6,
+    buttons: [{ label: T('Evaporation ☀️', 'تبخر ☀️'), value: 'ev', c: 0 }, { label: T('Condensation 💧', 'تكثف 💧'), value: 'cd', c: 1 }],
+    ask: T('Evaporation or condensation?', 'تبخر ولا تكثف؟'),
+    intro: T('Speed Round! Is it <b>evaporation</b> (water → water vapor) or <b>condensation</b> (water vapor → water)? Press the right button before time runs out. 6 rounds!', P('جولة السرعة! ده <b>تبخر</b> (ماء ← بخار ماء) ولا <b>تكثف</b> (بخار ماء ← ماء)؟ اضغط الزر الصح قبل ما الوقت يخلص. ٦ جولات!', 'جولة السرعة! ده <b>تبخر</b> (ماء ← بخار ماء) ولا <b>تكثف</b> (بخار ماء ← ماء)؟ اضغطي الزر الصح قبل ما الوقت يخلص. ٦ جولات!')),
+    think: T('Evaporation or condensation?', 'تبخر ولا تكثف؟'),
+    show: it => { sc.mode = 'photo'; sc.one = it.id; g.paint(); }, reveal: () => {}
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to the Water Journey. We will watch water <b>evaporate</b> in the sun, <b>condense</b> on a cold glass, and follow a drop around the <b>water cycle</b>.`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في رحلة قطرة الماء. هنشوف الماء <b>بيتبخر</b> في الشمس، و<b>بيتكثف</b> على كوب بارد، ونتابع قطرة في <b>دورة الماء</b>.`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في رحلة قطرة الماء. هنشوف الماء <b>بيتبخر</b> في الشمس، و<b>بيتكثف</b> على كوب بارد، ونتابع قطرة في <b>دورة الماء</b>.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Water <b>evaporates</b> into invisible water vapor, <b>condenses</b> back into water when it is cooled, and travels <b>Sea → Sky → Land → Sea</b>: the <b>water cycle</b>.', 'الماء <b>يتبخر</b> إلى بخار ماء غير مرئي، و<b>يتكثف</b> إلى ماء عندما يبرد، ويسافر <b>بحر ← سماء ← يابسة ← بحر</b>: <b>دورة الماء</b>.') }
+}).catch(err => console.error(err));
+window.__waterlab = { sc, render };
+})();
+</script>
+</body>
+</html>
