@@ -391,9 +391,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261025l"></script>
-<script src="chapters.js?v=20261025l"></script>
-<script src="common.js?v=20261025l"></script>
+<script src="firebase-config.js?v=20261025m"></script>
+<script src="chapters.js?v=20261025m"></script>
+<script src="common.js?v=20261025m"></script>
 <script>
 (() => {
 'use strict';
@@ -576,19 +576,19 @@ const DIAGRAMS = {
 /* ---------- one question ---------- */
 const TYPE_LABEL = AR
   ? { tf: 'صح أم خطأ', fill: 'أكمل الفراغ', order: 'رتّب', match: 'صِل', tap: 'اضغط على الصورة', mc: 'اختر', odd: 'الكلمة الشاذة', spot: 'اكتشف الخطأ', story: 'قصة قصيرة',
-      multi: 'اختر كل الإجابات الصحيحة', table: 'قارن بين', fix: 'صوّب ما تحته خط', term: 'اكتب المصطلح العلمي', build: 'كوّن الإجابة', why: 'علّل', whatif: 'ماذا يحدث؟', function: 'ما وظيفة؟', define: 'ما المقصود بـ؟', num: 'اكتب الناتج' }
+      multi: 'اختر كل الإجابات الصحيحة', table: 'قارن بين', fix: 'صوّب ما تحته خط', term: 'اختر المصطلح العلمي', build: 'كوّن الإجابة', why: 'علّل', whatif: 'ماذا يحدث؟', function: 'ما وظيفة؟', define: 'ما المقصود بـ؟', num: 'اكتب الناتج' }
   : { tf: 'True or false', fill: 'Fill the gap', order: 'Put in order', match: 'Match the pairs', tap: 'Tap the picture', mc: 'Choose', odd: 'Odd one out', spot: 'Spot the mistake', story: 'Mini story',
-      multi: 'Choose all the correct answers', table: 'Compare between', fix: 'Correct the underlined word', term: 'Write the scientific term', build: 'Build the answer', why: 'Give a reason', whatif: 'What happens?', function: 'What is the function?', define: 'What is meant by?', num: 'Write the number' };
+      multi: 'Choose all the correct answers', table: 'Compare between', fix: 'Correct the underlined word', term: 'Choose the scientific term', build: 'Build the answer', why: 'Give a reason', whatif: 'What happens?', function: 'What is the function?', define: 'What is meant by?', num: 'Write the number' };
 const PTS = { easy: 10, medium: 15, hard: 25 };
 let timerStop = null;
 let keyHandler = null;                                     // typing on a keyboard fills the letter tiles
 document.addEventListener('keydown', e => { if (keyHandler) keyHandler(e); });
-const LEAD = AR ? { why: 'علّل:', fix: 'صوّب ما تحته خط:', term: 'اكتب المصطلح العلمي:' } : { why: 'Give a reason for:', fix: 'Correct the underlined word:', term: 'Write the scientific term:' };
+const LEAD = AR ? { why: 'علّل:', fix: 'صوّب ما تحته خط:', term: 'اختر المصطلح العلمي:' } : { why: 'Give a reason for:', fix: 'Correct the underlined word:', term: 'Choose the scientific term:' };
 /* English subject: words, not scientific terms; and a "sentence" style of the build question (put the word cards in order) */
 TYPE_LABEL.sentence = AR ? 'كوّن الجملة' : 'Build the sentence';
 if (SI.chSubject(CH) === 'english') {
-  TYPE_LABEL.term = AR ? 'اكتب الكلمة' : 'Write the word';
-  LEAD.term = AR ? 'اكتب الكلمة:' : 'Write the word:';
+  TYPE_LABEL.term = AR ? 'اختر الكلمة' : 'Choose the word';
+  LEAD.term = AR ? 'اختر الكلمة:' : 'Choose the word:';
 }
 
 function header(q, idx, total, results) {
@@ -628,6 +628,21 @@ function startTimer(sec, onEnd) {
 function hideTimer() { $('#timer').hidden = true; timerStop = null; }
 
 /* each renderer resolves {firstTry, correct, timeout} */
+/* "the scientific term" is a choice (owner, Oct 2026): the right term + 3 wrong ones.
+   Wrong ones: the idea's own `choices` list if written, else other terms of the same chapter (same lesson first), then other short answers. */
+function termOpts(q) {
+  if (q._termOpts) return q._termOpts;
+  const ans = String(q.answer), low = x => String(x).trim().toLocaleLowerCase(), seen = new Set([low(ans)]), out = [ans];
+  const add = list => list.forEach(x => { if (out.length < 4 && x && !seen.has(low(x))) { seen.add(low(x)); const t = String(x); out.push(/^[A-Z]/.test(ans) ? t[0].toUpperCase() + t.slice(1) : t); } });
+  if (Array.isArray(q.choices)) add(q.choices);
+  const ideas = (window.IDEAS || []).filter(I => I.id !== q.id), vs = I => I.variants || [];
+  const sameL = I => q.lesson == null || I.lesson === q.lesson;
+  const terms = ok => shuffle(ideas.filter(ok).flatMap(I => vs(I).filter(v => v.type === 'term' || v.type === 'fix').map(v => v.answer)));
+  add(terms(sameL)); add(terms(I => !sameL(I)));
+  add(shuffle(ideas.flatMap(I => vs(I).filter(v => v.type === 'mc' && v.options).map(v => v.options[v.answer])).filter(x => String(x).split(' ').length <= 3)));
+  return (q._termOpts = out);
+}
+
 function ask(q) {
   return new Promise(resolve => {
     const area = $('#area'); area.innerHTML = '';
@@ -655,8 +670,9 @@ function ask(q) {
     let reveal = () => {};
     const optBtn = (html, key) => { const b = mk('button', 'btn opt', (key ? `<span class="k">${key}</span>` : '') + `<span>${html}</span>`); b.type = 'button'; return b; };
 
-    if (q.type === 'mc' || q.type === 'fill' || q.type === 'tf') {
-      const opts = q.type === 'tf' ? [T('True', 'صح'), T('False', 'خطأ')] : q.options;
+    if (q.type === 'mc' || q.type === 'fill' || q.type === 'tf' || q.type === 'term') {
+      const opts = q.type === 'tf' ? [T('True', 'صح'), T('False', 'خطأ')] : q.type === 'term' ? termOpts(q) : q.options;
+      const ansI = q.type === 'term' ? 0 : q.answer;
       const order = q.type === 'tf' ? [0, 1] : shuffle(opts.map((_, i) => i));
       const wrap = mk('div', 'choices' + (q.type === 'tf' ? ' two tf' : q.type === 'fill' ? ' two' : ''));
       const maxTries = retry ? Infinity : 1;   // practice: until right; timed and exam: one try
@@ -666,7 +682,7 @@ function ask(q) {
         b.onclick = () => {
           if (finished) return;
           tries++;
-          if (oi === q.answer) {
+          if (oi === ansI) {
             b.classList.add('good'); btns.forEach(x => x.disabled = true);
             if (q.type === 'fill') $('#gap').textContent = opts[oi];
             finish(true, tries === 1);
@@ -680,7 +696,7 @@ function ask(q) {
         wrap.appendChild(b); return b;
       });
       reveal = () => {
-        btns.forEach(x => { x.disabled = true; if (+x.dataset.oi === q.answer) x.classList.add('good'); else if (!x.classList.contains('bad')) x.classList.add('dim'); });
+        btns.forEach(x => { x.disabled = true; if (+x.dataset.oi === ansI) x.classList.add('good'); else if (!x.classList.contains('bad')) x.classList.add('dim'); });
         if (q.type === 'fill') $('#gap').textContent = opts[q.answer];
       };
       area.appendChild(wrap);
@@ -955,7 +971,7 @@ function ask(q) {
     }
 
     /* write the word with letter tiles: the scientific term, or the right word instead of the underlined one */
-    else if (q.type === 'term' || q.type === 'fix') {
+    else if (q.type === 'fix') {
       const ans = String(q.answer), maxTries = 2;
       const isLetter = ch => /[\p{L}\p{N}]/u.test(ch), same = (a, b) => a.toLocaleLowerCase() === b.toLocaleLowerCase();
       const slotsEl = mk('div', 'slots'), tilesEl = mk('div', 'tiles'), slots = [];
@@ -1588,7 +1604,7 @@ else if (SI.requirePlayer() && ((/^#preview/.test(location.hash) && SI.isOwner()
     notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل الأسئلة. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${SI.chWords()}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
   });
 }
-window.__quiz = { ask: q => ask(q), DIAGRAMS, variantOf, mysteryBox, notice, buildPaper, answerText, examResults, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
+window.__quiz = { ask: q => ask(q), termOpts, DIAGRAMS, variantOf, mysteryBox, notice, buildPaper, answerText, examResults, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
 })();
 </script>
 </body>
