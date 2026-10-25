@@ -68,7 +68,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   function requirePlayer() { const p = player(); if (!p || !p.name) { location.href = HOME; return null; } return p; }
   /* per-player progress shared by all chapters: xp, daily streak, the chapter being played (cur) */
   function prof() { const s = store.load(); return ((s.profiles || {})[s.current]) || {}; }
-  function updateProf(fn) { store.update(s => { s.profiles = s.profiles || {}; const p = s.profiles[s.current] = s.profiles[s.current] || {}; fn(p); }); return prof(); }
+  function updateProf(fn) { store.update(s => { s.profiles = s.profiles || {}; const p = s.profiles[s.current] = s.profiles[s.current] || {}; fn(p); const q = (s.players || {})[s.current]; if (q) { q.dirty = q.dirty || 2; q.dv = (q.dv || 0) + 1; } }); return prof(); }
 
   /* ---------- chapters (the list lives in chapters.js) ----------
      Each chapter keeps its own progress in profile.ch[chapterId]:
@@ -94,7 +94,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const chSubject = c => (c && c.subject) || 'science';
   const subjectId = () => prof().subj || chSubject(chapterById(prof().cur)) || 'science';
   const subject = () => subjectById(subjectId()) || subjects()[0];
-  function setSubject(id) { if (subjectById(id)) updateProf(p => { p.subj = id; }); return subject(); }
+  function setSubject(id) { if (subjectById(id)) updateProf(p => { p.subj = id; p.curAt = Date.now(); }); return subject(); }
   const subjectName = s => { s = s || subject(); return s ? T(s.title, s.titleAr) : ''; };
   /* the questions file this player reads for chapter c (null when there is none in that language) */
   const contentAr = c => { const L = (subjectById(chSubject(c)) || {}).lang; return L ? L[isAr() ? 'ar' : 'lang'] === 'ar' : isAr(); };
@@ -104,7 +104,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const chapterById = id => allChapters().find(c => c.id === id) || null;
   const chapterId = () => prof().cur || null;
   const chapter = () => chapterById(chapterId());
-  function setChapter(id) { const c = chapterById(id); if (c) updateProf(p => { p.cur = id; p.subj = chSubject(c); }); return chapter(); }
+  function setChapter(id) { const c = chapterById(id); if (c) updateProf(p => { p.cur = id; p.subj = chSubject(c); p.curAt = Date.now(); }); return chapter(); }
   /* pages inside a chapter call this; a game page passes its own chapter id */
   function requireChapter(id) {
     if (id) setChapter(id);
@@ -559,7 +559,9 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      only reads, once per browser session, to pick up progress made on another device.
      Merge (local × server): numbers keep the higher value, lists are joined, dates keep the later one,
      Review cards keep the higher box, unfinished runs keep the newer one; XP adds what each side earned
-     since the last sync. Choices of this device (current chapter, subject, worn items) stay local. */
+     since the last sync. The current chapter/subject follow whichever side changed them last (curAt); worn items stay local.
+     Any profile change marks the save to send: at once after a finished activity, otherwise on the next page
+     opened or when the tab is hidden (so «Continue» on another device starts where the child stopped). */
   const CODE_ABC = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';               // no 0/O, 1/I/L: easy to read aloud and copy
   const SYNC_SKIP_PAGES = /(^|\/)(admin|reviews|progress)\.html$/;
   const sync = {
@@ -594,11 +596,12 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       const out = mergeVal(L, S, '', '');
       const lx = L.xp || 0, sx = S.xp || 0, b = baseXp == null ? Math.min(lx, sx) : baseXp;
       out.xp = Math.max(lx, sx, sx + lx - b);
+      pickWhere(out, L, S);
       return out;
     },
     pack(p, profile) { return { v: 1, name: p.name, grade: p.grade || 'g5', track: p.track || 'lang', g: p.g || '', data: JSON.stringify(profile || {}) }; },
     unpack(d) { let prof = {}; try { prof = JSON.parse(d.data || '{}') || {}; } catch (e) {} return { name: d.name || '', grade: d.grade || 'g5', track: d.track || 'lang', g: d.g || '', prof }; },
-    dirty() { store.update(s => { const p = (s.players || {})[s.current]; if (p) p.dirty = 1; }); this.soon(); },
+    dirty() { store.update(s => { const p = (s.players || {})[s.current]; if (p) { p.dirty = 1; p.dv = (p.dv || 0) + 1; } }); this.soon(); },
     soon() { if (!this.enabled()) return; clearTimeout(this._t); this._t = setTimeout(() => this.run(), 400); },
     /* one sync of the current player: give a code if missing, read the server copy, merge, write only when something is new */
     run() {
@@ -607,7 +610,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
         const id = store.load().current, p = player();
         if (!p || !p.name || p.name === 'Admin' || !this.enabled()) return { ok: false };
         const db = await LB.ready(); if (!db || !(window.crypto && crypto.subtle)) return { ok: false };
-        const fs = LB._fs, local = JSON.parse(JSON.stringify(prof()));
+        const fs = LB._fs, local = JSON.parse(JSON.stringify(prof())), dv0 = p.dv || 0;
         let code = p.code, merged = null, wrote = false;
         if (!code) {                                                  // first time: a new code and the whole device save
           for (let i = 0; i < 4 && !merged; i++) {
@@ -637,8 +640,9 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
           const now = s.profiles[id] || {}, extra = (now.xp || 0) - (local.xp || 0);
           const next = mergeVal(now, merged, '', '');
           next.xp = (merged.xp || 0) + Math.max(0, extra);
+          pickWhere(next, now, merged);
           s.profiles[id] = next;
-          q.code = code; q.sb = merged.xp || 0; delete q.dirty;
+          q.code = code; q.sb = merged.xp || 0; if ((q.dv || 0) === dv0) delete q.dirty;
         });
         try { sessionStorage.setItem('si.synced.' + id, '1'); } catch (e) {}
         document.dispatchEvent(new CustomEvent('si-sync', { detail: { code, wrote } }));
@@ -654,6 +658,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       if (!p || !p.name || p.name === 'Admin') return;
       let seen = false; try { seen = sessionStorage.getItem('si.synced.' + s.current) === '1'; } catch (e) {}
       if (!p.code || p.dirty || !seen) setTimeout(() => this.run(), 1200);
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { const q = player(); if (q && q.code && q.dirty) this.run(); } });
     },
     /* read a file by its code without changing this device (recovery screen now, parent page later) */
     async fetch(raw) {
@@ -690,6 +695,11 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const SYNC_NEWER = new Set(['run', 'gameRun']);                     // unfinished runs: the newer one
   const SYNC_LOCAL = new Set(['cur', 'subj', 'worn', 'lastVar']);    // this device's choices
   const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  /* where the child stopped (chapter + subject): the side that changed it last */
+  function pickWhere(out, a, b) {
+    const src = (b.curAt || 0) > (a.curAt || 0) ? b : a;
+    ['cur', 'subj', 'curAt'].forEach(k => { if (src[k] !== undefined) out[k] = src[k]; });
+  }
   function mergeVal(a, b, key, parent) {
     if (a === undefined) return b === undefined ? undefined : JSON.parse(JSON.stringify(b));
     if (b === undefined || b === null) return a;

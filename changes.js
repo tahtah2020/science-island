@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: '«أكمل» يبدأ من آخر مكان توقف فيه الطفل',
+    items: [
+      { text: 'مكان التوقف (الفصل والسؤال) يُحفظ على الخادم عند الانتقال لصفحة أخرى أو إغلاق الصفحة، فيكمل الطفل من نفس المكان على أي جهاز' }
+    ] },
   { date: '2026-10-25', title: 'حفظ التقدم على الإنترنت ورمز الاستعادة',
     items: [
       { text: 'كل طفل له رمز استعادة من ٨ حروف وأرقام يظهر في صفحة الفصول', links: [{ label: 'صفحة الفصول', href: 'chapters.html' }] },
