@@ -11,7 +11,10 @@
                                                               primes are drawn in circles, composite numbers in squares (as the book asks)
              multVenn    (mvL | mvM | mvR)                    two circles "Multiples of a" and "Multiples of b", q.pic = { a: 3, b: 4, upTo: 12, show: [numbers drawn], blank: true }
              skipLine    (picture only)                       a time line with the first bus marked, q.pic = { from: 3, to: 13, first: 3, pm: 12 }  (no jumps: the picture never shows the answer)
-   Every Unit 2 picture honours q.pic.plain (inner markup only, for the game scene).
+     Unit 3: areaModel   (picture only)                       q.pic = { top: ['200','30','4'], left: ['20','7'], cells: [[…],[…]], hi: [r, c], fill }  ('' empty, '?' unknown)
+             unitGrid    (picture only)                       q.pic = { rows: 8, parts: [5, 4] }  (the distributive property)
+             longMult    (picture only)                       q.pic = { a: '76', b: '24', parts: ['304', '1,520'], total: '1,824', carry: '1' }  ('?' = an empty box)
+   Every Unit 2 and Unit 3 picture honours q.pic.plain (inner markup only, for the game scene).
    The numbers on every picture stay left to right, also for an Arabic player (as in the school book).
    The names read by screen readers describe what is drawn, never the answer. */
 (function () {
@@ -227,6 +230,69 @@
     return s + close2(q);
   }
 
+  /* ================= Unit 3 ================= */
+  const C3 = { line: '#5c7d96', head: '#e3d6f4', headD: '#9a7fc4', cell: '#fff', fill: ['#ffe2b8', '#d4ecdf', '#d7e8f8', '#f8d9e6'], hi: '#fff3c4', hiD: '#f2b134', q: '#e2603f' };
+  /* the area model of multiplication (book p66-77): place values on top and at the side, a partial product in each cell.
+     q.pic = { top: ['200','30','4'], left: ['20','7'], cells: [['4,000','600','80'], ['1,400','210','28']], hi: [row, col], fill: true }
+     a cell '' is empty, '?' is the unknown; fill = colour the cells already written (the game fills the model cell by cell) */
+  function areaModel(q) {
+    const p = (q && q.pic) || { top: ['200', '30', '4'], left: ['20', '7'], cells: [['', '', ''], ['', '', '']] };
+    const nc = p.top.length, nr = p.left.length, x0 = 52, w = 340 - x0 - 14, cw = w / nc, ch = nr > 2 ? 40 : 46, y0 = 30, H = y0 + nr * ch + 14;
+    const fs = n => (String(n).length > 6 ? 12 : String(n).length > 4 ? 14 : 16);
+    let s = open2(q, H, T('An area model: a rectangle split into parts by place value', 'نموذج مساحة المستطيل مقسم حسب القيمة المكانية'));
+    p.top.forEach((v, c) => { s += num(x0 + (c + .5) * cw, y0 - 9, v, { fs: 15, fill: C3.headD }); });
+    p.left.forEach((v, r) => { s += num(x0 - 22, y0 + (r + .5) * ch + 5, v, { fs: 15, fill: C3.headD }); });
+    p.left.forEach((_, r) => p.top.forEach((__, c) => {
+      const v = ((p.cells || [])[r] || [])[c] || '', isHi = p.hi && p.hi[0] === r && p.hi[1] === c, x = x0 + c * cw, y = y0 + r * ch;
+      const bg = isHi ? C3.hi : p.fill && v && v !== '?' ? C3.fill[(r * nc + c) % 4] : C3.cell;
+      s += `<rect x="${f1(x)}" y="${y}" width="${f1(cw)}" height="${ch}" fill="${bg}" stroke="${isHi ? C3.hiD : C3.line}" stroke-width="${isHi ? 3.5 : 2}"/>`;
+      if (v === '?') s += num(x + cw / 2, y + ch / 2 + 7, '?', { fs: 20, fill: C3.q });
+      else if (v) s += num(x + cw / 2, y + ch / 2 + 5, v, { fs: fs(v) });
+    }));
+    if (p.hi) { const [r, c] = p.hi; s += `<rect x="${f1(x0 + c * cw)}" y="${y0 + r * ch}" width="${f1(cw)}" height="${ch}" fill="none" stroke="${C3.hiD}" stroke-width="3.5"/>`; }
+    return s + close2(q);
+  }
+  /* a grid of unit squares split into two coloured rectangles (the distributive property, book p68-69): q.pic = { rows: 8, parts: [5, 4] } */
+  function unitGrid(q) {
+    const p = (q && q.pic) || { rows: 8, parts: [5, 4] }, cols = p.parts.reduce((a, b) => a + b, 0), u = Math.min(18, 250 / Math.max(cols, p.rows)), x0 = (340 - cols * u) / 2 + 8, y0 = 26, H = y0 + p.rows * u + 12;
+    const cs = ['#7cc8ec', '#f7cf4d', '#9ed7b6'];
+    let s = open2(q, H, T('A grid of unit squares split into coloured rectangles', 'شبكة مربعات وحدة مقسمة إلى مستطيلات ملونة'));
+    let cx = x0;
+    p.parts.forEach((k, i) => {
+      for (let r = 0; r < p.rows; r++) for (let c = 0; c < k; c++) s += `<rect x="${f1(cx + c * u)}" y="${f1(y0 + r * u)}" width="${f1(u)}" height="${f1(u)}" fill="${cs[i % 3]}" stroke="${COL.ink}" stroke-width="1"/>`;
+      s += num(cx + k * u / 2, y0 - 8, String(k), { fs: 14 });
+      cx += k * u;
+    });
+    s += num(x0 - 14, y0 + p.rows * u / 2 + 5, String(p.rows), { fs: 14 });
+    return s + close2(q);
+  }
+  /* the standard algorithm written in columns (book p72-75): q.pic = { a: '76', b: '24', parts: ['304', '1,520'], total: '1,824', carry: '1' }
+     a '?' inside a string is drawn as an empty box; parts or total can be left out */
+  function longMult(q) {
+    const p = (q && q.pic) || { a: '76', b: '24' }, rows = [p.a, '× ' + p.b].concat(p.parts || []), st = 12, xr = 230;
+    const nRows = rows.length + (p.total ? 1 : 0), H = 30 + nRows * 26 + 10;
+    let s = open2(q, H, T('A multiplication written in columns', 'عملية ضرب مكتوبة رأسيًا'));
+    const row = (str, y, col) => {
+      const ch = String(str).split(''); let x = xr;
+      for (let i = ch.length - 1; i >= 0; i--) {
+        const c = ch[i];
+        if (c === '?') s += `<rect x="${f1(x - 9)}" y="${y - 16}" width="18" height="21" rx="3" fill="#fff" stroke="${C3.q}" stroke-width="2" stroke-dasharray="4 3"/>`;
+        else if (c === ',') { s += num(x + 3, y, c, { fs: 18, fill: col || COL.ink, fw: 800 }); x -= 5; continue; }   // a comma sits between two digits and takes a narrow column
+        else if (c !== ' ') s += num(x, y, c, { fs: 18, fill: col || COL.ink, fw: 800 });
+        x -= c === ' ' ? 7 : st;
+      }
+    };
+    let y = 40;
+    if (p.carry) row(p.carry, 22, C3.q);
+    rows.forEach((r, i) => {
+      row(i >= 2 && i === rows.length - 1 && rows.length > 3 ? '+ ' + r : r, y);
+      if (i === 1 || (p.total && i === rows.length - 1)) s += `<path d="M${xr - 110} ${y + 8}H${xr + 12}" stroke="${COL.ink}" stroke-width="2.4"/>`;
+      y += 26;
+    });
+    if (p.total) row(p.total, y, '#2e7d5b');
+    return s + close2(q);
+  }
+
   window.M5ART = { COL, T, f1, esc, at, num, lab, hot, ringRect, svgOpen, grid100, slices, PLACES, digitsOf, chart, chartHots, line, isPrime };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeChart, numLine, gridShade, gridModel, barModel, factorTree, multVenn, skipLine });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeChart, numLine, gridShade, gridModel, barModel, factorTree, multVenn, skipLine, areaModel, unitGrid, longMult });
 })();

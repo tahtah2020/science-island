@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-26', title: 'رياضيات الصف الخامس · الوحدة 3 ضرب الأعداد الصحيحة (المساران)',
+    items: [
+      { text: 'فتح الوحدة 3: 5 دروس و28 فكرة و141 صياغة بالعربي والإنجليزي (الأفكار T-X)، بترتيب الكتاب وعلامة الدرس على كل سؤال', links: [{ label: 'الأسئلة', href: 'quiz.html#preview=m5c3.1', ch: 'm5c3' }] },
+      { text: 'لعبة جديدة «مبلّطو الكورنيش»: ملء نموذج المساحة بلاطة بلاطة، وخطأ بدير وخطأ أشرف، والخوارزمية، وجولة سرعة للتقدير', links: [{ label: 'اللعبة', href: 'math-corniche.html', ch: 'm5c3' }] },
+      { text: 'رسوم جديدة: نموذج مساحة المستطيل، وشبكة مربعات الوحدة، والضرب الرأسي' }
+    ] },
   { date: '2026-10-26', title: 'رياضيات الصف الخامس: الوحدة الثانية «العلاقات بين الأعداد»',
     items: [
       { text: 'الوحدة الثانية كاملة باللغتين: 8 دروس، 35 فكرة، 207 سؤال' },

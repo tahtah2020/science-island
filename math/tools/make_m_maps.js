@@ -128,3 +128,33 @@ ${mountain(240, 760, 2.4)}${mountain(560, 760, 1.6, '#d27b5a', '#a8553a')}${moun
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_m5c2.svg', b);
 })();
+
+/* ---------- Grade 5 · Unit 3 · Corniche Tilers: an Alexandria island with the sea wall, lamp posts, a fort, tiled plazas and an area-model board ---------- */
+(function () {
+  seed = 37;
+  const D = ctx.window.CH_DIAGRAMS;
+  const lampPost = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0V-90" stroke="#5c6f82" stroke-width="6"/><circle cx="0" cy="-96" r="11" fill="#ffd66b"/><circle cx="0" cy="-96" r="22" fill="#ffd66b" opacity=".3"/></g>`;
+  const fort = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-90" y="-70" width="180" height="70" fill="#e9d2a2" stroke="#b08a52" stroke-width="5"/><rect x="-36" y="-130" width="72" height="62" fill="#efdcb2" stroke="#b08a52" stroke-width="5"/>`
+    + `<path d="M-90 -70v-14h18v14M-54 -70v-14h18v14M36 -70v-14h18v14M72 -70v-14h18v14M-36 -130v-14h18v14M18 -130v-14h18v14" fill="#e9d2a2" stroke="#b08a52" stroke-width="4"/><path d="M-14 0v-30a14 14 0 0 1 28 0v30" fill="#8a5a28"/></g>`;
+  const plaza = (x, y, k, cols) => { let t = ''; for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) t += `<rect x="${-80 + c * 40}" y="${-60 + r * 40}" width="40" height="40" fill="${cols[(r * 4 + c) % cols.length]}" stroke="#fffaf0" stroke-width="4"/>`; return `<g transform="translate(${x} ${y}) scale(${k})">${t}</g>`; };
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#f4dfb6" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#e8e3c8" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#efe0c0" opacity=".6"/>`;
+  /* the Corniche: a bay of sea down the left side with its curved sea wall */
+  inside += `<path d="M90 160C230 400 150 640 250 880S170 1160 120 1300H-80V160Z" fill="#7cc4e6"/><path d="M100 170C240 410 160 640 260 880S180 1160 130 1290" fill="none" stroke="#d9c4a0" stroke-width="18" stroke-linecap="round"/>`;
+  for (let i = 0; i < 18; i++) { const x = f(320 + rnd() * 720), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#f6e4bd'], [.5, '#eadfbe'], [1, '#f2dcb0']], ['#f3e6b8', '#f6efd2'], inside);
+  s += lampPost(290, 470, 1) + lampPost(270, 760, 1) + lampPost(300, 1020, 1);
+  s += fort(900, 300, 1.1) + boat(150, 560, .9);
+  s += plaza(560, 1140, .8, ['#ffe2b8', '#d4ecdf', '#d7e8f8', '#f8d9e6']) + plaza(1000, 600, .7, ['#d4ecdf', '#ffe2b8', '#f8d9e6', '#d7e8f8']);
+  s += board(620, 610, 280, 160, '<g transform="translate(-136 -66) scale(.8)">' + D.areaModel({ pic: { plain: true, top: ['200', '30', '4'], left: ['20', '7'], cells: [['4,000', '600', '80'], ['1,400', '210', '28']], fill: true } }) + '</g>');
+  s += crate(400, 1150, 1, '×') + crate(458, 1162, .9, '10') + crate(512, 1154, .8, '=');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_m5c3.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".55" stop-color="#fdf0d8"/><stop offset="1" stop-color="#eadfbe"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 700H1600V820H0Z" fill="#7cc4e6"/><path d="M0 812H1600V840H0Z" fill="#d9c4a0"/><path d="M0 840H1600V1000H0Z" fill="#eadfbe"/>
+${fort(1280, 700, 1.6)}${boat(420, 760, 1.3)}${lampPost(160, 840, 1.4)}${lampPost(700, 840, 1.4)}${plaza(1000, 930, 1, ['#ffe2b8', '#d4ecdf', '#d7e8f8', '#f8d9e6'])}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_m5c3.svg', b);
+})();

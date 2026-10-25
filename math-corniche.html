@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Corniche Tilers · Multiplication with Whole Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261026c">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Corniche Tilers.</noscript>
+<script src="firebase-config.js?v=20261026c"></script>
+<script src="chapters.js?v=20261026c"></script>
+<script src="common.js?v=20261026c"></script>
+<script src="math/m5_art.js?v=20261026c"></script>
+<script src="game_kit.js?v=20261026c"></script>
+<script>
+(() => {
+'use strict';
+/* Corniche Tilers · the game of Unit 3, Multiplication with Whole Numbers (Math, Grade 5). Built on the shared game kit (game_kit.js).
+   The scene is the Alexandria Corniche at dusk (the unit opener): a tiled panel holds an area model, a multiplication in columns, a grid of unit squares or a sign.
+   The core move is TILING: the child fills an area model cell by cell, picking each partial product from the tray; the cell fills with colour, then the parts are added.
+   Stage 1 (Warm Up): multiplying by 10, 100, 1,000 and 10,000 (lesson 1, book p65).
+   Stage 2 (Missions): 1 tile 234 × 27 (lesson 1, p66) · 2 Badir's mistake and the Distributive Property (lesson 2, p68-69) · 3 flexible numbers 14 × 83 (lesson 2, p70)
+                       · 4 the area model and the standard algorithm 76 × 24, 67 × 76 (lesson 3, p72-74) · 5 Ashraf's mistake and estimation (lesson 4, p75-77)
+                       · 6 Mona's restaurant and the sandstorm (lesson 5, p78-79).
+   Stage 3 (Speed Round): is the product reasonable? (estimation, lesson 4).
+   The scene is set again before EVERY question, so the picture always belongs to the question asked, and it never shows the answer.
+   Every T('English', 'عربي') has both languages. Numbers and expressions stay left to right. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr" style="white-space:nowrap">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const INK = '#1f3d57';
+const D = () => window.CH_DIAGRAMS;
+const fmt = n => Number(n).toLocaleString('en-US');
+const sc = { mode: 'sign', n: '', cap: '' };
+const VW = 420, VH = 280;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+/* Arabic text keeps each number or expression in one left-to-right piece (isolates), so 206 × 45 never reads as 45 × 206 */
+const iso = s => String(s).replace(/[\d(][\d,.\s×+−=()?÷]*[\d)?]|\d/g, m => '\u2066' + m + '\u2069');
+const txt = (x, y, s, fs = 22, fill = INK) => { const ar = /[\u0600-\u06FF]/.test(s); return `<text x="${x}" y="${y}" text-anchor="middle" direction="${ar ? 'rtl' : 'ltr'}" unicode-bidi="embed" font-size="${fs}" font-weight="900" fill="${fill}">${esc(ar ? iso(s) : s)}</text>`; };
+/* the Corniche: dusk sky, the sea, the stone wall with its lamp posts */
+const lamp = x => `<path d="M${x} 196V128" stroke="#5c6f82" stroke-width="4"/><circle cx="${x}" cy="124" r="7" fill="#ffd66b"/><circle cx="${x}" cy="124" r="14" fill="#ffd66b" opacity=".25"/>`;
+const CORNICHE = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5a80"/><stop offset=".7" stop-color="#f6a96b"/><stop offset="1" stop-color="#fcd9a8"/></linearGradient></defs>`
+  + `<rect width="${VW}" height="${VH}" fill="url(#sky)"/><circle cx="350" cy="62" r="20" fill="#ffe39a" opacity=".9"/>`
+  + `<path d="M0 150H420V200H0Z" fill="#3e8fb8"/><path d="M0 162Q40 156 80 162T160 162T240 162T320 162T420 162" stroke="#a9dcf2" stroke-width="2" fill="none" opacity=".7"/>`
+  + `<path d="M0 196H420V280H0Z" fill="#e8d3ad"/><path d="M0 196H420V206H0Z" fill="#c9a874"/>${lamp(30)}${lamp(390)}`
+  + `<path d="M0 238H420" stroke="#d9be90" stroke-width="2"/><path d="M60 206V280M140 206V280M220 206V280M300 206V280M380 206V280" stroke="#d9be90" stroke-width="2"/>`;
+function render() {
+  let s = CORNICHE;
+  if (sc.mode === 'sign') {                      // a stone sign with a multiplication or a number
+    s += `<rect x="60" y="54" width="300" height="136" rx="16" fill="#fffaf0" stroke="#a8834f" stroke-width="7"/>` + txt(210, sc.cap ? 124 : 134, sc.n, sc.fs || Math.min(34, Math.round(560 / String(sc.n).length)));
+    if (sc.cap) s += txt(210, 166, sc.cap, Math.min(16, Math.round(520 / String(sc.cap).length)), '#8a5a28');
+  } else if (sc.pic) {                           // a picture of m5_art.js (plain) on a tiled panel
+    s += `<rect x="20" y="${sc.py || 14}" width="380" height="${sc.ph || 224}" rx="16" fill="#fffaf0" stroke="#a8834f" stroke-width="5"/>`
+      + `<g transform="translate(${sc.dx || 40} ${sc.dy || 30}) scale(${sc.k || 1})">${D()[sc.pic.name]({ pic: Object.assign({ plain: true }, sc.pic.pic) })}</g>`;
+    if (sc.cap) s += txt(210, (sc.py || 14) + (sc.ph || 224) - 12, sc.cap, Math.min(16, Math.round(560 / String(sc.cap).length)));
+  }
+  return s;
+}
+const g = G4Game({ ch: 'm5c3', logo: '🧱', title: ['Corniche Tilers', 'مبلّطو الكورنيش'], sub: ['Unit 3 · Multiplication with Whole Numbers', 'الوحدة 3 · ضرب الأعداد الصحيحة'],
+  bg: 'math/assets/bg_m5c3.svg', bgc: '#e3f1dc', label: ['The Alexandria Corniche with an area model, a multiplication in columns, a grid of squares or a sign for each question', 'كورنيش الإسكندرية وعليه نموذج مساحة أو عملية ضرب رأسية أو شبكة مربعات أو لافتة لكل سؤال'], render });
+const sign = (n, cap, fs) => { Object.assign(sc, { mode: 'sign', n, cap: cap || '', fs: fs || 0, pic: null }); g.paint(); };
+const pic = (name, p, o) => { Object.assign(sc, { mode: 'pic', pic: { name, pic: p }, cap: '', dx: 40, dy: 30, k: 1, py: 14, ph: 224 }, o || {}); g.paint(); };
+/* an area model on the panel; the rows of cells are copied so the scene can fill them */
+const model = (top, left, cells, o) => {
+  const big = left.length > 2, k = top.length > 3 ? 1 : 1.05;
+  pic('areaModel', { top, left, cells: cells.map(r => r.slice()), hi: o && o.hi, fill: true }, Object.assign({ dx: 210 - 170 * k, dy: big ? 34 : 50, k, cap: '' }, o || {}));
+};
+/* an option made only of numbers and signs keeps its left-to-right order on an Arabic page */
+const W = o => (/[؀-ۿ]/.test(o) || /^<span/.test(o) ? o : L(o));
+const choice = o => g.choice(Object.assign({}, o, { options: o.options.map(W), correct: W(o.correct) }));
+
+/* TILING: fill an area model cell by cell. For each cell the tray offers the right partial product and two common slips
+   (one place value too small or too big). A right pick colours the cell; the next cell is highlighted. */
+async function tile(top, left, cells, order, intro, start) {
+  const cur = start ? start.map(r => r.slice()) : cells.map(r => r.map(() => ''));
+  const n = s => Number(String(s).replace(/,/g, ''));
+  for (let i = 0; i < order.length; i++) {
+    const [r, c] = order[i], right = cells[r][c], v = n(right);
+    model(top, left, cur, { hi: [r, c] });
+    const wrong = [v / 10, v * 10].filter(x => Number.isInteger(x) && x > 0).map(fmt);
+    if (wrong.length < 2) wrong.push(fmt(n(left[r]) + n(top[c])));
+    const buttons = [right].concat(wrong.slice(0, 2)).map(x => ({ label: L(x), value: x }));
+    buttons.sort(() => Math.random() - 0.5);
+    g.say(i === 0 && intro ? intro : T(`Next tile: ${kw(L(left[r] + ' × ' + top[c]))}`, `البلاطة اللي بعدها: ${kw(L(left[r] + ' × ' + top[c]))}`), 'think');
+    await g.pick({ buttons, correct: right, points: 10,
+      ok: T(`${L(left[r] + ' × ' + top[c] + ' = ' + right)}. Tile laid!`, `${L(left[r] + ' × ' + top[c] + ' = ' + right)}. البلاطة اتحطت!`),
+      no: T(`${L(left[r] + ' × ' + top[c] + ' = ' + right)}.`, `${L(left[r] + ' × ' + top[c] + ' = ' + right)}.`),
+      hint: T('Multiply the digits, then count the zeros of both numbers.', 'اضرب الأرقام، وبعدين عدّ أصفار العددين.'),
+      reveal: () => { cur[r][c] = right; model(top, left, cur); } });
+  }
+  g.setTray(null);
+  return cur;
+}
+
+/* ---------- Stage 1 · Warm Up: multiplying by powers of ten (lesson 1) ---------- */
+async function stage1() {
+  sign('5 × 1,000 = ?');
+  g.say(T(`Welcome to the Alexandria Corniche! Before we lay tiles, warm up with powers of ten. ${kw(L('5 × 1,000'))} = ?`, `أهلًا بيك على كورنيش الإسكندرية! قبل ما نبلّط، نسخّن بقوى العشرة. ${kw(L('5 × 1,000'))} = ؟`), 'point');
+  await choice({ options: ['5,000', '500', '50,000'], correct: '5,000', hint: T('Write 5, then the three zeros of 1,000.', 'اكتب 5 وبعدها أصفار الـ 1,000 التلاتة.'), ok: T('5 × 1,000 = 5,000.', `${L('5 × 1,000 = 5,000')}.`) });
+  sign('10,000 × ? = 80,000');
+  g.say(T(`${kw(L('10,000 × ? = 80,000'))}. What is the missing factor?`, `${kw(L('10,000 × ? = 80,000'))}. إيه العامل الناقص؟`), 'think');
+  await choice({ options: ['8', '80', '800'], correct: '8', hint: T('80,000 is 8 ten-thousands.', L('80,000') + ' هي 8 عشرات آلاف.'), ok: T('10,000 × 8 = 80,000.', `${L('10,000 × 8 = 80,000')}.`) });
+  sign('70,000 = 7 × ?');
+  g.say(T(`Write ${kw(L('70,000'))} with a power of ten: ${L('7 × ?')}`, `اكتب ${kw(L('70,000'))} بقوة من قوى العشرة: ${L('7 × ?')}`), 'think');
+  await choice({ options: ['10,000', '1,000', '100,000'], correct: '10,000', hint: T('Count the zeros of 70,000.', 'عدّ أصفار ' + L('70,000') + '.'), ok: T('70,000 = 7 × 10,000.', `${L('70,000 = 7 × 10,000')}.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: the area model of 234 × 27
+  sign('234 × 27', T('The new plaza: 234 tiles by 27', 'الساحة الجديدة: 234 في 27'));
+  g.say(T(`Mission 1: the city wants a new plaza on the Corniche, ${kw(L('234 × 27'))}. First split 234 by place value. Which split is right?`, `المهمة ١: المحافظة عايزة ساحة جديدة على الكورنيش، ${kw(L('234 × 27'))}. الأول حلل ${L('234')} حسب القيمة المكانية. أنهي تحليل صح؟`), 'point');
+  await choice({ options: ['200 + 30 + 4', '2 + 3 + 4', '23 + 4'], correct: '200 + 30 + 4', hint: T('2 hundreds, 3 tens, 4 ones.', '2 مئات و3 عشرات و4 آحاد.'), ok: T('234 = 200 + 30 + 4, and 27 = 20 + 7.', `${L('234 = 200 + 30 + 4')}، و${L('27 = 20 + 7')}.`) });
+  const top = ['200', '30', '4'], left = ['20', '7'], cells = [['4,000', '600', '80'], ['1,400', '210', '28']];
+  await tile(top, left, cells, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2]],
+    T(`Now lay the tiles! Each cell is one partial product. First: ${kw(L('20 × 200'))}`, `يلّا نبلّط! كل خانة فيها ناتج ضرب جزئي. الأولى: ${kw(L('20 × 200'))}`));
+  model(top, left, cells);
+  g.say(T('All six tiles are laid. Add them: 4,000 + 600 + 80 + 1,400 + 210 + 28 = ?', `الست بلاطات اتحطوا. اجمعهم: ${L('4,000 + 600 + 80 + 1,400 + 210 + 28')} = ؟`), 'think');
+  await choice({ options: ['6,318', '5,318', '6,218'], correct: '6,318', hint: T('Thousands first: 4,000 + 1,400 = 5,400. Then add the rest.', 'الآلاف الأول: ' + L('4,000 + 1,400 = 5,400') + '. وبعدين الباقي.'), ok: T('234 × 27 = 6,318.', `${L('234 × 27 = 6,318')}.`) });
+}
+async function mission2() {                 // lesson 2: Badir's mistake, the Distributive Property
+  model(['200', '60', '0'], ['40', '5'], [['8,000', '2,400', '0'], ['1,000', '300', '0']], { cap: T('Badir: 206 × 45 = 11,700', 'بدير: 206 × 45 = 11,700') });
+  g.say(T(`Mission 2: Badir tiled ${kw(L('206 × 45'))} and got ${L('11,700')}. What did he do wrong?`, `المهمة ٢: بدير بلّط ${kw(L('206 × 45'))} وطلعله ${L('11,700')}. غلط في إيه؟`), 'point');
+  const R = T('He split 206 as 200 + 60; it is 200 + 6', 'حلل 206 لـ 200 + 60، والصح 200 + 6');
+  await choice({ options: [R, T('He split 45 wrongly', 'حلل 45 غلط'), T('40 × 200 is not 8,000', '40 × 200 مش 8,000')], correct: R,
+    hint: T('How many tens does 206 have?', L('206') + ' فيها كام عشرة؟'), ok: T('206 has 0 tens and 6 ones: 206 = 200 + 6.', `${L('206')} فيها ${L('0')} عشرات و${L('6')} آحاد: ${L('206 = 200 + 6')}.`) });
+  const top = ['200', '6'], left = ['40', '5'], cells = [['8,000', '240'], ['1,000', '30']];
+  await tile(top, left, cells, [[0, 1], [1, 1]], T(`Fix Badir's plaza: 200 + 6 by 40 + 5. The new tile ${kw(L('40 × 6'))}?`, `صلّح ساحة بدير: ${L('200 + 6')} في ${L('40 + 5')}. البلاطة الجديدة ${kw(L('40 × 6'))}؟`), [['8,000', ''], ['1,000', '']]);
+  model(top, left, cells);
+  g.say(T('So 206 × 45 = 8,000 + 240 + 1,000 + 30 = ?', `يبقى ${L('206 × 45 = 8,000 + 240 + 1,000 + 30')} = ؟`), 'think');
+  await choice({ options: ['9,270', '11,700', '9,240'], correct: '9,270', hint: T('8,000 + 1,000 = 9,000; 240 + 30 = 270.', `${L('8,000 + 1,000 = 9,000')}، ${L('240 + 30 = 270')}.`), ok: T('206 × 45 = 9,270.', `${L('206 × 45 = 9,270')}.`) });
+  pic('unitGrid', { rows: 8, parts: [5, 4] }, { dx: 52, dy: 26, k: .95 });
+  g.say(T(`8 rows of 9 squares, split into ${L('8 × 5')} (blue) and ${L('8 × 4')} (yellow). How big is the whole rectangle?`, `٨ صفوف في كل صف ٩ مربعات، اتقسموا ${L('8 × 5')} (أزرق) و${L('8 × 4')} (أصفر). المستطيل كله كام مربع؟`), 'think');
+  await choice({ options: ['40 + 32 = 72', '40 + 4 = 44', '13 + 12 = 25'], correct: '40 + 32 = 72', hint: T('Find each colour, then add.', 'احسب كل لون وبعدين اجمع.'), ok: T('8 × (5 + 4) = 40 + 32 = 72: the Distributive Property.', `${L('8 × (5 + 4) = 40 + 32 = 72')}: خاصية التوزيع.`) });
+}
+async function mission3() {                 // lesson 2: flexible numbers, 14 × 83
+  model(['80', '3'], ['7', '7'], [['560', '21'], ['560', '21']], { cap: T("Lamiaa's plaza: 14 × 83", 'ساحة لمياء: 14 × 83') });
+  g.say(T(`Mission 3: Lamiaa tiled ${kw(L('14 × 83'))} as ${L('80 + 3')} by ${L('7 + 7')}. What is the product?`, `المهمة ٣: لمياء بلّطت ${kw(L('14 × 83'))} على إنها ${L('80 + 3')} في ${L('7 + 7')}. الناتج كام؟`), 'point');
+  await choice({ options: ['1,162', '1,120', '581'], correct: '1,162', hint: T('560 + 560 + 21 + 21.', L('560 + 560 + 21 + 21') + '.'), ok: T('1,120 + 42 = 1,162.', `${L('1,120 + 42 = 1,162')}.`) });
+  model(['80', '3'], ['10', '4'], [['', ''], ['', '']], { cap: T("Reeda's plaza: 14 × 83", 'ساحة رضا: 14 × 83') });
+  g.say(T(`Reeda split the same plaza as ${L('80 + 3')} by ${L('10 + 4')}. What will Reeda get?`, `رضا قسّم نفس الساحة ${L('80 + 3')} في ${L('10 + 4')}. هيطلعله كام؟`), 'think');
+  await choice({ options: ['1,162', T('A different product', 'ناتج مختلف'), '1,120'], correct: '1,162', hint: T('It is the same rectangle, just cut differently.', 'هي نفس الساحة، بس متقسمة بشكل تاني.'), ok: T('800 + 320 + 30 + 12 = 1,162: same plaza, same area.', `${L('800 + 320 + 30 + 12 = 1,162')}: نفس الساحة ونفس المساحة.`) });
+  sign('14 × 83', T('Which split of 83 does NOT work?', 'أنهي تحليل للعدد 83 ما ينفعش؟'));
+  g.say(T('Which way of splitting 83 can NOT be used?', `أنهي طريقة لتحليل ${L('83')} ما تنفعش؟`), 'think');
+  await choice({ options: ['40 + 40 + 4', '40 + 40 + 3', '80 + 3'], correct: '40 + 40 + 4', hint: T('Add the parts. Do they make 83?', 'اجمع الأجزاء. بيعملوا ' + L('83') + '؟'), ok: T('40 + 40 + 4 = 84, not 83.', `${L('40 + 40 + 4 = 84')} مش ${L('83')}.`) });
+}
+async function mission4() {                 // lesson 3: the area model and the standard algorithm
+  pic('longMult', { a: '76', b: '24', parts: ['304', '1,520'], carry: '2' }, { dx: 10, dy: 22, k: 1.1, cap: T('Cells: 1,400 · 120 · 280 · 24', 'الخانات: 1,400 · 120 · 280 · 24') });
+  g.say(T(`Mission 4: the tile workshop writes ${kw(L('76 × 24'))} in columns. The cells of its area model are ${L('1,400')}, ${L('120')}, ${L('280')} and ${L('24')}. Which cells make the row ${L('304')}?`,
+    `المهمة ٤: ورشة البلاط كتبت ${kw(L('76 × 24'))} رأسي. خانات نموذج المساحة ${L('1,400')} و${L('120')} و${L('280')} و${L('24')}. أنهي خانات بتعمل السطر ${L('304')}؟`), 'point');
+  await choice({ options: ['280 + 24', '1,400 + 120', '120 + 24'], correct: '280 + 24', hint: T('304 is 76 × 4: the row of the 4.', L('304') + ' هي ' + L('76 × 4') + ': صف الـ ' + L('4') + '.'), ok: T('4 × 70 = 280 and 4 × 6 = 24: 304.', `${L('4 × 70 = 280')} و${L('4 × 6 = 24')}: ${L('304')}.`) });
+  pic('longMult', { a: '76', b: '24', parts: ['304', '1,520'], carry: '2' }, { dx: 10, dy: 22, k: 1.1 });
+  g.say(T('Now add the two rows. 76 × 24 = ?', `دلوقتي اجمع السطرين. ${L('76 × 24')} = ؟`), 'think');
+  await choice({ options: ['1,824', '1,724', '608'], correct: '1,824', hint: T('304 + 1,520.', L('304 + 1,520') + '.'), ok: T('304 + 1,520 = 1,824.', `${L('304 + 1,520 = 1,824')}.`) });
+  pic('longMult', { a: '67', b: '76', parts: ['402', '?,69?'], carry: '4' }, { dx: 10, dy: 22, k: 1.1 });
+  g.say(T(`${kw(L('67 × 76'))}: the first row is ${L('67 × 6 = 402')}. What is the second row, ${L('67 × 70')}?`, `${kw(L('67 × 76'))}: السطر الأول ${L('67 × 6 = 402')}. السطر التاني ${L('67 × 70')} كام؟`), 'think');
+  await choice({ options: ['4,690', '469', '4,620'], correct: '4,690', hint: T('67 × 7 = 469, and the 7 is 7 tens.', `${L('67 × 7 = 469')}، والـ ${L('7')} هنا ${L('7')} عشرات.`), ok: T('67 × 70 = 4,690, so 67 × 76 = 402 + 4,690 = 5,092.', `${L('67 × 70 = 4,690')}، يبقى ${L('67 × 76 = 402 + 4,690 = 5,092')}.`) });
+}
+async function mission5() {                 // lesson 4: Ashraf's mistake, estimation
+  pic('longMult', { a: '357', b: '36', parts: ['2,142', '10,521'], total: '12,663' }, { dx: 10, dy: 18, k: 1.05 });
+  g.say(T(`Mission 5: Ashraf worked out ${kw(L('357 × 36'))}. His first row ${L('2,142')} is right. What about his second row?`, `المهمة ٥: أشرف حسب ${kw(L('357 × 36'))}. السطر الأول ${L('2,142')} صح. والسطر التاني؟`), 'point');
+  const R = T('Wrong: 357 × 30 = 10,710', 'غلط: 357 × 30 = 10,710');
+  await choice({ options: [R, T('Right: 357 × 30 = 10,521', 'صح: 357 × 30 = 10,521'), T('Wrong: it should be 1,071', 'غلط: المفروض 1,071')], correct: R,
+    hint: T('Multiply 357 × 3, then put a 0 for the tens.', 'اضرب ' + L('357 × 3') + ' وبعدين حط ' + L('0') + ' للعشرات.'), ok: T('357 × 30 = 10,710, so 357 × 36 = 2,142 + 10,710 = 12,852.', `${L('357 × 30 = 10,710')}، يبقى ${L('357 × 36 = 2,142 + 10,710 = 12,852')}.`) });
+  sign('3,567 × 24', T('Estimate first!', 'قدّر الأول!'));
+  g.say(T(`A big order of tiles: ${kw(L('3,567 × 24'))}. Before working it out, estimate it.`, `طلبية بلاط كبيرة: ${kw(L('3,567 × 24'))}. قبل ما تحسبها، قدّرها.`), 'think');
+  await choice({ options: ['4,000 × 20 = 80,000', '4,000 × 2 = 8,000', '40,000 × 20 = 800,000'], correct: '4,000 × 20 = 80,000', hint: T('Round 3,567 to the nearest thousand and 24 to the nearest ten.', 'قرّب ' + L('3,567') + ' لأقرب ألف و' + L('24') + ' لأقرب عشرة.'), ok: T('About 80,000. The exact product is 85,608: close to the estimate.', `حوالي ${L('80,000')}. الناتج الصح ${L('85,608')}: قريب من التقدير.`) });
+  sign('6,209 × 33 = 37,254', T('Estimate: 6,000 × 30', 'التقدير: 6,000 × 30'), 28);
+  g.say(T(`Someone wrote ${kw(L('6,209 × 33 = 37,254'))}. The estimate is ${L('6,000 × 30 = 180,000')}. Is the answer reasonable?`, `حد كتب ${kw(L('6,209 × 33 = 37,254'))}. التقدير ${L('6,000 × 30 = 180,000')}. الإجابة معقولة؟`), 'think');
+  await choice({ options: [T('No, it is far too small', 'لا، صغيرة جدًا'), T('Yes, it is close', 'أيوه، قريبة')], correct: T('No, it is far too small', 'لا، صغيرة جدًا'), hint: T('Compare 37,254 with 180,000.', 'قارن ' + L('37,254') + ' بـ ' + L('180,000') + '.'), ok: T('The right product is 204,897, close to 180,000.', `الناتج الصح ${L('204,897')}، قريب من ${L('180,000')}.`) });
+}
+async function mission6() {                 // lesson 5: story problems
+  sign(T('402 · 753 · 83 g', '402 · 753 · 83'), T("Mona's kebabs: Feb · Mar · meat per kebab", 'كباب منى: فبراير · مارس · لحم القطعة'), 30);
+  g.say(T(`Mission 6: Mona's restaurant on the Red Sea sold ${L('402')} kebabs in February and ${L('753')} in March, ${L('83')} g of meat each. Which plan finds the meat used?`,
+    `المهمة ٦: مطعم منى على البحر الأحمر باع ${L('402')} قطعة كباب في فبراير و${L('753')} في مارس، وكل قطعة فيها ${L('83')} جرام لحمة. أنهي خطة تجيب اللحمة كلها؟`), 'point');
+  await choice({ options: ['(402 + 753) × 83', '402 × 753 × 83', '(753 − 402) × 83'], correct: '(402 + 753) × 83', hint: T('First find all the kebabs of the two months.', 'الأول هات عدد الكباب في الشهرين.'), ok: T('402 + 753 = 1,155 kebabs.', `${L('402 + 753 = 1,155')} قطعة.`) });
+  sign('1,155 × 83');
+  g.say(T(`So ${kw(L('1,155 × 83'))} = ? grams`, `يبقى ${kw(L('1,155 × 83'))} = ؟ جرام`), 'think');
+  await choice({ options: ['95,865', '9,586', '958,650'], correct: '95,865', hint: T('Estimate: about 1,000 × 80 = 80,000. Which answer is near?', 'قدّر: حوالي ' + L('1,000 × 80 = 80,000') + '. أنهي إجابة قريبة؟'), ok: T('1,155 × 83 = 95,865 g.', `${L('1,155 × 83 = 95,865')} جرام.`) });
+  sign(T('120 min × 33 days', '120 × 33'), T('A sandstorm: minutes a day × days', 'عاصفة رملية: دقائق كل يوم × أيام'), 28);
+  g.say(T(`A sandstorm lasted ${L('120')} minutes a day for ${L('33')} days. How many minutes in all?`, `عاصفة رملية استمرت ${L('120')} دقيقة كل يوم لمدة ${L('33')} يوم. كام دقيقة في المجموع؟`), 'think');
+  await choice({ options: ['3,960', '396', '153'], correct: '3,960', hint: T('12 × 33 = 396; now the zero of 120.', `${L('12 × 33 = 396')}؛ وبعدين صفر الـ ${L('120')}.`), ok: T('120 × 33 = 3,960 minutes, that is 2 × 33 = 66 hours.', `${L('120 × 33 = 3,960')} دقيقة، يعني ${L('2 × 33 = 66')} ساعة.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
+
+/* ---------- Stage 3 · Speed Round: is the product reasonable? (lesson 4) ---------- */
+const BT = [{ label: T('Reasonable', 'معقول'), value: 'y', c: 0 }, { label: T('Not reasonable', 'غير معقول'), value: 'n', c: 2 }];
+const PR = [['3,567 × 24', '85,608', 'y', '4,000 × 20 = 80,000'], ['8,222 × 53', '435,766', 'y', '8,000 × 50 = 400,000'], ['234 × 53', '12,402', 'y', '200 × 50 = 10,000'],
+  ['45 × 37', '1,665', 'y', '50 × 40 = 2,000'], ['572 × 98', '56,056', 'y', '600 × 100 = 60,000'], ['506 × 42', '21,252', 'y', '500 × 40 = 20,000'],
+  ['357 × 36', '1,285', 'n', '400 × 40 = 16,000', '12,852'], ['76 × 82', '62,320', 'n', '80 × 80 = 6,400', '6,232'], ['2,521 × 74', '18,655', 'n', '2,500 × 70 = 175,000', '186,554'],
+  ['659 × 42', '2,768', 'n', '700 × 40 = 28,000', '27,678'], ['3,352 × 17', '569,840', 'n', '3,000 × 20 = 60,000', '56,984'], ['6,209 × 33', '37,254', 'n', '6,000 × 30 = 180,000', '204,897']];
+async function stage3() {
+  sign('?');
+  await g.speedRound({ items: PR.map(([e, p, a, est, right]) => ({ t: L(`${e} = ${p}`), ans: a, e, p,
+      why: a === 'y' ? T(`Estimate ${est}: close.`, `التقدير ${L(est)}: قريب.`) : T(`Estimate ${est}. The product is ${right}.`, `التقدير ${L(est)}. الناتج ${L(right)}.`) })),
+    rounds: 8, ms: 15000, buttons: BT, show: it => sign(`${it.e} = ${it.p}`, '', 26),
+    ask: T('Reasonable or not?', 'معقول ولا غير معقول؟'), intro: T('Speed Round! A product appears on the sign. Estimate it in your head: is the answer reasonable?', 'جولة السرعة! هيظهر ناتج ضرب على اللافتة. قدّره في دماغك: الإجابة معقولة ولا لأ؟'),
+    think: T('Estimate: reasonable or not?', 'قدّر: معقول ولا لأ؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Help tile the Alexandria Corniche: split numbers by place value, lay each partial product as a tile, then add. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! ساعدنا نبلّط كورنيش الإسكندرية: نحلل الأعداد حسب القيمة المكانية ونحط كل ناتج جزئي بلاطة وبعدين نجمع. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can multiply with the area model, the Distributive Property and the standard algorithm, and check with an estimate. Next, try the questions of this unit.', 'بقيت تضرب بنموذج المساحة وخاصية التوزيع والخوارزمية المعيارية وتتأكد بالتقدير. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
