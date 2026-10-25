@@ -3,6 +3,13 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-26', title: 'رياضيات الصف الخامس: الوحدة الثانية «العلاقات بين الأعداد»',
+    items: [
+      { text: 'الوحدة الثانية كاملة باللغتين: 8 دروس، 35 فكرة، 207 سؤال' },
+      { text: 'لعبة جديدة: درب أرقام سيناء' },
+      { text: 'رسومات جديدة: النموذج الشريطي وشجرة العوامل ومخطط فن للمضاعفات' },
+      { text: 'الوحدات من 3 إلى 6 ظاهرة في القائمة كوحدات قادمة', links: [{ label: 'العب درب أرقام سيناء', href: 'math-sinai.html', ch: 'm5c2' }] }
+    ] },
   { date: '2026-10-25', title: 'دراسات الصف الخامس: الوحدة الثالثة «كنوز مصر»',
     items: [
       { text: 'الوحدة الثالثة كاملة: الثروة المعدنية ومصادر الطاقة، موارد المياه، المشروعات القومية (53 فكرة / 210 صياغة)' },

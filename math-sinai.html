@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Sinai Number Trail · Number Relationships</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261026a">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Sinai Number Trail.</noscript>
+<script src="firebase-config.js?v=20261026a"></script>
+<script src="chapters.js?v=20261026a"></script>
+<script src="common.js?v=20261026a"></script>
+<script src="math/m5_art.js?v=20261026a"></script>
+<script src="game_kit.js?v=20261026a"></script>
+<script>
+(() => {
+'use strict';
+/* Sinai Number Trail · the game of Unit 2, Number Relationships (Math, Grade 5). Built on the shared game kit (game_kit.js).
+   The scene is a trail through Sinai: a signpost with an equation or a number, or a picture of math/m5_art.js (plain mode): bar model, factor tree, Venn diagram, bus time line.
+   Stage 1 (Warm Up): equation or expression, and what the variable means (lesson 1, book pages 44-46).
+   Stage 2 (Missions): 1 Basem's bus and the bar model (lesson 2, p47-48) · 2 Taha's rain mistake (lesson 3, p49) · 3 factor trees and the GCF (lessons 4-5, p51-55)
+                       · 4 the buses of Ras Abu Galum and the LCM (lessons 6-7, p56-61) · 5 GCF or LCM? (lesson 8, p62-63).
+   Stage 3 (Speed Round): prime or composite? (lesson 4, p51).
+   The scene is set again before EVERY question, so the picture always belongs to the question asked, and it never shows the answer.
+   Every T('English', 'عربي') has both languages. Numbers and equations stay left to right. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr" style="white-space:nowrap">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const INK = '#1f3d57';
+const D = () => window.CH_DIAGRAMS;
+const sc = { mode: 'sign', n: '', cap: '' };
+const VW = 420, VH = 280;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const txt = (x, y, s, fs = 22, fill = INK) => `<text x="${x}" y="${y}" text-anchor="middle" direction="${/[\u0600-\u06FF]/.test(s) ? 'rtl' : 'ltr'}" unicode-bidi="embed" font-size="${fs}" font-weight="900" fill="${fill}">${esc(s)}</text>`;
+const DESERT = `<rect width="${VW}" height="${VH}" fill="#e9f5fb"/><path d="M-10 190L60 110L90 135L140 80L210 190Z" fill="#d27b5a" opacity=".55"/><path d="M230 190L300 120L330 145L380 95L440 190Z" fill="#c8664a" opacity=".45"/>`
+  + `<path d="M0 185C90 170 170 195 260 182S380 170 420 180V280H0Z" fill="#f3d39a"/><path d="M0 230C110 215 200 240 300 226S390 220 420 228V280H0Z" fill="#e8bf78" opacity=".7"/>`;
+function render() {
+  let s = DESERT;
+  if (sc.mode === 'sign') {                      // a wooden signpost with an equation, an expression or a number
+    s += `<path d="M210 196V262" stroke="#8a5a28" stroke-width="10" stroke-linecap="round"/><rect x="60" y="56" width="300" height="140" rx="16" fill="#fffaf0" stroke="#a8834f" stroke-width="7"/>`
+      + txt(210, sc.cap ? 128 : 140, sc.n, sc.fs || 34);
+    if (sc.cap) s += txt(210, 172, sc.cap, Math.min(16, Math.round(520 / String(sc.cap).length)), '#8a5a28');   // a long caption gets smaller so it stays on the sign
+  } else if (sc.pic) {                           // a picture of m5_art.js (plain) on a white panel
+    s += `<rect x="20" y="${sc.py || 18}" width="380" height="${sc.ph || 214}" rx="16" fill="#fffaf0" stroke="#a8834f" stroke-width="5"/>`
+      + `<g transform="translate(${sc.dx || 40} ${sc.dy || 30}) scale(${sc.k || 1})">${D()[sc.pic.name]({ pic: Object.assign({ plain: true }, sc.pic.pic) })}</g>`;
+    if (sc.cap) s += txt(210, 262, sc.cap, 16);
+  }
+  return s;
+}
+const g = G4Game({ ch: 'm5c2', logo: '🏜️', title: ['Sinai Number Trail', 'درب أرقام سيناء'], sub: ['Unit 2 · Number Relationships', 'الوحدة 2 · العلاقات بين الأعداد'],
+  bg: 'math/assets/bg_m5c2.svg', bgc: '#ffe0d6', label: ['A signpost with an equation, a bar model, a factor tree, a Venn diagram or a bus time line for each question', 'لافتة عليها معادلة أو نموذج شريطي أو شجرة عوامل أو مخطط فن أو خط زمني للأتوبيسات لكل سؤال'], render });
+const sign = (n, cap, fs) => { Object.assign(sc, { mode: 'sign', n, cap: cap || '', fs: fs || 0, pic: null }); g.paint(); };
+const pic = (name, p, o) => { Object.assign(sc, { mode: 'pic', pic: { name, pic: p }, cap: '', dx: 40, dy: 30, k: 1, py: 18, ph: 214 }, o || {}); g.paint(); };
+/* an option made only of numbers and signs keeps its left-to-right order on an Arabic page */
+const W = o => (/[\u0600-\u06FF]/.test(o) || /^<span/.test(o) ? o : L(o));
+const choice = o => g.choice(Object.assign({}, o, { options: o.options.map(W), correct: W(o.correct) }));
+const EQ = T('Equation', 'معادلة'), EX = T('Expression', 'تعبير رياضي'), NE = T('Neither', 'ليس أي منهما');
+
+/* ---------- Stage 1 · Warm Up: equation or expression? (lesson 1) ---------- */
+async function stage1() {
+  sign('4.7 + 3.6 = M');
+  g.say(T(`Welcome to Sinai! The first signpost says ${kw(L('4.7 + 3.6 = M'))}. Is it an equation or an expression?`, `أهلًا بيك في سيناء! أول لافتة مكتوب عليها ${kw(L('4.7 + 3.6 = M'))}. دي معادلة ولا تعبير رياضي؟`), 'point');
+  await choice({ options: [EQ, EX, NE], correct: EQ, hint: T('Look for an equal sign.', 'دوّر على علامة يساوي.'), ok: T('It has an equal sign, so it is an equation.', 'فيها علامة يساوي، يبقى معادلة.') });
+  sign('125 − 27.3');
+  g.say(T(`Next signpost: ${kw(L('125 − 27.3'))}. Equation or expression?`, `اللافتة اللي بعدها: ${kw(L('125 − 27.3'))}. معادلة ولا تعبير رياضي؟`), 'think');
+  await choice({ options: [EX, EQ, NE], correct: EX, hint: T('Is there an equal sign?', 'فيه علامة يساوي؟'), ok: T('No equal sign: it is an expression.', 'مفيش علامة يساوي: يبقى تعبير رياضي.') });
+  sign('180 + x = 275', T('Aqaba 180 km · Suez 275 km', 'العقبة 180 كم · السويس 275 كم'));
+  g.say(T(`Mariam compared the two gulfs: the Gulf of Aqaba is about ${L('180')} km and the Gulf of Suez about ${L('275')} km. She wrote ${kw(L('180 + x = 275'))}. What does ${kw('x')} represent?`,
+    `مريم قارنت بين الخليجين: خليج العقبة حوالي ${L('180')} كم وخليج السويس حوالي ${L('275')} كم. كتبت ${kw(L('180 + x = 275'))}. ${kw('x')} بيمثل إيه؟`), 'think');
+  await choice({ options: [T('The difference between the two lengths', 'الفرق بين الطولين'), T('The length of one gulf', 'طول خليج واحد'), T('The width of Sinai', 'عرض سيناء')], correct: T('The difference between the two lengths', 'الفرق بين الطولين'),
+    hint: T('180 plus what makes 275?', L('180') + ' زائد كام يعمل ' + L('275') + '؟'), ok: T('x = 275 − 180 = 95 km: the difference.', `${L('x = 275 − 180 = 95')} كم: الفرق.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 2: the bar model and the unknown part
+  pic('barModel', { whole: '492.64', parts: ['396.48', 'x'], w: [4, 1] }, { dy: 52 });
+  g.say(T(`Mission 1: Basem’s bus goes ${L('492.64')} km from Cairo to Ras Muhammad. It stops in El Tor after ${L('396.48')} km. Which equation matches the bar model?`,
+    `المهمة ١: أتوبيس باسم رايح من القاهرة لرأس محمد، الرحلة ${L('492.64')} كم. وقف في الطور بعد ${L('396.48')} كم. أنهي معادلة على مقاس النموذج الشريطي؟`), 'point');
+  await choice({ options: ['396.48 + x = 492.64', '492.64 + 396.48 = x', 'x − 396.48 = 492.64'], correct: '396.48 + x = 492.64', hint: T('The two parts make the whole.', 'الجزءين مع بعض بيعملوا الكل.'), ok: T('Part + part = whole.', 'جزء + جزء = الكل.') });
+  pic('barModel', { whole: '492.64', parts: ['396.48', 'x'], w: [4, 1] }, { dy: 52 });
+  g.say(T('Now find x: how far is El Tor from Ras Muhammad?', `دلوقتي أوجد ${L('x')}: الطور بعيدة عن رأس محمد قد إيه؟`), 'think');
+  await choice({ options: [T('96.16 km', '96.16 كم'), T('889.12 km', '889.12 كم'), T('104.24 km', '104.24 كم')], correct: T('96.16 km', '96.16 كم'), hint: T('Subtract the known part from the whole.', 'اطرح الجزء المعروف من الكل.'), ok: T('492.64 − 396.48 = 96.16 km.', `${L('492.64 − 396.48 = 96.16')} كم.`) });
+  sign('T − 2.45 = 0.26');
+  g.say(T(`A signpost on the trail: ${kw(L('T − 2.45 = 0.26'))}. What is T?`, `لافتة على الطريق: ${kw(L('T − 2.45 = 0.26'))}. قيمة ${L('T')} كام؟`), 'think');
+  await choice({ options: ['2.71', '2.19', '0.26'], correct: '2.71', hint: T('Something was subtracted from T: add it back.', 'اتطرح حاجة من ' + L('T') + ': رجّعها بالجمع.'), ok: T('T = 0.26 + 2.45 = 2.71.', `${L('T = 0.26 + 2.45 = 2.71')}.`) });
+}
+async function mission2() {                 // lesson 3: error analysis
+  sign('12.5 + 9.17 = x', T('Rain: 12.5 cm usually, 9.17 cm last year', 'المطر: 12.5 سم عادةً و9.17 سم العام الماضي'), 30);
+  g.say(T(`Mission 2: Northern Sinai usually gets ${L('12.5')} cm of rain in winter; last year only ${L('9.17')} cm. Taha wanted the difference and wrote this. What did he do wrong?`,
+    `المهمة ٢: شمال سيناء بينزل عليه عادةً ${L('12.5')} سم مطر في الشتا، والسنة اللي فاتت ${L('9.17')} سم بس. طه عايز الفرق وكتب كده. غلط في إيه؟`), 'point');
+  await choice({ options: [T('He added; a difference needs subtraction', 'جمع، والفرق محتاج طرح'), T('He added the numbers wrongly', 'غلط في الجمع'), T('He should not use a letter', 'مكانش المفروض يستخدم حرف')], correct: T('He added; a difference needs subtraction', 'جمع، والفرق محتاج طرح'),
+    hint: T('His adding is right. Is adding the right operation?', 'جمعه صح. بس هل الجمع هو العملية الصح؟'), ok: T('The question asks for a difference, so subtract.', 'السؤال عن الفرق، يبقى نطرح.') });
+  sign('12.5 − 9.17 = x');
+  g.say(T('Now solve the right equation. What is the difference?', 'دلوقتي حل المعادلة الصح. الفرق كام؟'), 'think');
+  await choice({ options: [T('3.33 cm', '3.33 سم'), T('21.67 cm', '21.67 سم'), T('3.43 cm', '3.43 سم')], correct: T('3.33 cm', '3.33 سم'), hint: T('Line up the decimal points: 12.50 − 9.17.', 'رتّب العلامات العشرية: ' + L('12.50 − 9.17') + '.'), ok: T('12.5 − 9.17 = 3.33 cm.', `${L('12.5 − 9.17 = 3.33')} سم.`) });
+}
+async function mission3() {                 // lessons 4-5: factor trees and the GCF
+  pic('factorTree', { tree: { v: 18, c: [{ v: 3 }, { v: 6, q: true }] } }, { dy: 40, k: 1.1, dx: 23 });
+  g.say(T(`Mission 3: complete the factor tree of ${kw('18')}. One branch is 3. What goes in place of the question mark?`, `المهمة ٣: كمّل شجرة عوامل العدد ${kw(L('18'))}. فرع منها ${L('3')}. إيه اللي مكان علامة الاستفهام؟`), 'point');
+  await choice({ options: ['6', '15', '9'], correct: '6', hint: T('3 × ? = 18', L('3 × ? = 18')), ok: T('3 × 6 = 18, and 6 = 2 × 3, so 18 = 2 × 3 × 3.', `${L('3 × 6 = 18')}، و${L('6 = 2 × 3')}، يبقى ${L('18 = 2 × 3 × 3')}.`) });
+  pic('factorTree', { tree: { v: 42, c: [{ v: 2 }, { v: 21, c: [{ v: 3 }, { v: 7 }] }] } }, { dy: 26, k: 1.05, dx: 31 });
+  g.say(T(`Here is the factor tree of ${kw('42')}: the primes are in circles. What is its prime factorization?`, `دي شجرة عوامل العدد ${kw(L('42'))}: الأعداد الأولية جوه دواير. إيه تحليله لعوامل أولية؟`), 'think');
+  await choice({ options: ['2 × 3 × 7', '2 × 21', '6 × 7'], correct: '2 × 3 × 7', hint: T('Only the numbers in circles.', 'الأعداد اللي في الدواير بس.'), ok: T('42 = 2 × 3 × 7.', `${L('42 = 2 × 3 × 7')}.`) });
+  sign(T('16 LE · 12 LE', '16 · 12'), T('Bus tickets in Sharm El Sheikh', 'تذاكر الأتوبيس في شرم الشيخ (بالجنيه)'), 30);
+  g.say(T(`Two groups ride the bus in Sharm El Sheikh; every ticket costs the same. One group pays ${L('16')} LE, the other ${L('12')} LE. At most, how much is one ticket?`,
+    `مجموعتين ركبوا الأتوبيس في شرم الشيخ، والتذاكر كلها بنفس السعر. مجموعة دفعت ${L('16')} جنيه والتانية ${L('12')} جنيه. أكتر سعر ممكن للتذكرة كام؟`), 'think');
+  await choice({ options: [T('4 LE', '4 جنيه'), T('2 LE', '2 جنيه'), T('8 LE', '8 جنيه')], correct: T('4 LE', '4 جنيه'), hint: T('Find the greatest common factor of 16 and 12.', 'هات العامل المشترك الأكبر لـ ' + L('16') + ' و' + L('12') + '.'), ok: T('GCF of 16 and 12 = 4 LE.', `ع.م.أ لـ ${L('16')} و${L('12')} = ${L('4')} جنيه.`) });
+}
+async function mission4() {                 // lessons 6-7: multiples, common multiples, the LCM
+  pic('skipLine', { from: 3, to: 13, first: 3 }, { dy: 66, dx: 32, k: 1.05 });
+  g.say(T(`Mission 4: to Ras Abu Galum! On weekdays the first bus leaves at ${L('3:00')} a.m., then one every 3 hours, the last at ${L('12:00')} p.m. When can Omar catch a bus?`,
+    `المهمة ٤: على رأس أبو جالوم! أيام الأسبوع أول أتوبيس بيتحرك ${L('3:00')} الصبح، وبعدين أتوبيس كل ٣ ساعات، وآخر واحد ${L('12:00')} الضهر. عمر يقدر يركب إمتى؟`), 'point');
+  await choice({ options: ['3:00, 6:00, 9:00, 12:00', '3:00, 5:00, 7:00, 9:00, 11:00', '3:00, 9:00, 12:00'], correct: '3:00, 6:00, 9:00, 12:00', hint: T('Skip count by 3 from 3.', 'عُد بالقفز ٣ ٣ من ' + L('3') + '.'), ok: T('3, 6, 9, 12: the multiples of 3.', `${L('3, 6, 9, 12')}: مضاعفات ${L('3')}.`) });
+  pic('skipLine', { from: 6, to: 12, first: 6 }, { dy: 66, dx: 32, k: 1.05 });
+  g.say(T(`On the weekend the first bus is at ${L('6:00')} a.m., then one every 2 hours until noon: ${L('6, 8, 10, 12')}. At which times can Omar ALWAYS catch a bus, weekday or weekend?`,
+    `في الأجازة أول أتوبيس ${L('6:00')} الصبح، وبعدين كل ساعتين لحد الضهر: ${L('6, 8, 10, 12')}. إمتى عمر يقدر يركب أتوبيس دايمًا، في أيام الأسبوع أو الأجازة؟`), 'think');
+  await choice({ options: ['6:00, 12:00', '3:00, 6:00', '8:00, 10:00'], correct: '6:00, 12:00', hint: T('Which times are in both lists?', 'أنهي أوقات موجودة في القائمتين؟'), ok: T('6 and 12 are in both lists: common multiples.', `${L('6')} و${L('12')} في القائمتين: مضاعفات مشتركة.`) });
+  pic('multVenn', { a: 3, b: 4, upTo: 12, show: [3, 6, 9, 4, 8, 16] }, { dy: 20, dx: 40, k: 1 });
+  g.say(T(`A Venn diagram of the first 12 multiples of 3 and of 4. Which numbers belong in the shared center?`, `مخطط فن لأول ١٢ مضاعف للعدد ${L('3')} وللعدد ${L('4')}. أنهي أعداد مكانها في الجزء المشترك؟`), 'think');
+  await choice({ options: ['12, 24, 36', '3, 4, 7', '6, 8, 9'], correct: '12, 24, 36', hint: T('Numbers that are multiples of 3 AND of 4.', 'أعداد من مضاعفات ' + L('3') + ' ومن مضاعفات ' + L('4') + ' مع بعض.'), ok: T('12, 24 and 36 are multiples of both.', `${L('12, 24, 36')} مضاعفات للاتنين.`) });
+  sign(T('6 min · 8 min', '6 · 8'), T('Hend and Jana bike around the lake', 'هند وجنى بيلفوا حوالين البحيرة (بالدقائق)'), 30);
+  g.say(T(`Hend bikes a lap in ${L('6')} minutes, her sister Jana in ${L('8')}. They start together. After how many minutes are they together at the start again?`,
+    `هند بتلف لفة بالعجلة في ${L('6')} دقايق، وأختها جنى في ${L('8')}. بدأوا مع بعض. بعد كام دقيقة يتقابلوا تاني عند البداية؟`), 'think');
+  await choice({ options: [T('24 minutes', '24 دقيقة'), T('48 minutes', '48 دقيقة'), T('14 minutes', '14 دقيقة')], correct: T('24 minutes', '24 دقيقة'), hint: T('The least common multiple of 6 and 8.', 'المضاعف المشترك الأصغر لـ ' + L('6') + ' و' + L('8') + '.'), ok: T('6, 12, 18, 24 and 8, 16, 24: the LCM is 24.', `${L('6, 12, 18, 24')} و${L('8, 16, 24')}: م.م.أ = ${L('24')}.`) });
+}
+async function mission5() {                 // lesson 8: GCF or LCM?
+  sign('7 · 4', T('Hiking every 7 days · weights every 4 days', 'مشي كل ٧ أيام · أثقال كل ٤ أيام'), 34);
+  g.say(T(`Mission 5: the Sinai Trail goes from the Gulf of Aqaba to the top of Mount Saint Catherine. Mohamed hikes every ${L('7')} days and lifts weights every ${L('4')} days. He did both today. Do we need the GCF or the LCM?`,
+    `المهمة ٥: درب سيناء بيبدأ من خليج العقبة لحد قمة جبل سانت كاترين. محمد بيمشي كل ${L('7')} أيام وبيرفع أثقال كل ${L('4')} أيام، وعمل الاتنين النهارده. محتاجين ع.م.أ ولا م.م.أ؟`), 'point');
+  await choice({ options: [T('The LCM', 'م.م.أ'), T('The GCF', 'ع.م.أ')], correct: T('The LCM', 'م.م.أ'), hint: T('When do two repeating things meet again?', 'إمتى حاجتين بيتكرروا يتقابلوا تاني؟'), ok: T('Meeting again: the least common multiple.', 'التقابل تاني: المضاعف المشترك الأصغر.') });
+  sign('7 · 4', T('Hiking every 7 days · weights every 4 days', 'مشي كل ٧ أيام · أثقال كل ٤ أيام'), 34);
+  g.say(T('So in how many days will he do both again?', 'يبقى بعد كام يوم هيعمل الاتنين تاني؟'), 'think');
+  await choice({ options: [T('28 days', '28 يوم'), T('11 days', '11 يوم'), T('3 days', '3 أيام')], correct: T('28 days', '28 يوم'), hint: T('Skip count by 7: 7, 14, 21, 28… Which is also a multiple of 4?', 'عُد بالقفز ٧: ' + L('7, 14, 21, 28') + '… أنهي واحد من مضاعفات ' + L('4') + ' كمان؟'), ok: T('LCM of 7 and 4 = 28 days.', `م.م.أ لـ ${L('7')} و${L('4')} = ${L('28')} يوم.`) });
+  sign(T('35 cm · 75 cm', '35 · 75'), T('Omnia’s two strips of cloth', 'قطعتين قماش أمنية (بالسنتيمتر)'), 32);
+  g.say(T(`Omnia cuts cloth ${L('35')} cm and ${L('75')} cm wide into equal strips, as wide as possible. How wide is each strip?`, `أمنية بتقص قماش عرضه ${L('35')} سم و${L('75')} سم لشرايط متساوية بأكبر عرض ممكن. عرض الشريط كام؟`), 'think');
+  await choice({ options: [T('5 cm', '5 سم'), T('15 cm', '15 سم'), T('7 cm', '7 سم')], correct: T('5 cm', '5 سم'), hint: T('The greatest number that divides 35 and 75.', 'أكبر عدد بيقسم ' + L('35') + ' و' + L('75') + '.'), ok: T('35 = 5 × 7, 75 = 3 × 5 × 5: the GCF is 5 cm.', `${L('35 = 5 × 7')} و${L('75 = 3 × 5 × 5')}: ع.م.أ = ${L('5')} سم.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
+
+/* ---------- Stage 3 · Speed Round: prime or composite? ---------- */
+const BT = [{ label: T('Prime', 'أولي'), value: 'p', c: 0 }, { label: T('Composite', 'متعدد العوامل'), value: 'c', c: 2 }];
+const NUMS = [[2, 'p'], [7, 'p'], [11, 'p'], [13, 'p'], [17, 'p'], [19, 'p'], [23, 'p'], [29, 'p'], [9, 'c', '3 × 3'], [15, 'c', '3 × 5'], [21, 'c', '3 × 7'], [24, 'c', '4 × 6'], [27, 'c', '3 × 9'], [33, 'c', '3 × 11'], [49, 'c', '7 × 7'], [51, 'c', '3 × 17']];
+async function stage3() {
+  sign('?');
+  await g.speedRound({ items: NUMS.map(([n, a, pair]) => ({ t: L(String(n)), ans: a, n,
+      why: a === 'p' ? T('Its only factors are 1 and itself.', 'عوامله ' + L('1') + ' والعدد نفسه بس.') : T(`It has another factor pair: ${pair}.`, `ليه زوج عوامل تاني: ${L(pair)}.`) })),
+    rounds: 8, ms: 12000, buttons: BT, show: it => sign(String(it.n)),
+    ask: T('Prime or composite?', 'أولي ولا متعدد العوامل؟'), intro: T('Speed Round! A number appears on the signpost. Is it prime (only 1 and itself) or composite (more than two factors)?', 'جولة السرعة! هيظهر عدد على اللافتة. أولي (عوامله ١ والعدد نفسه بس) ولا متعدد العوامل (له أكتر من عاملين)؟'),
+    think: T('Prime or composite?', 'أولي ولا متعدد العوامل؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Walk the trail across Sinai: read equations, find the unknown, build factor trees and catch the buses with multiples. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! يلّا نمشي في درب سيناء: نقرا المعادلات ونلاقي المجهول ونبني أشجار العوامل ونلحق الأتوبيسات بالمضاعفات. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can solve equations, find prime factors and use the GCF and the LCM. Next, try the questions of this unit.', 'بقيت تحل المعادلات وتحلل لعوامل أولية وتستخدم ع.م.أ وم.م.أ. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

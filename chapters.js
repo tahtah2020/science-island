@@ -246,6 +246,27 @@ window.CHAPTERS = [
     cover: 'math/assets/map_m5c1.svg', quizBg: 'math/assets/bg_m5c1.svg',
     lessons: ['Decimals to the Thousandths Place', 'Place Value Shuffle', 'Composing and Decomposing Decimals', 'Comparing Decimals', 'Rounding Decimals', 'Estimating Decimal Sums', 'Modeling Decimal Addition', 'Modeling Decimals Subtraction', 'Estimating Decimal Differences', 'Subtracting to the Thousandths Place', 'Decimal Story Problems'] },
 
+  /* Grade 5 Math Unit 2 (both books read 26 Oct 2026, pages 43-63). Units 3-6: titles and lessons from the contents pages (EN pages iii-v, AR pages iii-vi), locked until their pages arrive. */
+  { id: 'm5c2', subject: 'math', grade: 'g5', n: 2, title: 'Number Relationships', titleAr: 'العلاقات بين الأعداد', icon: '🔗', tint: '#ffe0d6', ready: true, bookOrder: true,
+    lessons: ['Expressions, Equations, and Variables', 'Variables in Equations', 'Telling Stories with Numbers', 'Prime Factorization', 'Greatest Common Factors (G.C.F)', 'Identifying Multiples', 'Least Common Multiple (L.C.M)', 'Factors or Multiples?'],
+    questions: 'math/questions_m5c2.js', questionsAr: 'math/questions_m5c2_ar.js', art: 'math/m5_art.js', questMax: 24,
+    game: { href: 'math-sinai.html', name: "Sinai Number Trail", nameAr: "درب أرقام سيناء", icon: '🏜️', hint: '…', hintAr: '…' },
+    map: { img: 'math/assets/map_m5c2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_m5c2.svg', quizBg: 'math/assets/bg_m5c2.svg',
+    lessonsAr: ['التعبيرات الرياضية والمعادلات والمتغيرات', 'المتغيرات في المعادلات', 'القصص والأعداد', 'تحليل العدد إلى عوامل أولية', 'العامل المشترك الأكبر (ع.م.أ)', 'تحديد المضاعفات', 'المضاعف المشترك الأصغر (م.م.أ)', 'عوامل أم مضاعفات؟'] },
+  { id: 'm5c3', subject: 'math', grade: 'g5', n: 3, title: 'Multiplication with Whole Numbers', titleAr: 'ضرب الأعداد الصحيحة', icon: '✖️', tint: '#e3f1dc', ready: false,
+    lessons: ['Using the Area Model to Multiply', 'The Distributive Property of Multiplication', 'Multiplying by a 2-digit number using the algorithm', 'Multiplying Multi-Digit Numbers', 'Multiplication Problems in the Real World'],
+    lessonsAr: ['استخدام نموذج مساحة المستطيل في عملية الضرب', 'خاصية التوزيع في عملية الضرب', 'الضرب في عدد مكون من رقمين باستخدام الخوارزمية المعيارية', 'ضرب الأعداد متعددة الأرقام', 'مسائل كلامية على الضرب'] },
+  { id: 'm5c4', subject: 'math', grade: 'g5', n: 4, title: 'Division with Whole Numbers', titleAr: 'القسمة على أعداد صحيحة', icon: '➗', tint: '#dcebf7', ready: false,
+    lessons: ['Dividing Using Area Model', 'Estimating Quotients', 'Using the division algorithm', 'The relation between division and multiplication', 'Multistep Story Problems'],
+    lessonsAr: ['القسمة باستخدام نموذج مساحة المستطيل', 'تقدير خارج القسمة', 'استخدام خوارزمية القسمة', 'علاقة القسمة بالضرب', 'مسائل كلامية متعددة الخطوات'] },
+  { id: 'm5c5', subject: 'math', grade: 'g5', n: 5, title: 'Multiplication and Division with Decimals', titleAr: 'عمليتا الضرب والقسمة مع الكسور العشرية', icon: '🔟', tint: '#f3e3f5', ready: false,
+    lessons: ['Multiplying by Powers of Ten', 'Multiplying Decimals by Whole Numbers', 'Multiplying Tenths by Tenths', 'Multiply decimals using the area model', 'Multiplying Decimals through the Hundredths Place', 'Multiplying Decimals through the Thousandths Place', 'Decimals and the Metric System', 'Measurement, Decimals, and Powers of Ten', 'Solving Multistep Story Problems', 'Dividing by Powers of Ten', 'Patterns and Relationships in Powers of Ten', 'Dividing Decimals by Whole Numbers', 'Dividing Decimals by Decimals'],
+    lessonsAr: ['الضرب في قوى العدد 10', 'ضرب الكسور العشرية في أعداد صحيحة', 'ضرب الأجزاء من عشرة في أجزاء من عشرة', 'ضرب الكسور العشرية باستخدام نموذج مساحة المستطيل', 'ضرب الكسور العشرية حتى جزء من مائة', 'ضرب الكسور العشرية حتى جزء من الألف', 'الكسور العشرية والنظام المتري', 'القياس والكسور العشرية وقوى العدد 10', 'حل مسائل كلامية متعددة الخطوات', 'القسمة على قوى العدد 10', 'الأنماط والعلاقات في قوى العدد 10', 'قسمة كسور عشرية على أعداد صحيحة', 'قسمة كسور عشرية على كسور عشرية'] },
+  { id: 'm5c6', subject: 'math', grade: 'g5', n: 6, title: 'Numerical Expressions and Patterns', titleAr: 'التعبيرات العددية والأنماط', icon: '🧩', tint: '#fff1c9', ready: false,
+    lessons: ['Ordering of Mathematical Operations', 'Numerical Expressions with Parentheses', 'Writing Expressions to Represent Scenarios', 'Identifying Numerical Patterns'],
+    lessonsAr: ['ترتيب إجراء العمليات الحسابية', 'تعبيرات عددية تتضمن أقواسًا', 'كتابة تعبير عددي لتمثيل موقف ما', 'تحديد الأنماط العددية'] },
+
   /* Grade 4 Math, first term 2026/2027. Sources: the Arabic and English school books (each track follows its own book; same content).
      Unit 1: concept 1 "Reinforcing Place Value" (lessons 1-4), concept 2 "Using Place Value" (lessons 5-8). */
   { id: 'mg4u1', subject: 'math', grade: 'g4', n: 1, title: 'Place Value', titleAr: 'القيمة المكانية', icon: '🔢', tint: '#ffe6cc', ready: true,

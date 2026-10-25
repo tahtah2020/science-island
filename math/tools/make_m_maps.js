@@ -98,3 +98,33 @@ g4Island('mg4u1', '#fbe3b8', [[540, 1180, 1, '1,000'], [590, 1190, .9, '100'], [
 g4Island('mg4u2', '#f6e0c2', [[540, 1180, 1, '+'], [590, 1190, .9, '−'], [640, 1182, .8, '=']]);
 g4Island('mg6u1', '#fbe3b8', [[540, 1180, 1, '2'], [590, 1190, .9, '3'], [640, 1182, .8, '5']]);
 g4Island('mg6u2', '#e9e3f6', [[540, 1180, 1, '−'], [590, 1190, .9, '0'], [640, 1182, .8, '+']]);
+
+/* ---------- Grade 5 · Unit 2 · Sinai Number Trail: a desert island with red mountains, sand dunes, the gulf, a factor tree and a Venn board ---------- */
+(function () {
+  seed = 31;
+  const D = ctx.window.CH_DIAGRAMS;
+  const mountain = (x, y, k, c1 = '#c8664a', c2 = '#a44a33') => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-120 0L-40 -130L-10 -96L30 -160L120 0Z" fill="${c1}" stroke="${c2}" stroke-width="5" stroke-linejoin="round"/><path d="M30 -160L52 -110L36 -100L60 -60" fill="none" stroke="${c2}" stroke-width="4" stroke-linecap="round"/></g>`;
+  const dune = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-110 0Q-40 -60 20 -40Q70 -26 110 0Z" fill="#efc77f" stroke="#d6a457" stroke-width="4"/><path d="M-60 -20Q-10 -44 40 -30" fill="none" stroke="#fff3d6" stroke-width="4" stroke-linecap="round"/></g>`;
+  const bus = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-50" y="-34" width="100" height="44" rx="10" fill="#e2603f" stroke="#a8432a" stroke-width="4"/><rect x="-40" y="-26" width="22" height="16" rx="3" fill="#fff"/><rect x="-12" y="-26" width="22" height="16" rx="3" fill="#fff"/><rect x="16" y="-26" width="22" height="16" rx="3" fill="#fff"/><circle cx="-28" cy="12" r="9" fill="#1f3d57"/><circle cx="28" cy="12" r="9" fill="#1f3d57"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#f6d9a2" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#f3cf96" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#f0c9a0" opacity=".6"/>`;
+  /* the gulf: a strip of sea down the right side */
+  inside += `<path d="M1130 100C1040 360 1090 640 1010 860S1040 1180 1100 1300H1300V100Z" fill="#8fd3ee" opacity=".95"/><path d="M1120 160C1050 380 1095 640 1030 860" fill="none" stroke="#c6ecf8" stroke-width="10" stroke-linecap="round" stroke-dasharray="2 30"/>`;
+  for (let i = 0; i < 18; i++) { const x = f(90 + rnd() * 880), y = f(140 + rnd() * 1040); inside += tuft(x, y, '#9aa860'); }
+  let s = island([[0, '#f8deac'], [.5, '#f3d39a'], [1, '#f6dcb4']], ['#f3e6b8', '#f6efd2'], inside, ['#d8b77a', '#fbf0cf', '#e2c58e']);
+  s += mountain(250, 330, 1.5) + mountain(420, 300, 1.1, '#d27b5a', '#a8553a') + mountain(840, 330, 1);
+  s += dune(200, 900, 1.2) + dune(560, 1140, 1) + dune(860, 1150, 1.1);
+  s += bus(560, 860, 1.1);
+  s += board(240, 640, 260, 190, '<g transform="translate(-118 -92) scale(.7)">' + D.factorTree({ pic: { plain: true, tree: { v: 24, c: [{ v: 4, c: [{ v: 2 }, { v: 2 }] }, { v: 6, c: [{ v: 2 }, { v: 3 }] }] } } }) + '</g>');
+  s += board(930, 700, 270, 170, '<g transform="translate(-130 -84) scale(.77)">' + D.multVenn({ pic: { plain: true, a: 3, b: 4, upTo: 12, show: [3, 6, 4, 8, 12, 24] } }) + '</g>');
+  s += crate(400, 1150, 1, 'x') + crate(458, 1162, .9, '+') + crate(510, 1154, .8, '=');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_m5c2.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fdf0d8"/><stop offset="1" stop-color="#f6d6a4"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+${mountain(240, 760, 2.4)}${mountain(560, 760, 1.6, '#d27b5a', '#a8553a')}${mountain(1360, 760, 2)}
+<path d="M0 760C300 730 620 790 900 760C1180 730 1400 760 1600 750V1000H0Z" fill="#efc77f"/><path d="M0 820C300 800 620 850 900 820C1180 800 1400 825 1600 815V1000H0Z" fill="#e2b56a" opacity=".7"/>
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_m5c2.svg', b);
+})();
