@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'English Grade 5 Unit 3: the owner’s pictures',
+    items: [
+      { text: 'The weather tap picture uses the owner’s pictures (thunderstorm, sandstorm, flood, drought, wildfire, heat wave), cropped without their captions', links: [{ label: 'K2', href: 'quiz.html#preview=K2.1&lang=en', ch: 'eg5u3' }] },
+      { text: 'New tap picture: pond, well, fly, frog, boat, mud-brick house. New idea M8 (page 48 «Read, look, and number») and new tap questions in L4 and M5', links: [{ label: 'M8', href: 'quiz.html#preview=M8.1&lang=en', ch: 'eg5u3' }] },
+      { text: 'Weather Watch shows the pictures in missions 1, 2, 4 and 5', links: [{ label: 'Missions', href: 'english-weather.html#stage2', ch: 'eg5u3' }] }
+    ] },
   { date: '2026-10-24', title: 'English Grade 5 Unit 2: real pictures',
     items: [
       { text: 'Healthy Body Hero and the body tap picture use the real pictures (heart, lungs, muscle, fist, vessels, football, apple, pillow, bones, dumbbell, toothbrush, water)' }

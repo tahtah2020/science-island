@@ -5,7 +5,9 @@
    Idea letters (one per lesson): K, L, M, N, O.  Boss ideas: K6, L6, M7, N4, O3.
    Rules: answers of mc/fill at index 0 (the page shuffles) · one Boss idea per lesson (every variant mode:'boss') · about a third timed (10-20 s, easy recall)
           distractors = real misconceptions · term/fix answers ≤ 18 letters · core and Boss only from the school book.
-   Tap picture (english/g5_art.js): weatherSix -> thunderstorm | sandstorm | flood | drought | wildfire | heatwave
+   Tap pictures (english/g5_art.js): weatherSix -> thunderstorm | sandstorm | flood | drought | wildfire | heatwave
+                                    storyThings -> pond | well | fly | frog | boat | mudhouse (new idea M8 = page 48 exercise 2 "Read, look, and number"; also in L4 and M5)
+   Pictures: the owner's illustrations (25 Oct 2026), english/assets/wx_*.jpg, cropped without the sheet's captions.
    Review notes:
    - The listening activities of the book (audio) are asked as reading questions; the audio is not on the site. Open speaking, discussion, "Think", role-play, writing and drawing tasks are not asked.
    - Page 43 exercise 5 question 3 says "Why can't farmers grow food in the US?" but the dialogue says the drought is in China: the question is not asked. Farmers in the drought are asked as "there is no water".
@@ -111,6 +113,7 @@ window.IDEAS = [
       { type: 'mc', mode: 'normal', level: 'easy', q: 'What protected the Ancient Egyptians from sandstorms?', options: ['Mud bricks', 'Wood', 'Pyramids', 'Metal'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'medium', q: 'The Ancient Egyptians found smart ways to ___.', options: ['survive', 'damage', 'breathe', 'grow'], answer: 0 },
       { type: 'tf', mode: 'timed', seconds: 10, level: 'easy', q: 'During sandstorms, people stayed inside to stay safe.', answer: 0 },
+      { type: 'tap', diagram: 'storyThings', mode: 'normal', level: 'easy', q: 'The Ancient Egyptians built their homes with thick mud bricks. Tap the mud-brick house.', answer: 'mudhouse' },
       { type: 'tf', mode: 'timed', seconds: 10, level: 'easy', q: 'The Ancient Egyptians had modern machines.', answer: 1 },
       { type: 'match', mode: 'normal', level: 'medium', q: 'Match each problem to the Egyptians’ solution.', left: ['Floods', 'Droughts', 'Sandstorms'], right: ['canals and basins', 'irrigation systems', 'thick mud bricks'], answer: [0, 1, 2] }
     ] },
@@ -138,6 +141,14 @@ window.IDEAS = [
     ] },
 
   /* ---------- Lesson 3 · Story Time: The Two Frogs ---------- */
+  { id: 'M8', lesson: 3, concept: 'Pond, well and flies (read, look and number)',
+    explain: 'A pond is an area of water, usually smaller than a lake. A well is a deep hole dug in the ground to find water. Flies are small insects with two thin, small wings.',
+    variants: [
+      { type: 'tap', diagram: 'storyThings', mode: 'normal', level: 'easy', q: 'An area of water, usually smaller than a lake. Tap it.', answer: 'pond' },
+      { type: 'tap', diagram: 'storyThings', mode: 'normal', level: 'easy', q: 'A deep hole dug in the ground to find water. Tap it.', answer: 'well' },
+      { type: 'tap', diagram: 'storyThings', mode: 'timed', seconds: 15, level: 'easy', q: 'Small insects with two thin, small wings. Tap one.', answer: 'fly' },
+      { type: 'tap', diagram: 'storyThings', mode: 'normal', level: 'easy', q: 'Two of them were best friends in the story. Tap this animal.', answer: 'frog' }
+    ] },
   { id: 'M1', lesson: 3, concept: 'The two frogs and their pond',
     explain: 'Once upon a time, in a small and quiet village, there were two frogs who were best friends. They lived together in a small pond near the edge of the village. Every day, they had fun catching flies, swimming in the cool water and resting under the warm sun.',
     variants: [
@@ -186,6 +197,7 @@ window.IDEAS = [
       { type: 'mc', mode: 'normal', level: 'medium', q: 'Which is the vowel digraph in “I like to eat green peas”?', options: ['ee and ea', 'oo', 'oa', 'ai'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'medium', q: 'Which is the vowel digraph in “We read two books last week”?', options: ['ea, oo and ee', 'oa', 'ai', 'ou'], answer: 0 },
       { type: 'fill', mode: 'normal', level: 'medium', q: 'The ___ sailed across the lake.', options: ['boat', 'meet', 'weak', 'floods'], answer: 0 },
+      { type: 'tap', diagram: 'storyThings', mode: 'normal', level: 'easy', q: '“oa” makes a long “o” sound in this word: it sailed across the lake. Tap it.', answer: 'boat' },
       { type: 'fill', mode: 'normal', level: 'medium', q: 'It’s nice to ___ my teacher at the break.', options: ['meet', 'boat', 'weak', 'floods'], answer: 0 },
       { type: 'fill', mode: 'normal', level: 'medium', q: 'The ___ made the plants weak.', options: ['floods', 'boat', 'meet', 'weak'], answer: 0 }
     ] },

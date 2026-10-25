@@ -2,6 +2,9 @@
    Unit 1 "Food, Nature, and Culture":  nileLife    (tap) ids crocodile · weeds · insect · fish · bird · river
    Unit 2 "My Healthy Body":            bodyParts   (tap) ids heart · lungs · muscle · blood · vessels · fist
    Unit 3 "When Nature Changes":        weatherSix  (tap) ids thunderstorm · sandstorm · flood · drought · wildfire · heatwave
+                                        storyThings (tap) ids pond · well · fly · frog · boat · mudhouse (lessons 2-3)
+   Unit 3 pictures are the owner's own illustrations (sheet sent 25 Oct 2026), cropped one by one WITHOUT their captions
+   (the sheet's captions had mistakes and would give the answer away): english/assets/wx_*.jpg.
    Each picture is six round badges (three on top, three below) in a 340 x 250 card.
    q.pic = { plain: true } draws the inner markup only (no frame and no tap rings) for the game scenes.
    Screen-reader names say what is drawn ("a long green animal with sharp teeth"), as the question itself asks for the name.
@@ -89,23 +92,28 @@
   const NAMES = {
     crocodile: 'a long green animal with sharp teeth', weeds: 'green round leaves floating on water', insect: 'a small flying animal with four thin wings', fish: 'an orange animal with a tail, swimming', bird: 'a blue animal with a beak and two wings', river: 'a wide band of water with a boat between sandy banks',
     heart: 'a red heart shape', lungs: 'two pink shapes joined to a tube', muscle: 'a bent arm with a round bump', blood: 'a red drop', vessels: 'thin red and blue tubes that branch', fist: 'a closed hand',
-    thunderstorm: 'a dark cloud with a yellow zigzag', sandstorm: 'a wall of brown swirling sand', flood: 'a house with water up to its door', drought: 'cracked dry ground and a bare plant', wildfire: 'big orange flames next to trees', heatwave: 'a bright sun next to a hot thermometer'
+    thunderstorm: 'a dark cloud with a yellow zigzag', sandstorm: 'a wall of brown swirling sand', flood: 'a house with water up to its door', drought: 'cracked dry ground and a bare plant', wildfire: 'big orange flames next to trees', heatwave: 'a bright sun next to a hot thermometer',
+    pond: 'a small round water with green leaves and a flower', well: 'a round stone hole with a wooden roof and a bucket rope', fly: 'a small dark insect with two clear wings', frog: 'a small green animal sitting on a leaf', boat: 'a wooden boat with a white sail on water', mudhouse: 'a brown house with small windows'
   };
   const TINT = {
     crocodile: '#e1f3e0', weeds: '#e2f1d6', insect: '#e1effb', fish: '#fdeee0', bird: '#e1ebfb', river: '#dff1f7',
     heart: '#fbe3e8', lungs: '#fde6e8', muscle: '#fdeee0', blood: '#fbe0e2', vessels: '#e8e6fb', fist: '#f6ecd9',
-    thunderstorm: '#e6eaf3', sandstorm: '#f8ecd0', flood: '#dff1f7', drought: '#f6e8cf', wildfire: '#fbe3d6', heatwave: '#fdf0cf'
+    thunderstorm: '#e6eaf3', sandstorm: '#f8ecd0', flood: '#dff1f7', drought: '#f6e8cf', wildfire: '#fbe3d6', heatwave: '#fdf0cf',
+    pond: '#e2f4dc', well: '#e8e6fb', fly: '#e1effb', frog: '#e2f4dc', boat: '#fbe3e8', mudhouse: '#efe6fb'
   };
   /* positions of the six badges in the 340 x 250 card: three on top, three below */
   const SLOT = [[62, 66], [170, 66], [278, 66], [62, 184], [170, 184], [278, 184]];
   const SETS = {
     nileLife: ['crocodile', 'weeds', 'insect', 'fish', 'bird', 'river'],
     bodyParts: ['heart', 'lungs', 'muscle', 'blood', 'vessels', 'fist'],
-    weatherSix: ['thunderstorm', 'sandstorm', 'flood', 'drought', 'wildfire', 'heatwave']
+    weatherSix: ['thunderstorm', 'sandstorm', 'flood', 'drought', 'wildfire', 'heatwave'],
+    storyThings: ['pond', 'well', 'fly', 'frog', 'boat', 'mudhouse']
   };
   const R = 46;
   const PHOTOS = { nileLife: { crocodile: 'nile_croc', weeds: 'nile_weeds', insect: 'nile_insects', river: 'nile_river' },   // the owner's pictures (ids without one stay drawn)
-    bodyParts: { heart: 'body_heart', lungs: 'body_lungs', muscle: 'body_muscles', fist: 'body_fist', vessels: 'body_vessels' } };
+    bodyParts: { heart: 'body_heart', lungs: 'body_lungs', muscle: 'body_muscles', fist: 'body_fist', vessels: 'body_vessels' },
+    weatherSix: { thunderstorm: 'wx_thunderstorm', sandstorm: 'wx_sandstorm', flood: 'wx_flood', drought: 'wx_drought', wildfire: 'wx_wildfire', heatwave: 'wx_heatwave' },
+    storyThings: { pond: 'wx_pond', well: 'wx_well', fly: 'wx_fly', frog: 'wx_frog', boat: 'wx_boat', mudhouse: 'wx_mudhouse' } };
   const POS = {};
   Object.keys(SETS).forEach(k => SETS[k].forEach((id, i) => { POS[id] = SLOT[i]; }));
 
@@ -131,7 +139,8 @@
   window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, {
     nileLife: makeSet('nileLife', 'Six round pictures: a crocodile, water weeds, an insect, a fish, a bird and a river'),
     bodyParts: makeSet('bodyParts', 'Six round pictures: a heart, lungs, a muscle, a drop of blood, blood vessels and a fist'),
-    weatherSix: makeSet('weatherSix', 'Six round pictures of weather: a thunderstorm, a sandstorm, a flood, a drought, a wildfire and a heat wave')
+    weatherSix: makeSet('weatherSix', 'Six round pictures of weather: a thunderstorm, a sandstorm, a flood, a drought, a wildfire and a heat wave'),
+    storyThings: makeSet('storyThings', 'Six round pictures: a pond, a well, a fly, a frog, a boat and a house')
   });
   window.E5ART = { D, POS, SETS, TINT, R, NAMES, at, hot, ringEl, INK, f1, esc, FONT };
 })();

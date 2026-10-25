@@ -30,6 +30,7 @@ const TAPS = { bloodLoop: ['heart', 'lungs', 'whole'], urinary: ['kidneys', 'urt
   nileLife: ['crocodile', 'weeds', 'insect', 'fish', 'bird', 'river'],
   bodyParts: ['heart', 'lungs', 'muscle', 'blood', 'vessels', 'fist'],
   weatherSix: ['thunderstorm', 'sandstorm', 'flood', 'drought', 'wildfire', 'heatwave'],
+  storyThings: ['pond', 'well', 'fly', 'frog', 'boat', 'mudhouse'],
   /* Grade 4 (g4_art.js) */
   hidePlaces: ['grass', 'stone', 'rock', 'sand'], nileDesert: ['nile', 'desert'], fennec: ['ears', 'feet', 'tail'], desertDay: ['hole', 'sand', 'dune'],
   butterflyStages: ['egg', 'larva', 'pupa', 'adult'], insectBody: ['head', 'thorax', 'abdomen'], insectSide: ['antennae', 'wings', 'legs'], whoIsInsect: ['grasshopper', 'spider', 'pillbug'],
