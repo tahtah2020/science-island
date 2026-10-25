@@ -87,11 +87,11 @@ window.CHAPTERS = [
     lessons: ['Animals that Give Birth to Babies', 'Animals that Lay Eggs', 'Comparing Animals and Preserving the Species'], lessonsAr: ['حيوانات تلد صغارًا', 'حيوانات تضع البيض', 'مقارنة الحيوانات والحفاظ على النوع'], bookOrder: true },
 
   { id: 'ch8', n: 8, title: 'Changes in Weather', titleAr: 'تغيرات الطقس', icon: '⛅', tint: '#e3ecfb', ready: true,
-    questions: 'science/questions_ch8.js', art: 'science/ch8_art.js', bookOrder: true,
+    questions: 'science/questions_ch8.js', questionsAr: 'science/questions_ch8_ar.js', art: 'science/ch8_art.js', bookOrder: true,
     game: { href: 'weatherlab.html', name: "Weather Station", nameAr: "محطة الطقس", icon: '⛅', hint: 'Count the clouds, follow them with a compass and predict tomorrow’s weather!', hintAr: 'عُدّ الغيوم، وتابعها بالبوصلة، وتوقّع طقس الغد!' },
     map: { img: 'science/assets/map_ch8.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'science/assets/map_ch8.svg', quizBg: 'science/assets/bg_ch8.svg',
-    lessons: ['Clouds and Weather', 'Clouds Movement', 'Weather Forecast'] },
+    lessons: ['Clouds and Weather', 'Clouds Movement', 'Weather Forecast'], lessonsAr: ['السحب والطقس', 'حركة السحب', 'التنبؤ بالطقس'] },
 
   { id: 'ch9', n: 9, title: 'Water Cycle', titleAr: 'دورة الماء', icon: '💧', tint: '#d8eefb', ready: false,
     lessons: ['Water Evaporation', 'Water in the Air', 'Where Does Water Go?'] },

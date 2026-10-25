@@ -7,18 +7,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261025j">
+<link rel="stylesheet" href="game_kit.css?v=20261025k">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Weather Station.</noscript>
-<script src="firebase-config.js?v=20261025j"></script>
-<script src="chapters.js?v=20261025j"></script>
-<script src="common.js?v=20261025j"></script>
-<script src="science/ch8_art.js?v=20261025j"></script>
-<script src="game_kit.js?v=20261025j"></script>
+<script src="firebase-config.js?v=20261025k"></script>
+<script src="chapters.js?v=20261025k"></script>
+<script src="common.js?v=20261025k"></script>
+<script src="science/ch8_art.js?v=20261025k"></script>
+<script src="game_kit.js?v=20261025k"></script>
 <script>
 (() => {
 'use strict';
@@ -65,25 +65,25 @@ const set = o => { Object.assign(sc, { hi: null }, o); g.paint(); };
 /* ---------- Stage 1 · Warm Up ---------- */
 async function stage1() {
   set({ mode: 'sky', n: 3 });
-  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('cloud cover · sunny · cloudy · reference point · compass · weather forecast', 'الغطاء السحابي · مشمس · غائم · نقطة مرجعية · بوصلة · التنبؤ بالطقس')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
-  g.say(T('Let’s look at the sky! Imagine dividing the whole sky into 8 blocks. Some blocks have clouds.', 'يلّا نبص على السماء! تخيّل إننا قسمنا السماء كلها ٨ مربعات. بعض المربعات فيها غيوم.'), 'wave');
+  g.veil(`<small>${T('Key Vocabulary', 'كلمات مهمة')}</small><strong>${T('cloud cover · sunny · cloudy · reference point · compass · weather forecast', 'غطاء السحب · مشمس · غائم · نقطة مرجعية · بوصلة · التنبؤ بالطقس')}</strong><span>${T('We will use these words today.', 'هنستخدم الكلمات دي النهارده.')}</span>`);
+  g.say(T('Let’s look at the sky! Imagine dividing the whole sky into 8 blocks. Some blocks have clouds.', 'يلّا نبص على السماء! تخيّل إننا قسمنا السماء كلها ٨ مربعات. بعض المربعات فيها سحب.'), 'wave');
   await g.next(T('Let’s look ▸', 'يلّا نبص ◂'));
   g.veil(null);
-  g.say(T('How many blocks are covered by clouds?', 'كام مربع مغطّى بالغيوم؟'), 'think');
+  g.say(T('How many blocks are covered by clouds?', 'كام مربع مغطّى بالسحب؟'), 'think');
   await g.choice({
     options: ['3', '5', '8'], correct: '3',
-    hint: T('Count the blocks with clouds, one by one.', 'عُدّ المربعات اللي فيها غيوم واحد واحد.'),
-    ok: T(`Three blocks have clouds, so the ${kw('cloud cover')} is 3. We use numbers from 0 to 8 to show how much of the sky is covered by clouds.`, `ثلاثة مربعات فيها غيوم، يعني ${kw('الغطاء السحابي')} = ٣. نستخدم الأرقام من ٠ إلى ٨ لنبيّن كم من السماء مغطّى بالغيوم.`) });
+    hint: T('Count the blocks with clouds, one by one.', 'عُدّ المربعات اللي فيها سحب واحد واحد.'),
+    ok: T(`Three blocks have clouds, so the ${kw('cloud cover')} is 3. We use numbers from 0 to 8 to show how much of the sky is covered by clouds.`, `ثلاثة مربعات فيها سحب، يعني ${kw('غطاء السحب')} = ٣. نستخدم الأرقام من ٠ إلى ٨ لنبيّن كم من السماء مغطّى بالسحب.`) });
 }
 
 /* ---------- Stage 2 · Missions ---------- */
 async function mission1() {
-  await g.banner(T('Mission 1', 'المهمة ١'), T('Clouds and weather', 'الغيوم والطقس'));
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Clouds and weather', 'السحب والطقس'));
   set({ mode: 'sky', n: 2 });
-  g.say(T('The cloud cover is 2. What is the weather?', 'الغطاء السحابي ٢. إيه الطقس؟'), 'think');
+  g.say(T('The cloud cover is 2. What is the weather?', 'غطاء السحب ٢. إيه الطقس؟'), 'think');
   const sun = T('Sunny', 'مشمس');
-  await g.choice({ options: [sun, T('Cloudy', 'غائم'), T('Rain', 'مطر')], correct: sun, hint: T('Very few blocks have clouds.', 'مربعات قليلة جدًّا فيها غيوم.'),
-    ok: T(`When the cloud cover is 0 to 6, the weather is ${kw('sunny')}.`, `لما يكون الغطاء السحابي من ٠ إلى ٦ يكون الطقس ${kw('مشمسًا')}.`) });
+  await g.choice({ options: [sun, T('Cloudy', 'غائم'), T('Rain', 'ممطر')], correct: sun, hint: T('Very few blocks have clouds.', 'مربعات قليلة جدًّا فيها سحب.'),
+    ok: T(`When the cloud cover is 0 to 6, the weather is ${kw('sunny')}.`, `عندما يكون غطاء السحب من ٠ إلى ٦ يكون الطقس ${kw('مشمسًا')}.`) });
   set({ mode: 'sky', n: 6 });
   g.say(T('Now 6 blocks are covered. Is it sunny or cloudy?', 'دلوقتي ٦ مربعات مغطّاة. مشمس ولا غائم؟'), 'think');
   await g.choice({ options: [sun, T('Cloudy', 'غائم')], correct: sun, hint: T('Remember: 6 or less is one kind of weather.', 'افتكر: ٦ أو أقل نوع واحد من الطقس.'),
@@ -92,77 +92,77 @@ async function mission1() {
   g.say(T('One more block gets covered: 7 in all. What is the weather now?', 'اتغطّى مربع كمان: ٧ كلها. إيه الطقس دلوقتي؟'), 'think');
   const cl = T('Cloudy', 'غائم');
   await g.choice({ options: [cl, sun], correct: cl, hint: T('It is 7 or more now.', 'بقى ٧ أو أكتر.'),
-    ok: T(`When the cloud cover is 7 to 8, the weather is ${kw('cloudy')}.`, `لما يكون الغطاء السحابي من ٧ إلى ٨ يكون الطقس ${kw('غائمًا')}.`) });
+    ok: T(`When the cloud cover is 7 to 8, the weather is ${kw('cloudy')}.`, `عندما يكون غطاء السحب من ٧ إلى ٨ يكون الطقس ${kw('غائمًا')}.`) });
   set({ mode: 'photo', one: 'c8dark' });
-  g.say(T('The sky is full of clouds: the cloud cover is 8, and it is raining. What is the weather?', 'السماء كلها غيوم: الغطاء السحابي ٨ وبتمطر. إيه الطقس؟'), 'think');
-  const rn = T('Rain', 'مطر');
-  await g.choice({ options: [rn, cl, sun], correct: rn, hint: T('Is something falling from the clouds?', 'في حاجة بتنزل من الغيوم؟'),
-    ok: T(`No matter the cloud cover, if it is raining or snowing, the weather is ${kw('“rain” or “snow”')}.`, `مهما كان الغطاء السحابي، إذا كانت تمطر أو تثلج فالطقس ${kw('«مطر» أو «ثلج»')}.`) });
+  g.say(T('The sky is full of clouds: the cloud cover is 8, and it is raining. What is the weather?', 'السماء كلها سحب: غطاء السحب ٨ وبتمطر. إيه الطقس؟'), 'think');
+  const rn = T('Rain', 'ممطر');
+  await g.choice({ options: [rn, cl, sun], correct: rn, hint: T('Is something falling from the clouds?', 'في حاجة بتنزل من السحب؟'),
+    ok: T(`No matter the cloud cover, if it is raining or snowing, the weather is ${kw('“rain” or “snow”')}.`, `مهما كان غطاء السحب، إذا كان المطر يهطل أو الثلج يتساقط فالطقس ${kw('«ممطر» أو «مثلج»')}.`) });
   set({ mode: 'four' });
-  g.say(T('Snow is falling from the clouds. Tap the picture of the weather “snow”.', P('الثلج بينزل من الغيوم. اضغط على صورة طقس «الثلج».', 'الثلج بينزل من الغيوم. اضغطي على صورة طقس «الثلج».')), 'think');
+  g.say(T('Snow is falling from the clouds. Tap the picture of the weather “snow”.', P('الثلج بينزل من السحب. اضغط على صورة طقس «الثلج».', 'الثلج بينزل من السحب. اضغطي على صورة طقس «الثلج».')), 'think');
   await g.spot(FOUR.map((id, i) => ({ id, name: A.nameOf(id), ring: circ(FX[i], 120, 50) })), 'c8snow', {
     hint: T('Look for white stars falling.', 'دوّر على نجوم بيضاء بتنزل.'),
-    ok: T('When snow is falling, the weather is “snow”.', 'لما يسقط الثلج يكون الطقس «ثلجًا».'), reveal: () => { sc.hi = 3; g.paint(); } });
+    ok: T('When snow is falling, the weather is “snow”.', 'لما يسقط الثلج يكون الطقس «مثلجًا».'), reveal: () => { sc.hi = 3; g.paint(); } });
 }
 async function mission2() {
-  await g.banner(T('Mission 2', 'المهمة ٢'), T('Cloud movement', 'حركة الغيوم'));
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Cloud movement', 'حركة السحب'));
   set({ mode: 'three' });
-  g.say(T('The clouds in the sky are moving! What makes them move?', 'الغيوم في السماء بتتحرك! إيه اللي بيحرّكها؟'), 'think');
+  g.say(T('The clouds in the sky are moving! What makes them move?', 'السحب في السماء بتتحرك! إيه اللي بيحرّكها؟'), 'think');
   const wind = T('The wind', 'الرياح');
   await g.choice({ options: [wind, T('The moon', 'القمر'), T('The sand', 'الرمل')], correct: wind, hint: T('You can feel it on your face.', 'ممكن تحس بيها على وشك.'),
-    ok: T(`Clouds move with the ${kw('wind')}. There is a pattern for their movement.`, `الغيوم تتحرك مع ${kw('الرياح')}، ولحركتها نمط معيّن.`) });
-  g.say(T('In places like Egypt and Japan, which way do clouds generally move?', 'في أماكن زي مصر واليابان، الغيوم بتتحرك في أي اتجاه عادةً؟'), 'think');
+    ok: T(`Clouds move with the ${kw('wind')}. There is a pattern for their movement.`, `السحب تتحرك مع ${kw('الرياح')}، ولحركتها نمط معيّن.`) });
+  g.say(T('In places like Egypt and Japan, which way do clouds generally move?', 'في أماكن زي مصر واليابان، السحب بتتحرك في أي اتجاه عادةً؟'), 'think');
   const we = T('From west to east', 'من الغرب إلى الشرق');
-  await g.choice({ options: [we, T('From east to west', 'من الشرق إلى الغرب'), T('From north to south', 'من الشمال إلى الجنوب')], correct: we, hint: T('The weather changes the same way as the clouds move.', 'الطقس بيتغيّر بنفس طريقة حركة الغيوم.'),
-    ok: T(`Clouds generally move ${kw('from west to east')}. The weather also changes from west to east.`, `تتحرك الغيوم عادةً ${kw('من الغرب إلى الشرق')}، والطقس أيضًا يتغيّر من الغرب إلى الشرق.`) });
-  g.say(T('To see which way the clouds move, we need a <b>reference point</b>: something that does <b>not</b> move. Tap it!', P('علشان نعرف الغيوم رايحة فين، محتاجين <b>نقطة مرجعية</b>: حاجة <b>مبتتحركش</b>. اضغط عليها!', 'علشان نعرف الغيوم رايحة فين، محتاجين <b>نقطة مرجعية</b>: حاجة <b>مبتتحركش</b>. اضغطي عليها!')), 'think');
+  await g.choice({ options: [we, T('From east to west', 'من الشرق إلى الغرب'), T('From north to south', 'من الشمال إلى الجنوب')], correct: we, hint: T('The weather changes the same way as the clouds move.', 'الطقس بيتغيّر بنفس طريقة حركة السحب.'),
+    ok: T(`Clouds generally move ${kw('from west to east')}. The weather also changes from west to east.`, `تتحرك السحب عادةً ${kw('من الغرب إلى الشرق')}، والطقس أيضًا يتغيّر من الغرب إلى الشرق.`) });
+  g.say(T('To see which way the clouds move, we need a <b>reference point</b>: something that does <b>not</b> move. Tap it!', P('علشان نعرف السحب رايحة فين، محتاجين <b>نقطة مرجعية</b>: حاجة <b>مبتتحركش</b>. اضغط عليها!', 'علشان نعرف السحب رايحة فين، محتاجين <b>نقطة مرجعية</b>: حاجة <b>مبتتحركش</b>. اضغطي عليها!')), 'think');
   await g.spot(THREE.map((id, i) => ({ id, name: A.nameOf(id), ring: circ(TX[i], 120, 62) })), 'c8tower', {
-    hint: T('The boat and the clouds both move.', 'المركب والغيوم الاتنين بيتحركوا.'),
+    hint: T('The boat and the clouds both move.', 'المركب والسحب الاتنين بيتحركوا.'),
     ok: T(`Use things that don’t move, like buildings or trees, as ${kw('reference points')}.`, `استخدم أشياء لا تتحرك، مثل المباني أو الأشجار، ${kw('كنقاط مرجعية')}.`), reveal: () => { sc.hi = 0; g.paint(); } });
   set({ mode: 'photo', one: 'c8palm' });
   g.say(T('Next to this tree, which tool do we use to find which way is west and which way is east?', 'جنب الشجرة دي، إيه الأداة اللي بنستخدمها لنعرف الغرب والشرق؟'), 'think');
   const cp = T('A compass', 'بوصلة');
   await g.choice({ options: [cp, T('A ruler', 'مسطرة'), T('A thermometer', 'ترمومتر')], correct: cp, hint: T('Its needle points to a direction.', 'إبرتها بتشاور على اتجاه.'),
     ok: T(`Use a ${kw('compass')} to find which way is west and which way is east.`, `استخدم ${kw('البوصلة')} لمعرفة الغرب والشرق.`) });
-  g.say(T('How often should we observe to see where the clouds appear and disappear?', 'كل قد إيه نراقب علشان نشوف الغيوم بتظهر وتختفي فين؟'), 'think');
+  g.say(T('How often should we observe to see where the clouds appear and disappear?', 'كل قد إيه نراقب علشان نشوف السحب بتظهر وتختفي فين؟'), 'think');
   await g.choice({ options: [T('Every 15 minutes', 'كل ١٥ دقيقة'), T('Once a year', 'مرة في السنة'), T('Only at night', 'بالليل بس')], correct: T('Every 15 minutes', 'كل ١٥ دقيقة'), hint: T('Not too long to wait.', 'مش وقت طويل قوي.'),
-    ok: T(`Observe ${kw('every 15 minutes')} to see from which side of the marker the clouds appear and to which side they disappear.`, `راقب ${kw('كل ١٥ دقيقة')} لترى من أي جهة من العلامة تظهر الغيوم وإلى أي جهة تختفي.`) });
+    ok: T(`Observe ${kw('every 15 minutes')} to see from which side of the marker the clouds appear and to which side they disappear.`, `راقب ${kw('كل ١٥ دقيقة')} لترى من أي جهة من العلامة تظهر السحب وإلى أي جهة تختفي.`) });
   set({ mode: 'map', cloud: true });
-  g.say(T('Rain clouds are seen in the west. What will happen?', 'ظهرت غيوم المطر في الغرب. إيه اللي هيحصل؟'), 'think');
+  g.say(T('Rain clouds are seen in the west. What will happen?', 'ظهرت سحب المطر في الغرب. إيه اللي هيحصل؟'), 'think');
   const soon = T('They will soon come here', 'هتيجي هنا قريبًا');
-  await g.choice({ options: [soon, T('They will come here right away', 'هتيجي هنا فورًا'), T('They will go back west', 'هترجع للغرب')], correct: soon, hint: T('Clouds move from west to east, but it takes time.', 'الغيوم بتتحرك من الغرب للشرق، بس ده بياخد وقت.'),
-    ok: T('When there are clouds in the west that look like they will bring rain, those rain clouds will soon come here.', 'عندما تكون هناك غيوم في الغرب تبدو أنها ستجلب المطر، فسوف تصل غيوم المطر هذه إلى هنا قريبًا.') });
+  await g.choice({ options: [soon, T('They will come here right away', 'هتيجي هنا فورًا'), T('They will go back west', 'هترجع للغرب')], correct: soon, hint: T('Clouds move from west to east, but it takes time.', 'السحب بتتحرك من الغرب للشرق، بس ده بياخد وقت.'),
+    ok: T('When there are clouds in the west that look like they will bring rain, those rain clouds will soon come here.', 'عندما تكون هناك سحب في الغرب تبدو أنها ستجلب المطر، فسوف تصل سحب المطر هذه إلى هنا قريبًا.') });
 }
 async function mission3() {
   await g.banner(T('Mission 3', 'المهمة ٣'), T('Weather forecast', 'التنبؤ بالطقس'));
   set({ mode: 'photo', one: 'c8sat' });
   g.say(T('Weather satellites take pictures of the Earth from space. What are the white parts in the pictures?', 'الأقمار الصناعية بتصوّر الأرض من الفضاء. إيه الأجزاء البيضاء في الصور؟'), 'think');
-  const cld = T('Clouds', 'غيوم');
+  const cld = T('Clouds', 'سحب');
   await g.choice({ options: [cld, T('Sand', 'رمال'), T('Rivers', 'أنهار')], correct: cld, hint: T('Think about the sky.', 'فكّر في السماء.'),
-    ok: T(`The white parts in the satellite images are ${kw('clouds')}.`, `الأجزاء البيضاء في صور الأقمار الصناعية هي ${kw('غيوم')}.`) });
+    ok: T(`The white parts in the satellite images are ${kw('clouds')}.`, `الأجزاء البيضاء في صور الأقمار الصناعية هي ${kw('سحب')}.`) });
   set({ mode: 'map', cloud: true });
-  g.say(T('A big mass of clouds is coming from the west. What do you predict for tomorrow?', 'كتلة كبيرة من الغيوم جاية من الغرب. إيه توقّعك لبكرة؟'), 'think');
-  const worse = T('The weather will get worse (cloudy or rain)', 'سيسوء الطقس (غائم أو مطر)');
-  await g.choice({ options: [worse, T('Clear, sunny weather will continue', 'سيستمر الطقس الصافي المشمس')], correct: worse, hint: T('The clouds are moving toward us.', 'الغيوم بتتحرك ناحيتنا.'),
-    ok: T(`If clouds in the west come closer, the weather will get ${kw('worse')}.`, `إذا اقتربت الغيوم من الغرب فسوف ${kw('يسوء')} الطقس.`) });
+  g.say(T('A big mass of clouds is coming from the west. What do you predict for tomorrow?', 'كتلة كبيرة من السحب جاية من الغرب. إيه توقّعك لبكرة؟'), 'think');
+  const worse = T('The weather will get worse (cloudy or rain)', 'سيصبح الطقس أسوأ (غائمًا أو ممطرًا)');
+  await g.choice({ options: [worse, T('Clear, sunny weather will continue', 'سيستمر الطقس صافيًا ومشمسًا')], correct: worse, hint: T('The clouds are moving toward us.', 'السحب بتتحرك ناحيتنا.'),
+    ok: T(`If clouds in the west come closer, the weather will get ${kw('worse')}.`, `إذا اقتربت السحب من الغرب فسوف ${kw('يسوء')} الطقس.`) });
   set({ mode: 'map', cloud: false });
-  g.say(T('Now there are no clouds in the west. What can we predict?', 'دلوقتي مفيش غيوم في الغرب. إيه اللي نقدر نتوقعه؟'), 'think');
+  g.say(T('Now there are no clouds in the west. What can we predict?', 'دلوقتي مفيش سحب في الغرب. إيه اللي نقدر نتوقعه؟'), 'think');
   const stay = T('Sunny weather will continue for a while', 'سيستمر الطقس المشمس لفترة');
-  await g.choice({ options: [stay, T('The weather will get worse', 'سيسوء الطقس'), T('It will snow', 'سيثلج')], correct: stay, hint: T('Nothing is coming from the west.', 'مفيش حاجة جاية من الغرب.'),
-    ok: T(`If there are no clouds in the west, we can predict that ${kw('sunny weather will continue')} for a while.`, `إذا لم تكن هناك غيوم في الغرب فيمكننا توقّع أن ${kw('الطقس المشمس سيستمر')} لفترة.`) });
+  await g.choice({ options: [stay, T('The weather will get worse', 'سيصبح الطقس أسوأ'), T('It will snow', 'سيثلج')], correct: stay, hint: T('Nothing is coming from the west.', 'مفيش حاجة جاية من الغرب.'),
+    ok: T(`If there are no clouds in the west, we can predict that ${kw('sunny weather will continue')} for a while.`, `إذا لم تكن هناك سحب في الغرب فيمكننا توقّع أن ${kw('الطقس المشمس سيستمر')} لفترة.`) });
   g.say(T('What is an important principle when predicting weather changes?', 'إيه المبدأ المهم عند توقّع تغيّر الطقس؟'), 'think');
-  const rule = T('Use the rule that clouds move from west to east', 'استخدم قاعدة أن الغيوم تتحرك من الغرب إلى الشرق');
-  await g.choice({ options: [rule, T('Clouds always move randomly, so we cannot predict', 'الغيوم تتحرك عشوائيًّا دائمًا فلا يمكن التوقع'), T('Predict by watching the movements of birds and animals', 'نتوقع بمراقبة حركة الطيور والحيوانات')], correct: rule, hint: T('There is a pattern for how clouds move.', 'لحركة الغيوم نمط معيّن.'),
-    ok: T(`A ${kw('weather forecast')} combines cloud movement and wind conditions, using the rule that clouds move from west to east.`, `${kw('التنبؤ بالطقس')} يجمع بين حركة الغيوم وأحوال الرياح، باستخدام قاعدة أن الغيوم تتحرك من الغرب إلى الشرق.`) });
+  const rule = T('Use the rule that clouds move from west to east', 'استخدم قاعدة أن السحب تتحرك من الغرب إلى الشرق');
+  await g.choice({ options: [rule, T('Clouds always move randomly, so we cannot predict', 'السحب تتحرك عشوائيًّا دائمًا فلا يمكن التوقع'), T('Predict by watching the movements of birds and animals', 'نتوقع بمراقبة حركة الطيور والحيوانات')], correct: rule, hint: T('There is a pattern for how clouds move.', 'لحركة السحب نمط معيّن.'),
+    ok: T(`A ${kw('weather forecast')} combines cloud movement and wind conditions, using the rule that clouds move from west to east.`, `${kw('التنبؤ بالطقس')} يجمع بين حركة السحب وأحوال الرياح، باستخدام قاعدة أن السحب تتحرك من الغرب إلى الشرق.`) });
 }
 async function stage2() { await mission1(); await mission2(); await mission3(); }
 
 /* ---------- Stage 3 · Speed Round: sunny, cloudy, or rain/snow? ---------- */
 const item = (t, ans, n) => ({ t, ans, n, box: '0 0 140 82', pic: A.grid(n, 6, 6, 128, 70) });
 const SPEED = [
-  item(T('Cloud cover 0', 'الغطاء السحابي ٠'), 'sunny', 0), item(T('Cloud cover 4', 'الغطاء السحابي ٤'), 'sunny', 4), item(T('Cloud cover 5', 'الغطاء السحابي ٥'), 'sunny', 5),
-  item(T('Cloud cover 6', 'الغطاء السحابي ٦'), 'sunny', 6), item(T('Cloud cover 7', 'الغطاء السحابي ٧'), 'cloudy', 7), item(T('Cloud cover 8', 'الغطاء السحابي ٨'), 'cloudy', 8),
-  item(T('Cloud cover 8, and it is raining', 'الغطاء السحابي ٨ وتمطر'), 'rain', 8), item(T('Cloud cover 2, and it is snowing', 'الغطاء السحابي ٢ ويثلج'), 'rain', 2)
+  item(T('Cloud cover 0', 'غطاء السحب ٠'), 'sunny', 0), item(T('Cloud cover 4', 'غطاء السحب ٤'), 'sunny', 4), item(T('Cloud cover 5', 'غطاء السحب ٥'), 'sunny', 5),
+  item(T('Cloud cover 6', 'غطاء السحب ٦'), 'sunny', 6), item(T('Cloud cover 7', 'غطاء السحب ٧'), 'cloudy', 7), item(T('Cloud cover 8', 'غطاء السحب ٨'), 'cloudy', 8),
+  item(T('Cloud cover 8, and it is raining', 'غطاء السحب ٨ وتمطر'), 'rain', 8), item(T('Cloud cover 2, and it is snowing', 'غطاء السحب ٢ ويثلج'), 'rain', 2)
 ];
 async function stage3() {
   set({ mode: 'sky', n: 0 });
@@ -170,16 +170,16 @@ async function stage3() {
     items: SPEED, rounds: 8,
     buttons: [{ label: T('Sunny ☀️', 'مشمس ☀️'), value: 'sunny', c: 0 }, { label: T('Cloudy ☁️', 'غائم ☁️'), value: 'cloudy', c: 1 }, { label: T('Rain or snow 🌧️', 'مطر أو ثلج 🌧️'), value: 'rain', c: 2 }],
     ask: T('What is the weather?', 'إيه الطقس؟'),
-    intro: T('Speed Round! I will tell you the cloud cover. Is the weather <b>sunny</b>, <b>cloudy</b> or <b>rain or snow</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هقولك الغطاء السحابي. الطقس <b>مشمس</b> ولا <b>غائم</b> ولا <b>مطر أو ثلج</b>؟ اضغط الزر الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هقولك الغطاء السحابي. الطقس <b>مشمس</b> ولا <b>غائم</b> ولا <b>مطر أو ثلج</b>؟ اضغطي الزر الصح قبل ما الوقت يخلص. ٨ جولات!')),
+    intro: T('Speed Round! I will tell you the cloud cover. Is the weather <b>sunny</b>, <b>cloudy</b> or <b>rain or snow</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هقولك غطاء السحب. الطقس <b>مشمس</b> ولا <b>غائم</b> ولا <b>مطر أو ثلج</b>؟ اضغط الزر الصح قبل ما الوقت يخلص. ٨ جولات!', 'جولة السرعة! هقولك غطاء السحب. الطقس <b>مشمس</b> ولا <b>غائم</b> ولا <b>مطر أو ثلج</b>؟ اضغطي الزر الصح قبل ما الوقت يخلص. ٨ جولات!')),
     think: T('Sunny, cloudy, or rain or snow?', 'مشمس أم غائم أم مطر أو ثلج؟'),
     show: it => { sc.n = it.n; g.paint(); }, reveal: () => {}
   });
 }
 
 g.run({
-  intro: T(`Hi, <b>${g.name()}</b>! Welcome to the Weather Station. We will count the <b>cloud cover</b>, follow the clouds with a <b>compass</b> and a <b>reference point</b>, and use a satellite picture to <b>predict</b> tomorrow’s weather.`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في محطة الطقس. هنعدّ <b>الغطاء السحابي</b>، ونتابع الغيوم بـ<b>البوصلة</b> و<b>النقطة المرجعية</b>، ونستخدم صورة القمر الصناعي <b>لنتوقع</b> طقس بكرة.`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في محطة الطقس. هنعدّ <b>الغطاء السحابي</b>، ونتابع الغيوم بـ<b>البوصلة</b> و<b>النقطة المرجعية</b>، ونستخدم صورة القمر الصناعي <b>لنتوقع</b> طقس بكرة.`)),
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to the Weather Station. We will count the <b>cloud cover</b>, follow the clouds with a <b>compass</b> and a <b>reference point</b>, and use a satellite picture to <b>predict</b> tomorrow’s weather.`, P(`أهلًا يا <b>${g.name()}</b>! أهلًا بيك في محطة الطقس. هنعدّ <b>غطاء السحب</b>، ونتابع السحب بـ<b>البوصلة</b> و<b>النقطة المرجعية</b>، ونستخدم صورة القمر الصناعي <b>لنتوقع</b> طقس بكرة.`, `أهلًا يا <b>${g.name()}</b>! أهلًا بيكي في محطة الطقس. هنعدّ <b>غطاء السحب</b>، ونتابع السحب بـ<b>البوصلة</b> و<b>النقطة المرجعية</b>، ونستخدم صورة القمر الصناعي <b>لنتوقع</b> طقس بكرة.`)),
   stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
-  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Cloud cover 0 to 6 is <b>sunny</b> and 7 to 8 is <b>cloudy</b>. Clouds move <b>from west to east</b>, so a <b>weather forecast</b> looks west to predict tomorrow.', 'الغطاء السحابي من ٠ إلى ٦ <b>مشمس</b> ومن ٧ إلى ٨ <b>غائم</b>. تتحرك الغيوم <b>من الغرب إلى الشرق</b>، لذلك ينظر <b>التنبؤ بالطقس</b> إلى الغرب ليتوقع طقس الغد.') }
+  done: { title: T('Great job!', P('برافو عليك!', 'برافو عليكي!')), text: T('Cloud cover 0 to 6 is <b>sunny</b> and 7 to 8 is <b>cloudy</b>. Clouds move <b>from west to east</b>, so a <b>weather forecast</b> looks west to predict tomorrow.', 'غطاء السحب من ٠ إلى ٦ <b>مشمس</b> ومن ٧ إلى ٨ <b>غائم</b>. تتحرك السحب <b>من الغرب إلى الشرق</b>، لذلك ينظر <b>التنبؤ بالطقس</b> إلى الغرب ليتوقع طقس الغد.') }
 }).catch(err => console.error(err));
 window.__weatherlab = { sc, render };
 })();

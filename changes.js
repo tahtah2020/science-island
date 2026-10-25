@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-25', title: 'الفصل ٨ تغيرات الطقس بالعربي',
+    items: [
+      { text: 'أسئلة الفصل ٨ بالعربي بلغة كتاب الوزارة (٧٦ سؤالًا)' },
+      { text: 'لعبة محطة الطقس بمصطلحات الكتاب العربي', links: [{ label: 'تغيرات الطقس', href: 'quiz.html?ch=ch8', ch: 'ch8' }] }
+    ] },
   { date: '2026-10-25', title: 'Grade 5 Science · Chapter 8 Changes in Weather',
     items: [
       { text: 'New chapter 8 (English track): 19 ideas from pages 80-88 plus 5 enrichment ideas from Let\'s Expand and the Column, with the owner\'s 12 pictures' },
