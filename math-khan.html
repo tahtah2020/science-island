@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Khan el-Khalili Weavers · Multiplication and Division with Decimals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261026e">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Khan el-Khalili Weavers.</noscript>
+<script src="firebase-config.js?v=20261026e"></script>
+<script src="chapters.js?v=20261026e"></script>
+<script src="common.js?v=20261026e"></script>
+<script src="math/m5_art.js?v=20261026e"></script>
+<script src="game_kit.js?v=20261026e"></script>
+<script>
+(() => {
+'use strict';
+/* Khan el-Khalili Weavers · the game of Unit 5, Multiplication and Division with Decimals (Math, Grade 5). Built on the shared game kit (game_kit.js).
+   The scene is a weaving workshop in Khan el-Khalili (the unit opener: a loom and patterned plates): arches, lanterns, rolls of cloth, and a panel with
+   a number in place-value boxes, a 10 × 10 grid, jumps on a number line, an area model or a long division.
+   The core moves: SLIDING the decimal point (the place-value boxes change after each answer, so the child sees the digits move), and TILING a decimal area model cell by cell.
+   Stage 1 (Warm Up): multiplying by powers of ten (lesson 1, book p92-94).
+   Stage 2 (Missions): 1 Manal's pencil and jumps of 0.3 (lessons 1-2) · 2 tenths × tenths on the grid (lesson 3) · 3 tile 1.3 × 6.8 (lesson 4) · 4 place the decimal point (lessons 5-6)
+                       · 5 metric units (lessons 7-8) · 6 multistep stories (lesson 9) · 7 dividing by powers of ten (lessons 10-11) · 8 dividing decimals (lessons 12-13).
+   Stage 3 (Speed Round): after × or ÷ by a power of ten, is the number bigger or smaller?
+   The scene is set again before EVERY question, so the picture always belongs to the question asked, and it never shows the answer.
+   Every T('English', 'عربي') has both languages. Numbers and expressions stay left to right (isolates in SVG text). */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr" style="white-space:nowrap">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const INK = '#1f3d57';
+const D = () => window.CH_DIAGRAMS;
+const fmt = n => Number(n).toLocaleString('en-US', { maximumFractionDigits: 6 });
+const sc = { mode: 'sign', n: '', cap: '' };
+const VW = 420, VH = 280;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const iso = s => String(s).replace(/[\d(][\d,.\s×÷+−=()?]*[\d)?]|\d/g, m => '⁦' + m + '⁩');
+const txt = (x, y, s, fs = 22, fill = INK) => { const ar = /[؀-ۿ]/.test(s); return `<text x="${x}" y="${y}" text-anchor="middle" direction="${ar ? 'rtl' : 'ltr'}" unicode-bidi="embed" font-size="${fs}" font-weight="900" fill="${fill}">${esc(ar ? iso(s) : s)}</text>`; };
+/* the workshop: three arches, hanging lanterns, rolls of striped cloth on the floor */
+const lantern = x => `<path d="M${x} 0V22" stroke="#8a5a28" stroke-width="2"/><path d="M${x - 9} 22h18l-4 22h-10z" fill="#f2b134" stroke="#a8692c" stroke-width="2"/><circle cx="${x}" cy="33" r="4" fill="#fff3c4"/>`;
+const roll = (x, c) => `<g transform="translate(${x} 236)"><rect x="-34" y="-14" width="68" height="28" rx="14" fill="${c}"/><path d="M-20 -14v28M0 -14v28M20 -14v28" stroke="#fffaf0" stroke-width="3" opacity=".7"/><ellipse cx="34" cy="0" rx="7" ry="14" fill="#fffaf0" stroke="${c}" stroke-width="3"/></g>`;
+const KHAN = `<rect width="${VW}" height="${VH}" fill="#f4e3c4"/>`
+  + [70, 210, 350].map(x => `<path d="M${x - 62} 210V90Q${x - 62} 30 ${x} 30Q${x + 62} 30 ${x + 62} 90V210" fill="#e8cfa0" stroke="#c99a5c" stroke-width="5"/>`).join('')
+  + lantern(140) + lantern(280) + `<rect y="210" width="${VW}" height="70" fill="#c98b4a"/>` + roll(50, '#e2603f') + roll(370, '#4ea5d9');
+function render() {
+  let s = KHAN;
+  if (sc.mode === 'sign') {
+    s += `<rect x="60" y="58" width="300" height="136" rx="16" fill="#fffaf0" stroke="#a8834f" stroke-width="7"/>` + txt(210, sc.cap ? 128 : 138, sc.n, sc.fs || Math.min(34, Math.round(560 / String(sc.n).length)));
+    if (sc.cap) s += txt(210, 170, sc.cap, Math.min(16, Math.round(520 / String(sc.cap).length)), '#8a5a28');
+  } else if (sc.pic) {
+    s += `<rect x="20" y="${sc.py || 40}" width="380" height="${sc.ph || 196}" rx="16" fill="#fffaf0" stroke="#a8834f" stroke-width="5"/>`
+      + `<g transform="translate(${sc.dx || 40} ${sc.dy || 60}) scale(${sc.k || 1})">${D()[sc.pic.name]({ pic: Object.assign({ plain: true }, sc.pic.pic) })}</g>`;
+    if (sc.cap) s += txt(210, (sc.py || 40) + (sc.ph || 196) - 14, sc.cap, Math.min(17, Math.round(560 / String(sc.cap).length)));
+  }
+  return s;
+}
+const g = G4Game({ ch: 'm5c5', logo: '🧵', title: ['Khan el-Khalili Weavers', 'نسّاجو خان الخليلي'], sub: ['Unit 5 · Multiplication and Division with Decimals', 'الوحدة 5 · عمليتا الضرب والقسمة مع الكسور العشرية'],
+  bg: 'math/assets/bg_m5c5.svg', bgc: '#f4e3c4', label: ['A weaving workshop in Khan el-Khalili with place-value boxes, a grid, a number line, an area model or a sign for each question', 'ورشة نسيج في خان الخليلي وفيها خانات القيمة المكانية أو شبكة أو خط أعداد أو نموذج مساحة أو لافتة لكل سؤال'], render });
+const sign = (n, cap, fs) => { Object.assign(sc, { mode: 'sign', n, cap: cap || '', fs: fs || 0, pic: null }); g.paint(); };
+const pic = (name, p, o) => { Object.assign(sc, { mode: 'pic', pic: { name, pic: p }, cap: '', dx: 40, dy: 60, k: 1, py: 40, ph: 196 }, o || {}); g.paint(); };
+const boxes = (n, cap) => pic('placeSlide', { num: String(n).replace(/,/g, '') }, { dy: 74, k: 1.05, dx: 31, cap: cap || '' });
+const W = o => (/[؀-ۿ]/.test(o) || /^<span/.test(o) ? o : L(o));
+const choice = o => g.choice(Object.assign({}, o, { options: o.options.map(W), correct: W(o.correct) }));
+
+/* SLIDING: the number sits in place-value boxes with the operation under it; after the answer the boxes show the result, so the digits visibly move */
+async function slide(start, op, result, wrong, say, ok) {
+  boxes(start, op);
+  g.say(say, 'think');
+  await choice({ options: [result].concat(wrong), correct: result,
+    hint: T('× 10, 100, 1,000 or ÷ 0.1, 0.01, 0.001 make it bigger; × 0.1, 0.01, 0.001 or ÷ 10, 100, 1,000 make it smaller. Count the zeros or decimal places.', '× 10 أو 100 أو 1,000 أو ÷ 0.1 أو 0.01 أو 0.001 تكبّر العدد؛ و× 0.1 أو 0.01 أو 0.001 أو ÷ 10 أو 100 أو 1,000 تصغّره. عدّ الأصفار أو الأماكن العشرية.'),
+    ok, reveal: () => boxes(result, `${start} ${op} = ${result}`) });
+}
+/* TILING a decimal area model, as in Unit 3: each cell from the tray, with one place value too small and too big */
+async function tile(top, left, cells, order) {
+  const cur = cells.map(r => r.map(() => '')), n = s => Number(String(s).replace(/,/g, ''));
+  const am = (hi) => pic('areaModel', { top, left, cells: cur.map(r => r.slice()), hi, fill: true }, { dx: 31, dy: 64, k: 1.05 });
+  for (const [r, c] of order) {
+    const right = cells[r][c], v = n(right);
+    am([r, c]);
+    const buttons = [right, fmt(+(v / 10).toFixed(6)), fmt(+(v * 10).toFixed(6))].map(x => ({ label: L(x), value: x })).sort(() => Math.random() - 0.5);
+    g.say(T(`Weave the tile ${kw(L(left[r] + ' × ' + top[c]))}`, `انسج البلاطة ${kw(L(left[r] + ' × ' + top[c]))}`), 'think');
+    await g.pick({ buttons, correct: right, points: 10,
+      ok: T(`${L(left[r] + ' × ' + top[c] + ' = ' + right)}.`, `${L(left[r] + ' × ' + top[c] + ' = ' + right)}.`), no: T(`${L(left[r] + ' × ' + top[c] + ' = ' + right)}.`, `${L(left[r] + ' × ' + top[c] + ' = ' + right)}.`),
+      hint: T('Multiply the digits, then count the decimal places of both numbers.', 'اضرب الأرقام، وبعدين عدّ الأماكن العشرية في العددين.'),
+      reveal: () => { cur[r][c] = right; am(); } });
+    cur[r][c] = right;
+  }
+  g.setTray(null);
+  am();
+}
+
+/* ---------- Stage 1 · Warm Up: multiplying by powers of ten (lesson 1) ---------- */
+async function stage1() {
+  g.say(T('Welcome to Khan el-Khalili! In this weaving workshop every length is a decimal. First, warm up: watch the digits move.', 'أهلًا بيك في خان الخليلي! في ورشة النسيج دي كل طول كسر عشري. نسخّن الأول: خلّي بالك الأرقام بتتحرك إزاي.'), 'point');
+  await slide('25', '× 1,000', '25,000', ['2,500', '0.025'], T(`${kw(L('25 × 1,000'))} = ?`, `${kw(L('25 × 1,000'))} = ؟`), T('Every digit moves 3 places: 25,000.', 'كل رقم اتحرك ٣ منازل: ' + L('25,000') + '.'));
+  await slide('25', '× 0.01', '0.25', ['2.5', '2,500'], T(`${kw(L('25 × 0.01'))} = ?`, `${kw(L('25 × 0.01'))} = ؟`), T('× 0.01 makes it smaller by 2 places: 0.25.', L('× 0.01') + ' بيصغّره منزلتين: ' + L('0.25') + '.'));
+  await slide('0.72', '× 1,000', '720', ['72', '7,200'], T(`Hoda’s stride is ${L('0.72')} m. After ${L('1,000')} paces: ${kw(L('0.72 × 1,000'))} = ?`, `خطوة هدى ${L('0.72')} متر. بعد ${L('1,000')} خطوة: ${kw(L('0.72 × 1,000'))} = ؟`), T('720 m.', `${L('720')} متر.`));
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lessons 1-2
+  g.say(T(`Mission 1: Manal’s pencil is ${L('15.2')} cm. The weaver wants a ruler 10 times as long.`, `المهمة ١: قلم منال طوله ${L('15.2')} سم. النسّاج عايز مسطرة أطول منه ١٠ مرات.`), 'point');
+  await slide('15.2', '× 10', '152', ['1.52', '1,520'], T(`${kw(L('15.2 × 10'))} = ? cm`, `${kw(L('15.2 × 10'))} = ؟ سم`), T('152 cm.', `${L('152')} سم.`));
+  await slide('15.2', '× 0.1', '1.52', ['152', '0.152'], T(`And one tenth of the pencil: ${kw(L('15.2 × 0.1'))} = ?`, `وجزء من عشرة من القلم: ${kw(L('15.2 × 0.1'))} = ؟`), T('1.52 cm.', `${L('1.52')} سم.`));
+  pic('jumpLine', { step: 0.3, n: 4, to: 3 }, { dx: 40, dy: 70, k: 1 });
+  g.say(T(`A ribbon is cut in ${L('4')} pieces of ${L('0.3')} m. The number line shows the jumps. ${kw(L('0.3 × 4'))} = ?`, `شريط اتقطع ${L('4')} قطع كل قطعة ${L('0.3')} متر. خط الأعداد بيوضح القفزات. ${kw(L('0.3 × 4'))} = ؟`), 'think');
+  await choice({ options: ['1.2', '0.12', '12'], correct: '1.2', hint: T('3 × 4 = 12 tenths.', `${L('3 × 4 = 12')} جزء من عشرة.`), ok: T('12 tenths = 1.2 m.', `${L('12')} جزء من عشرة = ${L('1.2')} متر.`) });
+}
+async function mission2() {                 // lesson 3
+  pic('tenthsGrid', { a: 3, b: 4 }, { dx: 50, dy: 46, k: 1 });
+  g.say(T(`Mission 2: a square of cloth is the whole. ${L('0.3')} is dyed yellow across, ${L('0.4')} blue down. The overlap is ${kw(L('0.3 × 0.4'))}. How much?`, `المهمة ٢: قطعة قماش مربعة هي الواحد الصحيح. ${L('0.3')} مصبوغ أصفر بالعرض، و${L('0.4')} أزرق بالطول. الجزء المشترك هو ${kw(L('0.3 × 0.4'))}. قد إيه؟`), 'point');
+  await choice({ options: ['0.12', '1.2', '0.7'], correct: '0.12', hint: T('Count the dark squares: each is one hundredth.', 'عدّ المربعات الغامقة: كل واحد جزء من مائة.'), ok: T('12 squares = 0.12.', `${L('12')} مربع = ${L('0.12')}.`) });
+  sign('0.5 × 0.7', T('Kamal: tenths · Nadia: hundredths', 'كمال: أجزاء من عشرة · نادية: أجزاء من مائة'));
+  g.say(T(`Kamal says ${L('0.5 × 0.7')} is in the tenths; Nadia says hundredths. Who is right?`, `كمال بيقول ${L('0.5 × 0.7')} في الأجزاء من عشرة، ونادية بتقول من مائة. مين صح؟`), 'think');
+  await choice({ options: [T('Nadia', 'نادية'), T('Kamal', 'كمال')], correct: T('Nadia', 'نادية'), hint: T('0.1 × 0.1 = ?', L('0.1 × 0.1') + ' = ؟'), ok: T('A tenth of a tenth is a hundredth: 0.5 × 0.7 = 0.35.', `جزء من عشرة من جزء من عشرة = جزء من مائة: ${L('0.5 × 0.7 = 0.35')}.`) });
+}
+async function mission3() {                 // lesson 4: tile a decimal area model
+  sign('1.3 × 6.8', T('A carpet: 1.3 m by 6.8 m', 'سجادة: 1.3 م في 6.8 م'));
+  g.say(T(`Mission 3: weave a carpet ${kw(L('1.3 m × 6.8 m'))}. Split it: ${L('1 + 0.3')} and ${L('6 + 0.8')}, and weave tile by tile.`, `المهمة ٣: انسج سجادة ${kw(L('1.3 × 6.8'))} متر. حللها: ${L('1 + 0.3')} و${L('6 + 0.8')}، وانسجها بلاطة بلاطة.`), 'point');
+  await g.next();
+  await tile(['6', '0.8'], ['1', '0.3'], [['6', '0.8'], ['1.8', '0.24']], [[0, 0], [0, 1], [1, 0], [1, 1]]);
+  g.say(T(`Add the tiles: ${L('6 + 0.8 + 1.8 + 0.24')} = ?`, `اجمع البلاطات: ${L('6 + 0.8 + 1.8 + 0.24')} = ؟`), 'think');
+  await choice({ options: ['8.84', '7.84', '8.4'], correct: '8.84', hint: T('6 + 1.8 = 7.8; 0.8 + 0.24 = 1.04.', `${L('6 + 1.8 = 7.8')}؛ ${L('0.8 + 0.24 = 1.04')}.`), ok: T('1.3 × 6.8 = 8.84 m².', `${L('1.3 × 6.8 = 8.84')} م².`) });
+}
+async function mission4() {                 // lessons 5-6: place the decimal point
+  sign('5.8 × 7.4 → 4292', T('Where is the decimal point?', 'فين العلامة العشرية؟'), 30);
+  g.say(T(`Mission 4: the workshop calculator lost its decimal point! ${kw(L('5.8 × 7.4'))} shows the digits ${L('4292')}. Estimate: ${L('6 × 7 = 42')}. Which product?`, `المهمة ٤: آلة حاسبة الورشة ضاعت منها العلامة العشرية! ${kw(L('5.8 × 7.4'))} بتبيّن الأرقام ${L('4292')}. قدّر: ${L('6 × 7 = 42')}. الناتج كام؟`), 'point');
+  await choice({ options: ['42.92', '4.292', '429.2'], correct: '42.92', hint: T('Which one is close to 42?', 'أنهي واحد قريب من ' + L('42') + '؟'), ok: T('42.92: two decimal places, as in 5.8 and 7.4 together.', `${L('42.92')}: مكانين عشريين زي ${L('5.8')} و${L('7.4')} مع بعض.`) });
+  sign('42.16 × 3.4 = 143.344', T('Dalal: estimate · Doha: count the decimal places', 'دلال: التقدير · ضحى: عدّ الأماكن العشرية'), 26);
+  g.say(T(`Dalal checks ${L('42.16 × 3.4 = 143.344')} with the estimate ${L('42 × 3 = 126')}; Doha counts ${L('2 + 1 = 3')} decimal places. Who is right?`, `دلال بتتحقق من ${L('42.16 × 3.4 = 143.344')} بالتقدير ${L('42 × 3 = 126')}؛ وضحى بتعد ${L('2 + 1 = 3')} أماكن عشرية. مين صح؟`), 'think');
+  await choice({ options: [T('Both of them', 'الاتنين'), T('Dalal only', 'دلال بس'), T('Doha only', 'ضحى بس')], correct: T('Both of them', 'الاتنين'), hint: T('Do both ways put the point in the same place?', 'الطريقتين بيحطوا العلامة في نفس المكان؟'), ok: T('Both ways work.', 'الطريقتين صح.') });
+}
+async function mission5() {                 // lessons 7-8: metric units
+  boxes('0.7', T('0.7 m of silk = ? cm', '0.7 م حرير = ؟ سم'));
+  g.say(T(`Mission 5: a customer wants ${kw(L('0.7'))} m of silk. The tape shows centimeters. How many cm?`, `المهمة ٥: زبونة عايزة ${kw(L('0.7'))} متر حرير. الشريط بالسنتيمتر. كام سم؟`), 'point');
+  await choice({ options: ['70', '7', '700'], correct: '70', hint: T('1 m = 100 cm: multiply by 100.', `${L('1')} م = ${L('100')} سم: اضرب في ${L('100')}.`), ok: T('0.7 × 100 = 70 cm.', `${L('0.7 × 100 = 70')} سم.`), reveal: () => boxes('70', T('0.7 m = 70 cm', '0.7 م = 70 سم')) });
+  sign(T('4,230 mL → L', 'من 4,230 مل إلى لتر'), T("Amgad's water", 'مياه أمجد'));
+  g.say(T(`Amgad drinks ${L('4,230')} mL of water a day. Which multiplication gives the liters?`, `أمجد بيشرب ${L('4,230')} مل مياه في اليوم. أنهي ضرب يجيب اللترات؟`), 'think');
+  await choice({ options: ['4,230 × 0.001', '4,230 × 1,000', '4,230 × 0.1'], correct: '4,230 × 0.001', hint: T('1 mL = 0.001 L.', `${L('1')} مل = ${L('0.001')} لتر.`), ok: T('4,230 × 0.001 = 4.23 L.', `${L('4,230 × 0.001 = 4.23')} لتر.`) });
+  sign(T('173 kg · 201,000 g', '173 كجم · 201,000 جم'), T('Snatch · clean and jerk', 'الخطف · النتر'));
+  g.say(T(`Mohamed Ehab lifted ${L('173')} kg in the snatch and ${L('201,000')} g in the clean and jerk. Which is greater?`, `محمد إيهاب رفع ${L('173')} كجم في الخطف و${L('201,000')} جم في النتر. أنهي أكبر؟`), 'think');
+  await choice({ options: [T('The clean and jerk', 'النتر'), T('The snatch', 'الخطف')], correct: T('The clean and jerk', 'النتر'), hint: T('Change 201,000 g to kg: × 0.001.', 'حوّل ' + L('201,000') + ' جم لكجم: ' + L('× 0.001') + '.'), ok: T('201,000 g = 201 kg, more than 173 kg.', `${L('201,000')} جم = ${L('201')} كجم، أكبر من ${L('173')} كجم.`) });
+}
+async function mission6() {                 // lesson 9: multistep stories
+  sign(T('1 L − 320 mL − 0.25 L', '1 لتر − 320 مل − 0.25 لتر'), T("Dalia's sugar cane juice", 'عصير قصب داليا'), 26);
+  g.say(T(`Mission 6: Dalia made ${L('1')} L of sugar cane juice. She drank ${L('320')} mL and her father ${L('0.25')} L. How much is left?`, `المهمة ٦: داليا عملت ${L('1')} لتر عصير قصب. شربت ${L('320')} مل، وباباها ${L('0.25')} لتر. فاضل كام؟`), 'point');
+  await choice({ options: [T('0.43 L', '0.43 لتر'), T('0.68 L', '0.68 لتر'), T('319.75 L', '319.75 لتر')], correct: T('0.43 L', '0.43 لتر'), hint: T('Change 320 mL to 0.32 L first.', 'حوّل ' + L('320') + ' مل لـ ' + L('0.32') + ' لتر الأول.'), ok: T('1 − 0.32 − 0.25 = 0.43 L.', `${L('1 − 0.32 − 0.25 = 0.43')} لتر.`) });
+  sign(T('1.35 m × 4 = 5.4 m', '1.35 م × 4 = 5.4 م'), T('250 cm in each package', '250 سم في كل علبة'), 28);
+  g.say(T(`Rania needs ${L('1.35')} m of bandage for each of ${L('4')} patients: ${L('5.4')} m = ${L('540')} cm. Each package has ${L('250')} cm. How many packages?`, `رانيا محتاجة ${L('1.35')} متر ضمادات لكل مريض من ${L('4')} مرضى: ${L('5.4')} م = ${L('540')} سم. كل علبة فيها ${L('250')} سم. كام علبة؟`), 'think');
+  await choice({ options: ['3', '2', '5'], correct: '3', hint: T('2 packages give 500 cm: is that enough?', 'علبتين يدّوا ' + L('500') + ' سم: يكفوا؟'), ok: T('3 packages = 750 cm, and 210 cm are left.', `${L('3')} علب = ${L('750')} سم، ويفضل ${L('210')} سم.`) });
+}
+async function mission7() {                 // lessons 10-11: dividing by powers of ten
+  g.say(T('Mission 7: now we divide by powers of ten. Watch the digits move the other way!', 'المهمة ٧: دلوقتي نقسم على قوى العشرة. خلّي بالك الأرقام هتتحرك في الاتجاه التاني!'), 'point');
+  await slide('2,500', '÷ 0.01', '250,000', ['25', '2,500,000'], T(`${kw(L('2,500 ÷ 0.01'))} = ?`, `${kw(L('2,500 ÷ 0.01'))} = ؟`), T('÷ 0.01 is the same as × 100: 250,000.', `${L('÷ 0.01')} زي ${L('× 100')}: ${L('250,000')}.`));
+  await slide('510.05', '÷ 100', '5.1005', ['51,005', '51.005'], T(`${kw(L('510.05 ÷ 100'))} = ?`, `${kw(L('510.05 ÷ 100'))} = ؟`), T('÷ 100 = × 0.01: 5.1005.', `${L('÷ 100 = × 0.01')}: ${L('5.1005')}.`));
+  sign('1,100 °C', T('Water boils at about one tenth of it', 'الماء يغلي عند جزء من عشرة منها تقريبًا'));
+  g.say(T(`Glass is blown at ${L('1,100')} °C. Water boils at about one tenth of that. Which choice?`, `الزجاج بيتنفخ عند ${L('1,100')} درجة. الماء بيغلي عند جزء من عشرة منها تقريبًا. أنهي اختيار؟`), 'think');
+  await choice({ options: ['1,100 ÷ 10', '1,100 × 10', '1,100 ÷ 0.1'], correct: '1,100 ÷ 10', hint: T('One tenth makes it smaller.', 'جزء من عشرة بيصغّر العدد.'), ok: T('1,100 ÷ 10 = 1,100 × 0.1 = 110 °C.', `${L('1,100 ÷ 10 = 1,100 × 0.1 = 110')} درجة.`) });
+}
+async function mission8() {                 // lessons 12-13: dividing decimals
+  pic('longDiv', { div: '30', num: '4.5' }, { dx: 20, dy: 90, k: 1.05 });
+  g.say(T(`Mission 8: Emad cuts ${L('4.5')} m of thread into ${L('30')} equal pieces. How long is each piece?`, `المهمة ٨: عماد بيقص ${L('4.5')} متر خيط لـ ${L('30')} قطعة متساوية. طول كل قطعة كام؟`), 'point');
+  await choice({ options: [T('0.15 m', '0.15 م'), T('1.5 m', '1.5 م'), T('0.015 m', '0.015 م')], correct: T('0.15 m', '0.15 م'), hint: T('Check: ? × 30 = 4.5.', `اتأكد: ${L('? × 30 = 4.5')}.`), ok: T('4.5 ÷ 30 = 0.15 m, because 0.15 × 30 = 4.5.', `${L('4.5 ÷ 30 = 0.15')} م، لأن ${L('0.15 × 30 = 4.5')}.`) });
+  sign('26.4 ÷ 2.2', T('Make the divisor a whole number', 'حوّل المقسوم عليه لعدد صحيح'));
+  g.say(T(`${kw(L('26.4 ÷ 2.2'))} has the same quotient as…`, `${kw(L('26.4 ÷ 2.2'))} ليها نفس خارج قسمة…`), 'think');
+  await choice({ options: ['264 ÷ 22', '2.64 ÷ 22', '26.4 ÷ 22'], correct: '264 ÷ 22', hint: T('Multiply BOTH numbers by 10.', 'اضرب العددين الاتنين في ' + L('10') + '.'), ok: T('264 ÷ 22 = 12.', `${L('264 ÷ 22 = 12')}.`) });
+  sign('77.43 ÷ 0.3 = 7.743 ÷ 3 ?', T("A student's work", 'حل تلميذ'), 28);
+  g.say(T(`A student wrote ${kw(L('77.43 ÷ 0.3 = 7.743 ÷ 3'))}. Is that right?`, `تلميذ كتب ${kw(L('77.43 ÷ 0.3 = 7.743 ÷ 3'))}. ده صح؟`), 'think');
+  const R = T('No: it is 774.3 ÷ 3', 'لأ: الصح 774.3 ÷ 3');
+  await choice({ options: [R, T('Yes', 'أيوه'), T('No: it is 77.43 ÷ 3', 'لأ: الصح 77.43 ÷ 3')], correct: R, hint: T('The divisor was multiplied by 10. What must happen to the dividend?', 'المقسوم عليه اتضرب في ' + L('10') + '. المقسوم لازم يحصله إيه؟'), ok: T('774.3 ÷ 3 = 258.1.', `${L('774.3 ÷ 3 = 258.1')}.`) });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); await mission7(); await mission8(); }
+
+/* ---------- Stage 3 · Speed Round: bigger or smaller? ---------- */
+const BT = [{ label: T('Bigger', 'أكبر'), value: 'b', c: 0 }, { label: T('Smaller', 'أصغر'), value: 's', c: 2 }];
+const SR = [['25 × 0.1', 's', '2.5'], ['2,500 ÷ 0.01', 'b', '250,000'], ['4.2 × 10', 'b', '42'], ['0.4 ÷ 10', 's', '0.04'], ['5.7 ÷ 0.1', 'b', '57'], ['360 × 0.1', 's', '36'],
+  ['1.245 × 100', 'b', '124.5'], ['71 ÷ 1,000', 's', '0.071'], ['0.39 ÷ 0.1', 'b', '3.9'], ['28.4 × 0.01', 's', '0.284'], ['12.8 ÷ 0.01', 'b', '1,280'], ['602.1 × 0.01', 's', '6.021']];
+async function stage3() {
+  sign('?');
+  await g.speedRound({ items: SR.map(([e, a, r]) => ({ t: L(e), ans: a, e, why: T(`${e} = ${r}.`, `${L(e + ' = ' + r)}.`) })),
+    rounds: 8, ms: 12000, buttons: BT, show: it => sign(it.e),
+    ask: T('Bigger or smaller than the first number?', 'أكبر ولا أصغر من العدد الأول؟'), intro: T('Speed Round! A multiplication or division by a power of ten appears. Will the answer be bigger or smaller than the first number?', 'جولة السرعة! هيظهر ضرب أو قسمة على قوة من قوى العشرة. الناتج هيبقى أكبر ولا أصغر من العدد الأول؟'),
+    think: T('Bigger or smaller?', 'أكبر ولا أصغر؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Work in a weaving workshop in Khan el-Khalili: measure cloth, move the decimal point, multiply and divide decimals and convert units. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! اشتغل في ورشة نسيج في خان الخليلي: قيس القماش وحرّك العلامة العشرية واضرب واقسم الكسور العشرية وحوّل الوحدات. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can multiply and divide decimals, use powers of ten and convert metric units. Next, try the questions of this unit.', 'بقيت تضرب وتقسم الكسور العشرية وتستخدم قوى العشرة وتحوّل وحدات القياس. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

@@ -16,7 +16,10 @@
              longMult    (picture only)                       q.pic = { a: '76', b: '24', parts: ['304', '1,520'], total: '1,824', carry: '1' }  ('?' = an empty box)
      Unit 4: divModel    (picture only)                       q.pic = { div: '31', top: ['100','10','6'], cells: [['3,622','3,100','522'], …], hi: c }  (each cell: what is left, − product, new remainder)
              longDiv     (picture only)                       q.pic = { div: '43', num: '8,858', quo: '26', steps: [['86', 1], ['258', 0], …], r: 'R 2' }
-   Every Unit 2, 3 and 4 picture honours q.pic.plain (inner markup only, for the game scene).
+     Unit 5: tenthsGrid  (picture only)                       q.pic = { a: 3, b: 4 }  (rows and columns in tenths; overlap darker; the product is never printed)
+             jumpLine    (picture only)                       q.pic = { step: 0.3, n: 3, to: 3 }  (equal jumps, the landing point not labelled)
+             placeSlide  (picture only)                       q.pic = { num: '25.4' }  (place-value boxes, whole part blue, decimal part orange, the decimal point between)
+   Every Unit 2 to 5 picture honours q.pic.plain (inner markup only, for the game scene).
    The numbers on every picture stay left to right, also for an Arabic player (as in the school book).
    The names read by screen readers describe what is drawn, never the answer. */
 (function () {
@@ -325,10 +328,11 @@
     const p = (q && q.pic) || { div: '43', num: '1,376' }, digits = String(p.num).replace(/,/g, ''), st = 15, steps = p.steps || [];
     const xr = 250, H = 64 + steps.length * 24 + 8, yN = 52;
     let s = open2(q, H, T('A long division written in columns', 'عملية قسمة مطوّلة مكتوبة رأسيًا'));
-    const colX = i => xr - (digits.length - 1 - i) * st;          // x of the i-th digit of the dividend
+    const cols = digits.replace('.', '').length, colX = i => xr - (cols - 1 - i) * st;   // x of the i-th digit (the point takes no column)          // x of the i-th digit of the dividend
     const put = (str, xRight, y, col) => {                         // right-aligned digits, '?' = box
       const ch = String(str).replace(/,/g, '').split(''); let x = xRight;
       for (let i = ch.length - 1; i >= 0; i--) {
+        if (ch[i] === '.') { s += num(x + st / 2, y, '.', { fs: 18, fill: col || COL.ink, fw: 800 }); continue; }   // the decimal point takes no column
         if (ch[i] === '?') s += `<rect x="${f1(x - 8)}" y="${y - 16}" width="16" height="20" rx="3" fill="#fff" stroke="${C3.q}" stroke-width="2" stroke-dasharray="4 3"/>`;
         else s += num(x, y, ch[i], { fs: 18, fill: col || COL.ink, fw: 800 });
         x -= st;
@@ -342,12 +346,48 @@
     steps.forEach(([t, r], i) => {
       const y = yN + 26 + i * 24, xR = xr - r * st;
       put(t, xR, y);
-      if (i % 2 === 0) { const len = String(t).replace(/,/g, '').length; s += num(xR - len * st - 2, y, '−', { fs: 18, fw: 800 }) + `<path d="M${f1(xR - len * st - 6)} ${y + 6}H${f1(xR + 9)}" stroke="${COL.ink}" stroke-width="1.8"/>`; }
+      if (i % 2 === 0) { const len = String(t).replace(/[,.]/g, '').length; s += num(xR - len * st - 2, y, '−', { fs: 18, fw: 800 }) + `<path d="M${f1(xR - len * st - 6)} ${y + 6}H${f1(xR + 9)}" stroke="${COL.ink}" stroke-width="1.8"/>`; }
     });
     if (p.r) s += lab(xr + 30, yN - 34, p.r, { fs: 12, fw: 900, fill: C3.q });
     return s + close2(q);
   }
 
+  /* ================= Unit 5 ================= */
+  /* tenths × tenths on a 10 × 10 grid (book p97-98): a rows shaded one way, b columns the other way; the overlap is darker.
+     q.pic = { a: 3, b: 4 }  (a, b in tenths). The overlap is not counted for the child: the picture never prints the product */
+  function tenthsGrid(q) {
+    const p = (q && q.pic) || { a: 3, b: 4 }, u = 15, x0 = (340 - 10 * u) / 2, y0 = 14, H = y0 + 10 * u + 14;
+    let s = open2(q, H, T('A 10 by 10 grid with tenths shaded across and down', 'شبكة 10 × 10 مظلل فيها أجزاء من عشرة أفقيًا ورأسيًا'));
+    for (let r = 0; r < 10; r++) for (let c = 0; c < 10; c++) {
+      const A = r < p.a, B = c < p.b, fill = A && B ? '#7f6bc4' : A ? '#f7cf4d' : B ? '#9ed2f0' : '#fff';
+      s += `<rect x="${x0 + c * u}" y="${y0 + r * u}" width="${u}" height="${u}" fill="${fill}" stroke="${COL.line}" stroke-width=".8"/>`;
+    }
+    s += `<rect x="${x0}" y="${y0}" width="${10 * u}" height="${10 * u}" fill="none" stroke="${COL.ink}" stroke-width="2"/>`;
+    return s + close2(q);
+  }
+  /* equal jumps on a number line from 0 to `to`, ticks every 0.1 (book p95): q.pic = { step: 0.3, n: 3, to: 3 }; the landing point is not labelled */
+  function jumpLine(q) {
+    const p = (q && q.pic) || { step: 0.3, n: 3, to: 3 }, x0 = 20, w = 300, y = 80, sc = w / p.to, H = 112;
+    let s = open2(q, H, T('Equal jumps on a number line', 'قفزات متساوية على خط الأعداد'));
+    s += `<path d="M${x0} ${y}H${x0 + w}" stroke="${COL.ink}" stroke-width="2.2"/>`;
+    for (let i = 0; i <= p.to * 10; i++) { const x = x0 + i * sc / 10, big = i % 10 === 0; s += `<path d="M${f1(x)} ${y - (big ? 9 : 5)}V${y + (big ? 9 : 5)}" stroke="${COL.ink}" stroke-width="${big ? 2 : 1}"/>`; if (big) s += num(x, y + 24, String(i / 10), { fs: 13 }); }
+    for (let k = 0; k < p.n; k++) {
+      const a = x0 + k * p.step * sc, b = x0 + (k + 1) * p.step * sc, m = (a + b) / 2, hgt = Math.min(34, (b - a) * .7);
+      s += `<path d="M${f1(a)} ${y - 4}Q${f1(m)} ${f1(y - 4 - hgt * 1.6)} ${f1(b)} ${y - 4}" fill="none" stroke="${C2.prime}" stroke-width="2.4"/><path d="M${f1(b)} ${y - 4}l-6 -5m6 5l-7 2" stroke="${C2.prime}" stroke-width="2.2" fill="none"/>`;
+      s += num(m, f1(y - 8 - hgt * .8), '+' + p.step, { fs: 10.5, fill: C2.prime });
+    }
+    return s + close2(q);
+  }
+  /* a number in place-value boxes with its decimal point (book p92): q.pic = { num: '25.4' }; the game slides the point */
+  function placeSlide(q) {
+    const p = (q && q.pic) || { num: '25.4' }, raw = String(p.num), digits = raw.replace('.', '').split(''), dot = raw.includes('.') ? raw.indexOf('.') : raw.length;
+    const bw = 34, gap = 6, n = digits.length, wAll = n * bw + (n - 1) * gap, x0 = (340 - wAll) / 2, y0 = 22, H = 80;
+    let s = open2(q, H, T('A number in place-value boxes with its decimal point', 'عدد في خانات القيمة المكانية مع العلامة العشرية'));
+    digits.forEach((d, i) => { const x = x0 + i * (bw + gap); s += `<rect x="${f1(x)}" y="${y0}" width="${bw}" height="42" rx="6" fill="${i < dot ? '#e3eef8' : '#fde7d6'}" stroke="${COL.line}" stroke-width="2"/>` + num(x + bw / 2, y0 + 29, d, { fs: 22 }); });
+    if (dot > 0 && dot < n) s += `<circle cx="${f1(x0 + dot * (bw + gap) - gap / 2)}" cy="${y0 + 38}" r="4.5" fill="${C2.prime}"/>`;
+    return s + close2(q);
+  }
+
   window.M5ART = { COL, T, f1, esc, at, num, lab, hot, ringRect, svgOpen, grid100, slices, PLACES, digitsOf, chart, chartHots, line, isPrime };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeChart, numLine, gridShade, gridModel, barModel, factorTree, multVenn, skipLine, areaModel, unitGrid, longMult, divModel, longDiv });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeChart, numLine, gridShade, gridModel, barModel, factorTree, multVenn, skipLine, areaModel, unitGrid, longMult, divModel, longDiv, tenthsGrid, jumpLine, placeSlide });
 })();
