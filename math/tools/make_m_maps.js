@@ -184,28 +184,28 @@ ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_m5c4.svg', b);
 })();
 
-/* ---------- Grade 5 · Unit 5 · Khan el-Khalili Weavers: an island of arches, lanterns, a loom, rolls of cloth and a tenths-grid board ---------- */
+/* ---------- Grade 5 · Unit 5 · Decimal Adventure: an adventure island with tents, flags, signposts, a compass rose and a tenths-grid board ---------- */
 (function () {
   seed = 43;
   const D = ctx.window.CH_DIAGRAMS;
-  const arch = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-70 0V-90Q-70 -150 0 -150Q70 -150 70 -90V0" fill="#e8cfa0" stroke="#c99a5c" stroke-width="7"/><path d="M-40 0V-80Q-40 -116 0 -116Q40 -116 40 -80V0" fill="#a8692c" opacity=".35"/></g>`;
-  const lantern = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 -40V-20" stroke="#8a5a28" stroke-width="4"/><path d="M-16 -20h32l-8 40h-16z" fill="#f2b134" stroke="#a8692c" stroke-width="4"/><circle cx="0" cy="0" r="7" fill="#fff3c4"/></g>`;
-  const roll = (x, y, k, c) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-60" y="-24" width="120" height="48" rx="24" fill="${c}"/><path d="M-30 -24v48M0 -24v48M30 -24v48" stroke="#fffaf0" stroke-width="5" opacity=".7"/><ellipse cx="60" cy="0" rx="12" ry="24" fill="#fffaf0" stroke="${c}" stroke-width="5"/></g>`;
-  const loom = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-80 0V-120M80 0V-120M-90 -120H90M-90 -20H90" stroke="#8a5a28" stroke-width="9" stroke-linecap="round"/>${[-60, -40, -20, 0, 20, 40, 60].map((v, i) => `<path d="M${v} -116V-24" stroke="${['#e2603f', '#f2b134', '#4ea5d9', '#79c69a'][i % 4]}" stroke-width="7"/>`).join('')}</g>`;
-  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#f3dcb2" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#ecd8c4" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#f0e0c8" opacity=".6"/>`;
-  for (let i = 0; i < 16; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
-  let s = island([[0, '#f4e3c4'], [.5, '#efdcbc'], [1, '#f4dcae']], ['#f3e6b8', '#f6efd2'], inside);
-  s += arch(260, 470, 1.1) + arch(940, 400, 1) + arch(1000, 1080, .9) + lantern(260, 330, 1.2) + lantern(940, 270, 1.1);
-  s += loom(240, 930, 1.1) + roll(560, 1150, .9, '#e2603f') + roll(760, 1160, .8, '#4ea5d9') + roll(900, 640, .8, '#79c69a');
+  const tent = (x, y, k, c) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-70 0L0 -90L70 0Z" fill="${c}" stroke="#7a3a24" stroke-width="5" stroke-linejoin="round"/><path d="M0 -90V0M-16 0L0 -30L16 0" stroke="#fffaf0" stroke-width="5" fill="none"/><path d="M0 -90V-140" stroke="#5c6f82" stroke-width="5"/><path d="M0 -140h40l-10 12h-30z" fill="#f2b134"/></g>`;
+  const post = (x, y, k, t) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0V-90" stroke="#8a5a28" stroke-width="8"/><path d="M-6 -90h70l14 14l-14 14h-70z" fill="#e0b070" stroke="#8a5a28" stroke-width="4"/>${M.num(32, -70, t, { fs: 18, fill: '#5a3a14' })}</g>`;
+  const compass = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><circle r="46" fill="#fffaf0" stroke="#8a5a28" stroke-width="6"/><path d="M0 -38L10 0L0 38L-10 0Z" fill="#e2603f"/><path d="M-38 0L0 -10L38 0L0 10Z" fill="#4ea5d9" opacity=".8"/><circle r="6" fill="#1f3d57"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#e4f1d0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#d8efd0" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#e6f0d8" opacity=".6"/>`;
+  for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#e6f3d6'], [.5, '#dcefcf'], [1, '#e8f0d0']], ['#f3e6b8', '#f6efd2'], inside);
+  s += tent(250, 470, 1.1, '#e2603f') + tent(960, 420, 1, '#4ea5d9') + tent(1000, 1100, .9, '#79c69a');
+  s += post(220, 920, 1.1, '0.1') + post(880, 700, 1, '× 10') + compass(560, 1150, 1);
   s += board(600, 640, 220, 200, '<g transform="translate(-102 -84) scale(.6)">' + D.tenthsGrid({ pic: { plain: true, a: 3, b: 4 } }) + '</g>');
   s += crate(400, 1150, 1, '0.1') + crate(458, 1162, .9, '×') + crate(512, 1154, .8, '÷');
   s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
   save('map_m5c5.svg', s);
   let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
-<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fbeedc"/><stop offset="1" stop-color="#f1dcb8"/></linearGradient></defs>
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#eef6e4"/><stop offset="1" stop-color="#d8ecc4"/></linearGradient></defs>
 <rect width="1600" height="1000" fill="url(#g)"/>
 ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
-<path d="M0 820H1600V1000H0Z" fill="#d9b483"/>${arch(220, 820, 2.2)}${arch(1380, 820, 2)}${roll(800, 900, 1.6, '#e2603f')}${lantern(560, 300, 2)}${lantern(1040, 300, 2)}
+<path d="M-50 820Q300 560 650 820Z" fill="#9ed7b6"/><path d="M900 820Q1250 520 1650 820Z" fill="#79c69a"/>
+<path d="M0 820H1600V1000H0Z" fill="#e8d3a0"/>${tent(260, 860, 2, '#e2603f')}${tent(1360, 860, 1.8, '#4ea5d9')}${compass(800, 920, 1.3)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_m5c5.svg', b);
 })();
