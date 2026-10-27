@@ -486,5 +486,7 @@ window.EXAMS = [
    once its unit is open) and on the map of its unit. Progress is kept in SI.chProf(ch)[id]. Add one line per new adventure. */
 window.ADVENTURES = [
   { id: 'cage', href: 'math-cage.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/reesho_sad.webp', of: 6,
-    title: 'Save Reesho!', titleAr: 'أنقذ ريشو!', hint: 'Crack the decimal lock before the fox gets there', hintAr: 'افتح قفل الأعداد العشرية قبل ما الثعلب يوصل' }
+    title: 'Save Reesho!', titleAr: 'أنقذ ريشو!', hint: 'Crack the decimal lock before the fox gets there', hintAr: 'افتح قفل الأعداد العشرية قبل ما الثعلب يوصل' },
+  { id: 'city', href: 'math-city.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/reesho_point.webp', of: 6, stat: 'Districts built', statAr: 'الأحياء المبنية',
+    title: 'Reesho’s City', titleAr: 'مدينة ريشو', hint: 'Colour exactly the land in each order: tenths, hundredths, thousandths', hintAr: 'لوّن الأرض المطلوبة بالظبط: أعشار وأجزاء من مئة وأجزاء من ألف' }
 ];

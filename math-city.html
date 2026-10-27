@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Reesho’s City · Decimals to the Thousandths</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 5 · Unit 1 (m5c1) adventure «مدينة ريشو / Reesho’s City», lessons 1-4, from the book's «تعلّم: تخطيط مدينة إلى ألف وحدة متساوية»
+     and «القرص الدوار للكسور العشرية» (one colour for tenths, one for hundredths, one for thousandths; shade the grid, then read the decimal).
+     Reesho is the mayor. Each order asks for a piece of land given as a decimal, in words, as a fraction over 1000, in expanded form, or as
+     «3 tenths + 14 hundredths + 5 thousandths» (composing). The child paints the land: a whole column = a tenth, a square = a hundredth,
+     a thin strip = a thousandth; 10 strips turn into a square and 10 squares into a column by themselves. Build = the land must be exactly
+     the order. Too much or too little makes the residents angry (3 = the district is lost). 6 districts × 3 orders.
+     Pictures: Reesho from assets/ (point, think, sad, celebrate → math/assets/reesho_*.webp); land, icons and city drawn in code.
+     Music and sounds made in the page with Web Audio. Progress: SI.chProf('m5c1').city = { lvl, best, stars[], built }. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--mint:#bfe8d6;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134;
+  --cT:#3b82c4;--cH:#45b36b;--cM:#f08a24}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#bfe3f2,#e6f4ea 40%,#f3e7c9);color:var(--navy);min-height:100svh}
+.wrap{max-width:720px;margin:0 auto;padding:10px 14px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:22px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffffaa;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px}
+.home,.snd{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffffaa;border:0;border-radius:99px;color:var(--navy);font-size:16px;width:34px;height:30px;cursor:pointer}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:18px}
+.say{margin:8px 0}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;min-height:44px;box-shadow:0 3px 10px #0001}
+.order{display:flex;align-items:center;gap:12px;background:var(--navy);color:#fff;border-radius:18px;padding:10px 14px;margin-bottom:10px;box-shadow:0 4px 0 #142a3d}
+.order .ico{font-size:34px;flex:none}
+.order small{display:block;opacity:.85;font-size:13.5px;font-weight:700}
+.order .goal{font-size:23px;font-weight:900;line-height:1.35;color:#ffe08a}
+.order .rnd{margin-inline-start:auto;font-size:12.5px;opacity:.8;flex:none;text-align:center}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;margin:0 2px}
+.frac b{border-bottom:3px solid currentColor;padding:0 4px}
+.frac i{font-style:normal}
+bdi{font-weight:900}
+.order bdi{color:#ffe08a}
+.bubble bdi,.box bdi{color:var(--pri)}
+.panel{background:var(--card);border-radius:20px;padding:12px;box-shadow:0 6px 20px #1f3d5722}
+.game{display:grid;grid-template-columns:1fr 168px;gap:12px;align-items:start}
+#land{width:100%;max-width:420px;display:block;margin:0 auto;touch-action:manipulation;cursor:pointer;user-select:none}
+.tools{display:grid;gap:7px}
+.tool{display:flex;align-items:center;gap:8px;border:3px solid transparent;background:#fff;border-radius:14px;padding:7px 9px;font:800 14px Nunito,Cairo;color:var(--navy);cursor:pointer;text-align:start;box-shadow:0 2px 0 #0001}
+.tool svg{flex:none}
+.tool.on{border-color:var(--navy);background:#fff6dd}
+.tool[hidden]{display:none}
+.row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:18px;max-width:400px;text-align:center;max-height:94svh;overflow:auto}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 10px}
+.stars{font-size:34px;letter-spacing:4px}
+.flash{animation:fl .5s 2}
+@keyframes fl{50%{opacity:.25}}
+.pop{animation:pop .5s}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+#land .pop{transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion:reduce){.flash,.pop{animation:none}}
+@media (max-width:560px){.game{grid-template-columns:1fr}.tools{grid-template-columns:1fr 1fr}.tool{font-size:13px;padding:6px 7px}.order .goal{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🏙️ مدينة ريشو">🏙️ Reesho’s City</h1><div class="pills"><span class="pill"><span data-ar="الحي">District</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="map.html" aria-label="Back to the map" data-ar-label="رجوع للخريطة">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 160" role="img" aria-label="Reesho the mayor and the city he is building" data-ar-label="ريشو العمدة والمدينة اللي بيبنيها"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="order" id="order"></div>
+  <div class="panel">
+    <div class="game">
+      <svg id="land" viewBox="0 0 360 360" role="img" aria-label="The land: 10 columns, each column 10 squares, each square 10 strips" data-ar-label="الأرض: ١٠ أعمدة، كل عمود ١٠ مربعات، كل مربع ١٠ شرايط"></svg>
+      <div class="tools" id="tools"></div>
+    </div>
+    <div class="row"><button class="btn" id="build" type="button" data-ar="🏗️ ابنِ">🏗️ Build</button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button><button class="btn alt" id="clear" type="button" data-ar="🧹 امسح الأرض">🧹 Clear</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="box">
+  <h2 data-ar="ريشو بقى عمدة!">Reesho is the mayor!</h2>
+  <svg viewBox="0 0 300 130" width="100%" style="max-width:300px" aria-hidden="true" id="ex"></svg>
+  <ol id="rules"></ol>
+  <button class="btn" id="go" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261027e"></script>
+<script src="chapters.js?v=20261027e"></script>
+<script src="common.js?v=20261027e"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('m5c1'); if (!CH) return;
+const T = SI.T, AR = SI.isAr(), G = SI.G || ((b) => b), GAME = 'math-city.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+document.title = T('Reesho’s City · Decimals to the Thousandths', 'مدينة ريشو · الكسور العشرية حتى جزء من الألف');
+
+/* ---------- pieces (colours as in the book's activity: one colour per place) ---------- */
+const COL = { T: '#3b82c4', H: '#45b36b', M: '#f08a24' };
+const PNAME = { T: T('tenths', 'الأجزاء من عشرة'), H: T('hundredths', 'الأجزاء من مئة'), M: T('thousandths', 'الأجزاء من ألف') };
+const swatch = k => `<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="4" fill="#fff" stroke="#9fb2bf"/>${
+  k === 'T' ? `<rect x="10" y="1" width="10" height="28" fill="${COL.T}"/>` : k === 'H' ? `<rect x="10" y="10" width="10" height="10" fill="${COL.H}"/>` :
+  k === 'M' ? `<rect x="10" y="10" width="2.6" height="10" fill="${COL.M}"/><rect x="10" y="10" width="10" height="10" fill="none" stroke="#9fb2bf" stroke-width=".6"/>` :
+  '<text x="15" y="21" font-size="17" text-anchor="middle">🧽</text>'}</svg>`;
+const TOOLS = [
+  { k: 'T', en: 'Column = 1 tenth', ar: 'عمود = جزء من عشرة' },
+  { k: 'H', en: 'Square = 1 hundredth', ar: 'مربع = جزء من مئة' },
+  { k: 'M', en: 'Strip = 1 thousandth', ar: 'شريط = جزء من ألف' },
+  { k: 'E', en: 'Eraser', ar: 'الممحاة' }
+];
+
+/* ---------- districts: what kind of order each one gives ---------- */
+const LEVELS = [
+  { forms: ['dec2'], tools: 'THE' },
+  { forms: ['dec3'], tools: 'THME' },
+  { forms: ['words'], tools: 'THME' },
+  { forms: ['frac', 'exp'], tools: 'THME' },
+  { forms: ['zdec', 'zwords', 'zfrac'], tools: 'THME' },
+  { forms: ['comp'], tools: 'THME' }
+];
+const ROUNDS = 3, LIVES = 3;
+const USES = [
+  { id: 'park', icon: '🌳', en: 'a park', ar: 'حديقة' },
+  { id: 'homes', icon: '🏠', en: 'new houses', ar: 'بيوت جديدة' },
+  { id: 'market', icon: '🏪', en: 'a market', ar: 'سوق' },
+  { id: 'farm', icon: '🌾', en: 'a farm', ar: 'مزرعة' }
+];
+
+/* ---------- number words ---------- */
+const AU = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
+const ATENS = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+const AH = ['', 'مائة', 'مائتا', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+/* n thousandths in Arabic words; the generator never sends n whose last two digits are 01 or 02 */
+function arWords(v) {
+  const h = Math.floor(v / 100), r = v % 100, u = r % 10, t = Math.floor(r / 10);
+  const rw = !r ? '' : r < 10 ? AU[r] : r === 10 ? 'عشرة' : r === 11 ? 'أحد عشر' : r === 12 ? 'اثنا عشر' : r < 20 ? AU[u] + ' عشر' : (u ? AU[u] + ' و' : '') + ATENS[t];
+  const hw = !h ? '' : (h === 2 && r) ? 'مائتان' : AH[h];
+  const noun = !r ? 'جزء' : r <= 10 ? 'أجزاء' : 'جزءًا';
+  return [hw, rw].filter(Boolean).join(' و') + ' ' + noun + ' من ألف';
+}
+const EU = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const ET = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+function enWords(v) {
+  const h = Math.floor(v / 100), r = v % 100;
+  const rw = !r ? '' : r < 20 ? EU[r] : ET[Math.floor(r / 10)] + (r % 10 ? '-' + EU[r % 10] : '');
+  return [h ? EU[h] + ' hundred' : '', rw].filter(Boolean).join(' ') + ' thousandth' + (v === 1 ? '' : 's');
+}
+const dec3 = v => '0.' + String(v).padStart(3, '0');
+const dec2 = v => '0.' + String(v / 10).padStart(2, '0');
+const shown = v => (L().tools.includes('M') ? dec3(v) : dec2(v));
+const frac = v => `<span class="frac" dir="ltr"><b>${v}</b><i>1000</i></span>`;
+const expd = v => n([Math.floor(v / 100) && '0.' + Math.floor(v / 100), Math.floor(v / 10) % 10 && '0.0' + Math.floor(v / 10) % 10, v % 10 && '0.00' + v % 10].filter(Boolean).join(' + '));
+/* counts for the composing orders: «3 أعشار و 14 جزءًا من مئة» */
+function cnt(k, kind) {
+  if (AR) {
+    const f = { T: ['جزء واحد من عشرة', 'جزءان من عشرة', 'أجزاء من عشرة', 'جزءًا من عشرة'], H: ['جزء واحد من مئة', 'جزءان من مئة', 'أجزاء من مئة', 'جزءًا من مئة'], M: ['جزء واحد من ألف', 'جزءان من ألف', 'أجزاء من ألف', 'جزءًا من ألف'] }[kind];
+    return k === 1 ? f[0] : k === 2 ? f[1] : `${n(k)} ${k <= 10 ? f[2] : f[3]}`;
+  }
+  const w = { T: 'tenth', H: 'hundredth', M: 'thousandth' }[kind];
+  return `${n(k)} ${w}${k === 1 ? '' : 's'}`;
+}
+
+/* ---------- order generator: v = the order in thousandths ---------- */
+function makeOrder(form) {
+  const a = 1 + rnd(8), b = rnd(10), c = 1 + rnd(9);
+  let v, goal, how;
+  const nice = x => x % 100 !== 1 && x % 100 !== 2;   // Arabic words for ...01 / ...02 need other grammar: not used
+  if (form === 'dec2') { v = a * 100 + (1 + rnd(9)) * 10; goal = n(dec2(v)); how = 'dec'; }
+  else if (form === 'dec3') { v = a * 100 + b * 10 + c; goal = n(dec3(v)); how = 'dec'; }
+  else if (form === 'words') { do { v = (1 + rnd(8)) * 100 + rnd(10) * 10 + 1 + rnd(9); } while (!nice(v)); goal = AR ? arWords(v) : enWords(v); how = 'words'; }
+  else if (form === 'frac') { v = a * 100 + b * 10 + c; goal = frac(v); how = 'frac'; }
+  else if (form === 'exp') { v = a * 100 + (1 + rnd(9)) * 10 + c; goal = expd(v); how = 'exp'; }
+  else if (form === 'zdec' || form === 'zwords' || form === 'zfrac') {
+    const pat = pick(['a0c', '0bc', 'ab0', '00c', 'a0c']);
+    do {
+      const A = pat[0] === '0' ? 0 : 1 + rnd(8), B = pat[1] === '0' ? 0 : 1 + rnd(9), C = pat[2] === '0' ? 0 : 3 + rnd(7);
+      v = A * 100 + B * 10 + C;
+    } while (!v || !nice(v));
+    how = form === 'zdec' ? 'dec' : form === 'zwords' ? 'words' : 'frac';
+    goal = how === 'dec' ? n(pat === 'ab0' && Math.random() < .5 ? dec2(v) : dec3(v)) : how === 'words' ? (AR ? arWords(v) : enWords(v)) : frac(v);
+  } else {   // comp: more than 9 of one piece, the child composes
+    const A = 1 + rnd(6);
+    if (Math.random() < .5) { const B = 10 + rnd(10), C = rnd(10); v = A * 100 + B * 10 + C; goal = [cnt(A, 'T'), cnt(B, 'H'), C && cnt(C, 'M')]; }
+    else { const B = rnd(10), C = 10 + rnd(10); v = A * 100 + B * 10 + C; goal = [cnt(A, 'T'), B && cnt(B, 'H'), cnt(C, 'M')]; }
+    goal = goal.filter(Boolean).join(AR ? ' و' : ' + '); how = 'comp';
+  }
+  return { v, goal, how, use: pick(USES) };
+}
+
+/* ---------- state ---------- */
+const saved = SI.chProf(CH.id).city || {};
+const S = { lvl: Math.min(5, saved.lvl || 0), round: 0, angry: 0, misses: 0, score: 0, tool: 'T', order: null, cells: [], busy: false, t0: Date.now(), hintN: 0, built: saved.built || 0, mood: 'point' };
+const L = () => LEVELS[S.lvl];
+function emptyLand() { S.cells = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => ({ k: null, s: 0 }))); }
+const cellVal = x => (x.k ? 10 : x.s);
+const total = () => S.cells.reduce((a, col) => a + col.reduce((b, x) => b + cellVal(x), 0), 0);
+
+/* ---------- pictures ---------- */
+const IMG = { point: 'math/assets/reesho_point.webp', think: 'math/assets/reesho_think.webp', sad: 'math/assets/reesho_sad.webp', happy: 'math/assets/reesho_happy.webp' };
+Object.values(IMG).forEach(s => { const i = new Image(); i.src = s; });
+function building(i) {
+  const x = 150 + (i % 14) * 20, row = Math.floor(i / 14), hgt = 30 + ((i * 37) % 5) * 9 + row * 6, y = 142 - hgt - row * 2;
+  const c = ['#e9b872', '#9cc7d9', '#e8a29a', '#b7d79a', '#d7c1e6'][i % 5];
+  let win = ''; for (let yy = y + 6; yy < 136; yy += 9) win += `<rect x="${x + 4}" y="${yy}" width="4" height="4" fill="#fff8" /><rect x="${x + 10}" y="${yy}" width="4" height="4" fill="#fff8"/>`;
+  return `<rect x="${x}" y="${y}" width="18" height="${142 - y}" rx="2" fill="${c}" stroke="#0002"/>${win}`;
+}
+function drawScene(flashNew) {
+  let h = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ccbe8"/><stop offset="1" stop-color="#dff1f7"/></linearGradient></defs>
+    <rect width="440" height="160" fill="url(#sky)"/><circle cx="410" cy="30" r="14" fill="#ffd767"/>
+    <path d="M0 142 H440 V160 H0Z" fill="#9cc98a"/><path d="M0 146 H440" stroke="#7db06b" stroke-width="2"/>`;
+  const shown = Math.min(S.built, 42);
+  for (let i = 0; i < shown; i++) h += i === shown - 1 && flashNew ? `<g class="pop" style="transform-box:fill-box;transform-origin:bottom">${building(i)}</g>` : building(i);
+  if (!S.built) h += `<text x="290" y="128" text-anchor="middle" font-size="12" fill="#3a5c75" font-family="Nunito,Cairo">${T('Your city will grow here', 'مدينتك هتكبر هنا')}</text>`;
+  const sz = { point: [104, 135], think: [72, 135], sad: [72, 135], happy: [118, 135] }[S.mood];
+  h += `<image href="${IMG[S.mood]}" x="${16 + (104 - sz[0]) / 2}" y="${148 - sz[1]}" width="${sz[0]}" height="${sz[1]}" preserveAspectRatio="xMidYMax meet"/>`;
+  // residents' anger: 3 faces
+  h += `<rect x="150" y="6" width="150" height="30" rx="15" fill="#fffc"/><text x="${AR ? 286 : 164}" y="26" font-size="12" font-weight="800" fill="#1f3d57" text-anchor="${AR ? 'end' : 'start'}" direction="${AR ? 'rtl' : 'ltr'}" font-family="Nunito,Cairo">${T('Anger', 'غضب السكان')}</text>`;
+  for (let i = 0; i < LIVES; i++) {
+    const on = i < S.angry, cx = AR ? 200 - i * 22 : 236 + i * 22;
+    h += `<g transform="translate(${cx},21)"><circle r="9" fill="${on ? '#e2603f' : '#d9e3e8'}"/><circle cx="-3" cy="-2" r="1.4" fill="#1f3d57"/><circle cx="3" cy="-2" r="1.4" fill="#1f3d57"/>${on ? '<path d="M-4 5 q4 -4 8 0" stroke="#1f3d57" stroke-width="1.5" fill="none"/><path d="M-6 -6 l4 2 M6 -6 l-4 2" stroke="#1f3d57" stroke-width="1.4"/>' : '<path d="M-4 3 q4 3 8 0" stroke="#1f3d57" stroke-width="1.5" fill="none"/>'}</g>`;
+  }
+  $('#scene').innerHTML = h;
+}
+
+/* ---------- the land ---------- */
+const X0 = 10, CS = 34;
+function icon(kind, x, y) {
+  const cx = x + CS / 2, cy = y + CS / 2;
+  if (kind === 'park') return `<rect x="${cx - 1.5}" y="${cy + 3}" width="3" height="9" fill="#7a5230"/><circle cx="${cx}" cy="${cy}" r="9" fill="#2f8a4a"/><circle cx="${cx - 3}" cy="${cy - 3}" r="3" fill="#5fbf6f"/>`;
+  if (kind === 'homes') return `<path d="M${cx - 10} ${cy} L${cx} ${cy - 10} L${cx + 10} ${cy} Z" fill="#c8553d"/><rect x="${cx - 8}" y="${cy}" width="16" height="11" fill="#fff4dc"/><rect x="${cx - 2.5}" y="${cy + 4}" width="5" height="7" fill="#7a5230"/>`;
+  if (kind === 'market') return `<rect x="${cx - 10}" y="${cy - 3}" width="20" height="14" fill="#fff4dc"/>${[0, 1, 2, 3].map(i => `<rect x="${cx - 10 + i * 5}" y="${cy - 9}" width="5" height="6" fill="${i % 2 ? '#fff' : '#e2603f'}"/>`).join('')}<rect x="${cx - 3}" y="${cy + 3}" width="6" height="8" fill="#23799f"/>`;
+  return [0, 1, 2].map(i => `<path d="M${cx - 8 + i * 8} ${cy + 11} V${cy - 6}" stroke="#c99a2e" stroke-width="2"/><ellipse cx="${cx - 8 + i * 8}" cy="${cy - 7}" rx="2.6" ry="5" fill="#e3b341"/>`).join('');
+}
+function drawLand(built) {
+  let h = `<rect x="0" y="0" width="360" height="360" rx="14" fill="#c9a36b"/><rect x="${X0}" y="${X0}" width="340" height="340" fill="#f6efd9"/>`;
+  for (let c = 0; c < 10; c++) {
+    const col = S.cells[c], x = X0 + c * CS;
+    if (col.every(z => z.k === 'T')) h += `<rect x="${x}" y="${X0}" width="${CS}" height="340" fill="${COL.T}" ${S.lastCol === c ? 'class="pop"' : ''}/>`;
+    for (let r = 0; r < 10; r++) {
+      const z = col[r], y = X0 + r * CS;
+      if (z.k === 'H') h += `<rect x="${x}" y="${y}" width="${CS}" height="${CS}" fill="${COL.H}" ${S.lastCell === c * 10 + r ? 'class="pop"' : ''}/>`;
+      else if (z.k === 'T' && !col.every(q => q.k === 'T')) h += `<rect x="${x}" y="${y}" width="${CS}" height="${CS}" fill="${COL.T}"/>`;
+      else if (!z.k && z.s) {
+        for (let s = 0; s < z.s; s++) h += `<rect x="${x + s * 3.4}" y="${y}" width="3.4" height="${CS}" fill="${COL.M}" stroke="#fff6" stroke-width=".4"/>`;
+        for (let s = 1; s < 10; s++) h += `<line x1="${x + s * 3.4}" y1="${y}" x2="${x + s * 3.4}" y2="${y + CS}" stroke="#c9b48a" stroke-width=".35"/>`;
+      }
+      if (built && cellVal(z) === 10) h += `<g class="pop">${icon(built, x, y)}</g>`;
+    }
+  }
+  // grid: thin lines for squares, thick lines for columns
+  for (let i = 1; i < 10; i++) h += `<line x1="${X0}" y1="${X0 + i * CS}" x2="${X0 + 340}" y2="${X0 + i * CS}" stroke="#a89466" stroke-width=".8"/>`;
+  for (let i = 1; i < 10; i++) h += `<line x1="${X0 + i * CS}" y1="${X0}" x2="${X0 + i * CS}" y2="${X0 + 340}" stroke="#6e5a33" stroke-width="2.2"/>`;
+  h += `<rect x="${X0}" y="${X0}" width="340" height="340" fill="none" stroke="#6e5a33" stroke-width="3"/>`;
+  // tap targets
+  for (let c = 0; c < 10; c++) for (let r = 0; r < 10; r++) h += `<rect class="hot" data-c="${c}" data-r="${r}" x="${X0 + c * CS}" y="${X0 + r * CS}" width="${CS}" height="${CS}" fill="transparent"/>`;
+  $('#land').innerHTML = h;
+  S.lastCol = S.lastCell = -1;
+}
+$('#land').addEventListener('click', e => {
+  const t = e.target.closest('.hot'); if (!t || S.busy) return;
+  paint(+t.dataset.c, +t.dataset.r);
+});
+function say(html) { $('#say').innerHTML = '🦜 ' + html; }
+/* paint one tap with the chosen tool; 10 strips → a square, 10 squares → a column */
+function paint(c, r) {
+  ac();
+  const col = S.cells[c], z = col[r], k = S.tool, fullCol = col.every(q => q.k === 'T');
+  if (k === 'T') {
+    if (fullCol) { say(T('This column is already a whole tenth.', 'العمود ده جزء من عشرة كامل خلاص.')); return; }
+    col.forEach(q => { q.k = 'T'; q.s = 0; }); S.lastCol = c; SFX.paint(0);
+  } else if (k === 'H') {
+    if (z.k) { say(z.k === 'T' ? T('This square is inside a coloured tenth. Use the eraser first if you want to change it.', 'المربع ده جوه عمود ملوّن كله. استعمل الممحاة الأول لو عايز تغيّره.') : T('This square is already coloured.', 'المربع ده ملوّن خلاص.')); return; }
+    z.k = 'H'; z.s = 0; S.lastCell = c * 10 + r; SFX.paint(1);
+    if (col.every(q => q.k)) { col.forEach(q => { q.k = 'T'; }); S.lastCol = c; SFX.trade(); say(T(`${n(10)} hundredths make ${n(1)} tenth! The column turned blue.`, `${n(10)} أجزاء من مئة = جزء واحد من عشرة! العمود بقى أزرق.`)); }
+  } else if (k === 'M') {
+    if (z.k) { say(T('This square is full. Strips go into an empty square.', 'المربع ده مليان. الشرايط بتتحط في مربع فاضي.')); return; }
+    z.s++; SFX.paint(2);
+    if (z.s === 10) {
+      z.k = 'H'; z.s = 0; S.lastCell = c * 10 + r; SFX.trade();
+      say(T(`${n(10)} thousandths make ${n(1)} hundredth! The square turned green.`, `${n(10)} أجزاء من ألف = جزء واحد من مئة! المربع بقى أخضر.`));
+      if (col.every(q => q.k)) { col.forEach(q => { q.k = 'T'; }); S.lastCol = c; }
+    }
+  } else {
+    if (z.k === 'T') col.forEach(q => { q.k = null; q.s = 0; });
+    else if (z.k === 'H') z.k = null;
+    else if (z.s) z.s--;
+    else return;
+    SFX.erase();
+  }
+  drawLand();
+}
+function drawTools() {
+  const lv = L();
+  $('#tools').innerHTML = TOOLS.filter(t => lv.tools.includes(t.k === 'E' ? 'E' : t.k)).map(t => `<button type="button" class="tool${S.tool === t.k ? ' on' : ''}" data-k="${t.k}" aria-pressed="${S.tool === t.k}">${swatch(t.k)}<span>${T(t.en, t.ar)}</span></button>`).join('');
+  $('#tools').querySelectorAll('.tool').forEach(b => b.onclick = () => { S.tool = b.dataset.k; ac(); SFX.click(); drawTools(); });
+}
+function drawOrder() {
+  const o = S.order;
+  $('#order').innerHTML = `<span class="ico" aria-hidden="true">${o.use.icon}</span><div><small>${T(`Order: build ${o.use.en} that covers this much of the land`, `طلب: ${o.use.ar} مساحتها من الأرض`)}</small><div class="goal">${o.goal}</div></div>
+    <span class="rnd">${T('Order', 'الطلب')}<br>${n((S.round + 1) + '/' + ROUNDS)}</span>`;
+}
+
+/* ---------- hints: never the answer ---------- */
+const digitsOf = v => [Math.floor(v / 100), Math.floor(v / 10) % 10, v % 10];
+function hint() {
+  if (S.busy) return;
+  const have = total(), want = S.order.v;
+  if (have === want) { say(T('The land matches the order! Press Build.', 'الأرض مظبوطة على الطلب! اضغط ابنِ.')); return; }
+  S.hintN++;
+  if (!have || S.hintN === 1) {
+    const how = S.order.how;
+    say(how === 'words' ? T('“thousandths” means the land has 1000 strips. Split the number: hundreds of thousandths = tenths (columns), tens of thousandths = hundredths (squares), the rest = strips.', '«من ألف» يعني الأرض فيها ١٠٠٠ شريط. فكّك العدد: كل مائة جزء من ألف = عمود، وكل عشرة أجزاء من ألف = مربع، والباقي شرايط.')
+      : how === 'frac' ? T('Over 1000: read the top number by its places. Hundreds → columns, tens → squares, ones → strips.', 'المقام ١٠٠٠: اقرأ البسط بخاناته. المئات = أعمدة، والعشرات = مربعات، والآحاد = شرايط.')
+      : how === 'exp' ? T('Each part of the sum is one place: 0.3 = 3 columns, 0.04 = 4 squares, 0.007 = 7 strips.', 'كل جزء في المجموع خانة لوحدها: ٠٫٣ = ٣ أعمدة، و٠٫٠٤ = ٤ مربعات، و٠٫٠٠٧ = ٧ شرايط.')
+      : how === 'comp' ? T('You may have more than 9 of a piece. 10 squares make a column by themselves; 10 strips make a square.', 'ممكن يبقى عندك أكتر من ٩ من نفس القطعة. كل ١٠ مربعات بيبقوا عمود لوحدهم، وكل ١٠ شرايط بيبقوا مربع.')
+      : T('After the point: the 1st digit = columns (tenths), the 2nd = squares (hundredths), the 3rd = strips (thousandths). A 0 means none.', 'بعد العلامة العشرية: أول رقم = أعمدة (أعشار)، وتاني رقم = مربعات (أجزاء من مئة)، وتالت رقم = شرايط (أجزاء من ألف). الصفر يعني ولا قطعة.'));
+    return;
+  }
+  const a = digitsOf(have), b = digitsOf(want), names = [PNAME.T, PNAME.H, PNAME.M];
+  const i = [0, 1, 2].find(j => a[j] !== b[j]);
+  say(a[i] > b[i] ? T(`Look at the ${names[i]}: you have more than the order.`, `بص على ${names[i]}: عندك أكتر من المطلوب.`) : T(`Look at the ${names[i]}: you have fewer than the order.`, `بص على ${names[i]}: عندك أقل من المطلوب.`));
+}
+
+/* ---------- music and sound (Web Audio, no files): calm C-major loop, faster when residents are angry ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0 };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .5 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+const RIFF = [60, 64, 67, 64, 65, 69, 67, 64, 62, 65, 69, 65, 67, 71, 72, 67];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const spb = 60 / (92 + S.angry * 16) / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    tone(RIFF[i] + 12, t, spb * .8, { type: 'sine', vol: .07, cut: 3000 });
+    if (i % 4 === 0) tone(RIFF[i] - 12, t, spb * 3.6, { type: 'triangle', vol: .09, cut: 700 });
+    if (S.angry >= 2 && i % 2 === 1) tone(84, t, .04, { type: 'square', vol: .025, cut: 4000 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(on) { if (!ac()) return; clearInterval(A.timer); A.timer = null; if (on) { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  click() { if (!ac()) return; tone(96, A.ctx.currentTime, .04, { type: 'square', vol: .04, cut: 5000 }); },
+  paint(k) { if (!ac()) return; const t = A.ctx.currentTime; tone([67, 74, 81][k], t, .12, { type: 'sine', vol: .12 }); },
+  erase() { if (!ac()) return; tone(55, A.ctx.currentTime, .1, { type: 'triangle', vol: .1, cut: 900 }); },
+  trade() { if (!ac()) return; const t = A.ctx.currentTime; [72, 76, 79, 84].forEach((m, i) => tone(m, t + .05 + i * .07, .25, { type: 'sine', vol: .12 })); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(52, t, .35, { type: 'sawtooth', vol: .1, cut: 900 }); tone(51, t + .02, .35, { type: 'square', vol: .05, cut: 700 }); },
+  build() { if (!ac()) return; const t = A.ctx.currentTime; [60, 64, 67, 72, 76, 79, 84].forEach((m, i) => tone(m, t + i * .08, .45, { type: 'triangle', vol: .14 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [64, 63, 62, 57].forEach((m, i) => tone(m, t + i * .26, .45, { type: 'triangle', vol: .14, cut: 1200 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .5 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+/* ---------- flow ---------- */
+function nextOrder(first) {
+  S.order = makeOrder(pick(L().forms)); S.hintN = 0; S.busy = false;
+  if (!L().tools.includes(S.tool)) S.tool = 'T';
+  emptyLand(); S.mood = 'point'; drawScene(); drawLand(); drawTools(); drawOrder();
+  $('#lvl').textContent = S.lvl + 1;
+  if (first && S.lvl === 0) say(T('Welcome to the town hall! Colour exactly the land in the order, then press Build.', 'أهلًا بيك في مجلس المدينة! لوّن الأرض المطلوبة بالظبط، وبعدين اضغط ابنِ.'));
+  else if (first) say(T(`District ${n(S.lvl + 1)}! Read the order carefully: it is written in a new way.`, `الحي رقم ${n(S.lvl + 1)}! اقرأ الطلب كويس: مكتوب بطريقة جديدة.`));
+  else say(T('Next order! The land is empty again.', 'الطلب اللي بعده! الأرض فضيت تاني.'));
+}
+function startLevel() { S.round = 0; S.angry = 0; S.misses = 0; S.t0 = Date.now(); nextOrder(true); }
+async function build() {
+  if (S.busy) return;
+  const have = total(), want = S.order.v;
+  if (!have) { say(T('The land is still empty. Colour it first!', 'الأرض لسه فاضية. لوّن الأول!')); return; }
+  S.busy = true;
+  if (have === want) {
+    S.built++; S.mood = 'happy'; SFX.build(); drawLand(S.order.use.id); drawScene(true);
+    const pts = 10 + Math.max(0, 5 - S.hintN * 2); S.score += pts; $('#score').textContent = S.score;
+    say(T(`Built! The land you coloured is ${n(shown(have))} of the whole land, exactly the order. +${n(pts)}`, `اتبنى! الأرض اللي لوّنتها = ${n(shown(have))} من الأرض كلها، بالظبط زي الطلب. +${n(pts)}`));
+    await sleep(2300);
+    S.round++;
+    if (S.round >= ROUNDS) return levelDone();
+    nextOrder(false); return;
+  }
+  // wrong: the residents get angry; say in words what was built and why it is wrong
+  S.angry++; S.misses++; S.mood = 'sad'; SFX.wrong();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.angry });
+  $('#land').classList.remove('flash'); void $('#land').offsetWidth; $('#land').classList.add('flash');
+  drawScene();
+  const more = have > want;
+  say(T(`Your land = ${n(shown(have))}. That is <b>${more ? 'more' : 'less'}</b> than the order: ${more ? 'it spills onto the neighbours’ land!' : 'it is too small for the residents!'} ${S.angry < LIVES ? `(${n(LIVES - S.angry)} chances left)` : ''}`,
+    `أرضك = ${n(shown(have))}. ودي <b>${more ? 'أكبر' : 'أصغر'}</b> من الطلب: ${more ? 'دخلت على أرض الجيران!' : 'مش مكفّية السكان!'} ${S.angry < LIVES ? `(فاضل ${n(LIVES - S.angry)} فرص)` : ''}`));
+  if (S.angry >= LIVES) {
+    music(false); SFX.lose();
+    SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+    await sleep(1800); showEnd('lose'); return;
+  }
+  await sleep(600); S.mood = 'think'; drawScene(); S.busy = false;
+}
+function levelDone() {
+  const stars = S.misses === 0 ? 3 : S.misses === 1 ? 2 : 1, pts = 20 + stars * 10, done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.city = c.city || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; o.built = S.built; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+  showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['🏙️🦜', T(`District ${S.lvl + 1} is built!`, `الحي رقم ${S.lvl + 1} اتبنى!`), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('The residents are happy. The next district has orders written in a new way… ready?', 'السكان مبسوطين. الحي اللي بعده طلباته مكتوبة بطريقة جديدة… جاهز؟'), T('Next district ➜', 'الحي اللي بعده ⬅')],
+    all: ['🏆🦜', T('You built the whole city!', 'بنيت المدينة كلها!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You can split a whole into tenths, hundredths and thousandths like a real city planner.`, `مجموع نقطك ${n(S.score)}. بقيت تقسّم الواحد لأعشار وأجزاء من مئة وأجزاء من ألف زي مهندس تخطيط بجد.`), T('Play again', 'العب من الأول')],
+    lose: ['😠🏚️', T('The residents are too angry', 'السكان زعلوا جدًا'), '', T(`The order was ${n(shown(S.order.v))}. Count the columns, then the squares, then the strips before you build.`, `الطلب كان ${n(shown(S.order.v))}. عدّ الأعمدة، وبعدين المربعات، وبعدين الشرايط قبل ما تبني.`), T('Try this district again', 'جرّب الحي ده تاني')]
+  }[kind];
+  $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } music(true); startLevel(); };
+}
+
+/* ---------- rules screen with a drawn example ---------- */
+(function intro() {
+  const sq = (x, y, fill) => `<rect x="${x}" y="${y}" width="9" height="9" fill="${fill}" stroke="#a89466" stroke-width=".4"/>`;
+  const grid = (ox, paint) => { let h = ''; for (let c = 0; c < 10; c++) for (let r = 0; r < 10; r++) h += sq(ox + c * 9, 6 + r * 9, paint(c, r)); return h + `<rect x="${ox}" y="6" width="90" height="90" fill="none" stroke="#6e5a33" stroke-width="1.5"/>`; };
+  let h = grid(5, c => (c === 0 ? COL.T : '#f6efd9'));
+  h += grid(105, (c, r) => (c === 0 && r === 0 ? COL.H : '#f6efd9'));
+  for (let i = 0; i < 10; i++) h += `<rect x="${205 + i * 9}" y="6" width="9" height="90" fill="${i ? '#f6efd9' : COL.M}" stroke="#a89466" stroke-width=".6"/>`;
+  h += `<rect x="205" y="6" width="90" height="90" fill="none" stroke="#6e5a33" stroke-width="1.5"/>`;
+  [[50, '0.1'], [150, '0.01'], [250, '0.001']].forEach(([x, v]) => {
+    h += `<text x="${x}" y="110" font-size="13" font-weight="900" text-anchor="middle" fill="#1f3d57" font-family="Nunito,Cairo" direction="ltr">${v}</text>`;
+  });
+  h += `<text x="250" y="124" font-size="10.5" text-anchor="middle" fill="#3a5c75" font-family="Nunito,Cairo">${T('one square, zoomed in', 'مربع واحد مكبَّر')}</text>`;
+  $('#ex').innerHTML = h;
+  $('#rules').innerHTML = [
+    T('The whole land is <b>1</b>. A column is a tenth, a square is a hundredth, a thin strip is a thousandth.', 'الأرض كلها = <b>1</b>. العمود = جزء من عشرة، والمربع = جزء من مئة، والشريط الرفيع = جزء من ألف.'),
+    T('Read the order at the top: how much land is needed.', 'اقرأ الطلب اللي فوق: محتاجين قد إيه من الأرض.'),
+    T('Pick a piece and tap the land to colour it. 10 strips become a square, 10 squares become a column.', 'اختار القطعة واضغط على الأرض عشان تلوّنها. كل 10 شرايط بيبقوا مربع، وكل 10 مربعات بيبقوا عمود.'),
+    T(`Press <b>Build</b> when the land is exactly the order. A wrong build makes the residents angry: ${LIVES} angry faces and the district is lost!`, `اضغط <b>ابنِ</b> لما الأرض تبقى زي الطلب بالظبط. البناء الغلط بيزعّل السكان: ${LIVES} وشوش زعلانة والحي يضيع!`)
+  ].map(x => `<li>${x}</li>`).join('');
+  $('#go').textContent = T('Let’s build! 🏗️', 'يلا نبني 🏗️');
+})();
+$('#build').onclick = build; $('#hint').onclick = hint;
+$('#clear').onclick = () => { if (S.busy) return; emptyLand(); SFX.erase(); drawLand(); };
+$('#go').onclick = () => { $('#intro').hidden = true; music(true); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+/* test hooks: __cityApi.solve() paints the order the simple way */
+window.__city = S;
+window.__cityApi = { makeOrder, arWords, enWords, total, drawLand, build, nextOrder, startLevel,
+  solve() { emptyLand(); const [a, b, c] = digitsOf(S.order.v); for (let i = 0; i < a; i++) S.cells[i].forEach(q => { q.k = 'T'; }); for (let i = 0; i < b; i++) S.cells[a][i].k = 'H'; S.cells[a][b].s = c; drawLand(); } };
+startLevel();
+})();
+</script>
+</body>
+</html>

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261027c">
+<link rel="stylesheet" href="common.css?v=20261027e">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -123,8 +123,8 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261027c"></script>
-<script src="common.js?v=20261027c"></script>
+<script src="chapters.js?v=20261027e"></script>
+<script src="common.js?v=20261027e"></script>
 <script>
 (() => {
   'use strict';
@@ -174,7 +174,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
     const P = SI.chProf(v.ch)[v.id] || {}, a = document.createElement('a');
     a.className = 'adv'; a.href = v.href;
     a.innerHTML = `<img src="${v.img}" alt="" aria-hidden="true"><span class="tx"><span class="k">${T('ADVENTURE', 'مغامرة')} · ${esc(SI.chWord(SI.chapterById(v.ch)))} ${SI.chapterById(v.ch).n}</span><b>${esc(T(v.title, v.titleAr))}</b><small>${esc(T(v.hint, v.hintAr))}</small>
-      ${P.best ? `<span class="st">${T('Locks opened', 'الأقفال المفتوحة')}: ${P.best} / ${v.of}</span>` : ''}</span>${P.best ? '' : `<span class="new">${T('New', 'جديد')}</span>`}<span class="go" aria-hidden="true">${T('Play ▸', 'العب ◂')}</span>`;
+      ${P.best ? `<span class="st">${T(v.stat || 'Locks opened', v.statAr || 'الأقفال المفتوحة')}: ${P.best} / ${v.of}</span>` : ''}</span>${P.best ? '' : `<span class="new">${T('New', 'جديد')}</span>`}<span class="go" aria-hidden="true">${T('Play ▸', 'العب ◂')}</span>`;
     a.onclick = () => { SI.setChapter(v.ch); SI.sfx.tick(); };
     $('#advs').appendChild(a);
   });
