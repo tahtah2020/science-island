@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Treasure Underground · Decimals to the Thousandths</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 5 · Unit 1 (m5c1) adventure «كنز تحت الأرض / Treasure Underground», lessons 1-4 (decimals to thousandths in words, fractions,
+     expanded form, zeros and equal decimals 0.45 = 0.450, ones). The fox buried treasures; the cage key is in the last one. The fox's note gives
+     where each treasure is, as a decimal, in words, as a fraction, in expanded form. The child digs down layer by layer: the soil layer is the
+     whole land split into tenths (pick a section), the rock layer is that tenth split into hundredths, the cave is that hundredth split into
+     thousandths (tap the exact mark). One layer = one place, so one tap = one digit. Only the ends and the middle of each layer are labelled:
+     the child counts the marks. A wrong section = water / a scorpion and the fox steps closer (5 = lost); the message says only «closer to 0» or
+     «farther from 0». 6 maps × 3 treasures; map 6 starts from 0 to 10 (ones layer, 4 layers).
+     Pictures: Reesho, the fox and the night background from math/assets/ (owner, Gemini, 27 Oct 2026); layers, chest, water, scorpion drawn in code.
+     Music and sounds made in the page with Web Audio. Progress: SI.chProf('m5c1').treasure = { lvl, best, stars[] }. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--mint:#bfe8d6;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#1d3a52,#33597a 30%,#6b4a2e 30.1%,#3b2a24);color:var(--navy);min-height:100svh}
+.wrap{max-width:720px;margin:0 auto;padding:10px 14px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#fff;flex-wrap:wrap}
+.top h1{font-size:22px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffff22;border-radius:99px;padding:3px 12px;font-weight:700;font-size:14px}
+.home,.snd{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffff22;border:0;border-radius:99px;color:#fff;font-size:16px;width:34px;height:30px;cursor:pointer}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:16px 16px 0 0}
+.note{display:flex;align-items:center;gap:10px;background:#fbf0d2;border:3px dashed #b98a55;border-radius:14px;padding:8px 12px;margin:8px 0}
+.note .ico{font-size:30px;flex:none}
+.note small{display:block;font-size:13px;font-weight:800;color:#7a5230}
+.note .goal{font-size:22px;font-weight:900;line-height:1.35;color:#5b3a1c}
+.note .cnt{margin-inline-start:auto;flex:none;text-align:center;font-size:12.5px;font-weight:800;color:#7a5230}
+.note .cnt b{display:block;font-size:18px;letter-spacing:2px}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;margin:0 2px}
+.frac b{border-bottom:3px solid currentColor;padding:0 4px}
+.frac i{font-style:normal}
+bdi{font-weight:900}
+.bubble bdi,.box bdi{color:var(--pri)}
+.say{margin:0 0 8px}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;min-height:44px;box-shadow:0 3px 10px #0002}
+.panel{background:var(--card);border-radius:20px;padding:10px 12px 12px;box-shadow:0 6px 20px #0004}
+.layers{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
+.chip{border-radius:99px;padding:3px 11px;font-size:13px;font-weight:800;background:#ece4d3;color:#8a7a62}
+.chip.on{color:#fff}
+.chip.done{background:#dff3e8;color:var(--ok)}
+.what{text-align:center;font-weight:800;font-size:14.5px;margin:2px 0 6px}
+#board{width:100%;max-width:520px;margin:0 auto;height:auto;display:block;border-radius:14px;touch-action:manipulation;cursor:pointer;user-select:none}
+.row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:18px;max-width:400px;text-align:center;max-height:94svh;overflow:auto}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 10px}
+.stars{font-size:34px;letter-spacing:4px}
+.shiver{animation:shiver .18s infinite;transform-box:fill-box}
+@keyframes shiver{50%{transform:translate(1.5px,0)}}
+.fly{animation:fly 1.2s ease-in-out infinite;transform-box:fill-box}
+@keyframes fly{50%{transform:translateY(-8px)}}
+.pop{animation:pop .5s;transform-box:fill-box;transform-origin:center bottom}
+@keyframes pop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.shake{animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@media (prefers-reduced-motion:reduce){.shiver,.fly,.pop,.shake{animation:none}}
+@media (max-width:420px){.note .goal{font-size:19px}.top h1{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🗺️ كنز تحت الأرض">🗺️ Treasure Underground</h1><div class="pills"><span class="pill"><span data-ar="الخريطة">Map</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="map.html" aria-label="Back to the map" data-ar-label="رجوع للخريطة">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 210" role="img" aria-label="Reesho is locked in a cage and the fox is coming closer" data-ar-label="ريشو محبوس في قفص والثعلب بيقرّب"></svg>
+  <div class="note" id="note"></div>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="layers" id="layers"></div>
+    <div class="what" id="what"></div>
+    <svg id="board" viewBox="0 0 440 170" role="img" aria-label="Number line of the layer you are digging" data-ar-label="خط الأعداد للطبقة اللي بتحفر فيها"></svg>
+    <div class="row"><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="box">
+  <h2 data-ar="الثعلب دفن المفتاح!">The fox buried the key!</h2>
+  <svg viewBox="0 0 300 150" width="100%" style="max-width:300px" aria-hidden="true" id="ex"></svg>
+  <ol id="rules"></ol>
+  <button class="btn" id="go" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261028a"></script>
+<script src="chapters.js?v=20261028a"></script>
+<script src="common.js?v=20261028a"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('m5c1'); if (!CH) return;
+const T = SI.T, AR = SI.isAr(), GAME = 'math-treasure.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+document.title = T('Treasure Underground · Decimals to the Thousandths', 'كنز تحت الأرض · الكسور العشرية حتى جزء من الألف');
+
+/* ---------- maps: how the fox writes the place; full = the whole line in thousandths (1000 = 0 to 1, 10000 = 0 to 10) ---------- */
+const LEVELS = [
+  { forms: ['dec'], full: 1000 },
+  { forms: ['words'], full: 1000 },
+  { forms: ['frac'], full: 1000 },
+  { forms: ['exp'], full: 1000 },
+  { forms: ['zdec', 'zwordsH', 'zfracH', 'zdec'], full: 1000 },
+  { forms: ['wdec', 'wexp'], full: 10000 }
+];
+const TREASURES = 3, STEPS = 5;
+const LAYER = [   // by digging depth from the top
+  { en: 'Soil', ar: 'التراب', c: '#b98a55', c2: '#a0723f' },
+  { en: 'Rock', ar: 'الصخر', c: '#8d8f94', c2: '#77797f' },
+  { en: 'Cave', ar: 'الكهف', c: '#5a4a6a', c2: '#493b58' },
+  { en: 'Deep cave', ar: 'الكهف العميق', c: '#2f3b5a', c2: '#26304b' }
+];
+const UNIT = { 1000: T('1 whole', 'واحد صحيح'), 100: T('one tenth', 'جزء من عشرة'), 10: T('one hundredth', 'جزء من مئة'), 1: T('one thousandth', 'جزء من ألف') };
+
+/* ---------- number words ---------- */
+const AU = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
+const ATENS = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+const AH = ['', 'مائة', 'مائتا', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+/* v parts of a thousand (or of a hundred); the generator never sends v ending in 01 or 02 (other Arabic grammar) */
+function arWords(v, per = 'ألف') {
+  const h = Math.floor(v / 100), r = v % 100, u = r % 10, t = Math.floor(r / 10);
+  const rw = !r ? '' : r < 10 ? AU[r] : r === 10 ? 'عشرة' : r === 11 ? 'أحد عشر' : r === 12 ? 'اثنا عشر' : r < 20 ? AU[u] + ' عشر' : (u ? AU[u] + ' و' : '') + ATENS[t];
+  const hw = !h ? '' : (h === 2 && r) ? 'مائتان' : AH[h];
+  const noun = !r ? 'جزء' : r <= 10 ? 'أجزاء' : 'جزءًا';
+  return [hw, rw].filter(Boolean).join(' و') + ' ' + noun + ' من ' + per;
+}
+const EU = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const ET = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+function enWords(v, per = 'thousandth') {
+  const h = Math.floor(v / 100), r = v % 100;
+  const rw = !r ? '' : r < 20 ? EU[r] : ET[Math.floor(r / 10)] + (r % 10 ? '-' + EU[r % 10] : '');
+  return [h ? EU[h] + ' hundred' : '', rw].filter(Boolean).join(' ') + ' ' + per + (v === 1 ? '' : 's');
+}
+const words = (v, per) => (AR ? arWords(v, per === 'h' ? 'مئة' : 'ألف') : enWords(v, per === 'h' ? 'hundredth' : 'thousandth'));
+/* v in thousandths → decimal text with k places */
+const dec = (v, k = 3) => (v / 1000).toFixed(k);
+const frac = (a, b) => `<span class="frac" dir="ltr"><b>${a}</b><i>${b}</i></span>`;
+const expd = v => n([Math.floor(v / 1000) || '', Math.floor(v / 100) % 10 && '0.' + Math.floor(v / 100) % 10, Math.floor(v / 10) % 10 && '0.0' + Math.floor(v / 10) % 10, v % 10 && '0.00' + v % 10].filter(Boolean).join(' + '));
+const nice = v => v % 100 !== 1 && v % 100 !== 2;
+
+/* ---------- the fox's note ---------- */
+function makeTreasure(form) {
+  let v, goal;
+  const abc = () => (1 + rnd(9)) * 100 + rnd(10) * 10 + 1 + rnd(9);
+  if (form === 'dec') { v = abc(); goal = n(dec(v)); }
+  else if (form === 'words') { do v = abc(); while (!nice(v)); goal = words(v); }
+  else if (form === 'frac') { v = abc(); goal = frac(v, 1000); }
+  else if (form === 'exp') { do v = abc(); while (v % 100 < 10); goal = expd(v); }
+  else if (form === 'zdec') {   // a zero in a place, or the hidden zero at the end (0.45 = 0.450)
+    const k = rnd(4);
+    v = k === 0 ? (1 + rnd(9)) * 100 + 1 + rnd(9)            // 0.a0c
+      : k === 1 ? (1 + rnd(9)) * 10 + 1 + rnd(9)              // 0.0bc
+      : k === 2 ? 1 + rnd(9)                                  // 0.00c
+      : (1 + rnd(9)) * 100 + (1 + rnd(9)) * 10;               // 0.ab written 0.ab (= 0.ab0)
+    goal = n(k === 3 ? dec(v, 2) : dec(v));
+  }
+  else if (form === 'zwordsH') { let h; do h = 10 + rnd(90); while (h % 10 === 0 || !nice(h)); v = h * 10; goal = words(h, 'h'); }
+  else if (form === 'zfracH') { const h = 10 + rnd(90); v = h * 10; goal = frac(h, 100); }
+  else if (form === 'wdec') { v = (1 + rnd(9)) * 1000 + abc(); goal = n(dec(v)); }
+  else { v = (1 + rnd(9)) * 1000 + rnd(10) * 100 + rnd(10) * 10 + 1 + rnd(9); goal = expd(v); }
+  return { v, goal, form };
+}
+
+/* ---------- state ---------- */
+const saved = SI.chProf(CH.id).treasure || {};
+const S = { lvl: Math.min(5, saved.lvl || 0), found: 0, fox: 0, misses: 0, score: 0, tr: null, lo: 0, span: 1000, depth: 0, busy: false, t0: Date.now(), hintN: 0, trMiss: 0, mark: null };
+const L = () => LEVELS[S.lvl];
+const depths = () => Math.round(Math.log10(L().full));   // 3 layers for 0-1, 4 for 0-10
+const seg = () => S.span / 10;                            // value of one section of the layer
+const last = () => S.span === 10;                         // the cave: tap a mark
+const placeOf = w => ({ 1000: T('ones', 'الآحاد'), 100: T('tenths', 'الأجزاء من عشرة'), 10: T('hundredths', 'الأجزاء من مئة'), 1: T('thousandths', 'الأجزاء من ألف') }[w]);
+
+/* ---------- scene: Reesho in the cage, the fox comes closer ---------- */
+const IMG_DIR = 'math/assets/';
+const IMG = { bg: 'bg_cage_night.jpg', sad: 'reesho_sad.webp', scared: 'reesho_scared.webp', happy: 'reesho_happy.webp',
+  sneak: 'fox_sneak.webp', laugh: 'fox_laugh.webp', surprised: 'fox_surprised.webp', angry: 'fox_angry.webp' };
+const src = k => IMG_DIR + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+const FOX_X = [318, 292, 266, 240, 214, 188];
+function fox(x, pose = 'sneak') { const sz = { sneak: [118, 88], laugh: [76, 101], surprised: [82, 73], angry: [105, 90] }[pose]; return im(pose, x, 196 - sz[1], sz[0], sz[1]); }
+function drawScene(state = 'locked', foxPose, foxX) {
+  const open = state === 'open', fx = foxX ?? FOX_X[Math.min(S.fox, 5)];
+  const pose = foxPose || (state === 'caught' ? 'laugh' : 'sneak'), mood = (S.fox >= 3 || state === 'caught') ? 'scared' : 'sad';
+  let h = `<image href="${src('bg')}" x="0" y="0" width="440" height="210" preserveAspectRatio="xMidYMax slice"/>`;
+  h += `<rect x="256" y="8" width="176" height="34" rx="17" fill="#0007"/><text x="${AR ? 404 : 398}" y="31" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" font-family="Nunito,Cairo">${T('Fox', 'الثعلب')}</text>`;
+  for (let i = 0; i < STEPS; i++) { const c = i < S.fox ? '#e2603f' : '#ffffff40'; h += `<g transform="translate(${274 + i * 22},25)"><ellipse rx="7" ry="8" fill="${c}"/><circle cx="-6" cy="-9" r="2.6" fill="${c}"/><circle cx="0" cy="-11" r="2.6" fill="${c}"/><circle cx="6" cy="-9" r="2.6" fill="${c}"/></g>`; }
+  // treasures found on this map
+  for (let i = 0; i < TREASURES; i++) h += `<g transform="translate(${30 + i * 30},24)" opacity="${i < S.found ? 1 : .35}">${chest(0, 0, .55, i < S.found)}</g>`;
+  h += `<g transform="translate(18,44) scale(.95)">
+    <ellipse cx="70" cy="170" rx="80" ry="9" fill="#0004"/>
+    ${open ? '' : im(mood, mood === 'sad' ? 30 : 26, 16, mood === 'sad' ? 76 : 86, 146, mood === 'scared' ? 'class="shiver"' : '')}
+    <path d="M10 18 q60 -50 120 0" fill="none" stroke="#2b3f52" stroke-width="6"/><circle cx="70" cy="-14" r="8" fill="none" stroke="#2b3f52" stroke-width="5"/>
+    <rect x="4" y="160" width="132" height="12" rx="4" fill="#2b3f52"/>
+    <g style="transition:transform .7s;transform-origin:136px 90px;${open ? 'transform:rotateY(80deg) translateX(30px)' : ''}">
+      ${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<line x1="${10 + i * 17}" y1="${i === 0 || i === 7 ? 18 : 8}" x2="${10 + i * 17}" y2="160" stroke="#2b3f52" stroke-width="3"/>`).join('')}
+      <rect x="98" y="118" width="34" height="30" rx="6" fill="${open ? '#2e9e6b' : '#e2603f'}"/>
+      <circle cx="115" cy="130" r="4" fill="#fff"/><rect x="113.5" y="132" width="3" height="9" fill="#fff"/></g></g>`;
+  if (open) h += `<g class="fly">${im('happy', 150, 20, 120, 140)}</g>`;
+  h += fox(fx, pose);
+  if (state === 'caught') h += `<rect x="120" y="70" width="200" height="40" rx="20" fill="#0008"/><text x="220" y="98" font-size="24" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The fox got here!', 'الثعلب وصل!')}</text>`;
+  $('#scene').innerHTML = h;
+}
+async function foxStep() {
+  const from = FOX_X[S.fox - 1], to = FOX_X[Math.min(S.fox, 5)], t0 = performance.now();
+  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 500); drawScene('locked', 'sneak', from + (to - from) * k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
+}
+async function foxRunAway() {
+  const x0 = FOX_X[Math.min(S.fox, 5)];
+  drawScene('open', 'surprised', x0 + 20); await sleep(650);
+  const t0 = performance.now();
+  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 700); drawScene('open', 'angry', x0 + (480 - x0) * k * k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
+}
+/* treasure chest drawn in code (x, y = bottom centre) */
+function chest(x, y, s = 1, open = false) {
+  return `<g transform="translate(${x},${y}) scale(${s})">
+    ${open ? '<path d="M-17 -22 l-3 -14 h40 l-3 14z" fill="#9a5b2a" stroke="#5b3a1c" stroke-width="2"/><circle cx="-6" cy="-24" r="5" fill="#f2b134"/><circle cx="5" cy="-25" r="5" fill="#ffd767"/><circle cx="0" cy="-29" r="4" fill="#f2b134"/>'
+      : '<path d="M-18 -22 q18 -16 36 0z" fill="#9a5b2a" stroke="#5b3a1c" stroke-width="2"/>'}
+    <rect x="-18" y="-22" width="36" height="22" rx="3" fill="#b06d34" stroke="#5b3a1c" stroke-width="2"/>
+    <rect x="-18" y="-15" width="36" height="4" fill="#f2b134"/><rect x="-4" y="-17" width="8" height="9" rx="2" fill="#f2b134" stroke="#5b3a1c"/></g>`;
+}
+
+/* ---------- the board: the layer being dug, a number line from lo to lo + span ---------- */
+const X0 = 30, W = 380, LY = 92;
+const xOf = (v, lo, span) => X0 + (v - lo) / span * W;
+const places = w => (w >= 1000 ? 0 : w >= 100 ? 1 : w >= 10 ? 2 : 3);
+function drawBoard({ lo = S.lo, span = S.span, depth = S.depth, fine = null, mark = S.mark, boom = null, found = false } = {}) {
+  const Ly = LAYER[depth], w = span / 10, k = places(w);
+  let h = `<defs><clipPath id="clip"><rect x="0" y="0" width="440" height="170" rx="14"/></clipPath><pattern id="dots${depth}" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r="1.6" fill="${Ly.c2}"/><circle cx="10" cy="11" r="1.2" fill="${Ly.c2}"/></pattern></defs>
+    <g clip-path="url(#clip)"><rect width="440" height="170" fill="${Ly.c}"/><rect width="440" height="170" fill="url(#dots${depth})"/>`;
+  // sections of this layer (taps), alternating shade
+  if (!last() || fine) for (let i = 0; i < 10; i++) {
+    const x = xOf(lo + i * w, lo, span);
+    h += `<rect x="${x}" y="${LY - 34}" width="${W / 10}" height="34" fill="${i % 2 ? '#ffffff18' : '#00000014'}"/>`;
+  }
+  // finer marks during the zoom
+  if (fine) for (let v = Math.ceil(lo / fine) * fine; v <= lo + span; v += fine) { const x = xOf(v, lo, span); if (x >= X0 - 1 && x <= X0 + W + 1) h += `<line x1="${x}" y1="${LY - 8}" x2="${x}" y2="${LY + 8}" stroke="#fff" stroke-width="1" opacity=".7"/>`; }
+  // the line and its marks
+  h += `<line x1="${X0}" y1="${LY}" x2="${X0 + W}" y2="${LY}" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
+  for (let i = 0; i <= 10; i++) { const x = xOf(lo + i * w, lo, span), big = i === 0 || i === 5 || i === 10; h += `<line x1="${x}" y1="${LY - (big ? 14 : 10)}" x2="${x}" y2="${LY + (big ? 14 : 10)}" stroke="#fff" stroke-width="${big ? 3 : 2}"/>`; }
+  // labels only at the ends and the middle: the child counts the marks
+  if (!fine) [0, 5, 10].forEach(i => { const v = lo + i * w; h += `<text x="${xOf(v, lo, span)}" y="${LY + 34}" font-size="15" font-weight="900" text-anchor="middle" fill="#fff" font-family="Nunito,Cairo" direction="ltr" stroke="#0005" stroke-width="3" paint-order="stroke">${v % 1000 ? dec(v, k) : v / 1000}</text>`; });
+  if (mark) h += `<g transform="translate(${xOf(mark.v, lo, span)},${LY - 16})">${mark.ok ? chest(0, 0, 1.15, true) + '<g fill="#ffd767">' + [[-26, -30], [24, -34], [-30, -8], [30, -10], [0, -48]].map(([a, b]) => `<path d="M${a} ${b} l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/>`).join('') + '</g>' : ''}</g>`;
+  if (boom) h += boom;
+  h += `</g>`;
+  // tap targets
+  if (!fine) {
+    if (last()) for (let i = 0; i <= 10; i++) h += `<rect class="hot" data-i="${i}" x="${xOf(lo + i * w, lo, span) - W / 20}" y="${LY - 50}" width="${W / 10}" height="100" fill="transparent"/>`;
+    else for (let i = 0; i < 10; i++) h += `<rect class="hot" data-i="${i}" x="${xOf(lo + i * w, lo, span)}" y="0" width="${W / 10}" height="170" fill="transparent"/>`;
+  }
+  $('#board').innerHTML = h;
+}
+function drawLayers() {
+  const d = depths();
+  $('#layers').innerHTML = Array.from({ length: d }, (_, i) => `<span class="chip${i === S.depth ? ' on' : i < S.depth ? ' done' : ''}" style="${i === S.depth ? 'background:' + LAYER[i].c : ''}">${i < S.depth ? '✓ ' : ''}${T(LAYER[i].en, LAYER[i].ar)}</span>`).join('<span aria-hidden="true">⬇</span>');
+  const w = seg();
+  $('#what').innerHTML = last() ? T(`Tap the exact mark. From one mark to the next = ${UNIT[w]}`, `اضغط على العلامة بالظبط. من علامة للي بعدها = ${UNIT[w]}`)
+    : T(`Pick the section to dig. Each section = ${UNIT[w]}`, `اختار القسم اللي هتحفر فيه. كل قسم = ${UNIT[w]}`);
+}
+function drawNote() {
+  $('#note').innerHTML = `<span class="ico" aria-hidden="true">📜</span><div><small>${T('The fox’s note: the treasure is buried at', 'ورقة الثعلب: الكنز مدفون عند')}</small><div class="goal">${S.tr.goal}</div></div>
+    <span class="cnt">${T('Treasures', 'الكنوز')}<b>${'💰'.repeat(S.found)}${'·'.repeat(TREASURES - S.found)}</b></span>`;
+}
+function say(html) { $('#say').innerHTML = '🦜 ' + html; }
+
+/* ---------- digging ---------- */
+$('#board').addEventListener('click', e => { const t = e.target.closest('.hot'); if (t && !S.busy) dig(+t.dataset.i); });
+async function dig(i) {
+  ac(); S.busy = true;
+  const w = seg(), v = S.tr.v;
+  if (last()) {
+    const at = S.lo + i * w;
+    if (at === v) return treasureFound();
+    return miss(at, at < v, i);
+  }
+  const want = Math.floor((v - S.lo) / w);
+  if (i !== want) return miss(S.lo + i * w, i < want, i);
+  // right section: zoom into it and go one layer down
+  SFX.dig(S.depth);
+  const lo0 = S.lo, sp0 = S.span, lo1 = S.lo + i * w, sp1 = w, t0 = performance.now(), dur = 750;
+  await new Promise(res => { (function f(t) {
+    const k = Math.min(1, (t - t0) / dur), e = k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
+    const sp = sp0 * (sp1 / sp0) ** e, lo = lo0 + (lo1 - lo0) * (1 - (sp - sp1) / (sp0 - sp1));
+    drawBoard({ lo, span: sp, fine: sp1 / 10, depth: S.depth });
+    k < 1 ? requestAnimationFrame(f) : res();
+  })(t0); });
+  S.lo = lo1; S.span = sp1; S.depth++;
+  drawLayers(); drawBoard();
+  say(last() ? T('The cave! Now count the marks and tap the treasure’s mark.', 'وصلت للكهف! عدّ العلامات واضغط على علامة الكنز.') : T(`Deeper! You are in the ${LAYER[S.depth].en.toLowerCase()} layer now.`, `أعمق! دلوقتي إنت في طبقة ${LAYER[S.depth].ar}.`));
+  S.busy = false;
+}
+/* a wrong section or mark: water or a scorpion, and the fox steps closer. The words say only which way, never the number. */
+async function miss(at, tooSmall, i) {
+  S.fox++; S.misses++; S.trMiss++;
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.fox });
+  const w = seg(), x = last() ? xOf(at, S.lo, S.span) : xOf(at + w / 2, S.lo, S.span), water = Math.random() < .5;
+  const boom = water ? `<g class="pop"><ellipse cx="${x}" cy="${LY - 6}" rx="16" ry="6" fill="#4fb3e8"/>${[-12, -4, 4, 12].map((d, j) => `<path d="M${x + d} ${LY - 16 - (j % 2) * 10} q4 6 0 9 q-4 -3 0 -9z" fill="#7fd0f5"/>`).join('')}</g>`
+    : `<g class="pop" transform="translate(${x},${LY - 22})"><ellipse rx="9" ry="6" fill="#2b1d14"/><circle cx="-10" cy="0" r="4.5" fill="#2b1d14"/><path d="M8 0 q14 -4 10 -16 q-2 -4 -5 -1" fill="none" stroke="#2b1d14" stroke-width="3.5" stroke-linecap="round"/><path d="M-12 -3 l-7 -5 M-12 3 l-7 5 M-4 5 l-3 7 M2 5 l2 7 M-4 -5 l-3 -7 M2 -5 l2 -7" stroke="#2b1d14" stroke-width="2"/></g>`;
+  drawBoard({ boom }); $('#board').classList.remove('shake'); void $('#board').offsetWidth; $('#board').classList.add('shake');
+  SFX.wrong(); SFX.step(); await foxStep();
+  if (S.fox >= STEPS) {
+    music('off'); SFX.lose(); drawScene('caught');
+    say(T('🦊 Ha ha… the treasure stays mine!', '🦊 هههه… الكنز هيفضل بتاعي!'));
+    SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+    await sleep(1300); showEnd('lose'); return;
+  }
+  say(T(`${water ? 'Water! 💦' : 'A scorpion! 🦂'} The treasure is not here: it is <b>${tooSmall ? 'farther from 0' : 'closer to 0'}</b>. The fox has ${n(STEPS - S.fox)} steps left.`,
+    `${water ? 'مية! 💦' : 'عقرب! 🦂'} الكنز مش هنا: هو <b>${tooSmall ? 'أبعد عن الصفر' : 'أقرب للصفر'}</b>. فاضل للثعلب ${n(STEPS - S.fox)} خطوات.`));
+  await sleep(700); drawBoard(); S.busy = false;
+}
+async function treasureFound() {
+  S.found++; const pts = 10 + (S.trMiss ? 0 : 5); S.score += pts; $('#score').textContent = S.score;
+  S.mark = { v: S.tr.v, ok: true }; drawBoard(); drawScene(); drawNote(); SFX.win();
+  const shown = S.tr.form === 'zdec' && S.tr.goal.includes(dec(S.tr.v, 2) + '<') ? dec(S.tr.v, 2) + ' = ' + dec(S.tr.v) : dec(S.tr.v);
+  say(T(`Treasure! It was at ${n(shown)}. +${n(pts)}`, `كنز! كان مدفون عند ${n(shown)}. +${n(pts)}`));
+  await sleep(2200); S.mark = null;
+  if (S.found >= TREASURES) return mapDone();
+  newTreasure(); S.busy = false;
+}
+
+/* ---------- hints: never the answer ---------- */
+function hint() {
+  if (S.busy) return;
+  S.hintN++;
+  const f = S.tr.form, w = seg();
+  if (S.hintN === 1 && S.depth === 0) {
+    say(f === 'words' || f === 'zwordsH' ? T('Write the words as a decimal in your head first: “thousandths” = 3 places after the point, “hundredths” = 2.', 'حوّل الكلام لعدد عشري في دماغك الأول: «من ألف» = ٣ خانات بعد العلامة، و«من مئة» = خانتين.')
+      : f === 'frac' || f === 'zfracH' ? T('Over 1000 = thousandths, over 100 = hundredths. Write the top number after the point with that many places.', 'المقام ١٠٠٠ = أجزاء من ألف، والمقام ١٠٠ = أجزاء من مئة. اكتب البسط بعد العلامة العشرية بعدد الخانات ده.')
+      : f === 'exp' || f === 'wexp' ? T('Each part of the sum is one place. A missing part means a 0 in that place.', 'كل جزء في المجموع خانة لوحده. الجزء اللي مش موجود يعني صفر في الخانة دي.')
+      : T('Read the number place by place: each layer you dig is one place.', 'اقرأ العدد خانة خانة: كل طبقة بتحفرها = خانة واحدة.'));
+    return;
+  }
+  say(last() ? T(`Look at the ${placeOf(w)} digit of the number, and count that many marks from the left end.`, `بص على رقم ${placeOf(w)} في العدد، وعدّ العلامات من الطرف الشمال بعدده.`)
+    : T(`In this layer each section is ${UNIT[w]}: look at the ${placeOf(w)} digit of the number. Count sections from the left end.`, `في الطبقة دي كل قسم = ${UNIT[w]}: بص على رقم ${placeOf(w)} في العدد، وعدّ الأقسام من الطرف الشمال.`));
+}
+
+/* ---------- music and sound (Web Audio, no files): a mysterious D-minor loop; tempo and a heartbeat rise as the fox comes closer ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function thump(t, vol = .5) { const c = A.ctx, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + .16); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + .2); o.connect(g); g.connect(A.master); o.start(t); o.stop(t + .25); }
+const RIFF = [62, 65, 69, 65, 64, 67, 70, 67, 62, 65, 69, 72, 70, 69, 67, 64];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const spb = 60 / (80 + Math.min(S.fox, 4) * 14) / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    tone(RIFF[i], t, spb * .9, { type: 'triangle', vol: .11, cut: 1400 });
+    if (i % 4 === 0) tone(RIFF[i] - 24, t, spb * 3.5, { type: 'sine', vol: .14, cut: 600 });
+    if (S.fox >= 2 && i % 4 === 0) thump(t, .25 + S.fox * .07);
+    if (S.fox >= 4 && i % 2 === 1) tone(81, t, .05, { type: 'square', vol: .03, cut: 4000 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null; if (mode === 'on') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  dig(d) { if (!ac()) return; const t = A.ctx.currentTime; [0, .12, .24].forEach((x, i) => tone(45 - d * 3 + i, t + x, .12, { type: 'sawtooth', vol: .09, cut: 500 })); tone(74 + d * 3, t + .4, .3, { type: 'sine', vol: .12 }); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(52, t, .35, { type: 'sawtooth', vol: .12, cut: 900, glide: -5 }); tone(51, t + .02, .35, { type: 'square', vol: .06, cut: 700 }); },
+  step() { if (!ac()) return; const t = A.ctx.currentTime; thump(t, .55); thump(t + .22, .45); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [72, 76, 79, 84, 88].forEach((m, i) => tone(m, t + i * .07, .4, { type: 'sine', vol: .13 })); },
+  fanfare() { if (!ac()) return; const t = A.ctx.currentTime; [60, 64, 67, 72, 76, 79, 84].forEach((m, i) => tone(m, t + i * .09, .5, { type: 'triangle', vol: .16 })); [[72, .8], [76, .95], [79, 1.1], [84, 1.25]].forEach(([m, d]) => tone(m, t + d, .6, { type: 'sine', vol: .14 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [64, 63, 62, 57].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); thump(t + 1.1, .6); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+/* ---------- flow ---------- */
+function newTreasure() {
+  S.tr = makeTreasure(pick(L().forms)); S.lo = 0; S.span = L().full; S.depth = 0; S.hintN = 0; S.trMiss = 0; S.mark = null;
+  drawNote(); drawLayers(); drawBoard();
+}
+function startMap() {
+  S.found = 0; S.fox = 0; S.misses = 0; S.t0 = Date.now(); S.busy = false;
+  $('#lvl').textContent = S.lvl + 1;
+  drawScene(); newTreasure();
+  say(S.lvl === 0 ? T('The fox buried the key to my cage in a treasure! Dig layer by layer: pick the section, then go deeper.', 'الثعلب دفن مفتاح قفصي في كنز! احفر طبقة طبقة: اختار القسم، وبعدين انزل أعمق.')
+    : S.lvl === 5 ? T(`Map ${n(6)}! This land goes from ${n(0)} to ${n(10)}: the first layer is the ones.`, `الخريطة ${n(6)}! الأرض دي من ${n(0)} لـ ${n(10)}: أول طبقة هي الآحاد.`)
+    : T(`Map ${n(S.lvl + 1)}! The fox writes his notes in a new way now. Read carefully.`, `الخريطة ${n(S.lvl + 1)}! الثعلب بقى يكتب ورقته بطريقة جديدة. ركّز.`));
+}
+async function mapDone() {
+  const stars = S.fox === 0 ? 3 : S.fox <= 2 ? 2 : 1, pts = 20 + stars * 10, done = S.lvl + 1;
+  S.score += pts; $('#score').textContent = S.score;
+  SI.updateChProf(c => { const o = c.treasure = c.treasure || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+  if (S.lvl === LEVELS.length - 1) { music('off'); SFX.fanfare(); await foxRunAway(); await sleep(400); }
+  showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['💰💰💰', T('You found all three treasures!', 'لقيت الكنوز التلاتة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('But the key was not in them… the fox has another map. Ready?', 'بس المفتاح ما كانش فيهم… الثعلب عنده خريطة تانية. جاهز؟'), T('Next map ➜', 'الخريطة اللي بعدها ⬅')],
+    all: ['🗝️🦜', T('You found the key and freed Reesho!', 'لقيت المفتاح وحرّرت ريشو!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You can find any decimal down to the thousandths.`, `مجموع نقطك ${n(S.score)}. بقيت تلاقي أي عدد عشري لحد جزء من الألف.`), T('Play again', 'العب من الأول')],
+    lose: ['🦊💰', T('The fox got there first', 'الثعلب وصل قبلك'), '', T(`The treasure was at ${n(dec(S.tr.v))}. Dig one place at a time: first digit = first layer.`, `الكنز كان عند ${n(dec(S.tr.v))}. احفر خانة خانة: أول رقم = أول طبقة.`), T('Try this map again', 'جرّب الخريطة دي تاني')]
+  }[kind];
+  $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } music('on'); startMap(); };
+}
+
+/* ---------- rules screen with a drawn example: 0.307 = soil 0.3 → rock 0.30 → cave 0.307 ---------- */
+(function intro() {
+  const line = (y, c, lo, hi, pickI, isMark) => {
+    let h = `<rect x="0" y="${y - 18}" width="300" height="40" rx="8" fill="${c}"/><line x1="20" y1="${y}" x2="280" y2="${y}" stroke="#fff" stroke-width="2.5"/>`;
+    for (let i = 0; i <= 10; i++) h += `<line x1="${20 + i * 26}" y1="${y - 6}" x2="${20 + i * 26}" y2="${y + 6}" stroke="#fff" stroke-width="${i % 5 ? 1.5 : 2.5}"/>`;
+    h += isMark ? `<circle cx="${20 + pickI * 26}" cy="${y}" r="6" fill="#f2b134" stroke="#5b3a1c" stroke-width="2"/>` : `<rect x="${20 + pickI * 26}" y="${y - 9}" width="26" height="18" fill="#f2b134" opacity=".75"/>`;
+    [[20, lo], [280, hi]].forEach(([x, t]) => { h += `<text x="${x}" y="${y + 17}" font-size="10.5" font-weight="900" fill="#fff" text-anchor="middle" font-family="Nunito,Cairo" direction="ltr">${t}</text>`; });
+    return h;
+  };
+  $('#ex').innerHTML = line(22, '#b98a55', '0', '1', 3) + line(72, '#8d8f94', '0.3', '0.4', 0) + line(122, '#5a4a6a', '0.30', '0.31', 7, true);
+  $('#rules').innerHTML = [
+    T('The fox’s note says where each treasure is, for example <b dir="ltr">0.307</b>.', 'ورقة الثعلب بتقول الكنز مدفون فين، مثلًا <b dir="ltr">0.307</b>.'),
+    T('Dig one layer at a time. Soil = tenths: pick the section <b dir="ltr">0.3</b>. Rock = hundredths: pick <b dir="ltr">0.30</b>. Cave = thousandths: tap the mark <b dir="ltr">0.307</b>.', 'احفر طبقة طبقة. التراب = أعشار: اختار القسم <b dir="ltr">0.3</b>. الصخر = أجزاء من مئة: اختار <b dir="ltr">0.30</b>. الكهف = أجزاء من ألف: اضغط العلامة <b dir="ltr">0.307</b>.'),
+    T('Only the ends and the middle have numbers: count the marks.', 'الأرقام مكتوبة على الطرفين والنص بس: عدّ العلامات.'),
+    T(`A wrong place = water or a scorpion, and the fox steps closer. ${STEPS} steps and he wins! Find ${TREASURES} treasures on each map.`, `مكان غلط = مية أو عقرب، والثعلب يقرّب خطوة. ${STEPS} خطوات ويكسب! لاقي ${TREASURES} كنوز في كل خريطة.`)
+  ].map(x => `<li>${x}</li>`).join('');
+  $('#go').textContent = T('Let’s dig! ⛏️', 'يلا نحفر ⛏️');
+})();
+$('#hint').onclick = hint;
+$('#go').onclick = () => { $('#intro').hidden = true; music('on'); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+/* test hooks: __treasureApi.answer() = the section/mark index to tap now */
+window.__treasure = S;
+window.__treasureApi = { makeTreasure, arWords, enWords, startMap, newTreasure, dig,
+  answer() { const w = seg(); return last() ? S.tr.v - S.lo : Math.floor((S.tr.v - S.lo) / w); } };
+startMap();
+})();
+</script>
+</body>
+</html>
