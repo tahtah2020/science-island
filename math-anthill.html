@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Save the Ant Colony · Place Value</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 4 · Unit 1 (mg4u1) adventure «أنقذ مستعمرة النمل / Save the Ant Colony», lessons 1-2 (big numbers: places and periods up to the
+     milliards, the value of a digit; changing place values: one place to the left = 10 times, two places = 100 times; the book's anthills).
+     Moves (one tap = one move, no multiple choice):
+       A  an ant carries a digit with its VALUE (700,000) or its place in words (7 hundred thousands); tap the chamber where it lives.
+       B1 one ant sits in a chamber; the queen wants its value 10 / 100 times greater, or a given value: tap the chamber it moves to.
+       B2 the book's anthills: 1 anthill has 156 ants, how many in 10 (100) anthills? move each digit (left one first) to its new chamber.
+     Excitement: the anteater comes one step closer on each wrong tap or when an ant's sand-timer runs out (5 = lost);
+     3 right taps in a row = the ants throw pebbles and push him back one step; music and heartbeat speed up with the danger.
+     Pictures: Reesho from math/assets (worried, happy); the owner gave no pictures for this unit, so the anteater, ants and anthill are drawn in code.
+     Progress: SI.chProf('mg4u1').ants = { lvl, best, stars[] }. Test hooks window.__ants, window.__antsApi. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--mint:#bfe8d6;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134;--soil:#7a5235;--soil2:#5e3d26}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#8fd0ef,#cdeccf 34%,#7a5235 34.1%,#5e3d26);color:var(--navy);min-height:100svh}
+.wrap{max-width:600px;margin:0 auto;padding:10px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--navy);flex-wrap:wrap}
+.top h1{font-size:21px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffffaa;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:16px}
+.say{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;flex:1;min-height:44px;box-shadow:0 3px 10px #0002;line-height:1.6}
+.panel{background:var(--card);border-radius:20px;padding:10px;box-shadow:0 6px 20px #0004}
+bdi{font-weight:900;color:var(--pri)}
+/* the order card: the ant that waits, with its sand timer */
+.order{display:flex;gap:10px;align-items:center;background:#fff;border-radius:14px;padding:8px 10px;border:2px solid #f2e3c4;margin-bottom:8px}
+.order .antc{flex:none;width:58px;height:50px}
+.order .txt{flex:1;font-weight:800;font-size:15.5px;line-height:1.5}
+.order .big{font:900 24px Nunito,Cairo,sans-serif;color:var(--coral);direction:ltr;unicode-bidi:isolate;display:inline-block}
+.timer{height:9px;border-radius:9px;background:#efe6d4;overflow:hidden;margin-top:5px}
+.timer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#2e9e6b,#f2b134);border-radius:9px;transition:width .1s linear}
+.timer.low i{background:var(--coral);animation:blink .5s infinite}
+@keyframes blink{50%{opacity:.45}}
+.order.pop{animation:pop .35s}
+@keyframes pop{40%{transform:scale(1.04)}}
+/* the colony: a place value chart dug in the soil (always left to right) */
+.board{direction:ltr;display:grid;gap:3px;background:var(--soil2);border-radius:14px;padding:6px;position:relative}
+.per{border-radius:7px;text-align:center;font:900 11.5px/1.2 Nunito,Cairo;padding:4px 1px;color:var(--navy);white-space:nowrap;overflow:hidden}
+.per.one{font-size:8px;letter-spacing:-.3px;padding:5px 0}
+.plc{border-radius:5px;text-align:center;font:800 9.5px/1.15 Nunito,Cairo;padding:3px 0;color:var(--navy);opacity:.85;overflow:hidden}
+.rowlab{grid-column:1/-1;color:#fbe9c9;font:800 12.5px Nunito,Cairo;text-align:center;margin-top:3px}
+.cell{height:56px;border:0;border-radius:40% 40% 12px 12px;background:radial-gradient(ellipse at 50% 70%,#3b2617 0,#4a2f1c 55%,#6b4a30 100%);color:#fffaf0;font:900 27px Nunito,Cairo,sans-serif;cursor:pointer;position:relative;box-shadow:inset 0 3px 6px #0007;padding:0;transition:transform .12s}
+.cell:active{transform:scale(.94)}
+.cell.full{background:radial-gradient(ellipse at 50% 70%,#f6e2b8 0,#e9c98d 70%,#c9a46a 100%);color:var(--navy);box-shadow:inset 0 -3px 0 #0002}
+.cell.src{background:radial-gradient(ellipse at 50% 70%,#ffe39a 0,#f2b134 75%);color:var(--navy);animation:glow 1s infinite}
+@keyframes glow{50%{box-shadow:0 0 0 4px #ffe39a88}}
+.cell.ghost{color:#fffaf066}
+.cell.zero{color:var(--ink)}
+.cell.new{animation:land .45s}
+@keyframes land{0%{transform:translateY(-14px) scale(1.2)}60%{transform:translateY(3px)}}
+.cell.bad{background:#b8452c;animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.cell.off{pointer-events:none;opacity:.55}
+.rowlab bdi{color:#ffe39a}
+.result{direction:ltr;text-align:center;font:900 26px Nunito,Cairo,sans-serif;color:#fffaf0;letter-spacing:1px;min-height:0}
+.result:empty{display:none}
+.row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.combo{display:flex;align-items:center;gap:4px;font-weight:900;font-size:13px;color:var(--ink)}
+.combo i{width:14px;height:14px;border-radius:50%;background:#e6dccb;display:inline-block;transition:.2s}
+.combo i.on{background:#8a8f99;box-shadow:inset -2px -2px 0 #0003,0 0 6px #f2b134}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:20px;max-width:390px;text-align:center}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 12px}
+.stars{font-size:34px;letter-spacing:4px}
+.home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffffaa;border-radius:99px;color:var(--navy);font-size:16px;width:34px;height:30px}
+.snd{background:#ffffffaa;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer}
+.banner{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.6);background:var(--coral);color:#fff;font:900 26px Nunito,Cairo;padding:12px 26px;border-radius:18px;box-shadow:0 8px 24px #0006;opacity:0;pointer-events:none;z-index:8;transition:.3s;text-align:center;white-space:nowrap}
+.banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.banner.good{background:var(--ok)}
+.march{animation:march 3.5s linear infinite}
+@keyframes march{to{transform:translateX(-46px)}}
+.wob{animation:wob .9s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes wob{50%{transform:rotate(-4deg)}}
+.shake{animation:shk .14s infinite;transform-box:fill-box}
+@keyframes shk{50%{transform:translate(1.5px,-1px)}}
+@media (prefers-reduced-motion:reduce){.march,.wob,.shake,.cell.src{animation:none}}
+@media (max-width:420px){.cell{height:48px;font-size:22px}.per{font-size:10px}.per.one{font-size:8px;letter-spacing:-.3px;padding:5px 0}
+.plc{font-size:8.5px}.order .txt{font-size:14.5px}.order .big{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🐜 أنقذ مستعمرة النمل">🐜 Save the Ant Colony</h1><div class="pills"><span class="pill"><span data-ar="النفق">Tunnel</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="adventures.html" aria-label="Back to the adventures" data-ar-label="رجوع للمغامرات">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 190" role="img" aria-label="An anteater is walking towards the ants’ hill" data-ar-label="آكل النمل ماشي ناحية تل النمل"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="order" id="order"></div>
+    <div class="board" id="board"></div>
+    <div class="row"><span class="combo" id="combo"></span><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+<div class="banner" id="banner"></div>
+
+<div class="veil" id="intro"><div class="box">
+  <div style="font-size:46px" aria-hidden="true">🐜🏠🐾</div>
+  <h2 data-ar="آكل النمل جاي!">The anteater is coming!</h2>
+  <ol id="rules"></ol>
+  <button class="btn" id="go" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261028d"></script>
+<script src="chapters.js?v=20261028d"></script>
+<script src="common.js?v=20261028d"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg4u1'); if (!CH) return;
+const T = SI.T, AR = SI.isAr(), GAME = 'math-anthill.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const fmt = x => Number(x).toLocaleString('en-US');
+const P10 = e => 10 ** e;
+document.title = T('Save the Ant Colony · Place Value', 'أنقذ مستعمرة النمل · القيمة المكانية');
+$('#rules').innerHTML = [
+  T('Each ant carries a digit and tells you its <b>value</b>. Tap the chamber where it lives.', 'كل نملة شايلة رقم وبتقولك <b>قيمته</b>. اضغط على الغرفة اللي يسكن فيها.'),
+  T('Hurry: every ant has a sand timer ⏳.', 'بسرعة: كل نملة معاها ساعة رملية ⏳.'),
+  T('A wrong chamber or a timer that runs out = the anteater takes a step. <b>5 steps</b> and he breaks in!', 'غرفة غلط أو الوقت خلص = آكل النمل يقرّب خطوة. <b>5 خطوات</b> ويدخل المستعمرة!'),
+  T('<b>3 right in a row</b>: the ants throw pebbles and push him back! 🪨', '<b>3 صح ورا بعض</b>: النمل يحدفه بالحصى ويرجّعه لورا! 🪨')].map(x => `<li>${x}</li>`).join('');
+$('#go').textContent = T('Defend the colony! 💪', 'يلا ندافع عن المستعمرة 💪');
+
+/* places: e = power of ten (0 = ones … 9 = milliards); period colours from the book's chart (math/g4_art.js) */
+const PER = [
+  { en: 'Ones', ar: 'الوحدات', head: '#7fb0dc', cell: '#bcd9f2' },
+  { en: 'Thousands', ar: 'الألوف', head: '#f5c93f', cell: '#fbe38c' },
+  { en: 'Millions', ar: 'الملايين', head: '#8fa383', cell: '#c3cfba' },
+  { en: 'Milliards', ar: 'المليارات', head: '#eba98a', cell: '#f5d3c2' }];
+const SHORT = [['O', 'آحاد'], ['T', 'عشرات'], ['H', 'مئات']];
+const NAME = [['ones', 'الآحاد'], ['tens', 'العشرات'], ['hundreds', 'المئات'], ['thousands', 'آحاد الألوف'], ['ten thousands', 'عشرات الألوف'], ['hundred thousands', 'مئات الألوف'],
+  ['millions', 'آحاد الملايين'], ['ten millions', 'عشرات الملايين'], ['hundred millions', 'مئات الملايين'], ['milliards', 'المليارات']];
+const pname = e => T(NAME[e][0], NAME[e][1]);
+/* card text for a digit d at place e: its value (700,000) or its place in words (7 hundred thousands) */
+const cardText = (d, e, form) => form === 'words'
+  ? T(`${n(d)} ${NAME[e][0]}`, `${n(d)} من ${NAME[e][1]}`)
+  : `<span class="big">${fmt(d * P10(e))}</span>`;
+
+/* six tunnels, harder each time. k = chambers on the board; tasks: A (place the ants), B1 (move one ant), B2 (10 / 100 anthills) */
+const LEVELS = [
+  { k: 6, time: 25, tasks: [{ t: 'A', nd: 4, forms: ['value'] }] },
+  { k: 6, time: 22, tasks: [{ t: 'A', nd: 6, zeros: 1, forms: ['value'] }, { t: 'B1', s: [1], forms: ['times'] }] },
+  { k: 9, time: 20, tasks: [{ t: 'A', nd: 7, zeros: 1, forms: ['value'] }, { t: 'B2', nd: 2, s: 1 }] },
+  { k: 9, time: 18, tasks: [{ t: 'A', nd: 9, zeros: 2, forms: ['value', 'words'] }, { t: 'B1', s: [1, 2], forms: ['times', 'value'] }] },
+  { k: 10, time: 15, tasks: [{ t: 'A', nd: 10, zeros: 2, forms: ['value', 'words'] }, { t: 'B2', nd: 3, s: 2 }] },
+  { k: 10, time: 12, boss: true, tasks: [{ t: 'B1', s: [2], forms: ['value'] }, { t: 'A', nd: 10, zeros: 3, forms: ['words', 'value'] }, { t: 'B2', nd: 4, s: 1 }] }];
+
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).ants || {}).lvl) || 0), score: 0, fox: 0, misses: 0, combo: 0, busy: true, task: null, ti: 0, deadline: 0, left: 1, started: false, hintN: 0 };
+const L = () => LEVELS[S.lvl];
+
+/* ---------- tasks ---------- */
+function makeDigits(nd, zeros = 0) {
+  for (;;) {
+    const d = Array.from({ length: nd }, (_, i) => (i === 0 ? 1 + rnd(9) : 1 + rnd(9)));
+    for (let z = 0; z < zeros; z++) d[1 + rnd(nd - 1)] = 0;
+    if (d.slice(1).filter(x => x === 0).length >= Math.min(zeros, 1)) return d;   // digits from the left; d[0] never 0
+  }
+}
+function makeTask(c) {
+  const k = L().k;
+  if (c.t === 'A') {
+    const dg = makeDigits(c.nd, c.zeros), nd = dg.length;
+    const cards = shuffle(dg.map((d, i) => ({ d, e: nd - 1 - i })).filter(x => x.d)).map(x => ({ ...x, form: pick(c.forms) }));
+    return { t: 'A', dg, cards, ci: 0, placed: {} };
+  }
+  if (c.t === 'B1') {
+    const s = pick(c.s), e = rnd(k - s), d = 1 + rnd(9);
+    return { t: 'B1', d, e, s, form: pick(c.forms) };
+  }
+  /* B2: the book's anthills: the number in one anthill, times 10 or 100 */
+  const dg = makeDigits(c.nd, 0), nd = dg.length;
+  return { t: 'B2', dg, s: c.s, mi: 0, placed: {}, src: dg.map((d, i) => ({ d, e: nd - 1 - i })) };
+}
+/* the chamber the current move must go to */
+function target() {
+  const k = S.task;
+  if (k.t === 'A') return { row: 0, e: k.cards[k.ci].e };
+  if (k.t === 'B1') return { row: 0, e: k.e + k.s };
+  return { row: 1, e: k.src[k.mi].e + k.s };
+}
+const curDigit = () => { const k = S.task; return k.t === 'A' ? k.cards[k.ci].d : k.t === 'B1' ? k.d : k.src[k.mi].d; };
+
+/* ---------- the order card ---------- */
+const ANT = (sz = 1, col = '#2b1d14') => `<g transform="scale(${sz})"><g stroke="${col}" stroke-width="1.6" fill="none"><path d="M-6 3 l-5 7 M0 4 l-1 8 M6 3 l5 7 M-5 -1 l-7 -4 M5 -1 l7 -4"/><path d="M13 -7 q4 -8 9 -9 M13 -6 q6 -5 11 -3"/></g><ellipse cx="-11" cy="0" rx="7" ry="5.5" fill="${col}"/><ellipse cx="0" cy="0" rx="5" ry="4" fill="${col}"/><circle cx="10" cy="-3" r="5" fill="${col}"/><circle cx="12" cy="-4" r="1.3" fill="#fff"/></g>`;
+function drawOrder() {
+  const k = S.task; let txt;
+  if (k.t === 'A') {
+    const c = k.cards[k.ci];
+    txt = (c.form === 'words' ? T('This ant is worth ', 'النملة دي قيمتها ') + cardText(c.d, c.e, 'words') : T('My value is ', 'قيمتي ') + cardText(c.d, c.e, 'value'))
+      + `<br><small>${T(`Where do I live? (ant ${n(k.ci + 1)} of ${n(k.cards.length)})`, `أسكن في أنهي غرفة؟ (نملة ${n(k.ci + 1)} من ${n(k.cards.length)})`)}</small>`;
+  } else if (k.t === 'B1') {
+    const now = fmt(k.d * P10(k.e)), want = fmt(k.d * P10(k.e + k.s));
+    txt = k.form === 'value'
+      ? T(`The queen says: this ${n(k.d)} must be worth <span class="big">${want}</span>. Tap its new chamber.`, `الملكة بتقول: الرقم ${n(k.d)} ده لازم قيمته تبقى <span class="big">${want}</span>. اضغط على غرفته الجديدة.`)
+      : T(`The queen says: make this ${n(k.d)} worth <b>${n(P10(k.s))} times</b> more (now ${n(now)}). Tap its new chamber.`, `الملكة بتقول: خلّي قيمة الرقم ${n(k.d)} ده <b>${n(P10(k.s))} ${k.s > 1 ? 'مثل' : 'أمثال'}</b> قيمته (دلوقتي ${n(now)}). اضغط على غرفته الجديدة.`);
+  } else {
+    const N = fmt(+k.dg.join('')), m = P10(k.s), d = k.src[k.mi].d;
+    txt = T(`One anthill has ${n(N)} ants. How many ants live in <b>${n(m)} anthills</b> like it?<br><small>Move the glowing ${n(d)} down to its new chamber.</small>`,
+      `في التل الواحد ${n(N)} نملة. كم نملة في <b>${n(m)} من تلال النمل</b> زيّه؟<br><small>انزل بالرقم ${n(d)} اللي بينوّر لغرفته الجديدة.</small>`);
+  }
+  $('#order').innerHTML = `<svg class="antc" viewBox="-30 -26 60 44" aria-hidden="true"><g class="wob">${ANT(1.25)}</g><circle cx="16" cy="-17" r="9" fill="#f2b134"/><text x="16" y="-12.5" font-size="12" font-weight="900" text-anchor="middle" fill="#1f3d57" font-family="Nunito">${curDigit()}</text></svg><div class="txt">${txt}<div class="timer" id="timer"><i></i></div></div>`;
+  const o = $('#order'); o.classList.remove('pop'); void o.offsetWidth; o.classList.add('pop');
+}
+
+/* ---------- the board ---------- */
+function drawBoard(flash) {
+  const lv = L(), k = S.task, cols = lv.k, es = Array.from({ length: cols }, (_, i) => cols - 1 - i);
+  let h = '';
+  // periods
+  for (let p = 3; p >= 0; p--) {
+    const span = es.filter(e => Math.min(3, Math.floor(e / 3)) === p).length; if (!span) continue;
+    h += `<div class="per${span === 1 ? ' one' : ''}" style="grid-column:span ${span};background:${PER[p].head}">${T(PER[p].en, PER[p].ar)}</div>`;
+  }
+  es.forEach(e => { const p = Math.min(3, Math.floor(e / 3)); h += `<div class="plc" style="background:${PER[p].cell}">${T(SHORT[e === 9 ? 0 : e % 3][0], SHORT[e === 9 ? 0 : e % 3][1])}</div>`; });
+  const rows = k.t === 'B2' ? 2 : 1;
+  for (let r = 0; r < rows; r++) {
+    if (k.t === 'B2') h += `<div class="rowlab">${r === 0 ? T('🏠 1 anthill', '🏠 تل واحد') : T(`🏠 ${n(P10(k.s))} anthills`, `🏠 ${n(P10(k.s))} من تلال النمل`)}</div>`;
+    es.forEach(e => {
+      let d = '', cls = '';
+      if (k.t === 'A') { if (k.placed[e] != null) { d = k.placed[e]; cls = k.placed[e] === 0 && k.zfill ? 'full zero' : 'full'; } }
+      else if (k.t === 'B1') { if (k.moved ? e === k.e + k.s : e === k.e) { d = k.d; cls = k.moved ? 'full' : 'src'; } }
+      else if (r === 0) { const x = k.src.find(s => s.e === e); if (x) { d = x.d; cls = k.src.indexOf(x) === k.mi && !k.done ? 'src' : k.src.indexOf(x) < k.mi || k.done ? 'full ghost' : 'full'; } }
+      else if (k.placed[e] != null) { d = k.placed[e]; cls = 'full' + (k.placed[e] === 0 && k.zfill ? ' zero' : ''); }
+      if (flash && flash.e === e && flash.row === r) cls += ' new';
+      const off = (k.t === 'B2' && r === 0) || (cls.includes('full') && !(k.t === 'B1')) ? ' off' : '';
+      h += `<button type="button" class="cell ${cls}${off}" data-e="${e}" data-r="${r}" aria-label="${T('Chamber: ', 'غرفة: ')}${pname(e)}${d !== '' ? ' = ' + d : ''}">${d}</button>`;
+    });
+  }
+  h += `<div class="rowlab result" id="result" style="grid-column:1/-1"></div>`;
+  $('#board').style.gridTemplateColumns = `repeat(${cols},1fr)`;
+  $('#board').innerHTML = h;
+  $('#board').querySelectorAll('.cell').forEach(b => b.onclick = () => tap(+b.dataset.e, +b.dataset.r, b));
+}
+
+/* ---------- scene ---------- */
+const FOX_X = [300, 278, 256, 234, 212, 190];
+const IMG = { worried: 'math/assets/reesho_worried.webp', happy: 'math/assets/reesho_happy.webp' };
+Object.values(IMG).forEach(s => { const i = new Image(); i.src = s; });
+/* the anteater, drawn in code, facing left; x = left edge of his body, standing on the ground (y = 112) */
+function anteater(x, { tongue = 0, mood = 'sneak' } = {}) {
+  const y = 112, tl = tongue ? `<path d="M-48 -18 q-${30 * tongue} 10 -${70 * tongue} 6" stroke="#e8798a" stroke-width="3.5" fill="none" stroke-linecap="round"/>` : '';
+  const cls = mood === 'run' ? '' : 'wob';
+  return `<g transform="translate(${x},${y})"><g class="${cls}">
+    <path d="M96 -36 q34 -40 18 -62 q-6 22 -22 30 q-14 -22 -4 -40 q-26 18 -10 56z" fill="#6e5a4a"/>
+    <rect x="10" y="-14" width="9" height="16" rx="3" fill="#4a3a30"/><rect x="72" y="-14" width="9" height="16" rx="3" fill="#4a3a30"/>
+    <ellipse cx="52" cy="-30" rx="46" ry="22" fill="#9a826c"/>
+    <path d="M14 -40 q40 18 84 4 q-4 10 -12 12 q-36 8 -72 -6z" fill="#3b2f2a"/><path d="M18 -44 q36 14 76 4" stroke="#f3eadb" stroke-width="4" fill="none"/>
+    <rect x="22" y="-14" width="9" height="16" rx="3" fill="#5a4838"/><rect x="84" y="-14" width="9" height="16" rx="3" fill="#5a4838"/>
+    <ellipse cx="6" cy="-34" rx="16" ry="12" fill="#9a826c"/><path d="M-6 -40 q-30 8 -42 20 q-2 4 3 4 q24 -6 45 -12z" fill="#8a735e"/>
+    <circle cx="-45" cy="-18" r="3" fill="#2b1d14"/><circle cx="4" cy="-38" r="2.6" fill="#1b130e"/>${mood === 'angry' ? '<path d="M-1 -44 l9 3" stroke="#1b130e" stroke-width="2"/>' : ''}
+    <path d="M12 -44 q2 -9 8 -6" fill="#8a735e" stroke="#6e5a4a"/>${tl}</g></g>`;
+}
+function drawScene(o = {}) {
+  const fx = o.x ?? FOX_X[Math.min(S.fox, 5)];
+  let h = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ef"/><stop offset="1" stop-color="#e6f6dc"/></linearGradient></defs>
+    <rect width="440" height="190" fill="url(#sky)"/><circle cx="392" cy="34" r="18" fill="#ffe28a"/>
+    <path d="M0 112 H440 V190 H0z" fill="#7a5235"/><path d="M0 112 H440" stroke="#5aa34a" stroke-width="7"/>
+    <path d="M0 140 q60 10 120 0 t130 4 t190 -6 V190 H0z" fill="#6b4529"/>`;
+  // tunnels under the hill
+  h += `<g fill="#3b2617" opacity=".85"><ellipse cx="70" cy="140" rx="14" ry="8"/><ellipse cx="110" cy="160" rx="14" ry="8"/><ellipse cx="150" cy="142" rx="12" ry="7"/><path d="M84 140 q14 4 14 16 M124 158 q16 -2 18 -12" stroke="#3b2617" stroke-width="6" fill="none"/></g>`;
+  // the anthill
+  h += `<path d="M30 113 q55 -78 125 -2z" fill="#c08a52"/><path d="M48 113 q40 -55 92 -2" fill="#d39c60"/><ellipse cx="92" cy="104" rx="9" ry="6" fill="#3b2617"/>`;
+  // marching ants on the surface
+  h += `<g class="march">${[0, 1, 2, 3, 4, 5, 6].map(i => `<g transform="translate(${190 + i * 46},106)">${ANT(.55)}</g>`).join('')}</g>`;
+  // pebbles in the air
+  if (o.peb != null) for (let i = 0; i < 4; i++) { const t = Math.max(0, Math.min(1, o.peb * 1.3 - i * .1)); const px = 100 + (fx - 70) * t, py = 80 - Math.sin(t * Math.PI) * 60 + i * 4; if (t > 0 && t < 1) h += `<circle cx="${px + 30}" cy="${py}" r="${5 - i * .6}" fill="#8a8f99" stroke="#5c616a"/>`; }
+  // Reesho on the hill
+  const rh = o.win ? IMG.happy : IMG.worried;
+  h += `<image href="${rh}" x="${o.win ? 50 : 58}" y="${o.win ? 0 : 20}" width="${o.win ? 80 : 64}" height="${o.win ? 96 : 76}" preserveAspectRatio="xMidYMax meet" ${S.fox >= 3 && !o.win ? 'class="shake"' : ''}/>`;
+  // the anteater
+  if (!o.gone) h += anteater(fx, o);
+  // danger meter
+  h += `<rect x="160" y="6" width="172" height="30" rx="15" fill="#0006"/><text x="300" y="26" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" font-family="Nunito,Cairo">${T('Steps', 'خطوات')}</text>`;
+  for (let i = 0; i < 5; i++) { const c = i < S.fox ? '#e2603f' : '#ffffff40'; h += `<g transform="translate(${174 + i * 21},22)"><ellipse rx="6.5" ry="7.5" fill="${c}"/><circle cx="-5.5" cy="-8.5" r="2.4" fill="${c}"/><circle cx="0" cy="-10.5" r="2.4" fill="${c}"/><circle cx="5.5" cy="-8.5" r="2.4" fill="${c}"/></g>`; }
+  if (o.caught) h += `<rect x="90" y="50" width="260" height="40" rx="20" fill="#000a"/><text x="220" y="77" font-size="20" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The anteater broke in!', 'آكل النمل دخل المستعمرة!')}</text>`;
+  if (o.win) for (let i = 0; i < 24; i++) h += `<rect x="${20 + rnd(400)}" y="${10 + rnd(150)}" width="7" height="11" rx="2" fill="${pick(['#f2b134', '#e2603f', '#45b36b', '#23799f', '#fff'])}"/>`;
+  $('#scene').innerHTML = h;
+}
+const anim = (ms, f) => new Promise(res => { const t0 = performance.now(); (function g(t) { const k = Math.min(1, (t - t0) / ms); f(k); k < 1 ? requestAnimationFrame(g) : res(); })(t0); });
+async function anteaterAttack() {
+  const from = FOX_X[S.fox - 1], to = FOX_X[Math.min(S.fox, 5)];
+  await anim(220, k => drawScene({ x: from, tongue: k, mood: 'angry' }));
+  await anim(180, k => drawScene({ x: from, tongue: 1 - k, mood: 'angry' }));
+  await anim(420, k => drawScene({ x: from + (to - from) * k }));
+}
+async function pushBack() {
+  const from = FOX_X[S.fox + 1], to = FOX_X[S.fox];
+  await anim(520, k => drawScene({ x: from, peb: k }));
+  SFX.bonk(); await anim(380, k => drawScene({ x: from + (to - from) * k, mood: 'angry' }));
+}
+async function runAway() { const x0 = FOX_X[Math.min(S.fox, 5)]; await anim(800, k => drawScene({ x: x0 + (470 - x0) * k * k, mood: 'run', win: true })); drawScene({ gone: true, win: true }); }
+
+function banner(txt, good) { const b = $('#banner'); b.innerHTML = txt; b.classList.toggle('good', !!good); b.classList.add('show'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('show'), 1100); }
+function drawCombo() { $('#combo').innerHTML = `${T('Pebbles', 'الحصى')} ` + [0, 1, 2].map(i => `<i class="${i < S.combo ? 'on' : ''}"></i>`).join(''); }
+
+/* ---------- timer ---------- */
+function startTimer() { S.left = 1; S.deadline = performance.now() + L().time * 1000; S.ticked = 0; }
+setInterval(() => {
+  if (S.busy || !S.started || !S.task) return;
+  const ms = S.deadline - performance.now(), k = Math.max(0, ms / (L().time * 1000)), bar = $('#timer');
+  if (bar) { bar.firstChild.style.width = (k * 100) + '%'; bar.classList.toggle('low', ms < 5000); }
+  if (ms < 5000 && ms > 0 && Math.ceil(ms / 1000) !== S.ticked) { S.ticked = Math.ceil(ms / 1000); SFX.tick(); }
+  if (ms <= 0) timeout();
+}, 100);
+async function timeout() {
+  S.busy = true; banner(T('⏳ Too slow!', '⏳ الوقت خلص!'));
+  $('#say').innerHTML = T('🦜 The sand ran out and the anteater took a step! Here comes the same ant again.', '🦜 الرمل خلص وآكل النمل قرّب خطوة! نفس النملة جاية تاني.');
+  await miss('timeout');
+}
+
+/* ---------- moves ---------- */
+async function tap(e, r, el) {
+  if (S.busy || !S.started) return;
+  const tg = target(), k = S.task, d = curDigit();
+  if (tg.e === e && tg.row === r) {
+    S.busy = true; SFX.place(); S.combo++;
+    const pts = 5 + (S.deadline - performance.now() > L().time * 500 ? 3 : 0); S.score += pts; $('#score').textContent = S.score;
+    if (k.t === 'A') { k.placed[e] = d; k.ci++; }
+    else if (k.t === 'B1') { k.moved = true; }
+    else { k.placed[e] = d; k.mi++; if (k.mi >= k.src.length) k.done = true; }
+    drawBoard({ e, row: r });
+    const value = fmt(d * P10(e));
+    $('#say').innerHTML = pick([T('🦜 Yes!', '🦜 صح!'), T('🦜 Great!', '🦜 برافو!'), T('🦜 Home safe!', '🦜 وصلت بيتها!')]) + ' ' + T(`The ${n(d)} here is worth ${n(value)}.`, `الرقم ${n(d)} هنا قيمته ${n(value)}.`);
+    drawCombo();
+    if (S.combo >= 3) {
+      S.combo = 0; drawCombo();
+      if (S.fox > 0) { S.fox--; banner(T('🪨 Pebble attack!', '🪨 هجوم الحصى!'), true); SFX.throw(); await pushBack(); }
+      else { S.score += 5; $('#score').textContent = S.score; banner(T('🪨 +5 The ants cheer!', '🪨 +5 النمل بيهتف!'), true); }
+    }
+    await sleep(350);
+    await afterMove();
+    return;
+  }
+  // wrong chamber: the world answers in words, never with the answer
+  S.busy = true; el.classList.add('bad'); SFX.wrong();
+  const said = fmt(d * P10(e)), want = k.t === 'A' ? fmt(d * P10(tg.e)) : fmt(d * P10(tg.e));
+  const big = d * P10(e) > d * P10(tg.e);
+  $('#say').innerHTML = T(`🦜 In that chamber the ${n(d)} would be worth ${n(said)}: that is ${big ? 'too big' : 'too small'}!`, `🦜 في الغرفة دي الرقم ${n(d)} قيمته ${n(said)}: ده ${big ? 'أكبر من المطلوب' : 'أصغر من المطلوب'}!`);
+  void want;
+  await miss('wrong');
+}
+async function miss(kind) {
+  S.fox++; S.misses++; S.combo = 0; drawCombo();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.fox });
+  SFX.sniff(); await anteaterAttack(); drawBoard();
+  if (S.fox >= 5) { lose(); return; }
+  if (S.fox === 4) banner(T('⚠️ One step left!', '⚠️ فاضل خطوة واحدة!'));
+  startTimer(); S.busy = false;
+}
+async function afterMove() {
+  const k = S.task;
+  const doneA = k.t === 'A' && k.ci >= k.cards.length, doneB1 = k.t === 'B1' && k.moved, doneB2 = k.t === 'B2' && k.done;
+  if (!doneA && !doneB1 && !doneB2) { drawOrder(); startTimer(); S.busy = false; return; }
+  // empty chambers inside the number get a 0 (the book's place holder)
+  if (doneA || doneB2) {
+    const nd = k.t === 'A' ? k.dg.length : k.dg.length + k.s;
+    let z = 0; for (let e = 0; e < nd; e++) if (k.placed[e] == null) { k.placed[e] = 0; z++; }
+    k.zfill = true; drawBoard();
+    if (z) { SFX.zero(); $('#say').innerHTML += ' ' + T(`The empty chambers get a ${n(0)}.`, `والغرف الفاضية بنحط فيها ${n(0)}.`); await sleep(500); }
+    const num = Array.from({ length: nd }, (_, i) => k.placed[nd - 1 - i]).join('');
+    $('#result').textContent = fmt(+num);
+    if (k.t === 'B2') $('#say').innerHTML = T(`🦜 ${n(fmt(+k.dg.join('')))} × ${n(P10(k.s))} = ${n(fmt(+num))} ants. Every digit moved ${n(k.s)} place${k.s > 1 ? 's' : ''} to the left!`, `🦜 ${n(fmt(+k.dg.join('')))} × ${n(P10(k.s))} = ${n(fmt(+num))} نملة. كل رقم اتحرك ${k.s > 1 ? 'خانتين' : 'خانة'} لليسار!`);
+    else $('#say').innerHTML = T(`🦜 All the ants are home: ${n(fmt(+num))}.`, `🦜 كل النمل وصل بيته: ${n(fmt(+num))}.`);
+    await sleep(1700);
+  } else {
+    $('#say').innerHTML = T(`🦜 ${n(fmt(k.d * P10(k.e)))} → ${n(fmt(k.d * P10(k.e + k.s)))}: one place left = ×${n(10)}, two places = ×${n(100)}.`, `🦜 ${n(fmt(k.d * P10(k.e)))} ← ${n(fmt(k.d * P10(k.e + k.s)))}: خانة لليسار = ×${n(10)}، خانتين = ×${n(100)}.`);
+    await sleep(1600);
+  }
+  S.ti++;
+  if (S.ti >= L().tasks.length) { win(); return; }
+  nextTask();
+}
+function nextTask() {
+  S.task = makeTask(L().tasks[S.ti]); S.hintN = 0;
+  drawBoard(); drawOrder(); startTimer(); S.busy = false;
+  const t = S.task.t;
+  $('#say').innerHTML = t === 'A' ? T('🦜 The ants are running home. Show each one its chamber, fast!', '🦜 النمل بيجري على البيت. ورّي كل نملة غرفتها، بسرعة!')
+    : t === 'B1' ? T('🦜 The queen wants to move an ant. Where will its value be what she asks?', '🦜 الملكة عايزة تنقل نملة. فين قيمتها هتبقى زي ما هي عايزة؟')
+    : T('🦜 The colony is growing! Move the digits, the left one first.', '🦜 المستعمرة بتكبر! انقل الأرقام، اللي على الشمال الأول.');
+}
+function hint() {
+  if (S.busy || !S.started) return;
+  const k = S.task; S.hintN++;
+  let h;
+  if (k.t === 'A') {
+    const c = k.cards[k.ci];
+    h = c.form === 'words' ? T('Find the period first (Ones, Thousands, Millions…), then the place inside it (hundreds, tens, ones).', 'دوّر على المجموعة الأول (الآحاد، الألوف، الملايين…)، وبعدين الخانة جوّاها (مئات، عشرات، آحاد).')
+      : S.hintN === 1 ? T('Each chamber is worth 10 times the chamber on its right: 1, 10, 100, 1,000, 10,000…', 'كل غرفة قيمتها 10 أمثال الغرفة اللي على يمينها: 1، 10، 100، 1,000، 10,000…')
+      : T('Count the zeros after the digit: each zero is one chamber to the left of the ones.', 'عِدّ الأصفار اللي بعد الرقم: كل صفر = غرفة لليسار بعد الآحاد.');
+  } else h = T('One place to the left = 10 times the value. Two places to the left = 100 times.', 'خانة واحدة لليسار = القيمة 10 أمثال. خانتين لليسار = 100 مثل.');
+  $('#say').innerHTML = '🦜 ' + h;
+}
+
+/* ---------- levels ---------- */
+function startLevel() {
+  S.t0 = Date.now(); S.fox = 0; S.misses = 0; S.combo = 0; S.ti = 0;
+  $('#lvl').textContent = S.lvl + 1; drawCombo(); drawScene();
+  nextTask();
+  if (L().boss) { banner(T('👑 The queen’s tunnel!', '👑 نفق الملكة!')); $('#say').innerHTML = T('🦜 Last tunnel: the queen is inside! Less time for every ant…', '🦜 آخر نفق: الملكة جوّه! الوقت أقل لكل نملة…'); }
+  if (A.ctx && A.mode !== 'tension') music('tension');
+}
+async function win() {
+  S.busy = true;
+  const stars = S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1, pts = 20 + stars * 10;
+  S.score += pts; $('#score').textContent = S.score;
+  music('off'); SFX.win(); banner(T('🎉 Colony saved!', '🎉 المستعمرة اتنقذت!'), true);
+  saveWin(stars, pts); await runAway(); await sleep(500);
+  showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+async function lose() {
+  S.busy = true; music('off'); SFX.lose(); drawScene({ caught: true, tongue: 1, mood: 'angry' });
+  $('#say').innerHTML = T('🐾 Slurp! The ants ran deep into the tunnels…', '🐾 شلّب! النمل هرب جوّه الأنفاق…');
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+  await sleep(1300); showEnd('lose');
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['🐜🎉', T('The anteater ran away!', 'آكل النمل هرب!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('But he is digging toward a deeper tunnel… ready?', 'بس هو بيحفر ناحية نفق أعمق… جاهز؟'), T('Next tunnel ➜', 'النفق اللي بعده ⬅')],
+    all: ['👑🐜', T('You saved the queen!', 'أنقذت الملكة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You know every chamber up to the milliards!`, `مجموع نقطك ${n(S.score)}. بقيت عارف كل الغرف لحد المليارات!`), T('Play again', 'العب من الأول')],
+    lose: ['🐾😱', T('The anteater broke in', 'آكل النمل دخل المستعمرة'), '', T('Look at the value each ant tells you, and count the places from the ones. Try again!', 'بُص على القيمة اللي النملة بتقولها، وعِدّ الخانات من الآحاد. جرّب تاني!'), T('Try again', 'جرّب تاني')]
+  }[kind];
+  $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLevel(); };
+}
+/* progress: SI.chProf('mg4u1').ants = { lvl: next tunnel, best: highest tunnel saved (1-6), stars: [per tunnel] } */
+function saveWin(stars, pts) {
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.ants = c.ants || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+
+/* ---------- music and sound (Web Audio, no files): a busy, bouncy march in D minor; tempo and a heartbeat rise with the danger ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function thump(t, vol = .5) { const c = A.ctx, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + .16); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + .2); o.connect(g); g.connect(A.master); o.start(t); o.stop(t + .25); }
+function noise(t, dur, vol, from, to) { const c = A.ctx, b = c.createBuffer(1, c.sampleRate * dur, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.setValueAtTime(from, t); f.frequency.exponentialRampToValueAtTime(to, t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(f); f.connect(g); g.connect(A.master); s.start(t); }
+const RIFF = [62, 65, 69, 65, 62, 65, 70, 69, 62, 65, 69, 72, 70, 69, 67, 65];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const bpm = 96 + Math.min(S.fox, 4) * 14 + (L().boss ? 10 : 0), spb = 60 / bpm / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    tone(RIFF[i], t, spb * .55, { type: 'square', vol: .045, cut: 1800 });
+    if (i % 2 === 0) tone(RIFF[i] - 24, t, spb * 1.6, { type: 'triangle', vol: .12, cut: 700 });
+    if (i % 4 === 2) noise(t, .05, .06, 6000, 3000);                       // little drum
+    if (S.fox >= 2 && i % 4 === 0) thump(t, .22 + S.fox * .07);
+    if (S.fox >= 2 && i % 4 === 1) thump(t + spb * .35, .13 + S.fox * .05);
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null; if (mode === 'tension') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  place() { if (!ac()) return; const t = A.ctx.currentTime; tone(79, t, .12, { type: 'sine', vol: .14 }); tone(86, t + .07, .2, { type: 'sine', vol: .12 }); },
+  zero() { if (!ac()) return; const t = A.ctx.currentTime; tone(72, t, .15, { type: 'triangle', vol: .1 }); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(52, t, .35, { type: 'sawtooth', vol: .12, cut: 900, glide: -5 }); },
+  sniff() { if (!ac()) return; const t = A.ctx.currentTime; [0, .16, .32].forEach(d => noise(t + d, .12, .25, 900, 2400)); thump(t + .55, .5); },
+  tick() { if (!ac()) return; tone(93, A.ctx.currentTime, .04, { type: 'square', vol: .05, cut: 5000 }); },
+  throw() { if (!ac()) return; const t = A.ctx.currentTime; [0, .08, .16, .24].forEach(d => noise(t + d, .18, .18, 1500, 500)); },
+  bonk() { if (!ac()) return; const t = A.ctx.currentTime; tone(60, t, .2, { type: 'square', vol: .1, cut: 900, glide: -12 }); tone(84, t + .15, .25, { type: 'sine', vol: .1 }); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [62, 66, 69, 74, 78, 81, 86].forEach((m, i) => tone(m, t + i * .09, .5, { type: 'triangle', vol: .16 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [65, 64, 62, 57].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); thump(t + 1.1, .6); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+$('#hint').onclick = hint;
+$('#go').onclick = () => { $('#intro').hidden = true; S.started = true; music('tension'); startTimer(); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+window.__ants = S; window.__antsApi = { target, makeTask, startLevel, LEVELS, redraw: () => { drawScene(); drawBoard(); drawOrder(); drawCombo(); } };
+drawScene(); startLevel(); S.busy = false;
+})();
+</script>
+</body>
+</html>

@@ -485,6 +485,9 @@ window.EXAMS = [
 /* Adventures: story games beside the units (owner, Oct 2026). Each one shows as a big card on chapters.html (for its subject and grade,
    once its unit is open) and on the map of its unit. Progress is kept in SI.chProf(ch)[id]. Add one line per new adventure. */
 window.ADVENTURES = [
+  { id: 'ants', href: 'math-anthill.html', ch: 'mg4u1', subject: 'math', grade: 'g4', img: 'math/assets/reesho_worried.webp', of: 6, stat: 'Tunnels saved', statAr: 'الأنفاق اللي أنقذتها',
+    lessons: '1-2', concept: 'Big numbers up to the milliards: the place and value of a digit; one place to the left = 10 times, two places = 100 times', conceptAr: 'الأعداد الكبيرة حتى المليارات: مكان الرقم وقيمته؛ خانة لليسار = 10 أمثال، وخانتين = 100 مثل',
+    title: 'Save the Ant Colony!', titleAr: 'أنقذ مستعمرة النمل!', hint: 'Send every ant to its chamber before the anteater breaks in', hintAr: 'ودّي كل نملة لغرفتها قبل ما آكل النمل يدخل المستعمرة' },
   { id: 'cage', href: 'math-cage.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/reesho_sad.webp', of: 6,
     lessons: '1-4', concept: 'Place value of decimals: the digit, its value, expanded form, ×10 and ÷10', conceptAr: 'القيمة المكانية للكسور العشرية: الرقم وقيمته، والصيغة الممتدة، والضرب والقسمة على 10',
     title: 'Save Reesho!', titleAr: 'أنقذ ريشو!', hint: 'Crack the decimal lock before the fox gets there', hintAr: 'افتح قفل الأعداد العشرية قبل ما الثعلب يوصل' },
