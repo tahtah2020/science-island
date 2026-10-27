@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-28', title: 'Save the Ant Colony (Grade 4 math adventure)',
+    items: [
+      { text: 'Math Grade 4 Unit 1 lessons 1-2: send every ant to its chamber, move ants ×10 / ×100, the book\'s 10 and 100 anthills; anteater, sand timer and pebble attack, with the owner\'s pictures' },
+      { text: 'Arabic text: «أنهي» replaced by standard Arabic («أي / أيها / أيهما») across the site', links: [{ label: 'Save the Ant Colony', href: 'math-anthill.html', ch: 'mg4u1' }] }
+    ] },
   { date: '2026-10-28', title: 'Save the Ant Colony (Grade 4 math adventure, prototype)',
     items: [
       { text: 'Math Grade 4 Unit 1 lessons 1-2: send every ant to its chamber (value or place in words), move ants ×10 / ×100, the book\'s 10 and 100 anthills; anteater, sand timer and pebble attack', links: [{ label: 'Save the Ant Colony', href: 'math-anthill.html', ch: 'mg4u1' }] }
