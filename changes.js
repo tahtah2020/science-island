@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-27', title: 'Reesho’s Cage: decimal point fix',
+    items: [
+      { text: 'The decimal point on the lock now sits between the ones and the tenths digits' }
+    ] },
   { date: '2026-10-27', title: 'Math Grade 5: new adventure «Reesho’s Cage»',
     items: [
       { text: 'Unit 1 adventure: crack the decimal lock before the fox arrives (6 locks, clues made at random, music)' },

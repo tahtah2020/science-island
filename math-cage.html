@@ -37,14 +37,14 @@ body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#1d
 .clue.bad{border-color:var(--coral);animation:sh .4s}
 @keyframes sh{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 bdi{font-weight:900;color:var(--pri)}
-.lock{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:6px;background:#2b3f52;border-radius:16px;padding:10px 8px 6px}
+.lock{direction:ltr;display:flex;justify-content:center;align-items:flex-start;gap:6px;background:#2b3f52;border-radius:16px;padding:10px 8px 6px}
 .wheel{display:flex;flex-direction:column;align-items:center;gap:3px}
 .wheel button{width:52px;height:34px;border:0;border-radius:10px;background:#3f5a72;color:#fff;font-size:18px;cursor:pointer}
 .wheel button:active{background:var(--pri)}
 .digit{width:52px;height:62px;border-radius:10px;background:#fffaf0;font:900 38px Nunito,Cairo;display:flex;align-items:center;justify-content:center;color:var(--navy);transition:transform .15s}
 .digit.spin{transform:scaleY(.6)}
 .wheel small{color:#cfe3ee;font-size:10.5px;width:56px;text-align:center;line-height:1.3;min-height:28px}
-.dot{color:#fffaf0;font:900 40px Nunito,Cairo;padding-bottom:42px}
+.dot{color:#fffaf0;font:900 40px/1 Nunito,Cairo;height:99px;display:flex;align-items:flex-end;padding-bottom:8px}   /* button 34 + gap 3 + digit 62: the point sits at the foot of the digits */
 .row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
 .btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
@@ -65,7 +65,7 @@ bdi{font-weight:900;color:var(--pri)}
 .home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffff22;border-radius:99px;color:#fff;font-size:16px;width:34px;height:30px}
 .snd{background:#ffffff22;border:0;border-radius:99px;color:#fff;font-size:16px;width:34px;height:30px;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.tear,.shiver,.fly{animation:none}}
-@media (max-width:420px){.wheel button,.digit{width:44px}.digit{height:54px;font-size:32px}.wheel small{width:46px;font-size:9.5px}.clue{font-size:14.5px}}
+@media (max-width:420px){.wheel button,.digit{width:44px}.digit{height:54px;font-size:32px}.wheel small{width:46px;font-size:9.5px}.dot{height:91px;padding-bottom:6px}.clue{font-size:14.5px}}
 </style>
 </head>
 <body>
@@ -88,9 +88,9 @@ bdi{font-weight:900;color:var(--pri)}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261027a"></script>
-<script src="chapters.js?v=20261027a"></script>
-<script src="common.js?v=20261027a"></script>
+<script src="firebase-config.js?v=20261027b"></script>
+<script src="chapters.js?v=20261027b"></script>
+<script src="common.js?v=20261027b"></script>
 <script>
 (() => {
 'use strict';
