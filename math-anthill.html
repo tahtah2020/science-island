@@ -19,7 +19,7 @@
        B2 the book's anthills: 1 anthill has 156 ants, how many in 10 (100) anthills? move each digit (left one first) to its new chamber.
      Excitement: the anteater comes one step closer on each wrong tap or when an ant's sand-timer runs out (5 = lost);
      3 right taps in a row = the ants throw pebbles and push him back one step; music and heartbeat speed up with the danger.
-     Pictures: Reesho from math/assets (worried, happy); the owner gave no pictures for this unit, so the anteater, ants and anthill are drawn in code.
+     Pictures: the owner's Gemini sheet and background (28 Oct 2026) cut out into math/assets (anteater_*, ant_*, ants_cheer, bg_anthill); Reesho worried / happy.
      Progress: SI.chProf('mg4u1').ants = { lvl, best, stars[] }. Test hooks window.__ants, window.__antsApi. -->
 <style>
 :root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--mint:#bfe8d6;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134;--soil:#7a5235;--soil2:#5e3d26}
@@ -30,14 +30,14 @@ body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#8f
 .top h1{font-size:21px;margin:0}
 .pills{display:flex;gap:6px}
 .pill{background:#ffffffaa;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px}
-#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:16px}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:16px;background:#bfe3f2}
 .say{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
 .bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;flex:1;min-height:44px;box-shadow:0 3px 10px #0002;line-height:1.6}
 .panel{background:var(--card);border-radius:20px;padding:10px;box-shadow:0 6px 20px #0004}
 bdi{font-weight:900;color:var(--pri)}
 /* the order card: the ant that waits, with its sand timer */
 .order{display:flex;gap:10px;align-items:center;background:#fff;border-radius:14px;padding:8px 10px;border:2px solid #f2e3c4;margin-bottom:8px}
-.order .antc{flex:none;width:58px;height:50px}
+.order .antc{flex:none;width:56px;height:76px}
 .order .txt{flex:1;font-weight:800;font-size:15.5px;line-height:1.5}
 .order .big{font:900 24px Nunito,Cairo,sans-serif;color:var(--coral);direction:ltr;unicode-bidi:isolate;display:inline-block}
 .timer{height:9px;border-radius:9px;background:#efe6d4;overflow:hidden;margin-top:5px}
@@ -79,19 +79,19 @@ bdi{font-weight:900;color:var(--pri)}
 .box{background:#fff;border-radius:20px;padding:20px;max-width:390px;text-align:center}
 .box h2{margin:4px 0 8px}
 .box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 12px}
+.introart{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:14px}.introart img{height:84px}.introart img+img{height:70px}
+#endArt img{height:110px}
 .stars{font-size:34px;letter-spacing:4px}
 .home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffffaa;border-radius:99px;color:var(--navy);font-size:16px;width:34px;height:30px}
 .snd{background:#ffffffaa;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer}
 .banner{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.6);background:var(--coral);color:#fff;font:900 26px Nunito,Cairo;padding:12px 26px;border-radius:18px;box-shadow:0 8px 24px #0006;opacity:0;pointer-events:none;z-index:8;transition:.3s;text-align:center;white-space:nowrap}
 .banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .banner.good{background:var(--ok)}
-.march{animation:march 3.5s linear infinite}
-@keyframes march{to{transform:translateX(-46px)}}
 .wob{animation:wob .9s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
 @keyframes wob{50%{transform:rotate(-4deg)}}
 .shake{animation:shk .14s infinite;transform-box:fill-box}
 @keyframes shk{50%{transform:translate(1.5px,-1px)}}
-@media (prefers-reduced-motion:reduce){.march,.wob,.shake,.cell.src{animation:none}}
+@media (prefers-reduced-motion:reduce){.wob,.shake,.cell.src{animation:none}}
 @media (max-width:420px){.cell{height:48px;font-size:22px}.per{font-size:10px}.per.one{font-size:8px;letter-spacing:-.3px;padding:5px 0}
 .plc{font-size:8.5px}.order .txt{font-size:14.5px}.order .big{font-size:21px}}
 </style>
@@ -99,7 +99,7 @@ bdi{font-weight:900;color:var(--pri)}
 <body>
 <div class="wrap">
   <div class="top"><h1 data-ar="🐜 أنقذ مستعمرة النمل">🐜 Save the Ant Colony</h1><div class="pills"><span class="pill"><span data-ar="النفق">Tunnel</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="adventures.html" aria-label="Back to the adventures" data-ar-label="رجوع للمغامرات">⌂</a></div></div>
-  <svg id="scene" viewBox="0 0 440 190" role="img" aria-label="An anteater is walking towards the ants’ hill" data-ar-label="آكل النمل ماشي ناحية تل النمل"></svg>
+  <svg id="scene" viewBox="0 0 440 230" role="img" aria-label="An anteater is walking towards the ants’ hill" data-ar-label="آكل النمل ماشي ناحية تل النمل"></svg>
   <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
   <div class="panel">
     <div class="order" id="order"></div>
@@ -110,12 +110,12 @@ bdi{font-weight:900;color:var(--pri)}
 <div class="banner" id="banner"></div>
 
 <div class="veil" id="intro"><div class="box">
-  <div style="font-size:46px" aria-hidden="true">🐜🏠🐾</div>
+  <div class="introart" aria-hidden="true"><img src="math/assets/ant_sign.webp" alt=""><img src="math/assets/anteater_sneak.webp" alt=""></div>
   <h2 data-ar="آكل النمل جاي!">The anteater is coming!</h2>
   <ol id="rules"></ol>
   <button class="btn" id="go" type="button"></button></div></div>
 
-<div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
 <script src="firebase-config.js?v=20261028d"></script>
 <script src="chapters.js?v=20261028d"></script>
@@ -202,7 +202,6 @@ function target() {
 const curDigit = () => { const k = S.task; return k.t === 'A' ? k.cards[k.ci].d : k.t === 'B1' ? k.d : k.src[k.mi].d; };
 
 /* ---------- the order card ---------- */
-const ANT = (sz = 1, col = '#2b1d14') => `<g transform="scale(${sz})"><g stroke="${col}" stroke-width="1.6" fill="none"><path d="M-6 3 l-5 7 M0 4 l-1 8 M6 3 l5 7 M-5 -1 l-7 -4 M5 -1 l7 -4"/><path d="M13 -7 q4 -8 9 -9 M13 -6 q6 -5 11 -3"/></g><ellipse cx="-11" cy="0" rx="7" ry="5.5" fill="${col}"/><ellipse cx="0" cy="0" rx="5" ry="4" fill="${col}"/><circle cx="10" cy="-3" r="5" fill="${col}"/><circle cx="12" cy="-4" r="1.3" fill="#fff"/></g>`;
 function drawOrder() {
   const k = S.task; let txt;
   if (k.t === 'A') {
@@ -219,7 +218,7 @@ function drawOrder() {
     txt = T(`One anthill has ${n(N)} ants. How many ants live in <b>${n(m)} anthills</b> like it?<br><small>Move the glowing ${n(d)} down to its new chamber.</small>`,
       `في التل الواحد ${n(N)} نملة. كم نملة في <b>${n(m)} من تلال النمل</b> زيّه؟<br><small>انزل بالرقم ${n(d)} اللي بينوّر لغرفته الجديدة.</small>`);
   }
-  $('#order').innerHTML = `<svg class="antc" viewBox="-30 -26 60 44" aria-hidden="true"><g class="wob">${ANT(1.25)}</g><circle cx="16" cy="-17" r="9" fill="#f2b134"/><text x="16" y="-12.5" font-size="12" font-weight="900" text-anchor="middle" fill="#1f3d57" font-family="Nunito">${curDigit()}</text></svg><div class="txt">${txt}<div class="timer" id="timer"><i></i></div></div>`;
+  $('#order').innerHTML = `<svg class="antc" viewBox="0 0 222 302" aria-hidden="true"><g class="wob"><image href="${src('sign')}" x="0" y="0" width="222" height="302"/><text x="148" y="106" font-size="92" font-weight="900" text-anchor="middle" fill="#1f3d57" font-family="Nunito,Cairo,sans-serif">${curDigit()}</text></g></svg><div class="txt">${txt}<div class="timer" id="timer"><i></i></div></div>`;
   const o = $('#order'); o.classList.remove('pop'); void o.offsetWidth; o.classList.add('pop');
 }
 
@@ -253,63 +252,57 @@ function drawBoard(flash) {
   $('#board').querySelectorAll('.cell').forEach(b => b.onclick = () => tap(+b.dataset.e, +b.dataset.r, b));
 }
 
-/* ---------- scene ---------- */
-const FOX_X = [300, 278, 256, 234, 212, 190];
-const IMG = { worried: 'math/assets/reesho_worried.webp', happy: 'math/assets/reesho_happy.webp' };
-Object.values(IMG).forEach(s => { const i = new Image(); i.src = s; });
-/* the anteater, drawn in code, facing left; x = left edge of his body, standing on the ground (y = 112) */
-function anteater(x, { tongue = 0, mood = 'sneak' } = {}) {
-  const y = 112, tl = tongue ? `<path d="M-48 -18 q-${30 * tongue} 10 -${70 * tongue} 6" stroke="#e8798a" stroke-width="3.5" fill="none" stroke-linecap="round"/>` : '';
-  const cls = mood === 'run' ? '' : 'wob';
-  return `<g transform="translate(${x},${y})"><g class="${cls}">
-    <path d="M96 -36 q34 -40 18 -62 q-6 22 -22 30 q-14 -22 -4 -40 q-26 18 -10 56z" fill="#6e5a4a"/>
-    <rect x="10" y="-14" width="9" height="16" rx="3" fill="#4a3a30"/><rect x="72" y="-14" width="9" height="16" rx="3" fill="#4a3a30"/>
-    <ellipse cx="52" cy="-30" rx="46" ry="22" fill="#9a826c"/>
-    <path d="M14 -40 q40 18 84 4 q-4 10 -12 12 q-36 8 -72 -6z" fill="#3b2f2a"/><path d="M18 -44 q36 14 76 4" stroke="#f3eadb" stroke-width="4" fill="none"/>
-    <rect x="22" y="-14" width="9" height="16" rx="3" fill="#5a4838"/><rect x="84" y="-14" width="9" height="16" rx="3" fill="#5a4838"/>
-    <ellipse cx="6" cy="-34" rx="16" ry="12" fill="#9a826c"/><path d="M-6 -40 q-30 8 -42 20 q-2 4 3 4 q24 -6 45 -12z" fill="#8a735e"/>
-    <circle cx="-45" cy="-18" r="3" fill="#2b1d14"/><circle cx="4" cy="-38" r="2.6" fill="#1b130e"/>${mood === 'angry' ? '<path d="M-1 -44 l9 3" stroke="#1b130e" stroke-width="2"/>' : ''}
-    <path d="M12 -44 q2 -9 8 -6" fill="#8a735e" stroke="#6e5a4a"/>${tl}</g></g>`;
+/* ---------- scene ----------
+   Pictures: the owner's Gemini sheet (28 Oct 2026), cut out with PIL into math/assets/: anteater_{sneak,attack,hit,run,laugh}.webp,
+   ant_{sign,throw,queen}.webp, ants_cheer.webp, bg_anthill.jpg (the hill on the left, tunnels under the ground). Reesho: reesho_worried / reesho_happy.
+   viewBox 440×230: the background is drawn 440 wide and sits on the bottom edge, so its grass line falls at y = 150 (G). */
+const G = 150, F = .41;                                   // ground line; scale of the anteater pictures (sheet px → scene units)
+const FOX_X = [285, 261, 237, 213, 189, 165];             // left edge of the anteater; at step 5 his snout is at the hill's door
+const IMG = { bg: 'bg_anthill.jpg', worried: 'reesho_worried.webp', happy: 'reesho_happy.webp', sneak: 'anteater_sneak.webp', attack: 'anteater_attack.webp',
+  hit: 'anteater_hit.webp', run: 'anteater_run.webp', laugh: 'anteater_laugh.webp', sign: 'ant_sign.webp', thrower: 'ant_throw.webp', cheer: 'ants_cheer.webp', queen: 'ant_queen.webp' };
+const SZ = { sneak: [366, 160], attack: [376, 160], hit: [306, 238], run: [362, 186], laugh: [246, 282], sign: [222, 302], thrower: [228, 222], cheer: [302, 226], queen: [206, 254] };
+const src = k => 'math/assets/' + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+/* the anteater on the ground; x = left edge of the picture */
+function anteater(x, pose = 'sneak') {
+  const [w, h] = SZ[pose].map(v => v * (pose === 'laugh' ? .36 : F)), dx = pose === 'attack' ? -4 : 0;
+  return `<g class="${pose === 'run' ? '' : 'wob'}">${im(pose, x + dx, G + 3 - h, w, h)}</g>`;
 }
 function drawScene(o = {}) {
-  const fx = o.x ?? FOX_X[Math.min(S.fox, 5)];
-  let h = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ef"/><stop offset="1" stop-color="#e6f6dc"/></linearGradient></defs>
-    <rect width="440" height="190" fill="url(#sky)"/><circle cx="392" cy="34" r="18" fill="#ffe28a"/>
-    <path d="M0 112 H440 V190 H0z" fill="#7a5235"/><path d="M0 112 H440" stroke="#5aa34a" stroke-width="7"/>
-    <path d="M0 140 q60 10 120 0 t130 4 t190 -6 V190 H0z" fill="#6b4529"/>`;
-  // tunnels under the hill
-  h += `<g fill="#3b2617" opacity=".85"><ellipse cx="70" cy="140" rx="14" ry="8"/><ellipse cx="110" cy="160" rx="14" ry="8"/><ellipse cx="150" cy="142" rx="12" ry="7"/><path d="M84 140 q14 4 14 16 M124 158 q16 -2 18 -12" stroke="#3b2617" stroke-width="6" fill="none"/></g>`;
-  // the anthill
-  h += `<path d="M30 113 q55 -78 125 -2z" fill="#c08a52"/><path d="M48 113 q40 -55 92 -2" fill="#d39c60"/><ellipse cx="92" cy="104" rx="9" ry="6" fill="#3b2617"/>`;
-  // marching ants on the surface
-  h += `<g class="march">${[0, 1, 2, 3, 4, 5, 6].map(i => `<g transform="translate(${190 + i * 46},106)">${ANT(.55)}</g>`).join('')}</g>`;
-  // pebbles in the air
-  if (o.peb != null) for (let i = 0; i < 4; i++) { const t = Math.max(0, Math.min(1, o.peb * 1.3 - i * .1)); const px = 100 + (fx - 70) * t, py = 80 - Math.sin(t * Math.PI) * 60 + i * 4; if (t > 0 && t < 1) h += `<circle cx="${px + 30}" cy="${py}" r="${5 - i * .6}" fill="#8a8f99" stroke="#5c616a"/>`; }
-  // Reesho on the hill
-  const rh = o.win ? IMG.happy : IMG.worried;
-  h += `<image href="${rh}" x="${o.win ? 50 : 58}" y="${o.win ? 0 : 20}" width="${o.win ? 80 : 64}" height="${o.win ? 96 : 76}" preserveAspectRatio="xMidYMax meet" ${S.fox >= 3 && !o.win ? 'class="shake"' : ''}/>`;
-  // the anteater
-  if (!o.gone) h += anteater(fx, o);
+  const fx = o.x ?? FOX_X[Math.min(S.fox, 5)], pose = o.pose || (o.caught ? 'laugh' : 'sneak');
+  let h = `<image href="${src('bg')}" x="0" y="${230 - 440 * 572 / 1024}" width="440" height="${440 * 572 / 1024}" preserveAspectRatio="none"/>`;
+  // Reesho on top of the hill
+  h += o.win ? im('happy', 70, -8, 66, 76) : im('worried', 78, -2, 58, 66, S.fox >= 3 ? 'class="shake"' : '');
+  // the ant who throws, then the pebbles
+  if (o.peb != null) {
+    h += im('thrower', 136, G - 58, 60, 58);
+    for (let i = 0; i < 4; i++) { const t = Math.max(0, Math.min(1, o.peb * 1.3 - i * .1)), x0 = 186, y0 = G - 30, x1 = fx + 14, y1 = G - 52;
+      if (t > 0 && t < 1) h += `<circle cx="${x0 + (x1 - x0) * t}" cy="${y0 + (y1 - y0) * t - Math.sin(t * Math.PI) * 50 + i * 3}" r="${5 - i * .6}" fill="#8a8f99" stroke="#5c616a"/>`; }
+  }
+  if (o.win) h += im('cheer', 128, G - 52, 70, 52);
+  if (!o.gone) h += anteater(fx, pose);
   // danger meter
   h += `<rect x="160" y="6" width="172" height="30" rx="15" fill="#0006"/><text x="300" y="26" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" font-family="Nunito,Cairo">${T('Steps', 'خطوات')}</text>`;
-  for (let i = 0; i < 5; i++) { const c = i < S.fox ? '#e2603f' : '#ffffff40'; h += `<g transform="translate(${174 + i * 21},22)"><ellipse rx="6.5" ry="7.5" fill="${c}"/><circle cx="-5.5" cy="-8.5" r="2.4" fill="${c}"/><circle cx="0" cy="-10.5" r="2.4" fill="${c}"/><circle cx="5.5" cy="-8.5" r="2.4" fill="${c}"/></g>`; }
-  if (o.caught) h += `<rect x="90" y="50" width="260" height="40" rx="20" fill="#000a"/><text x="220" y="77" font-size="20" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The anteater broke in!', 'آكل النمل دخل المستعمرة!')}</text>`;
+  for (let i = 0; i < 5; i++) { const c = i < S.fox ? '#e2603f' : '#ffffff70'; h += `<g transform="translate(${174 + i * 21},22)"><ellipse rx="6.5" ry="7.5" fill="${c}"/><circle cx="-5.5" cy="-8.5" r="2.4" fill="${c}"/><circle cx="0" cy="-10.5" r="2.4" fill="${c}"/><circle cx="5.5" cy="-8.5" r="2.4" fill="${c}"/></g>`; }
+  if (o.caught) h += `<rect x="90" y="66" width="260" height="40" rx="20" fill="#000a"/><text x="220" y="93" font-size="20" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The anteater broke in!', 'آكل النمل دخل المستعمرة!')}</text>`;
   if (o.win) for (let i = 0; i < 24; i++) h += `<rect x="${20 + rnd(400)}" y="${10 + rnd(150)}" width="7" height="11" rx="2" fill="${pick(['#f2b134', '#e2603f', '#45b36b', '#23799f', '#fff'])}"/>`;
   $('#scene').innerHTML = h;
 }
 const anim = (ms, f) => new Promise(res => { const t0 = performance.now(); (function g(t) { const k = Math.min(1, (t - t0) / ms); f(k); k < 1 ? requestAnimationFrame(g) : res(); })(t0); });
+/* a wrong move: the tongue shoots out, then he walks one step closer */
 async function anteaterAttack() {
   const from = FOX_X[S.fox - 1], to = FOX_X[Math.min(S.fox, 5)];
-  await anim(220, k => drawScene({ x: from, tongue: k, mood: 'angry' }));
-  await anim(180, k => drawScene({ x: from, tongue: 1 - k, mood: 'angry' }));
+  drawScene({ x: from, pose: 'attack' }); await sleep(450);
   await anim(420, k => drawScene({ x: from + (to - from) * k }));
 }
+/* 3 right in a row: an ant throws pebbles, he is hit and pushed back one step */
 async function pushBack() {
   const from = FOX_X[S.fox + 1], to = FOX_X[S.fox];
-  await anim(520, k => drawScene({ x: from, peb: k }));
-  SFX.bonk(); await anim(380, k => drawScene({ x: from + (to - from) * k, mood: 'angry' }));
+  await anim(560, k => drawScene({ x: from, peb: k }));
+  SFX.bonk(); await anim(420, k => drawScene({ x: from + (to - from) * k, pose: 'hit' })); await sleep(250); drawScene();
 }
-async function runAway() { const x0 = FOX_X[Math.min(S.fox, 5)]; await anim(800, k => drawScene({ x: x0 + (470 - x0) * k * k, mood: 'run', win: true })); drawScene({ gone: true, win: true }); }
+async function runAway() { const x0 = FOX_X[Math.min(S.fox, 5)]; await anim(900, k => drawScene({ x: x0 + (470 - x0) * k * k, pose: 'run', win: true })); drawScene({ gone: true, win: true }); }
 
 function banner(txt, good) { const b = $('#banner'); b.innerHTML = txt; b.classList.toggle('good', !!good); b.classList.add('show'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('show'), 1100); }
 function drawCombo() { $('#combo').innerHTML = `${T('Pebbles', 'الحصى')} ` + [0, 1, 2].map(i => `<i class="${i < S.combo ? 'on' : ''}"></i>`).join(''); }
@@ -429,7 +422,7 @@ async function win() {
   showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
 }
 async function lose() {
-  S.busy = true; music('off'); SFX.lose(); drawScene({ caught: true, tongue: 1, mood: 'angry' });
+  S.busy = true; music('off'); SFX.lose(); drawScene({ caught: true });
   $('#say').innerHTML = T('🐾 Slurp! The ants ran deep into the tunnels…', '🐾 شلّب! النمل هرب جوّه الأنفاق…');
   SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
   await sleep(1300); showEnd('lose');
@@ -437,11 +430,11 @@ async function lose() {
 function showEnd(kind, stars = 0) {
   $('#end').hidden = false;
   const cfg = {
-    win: ['🐜🎉', T('The anteater ran away!', 'آكل النمل هرب!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('But he is digging toward a deeper tunnel… ready?', 'بس هو بيحفر ناحية نفق أعمق… جاهز؟'), T('Next tunnel ➜', 'النفق اللي بعده ⬅')],
-    all: ['👑🐜', T('You saved the queen!', 'أنقذت الملكة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You know every chamber up to the milliards!`, `مجموع نقطك ${n(S.score)}. بقيت عارف كل الغرف لحد المليارات!`), T('Play again', 'العب من الأول')],
-    lose: ['🐾😱', T('The anteater broke in', 'آكل النمل دخل المستعمرة'), '', T('Look at the value each ant tells you, and count the places from the ones. Try again!', 'بُص على القيمة اللي النملة بتقولها، وعِدّ الخانات من الآحاد. جرّب تاني!'), T('Try again', 'جرّب تاني')]
+    win: ['cheer', T('The anteater ran away!', 'آكل النمل هرب!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('But he is digging toward a deeper tunnel… ready?', 'بس هو بيحفر ناحية نفق أعمق… جاهز؟'), T('Next tunnel ➜', 'النفق اللي بعده ⬅')],
+    all: ['queen', T('You saved the queen!', 'أنقذت الملكة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You know every chamber up to the milliards!`, `مجموع نقطك ${n(S.score)}. بقيت عارف كل الغرف لحد المليارات!`), T('Play again', 'العب من الأول')],
+    lose: ['laugh', T('The anteater broke in', 'آكل النمل دخل المستعمرة'), '', T('Look at the value each ant tells you, and count the places from the ones. Try again!', 'بُص على القيمة اللي النملة بتقولها، وعِدّ الخانات من الآحاد. جرّب تاني!'), T('Try again', 'جرّب تاني')]
   }[kind];
-  $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endArt').innerHTML = `<img src="${src(cfg[0])}" alt="">`; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
   $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLevel(); };
 }
 /* progress: SI.chProf('mg4u1').ants = { lvl: next tunnel, best: highest tunnel saved (1-6), stars: [per tunnel] } */
