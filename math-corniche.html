@@ -117,7 +117,7 @@ async function stage1() {
 /* ---------- Stage 2 · Missions ---------- */
 async function mission1() {                 // lesson 1: the area model of 234 × 27
   sign('234 × 27', T('The new plaza: 234 tiles by 27', 'الساحة الجديدة: 234 في 27'));
-  g.say(T(`Mission 1: the city wants a new plaza on the Corniche, ${kw(L('234 × 27'))}. First split 234 by place value. Which split is right?`, `المهمة ١: المحافظة عايزة ساحة جديدة على الكورنيش، ${kw(L('234 × 27'))}. الأول حلل ${L('234')} حسب القيمة المكانية. أنهي تحليل صح؟`), 'point');
+  g.say(T(`Mission 1: the city wants a new plaza on the Corniche, ${kw(L('234 × 27'))}. First split 234 by place value. Which split is right?`, `المهمة ١: المحافظة عايزة ساحة جديدة على الكورنيش، ${kw(L('234 × 27'))}. الأول حلل ${L('234')} حسب القيمة المكانية. أي تحليل صح؟`), 'point');
   await choice({ options: ['200 + 30 + 4', '2 + 3 + 4', '23 + 4'], correct: '200 + 30 + 4', hint: T('2 hundreds, 3 tens, 4 ones.', '2 مئات و3 عشرات و4 آحاد.'), ok: T('234 = 200 + 30 + 4, and 27 = 20 + 7.', `${L('234 = 200 + 30 + 4')}، و${L('27 = 20 + 7')}.`) });
   const top = ['200', '30', '4'], left = ['20', '7'], cells = [['4,000', '600', '80'], ['1,400', '210', '28']];
   await tile(top, left, cells, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2]],
@@ -148,14 +148,14 @@ async function mission3() {                 // lesson 2: flexible numbers, 14 ×
   model(['80', '3'], ['10', '4'], [['', ''], ['', '']], { cap: T("Reeda's plaza: 14 × 83", 'ساحة رضا: 14 × 83') });
   g.say(T(`Reeda split the same plaza as ${L('80 + 3')} by ${L('10 + 4')}. What will Reeda get?`, `رضا قسّم نفس الساحة ${L('80 + 3')} في ${L('10 + 4')}. هيطلعله كام؟`), 'think');
   await choice({ options: ['1,162', T('A different product', 'ناتج مختلف'), '1,120'], correct: '1,162', hint: T('It is the same rectangle, just cut differently.', 'هي نفس الساحة، بس متقسمة بشكل تاني.'), ok: T('800 + 320 + 30 + 12 = 1,162: same plaza, same area.', `${L('800 + 320 + 30 + 12 = 1,162')}: نفس الساحة ونفس المساحة.`) });
-  sign('14 × 83', T('Which split of 83 does NOT work?', 'أنهي تحليل للعدد 83 ما ينفعش؟'));
-  g.say(T('Which way of splitting 83 can NOT be used?', `أنهي طريقة لتحليل ${L('83')} ما تنفعش؟`), 'think');
+  sign('14 × 83', T('Which split of 83 does NOT work?', 'أي تحليل للعدد 83 ما ينفعش؟'));
+  g.say(T('Which way of splitting 83 can NOT be used?', `أي طريقة لتحليل ${L('83')} ما تنفعش؟`), 'think');
   await choice({ options: ['40 + 40 + 4', '40 + 40 + 3', '80 + 3'], correct: '40 + 40 + 4', hint: T('Add the parts. Do they make 83?', 'اجمع الأجزاء. بيعملوا ' + L('83') + '؟'), ok: T('40 + 40 + 4 = 84, not 83.', `${L('40 + 40 + 4 = 84')} مش ${L('83')}.`) });
 }
 async function mission4() {                 // lesson 3: the area model and the standard algorithm
   pic('longMult', { a: '76', b: '24', parts: ['304', '1,520'], carry: '2' }, { dx: 10, dy: 22, k: 1.1, cap: T('Cells: 1,400 · 120 · 280 · 24', 'الخانات: 1,400 · 120 · 280 · 24') });
   g.say(T(`Mission 4: the tile workshop writes ${kw(L('76 × 24'))} in columns. The cells of its area model are ${L('1,400')}, ${L('120')}, ${L('280')} and ${L('24')}. Which cells make the row ${L('304')}?`,
-    `المهمة ٤: ورشة البلاط كتبت ${kw(L('76 × 24'))} رأسي. خانات نموذج المساحة ${L('1,400')} و${L('120')} و${L('280')} و${L('24')}. أنهي خانات بتعمل السطر ${L('304')}؟`), 'point');
+    `المهمة ٤: ورشة البلاط كتبت ${kw(L('76 × 24'))} رأسي. خانات نموذج المساحة ${L('1,400')} و${L('120')} و${L('280')} و${L('24')}. أي الخانات بتعمل السطر ${L('304')}؟`), 'point');
   await choice({ options: ['280 + 24', '1,400 + 120', '120 + 24'], correct: '280 + 24', hint: T('304 is 76 × 4: the row of the 4.', L('304') + ' هي ' + L('76 × 4') + ': صف الـ ' + L('4') + '.'), ok: T('4 × 70 = 280 and 4 × 6 = 24: 304.', `${L('4 × 70 = 280')} و${L('4 × 6 = 24')}: ${L('304')}.`) });
   pic('longMult', { a: '76', b: '24', parts: ['304', '1,520'], carry: '2' }, { dx: 10, dy: 22, k: 1.1 });
   g.say(T('Now add the two rows. 76 × 24 = ?', `دلوقتي اجمع السطرين. ${L('76 × 24')} = ؟`), 'think');
@@ -180,11 +180,11 @@ async function mission5() {                 // lesson 4: Ashraf's mistake, estim
 async function mission6() {                 // lesson 5: story problems
   sign(T('402 · 753 · 83 g', '402 · 753 · 83'), T("Mona's kebabs: Feb · Mar · meat per kebab", 'كباب منى: فبراير · مارس · لحم القطعة'), 30);
   g.say(T(`Mission 6: Mona's restaurant on the Red Sea sold ${L('402')} kebabs in February and ${L('753')} in March, ${L('83')} g of meat each. Which plan finds the meat used?`,
-    `المهمة ٦: مطعم منى على البحر الأحمر باع ${L('402')} قطعة كباب في فبراير و${L('753')} في مارس، وكل قطعة فيها ${L('83')} جرام لحمة. أنهي خطة تجيب اللحمة كلها؟`), 'point');
+    `المهمة ٦: مطعم منى على البحر الأحمر باع ${L('402')} قطعة كباب في فبراير و${L('753')} في مارس، وكل قطعة فيها ${L('83')} جرام لحمة. أي خطة تجيب اللحمة كلها؟`), 'point');
   await choice({ options: ['(402 + 753) × 83', '402 × 753 × 83', '(753 − 402) × 83'], correct: '(402 + 753) × 83', hint: T('First find all the kebabs of the two months.', 'الأول هات عدد الكباب في الشهرين.'), ok: T('402 + 753 = 1,155 kebabs.', `${L('402 + 753 = 1,155')} قطعة.`) });
   sign('1,155 × 83');
   g.say(T(`So ${kw(L('1,155 × 83'))} = ? grams`, `يبقى ${kw(L('1,155 × 83'))} = ؟ جرام`), 'think');
-  await choice({ options: ['95,865', '9,586', '958,650'], correct: '95,865', hint: T('Estimate: about 1,000 × 80 = 80,000. Which answer is near?', 'قدّر: حوالي ' + L('1,000 × 80 = 80,000') + '. أنهي إجابة قريبة؟'), ok: T('1,155 × 83 = 95,865 g.', `${L('1,155 × 83 = 95,865')} جرام.`) });
+  await choice({ options: ['95,865', '9,586', '958,650'], correct: '95,865', hint: T('Estimate: about 1,000 × 80 = 80,000. Which answer is near?', 'قدّر: حوالي ' + L('1,000 × 80 = 80,000') + '. أي إجابة قريبة؟'), ok: T('1,155 × 83 = 95,865 g.', `${L('1,155 × 83 = 95,865')} جرام.`) });
   sign(T('120 min × 33 days', '120 × 33'), T('A sandstorm: minutes a day × days', 'عاصفة رملية: دقائق كل يوم × أيام'), 28);
   g.say(T(`A sandstorm lasted ${L('120')} minutes a day for ${L('33')} days. How many minutes in all?`, `عاصفة رملية استمرت ${L('120')} دقيقة كل يوم لمدة ${L('33')} يوم. كام دقيقة في المجموع؟`), 'think');
   await choice({ options: ['3,960', '396', '153'], correct: '3,960', hint: T('12 × 33 = 396; now the zero of 120.', `${L('12 × 33 = 396')}؛ وبعدين صفر الـ ${L('120')}.`), ok: T('120 × 33 = 3,960 minutes, that is 2 × 33 = 66 hours.', `${L('120 × 33 = 3,960')} دقيقة، يعني ${L('2 × 33 = 66')} ساعة.`) });

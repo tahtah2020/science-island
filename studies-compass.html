@@ -74,7 +74,7 @@ const g = G4Game({ ch: 'sg4u1', logo: '🧭', title: ['Compass Trail', 'رحلة
 /* ---------- Stage 1 · Warm Up ---------- */
 async function stage1() {
   set('sun');
-  g.say(T(`Welcome to the Compass Trail! Early in the morning you stand facing the rising sun. Which direction are you facing?`, P(`أهلًا في رحلة البوصلة! في الصبح بدري انت واقف مواجه الشمس وهي بتشرق. إنت متجه ناحية أنهي اتجاه؟`, `أهلًا في رحلة البوصلة! في الصبح بدري إنتي واقفة مواجهة الشمس وهي بتشرق. إنتي متجهة ناحية أنهي اتجاه؟`)), 'point');
+  g.say(T(`Welcome to the Compass Trail! Early in the morning you stand facing the rising sun. Which direction are you facing?`, P(`أهلًا في رحلة البوصلة! في الصبح بدري انت واقف مواجه الشمس وهي بتشرق. إنت متجه ناحية أي اتجاه؟`, `أهلًا في رحلة البوصلة! في الصبح بدري إنتي واقفة مواجهة الشمس وهي بتشرق. إنتي متجهة ناحية أي اتجاه؟`)), 'point');
   await g.choice({ options: ['الشرق', 'الغرب', 'الشمال', 'الجنوب'], correct: 'الشرق', hint: T('The sun always rises from the same side.', 'الشمس بتشرق دايمًا من نفس الناحية.'),
     ok: T(`The sun rises in the ${kw('east')}, so you face east. The west is behind you.`, `الشمس بتشرق من ${kw('الشرق')}، يعني إنت متجه للشرق. والغرب وراك.`) });
   g.say(T('Now tap the arrow that points to the <b>north</b>.', 'دلوقتي اضغط على السهم اللي بيشاور على <b>الشمال</b>.'), 'point');
@@ -85,13 +85,13 @@ async function stage1() {
     ok: T('The west is behind you, opposite the sun.', 'الغرب وراك، عكس الشمس.') });
 
   set('town');
-  g.say(T('This is our little town. The park is in the middle and the north is at the top. Where is the <b>school</b> from the park?', 'دي بلدتنا الصغيرة. الحديقة في النص والشمال فوق. المدرسة في أنهي اتجاه بالنسبة للحديقة؟'), 'point');
+  g.say(T('This is our little town. The park is in the middle and the north is at the top. Where is the <b>school</b> from the park?', 'دي بلدتنا الصغيرة. الحديقة في النص والشمال فوق. المدرسة في أي اتجاه بالنسبة للحديقة؟'), 'point');
   await g.choice({ options: ['شرق', 'غرب', 'جنوب شرق', 'شمال شرق'], correct: 'شرق', hint: T('Look to the right side of the park.', 'بص على يمين الحديقة.'),
     ok: T(`The school is ${kw('east')} of the park.`, `المدرسة ${kw('شرق')} الحديقة.`) });
   g.say(T('Tap the place that is <b>south-west</b> of the park. It is between the south and the west.', 'اضغط على المكان اللي في <b>الجنوب الغربي</b> للحديقة. يعني بين الجنوب والغرب.'), 'think');
   await g.spot(townRings(), 'bus', { hint: T('South-west is down and to the left.', 'الجنوب الغربي تحت وناحية الشمال.'),
     ok: T(`The bus station is ${kw('south-west')} of the park.`, `محطة الحافلات ${kw('جنوب غرب')} الحديقة.`) });
-  g.say(T('You are in the park and want to go to the market. Which way do you walk?', 'انت في الحديقة وعايز تروح السوق. تمشي ناحية أنهي اتجاه؟'), 'think');
+  g.say(T('You are in the park and want to go to the market. Which way do you walk?', 'انت في الحديقة وعايز تروح السوق. تمشي ناحية أي اتجاه؟'), 'think');
   await g.choice({ options: ['الجنوب', 'الشمال', 'الشرق', 'الغرب'], correct: 'الجنوب', hint: T('The market is straight down from the park.', 'السوق تحت الحديقة على طول.'),
     ok: T(`Walk ${kw('south')}: the market is right below the park.`, `امشي ناحية ${kw('الجنوب')}: السوق تحت الحديقة على طول.`) });
 }
@@ -100,9 +100,9 @@ async function stage1() {
 async function mission1() {                 // lesson 1: choose a route
   set('path');
   g.say(T('Mission 1: three routes lead from the house to the park. Salma is in a hurry. Tap the route she should take.', 'المهمة ١: تلات طرق من البيت للحديقة. سلمى مستعجلة. اضغط على الطريق اللي تمشي فيه.'), 'point');
-  await g.spot(pathRings(), 'p2', { hint: T('Which route is the shortest?', 'أنهي طريق هو الأقصر؟'),
+  await g.spot(pathRings(), 'p2', { hint: T('Which route is the shortest?', 'أي طريق هو الأقصر؟'),
     ok: T(`The second route is the shortest: ${kw(L('500'))} metres, and it is direct.`, `الطريق التاني هو الأقصر: ${kw(L('500'))} متر ومباشر.`) });
-  g.say(T('Omar loves shopping on the way. Which route is best for him?', 'عمر بيحب يتسوق في الطريق. أنهي طريق يناسبه؟'), 'think');
+  g.say(T('Omar loves shopping on the way. Which route is best for him?', 'عمر بيحب يتسوق في الطريق. أي طريق يناسبه؟'), 'think');
   await g.spot(pathRings(), 'p1', { hint: T('Look for the route with a shop on it, and curves.', 'دوّر على الطريق اللي فيه محل، وفيه منحنيات.'),
     ok: T(`The first route has a shop and is ${L('650')} metres long: it is good for shopping. A route is not chosen by speed only; think about your goal.`, `الطريق الأول فيه محل وطوله ${L('650')} متر: مناسب للتسوق. اختيار الطريق مش بالسرعة بس، فكّر في هدفك.`) });
 }
@@ -126,11 +126,11 @@ async function mission2() {                 // lesson 2: map parts and scale
 async function mission3() {                 // lesson 3: plane or satellite
   set('sky');
   g.say(T('Mission 3: pictures from the sky help us draw maps. Tap what takes the picture that covers the <b>wider</b> area.', 'المهمة ٣: الصور من السما بتساعدنا نرسم الخرائط. اضغط على اللي بيصوّر صورة بتغطي مساحة <b>أوسع</b>.'), 'point');
-  await g.spot(skyRings(), 'satellite', { hint: T('Which one is higher up?', 'أنهي واحد أعلى؟'),
+  await g.spot(skyRings(), 'satellite', { hint: T('Which one is higher up?', 'أيها أعلى؟'),
     ok: T(`A ${kw('satellite')} takes space pictures that cover a wider area. A plane takes aerial pictures of a smaller area.`, `${kw('القمر الصناعي')} بيصوّر صور فضائية بتغطي مساحة أوسع. والطائرة بتصوّر صور جوية لمساحة أصغر.`) });
   set('kinds');
   g.say(T('Maps changed over time. Tap the <b>digital</b> map.', 'الخرائط اتغيّرت مع الزمن. اضغط على الخريطة <b>الرقمية</b>.'), 'think');
-  await g.spot([{ id: 'hand', name: 'اليدوية', ring: rr(FS.kinds, 8, 8, 160, 236, 12) }, { id: 'digital', name: 'الرقمية', ring: rr(FS.kinds, 190, 4, 120, 242, 18) }], 'digital', { hint: T('Which map is on a phone screen?', 'أنهي خريطة على شاشة موبايل؟'),
+  await g.spot([{ id: 'hand', name: 'اليدوية', ring: rr(FS.kinds, 8, 8, 160, 236, 12) }, { id: 'digital', name: 'الرقمية', ring: rr(FS.kinds, 190, 4, 120, 242, 18) }], 'digital', { hint: T('Which map is on a phone screen?', 'أي خريطة على شاشة موبايل؟'),
     ok: T('The map on the phone is digital. GPS apps show accurate digital maps.', 'الخريطة على الموبايل رقمية. تطبيق GPS بيعرض خرائط رقمية دقيقة.') });
   set('blank');
   g.say(T('Long ago, Maryam al-Astrulabi developed an old tool that finds directions from the stars. What is it?', 'من زمان، مريم الإسطرلابي طوّرت أداة قديمة بتحدد الاتجاهات من النجوم. إيه هي؟'), 'think');
@@ -144,7 +144,7 @@ async function mission4() {                 // lesson 4: primary and secondary s
     ok: T(`An article is a ${kw('secondary')} source. Papyri and carvings are ${kw('primary')} sources.`, `المقال مصدر ${kw('ثانوي')}. والبرديات والنقوش مصادر ${kw('أولية')}.`) });
   set('src', { set: 'cba' });
   g.say(T('Now tap the <b>primary</b> source, recorded at the time of the event.', 'دلوقتي اضغط على المصدر <b>الأولي</b>، اللي اتسجّل وقت الحدث.'), 'think');
-  await g.spot(srcRings(['c', 'b', 'a']), 'carving', { hint: T('Which one is an ancient carving on stone?', 'أنهي واحد نقش قديم على حجر؟'),
+  await g.spot(srcRings(['c', 'b', 'a']), 'carving', { hint: T('Which one is an ancient carving on stone?', 'أيها نقش قديم على حجر؟'),
     ok: T('A carving is a primary source: it was made at the time of the event.', 'النقش مصدر أولي: اتعمل وقت الحدث.') });
   set('blank');
 }

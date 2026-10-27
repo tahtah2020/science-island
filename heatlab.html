@@ -154,12 +154,12 @@ function heatTo(ms, a, b, t0, t1, more) {
 async function stage1() {
   Object.assign(sc, { mode: 'lens', hi: null }); g.paint(); shake(true);
   g.say(T(`Matter is anything that has mass and occupies space. Here are the ${kw('particles')} of matter in its three states, under my magnifier. Which one has a <b>fixed shape and a fixed volume</b>? Tap it.`,
-    P(`المادة هي كل ما له كتلة ويشغل حيزًا. دي ${kw('جسيمات')} المادة في حالاتها الثلاث تحت العدسة بتاعتي. أنهي حالة لها <b>شكل ثابت وحجم ثابت</b>؟ اضغط عليها.`, `المادة هي كل ما له كتلة ويشغل حيزًا. دي ${kw('جسيمات')} المادة في حالاتها الثلاث تحت العدسة بتاعتي. أنهي حالة لها <b>شكل ثابت وحجم ثابت</b>؟ اضغطي عليها.`)), 'point');
+    P(`المادة هي كل ما له كتلة ويشغل حيزًا. دي ${kw('جسيمات')} المادة في حالاتها الثلاث تحت العدسة بتاعتي. أي حالة لها <b>شكل ثابت وحجم ثابت</b>؟ اضغط عليها.`, `المادة هي كل ما له كتلة ويشغل حيزًا. دي ${kw('جسيمات')} المادة في حالاتها الثلاث تحت العدسة بتاعتي. أي حالة لها <b>شكل ثابت وحجم ثابت</b>؟ اضغطي عليها.`)), 'point');
   await g.spot(lensSpots(), 'solid', {
     hint: T('Look for the particles packed tightly in rows.', P('دوّر على الجسيمات المتلاصقة في صفوف.', 'دوّري على الجسيمات المتلاصقة في صفوف.')),
     ok: T(`The ${kw('solid')}: the forces of attraction between its particles are very strong, the spaces between them are very small, and they only vibrate in place.`, `${kw('المادة الصلبة')}: قوى التجاذب بين جسيماتها قوية جدًا، والمسافات البينية صغيرة جدًا، وتهتز الجسيمات في مواضعها دون أن تنتقل.`),
     reveal: () => { sc.hi = 'solid'; } });
-  g.say(T('In which state do the particles move <b>randomly and completely freely</b>? Tap it.', P('في أنهي حالة الجسيمات بتتحرك <b>بطريقة عشوائية وبحرية تامة</b>؟ اضغط عليها.', 'في أنهي حالة الجسيمات بتتحرك <b>بطريقة عشوائية وبحرية تامة</b>؟ اضغطي عليها.')), 'think');
+  g.say(T('In which state do the particles move <b>randomly and completely freely</b>? Tap it.', P('في أي حالة الجسيمات بتتحرك <b>بطريقة عشوائية وبحرية تامة</b>؟ اضغط عليها.', 'في أي حالة الجسيمات بتتحرك <b>بطريقة عشوائية وبحرية تامة</b>؟ اضغطي عليها.')), 'think');
   await g.spot(lensSpots(), 'gas', {
     hint: T('Its particles are few and far apart.', 'جسيماتها قليلة ومتباعدة.'),
     ok: T(`The ${kw('gas')}: the forces of attraction are very weak, so the gas spreads (diffusion) and takes the shape and the volume of its container.`, `${kw('الغاز')}: قوى التجاذب بين جسيماته ضعيفة جدًا، وهذا يفسر قدرته على الانتشار واتخاذه شكل وحجم الإناء الحاوي له.`),
@@ -215,12 +215,12 @@ async function stage1() {
 async function mission1() {
   Object.assign(sc, { mode: 'sys', sys: null }); g.paint();
   g.say(T(`Mission 1: ${kw('systems')}. A system is any part of the universe we study to watch its energy and matter change. Which of these is an <b>isolated</b> system? Tap it.`,
-    P(`المهمة الأولى: ${kw('النظام')}. النظام هو أي جزء من الكون يكون موضعًا للدراسة وملاحظة تغير الطاقة والمادة به. أنهي واحد فيهم <b>نظام معزول</b>؟ اضغط عليه.`, `المهمة الأولى: ${kw('النظام')}. النظام هو أي جزء من الكون يكون موضعًا للدراسة وملاحظة تغير الطاقة والمادة به. أنهي واحد فيهم <b>نظام معزول</b>؟ اضغطي عليه.`)), 'point');
+    P(`المهمة الأولى: ${kw('النظام')}. النظام هو أي جزء من الكون يكون موضعًا للدراسة وملاحظة تغير الطاقة والمادة به. أيها <b>نظام معزول</b>؟ اضغط عليه.`, `المهمة الأولى: ${kw('النظام')}. النظام هو أي جزء من الكون يكون موضعًا للدراسة وملاحظة تغير الطاقة والمادة به. أيها <b>نظام معزول</b>؟ اضغطي عليه.`)), 'point');
   await g.spot(sysSpots(), 'isolated', {
     hint: T('It keeps a hot drink hot.', 'ده اللي بيحافظ على المشروب سخن.'),
     ok: T(`The thermos is an ${kw('isolated system')}: no energy and no matter are exchanged with the surroundings.`, `حافظ الحرارة (الترمس) ${kw('نظام معزول')}: لا يحدث فيه تبادل للطاقة أو المادة مع الوسط المحيط.`),
     reveal: () => { sc.sys = 'isolated'; } });
-  g.say(T('Which one is an <b>open</b> system? Tap it.', P('وأنهي واحد <b>نظام مفتوح</b>؟ اضغط عليه.', 'وأنهي واحد <b>نظام مفتوح</b>؟ اضغطي عليه.')), 'think');
+  g.say(T('Which one is an <b>open</b> system? Tap it.', P('وأيها <b>نظام مفتوح</b>؟ اضغط عليه.', 'وأيها <b>نظام مفتوح</b>؟ اضغطي عليه.')), 'think');
   await g.spot(sysSpots(), 'open', {
     hint: T('Steam (matter) and heat (energy) both leave it.', 'البخار (مادة) والحرارة (طاقة) الاتنين بيخرجوا منه.'),
     ok: T(`The open pot of boiling water is an ${kw('open system')}: energy and matter are exchanged with the surroundings.`, `الإناء المفتوح الذي به ماء يغلي ${kw('نظام مفتوح')}: يحدث فيه تبادل للطاقة والمادة مع الوسط المحيط.`),
@@ -236,14 +236,14 @@ async function mission1() {
 async function mission2() {
   Object.assign(sc, { mode: 'race', race: 'mass', ta: 20, tb: 20 }); g.paint();
   g.say(T(`Mission 2: the ${kw('heat race')}! Two beakers of water at ${deg(20)}, the same flame, the same time. One has more water, one has less. Which one will get hotter?`,
-    `المهمة التانية: ${kw('سباق الحرارة')}! كأسين فيهم ماء عند ${deg(20)}، ونفس اللهب، ونفس الوقت. واحدة فيها ماء أكتر وواحدة فيها ماء أقل. أنهي واحدة هتسخن أكتر؟`), 'think');
+    `المهمة التانية: ${kw('سباق الحرارة')}! كأسين فيهم ماء عند ${deg(20)}، ونفس اللهب، ونفس الوقت. واحدة فيها ماء أكتر وواحدة فيها ماء أقل. أيهما هتسخن أكتر؟`), 'think');
   await g.choice({
     options: [T('The beaker with less water', 'الكأس اللي فيها ماء أقل'), T('The beaker with more water', 'الكأس اللي فيها ماء أكثر'), T('They will be the same', 'هيبقوا زي بعض')], correct: T('The beaker with less water', 'الكأس اللي فيها ماء أقل'),
     hint: T('The same heat is shared by fewer particles in one of them.', 'نفس الحرارة بتتوزع على جسيمات أقل في واحدة منهم.'),
     ok: T(`The smaller the mass, the bigger the change in temperature: the heat is shared by ${kw('fewer particles')}, so their average kinetic energy goes up more.`, `التغير في درجة حرارة المادة يزداد كلما كانت الكتلة أقل، حيث تتوزع الطاقة الحرارية على ${kw('عدد أقل من الجسيمات')} فيزداد متوسط طاقة حركتها بمقدار أكبر.`),
     reveal: () => g.tween(1800, k => { sc.ta = 20 + 22 * k; sc.tb = 20 + 52 * k; }) });
   Object.assign(sc, { race: 'type', ta: 20, tb: 20 }); g.paint();
-  g.say(T(`Round 2: equal masses of water and oil at ${deg(20)}, the same flame, the same time. Which one will get hotter?`, `الجولة التانية: كتلتين متساويتين من الماء والزيت عند ${deg(20)}، ونفس اللهب، ونفس الوقت. أنهي واحد هيسخن أكتر؟`), 'think');
+  g.say(T(`Round 2: equal masses of water and oil at ${deg(20)}, the same flame, the same time. Which one will get hotter?`, `الجولة التانية: كتلتين متساويتين من الماء والزيت عند ${deg(20)}، ونفس اللهب، ونفس الوقت. أيهما هيسخن أكتر؟`), 'think');
   await g.choice({
     options: [T('The oil', 'الزيت'), T('The water', 'الماء'), T('They will be the same', 'هيبقوا زي بعض')], correct: T('The oil', 'الزيت'),
     hint: T('Different substances change temperature by different amounts.', 'المواد المختلفة بتسخن بمقادير مختلفة.'),
@@ -261,7 +261,7 @@ async function mission3() {
   g.say(T(`Mission 3: a pot of water on a fire. Heat moves in three ways. Tap where heat moves by ${kw('conduction')} (through a solid).`,
     P(`المهمة التالتة: إناء فيه ماء على النار. الحرارة بتنتقل بتلات طرق. اضغط على المكان اللي الحرارة بتنتقل فيه ${kw('بالتوصيل')} (خلال جسم صلب).`, `المهمة التالتة: إناء فيه ماء على النار. الحرارة بتنتقل بتلات طرق. اضغطي على المكان اللي الحرارة بتنتقل فيه ${kw('بالتوصيل')} (خلال جسم صلب).`)), 'point');
   await g.spot(potSpots(), 'cond', {
-    hint: T('Which part of the pot is a solid that gets hot from one end to the other?', 'أنهي جزء صلب في الإناء بيسخن من طرف للطرف التاني؟'),
+    hint: T('Which part of the pot is a solid that gets hot from one end to the other?', 'أي جزء صلب في الإناء بيسخن من طرف للطرف التاني؟'),
     ok: T(`The ${kw('handle')}: heat moves along the solid by conduction, as each particle vibrates and passes energy to its neighbour. That is why handles are made of plastic or wood.`, `${kw('يد الإناء')}: تنتقل الحرارة على امتداد الجسم الصلب بالتوصيل، حيث تهتز الجسيمات وتنقل جزءًا من طاقتها للجسيمات المجاورة. ولهذا تُصنع المقابض من البلاستيك أو الخشب.`),
     reveal: () => { g.tween(1400, k => { sc.handle = k; }); } });
   g.say(T(`Now tap where heat moves by ${kw('convection')} (with the moving particles of a fluid).`, P(`دلوقتي اضغط على المكان اللي الحرارة بتنتقل فيه ${kw('بالحمل')} (مع حركة جسيمات المائع).`, `دلوقتي اضغطي على المكان اللي الحرارة بتنتقل فيه ${kw('بالحمل')} (مع حركة جسيمات المائع).`)), 'think');

@@ -84,7 +84,7 @@ async function stage1() {
 async function mission1() {                 // lesson 2: the bar model and the unknown part
   pic('barModel', { whole: '492.64', parts: ['396.48', 'x'], w: [4, 1] }, { dy: 52 });
   g.say(T(`Mission 1: Basem’s bus goes ${L('492.64')} km from Cairo to Ras Muhammad. It stops in El Tor after ${L('396.48')} km. Which equation matches the bar model?`,
-    `المهمة ١: أتوبيس باسم رايح من القاهرة لرأس محمد، الرحلة ${L('492.64')} كم. وقف في الطور بعد ${L('396.48')} كم. أنهي معادلة على مقاس النموذج الشريطي؟`), 'point');
+    `المهمة ١: أتوبيس باسم رايح من القاهرة لرأس محمد، الرحلة ${L('492.64')} كم. وقف في الطور بعد ${L('396.48')} كم. أي معادلة على مقاس النموذج الشريطي؟`), 'point');
   await choice({ options: ['396.48 + x = 492.64', '492.64 + 396.48 = x', 'x − 396.48 = 492.64'], correct: '396.48 + x = 492.64', hint: T('The two parts make the whole.', 'الجزءين مع بعض بيعملوا الكل.'), ok: T('Part + part = whole.', 'جزء + جزء = الكل.') });
   pic('barModel', { whole: '492.64', parts: ['396.48', 'x'], w: [4, 1] }, { dy: 52 });
   g.say(T('Now find x: how far is El Tor from Ras Muhammad?', `دلوقتي أوجد ${L('x')}: الطور بعيدة عن رأس محمد قد إيه؟`), 'think');
@@ -123,9 +123,9 @@ async function mission4() {                 // lessons 6-7: multiples, common mu
   pic('skipLine', { from: 6, to: 12, first: 6 }, { dy: 66, dx: 32, k: 1.05 });
   g.say(T(`On the weekend the first bus is at ${L('6:00')} a.m., then one every 2 hours until noon: ${L('6, 8, 10, 12')}. At which times can Omar ALWAYS catch a bus, weekday or weekend?`,
     `في الأجازة أول أتوبيس ${L('6:00')} الصبح، وبعدين كل ساعتين لحد الضهر: ${L('6, 8, 10, 12')}. إمتى عمر يقدر يركب أتوبيس دايمًا، في أيام الأسبوع أو الأجازة؟`), 'think');
-  await choice({ options: ['6:00, 12:00', '3:00, 6:00', '8:00, 10:00'], correct: '6:00, 12:00', hint: T('Which times are in both lists?', 'أنهي أوقات موجودة في القائمتين؟'), ok: T('6 and 12 are in both lists: common multiples.', `${L('6')} و${L('12')} في القائمتين: مضاعفات مشتركة.`) });
+  await choice({ options: ['6:00, 12:00', '3:00, 6:00', '8:00, 10:00'], correct: '6:00, 12:00', hint: T('Which times are in both lists?', 'أي الأوقات موجودة في القائمتين؟'), ok: T('6 and 12 are in both lists: common multiples.', `${L('6')} و${L('12')} في القائمتين: مضاعفات مشتركة.`) });
   pic('multVenn', { a: 3, b: 4, upTo: 12, show: [3, 6, 9, 4, 8, 16] }, { dy: 20, dx: 40, k: 1 });
-  g.say(T(`A Venn diagram of the first 12 multiples of 3 and of 4. Which numbers belong in the shared center?`, `مخطط فن لأول ١٢ مضاعف للعدد ${L('3')} وللعدد ${L('4')}. أنهي أعداد مكانها في الجزء المشترك؟`), 'think');
+  g.say(T(`A Venn diagram of the first 12 multiples of 3 and of 4. Which numbers belong in the shared center?`, `مخطط فن لأول ١٢ مضاعف للعدد ${L('3')} وللعدد ${L('4')}. أي الأعداد مكانها في الجزء المشترك؟`), 'think');
   await choice({ options: ['12, 24, 36', '3, 4, 7', '6, 8, 9'], correct: '12, 24, 36', hint: T('Numbers that are multiples of 3 AND of 4.', 'أعداد من مضاعفات ' + L('3') + ' ومن مضاعفات ' + L('4') + ' مع بعض.'), ok: T('12, 24 and 36 are multiples of both.', `${L('12, 24, 36')} مضاعفات للاتنين.`) });
   sign(T('6 min · 8 min', '6 · 8'), T('Hend and Jana bike around the lake', 'هند وجنى بيلفوا حوالين البحيرة (بالدقائق)'), 30);
   g.say(T(`Hend bikes a lap in ${L('6')} minutes, her sister Jana in ${L('8')}. They start together. After how many minutes are they together at the start again?`,
@@ -139,7 +139,7 @@ async function mission5() {                 // lesson 8: GCF or LCM?
   await choice({ options: [T('The LCM', 'م.م.أ'), T('The GCF', 'ع.م.أ')], correct: T('The LCM', 'م.م.أ'), hint: T('When do two repeating things meet again?', 'إمتى حاجتين بيتكرروا يتقابلوا تاني؟'), ok: T('Meeting again: the least common multiple.', 'التقابل تاني: المضاعف المشترك الأصغر.') });
   sign('7 · 4', T('Hiking every 7 days · weights every 4 days', 'مشي كل ٧ أيام · أثقال كل ٤ أيام'), 34);
   g.say(T('So in how many days will he do both again?', 'يبقى بعد كام يوم هيعمل الاتنين تاني؟'), 'think');
-  await choice({ options: [T('28 days', '28 يوم'), T('11 days', '11 يوم'), T('3 days', '3 أيام')], correct: T('28 days', '28 يوم'), hint: T('Skip count by 7: 7, 14, 21, 28… Which is also a multiple of 4?', 'عُد بالقفز ٧: ' + L('7, 14, 21, 28') + '… أنهي واحد من مضاعفات ' + L('4') + ' كمان؟'), ok: T('LCM of 7 and 4 = 28 days.', `م.م.أ لـ ${L('7')} و${L('4')} = ${L('28')} يوم.`) });
+  await choice({ options: [T('28 days', '28 يوم'), T('11 days', '11 يوم'), T('3 days', '3 أيام')], correct: T('28 days', '28 يوم'), hint: T('Skip count by 7: 7, 14, 21, 28… Which is also a multiple of 4?', 'عُد بالقفز ٧: ' + L('7, 14, 21, 28') + '… أيها من مضاعفات ' + L('4') + ' كمان؟'), ok: T('LCM of 7 and 4 = 28 days.', `م.م.أ لـ ${L('7')} و${L('4')} = ${L('28')} يوم.`) });
   sign(T('35 cm · 75 cm', '35 · 75'), T('Omnia’s two strips of cloth', 'قطعتين قماش أمنية (بالسنتيمتر)'), 32);
   g.say(T(`Omnia cuts cloth ${L('35')} cm and ${L('75')} cm wide into equal strips, as wide as possible. How wide is each strip?`, `أمنية بتقص قماش عرضه ${L('35')} سم و${L('75')} سم لشرايط متساوية بأكبر عرض ممكن. عرض الشريط كام؟`), 'think');
   await choice({ options: [T('5 cm', '5 سم'), T('15 cm', '15 سم'), T('7 cm', '7 سم')], correct: T('5 cm', '5 سم'), hint: T('The greatest number that divides 35 and 75.', 'أكبر عدد بيقسم ' + L('35') + ' و' + L('75') + '.'), ok: T('35 = 5 × 7, 75 = 3 × 5 × 5: the GCF is 5 cm.', `${L('35 = 5 × 7')} و${L('75 = 3 × 5 × 5')}: ع.م.أ = ${L('5')} سم.`) });

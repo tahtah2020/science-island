@@ -96,7 +96,7 @@ async function mission4() {                 // lesson 3: Multiply It with Words!
   set('card', { lines: ['4 boxes of apples', '32 apples in each box', 'How many in total?'] });
   g.say(T('Mission 4: Multiply It with Words! A farmer has 4 boxes of apples. Each box has 32 apples.', 'المهمة ٤: اضرب بالكلمات! فلاح عنده ٤ صناديق تفاح، في كل صندوق ٣٢ تفاحة.'), 'point');
   await g.next();
-  await ask('Which problem do we write?', 'هنكتب أنهي مسألة؟', ['32 x 4', '32 + 4', '32 − 4'], '32 x 4', 'Each box has the same number: we multiply.', 'كل صندوق فيه نفس العدد: بنضرب.', `Problem: ${kw('32 x 4')}.`, `${L('32 x 4')}.`);
+  await ask('Which problem do we write?', 'هنكتب أي مسألة؟', ['32 x 4', '32 + 4', '32 − 4'], '32 x 4', 'Each box has the same number: we multiply.', 'كل صندوق فيه نفس العدد: بنضرب.', `Problem: ${kw('32 x 4')}.`, `${L('32 x 4')}.`);
   set('card', { lines: ['32 x 4', 'ones: 2 x 4 = 8', 'tens: 3 x 4 = 12'] });
   await ask('So, how many apples does the farmer have?', 'يبقى الفلاح عنده كام تفاحة؟', ['128 apples', '36 apples', '96 apples'], '128 apples', '12 tens and 8 ones.', '١٢ عشرة و٨ آحاد.', `32 x 4 = ${kw('128')} apples.`, `${L('128 apples')}.`);
   set('card', { lines: ['3 baskets', '22 oranges in each basket', 'How many in total?'] });
@@ -104,11 +104,11 @@ async function mission4() {                 // lesson 3: Multiply It with Words!
 }
 async function mission5() {                 // lesson 3: trigraphs (page 69)
   set('card', { lines: ['dge → “j”  bridge', 'tch → “ch”  match', 'igh → “i”  right'] });
-  g.say(T('Mission 5: trigraphs. A trigraph is three letters that make one sound. Which trigraph completes each word?', 'المهمة ٥: الحروف الثلاثية. ٣ حروف بيطلّعوا صوت واحد. أنهي ثلاثي يكمّل كل كلمة؟'), 'point');
+  g.say(T('Mission 5: trigraphs. A trigraph is three letters that make one sound. Which trigraph completes each word?', 'المهمة ٥: الحروف الثلاثية. ٣ حروف بيطلّعوا صوت واحد. أي ثلاثي يكمّل كل كلمة؟'), 'point');
   await g.next();
   const buttons = [{ label: 'dge', value: 'dge', c: 0 }, { label: 'tch', value: 'tch', c: 2 }, { label: 'igh', value: 'igh', c: 3 }];
   await sortCards(buttons, [['bri___', 'dge', 'bridge: “dge” sounds like “j”.'], ['ma___', 'tch', 'match: “tch” sounds like “ch”.'], ['r___t', 'igh', 'right: “igh” sounds like “i”.'],
-    ['fl___t', 'igh', 'flight has “igh”.'], ['fri___', 'dge', 'fridge has “dge”.'], ['wa___', 'tch', 'watch has “tch”.']], 'word', T('Which trigraph completes the word?', 'أنهي ثلاثي يكمّل الكلمة؟'));
+    ['fl___t', 'igh', 'flight has “igh”.'], ['fri___', 'dge', 'fridge has “dge”.'], ['wa___', 'tch', 'watch has “tch”.']], 'word', T('Which trigraph completes the word?', 'أي ثلاثي يكمّل الكلمة؟'));
 }
 async function mission6() {                 // lesson 4: The New Administrative Capital (pages 70-71)
   set('card', { lines: ['Egypt’s New City', 'The New Administrative Capital'] });
@@ -122,7 +122,7 @@ async function mission6() {                 // lesson 4: The New Administrative 
   await ask('How tall is the Iconic Tower?', 'البرج الأيقوني طوله قد إيه؟', ['385 meters', '80 meters', '45 meters'], '385 meters', 'It has 80 floors.', 'فيه ٨٠ دور.', `The Iconic Tower is ${kw('385 meters')} high and has 80 floors.`, `${L('385 meters')}.`);
   await fillCard(['Builders often use', 'strong ___ to build towers.'], ['steel', 'cotton', 'soil'], 'steel', 'Choose the word.', 'اختار الكلمة.', 'The tower is made of strong glass and …', 'البرج معمول من زجاج و…', `The tower is made of strong glass and ${kw('steel')}.`, `${L('steel')} = صلب.`);
   set('card', { lines: ['Writing a narrative', 'in the first person'] });
-  await ask('Which words do we use in a first-person narrative?', 'بنستخدم أنهي كلمات في قصة بصيغة المتكلم؟', ['I, me, my', 'he, him, his', 'they, them, their'], 'I, me, my', 'The writer tells the story about herself.', 'الكاتب بيحكي عن نفسه.', `First person: ${kw('I, me, my')}.`, `${L('I, me, my')}.`);
+  await ask('Which words do we use in a first-person narrative?', 'بنستخدم أي الكلمات في قصة بصيغة المتكلم؟', ['I, me, my', 'he, him, his', 'they, them, their'], 'I, me, my', 'The writer tells the story about herself.', 'الكاتب بيحكي عن نفسه.', `First person: ${kw('I, me, my')}.`, `${L('I, me, my')}.`);
 }
 async function stage2() {
   const all = [mission1, mission2, mission3, mission4, mission5, mission6];
@@ -139,8 +139,8 @@ async function stage3() {
     { t: 'We play sports here', ans: 'cl', why: 'A club is a place where people play sports.' }, { t: 'We go on rides here', ans: 'th', why: 'A theme park has rides and games for fun.' },
     { t: 'I train here every weekend', ans: 'cl', why: 'I train at the club every weekend.' }, { t: 'My mom shops here', ans: 'su', why: 'My mom shops at the supermarket.' }];
   await g.speedRound({ items, buttons, rounds: 8,
-    ask: T('Which place?', 'أنهي مكان؟'), intro: T('Speed Round! I say what we do. Press the right place. Be quick!', 'جولة السرعة! هقولك بنعمل إيه، واضغط على المكان الصح. بسرعة!'),
-    think: T('Which place?', 'أنهي مكان؟') });
+    ask: T('Which place?', 'أي مكان؟'), intro: T('Speed Round! I say what we do. Press the right place. Be quick!', 'جولة السرعة! هقولك بنعمل إيه، واضغط على المكان الصح. بسرعة!'),
+    think: T('Which place?', 'أي مكان؟') });
 }
 
 g.run({

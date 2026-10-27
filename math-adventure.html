@@ -136,7 +136,7 @@ async function mission3() {                 // lesson 4: tile a decimal area mod
 async function mission4() {                 // lessons 5-6: place the decimal point
   sign('5.8 × 7.4 → 4292', T('Where is the decimal point?', 'فين العلامة العشرية؟'), 30);
   g.say(T(`Mission 4: the explorer’s calculator lost its decimal point! ${kw(L('5.8 × 7.4'))} shows the digits ${L('4292')}. Estimate: ${L('6 × 7 = 42')}. Which product?`, `المهمة ٤: الآلة الحاسبة بتاعة المستكشف ضاعت منها العلامة العشرية! ${kw(L('5.8 × 7.4'))} بتبيّن الأرقام ${L('4292')}. قدّر: ${L('6 × 7 = 42')}. الناتج كام؟`), 'point');
-  await choice({ options: ['42.92', '4.292', '429.2'], correct: '42.92', hint: T('Which one is close to 42?', 'أنهي واحد قريب من ' + L('42') + '؟'), ok: T('42.92: two decimal places, as in 5.8 and 7.4 together.', `${L('42.92')}: مكانين عشريين زي ${L('5.8')} و${L('7.4')} مع بعض.`) });
+  await choice({ options: ['42.92', '4.292', '429.2'], correct: '42.92', hint: T('Which one is close to 42?', 'أيها قريب من ' + L('42') + '؟'), ok: T('42.92: two decimal places, as in 5.8 and 7.4 together.', `${L('42.92')}: مكانين عشريين زي ${L('5.8')} و${L('7.4')} مع بعض.`) });
   sign('42.16 × 3.4 = 143.344', T('Dalal: estimate · Doha: count the decimal places', 'دلال: التقدير · ضحى: عدّ الأماكن العشرية'), 26);
   g.say(T(`Dalal checks ${L('42.16 × 3.4 = 143.344')} with the estimate ${L('42 × 3 = 126')}; Doha counts ${L('2 + 1 = 3')} decimal places. Who is right?`, `دلال بتتحقق من ${L('42.16 × 3.4 = 143.344')} بالتقدير ${L('42 × 3 = 126')}؛ وضحى بتعد ${L('2 + 1 = 3')} أماكن عشرية. مين صح؟`), 'think');
   await choice({ options: [T('Both of them', 'الاتنين'), T('Dalal only', 'دلال بس'), T('Doha only', 'ضحى بس')], correct: T('Both of them', 'الاتنين'), hint: T('Do both ways put the point in the same place?', 'الطريقتين بيحطوا العلامة في نفس المكان؟'), ok: T('Both ways work.', 'الطريقتين صح.') });
@@ -146,10 +146,10 @@ async function mission5() {                 // lessons 7-8: metric units
   g.say(T(`Mission 5: the rope to the next station is ${kw(L('0.7'))} m. The tape shows centimeters. How many cm?`, `المهمة ٥: الحبل للمحطة الجاية طوله ${kw(L('0.7'))} متر. الشريط بالسنتيمتر. كام سم؟`), 'point');
   await choice({ options: ['70', '7', '700'], correct: '70', hint: T('1 m = 100 cm: multiply by 100.', `${L('1')} م = ${L('100')} سم: اضرب في ${L('100')}.`), ok: T('0.7 × 100 = 70 cm.', `${L('0.7 × 100 = 70')} سم.`), reveal: () => boxes('70', T('0.7 m = 70 cm', '0.7 م = 70 سم')) });
   sign(T('4,230 mL → L', 'من 4,230 مل إلى لتر'), T("Amgad's water", 'مياه أمجد'));
-  g.say(T(`Amgad drinks ${L('4,230')} mL of water a day. Which multiplication gives the liters?`, `أمجد بيشرب ${L('4,230')} مل مياه في اليوم. أنهي ضرب يجيب اللترات؟`), 'think');
+  g.say(T(`Amgad drinks ${L('4,230')} mL of water a day. Which multiplication gives the liters?`, `أمجد بيشرب ${L('4,230')} مل مياه في اليوم. أي ضرب يجيب اللترات؟`), 'think');
   await choice({ options: ['4,230 × 0.001', '4,230 × 1,000', '4,230 × 0.1'], correct: '4,230 × 0.001', hint: T('1 mL = 0.001 L.', `${L('1')} مل = ${L('0.001')} لتر.`), ok: T('4,230 × 0.001 = 4.23 L.', `${L('4,230 × 0.001 = 4.23')} لتر.`) });
   sign(T('173 kg · 201,000 g', '173 كجم · 201,000 جم'), T('Snatch · clean and jerk', 'الخطف · النتر'));
-  g.say(T(`Mohamed Ehab lifted ${L('173')} kg in the snatch and ${L('201,000')} g in the clean and jerk. Which is greater?`, `محمد إيهاب رفع ${L('173')} كجم في الخطف و${L('201,000')} جم في النتر. أنهي أكبر؟`), 'think');
+  g.say(T(`Mohamed Ehab lifted ${L('173')} kg in the snatch and ${L('201,000')} g in the clean and jerk. Which is greater?`, `محمد إيهاب رفع ${L('173')} كجم في الخطف و${L('201,000')} جم في النتر. أيهما أكبر؟`), 'think');
   await choice({ options: [T('The clean and jerk', 'النتر'), T('The snatch', 'الخطف')], correct: T('The clean and jerk', 'النتر'), hint: T('Change 201,000 g to kg: × 0.001.', 'حوّل ' + L('201,000') + ' جم لكجم: ' + L('× 0.001') + '.'), ok: T('201,000 g = 201 kg, more than 173 kg.', `${L('201,000')} جم = ${L('201')} كجم، أكبر من ${L('173')} كجم.`) });
 }
 async function mission6() {                 // lesson 9: multistep stories
@@ -165,7 +165,7 @@ async function mission7() {                 // lessons 10-11: dividing by powers
   await slide('2,500', '÷ 0.01', '250,000', ['25', '2,500,000'], T(`${kw(L('2,500 ÷ 0.01'))} = ?`, `${kw(L('2,500 ÷ 0.01'))} = ؟`), T('÷ 0.01 is the same as × 100: 250,000.', `${L('÷ 0.01')} زي ${L('× 100')}: ${L('250,000')}.`));
   await slide('510.05', '÷ 100', '5.1005', ['51,005', '51.005'], T(`${kw(L('510.05 ÷ 100'))} = ?`, `${kw(L('510.05 ÷ 100'))} = ؟`), T('÷ 100 = × 0.01: 5.1005.', `${L('÷ 100 = × 0.01')}: ${L('5.1005')}.`));
   sign('1,100 °C', T('Water boils at about one tenth of it', 'الماء يغلي عند جزء من عشرة منها تقريبًا'));
-  g.say(T(`Glass is blown at ${L('1,100')} °C. Water boils at about one tenth of that. Which choice?`, `الزجاج بيتنفخ عند ${L('1,100')} درجة. الماء بيغلي عند جزء من عشرة منها تقريبًا. أنهي اختيار؟`), 'think');
+  g.say(T(`Glass is blown at ${L('1,100')} °C. Water boils at about one tenth of that. Which choice?`, `الزجاج بيتنفخ عند ${L('1,100')} درجة. الماء بيغلي عند جزء من عشرة منها تقريبًا. أي اختيار؟`), 'think');
   await choice({ options: ['1,100 ÷ 10', '1,100 × 10', '1,100 ÷ 0.1'], correct: '1,100 ÷ 10', hint: T('One tenth makes it smaller.', 'جزء من عشرة بيصغّر العدد.'), ok: T('1,100 ÷ 10 = 1,100 × 0.1 = 110 °C.', `${L('1,100 ÷ 10 = 1,100 × 0.1 = 110')} درجة.`) });
 }
 async function mission8() {                 // lessons 12-13: dividing decimals

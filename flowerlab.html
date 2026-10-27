@@ -134,7 +134,7 @@ async function mission1() {
     options: [T('Narrow and dark', 'ضيق ومظلم'), T('Wide and bright', 'واسع ومضيء')], correct: T('Narrow and dark', 'ضيق ومظلم'),
     hint: T('Compare it with the low magnification picture.', 'قارنه بصورة التكبير المنخفض.'),
     ok: T(`High magnification: the view is ${kw('narrow')} and ${kw('dark')}. Low magnification: wide and bright.`, `التكبير العالي: المجال ${kw('ضيق')} و${kw('مظلم')}. التكبير المنخفض: واسع ومضيء.`) });
-  g.say(T('In a microscope, things look upside down and reversed left to right. You want the pollen to move to the right in the view. Which way do you move the slide?', 'في المجهر تظهر الأشياء مقلوبة ومعكوسة يمينًا ويسارًا. عايز حبوب اللقاح تتحرك لليمين في المجال. ناحية أنهي اتجاه تحرّك الشريحة؟'), 'think');
+  g.say(T('In a microscope, things look upside down and reversed left to right. You want the pollen to move to the right in the view. Which way do you move the slide?', 'في المجهر تظهر الأشياء مقلوبة ومعكوسة يمينًا ويسارًا. عايز حبوب اللقاح تتحرك لليمين في المجال. ناحية أي اتجاه تحرّك الشريحة؟'), 'think');
   await g.choice({
     options: [T('To the left: the opposite direction', 'لليسار: الاتجاه المعاكس'), T('To the right: the same direction', 'لليمين: نفس الاتجاه')], correct: T('To the left: the opposite direction', 'لليسار: الاتجاه المعاكس'),
     hint: T('The picture is reversed.', 'الصورة معكوسة.'),
@@ -159,7 +159,7 @@ async function mission2() {
   g.say(T('Two female flowers had paper bags on them. Flower A got pollen from a male flower on its pistil. Flower B did not. After a few days, tap the flower that grew a <b>fruit</b>.', P('زهرتان مؤنثتان كان عليهما أكياس ورقية. الزهرة (أ) وضعنا على مدقتها حبوب لقاح من زهرة مذكرة. الزهرة (ب) لا. بعد أيام اضغط على الزهرة التي نمت لها <b>ثمرة</b>.', 'زهرتان مؤنثتان كان عليهما أكياس ورقية. الزهرة (أ) وضعنا على مدقتها حبوب لقاح من زهرة مذكرة. الزهرة (ب) لا. بعد أيام اضغطي على الزهرة التي نمت لها <b>ثمرة</b>.')), 'think');
   g.tween(1600, k => { sc.fruit = k; });
   await g.spot([{ id: 'A', name: T('Flower A', 'الزهرة (أ)'), ring: rrect(55, 40, 140, 220) }, { id: 'B', name: T('Flower B', 'الزهرة (ب)'), ring: rrect(225, 60, 140, 200) }], 'A', {
-    hint: T('Which flower was pollinated?', 'أنهي زهرة اتلقّحت؟'),
+    hint: T('Which flower was pollinated?', 'أي زهرة اتلقّحت؟'),
     ok: T(`To become a fruit, ${kw('pollination')} is necessary. Flower A was pollinated, so its swelling grew into a fruit.`, `لكي تصبح الزهرة ثمرة، ${kw('التلقيح')} ضروري. الزهرة (أ) تلقّحت، فنما انتفاخها وصار ثمرة.`) });
   g.say(T('What happens to a female flower that is not pollinated, like flower B?', 'ماذا يحدث للزهرة المؤنثة التي لا تُلقَّح مثل الزهرة (ب)؟'), 'think');
   await g.choice({

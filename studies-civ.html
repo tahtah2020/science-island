@@ -103,7 +103,7 @@ async function mission1() {                 // lesson 1: the factors (pages 40-4
   await ask('How did the Nile help the Ancient Egyptian?', 'نهر النيل ساعد المصري القديم في إيه؟', [op('الزراعة والاستقرار على ضفافه', 'Farming and settling on its banks'), op('سكن الكهوف', 'Living in caves'), op('الترحال الدائم', 'Moving all the time')], op('الزراعة والاستقرار على ضفافه', 'Farming and settling on its banks'),
     'Think of the river banks.', 'فكّر في ضفاف النهر.', 'The Nile helped farming, settling, unity and cooperation.', `ساعد في ${kw('الزراعة والاستقرار')}، والوحدة والتعاون لبناء الجسور والسدود.`);
   set('photo', { sub: 'sphinx' });
-  await ask('Which natural factor kept the monuments of the Ancient Egyptians until today?', 'أنهي عامل طبيعي ساعد على بقاء آثار المصريين القدماء حتى الآن؟', [op('المناخ الجاف', 'The dry climate'), op('الحكومة المركزية', 'The central government'), op('الجيش المصري', 'The army')], op('المناخ الجاف', 'The dry climate'),
+  await ask('Which natural factor kept the monuments of the Ancient Egyptians until today?', 'أي عامل طبيعي ساعد على بقاء آثار المصريين القدماء حتى الآن؟', [op('المناخ الجاف', 'The dry climate'), op('الحكومة المركزية', 'The central government'), op('الجيش المصري', 'The army')], op('المناخ الجاف', 'The dry climate'),
     'It is about the weather.', 'ليه علاقة بالجو.', 'The dry climate kept the monuments.', `${kw('المناخ الجاف')} ساعد على بقاء الآثار خالدة.`);
   set('card', { lines: ['الجيش المصري'] });
   await ask('Why was the army important in Ancient Egypt?', 'الجيش كان مهم ليه في مصر القديمة؟', [op('حماية البلاد واستقرارها ووحدة أراضيها', 'Protecting the country, its stability and unity'), op('بناء الأهرامات', 'Building the pyramids'), op('صناعة الحلي', 'Making jewelry')], op('حماية البلاد واستقرارها ووحدة أراضيها', 'Protecting the country, its stability and unity'),
@@ -124,7 +124,7 @@ async function mission2() {                 // lesson 2: the prehistoric ages (p
     [['سكن الكهوف', 'فوق الهضاب'], 'o', ['Caves on the plateaus: the Old Stone Age.', 'سكن الكهوف فوق الهضاب: العصر الحجري القديم.']], ['اكتشاف النار', 'o', ['Fire: the Old Stone Age.', 'اكتشاف النار: العصر الحجري القديم.']],
     [['النزول إلى ضفاف النيل', 'ومعرفة الزراعة'], 'n', ['Farming by the Nile: the New Stone Age.', 'الزراعة على ضفاف النيل: العصر الحجري الحديث.']], [['أدوات من الفخار', 'والحجارة'], 'n', ['Pottery tools: the New Stone Age.', 'أدوات من الفخار والحجارة: العصر الحجري الحديث.']],
     [['حياة أكثر استقرارًا', 'واكتشاف الحديد والنحاس'], 'm', ['Iron and copper: the Metal Age.', 'الحديد والنحاس: عصر المعادن.']]],
-    T('Which age is this?', 'ده أنهي عصر؟'));
+    T('Which age is this?', 'ده أي عصر؟'));
   set('card', { lines: ['لماذا نزل المصري القديم', 'من الهضاب إلى النيل؟'] });
   await ask('Why did the Ancient Egyptian come down from the plateaus to the Nile?', 'ليه المصري القديم نزل من الهضاب للنيل؟', [op('جفاف الهضاب', 'The plateaus dried up'), op('الأمطار الغزيرة', 'Heavy rain'), op('كثرة الحيوانات', 'Too many animals')], op('جفاف الهضاب', 'The plateaus dried up'),
     'There was no more water up there.', 'مبقاش فيه مية فوق.', 'The plateaus dried up.', `بسبب ${kw('جفاف الهضاب')}.`);
@@ -152,7 +152,7 @@ async function mission4() {                 // lesson 3: the Archaic age and the
   g.say(T('Mission 4: the historical ages begin after people knew writing. Manetho divided the history of Ancient Egypt into 30 ruling families.', 'المهمة ٤: العصور التاريخية بدأت بعد ما الإنسان عرف الكتابة. المؤرخ مانيتون قسّم تاريخ مصر القديمة إلى 30 أسرة حاكمة.'), 'point');
   await g.next();
   set('photo', { sub: 'narmer' });
-  await ask('Which king recorded his victories over the Northern Kingdom on this palette?', 'أنهي ملك سجّل انتصاراته على مملكة الشمال على اللوحة دي؟', [op('نعرمر', 'Narmer'), op('خوفو', 'Khufu'), op('رمسيس الثاني', 'Ramesses II')], op('نعرمر', 'Narmer'),
+  await ask('Which king recorded his victories over the Northern Kingdom on this palette?', 'أي ملك سجّل انتصاراته على مملكة الشمال على اللوحة دي؟', [op('نعرمر', 'Narmer'), op('خوفو', 'Khufu'), op('رمسيس الثاني', 'Ramesses II')], op('نعرمر', 'Narmer'),
     'He founded the First Dynasty.', 'مؤسس الأسرة الأولى.', 'The Narmer Palette.', `دي ${kw('لوحة نعرمر')}.`);
   await spotSet('civGreat', 'steppyr', 'The Old Kingdom is the age of the pyramid builders. Tap the first pyramid in history, King Djoser’s.', 'الدولة القديمة عصر بناة الأهرامات. اضغط على أول هرم في التاريخ، هرم الملك زوسر.', 'It is made of steps.', 'معمول من درجات.', 'Djoser’s Step Pyramid.', `${kw('هرم زوسر المدرج')} أول هرم في التاريخ.`);
   await spotSet('civGreat', 'khufu', 'Tap the Great Pyramid of King Khufu, one of the Seven Wonders of the Ancient World.', 'اضغط على الهرم الأكبر للملك خوفو، من عجائب الدنيا السبع القديمة.', 'Its sides are smooth.', 'جوانبه ملساء.', 'Khufu’s Great Pyramid.', `${kw('الهرم الأكبر')} للملك خوفو.`);
@@ -172,7 +172,7 @@ async function mission5() {                 // lesson 3: the Middle and New King
   await ask('Who dug the Sesostris Canal, and why?', 'مين حفر قناة سيزوستريس وليه؟', [op('سنوسرت الثالث، لتسهيل التجارة', 'Senusret III, to ease trade'), op('خوفو، لنقل الأحجار', 'Khufu, to carry stones'), op('أحمس، لطرد الهكسوس', 'Ahmose, to drive out the Hyksos')], op('سنوسرت الثالث، لتسهيل التجارة', 'Senusret III, to ease trade'),
     'It joined the Red Sea and the Nile.', 'ربطت البحر الأحمر بالنيل.', 'Senusret III, for trade between the Red Sea and the Mediterranean.', `${kw('سنوسرت الثالث')}؛ لتسهيل التجارة بين البحر الأحمر والمتوسط.`);
   set('card', { lines: ['الهكسوس', 'عاصمتهم أواريس'] });
-  await ask('Which king defeated the Hyksos and drove them out?', 'أنهي ملك هزم الهكسوس وطردهم؟', [op('أحمس', 'Ahmose'), op('زوسر', 'Djoser'), op('مينا', 'Menes')], op('أحمس', 'Ahmose'),
+  await ask('Which king defeated the Hyksos and drove them out?', 'أي ملك هزم الهكسوس وطردهم؟', [op('أحمس', 'Ahmose'), op('زوسر', 'Djoser'), op('مينا', 'Menes')], op('أحمس', 'Ahmose'),
     'His mother, Queen Ahhotep, encouraged him.', 'أمه الملكة إياح حتب شجعته.', 'Ahmose defeated the Hyksos.', `الملك ${kw('أحمس')}.`);
   const buttons = [{ label: T('Megiddo', 'مجدو'), value: 'm', c: 2 }, { label: T('Kadesh', 'قادش'), value: 'k', c: 1 }];
   await sortCards(buttons, [
@@ -186,7 +186,7 @@ async function mission6() {                 // lesson 4: Alexander, the Ptolemie
   g.say(T('Mission 6: Egyptians suffered under the Persians. Alexander the Great took Egypt in 332 BC to secure food for his army and build his empire.', 'المهمة ٦: المصريين عانوا من الفرس. الإسكندر الأكبر سيطر على مصر عام 332 ق.م ليأمّن الغذاء لجيشه ويبني إمبراطوريته.'), 'point');
   await g.next();
   set('card', { lines: ['زار الإسكندر الأكبر', 'معبد الإله … في واحة سيوة'] });
-  await ask('Which temple did Alexander visit in the Siwa Oasis?', 'الإسكندر زار معبد أنهي إله في واحة سيوة؟', [op('آمون', 'Amun'), op('أتون', 'Aten'), op('أوزوريس', 'Osiris')], op('آمون', 'Amun'),
+  await ask('Which temple did Alexander visit in the Siwa Oasis?', 'الإسكندر زار معبد أي إله في واحة سيوة؟', [op('آمون', 'Amun'), op('أتون', 'Aten'), op('أوزوريس', 'Osiris')], op('آمون', 'Amun'),
     'He showed great respect for the Egyptian religion.', 'أظهر احترامًا للديانة المصرية.', 'The temple of Amun.', `معبد الإله ${kw('آمون')}.`);
   set('card', { lines: ['دولة البطالمة', 'حوالي ثلاثة قرون'] });
   await ask('Why did the Ptolemies build the Lighthouse of Alexandria?', 'ليه البطالمة أنشأوا منارة الإسكندرية؟', [op('لإرشاد السفن ليلًا', 'To guide ships at night'), op('لحماية المكتبة', 'To guard the library'), op('لمراقبة الفيضان', 'To watch the flood')], op('لإرشاد السفن ليلًا', 'To guide ships at night'),
@@ -221,8 +221,8 @@ async function stage3() {
     { t: ar('معركة مجدو'), ans: 'n', why: T('The New Kingdom.', 'الدولة الحديثة.') }, { t: ar('أول معاهدة سلام موثقة في التاريخ'), ans: 'n', why: T('The New Kingdom.', 'الدولة الحديثة.') }];
   await g.speedRound({ items, rounds: 8, ms: 12000,
     buttons: [{ label: T('Archaic', 'العصر العتيق'), value: 'a', c: 0 }, { label: T('Old Kingdom', 'الدولة القديمة'), value: 'o', c: 1 }, { label: T('Middle Kingdom', 'الدولة الوسطى'), value: 'm', c: 2 }, { label: T('New Kingdom', 'الدولة الحديثة'), value: 'n', c: 3 }],
-    ask: T('Which age?', 'أنهي عصر؟'), intro: T('Speed Round! An event comes in. Press the age it belongs to. Be quick!', 'جولة السرعة! هيظهر حدث، اضغط على العصر بتاعه. بسرعة!'),
-    think: T('Which age?', 'أنهي عصر؟') });
+    ask: T('Which age?', 'أي عصر؟'), intro: T('Speed Round! An event comes in. Press the age it belongs to. Be quick!', 'جولة السرعة! هيظهر حدث، اضغط على العصر بتاعه. بسرعة!'),
+    think: T('Which age?', 'أي عصر؟') });
 }
 
 g.run({

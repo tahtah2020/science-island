@@ -796,7 +796,7 @@ async function stage2() {
   say(T(`<b>Mission 1:</b> Lift the heavy bag! <b>Bend</b> your arm to pick it up.`, G(`<b>المهمة ١:</b> ارفع الحقيبة التقيلة! <b>اثنِ</b> ذراعك علشان تشيلها.`, `<b>المهمة ١:</b> ارفعي الحقيبة التقيلة! <b>اثني</b> ذراعك علشان تشيليها.`)), 'point');
   await waitTheta(t => t >= 110);
   lock(true);
-  say(T(`Great lift! Hold it there. <b>Which muscle is contracting</b> to lift the bag? <b>Tap it!</b>`, G(`رفعة جامدة! خليك ماسكها. <b>أنهي عضلة منقبضة</b> علشان ترفع الحقيبة؟ <b>اضغط عليها!</b>`, `رفعة جامدة! خليكي ماسكاها. <b>أنهي عضلة منقبضة</b> علشان ترفعي الحقيبة؟ <b>اضغطي عليها!</b>`)), 'think');
+  say(T(`Great lift! Hold it there. <b>Which muscle is contracting</b> to lift the bag? <b>Tap it!</b>`, G(`رفعة جامدة! خليك ماسكها. <b>أي عضلة منقبضة</b> علشان ترفع الحقيبة؟ <b>اضغط عليها!</b>`, `رفعة جامدة! خليكي ماسكاها. <b>أي عضلة منقبضة</b> علشان ترفعي الحقيبة؟ <b>اضغطي عليها!</b>`)), 'think');
   await askTap('in', {
     hint: T(`Not quite. The muscle that <b>contracts</b> is the one that gets thick and hard. Try again!`, G(`قرّبت! العضلة اللي <b>بتنقبض</b> هي اللي بتبقى سميكة وصلبة. جرّب تاني!`, `قرّبتي! العضلة اللي <b>بتنقبض</b> هي اللي بتبقى سميكة وصلبة. جرّبي تاني!`)),
     ok: T(`The <b>inner muscle</b> contracts and <b class="kw">pulls</b> the forearm bone up.`, `<b>العضلة الأمامية</b> بتنقبض و<b class="kw">تشد</b> عظمة الساعد لفوق.`)
@@ -814,7 +814,7 @@ async function stage2() {
   });
   lock(true); sfx.tick();
   await throwBall(); showBall(false);
-  say(T(`What a throw! <b>Which muscle contracted</b> to stretch your arm? <b>Tap it!</b>`, G(`رمية جامدة! <b>أنهي عضلة انقبضت</b> علشان تفرد ذراعك؟ <b>اضغط عليها!</b>`, `رمية جامدة! <b>أنهي عضلة انقبضت</b> علشان تفردي ذراعك؟ <b>اضغطي عليها!</b>`)), 'think');
+  say(T(`What a throw! <b>Which muscle contracted</b> to stretch your arm? <b>Tap it!</b>`, G(`رمية جامدة! <b>أي عضلة انقبضت</b> علشان تفرد ذراعك؟ <b>اضغط عليها!</b>`, `رمية جامدة! <b>أي عضلة انقبضت</b> علشان تفردي ذراعك؟ <b>اضغطي عليها!</b>`)), 'think');
   await askTap('out', {
     hint: T(`Not quite. When you <b>stretch</b> the arm, the other muscle does the work. Try again!`, G(`قرّبت! لما <b>تفرد</b> الذراع، العضلة التانية هي اللي بتشتغل. جرّب تاني!`, `قرّبتي! لما <b>تفردي</b> الذراع، العضلة التانية هي اللي بتشتغل. جرّبي تاني!`)),
     ok: T(`The <b>outer muscle</b> contracts and <b class="kw">pulls</b> to stretch the arm.`, `<b>العضلة الخلفية</b> بتنقبض و<b class="kw">تشد</b> علشان تفرد الذراع.`)
@@ -827,7 +827,7 @@ async function stage2() {
   await sleep(900);
   say(T(`Muscles move bones by ______ them.`, `تحرك العضلات العظام عن طريق ______.`), 'think');
   await askChoice({ options: [T('pushing', 'دفع'), T('pulling', 'سحب')], correct: T('pulling', 'سحب'),
-    hint: T(`Think about the arrow on the muscle. Which way does it go?`, G(`فكّر في السهم اللي على العضلة. رايح في أنهي اتجاه؟`, `فكّري في السهم اللي على العضلة. رايح في أنهي اتجاه؟`)), ok: T(`Muscles never push. They <b class="kw">pull</b> the bones.`, `العضلات عمرها ما بتدفع. هي <b class="kw">بتشد</b> العظام.`) });
+    hint: T(`Think about the arrow on the muscle. Which way does it go?`, G(`فكّر في السهم اللي على العضلة. رايح في أي اتجاه؟`, `فكّري في السهم اللي على العضلة. رايح في أي اتجاه؟`)), ok: T(`Muscles never push. They <b class="kw">pull</b> the bones.`, `العضلات عمرها ما بتدفع. هي <b class="kw">بتشد</b> العظام.`) });
   say(T(`To pull a bone, a muscle must ______.`, `علشان العضلة تشد العظمة لازم ______.`), 'think');
   await askChoice({ options: [T('relax', 'تنبسط'), T('contract', 'تنقبض'), T('expand', 'تتمدد')], correct: T('contract', 'تنقبض'),
     hint: T(`Remember the bag: the muscle that works gets hard and short.`, G(`افتكر الحقيبة: العضلة اللي بتشتغل بتبقى صلبة وقصيرة.`, `افتكري الحقيبة: العضلة اللي بتشتغل بتبقى صلبة وقصيرة.`)), ok: T(`A muscle <b class="kw">contracts</b> to pull a bone.`, `العضلة <b class="kw">بتنقبض</b> علشان تشد العظمة.`) });

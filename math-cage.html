@@ -341,7 +341,7 @@ function showEnd(kind, stars = 0) {
   const cfg = {
     win: ['🦜🎉', T('Reesho is out of the cage!', 'ريشو خرج من القفص!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('But the fox has a harder lock… ready?', 'بس الثعلب عنده قفل أصعب… جاهز؟'), T('Next lock ➜', 'القفل اللي بعده ⬅')],
     all: ['🏆🦜', T('You opened all six locks!', 'فتحت الستة أقفال!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You are a decimal place value expert now.`, `مجموع نقطك ${n(S.score)}. بقيت خبير القيمة المكانية للأعداد العشرية.`), T('Play again', 'العب من الأول')],
-    lose: ['🦊🔒', T('The fox got there first', 'الثعلب وصل قبلك'), '', T(`The number was ${n(fmtNum(S.secret, L().places))}. Read each clue on its own and see which place it talks about.`, `العدد كان ${n(fmtNum(S.secret, L().places))}. اقرأ كل لغز لوحده، وشوف بيتكلم عن أنهي خانة.`), T('Try a new lock', 'جرّب قفل جديد')]
+    lose: ['🦊🔒', T('The fox got there first', 'الثعلب وصل قبلك'), '', T(`The number was ${n(fmtNum(S.secret, L().places))}. Read each clue on its own and see which place it talks about.`, `العدد كان ${n(fmtNum(S.secret, L().places))}. اقرأ كل لغز لوحده، وشوف بيتكلم عن أي خانة.`), T('Try a new lock', 'جرّب قفل جديد')]
   }[kind];
   $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
   $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLock(); };

@@ -140,13 +140,13 @@ async function mission3() {                 // lesson 2: estimating quotients
   sign('5,814 ÷ 47', T('Estimate with compatible numbers', 'قدّر بأعداد لها قيمة مميزة'));
   g.say(T(`Mission 3: a big order of ${kw(L('5,814'))} pieces in boxes of ${L('47')}. Estimate first with compatible numbers.`, `المهمة ٣: طلبية كبيرة ${kw(L('5,814'))} قطعة في علب كل علبة ${L('47')}. قدّر الأول بأعداد لها قيمة مميزة.`), 'point');
   await choice({ options: ['6,000 ÷ 50 = 120', '5,814 ÷ 7 = 830', '600 ÷ 5 = 12'], correct: '6,000 ÷ 50 = 120', hint: T('Round 47 to 50 and 5,814 to a number that divides by 50 easily.', 'قرّب ' + L('47') + ' لـ ' + L('50') + ' و' + L('5,814') + ' لعدد يتقسم على ' + L('50') + ' بسهولة.'), ok: T('About 120 boxes. The exact answer is 123 R 33.', `حوالي ${L('120')} علبة. الإجابة الدقيقة ${L('123')} والباقي ${L('33')}.`) });
-  sign('2,207 ÷ 7 · 8,014 ÷ 46', T('Winner Takes All: which card wins?', 'الفوز بكل البطاقات: أنهي بطاقة تكسب؟'), 26);
-  g.say(T(`Winner Takes All! Two cards: ${L('2,207 ÷ 7')} and ${L('8,014 ÷ 46')}. The greater estimated quotient wins. Which card?`, `لعبة الفوز بكل البطاقات! بطاقتين: ${L('2,207 ÷ 7')} و${L('8,014 ÷ 46')}. خارج القسمة التقديري الأكبر يكسب. أنهي بطاقة؟`), 'think');
+  sign('2,207 ÷ 7 · 8,014 ÷ 46', T('Winner Takes All: which card wins?', 'الفوز بكل البطاقات: أي بطاقة تكسب؟'), 26);
+  g.say(T(`Winner Takes All! Two cards: ${L('2,207 ÷ 7')} and ${L('8,014 ÷ 46')}. The greater estimated quotient wins. Which card?`, `لعبة الفوز بكل البطاقات! بطاقتين: ${L('2,207 ÷ 7')} و${L('8,014 ÷ 46')}. خارج القسمة التقديري الأكبر يكسب. أي بطاقة؟`), 'think');
   await choice({ options: ['2,207 ÷ 7', '8,014 ÷ 46'], correct: '2,207 ÷ 7', hint: T('2,100 ÷ 7 and 8,000 ÷ 40.', L('2,100 ÷ 7') + ' و' + L('8,000 ÷ 40') + '.'), ok: T('About 300 beats about 200.', `حوالي ${L('300')} أكبر من حوالي ${L('200')}.`) });
 }
 async function mission4() {                 // lesson 3: the standard algorithm
   ldiv({ div: '43', num: '1,376' });
-  g.say(T(`Mission 4: Rana's coffee shop uses the standard algorithm: ${kw(L('1,376 ÷ 43'))}. ${L('43')} does not go into ${L('1')} or ${L('13')}. Which part do we divide first?`, `المهمة ٤: مقهى رنا بيستخدم الخوارزمية المعيارية: ${kw(L('1,376 ÷ 43'))}. ${L('43')} ما يدخلش في ${L('1')} ولا ${L('13')}. نبدأ بأنهي جزء؟`), 'point');
+  g.say(T(`Mission 4: Rana's coffee shop uses the standard algorithm: ${kw(L('1,376 ÷ 43'))}. ${L('43')} does not go into ${L('1')} or ${L('13')}. Which part do we divide first?`, `المهمة ٤: مقهى رنا بيستخدم الخوارزمية المعيارية: ${kw(L('1,376 ÷ 43'))}. ${L('43')} ما يدخلش في ${L('1')} ولا ${L('13')}. نبدأ بأي جزء؟`), 'point');
   await choice({ options: ['137', '1,376', '76'], correct: '137', hint: T('Take digits from the left until the number is at least 43.', 'خد أرقام من الشمال لحد ما العدد يبقى ' + L('43') + ' أو أكتر.'), ok: T('137 ÷ 43 = 3, because 43 × 3 = 129.', `${L('137 ÷ 43 = 3')}، لأن ${L('43 × 3 = 129')}.`) });
   ldiv({ div: '43', num: '1,376', quo: '3?', steps: [['129', 1], ['86', 0]] });
   g.say(T(`${L('137 − 129 = 8')}; bring down ${L('6')}: ${L('86')}. How many 43s in ${L('86')}?`, `${L('137 − 129 = 8')}؛ ننزل ${L('6')}: ${L('86')}. ${L('86')} فيها كام ${L('43')}؟`), 'think');
@@ -163,7 +163,7 @@ async function mission5() {                 // lesson 4: Ayman, checking with mu
   await choice({ options: [R, T('To subtract 258', 'يطرح 258'), T('The remainder 2', 'الباقي 2')], correct: R,
     hint: T('After 88 − 86 = 2 he brought down 5: is 25 big enough for 43?', 'بعد ' + L('88 − 86 = 2') + ' نزّل ' + L('5') + ': ' + L('25') + ' تكفي ' + L('43') + '؟'), ok: T('25 is smaller than 43, so we write 0. 8,858 ÷ 43 = 206, and 43 × 206 = 8,858.', `${L('25')} أصغر من ${L('43')} فنكتب ${L('0')}. ${L('8,858 ÷ 43 = 206')}، و${L('43 × 206 = 8,858')}.`) });
   sign('200 ÷ 17 = 11 R 13', T('Keep the Leftovers: check it!', 'احتفظ بالباقي: اتأكد!'), 28);
-  g.say(T(`Keep the Leftovers: ${kw(L('200 ÷ 17 = 11 R 13'))}. Which check proves it?`, `لعبة احتفظ بالباقي: ${kw(L('200 ÷ 17'))} = ${L('11')} والباقي ${L('13')}. أنهي تحقق يثبتها؟`), 'think');
+  g.say(T(`Keep the Leftovers: ${kw(L('200 ÷ 17 = 11 R 13'))}. Which check proves it?`, `لعبة احتفظ بالباقي: ${kw(L('200 ÷ 17'))} = ${L('11')} والباقي ${L('13')}. أي تحقق يثبتها؟`), 'think');
   await choice({ options: ['17 × 11 + 13 = 200', '17 + 11 + 13 = 200', '200 × 11 = 17'], correct: '17 × 11 + 13 = 200', hint: T('Divisor × quotient + remainder = dividend.', 'المقسوم عليه × خارج القسمة + الباقي = المقسوم.'), ok: T('17 × 11 = 187 and 187 + 13 = 200.', `${L('17 × 11 = 187')} و${L('187 + 13 = 200')}.`) });
   sign('100 ÷ 16', T("Ziad's buttons · 16 for each shirt", 'أزرار زياد · 16 لكل قميص'));
   g.say(T(`Ziad has ${L('100')} buttons and needs ${L('16')} for each shirt. He thinks: ${L('6')} shirts and ${L('4')} buttons left. Is he right?`, `زياد معاه ${L('100')} زرار ومحتاج ${L('16')} لكل قميص. بيقول: ${L('6')} قمصان ويفضل ${L('4')} زراير. كلامه صح؟`), 'think');

@@ -57,7 +57,7 @@ const pic = (name, p, o) => Object.assign(sc, { mode: 'pic', pic: { name, pic: p
 /* ---------- Stage 1 · Warm Up: can it be shared equally? ---------- */
 async function stage1() {
   Object.assign(sc, { mode: 'box', n: '120', cap: '' }); g.paint();
-  g.say(T(`Welcome to the Food Bank! ${kw('120')} volunteers want to be put in teams of 6. Which rule tells you that 120 is divisible by 6?`, `أهلًا في بنك الطعام! عندنا ${kw(L('120'))} متطوع عايزين يتقسّموا فرق، كل فريق ٦. أنهي قاعدة بتقولك إن ${L('120')} بتتقسم على ٦؟`), 'point');
+  g.say(T(`Welcome to the Food Bank! ${kw('120')} volunteers want to be put in teams of 6. Which rule tells you that 120 is divisible by 6?`, `أهلًا في بنك الطعام! عندنا ${kw(L('120'))} متطوع عايزين يتقسّموا فرق، كل فريق ٦. أي قاعدة بتقولك إن ${L('120')} بتتقسم على ٦؟`), 'point');
   await g.choice({ options: [T('It is divisible by both 2 and 3', 'بتتقسم على ٢ وعلى ٣ مع بعض'), T('It ends in 0', 'آخرها صفر'), T('Its digits add up to 3 only', 'مجموع أرقامها ٣ بس'), T('It has three digits', 'ليها ٣ أرقام')],
     correct: T('It is divisible by both 2 and 3', 'بتتقسم على ٢ وعلى ٣ مع بعض'), hint: T('6 = 2 × 3.', L('6 = 2 × 3') + '.'), ok: T('120 is even and 1 + 2 + 0 = 3, so it is divisible by 2 and by 3, so by 6.', `${L('120')} زوجي و${L('1 + 2 + 0 = 3')}، يعني بتتقسم على ٢ وعلى ٣، يعني على ٦.`) });
   Object.assign(sc, { n: '254', cap: '254 → 5 buses' }); g.paint();
@@ -84,7 +84,7 @@ async function mission2() {                 // lesson 3: boxes and the GCF expre
   pic('boxPack', { boxes: 4, g: 3, c: 2 }, { k: 1.2, dy: 40 }); g.paint();
   g.say(T('Mission 2: a student has 12 grain bags and 8 packs of cheese. She wants the greatest number of identical boxes with nothing left over. How many boxes?', 'المهمة ٢: طالبة معاها ' + L('12') + ' كيس حبوب و' + L('8') + ' عبوات جبن. عايزة أكبر عدد صناديق متشابهة من غير ما يفضل حاجة. كام صندوق؟'), 'point');
   await g.choice({ options: ['4', '2', '6', '8'], correct: '4', hint: T('Find the GCF of 12 and 8.', 'دوّر على ع.م.أ للعددين ' + L('12') + ' و' + L('8') + '.'), ok: T('GCF of 12 and 8 = 4: four boxes, each with 3 grain bags and 2 packs of cheese.', `ع.م.أ للعددين ${L('12')} و${L('8')} = ${L('4')}: ٤ صناديق، في كل صندوق ${L('3')} أكياس حبوب و${L('2')} عبوات جبن.`) });
-  g.say(T('Which expression gives all the items in the 4 boxes (3 grain bags and 2 cheese in each)?', 'أنهي عبارة بتدّي كل الحاجات في الـ٤ صناديق (في كل صندوق ' + L('3') + ' حبوب و' + L('2') + ' جبن)؟'), 'think');
+  g.say(T('Which expression gives all the items in the 4 boxes (3 grain bags and 2 cheese in each)?', 'أي عبارة بتدّي كل الحاجات في الـ٤ صناديق (في كل صندوق ' + L('3') + ' حبوب و' + L('2') + ' جبن)؟'), 'think');
   await g.choice({ options: ['4(3 + 2)', '4 + 3 + 2', '4(3 × 2)', '4 + (3 × 2)'], correct: '4(3 + 2)', hint: T('4 boxes, each with 3 + 2 items.', '٤ صناديق، كل واحد فيه ' + L('3 + 2') + ' حاجة.'), ok: T('4(3 + 2) = (4 × 3) + (4 × 2) = 12 + 8: the distributive property.', `${L('4(3 + 2) = (4 × 3) + (4 × 2) = 12 + 8')}: خاصية التوزيع.`) });
   Object.assign(sc, { pic: { name: 'boxPack', pic: { boxes: 4, g: 3, c: 2 } } });
   g.say(T('Now 36 packs of cheese and 48 grain bags: the GCF is 12. What does 12(3 + 4) mean?', 'دلوقتي ' + L('36') + ' عبوة جبن و' + L('48') + ' كيس حبوب: ع.م.أ ' + L('12') + '. إيه معنى ' + L('12(3 + 4)') + '؟'), 'think');
@@ -93,7 +93,7 @@ async function mission2() {                 // lesson 3: boxes and the GCF expre
 }
 async function mission3() {                 // lesson 4: fruit and the LCM as a common denominator
   pic('bagFrac', { bags: [{ n: 4, k: 3, name: '3/4' }, { n: 12, k: 7, name: '7/12', col: '#f2a24a' }] }, { k: 1.2, dx: 70, dy: 14 }); g.paint();
-  g.say(T('Mission 3: you have 3/4 of one package of fruit and 7/12 of another. How much fruit is that? First, which common denominator is best?', 'المهمة ٣: معاك ' + L('3/4') + ' من كيس فاكهة و' + L('7/12') + ' من كيس تاني. الفاكهة دي قد إيه؟ الأول، أنهي مقام مشترك أنسب؟'), 'point');
+  g.say(T('Mission 3: you have 3/4 of one package of fruit and 7/12 of another. How much fruit is that? First, which common denominator is best?', 'المهمة ٣: معاك ' + L('3/4') + ' من كيس فاكهة و' + L('7/12') + ' من كيس تاني. الفاكهة دي قد إيه؟ الأول، أي مقام مشترك أنسب؟'), 'point');
   await g.choice({ options: ['12', '4', '16', '48'], correct: '12', hint: T('The LCM of 4 and 12.', 'م.م.أ للعددين ' + L('4') + ' و' + L('12') + '.'), ok: T('LCM of 4 and 12 = 12.', `م.م.أ للعددين ${L('4')} و${L('12')} = ${L('12')}.`) });
   g.say(T('Write 3/4 with the denominator 12.', 'اكتب ' + L('3/4') + ' بمقام ' + L('12') + '.'), 'think');
   await g.choice({ options: ['9/12', '3/12', '7/12', '12/4'], correct: '9/12', hint: T('4 × 3 = 12, so multiply the top by 3 as well.', `${L('4 × 3 = 12')}، يعني اضرب البسط في ${L('3')} كمان.`), ok: T('3/4 = 9/12.', `${L('3/4 = 9/12')}.`) });

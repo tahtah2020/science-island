@@ -229,7 +229,7 @@ async function stage1() {
     hint: T('The negative charges must balance the positive charges.', 'الشحنات السالبة لازم تساوي الشحنات الموجبة.'),
     ok: T(`${kw('11')} electrons: in any atom, the number of positive protons equals the number of negative electrons.`, `${kw('11')} إلكترونًا: في أي ذرة يكون عدد البروتونات الموجبة مساويًا لعدد الإلكترونات السالبة.`),
     reveal: () => { sc.know.e = true; sc.rings = 3; g.paint(); } });
-  g.say(T(`The electrons revolve around the nucleus in ${kw('energy levels')}: K, L, M… Which level is filled first? Tap it.`, P(`الإلكترونات بتدور حول النواة في ${kw('مستويات الطاقة')}: ${ltr('K, L, M')}… أنهي مستوى يتملي الأول؟ اضغط عليه.`, `الإلكترونات بتدور حول النواة في ${kw('مستويات الطاقة')}: ${ltr('K, L, M')}… أنهي مستوى يتملي الأول؟ اضغطي عليه.`)), 'point');
+  g.say(T(`The electrons revolve around the nucleus in ${kw('energy levels')}: K, L, M… Which level is filled first? Tap it.`, P(`الإلكترونات بتدور حول النواة في ${kw('مستويات الطاقة')}: ${ltr('K, L, M')}… أي مستوى يتملي الأول؟ اضغط عليه.`, `الإلكترونات بتدور حول النواة في ${kw('مستويات الطاقة')}: ${ltr('K, L, M')}… أي مستوى يتملي الأول؟ اضغطي عليه.`)), 'point');
   await g.spot(ringSpots(), 'K', {
     hint: T('It is the level nearest to the nucleus.', 'هو أقرب مستوى للنواة.'),
     ok: T(`The first level, ${kw('K')}, is filled first; then the higher levels, one after the other.`, `يُملأ مستوى الطاقة الأول ${kw('K')} بالإلكترونات أولًا، ثم يتتابع ملء مستويات الطاقة الأعلى.`) });

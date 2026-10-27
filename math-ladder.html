@@ -212,7 +212,7 @@ function drawWork() {
     $('#check').textContent = T('✂️ Cut and fix', '✂️ قصّ وركّب');
     return;
   }
-  $('#ask').innerHTML = T('Tap pieces to build the ladder. Which pieces add up to the roof height <b>exactly</b>?', 'اضغط على القطع عشان تبني السلم. أنهي قطع مجموعها يساوي ارتفاع السطح <b>بالظبط</b>؟');
+  $('#ask').innerHTML = T('Tap pieces to build the ladder. Which pieces add up to the roof height <b>exactly</b>?', 'اضغط على القطع عشان تبني السلم. أي القطع مجموعها يساوي ارتفاع السطح <b>بالظبط</b>؟');
   $('#work').innerHTML = `<div class="tray">${r.pieces.map((u, i) => { const k = S.stack.indexOf(i); return `<button class="piece${k >= 0 ? ' on' : ''}" type="button" data-i="${i}" aria-pressed="${k >= 0}"><span class="bar">${fmt(u, r.d)}</span><span class="ord">${k + 1}</span></button>`; }).join('')}</div>`;
   $('#work').querySelectorAll('.piece').forEach(b => b.onclick = () => togglePiece(+b.dataset.i));
   $('#check').textContent = T('✔ Fix the ladder', '✔ ثبّت السلم');

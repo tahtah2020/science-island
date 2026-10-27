@@ -208,7 +208,7 @@ function drawOrder() {
   if (k.t === 'A') {
     const c = k.cards[k.ci];
     txt = (c.form === 'words' ? T('This ant is worth ', 'النملة دي قيمتها ') + cardText(c.d, c.e, 'words') : T('My value is ', 'قيمتي ') + cardText(c.d, c.e, 'value'))
-      + `<br><small>${T(`Where do I live? (ant ${n(k.ci + 1)} of ${n(k.cards.length)})`, `أسكن في أنهي غرفة؟ (نملة ${n(k.ci + 1)} من ${n(k.cards.length)})`)}</small>`;
+      + `<br><small>${T(`Where do I live? (ant ${n(k.ci + 1)} of ${n(k.cards.length)})`, `أسكن في أي غرفة؟ (نملة ${n(k.ci + 1)} من ${n(k.cards.length)})`)}</small>`;
   } else if (k.t === 'B1') {
     const now = fmt(k.d * P10(k.e)), want = fmt(k.d * P10(k.e + k.s));
     txt = k.form === 'value'

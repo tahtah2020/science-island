@@ -92,7 +92,7 @@ async function mission2() {                 // lesson 3: subtract with regroupin
 }
 async function mission3() {                 // lesson 4: a bar model and a variable
   Object.assign(sc, { mode: 'bar', whole: '5,328', p1: '2,164', p2: '?', cap: '' }); g.paint();
-  g.say(T(`Mission 3: a colony has ${kw('5,328')} ants. ${kw('2,164')} are females and the rest are males, a. Which equation matches the bar model?`, `المهمة ٣: مستعمرة فيها ${kw(L('5,328'))} نملة. ${kw(L('2,164'))} إناث والباقي ذكور a. أنهي معادلة بتمثّل النموذج الشريطي؟`), 'point');
+  g.say(T(`Mission 3: a colony has ${kw('5,328')} ants. ${kw('2,164')} are females and the rest are males, a. Which equation matches the bar model?`, `المهمة ٣: مستعمرة فيها ${kw(L('5,328'))} نملة. ${kw(L('2,164'))} إناث والباقي ذكور a. أي معادلة بتمثّل النموذج الشريطي؟`), 'point');
   await g.choice({ options: ['2,164 + a = 5,328', '5,328 + a = 2,164', 'a − 2,164 = 5,328', '2,164 − a = 5,328'], correct: '2,164 + a = 5,328', hint: T('The two parts add up to the whole.', 'الجزءين مجموعهم الكل.'), ok: T('part + part = whole: 2,164 + a = 5,328.', `جزء + جزء = الكل: ${L('2,164 + a = 5,328')}.`) });
   g.say(T('So a = 5,328 − 2,164. How many males are there?', `يبقى ${L('a = 5,328 − 2,164')}. كام ذكر؟`), 'think');
   await g.choice({ options: ['3,164', '3,264', '7,492', '2,164'], correct: '3,164', hint: T('Subtract with regrouping: 8 − 4 = 4, 2 tens − 6 tens needs a regroup.', `اطرح بإعادة التسمية: ${L('8 − 4 = 4')}، و٢ عشرات ناقص ٦ عشرات محتاجة إعادة تسمية.`), ok: T('a = 3,164 males.', `${L('a = 3,164')} ذكر.`), reveal: () => { sc.p2 = '3,164'; g.paint(); } });
@@ -114,7 +114,7 @@ const ITEMS = [['0 + 2,345 = 2,345', 'z'], ['12,567,109 + 0 = 12,567,109', 'z'],
 async function stage3() {
   Object.assign(sc, { mode: 'colony', top: '', bottom: '', cap: '' }); g.paint();
   await g.speedRound({ items: ITEMS.map(([t, r]) => ({ t: L(t), ans: r, why: WHY[r] })), rounds: 8, ms: 11000, buttons: BT,
-    ask: T('Which property?', 'أنهي خاصية؟'), intro: T('Speed Round! A sum comes in. Press the property it shows: Zero, Swap (order) or Group (brackets).', 'جولة السرعة! هتظهرلك عملية جمع. اضغط على الخاصية اللي بتوضّحها: صفر، إبدال (ترتيب) ولا دمج (أقواس).'),
+    ask: T('Which property?', 'أي خاصية؟'), intro: T('Speed Round! A sum comes in. Press the property it shows: Zero, Swap (order) or Group (brackets).', 'جولة السرعة! هتظهرلك عملية جمع. اضغط على الخاصية اللي بتوضّحها: صفر، إبدال (ترتيب) ولا دمج (أقواس).'),
     think: T('Zero, Swap or Group?', 'صفر ولا إبدال ولا دمج؟') });
 }
 

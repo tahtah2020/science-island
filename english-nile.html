@@ -195,9 +195,9 @@ async function mission4() {                 // lesson 3: The Giving Tree
   g.say(T('Mission 4: Story Time: The Giving Tree. Tom loved a big apple tree, but he was selfish. Choose the word that matches each meaning.', 'المهمة ٤: وقت الحكاية: الشجرة المعطاءة. توم كان بيحب شجرة تفاح كبيرة، بس كان أناني. اختار الكلمة اللي تناسب كل معنى.'), 'point');
   await g.next();
   set('tree');
-  await ask('Which word means: the main, thick part of a tree?', 'أنهي كلمة معناها: الجزء الرئيسي السميك من الشجرة؟', ['trunk', 'crown', 'shade'], 'trunk', 'It supports the branches and leaves.', 'بيشيل الأغصان والورق.', `The ${kw('trunk')} is the main, thick part of a tree.`, `${L('The trunk is the main, thick part of a tree.')}`);
+  await ask('Which word means: the main, thick part of a tree?', 'أي كلمة معناها: الجزء الرئيسي السميك من الشجرة؟', ['trunk', 'crown', 'shade'], 'trunk', 'It supports the branches and leaves.', 'بيشيل الأغصان والورق.', `The ${kw('trunk')} is the main, thick part of a tree.`, `${L('The trunk is the main, thick part of a tree.')}`);
   set('tree');
-  await ask('Which word means: a dark shadow created when sunlight is blocked?', 'أنهي كلمة معناها: ظل غامق بيتكوّن لما حاجة بتحجب الشمس؟', ['shade', 'branch', 'crown'], 'shade', 'We rest in it on a hot day.', 'بنرتاح فيه في يوم حر.', `${kw('Shade')} is a dark shadow created when sunlight is blocked.`, `${L('Shade is a dark shadow created when sunlight is blocked.')}`);
+  await ask('Which word means: a dark shadow created when sunlight is blocked?', 'أي كلمة معناها: ظل غامق بيتكوّن لما حاجة بتحجب الشمس؟', ['shade', 'branch', 'crown'], 'shade', 'We rest in it on a hot day.', 'بنرتاح فيه في يوم حر.', `${kw('Shade')} is a dark shadow created when sunlight is blocked.`, `${L('Shade is a dark shadow created when sunlight is blocked.')}`);
   set('tree');
   await ask('Tom never thought about the tree’s needs. What was he?', 'توم عمره ما فكّر في احتياجات الشجرة. كان إيه؟', ['selfish', 'careful', 'kind'], 'selfish', 'It means caring for oneself only.', 'يعني بيهتم بنفسه بس.', `${kw('Selfish')} means caring for oneself only.`, `${L('Selfish means caring for oneself only.')}`);
   set('tree', { sub: 'sad' });
@@ -208,9 +208,9 @@ async function mission5() {                 // lesson 4: recipe
   set('koshari');
   g.say(T('Mission 5: Let’s make Koshari! Sequence words show the order of the steps: First, Then, Next, After that and Finally.', 'المهمة ٥: يلا نعمل كشري! كلمات الترتيب بتوضّح ترتيب الخطوات: First وThen وNext وAfter that وFinally.'), 'point');
   await g.next();
-  await fillCard(['___, you need to cook', 'rice in a pot.'], ['First', 'Finally', 'Next'], 'First', 'Which word starts the recipe?', 'أنهي كلمة بتبدأ الوصفة؟', 'It comes at the beginning.', 'بتيجي في البداية.', `We start with ${kw('First')}.`, `بنبدأ بـ ${L('First')}.`);
-  await fillCard(['First, cook the rice. ___,', 'boil lentils in water.'], ['Then', 'Finally', 'First'], 'Then', 'Which word comes next?', 'أنهي كلمة بتيجي بعد كده؟', 'It comes in the middle.', 'بتيجي في النص.', `${kw('Then')} comes after First.`, `${L('Then')} بتيجي بعد ${L('First')}.`);
-  await fillCard(['___, pour the red sauce', 'all over it.'], ['Finally', 'First', 'Next'], 'Finally', 'Which word ends the recipe?', 'أنهي كلمة بتنهي الوصفة؟', 'It comes at the end.', 'بتيجي في الآخر.', `${kw('Finally')} ends the steps.`, `${L('Finally')} بتنهي الخطوات.`);
+  await fillCard(['___, you need to cook', 'rice in a pot.'], ['First', 'Finally', 'Next'], 'First', 'Which word starts the recipe?', 'أي كلمة بتبدأ الوصفة؟', 'It comes at the beginning.', 'بتيجي في البداية.', `We start with ${kw('First')}.`, `بنبدأ بـ ${L('First')}.`);
+  await fillCard(['First, cook the rice. ___,', 'boil lentils in water.'], ['Then', 'Finally', 'First'], 'Then', 'Which word comes next?', 'أي كلمة بتيجي بعد كده؟', 'It comes in the middle.', 'بتيجي في النص.', `${kw('Then')} comes after First.`, `${L('Then')} بتيجي بعد ${L('First')}.`);
+  await fillCard(['___, pour the red sauce', 'all over it.'], ['Finally', 'First', 'Next'], 'Finally', 'Which word ends the recipe?', 'أي كلمة بتنهي الوصفة؟', 'It comes at the end.', 'بتيجي في الآخر.', `${kw('Finally')} ends the steps.`, `${L('Finally')} بتنهي الخطوات.`);
   set('koshari');
   await ask('What does Koshari have in one bowl?', 'الكشري فيه إيه في طبق واحد؟', ['Rice, lentils, pasta and chickpeas', 'Only rice', 'Fish and bread'], 'Rice, lentils, pasta and chickpeas', 'It has many simple ingredients.', 'فيه مكونات بسيطة كتير.', `Koshari is a tasty Egyptian meal with ${kw('many simple ingredients')} in one bowl.`, `الكشري وجبة مصرية لذيذة فيها ${L('many simple ingredients')} في طبق واحد.`);
 }
@@ -237,8 +237,8 @@ async function stage3() {
     { t: '100%', ans: 'always', why: 'Always means 100%.' }, { t: '90%', ans: 'usually', why: 'Usually means 90%.' }, { t: '70%', ans: 'often', why: 'Often means 70%.' },
     { t: '50%', ans: 'sometimes', why: 'Sometimes means 50%.' }, { t: '20%', ans: 'rarely', why: 'Rarely means 20%.' }, { t: '0%', ans: 'never', why: 'Never means 0%.' }];
   await g.speedRound({ items, buttons, rounds: 8,
-    ask: T('Which adverb?', 'أنهي كلمة؟'), intro: T('Speed Round! I say a percentage. Press the adverb of frequency. Be quick!', 'جولة السرعة! هقولك نسبة، واضغط على ظرف التكرار المناسب. بسرعة!'),
-    think: T('Which adverb?', 'أنهي كلمة؟') });
+    ask: T('Which adverb?', 'أي كلمة؟'), intro: T('Speed Round! I say a percentage. Press the adverb of frequency. Be quick!', 'جولة السرعة! هقولك نسبة، واضغط على ظرف التكرار المناسب. بسرعة!'),
+    think: T('Which adverb?', 'أي كلمة؟') });
 }
 
 g.run({

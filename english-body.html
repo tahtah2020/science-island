@@ -115,7 +115,7 @@ async function stage1() {
   await g.spot(setRings(), 'muscle', { hint: T('They are the parts of your body that help you move.', 'هما الأجزاء في جسمك اللي بتساعدك تتحرك.'),
     ok: T(`${kw('Muscles')} are the parts of your body that help you move.`, `${L('Muscles are the parts of your body that help you move.')}`) });
   set('photo', { sub: 'football' });
-  await ask('Which sport makes your heart strong and helps your muscles grow?', 'أنهي رياضة بتقوّي قلبك وبتكبّر عضلاتك؟', ['Football', 'Reading', 'Watching TV'], 'Football', 'Mazen asks about it first.', 'مازن سأل عنها الأول.', `${kw('Football')} makes your heart strong and helps your muscles grow.`, `${L('Football makes your heart strong and helps your muscles grow.')}`);
+  await ask('Which sport makes your heart strong and helps your muscles grow?', 'أي رياضة بتقوّي قلبك وبتكبّر عضلاتك؟', ['Football', 'Reading', 'Watching TV'], 'Football', 'Mazen asks about it first.', 'مازن سأل عنها الأول.', `${kw('Football')} makes your heart strong and helps your muscles grow.`, `${L('Football makes your heart strong and helps your muscles grow.')}`);
   set('photo', { sub: 'apple' });
   await ask('You feel tired when you play sports. What can you do?', 'بتتعب لما بتلعب رياضة. تعمل إيه؟', ['Eat some fruit before you exercise', 'Stop all sports', 'Drink soda'], 'Eat some fruit before you exercise', 'It gives you more energy.', 'بتديك طاقة أكتر.',
     `Eat ${kw('some fruit')} before you exercise to get more energy.`, `${L('Eat some fruit before you exercise.')}`);
@@ -166,7 +166,7 @@ async function mission4() {                 // lesson 3: heart and blood
   await g.spot(setRings(), 'fist', { hint: T('It is your closed hand.', 'ده إيدك المقفولة.'),
     ok: T(`The heart is about the size of your ${kw('fist')}.`, `${L('The heart is about the size of your fist.')}`) });
   await ask('What does blood carry to every cell?', 'الدم بيوصّل إيه لكل خلية؟', ['Oxygen and nutrients', 'Only waste', 'Only water'], 'Oxygen and nutrients', 'It also takes away carbon dioxide.', 'وكمان بياخد ثاني أكسيد الكربون.', `Blood carries ${kw('oxygen and nutrients')} to every cell and takes away waste like carbon dioxide.`, `${L('Blood carries oxygen and nutrients to every cell.')}`);
-  await ask('Which habit keeps your heart strong?', 'أنهي عادة بتحافظ على قوة قلبك؟', ['Eating good food, sleeping well and exercising', 'Too much stress', 'Not drinking water'], 'Eating good food, sleeping well and exercising', 'Stress can hurt your heart.', 'الضغط العصبي ممكن يضر قلبك.', `Good food, sleep, water and ${kw('exercise')} keep your heart strong.`, `${L('Good food, sleep, water and exercise keep your heart strong.')}`);
+  await ask('Which habit keeps your heart strong?', 'أي عادة بتحافظ على قوة قلبك؟', ['Eating good food, sleeping well and exercising', 'Too much stress', 'Not drinking water'], 'Eating good food, sleeping well and exercising', 'Stress can hurt your heart.', 'الضغط العصبي ممكن يضر قلبك.', `Good food, sleep, water and ${kw('exercise')} keep your heart strong.`, `${L('Good food, sleep, water and exercise keep your heart strong.')}`);
 }
 async function mission5() {                 // lesson 3: syllables
   set('plate', { emoji: '👏', word: 'Clap it out!' });
@@ -186,7 +186,7 @@ async function mission6() {                 // lesson 4: healthcare heroes
     ['Makes sure patients get the correct medicine', 'ph', 'Pharmacists make sure patients receive the correct medicine.', '💊'],
     ['Helps on the spot in emergencies', 'pa', 'Paramedics respond quickly in emergencies and take patients to hospitals.', '🚑']], 'plate');
   set('plate', { emoji: '📝', word: 'Non-fiction text' });
-  await ask('Which sentence is an introductory sentence?', 'أنهي جملة هي جملة افتتاحية؟', ['My neighbor, Selim, is a doctor at our local hospital.', 'The work is tiring, but he’s proud to be a doctor.', 'He wears a white coat.'], 'My neighbor, Selim, is a doctor at our local hospital.', 'It introduces the person.', 'بتعرّفنا على الشخص.', `An ${kw('introductory sentence')} introduces the person.`, `${L('An introductory sentence introduces the person.')}`);
+  await ask('Which sentence is an introductory sentence?', 'أي جملة هي جملة افتتاحية؟', ['My neighbor, Selim, is a doctor at our local hospital.', 'The work is tiring, but he’s proud to be a doctor.', 'He wears a white coat.'], 'My neighbor, Selim, is a doctor at our local hospital.', 'It introduces the person.', 'بتعرّفنا على الشخص.', `An ${kw('introductory sentence')} introduces the person.`, `${L('An introductory sentence introduces the person.')}`);
 }
 async function mission7() {                 // lesson 5: six healthy habits
   set('photo', { sub: 'toothbrush' });

@@ -95,7 +95,7 @@ async function mission1() {
     hint: T('The water seems to “disappear”.', 'الماء بيبان كأنه «اختفى».'),
     ok: T(`Water vapor is ${kw('invisible')}.`, `بخار الماء ${kw('غير مرئي')}.`) });
   set({ mode: 'photo', one: 'c9laundry' });
-  g.say(T('On which day does the laundry dry quickly?', 'في أنهي يوم الغسيل بينشف بسرعة؟'), 'think');
+  g.say(T('On which day does the laundry dry quickly?', 'في أي يوم الغسيل بينشف بسرعة؟'), 'think');
   const hot = T('A hot, sunny, windy day', 'يوم حار ومشمس وفيه رياح');
   await g.choice({ options: [hot, T('A cold, heavily cloudy day', 'يوم بارد وغائم جدًّا'), T('A rainy day', 'يوم ممطر')], correct: hot,
     hint: T('Heat, sun and wind help water evaporate.', 'الحرارة والشمس والرياح بيساعدوا الماء يتبخر.'),
@@ -173,13 +173,13 @@ async function mission3() {
 async function mission4() {
   await g.banner(T('Mission 4', 'المهمة ٤'), T('How to do science', 'كيف تمارس العلم؟'));
   set({ mode: 'photo', one: 'c9beaker' });
-  g.say(T('In the lid experiment, both beakers had the same amount of water. Only one had a lid. Which condition did we test?', 'في تجربة الغطاء الكأسين فيهم نفس كمية الماء، وواحد بس عليه غطاء. اختبرنا أنهي عامل؟'), 'think');
+  g.say(T('In the lid experiment, both beakers had the same amount of water. Only one had a lid. Which condition did we test?', 'في تجربة الغطاء الكأسين فيهم نفس كمية الماء، وواحد بس عليه غطاء. اختبرنا أي عامل؟'), 'think');
   const lid = T('The lid', 'الغطاء');
   await g.choice({ options: [lid, T('The amount of water', 'كمية الماء'), T('Nothing', 'ولا حاجة')], correct: lid,
     hint: T('What is different between the two beakers?', 'إيه المختلف بين الكأسين؟'),
     ok: T(`A ${kw('fair test')}: change only the condition you want to test and keep all other conditions the same.`, `${kw('التجربة العادلة')}: غيّر العامل اللي عايز تختبره بس، وأبقِ جميع العوامل الأخرى ثابتة.`) });
   set({ mode: 'photo', one: 'c9micro' });
-  g.say(T('Before using the microscope, which magnification do we set the objective lens to?', 'قبل ما نستخدم المجهر، بنضبط العدسة الشيئية على أنهي قوة تكبير؟'), 'think');
+  g.say(T('Before using the microscope, which magnification do we set the objective lens to?', 'قبل ما نستخدم المجهر، بنضبط العدسة الشيئية على أي قوة تكبير؟'), 'think');
   const low = T('The lowest', 'الأقل');
   await g.choice({ options: [low, T('The highest', 'الأعلى')], correct: low,
     hint: T('Start small.', 'ابدأ بالصغير.'),

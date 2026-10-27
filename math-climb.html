@@ -60,7 +60,7 @@ async function stage1() {
   g.say(T('Climber E is at −3. Which climber is the same distance from the platform, on the other side?', 'المتسلق هـ على ' + L('−3') + '. مين المتسلق اللي نفس بُعده عن المنصة في الناحية التانية؟'), 'think');
   await g.choice({ options: [T('Climber B (3)', 'المتسلق ب (٣)'), T('Climber A (−5)', 'المتسلق أ (−٥)'), T('Climber D (−8)', 'المتسلق د (−٨)')], correct: T('Climber B (3)', 'المتسلق ب (٣)'), hint: T('The opposite of −3.', 'عكس ' + L('−3') + '.'), ok: T('3 and −3 are opposites: the same distance from 0 on opposite sides.', `${L('3')} و${L('−3')} متعاكسين: نفس البُعد عن الصفر في ناحيتين مختلفتين.`) });
   g.say(T('Which climber is below the platform but the closest to it?', 'مين المتسلق اللي تحت المنصة وأقرب واحد ليها؟'), 'think');
-  await g.choice({ options: ['E (−3)', 'A (−5)', 'D (−8)', 'C (−9)'], correct: 'E (−3)', hint: T('Negative = below. Which negative is closest to 0?', 'سالب = تحت. أنهي سالب أقرب للصفر؟'), ok: T('−3 is the negative number closest to 0.', `${L('−3')} هو أقرب عدد سالب للصفر.`) });
+  await g.choice({ options: ['E (−3)', 'A (−5)', 'D (−8)', 'C (−9)'], correct: 'E (−3)', hint: T('Negative = below. Which negative is closest to 0?', 'سالب = تحت. أي سالب أقرب للصفر؟'), ok: T('−3 is the negative number closest to 0.', `${L('−3')} هو أقرب عدد سالب للصفر.`) });
 }
 
 /* ---------- Stage 2 · Missions ---------- */
@@ -70,18 +70,18 @@ async function mission1() {                 // lesson 3: the sets of numbers
   const all = [['Counting numbers', 'أعداد العدّ'], ['Natural numbers', 'الأعداد الطبيعية'], ['Integers', 'الأعداد الصحيحة'], ['Rational numbers', 'الأعداد النسبية']];
   for (let i = 0; i < Q.length; i++) {
     const [v, en, ar, okEn, okAr] = Q[i];
-    g.say(T(`Mission 1: sets inside sets. Which is the BEST (smallest) set for the number ${kw(v)}?`, `المهمة ١: مجموعات جوه مجموعات. أنهي أنسب (أصغر) مجموعة للعدد ${kw(L(v))}؟`), i ? 'think' : 'point');
+    g.say(T(`Mission 1: sets inside sets. Which is the BEST (smallest) set for the number ${kw(v)}?`, `المهمة ١: مجموعات جوه مجموعات. ما أنسب (أصغر) مجموعة للعدد ${kw(L(v))}؟`), i ? 'think' : 'point');
     await g.choice({ options: all.map(([e, a]) => T(e, a)), correct: T(en, ar), hint: T('Start from the middle circle and go out.', 'ابدأ من الدايرة اللي في النص وروح لبره.'), ok: T(okEn, okAr) });
   }
 }
 async function mission2() {                 // lesson 4: order the points
   const pts = [{ v: 2.1, l: 'A', show: '2.1' }, { v: 1.4, l: 'B', show: '1.4' }, { v: -3.25, l: 'C', show: '−3 1/4' }, { v: -1.875, l: 'D', show: '−1 7/8' }, { v: -2.5, l: 'E', show: '−2 1/2' }];
   line(-4, 4, pts, { lab: 1 }); g.paint();
-  g.say(T('Mission 2: the points are 2.1, 1.4, −3 1/4, −1 7/8 and −2 1/2. Which point is the LEAST?', 'المهمة ٢: النقط هي ' + L('2.1') + ' و' + L('1.4') + ' و' + L('−3 1/4') + ' و' + L('−1 7/8') + ' و' + L('−2 1/2') + '. أنهي نقطة هي الأصغر؟'), 'point');
+  g.say(T('Mission 2: the points are 2.1, 1.4, −3 1/4, −1 7/8 and −2 1/2. Which point is the LEAST?', 'المهمة ٢: النقط هي ' + L('2.1') + ' و' + L('1.4') + ' و' + L('−3 1/4') + ' و' + L('−1 7/8') + ' و' + L('−2 1/2') + '. أي نقطة هي الأصغر؟'), 'point');
   await g.choice({ options: [T('C (−3 1/4)', 'ج (' + L('−3 1/4') + ')'), T('E (−2 1/2)', 'هـ (' + L('−2 1/2') + ')'), T('D (−1 7/8)', 'د (' + L('−1 7/8') + ')'), T('B (1.4)', 'ب (' + L('1.4') + ')')], correct: T('C (−3 1/4)', 'ج (' + L('−3 1/4') + ')'), hint: T('The least is the one farthest to the left.', 'الأصغر هو اللي أبعد على الشمال.'), ok: T('The number farthest to the left is the least: −3 1/4.', `العدد اللي أبعد على الشمال هو الأصغر: ${L('−3 1/4')}.`) });
-  g.say(T('Now read the line from left to right. Which point is the third one from the left?', 'دلوقتي اقرا الخط من الشمال لليمين. أنهي نقطة هي التالتة من الشمال؟'), 'think');
+  g.say(T('Now read the line from left to right. Which point is the third one from the left?', 'دلوقتي اقرا الخط من الشمال لليمين. أي نقطة هي التالتة من الشمال؟'), 'think');
   await g.choice({ options: [T('D (−1 7/8)', 'د (' + L('−1 7/8') + ')'), T('E (−2 1/2)', 'هـ (' + L('−2 1/2') + ')'), T('B (1.4)', 'ب (' + L('1.4') + ')'), T('A (2.1)', 'أ (' + L('2.1') + ')')], correct: T('D (−1 7/8)', 'د (' + L('−1 7/8') + ')'), hint: T('From the left: −3 1/4, −2 1/2, …', 'من الشمال: ' + L('−3 1/4') + '، ' + L('−2 1/2') + '، …'), ok: T('In ascending order: −3 1/4, −2 1/2, −1 7/8, 1.4, 2.1.', `بالترتيب التصاعدي: ${L('−3 1/4, −2 1/2, −1 7/8, 1.4, 2.1')}.`) });
-  g.say(T('Which number lies between −2 1/2 and −1 7/8?', 'أنهي عدد بين ' + L('−2 1/2') + ' و' + L('−1 7/8') + '؟'), 'think');
+  g.say(T('Which number lies between −2 1/2 and −1 7/8?', 'أي عدد بين ' + L('−2 1/2') + ' و' + L('−1 7/8') + '؟'), 'think');
   await g.choice({ options: ['−2', '−3', '−1 3/4', '−2 3/4'], correct: '−2', hint: T('−2.5 < ? < −1.875', L('−2.5 < ? < −1.875')), ok: T('−2 is greater than −2.5 and less than −1.875.', `${L('−2')} أكبر من ${L('−2.5')} وأصغر من ${L('−1.875')}.`) });
 }
 async function mission3() {                 // lessons 5-6: absolute value
@@ -89,8 +89,8 @@ async function mission3() {                 // lessons 5-6: absolute value
   g.say(T('Mission 3: the absolute value of a number is its distance from 0. How far from 0 is −6, so what is |−6|?', 'المهمة ٣: القيمة المطلقة للعدد هي بُعده عن الصفر. كام بُعد ' + L('−6') + ' عن الصفر، يعني كام ' + L('|−6|') + '؟'), 'point');
   await g.choice({ options: ['6', '−6', '0', '12'], correct: '6', hint: T('Count the units from 0.', 'عُد الوحدات من الصفر.'), ok: T('|−6| = 6 and |6| = 6: opposites have the same absolute value.', `${L('|−6| = 6')} و${L('|6| = 6')}: المتعاكسين ليهم نفس القيمة المطلقة.`) });
   line(-40, 0, [{ v: -33, l: 'B' }, { v: -17, l: 'A' }], { lab: 10 }); g.paint();
-  g.say(T('Freezer A is −17 °C and Freezer B is −33 °C. Which freezer is COLDER?', 'الفريزر أ على ' + L('−17 °C') + ' والفريزر ب على ' + L('−33 °C') + '. أنهي فريزر أبرد؟'), 'think');
-  await g.choice({ options: [T('Freezer B', 'الفريزر ب'), T('Freezer A', 'الفريزر أ'), T('The same', 'نفس الدرجة')], correct: T('Freezer B', 'الفريزر ب'), hint: T('Which one is farther below zero?', 'أنهي واحد أبعد تحت الصفر؟'), ok: T('−33 is farther below zero: it is the colder one (the greater absolute value) and also the lesser number.', `${L('−33')} أبعد تحت الصفر: هو الأبرد (قيمته المطلقة أكبر) وهو كمان العدد الأصغر.`) });
+  g.say(T('Freezer A is −17 °C and Freezer B is −33 °C. Which freezer is COLDER?', 'الفريزر أ على ' + L('−17 °C') + ' والفريزر ب على ' + L('−33 °C') + '. أي فريزر أبرد؟'), 'think');
+  await g.choice({ options: [T('Freezer B', 'الفريزر ب'), T('Freezer A', 'الفريزر أ'), T('The same', 'نفس الدرجة')], correct: T('Freezer B', 'الفريزر ب'), hint: T('Which one is farther below zero?', 'أيها أبعد تحت الصفر؟'), ok: T('−33 is farther below zero: it is the colder one (the greater absolute value) and also the lesser number.', `${L('−33')} أبعد تحت الصفر: هو الأبرد (قيمته المطلقة أكبر) وهو كمان العدد الأصغر.`) });
   g.say(T('You borrowed 6.50 LE from Naglaa and 3.25 LE from Rawan. Rawan says −3.25 > 6.50, so you owe her more. Who is right?', 'استلفت ' + L('6.50') + ' جنيه من نجلاء و' + L('3.25') + ' جنيه من روان. روان بتقول ' + L('−3.25 > 6.50') + ' يعني مديون لها بأكتر. مين صح؟'), 'think');
   await g.choice({ options: [T('No: you owe Naglaa more, 6.50 > 3.25', 'لأ: مديون لنجلاء بأكتر، ' + L('6.50 > 3.25')), T('Yes: −3.25 is greater', 'أيوه: ' + L('−3.25') + ' أكبر'), T('You owe both the same', 'مديون للاتنين بنفس القدر')],
     correct: T('No: you owe Naglaa more, 6.50 > 3.25', 'لأ: مديون لنجلاء بأكتر، ' + L('6.50 > 3.25')), hint: T('Compare the amounts, their absolute values.', 'قارن المبالغ، يعني القيم المطلقة.'), ok: T('−3.25 < 6.50, and the amount owed is the absolute value: 6.50 is more than 3.25.', `${L('−3.25 < 6.50')}، والمبلغ المطلوب هو القيمة المطلقة: ${L('6.50')} أكتر من ${L('3.25')}.`) });
@@ -104,7 +104,7 @@ const WHY = { '<': T('It is to the left, so it is less.', 'هو على الشم�
 async function stage3() {
   Object.assign(sc, { pic: null, cap: '' }); g.paint();
   await g.speedRound({ items: ITEMS.map(([t, r]) => ({ t: L(t), ans: r, why: WHY[r] })), rounds: 8, ms: 11000, buttons: BT,
-    ask: T('Which symbol?', 'أنهي علامة؟'), intro: T('Speed Round! Two numbers come in. Press the symbol that makes the statement true: <, > or =.', 'جولة السرعة! هيظهرلك عددين. اضغط على العلامة اللي بتخلّي الجملة صح: أصغر من، أكبر من أو يساوي.'),
+    ask: T('Which symbol?', 'أي علامة؟'), intro: T('Speed Round! Two numbers come in. Press the symbol that makes the statement true: <, > or =.', 'جولة السرعة! هيظهرلك عددين. اضغط على العلامة اللي بتخلّي الجملة صح: أصغر من، أكبر من أو يساوي.'),
     think: T('Less, greater or equal?', 'أصغر ولا أكبر ولا يساوي؟') });
 }
 

@@ -66,7 +66,7 @@ async function stage1() {
   g.say(T(`Welcome, city planner! Here is a plan of a city seen from above. A new <b>factory</b> must be built. Tap the best zone for it.`, P(`أهلًا يا مخطط المدينة! ده مخطط مدينة من فوق. لازم نبني <b>مصنع</b> جديد. اضغط على أنسب منطقة ليه.`, `أهلًا يا مخططة المدينة! ده مخطط مدينة من فوق. لازم نبني <b>مصنع</b> جديد. اضغطي على أنسب منطقة ليه.`)), 'point');
   await g.spot(landRings(), 'factory', { hint: T('Factories are built away from the homes.', 'المصانع بتتبني بعيد عن البيوت.'),
     ok: T(`Industrial areas are on the ${kw('outskirts')} of cities, away from homes, to reduce pollution.`, `المناطق الصناعية على ${kw('أطراف')} المدن وبعيدة عن البيوت لتقليل التلوث.`) });
-  g.say(T('Which zone produces our crops and food, and is a national wealth?', 'أنهي منطقة بتنتج المحاصيل والغذاء وتُعد ثروة قومية؟'), 'think');
+  g.say(T('Which zone produces our crops and food, and is a national wealth?', 'أي منطقة بتنتج المحاصيل والغذاء وتُعد ثروة قومية؟'), 'think');
   await g.spot(landRings(), 'farm', { hint: T('Look for the green fields.', 'دوّر على الحقول الخضرا.'),
     ok: T('Agricultural areas are a national wealth we must protect.', 'المناطق الزراعية ثروة قومية لازم نحافظ عليها.') });
   g.say(T('People want a place to walk that also cleans the air. Tap it.', 'الناس عايزة مكان للتنزه ويكمان بينقّي الهوا. اضغط عليه.'), 'think');
@@ -88,7 +88,7 @@ async function mission1() {                 // lesson 2: old and new
     ok: T('Long ago people used simple tools, like kerosene lamps. Today we use electricity.', 'زمان الناس استخدمت أدوات بسيطة زي مصابيح الكيروسين. النهارده بنستخدم الكهرباء.') });
   set('tn', { set: 'train', flip: true });
   g.say(T('Tap the <b>modern</b> train. Modern transport is fast, safe and kind to the environment.', 'اضغط على القطار <b>الحديث</b>. المواصلات الحديثة سريعة وآمنة ومش بتضر البيئة.'), 'think');
-  await g.spot(tnRings(true), 'new', { hint: T('Which train looks faster?', 'أنهي قطر شكله أسرع؟'),
+  await g.spot(tnRings(true), 'new', { hint: T('Which train looks faster?', 'أي قطر شكله أسرع؟'),
     ok: T('The modern train joins speed, efficiency and safety. The metro, electric train and BRT are modern too.', 'القطار الحديث بيجمع السرعة والكفاءة والأمان. ومترو الأنفاق والقطار الكهربائي والأتوبيس الترددي كمان حديثين.') });
   set('blank');
   g.say(T('Why does the state build new cities in the desert?', 'ليه الدولة بتبني مدن جديدة في الصحرا؟'), 'think');
@@ -100,22 +100,22 @@ async function mission2() {                 // lesson 3: service places
   g.say(T('Mission 2: the service places. Fire! Tap the place that puts out fires.', 'المهمة ٢: الأماكن الخدمية. حريق! اضغط على المكان اللي بيطفّي الحرائق.'), 'point');
   await g.spot(servRings(), 'fire', { hint: T('Look for the red building.', 'دوّر على المبنى الأحمر.'),
     ok: T('The civil defense centre puts out fires, rescues people and helps after disasters like earthquakes.', 'مركز الحماية المدنية بيطفّي الحرائق وينقذ الناس ويساعد وقت الكوارث زي الزلازل.') });
-  g.say(T('Someone needs help with traffic. Which place organises traffic?', 'في زحمة مرور. أنهي مكان بينظّم المرور؟'), 'think');
+  g.say(T('Someone needs help with traffic. Which place organises traffic?', 'في زحمة مرور. أي مكان بينظّم المرور؟'), 'think');
   await g.spot(servRings(), 'police', { hint: T('This place keeps security and order.', 'المكان ده بيحفظ الأمن والنظام.'),
     ok: T('The police keep security, catch lawbreakers, organise traffic and issue official documents.', 'الشرطة بتحفظ الأمن وتضبط المخالفين وتنظّم المرور وتصدر الوثائق الرسمية.') });
   g.say(T('A sick child needs a check-up. Where do we go?', 'طفل تعبان محتاج كشف. نروح فين؟'), 'think');
   await g.spot(servRings(), 'hospital', { hint: T('Where do doctors work?', 'فين بيشتغل الأطباء؟'),
     ok: T('Hospitals give health services: check-ups and treatment.', 'المستشفيات بتقدم خدمات صحية: كشف وعلاج.') });
-  g.say(T('We want to buy food and school supplies. Which place gives trade services?', 'عايزين نشتري أكل وأدوات مدرسية. أنهي مكان بيقدم خدمات تجارية؟'), 'think');
+  g.say(T('We want to buy food and school supplies. Which place gives trade services?', 'عايزين نشتري أكل وأدوات مدرسية. أي مكان بيقدم خدمات تجارية؟'), 'think');
   await g.spot(servRings(), 'market', { hint: T('Where do we shop?', 'فين بنتسوق؟'),
     ok: T('Markets give trade services. Buy only what you need, and the state watches prices.', 'الأسواق بتقدم خدمات تجارية. اشتري اللي تحتاجه بس، والدولة بتراقب الأسعار.') });
 }
 async function mission3() {                 // lesson 4: the future city
   set('blank');
-  g.say(T('Mission 3: the city of the future. Which tool turns sunlight into electricity?', 'المهمة ٣: مدينة المستقبل. أنهي أداة بتحوّل ضوء الشمس لكهرباء؟'), 'point');
+  g.say(T('Mission 3: the city of the future. Which tool turns sunlight into electricity?', 'المهمة ٣: مدينة المستقبل. أي أداة بتحوّل ضوء الشمس لكهرباء؟'), 'point');
   await g.choice({ options: ['الألواح الشمسية', 'البطاريات', 'المصابيح الكهربية', 'المولدات'], correct: 'الألواح الشمسية', hint: T('The name has the word sun in it.', 'اسمها فيه كلمة شمس.'),
     ok: T(`${kw('Solar panels')} make electricity for lights, devices and electric cars.`, `${kw('الألواح الشمسية')} بتعمل كهرباء للإضاءة والأجهزة والسيارات الكهربائية.`) });
-  g.say(T('Cooperating to finish work fast, as one team. Which value is that?', 'نتعاون وننجز الشغل بسرعة كفريق واحد. دي أنهي قيمة؟'), 'think');
+  g.say(T('Cooperating to finish work fast, as one team. Which value is that?', 'نتعاون وننجز الشغل بسرعة كفريق واحد. دي أي قيمة؟'), 'think');
   await g.choice({ options: ['التعاون', 'التسامح', 'الكرم', 'الانتماء الوطني'], correct: 'التعاون', hint: T('Working together.', 'شغل مع بعض.'),
     ok: T(`${kw('Cooperation')}. We keep the values of our long history: cooperation, tolerance, respect and belonging.`, `${kw('التعاون')}. بنتمسك بقيم تاريخنا العريق: التعاون والتسامح والاحترام والانتماء.`) });
 }
@@ -144,7 +144,7 @@ async function stage3() {
   set('blank');
   await g.speedRound({ items: ST.map(([a, r]) => ({ t: `<span dir="rtl" lang="ar">${a}</span>`, ans: r, why: WHY[r] })), rounds: 8, ms: 10000,
     buttons: [{ label: T('Education', 'تعليمية'), value: 'e', c: 0 }, { label: T('Health', 'صحية'), value: 'h', c: 1 }, { label: T('Security', 'أمنية'), value: 's', c: 2 }, { label: T('Trade', 'تجارية'), value: 't', c: 3 }],
-    ask: T('Which kind of service?', 'أنهي نوع خدمة؟'),
+    ask: T('Which kind of service?', 'أي نوع خدمة؟'),
     intro: T('Speed Round! A place or a job comes in. Press the kind of service it gives: education, health, security or trade.', 'جولة السرعة! هيظهر مكان أو مهمة. اضغط على نوع الخدمة اللي بيقدمها: تعليمية أو صحية أو أمنية أو تجارية.'),
     think: T('What does it give us?', 'بيقدم لنا إيه؟') });
 }

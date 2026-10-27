@@ -89,7 +89,7 @@ async function stage1() {
   g.say(T('Tap the <b>Tropic of Cancer</b>, at 23.5° north of the equator.', 'اضغط على <b>مدار السرطان</b>، اللي على ' + L('23.5°') + ' شمال دائرة الاستواء.'), 'point');
   await g.spot(globeRings(['cancer', 'capricorn', 'arctic', 'antarctic']), 'cancer', { hint: T('It is the first circle north of the equator.', 'هي أول دايرة شمال الاستواء.'),
     ok: T('The Tropic of Cancer is 23.5° north; the Tropic of Capricorn is 23.5° south.', `مدار السرطان ${L('23.5°')} شمالًا، ومدار الجدي ${L('23.5°')} جنوبًا.`) });
-  g.say(T('Which circle is at 66.5° north of the equator?', 'أنهي دايرة على ' + L('66.5°') + ' شمال دائرة الاستواء؟'), 'think');
+  g.say(T('Which circle is at 66.5° north of the equator?', 'أي دايرة على ' + L('66.5°') + ' شمال دائرة الاستواء؟'), 'think');
   await g.choice({ options: ['الدائرة القطبية الشمالية', 'الدائرة القطبية الجنوبية', 'مدار السرطان', 'مدار الجدي'], correct: 'الدائرة القطبية الشمالية', hint: T('Near the north pole.', 'قريبة من القطب الشمالي.'),
     ok: T(`It is the ${kw('Arctic Circle')}. The Antarctic Circle has the same degree, 66.5°, but south of the equator.`, `دي ${kw('الدائرة القطبية الشمالية')}. والجنوبية لها نفس الدرجة ${L('66.5°')} لكن جنوب الاستواء.`) });
 
@@ -97,7 +97,7 @@ async function stage1() {
   g.say(T('Now Egypt. Egypt lies between latitude circles 22° and 31°36′. Is it north or south of the equator?', 'دلوقتي مصر. مصر بين دائرتي عرض ' + L('22°') + ' و' + L('31°36′') + '. هي شمال ولا جنوب دائرة الاستواء؟'), 'point');
   await g.choice({ options: ['شمال', 'جنوب'], correct: 'شمال', hint: T('Both degrees are north.', 'الدرجتين شمالية.'),
     ok: T(`Egypt is ${kw('north')} of the equator, in the northern half of the Earth.`, `مصر ${kw('شمال')} دائرة الاستواء، في نصف الكرة الشمالي.`) });
-  g.say(T('Which latitude circle passes through the south of Egypt?', 'أنهي دايرة عرض بتمر بجنوب مصر؟'), 'think');
+  g.say(T('Which latitude circle passes through the south of Egypt?', 'أي دايرة عرض بتمر بجنوب مصر؟'), 'think');
   await g.choice({ options: ['مدار السرطان', 'مدار الجدي', 'دائرة الاستواء', 'الدائرة القطبية الشمالية'], correct: 'مدار السرطان', hint: T('The dashed line on the map.', 'الخط المتقطع على الخريطة.'),
     ok: T(`The ${kw('Tropic of Cancer')} passes through the south of Egypt.`, `${kw('مدار السرطان')} بيمر بجنوب مصر.`) });
 }
@@ -121,13 +121,13 @@ async function mission2() {                 // lesson 2: the four relief units
   g.say(T('Tap the desert rich in <b>gold</b>, with oil and natural gas.', 'اضغط على الصحراء الغنية بـ<b>الذهب</b>، وفيها البترول والغاز الطبيعي.'), 'think');
   await g.spot(regionRings(['west', 'east', 'sinai']), 'east', { hint: T('It lies between the Nile and the Red Sea.', 'بين النيل والبحر الأحمر.'),
     ok: T(`The ${kw('Eastern Desert')} is a mountainous plateau rich in minerals.`, `${kw('الصحراء الشرقية')} صحراء جبلية هضبية غنية بالمعادن.`) });
-  g.say(T('Mount St Catherine and Mount Moses are in the south of which unit?', 'جبل سانت كاترين وجبل موسى في جنوب أنهي وحدة؟'), 'think');
+  g.say(T('Mount St Catherine and Mount Moses are in the south of which unit?', 'جبل سانت كاترين وجبل موسى في جنوب أي وحدة؟'), 'think');
   await g.spot(regionRings(['west', 'east', 'sinai', 'delta']), 'sinai', { hint: T('A peninsula east of the Suez Canal.', 'شبه جزيرة شرق قناة السويس.'),
     ok: T(`The south of ${kw('Sinai')} has rugged mountains such as Mount St Catherine.`, `جنوب ${kw('سيناء')} فيه جبال وعرة زي جبل سانت كاترين.`) });
   g.say(T('Tap the triangle of fertile land made by the Nile silt at its mouth.', 'اضغط على المثلث من الأرض الخصبة اللي كوّنها طمي النيل عند المصب.'), 'point');
   await g.spot(regionRings(['delta', 'valley', 'fayoum']), 'delta', { hint: T('It is in the north.', 'هو في الشمال.'),
     ok: T(`The ${kw('Nile Delta')} is about half of the farmland.`, `${kw('دلتا النيل')} حوالي نصف مساحة الأراضي الزراعية.`) });
-  g.say(T('Which of these gets Nile water through the Bahr Yusuf canal?', 'أنهي منهم بتوصله مياه النيل عن طريق ترعة بحر يوسف؟'), 'think');
+  g.say(T('Which of these gets Nile water through the Bahr Yusuf canal?', 'أيها بتوصله مياه النيل عن طريق ترعة بحر يوسف؟'), 'think');
   await g.spot(regionRings(['delta', 'valley', 'fayoum']), 'fayoum', { hint: T('A depression in the Western Desert.', 'منخفض في الصحراء الغربية.'),
     ok: T(`The ${kw('Fayoum depression')} receives Nile water and silt through the Bahr Yusuf canal.`, `${kw('منخفض الفيوم')} بتوصله مياه النيل والطمي عن طريق ترعة بحر يوسف.`) });
 }
@@ -155,7 +155,7 @@ async function mission4() {                 // lesson 3: the sun's rays, the sea
   g.say(T('What makes the four seasons follow one another regularly?', 'إيه اللي بيخلّي الفصول الأربعة تتعاقب بانتظام؟'), 'think');
   await g.choice({ options: ['دوران الأرض حول الشمس', 'دوران الأرض حول نفسها', 'ارتفاع الجبال', 'القرب من البحر'], correct: 'دوران الأرض حول الشمس', hint: T('It takes 365 and a quarter days.', 'بياخد ' + L('365') + ' يوم وربع.'),
     ok: T(`The Earth goes round the Sun once every ${kw('365¼')} days: the annual cycle.`, `الأرض بتدور حول الشمس مرة كل ${kw(L('365'))} يوم وربع: الدورة السنوية.`) });
-  g.say(T('In which season do the Khamasin winds, carrying sand and dust, blow?', 'في أنهي فصل بتهب رياح الخماسين المحمّلة بالرمال والأتربة؟'), 'point');
+  g.say(T('In which season do the Khamasin winds, carrying sand and dust, blow?', 'في أي فصل بتهب رياح الخماسين المحمّلة بالرمال والأتربة؟'), 'point');
   await g.choice({ options: ['الربيع', 'الشتاء', 'الصيف', 'الخريف'], correct: 'الربيع', hint: T('The sun’s rays are on the equator and the weather is moderate.', 'الشمس على الاستواء والجو معتدل.'),
     ok: T(`In ${kw('spring')}. The Khamasin winds can cause respiratory diseases and harm crops.`, `في ${kw('الربيع')}. والخماسين ممكن تسبب أمراض الجهاز التنفسي وتضر المحاصيل.`) });
   set('climate');
@@ -171,13 +171,13 @@ async function mission5() {                 // lesson 4: natural plants and wild
   g.say(T('Mission 5: natural plants and wild animals. Tap the environment where <b>papyrus</b> grows, the water plant the ancient Egyptians made paper from.', 'المهمة ٥: النباتات الطبيعية والحيوانات البرية. اضغط على البيئة اللي بينمو فيها <b>البردي</b>، النبات المائي اللي صنع منه المصريون القدماء الورق.'), 'point');
   await g.spot(envRings(), 'envNile', { hint: T('It grows in swamps and on the banks of the Nile.', 'بينمو في المستنقعات وعلى ضفاف النيل.'),
     ok: T(`${kw('Papyrus')} grows in the Nile valley, the delta and Fayoum.`, `${kw('البردي')} بينمو في وادي النيل والدلتا والفيوم.`) });
-  g.say(T('Which animals live in the Egyptian deserts and can bear hunger and thirst? (Look at the desert in the picture.)', 'أنهي حيوانات بتعيش في الصحاري المصرية وبتتحمل الجوع والعطش؟ (بص على الصحراء في الصورة)'), 'think');
+  g.say(T('Which animals live in the Egyptian deserts and can bear hunger and thirst? (Look at the desert in the picture.)', 'أي الحيوانات بتعيش في الصحاري المصرية وبتتحمل الجوع والعطش؟ (بص على الصحراء في الصورة)'), 'think');
   await g.choice({ options: ['الإبل والغزلان والزواحف', 'طائر النورس والأرانب البرية', 'أبو قردان والفئران', 'الثعالب والذئاب'], correct: 'الإبل والغزلان والزواحف', hint: T('Think of the desert.', 'فكّر في الصحراء.'),
     ok: T(`${kw('Camels, gazelles and reptiles')} live in the deserts.`, `${kw('الإبل والغزلان والزواحف')} بتعيش في الصحاري.`) });
   g.say(T('Tap the environment where the <b>mangrove</b> tree and the seagull live.', 'اضغط على البيئة اللي بيعيش فيها شجر <b>المانجروف</b> وطائر النورس.'), 'think');
   await g.spot(envRings(), 'envCoast', { hint: T('Their plants bear salty soil.', 'نباتاتها بتتحمل الملوحة.'),
     ok: T(`The ${kw('coastal areas')}: their plants bear salt and sandy soil.`, `${kw('المناطق الساحلية')}: نباتاتها بتتحمل الأملاح والتربة الرملية.`) });
-  g.say(T('Which of these is a danger to wild animals?', 'أنهي من دول خطر على الحيوانات البرية؟'), 'point');
+  g.say(T('Which of these is a danger to wild animals?', 'أي مما يلي خطر على الحيوانات البرية؟'), 'point');
   await g.choice({ options: ['الصيد الجائر', 'إنشاء المحميات الطبيعية', 'نشر الوعي', 'إصدار القوانين'], correct: 'الصيد الجائر', hint: T('It leads to extinction.', 'بيؤدي للانقراض.'),
     ok: T(`${kw('Over-hunting')} leads to extinction. Nature reserves, laws and awareness are the state’s efforts to protect them.`, `${kw('الصيد الجائر')} بيؤدي لانقراض الحيوانات. أما المحميات والقوانين والتوعية فهي جهود الدولة لحمايتها.`) });
   set('env');

@@ -103,14 +103,14 @@ async function mission1() {                 // lesson 1: the minerals (pages 68-
     'An oasis in the Western Desert, not Siwa.', 'واحة في الصحراء الغربية، مش سيوة.', 'The Bahariya Oasis in the Western Desert.', `${kw('الواحات البحرية')} بالصحراء الغربية.`);
   await spotSet('trEnergy', 'gold', 'Gold is a rare mineral, used for jewelry and in treating some diseases. Tap the gold.', 'الذهب معدن نادر، بيُستخدم في صناعة الحلي وفي علاج بعض الأمراض. اضغط على الذهب.', 'The shiny yellow lump.', 'الكتلة الصفرا اللامعة.', 'Gold comes from the Sukari mine.', `الذهب من ${kw('منجم السكري')} بالصحراء الشرقية.`);
   set('photo', { sub: 'gold' });
-  await ask('Which mine gives us gold?', 'أنهي منجم بيطلع منه الذهب؟', [op('منجم السكري', 'The Sukari mine'), op('أم بجمة', 'Umm Bogma'), op('أبو طرطور', 'Abu Tartur')], op('منجم السكري', 'The Sukari mine'),
+  await ask('Which mine gives us gold?', 'أي منجم بيطلع منه الذهب؟', [op('منجم السكري', 'The Sukari mine'), op('أم بجمة', 'Umm Bogma'), op('أبو طرطور', 'Abu Tartur')], op('منجم السكري', 'The Sukari mine'),
     'It is in the Eastern Desert.', 'في الصحراء الشرقية.', 'The Sukari mine.', `${kw('منجم السكري')} بالصحراء الشرقية.`);
   const buttons = [{ label: T('Copper', 'النحاس'), value: 'c', c: 0 }, { label: T('Phosphate', 'الفوسفات'), value: 'p', c: 2 }, { label: T('Manganese', 'المنجنيز'), value: 'm', c: 3 }];
   await sortCards(buttons, [
     ['أسلاك الكهرباء والسبائك', 'c', ['Copper makes electric wires and alloys.', 'النحاس في أسلاك الكهرباء والسبائك.']], ['محافظة البحر الأحمر', 'c', ['Copper comes from the Red Sea Governorate.', 'النحاس من محافظة البحر الأحمر.']],
     [['الأسمدة الكيماوية', 'والمبيدات الحشرية'], 'p', ['Phosphate makes fertilizers and pesticides.', 'الفوسفات في الأسمدة والمبيدات.']], ['منطقة أبو طرطور', 'p', ['Phosphate comes from Abu Tartur.', 'الفوسفات من أبو طرطور.']],
     ['الصلب والدهانات', 'm', ['Manganese is used in steel and paints.', 'المنجنيز في الصلب والدهانات.']], ['أم بجمة بسيناء', 'm', ['Manganese comes from Umm Bogma.', 'المنجنيز من أم بجمة.']]],
-    T('Which mineral?', 'ده أنهي معدن؟'));
+    T('Which mineral?', 'ده أي معدن؟'));
   set('card', { lines: ['ترشيد استهلاك المعادن', 'حق للأجيال القادمة'] });
   await ask('Why should we save minerals for the coming generations?', 'ليه لازم نرشّد استهلاك المعادن للأجيال الجاية؟', [op('لأنها موارد غير متجددة', 'They are non-renewable'), op('لأنها لا تنفد', 'They never run out'), op('لأنها رخيصة', 'They are cheap')], op('لأنها موارد غير متجددة', 'They are non-renewable'),
     'Can minerals grow back?', 'المعادن بتتجدد؟', 'Minerals are non-renewable.', `لأنها ${kw('موارد غير متجددة')}.`);
@@ -134,7 +134,7 @@ async function mission2() {                 // lesson 1: the energy sources (pag
   await ask('Zohr, in the Mediterranean north of Port Said, is a famous field of…', 'حقل ظُهر في البحر المتوسط شمال بورسعيد من أشهر حقول…', [op('الغاز الطبيعي', 'Natural gas'), op('الفحم', 'Coal'), op('الذهب', 'Gold')], op('الغاز الطبيعي', 'Natural gas'),
     'We use it at home and to make electricity.', 'بنستخدمه في البيت وفي توليد الكهربا.', 'Natural gas.', `${kw('الغاز الطبيعي')}.`);
   set('card', { lines: ['البنزين والسولار', 'والبلاستيك'] });
-  await ask('Petrol, diesel and plastics come from which source?', 'البنزين والسولار والبلاستيك جايين من أنهي مصدر؟', [op('البترول', 'Petroleum'), op('الفحم', 'Coal'), op('الفوسفات', 'Phosphate')], op('البترول', 'Petroleum'),
+  await ask('Petrol, diesel and plastics come from which source?', 'البنزين والسولار والبلاستيك جايين من أي مصدر؟', [op('البترول', 'Petroleum'), op('الفحم', 'Coal'), op('الفوسفات', 'Phosphate')], op('البترول', 'Petroleum'),
     'It comes from the Gulf of Suez.', 'بيُستخرج من خليج السويس.', 'Petroleum and its products.', `من مشتقات ${kw('البترول')}.`);
   const buttons = [{ label: T('The State', 'دور الدولة'), value: 's', c: 3 }, { label: T('Citizens', 'دور المواطنين'), value: 'c', c: 2 }];
   await sortCards(buttons, [
@@ -157,7 +157,7 @@ async function mission3() {                 // lesson 2: water resources and the
   await ask('What is the main source of fresh water in Egypt?', 'إيه المصدر الأساسي للمياه العذبة في مصر؟', [op('نهر النيل', 'The Nile'), op('الأمطار', 'Rain'), op('البحر المتوسط', 'The Mediterranean')], op('نهر النيل', 'The Nile'),
     'Herodotus called Egypt its gift.', 'هيرودوت قال إن مصر هبته.', 'The Nile, with its branches Damietta and Rosetta.', `${kw('نهر النيل')} وفرعاه دمياط ورشيد.`);
   set('card', { lines: ['ندرة المياه العذبة'] });
-  await ask('Which of these is a cause of fresh water shortage?', 'أنهي واحد من دول سبب لندرة المياه العذبة؟', [op('تزايد عدد السكان', 'A growing population'), op('كثرة الأمطار', 'Too much rain'), op('محطات التحلية', 'Desalination plants')], op('تزايد عدد السكان', 'A growing population'),
+  await ask('Which of these is a cause of fresh water shortage?', 'أي مما يلي سبب لندرة المياه العذبة؟', [op('تزايد عدد السكان', 'A growing population'), op('كثرة الأمطار', 'Too much rain'), op('محطات التحلية', 'Desalination plants')], op('تزايد عدد السكان', 'A growing population'),
     'More people, more water used.', 'ناس أكتر، مية أكتر.', 'More people, little rain, and dams at the sources of the Nile.', `${kw('تزايد عدد السكان')}، وقلة الأمطار، والسدود على منابع النيل.`);
   set('card', { lines: ['تلوث المياه'] });
   await ask('What pollutes the water in Egypt?', 'إيه اللي بيلوّث المية في مصر؟', [op('مخلفات المصانع والسفن', 'Waste from factories and ships'), op('الأمطار الشتوية', 'Winter rain'), op('الأسماك', 'Fish')], op('مخلفات المصانع والسفن', 'Waste from factories and ships'),
@@ -205,8 +205,8 @@ async function stage3() {
     { t: 'محطة العين السخنة', ans: 'w', why: T('Desalination of sea water.', 'تحلية مياه البحر.') }, { t: 'محطة بحر البقر', ans: 'w', why: T('Recycling drainage water.', 'تدوير مياه الصرف.') }];
   await g.speedRound({ items, rounds: 8, ms: 12000,
     buttons: [{ label: T('Farming & fish', 'زراعي وسمكي'), value: 'a', c: 2 }, { label: T('Energy', 'طاقة'), value: 'e', c: 1 }, { label: T('Transport', 'نقل'), value: 't', c: 3 }, { label: T('Water', 'مياه'), value: 'w', c: 0 }],
-    ask: T('Which field?', 'أنهي مجال؟'), intro: T('Speed Round! A project comes in. Press its field. Be quick!', 'جولة السرعة! هيظهر مشروع، اضغط على مجاله. بسرعة!'),
-    think: T('Which field?', 'أنهي مجال؟') });
+    ask: T('Which field?', 'أي مجال؟'), intro: T('Speed Round! A project comes in. Press its field. Be quick!', 'جولة السرعة! هيظهر مشروع، اضغط على مجاله. بسرعة!'),
+    think: T('Which field?', 'أي مجال؟') });
 }
 
 g.run({

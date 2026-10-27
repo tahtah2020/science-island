@@ -75,7 +75,7 @@ async function stage1() {
   g.say(T('Now tap the sea that separates the two wings.', 'دلوقتي اضغط على البحر اللي بيفصل بين الجناحين.'), 'think');
   await g.spot(rings('arabWings', FM, ['redSea', 'asWing', 'afWing']), 'redSea', { hint: T('A long narrow sea between Africa and Asia.', 'بحر طويل وضيق بين إفريقيا وآسيا.'),
     ok: T(`The ${kw('Red Sea')} separates the two wings.`, `${kw('البحر الأحمر')} بيفصل بين جناحَي الوطن العربي.`) });
-  g.say(T('Which is the largest Arab country by area?', 'أنهي أكبر دولة عربية من حيث المساحة؟'), 'think');
+  g.say(T('Which is the largest Arab country by area?', 'ما أكبر دولة عربية من حيث المساحة؟'), 'think');
   await g.choice({ options: ['الجزائر', 'السعودية', 'مصر', 'البحرين'], correct: 'الجزائر', hint: T('It is in the African wing, west of Libya.', 'في الجناح الإفريقي، غرب ليبيا.'),
     ok: T(`${kw('Algeria')} is the largest; ${kw('Bahrain')} is the smallest.`, `${kw('الجزائر')} الأكبر مساحة، و${kw('البحرين')} الأصغر.`) });
 
@@ -86,7 +86,7 @@ async function stage1() {
   g.say(T('Tap the mountains on the northern border.', 'اضغط على الجبال اللي على الحدود الشمالية.'), 'think');
   await g.spot(rings('arabBorders', FM, ['bTaurus', 'bZagros']), 'bTaurus', { hint: T('North of Syria.', 'شمال سوريا.'),
     ok: T(`The ${kw('Taurus mountains')} and the Mediterranean are the northern borders.`, `${kw('جبال طوروس')} والبحر المتوسط هما الحدود الشمالية.`) });
-  g.say(T('Which of these is on the southern border?', 'أنهي من دول من الحدود الجنوبية؟'), 'think');
+  g.say(T('Which of these is on the southern border?', 'أي مما يلي من الحدود الجنوبية؟'), 'think');
   await g.choice({ options: ['الصحراء الكبرى', 'جبال زاجروس', 'البحر المتوسط', 'خليج عُمان'], correct: 'الصحراء الكبرى', hint: T('The Indian Ocean and the Arabian Sea are too.', 'ومعاها المحيط الهندي وبحر العرب.'),
     ok: T(`The ${kw('Great Sahara')}, the Indian Ocean and the Arabian Sea are in the south.`, `${kw('الصحراء الكبرى')} والمحيط الهندي وبحر العرب في الجنوب.`) });
 }
@@ -97,13 +97,13 @@ async function mission1() {                 // lesson 1: water passages and impo
   g.say(T('Mission 1: our homeland controls important water passages. Tap the one that links the Red Sea and the Mediterranean.', 'المهمة ١: وطننا بيتحكم في ممرات مائية مهمة. اضغط على الممر اللي بيربط البحر الأحمر بالبحر المتوسط.'), 'point');
   await g.spot(rings('arabStraits', FM, ['sSuez', 'sMandeb', 'sHormuz', 'sGibraltar']), 'sSuez', { hint: T('It is in Egypt.', 'هو في مصر.'),
     ok: T(`The ${kw('Suez Canal')} links the Red Sea and the Mediterranean.`, `${kw('قناة السويس')} بتربط البحرين الأحمر والمتوسط.`) });
-  g.say(T('Which strait do Yemen and Djibouti overlook?', 'أنهي مضيق بتشرف عليه اليمن وجيبوتي؟'), 'think');
+  g.say(T('Which strait do Yemen and Djibouti overlook?', 'أي مضيق بتشرف عليه اليمن وجيبوتي؟'), 'think');
   await g.spot(rings('arabStraits', FM, ['sSuez', 'sMandeb', 'sHormuz', 'sGibraltar']), 'sMandeb', { hint: T('At the south end of the Red Sea.', 'عند الطرف الجنوبي للبحر الأحمر.'),
     ok: T(`${kw('Bab el-Mandeb')}. Gibraltar links the Mediterranean and the Atlantic; Oman overlooks Hormuz.`, `${kw('مضيق باب المندب')}. وجبل طارق بيربط المتوسط بالأطلنطي، وعمان بتشرف على هرمز.`) });
-  g.say(T('Controlling these passages gives the Arab homeland which kind of importance?', 'التحكم في الممرات دي بيدّي الوطن العربي أهمية من أنهي نوع؟'), 'think');
+  g.say(T('Controlling these passages gives the Arab homeland which kind of importance?', 'التحكم في الممرات دي بيدّي الوطن العربي أهمية من أي نوع؟'), 'think');
   await g.choice({ options: ['إستراتيجية', 'دينية', 'حضارية'], correct: 'إستراتيجية', hint: T('It matters a lot in times of war.', 'بتفرق جدًّا وقت الحروب.'),
     ok: T(`${kw('Strategic')} importance, great in wars and international conflicts.`, `أهمية ${kw('إستراتيجية')}، كبيرة وقت الحروب والصراعات الدولية.`) });
-  g.say(T('The Kaaba, Al-Aqsa Mosque and the Church of the Nativity show which importance?', 'الكعبة المشرفة والمسجد الأقصى وكنيسة المهد بيدلّوا على أنهي أهمية؟'), 'point');
+  g.say(T('The Kaaba, Al-Aqsa Mosque and the Church of the Nativity show which importance?', 'الكعبة المشرفة والمسجد الأقصى وكنيسة المهد بيدلّوا على أي أهمية؟'), 'point');
   await g.choice({ options: ['دينية', 'اقتصادية', 'إستراتيجية'], correct: 'دينية', hint: T('The homeland is the cradle of three religions.', 'الوطن العربي مهد الديانات السماوية الثلاث.'),
     ok: T(`${kw('Religious')} importance: the cradle of the three heavenly religions.`, `أهمية ${kw('دينية')}: مهد الديانات السماوية الثلاث.`) });
 }
@@ -163,10 +163,10 @@ async function mission5() {                 // lesson 4: environmental challenge
   g.say(T('Mission 5: environmental challenges. Tap the problem we face with dams and flood channels.', 'المهمة ٥: التحديات البيئية. اضغط على المشكلة اللي بنواجهها بالسدود ومخرات السيول.'), 'point');
   await g.spot(envRings(), 'eFlood', { hint: T('Sudden heavy rain flowing fast in valleys.', 'أمطار غزيرة فجائية بتجري بسرعة في الأودية.'),
     ok: T(`${kw('Floods')}. The ancient Egyptians dug flood channels to protect temples and tombs.`, `${kw('السيول')}. والمصريين القدماء عملوا مخرات للسيول عشان يحموا المعابد والمقابر.`) });
-  g.say(T('Cutting trees and overgrazing lead to which problem?', 'قطع الأشجار والرعي الجائر بيؤدوا لأنهي مشكلة؟'), 'think');
+  g.say(T('Cutting trees and overgrazing lead to which problem?', 'قطع الأشجار والرعي الجائر بيؤدوا لأي مشكلة؟'), 'think');
   await g.spot(envRings(), 'eDesertif', { hint: T('Farmland that can no longer produce.', 'أرض زراعية قدرتها على الإنتاج بتقل.'),
     ok: T(`${kw('Desertification')}: farmland loses its ability to produce.`, `${kw('التصحر')}: تناقص قدرة الأراضي الزراعية على الإنتاج.`) });
-  g.say(T('Which solution faces air pollution?', 'أنهي حل بيواجه تلوث الهواء؟'), 'point');
+  g.say(T('Which solution faces air pollution?', 'أي حل بيواجه تلوث الهواء؟'), 'point');
   await g.choice({ options: ['الاعتماد على الطاقة المتجددة', 'حرق النفايات', 'زيادة المصانع الملوثة'], correct: 'الاعتماد على الطاقة المتجددة', hint: T('Clean energy.', 'طاقة نظيفة.'),
     ok: T(`${kw('Renewable energy')}, more green spaces, sustainable transport and recycling.`, `${kw('الطاقة المتجددة')}، وزيادة المساحات الخضراء، والنقل المستدام، وإعادة التدوير.`) });
   g.say(T('How many trees did Egypt’s initiative plan to plant?', 'مبادرة مصر هدفها تزرع كام شجرة؟'), 'think');
@@ -184,7 +184,7 @@ async function stage3() {
   await g.speedRound({ items: ST.map(([a, r]) => ({ t: `<span dir="rtl" lang="ar">${a}</span>`, ans: r,
       why: r === 'af' ? T('African wing.', 'من دول الجناح الإفريقي.') : T('Asian wing.', 'من دول الجناح الآسيوي.') })), rounds: 10, ms: 9000,
     buttons: [{ label: T('African wing', 'الجناح الإفريقي'), value: 'af', c: 0 }, { label: T('Asian wing', 'الجناح الآسيوي'), value: 'as', c: 1 }],
-    ask: T('Which wing?', 'أنهي جناح؟'),
+    ask: T('Which wing?', 'أي جناح؟'),
     intro: T('Speed Round! A country comes in. Press its wing: African or Asian.', 'جولة السرعة! هتظهر دولة. اضغط على جناحها: الإفريقي ولا الآسيوي.'),
     think: T('West or east of the Red Sea?', 'غرب البحر الأحمر ولا شرقه؟') });
 }

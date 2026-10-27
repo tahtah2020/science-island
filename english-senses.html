@@ -107,7 +107,7 @@ async function fillCard(lines, options, correct, sayEn, sayAr, hintEn, hintAr, o
 /* ---------- Stage 1 · Warm Up (lesson 1) ---------- */
 async function stage1() {
   set('senses');
-  g.say(T(`Welcome to Senses Explorer! We have five senses. Which part of your body do you use to <b>hear</b>? Tap it.`, P(`أهلًا في مستكشف الحواس! عندنا ٥ حواس. بتسمع بأنهي جزء في جسمك؟ اضغط عليه.`, `أهلًا في مستكشف الحواس! عندنا ٥ حواس. بتسمعي بأنهي جزء في جسمك؟ اضغطي عليه.`)), 'point');
+  g.say(T(`Welcome to Senses Explorer! We have five senses. Which part of your body do you use to <b>hear</b>? Tap it.`, P(`أهلًا في مستكشف الحواس! عندنا ٥ حواس. بتسمع بأي جزء في جسمك؟ اضغط عليه.`, `أهلًا في مستكشف الحواس! عندنا ٥ حواس. بتسمعي بأي جزء في جسمك؟ اضغطي عليه.`)), 'point');
   await g.spot(sensesRings(), 'ear', { hint: T('We hear music and voices with this part.', 'بنسمع بيه الموسيقى والأصوات.'),
     ok: T(`I ${kw('hear')} with my ${kw('ears')}.`, `${L('I hear with my ears.')} يعني بنسمع بالودان.`) });
   g.say(T('Now tap the part you use to <b>smell</b> a flower.', 'دلوقتي اضغط على الجزء اللي بتشم بيه الوردة.'), 'think');
@@ -168,7 +168,7 @@ async function mission3() {                 // lesson 3: Goha
   await g.choice({ options: ['He was hungry and smelled the soup', 'He wanted to work there', 'He was waiting for a friend'], correct: 'He was hungry and smelled the soup', hint: T('Remember what he smelled.', 'افتكر هو شمّ إيه.'),
     ok: T('Goha was hungry and had no money, so he enjoyed the smell of the soup.', 'جحا كان جعان ومعاهوش فلوس، فاستمتع بريحة الشوربة.') });
   set('goha', { smell: true, owner: true });
-  g.say(T('The restaurant owner was <b>greedy</b>. He said, “You can’t smell the soup for free! You must pay for it!” Which word means “always wanting more than what is needed”?', 'صاحب المطعم كان <b>طمّاع</b>. قال: “مينفعش تشم الشوربة ببلاش! لازم تدفع!” أنهي كلمة معناها “دايمًا عايز أكتر من اللي محتاجه”؟'), 'think');
+  g.say(T('The restaurant owner was <b>greedy</b>. He said, “You can’t smell the soup for free! You must pay for it!” Which word means “always wanting more than what is needed”?', 'صاحب المطعم كان <b>طمّاع</b>. قال: “مينفعش تشم الشوربة ببلاش! لازم تدفع!” أي كلمة معناها “دايمًا عايز أكتر من اللي محتاجه”؟'), 'think');
   await g.choice({ options: ['greedy', 'hungry', 'jingling'], correct: 'greedy', hint: T('The owner wanted money even for a smell.', 'صاحب المطعم عايز فلوس حتى على الريحة.'),
     ok: T(`${kw('Greedy')} means always wanting more than what is needed.`, `${L('Greedy')} معناها دايمًا عايز أكتر من اللي محتاجه.`) });
   set('goha', { smell: true, owner: true, coins: true });
@@ -192,13 +192,13 @@ async function mission4() {                 // lesson 3: pronunciation
 async function mission5() {                 // lesson 4: sequence words
   g.say(T('Mission 5: sequence words show the order of events. They are First, Next, Then, After that and Finally. Let’s read “My Healthy Life”.', 'المهمة ٥: كلمات الترتيب بتوضّح ترتيب الأحداث. وهي First وNext وThen وAfter that وFinally. يلّا نقرا “My Healthy Life”.'), 'point');
   await g.next();
-  await fillCard(['___, I wake up early', 'at 6:00 a.m.'], ['First', 'Finally', 'After school'], 'First', 'Which word starts the routine?', 'أنهي كلمة بتبدأ الروتين؟', 'It comes at the beginning.', 'بتيجي في البداية.',
+  await fillCard(['___, I wake up early', 'at 6:00 a.m.'], ['First', 'Finally', 'After school'], 'First', 'Which word starts the routine?', 'أي كلمة بتبدأ الروتين؟', 'It comes at the beginning.', 'بتيجي في البداية.',
     `We start with ${kw('First')}.`, `بنبدأ بـ ${L('First')}.`);
-  await fillCard(['___, I have a healthy', 'breakfast.'], ['Next', 'Finally', 'After school'], 'Next', 'Which word comes after First?', 'أنهي كلمة بتيجي بعد First؟', 'It comes right after First.', 'بتيجي على طول بعد First.',
+  await fillCard(['___, I have a healthy', 'breakfast.'], ['Next', 'Finally', 'After school'], 'Next', 'Which word comes after First?', 'أي كلمة بتيجي بعد First؟', 'It comes right after First.', 'بتيجي على طول بعد First.',
     `${kw('Next')} comes after First.`, `${L('Next')} بتيجي بعد ${L('First')}.`);
   await fillCard(['___, I have lunch', 'with my family.'], ['After school', 'First', 'Next'], 'After school', 'When does the writer have lunch?', 'الكاتب بيتغدى إمتى؟', 'Lunch is at the end of the school day.', 'الغدا بعد اليوم الدراسي.',
     `The writer has lunch ${kw('after school')}.`, `الكاتب بيتغدى ${L('after school')}.`);
-  await fillCard(['___, I go to bed', 'at 9:00 p.m.'], ['Finally', 'First', 'Then'], 'Finally', 'Which word ends the routine?', 'أنهي كلمة بتنهي الروتين؟', 'It comes at the end.', 'بتيجي في الآخر.',
+  await fillCard(['___, I go to bed', 'at 9:00 p.m.'], ['Finally', 'First', 'Then'], 'Finally', 'Which word ends the routine?', 'أي كلمة بتنهي الروتين؟', 'It comes at the end.', 'بتيجي في الآخر.',
     `The day ends with ${kw('Finally')}.`, `اليوم بينتهي بـ ${L('Finally')}.`);
 }
 async function mission6() {                 // lesson 5: stars and comments
@@ -211,7 +211,7 @@ async function mission6() {                 // lesson 5: stars and comments
   set('stars', { n: 4 });
   g.say(T('And <b>4 stars</b>?', 'و<b>٤ نجوم</b>؟'), 'think');
   await g.choice({ options: ['very good', 'good', 'poor'], correct: 'very good', hint: T('One star less than excellent.', 'أقل من excellent بنجمة.'), ok: T(`4 stars = ${kw('very good')}.`, `${L('4 stars = very good')}.`) });
-  await fillCard(['A friend speaks very quietly.', 'Comment: “___”'], ['Please speak louder', 'Well done', 'Excellent'], 'Please speak louder', 'Which comment helps your friend?', 'أنهي تعليق بيساعد صاحبك؟', 'He needs to speak with a louder voice.', 'محتاج يتكلم بصوت أعلى.',
+  await fillCard(['A friend speaks very quietly.', 'Comment: “___”'], ['Please speak louder', 'Well done', 'Excellent'], 'Please speak louder', 'Which comment helps your friend?', 'أي تعليق بيساعد صاحبك؟', 'He needs to speak with a louder voice.', 'محتاج يتكلم بصوت أعلى.',
     `${kw('Please speak louder')} tells him what to do better.`, `${L('Please speak louder')} بتقوله يحسّن إيه.`);
 }
 async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); }
@@ -227,8 +227,8 @@ async function stage3() {
     { t: 'Colorful butterflies', ans: 'see', why: 'We see with our eyes.' }, { t: 'Smoke from a fire', ans: 'smell', why: 'We smell with our nose.' },
     { t: 'Ice cream on your tongue', ans: 'taste', why: 'We taste with our tongue.' }, { t: 'Something in your bag', ans: 'touch', why: 'We touch with our hands.' }];
   await g.speedRound({ items, buttons, rounds: 8,
-    ask: T('Which sense do you use?', 'بتستخدم أنهي حاسة؟'), intro: T('Speed Round! I say what is around you. Press the sense you use. Be quick!', 'جولة السرعة! هقولك على حاجة حواليك، واضغط على الحاسة اللي بتستخدمها. بسرعة!'),
-    think: T('Which sense?', 'أنهي حاسة؟') });
+    ask: T('Which sense do you use?', 'بتستخدم أي حاسة؟'), intro: T('Speed Round! I say what is around you. Press the sense you use. Be quick!', 'جولة السرعة! هقولك على حاجة حواليك، واضغط على الحاسة اللي بتستخدمها. بسرعة!'),
+    think: T('Which sense?', 'أي حاسة؟') });
 }
 
 g.run({

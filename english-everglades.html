@@ -83,11 +83,11 @@ async function mission3() {                 // page 97: alone in the swamp
 }
 async function mission4() {                 // page 98: learning from the animals
   set('card', { lines: ['She watched the animals', 'closely.'] });
-  g.say(T('Mission 4: Billie watched the animals closely and saw how they survived. Which animal did this?', 'المهمة ٤: بيلي راقبت الحيوانات كويس وشافت إزاي بيعيشوا. أنهي حيوان عمل كده؟'), 'point');
+  g.say(T('Mission 4: Billie watched the animals closely and saw how they survived. Which animal did this?', 'المهمة ٤: بيلي راقبت الحيوانات كويس وشافت إزاي بيعيشوا. أي حيوان عمل كده؟'), 'point');
   await g.next();
   const buttons = [{ label: T('Alligators', 'Alligators'), value: 'a', c: 2 }, { label: T('Turtles', 'Turtles'), value: 't', c: 3 }, { label: T('Birds', 'Birds'), value: 'b', c: 1 }];
   await sortCards(buttons, [[['waited patiently for their food', 'instead of wasting energy'], 'a', 'The alligators waited patiently for their food.'], [['hid in their shells', 'when danger was near'], 't', 'The turtles hid in their shells.'],
-    [['warned each other', 'when an animal came to attack'], 'b', 'The birds warned each other.']], 'card', T('Which animal did this?', 'أنهي حيوان عمل كده؟'));
+    [['warned each other', 'when an animal came to attack'], 'b', 'The birds warned each other.']], 'card', T('Which animal did this?', 'أي حيوان عمل كده؟'));
   set('card', { lines: ['Nature had its own way', 'of teaching.'] });
   await ask('What did Billie learn to do, just like the animals?', 'بيلي اتعلمت تعمل إيه زي الحيوانات؟', ['Catch fish, make a fire and find shelter', 'Fly and hoot', 'Build a big city'], 'Catch fish, make a fire and find shelter', 'She learned to survive.', 'اتعلمت تعيش.', `She learned how to ${kw('catch fish, make a fire, and find shelter')}.`, `${L('catch fish, make a fire, find shelter')}.`);
 }

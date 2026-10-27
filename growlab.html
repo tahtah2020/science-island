@@ -150,7 +150,7 @@ async function stage1() {
   await g.tween(1400, k => { sc.boxY = lerp(0, -150, Math.min(1, k * 2)); sc.grow = k; });
   g.say(T('A week later! Tap the seedling that grew <b>without</b> sunlight.', P('بعد أسبوع! اضغط على الشتلة اللي نمت <b>بدون</b> ضوء الشمس.', 'بعد أسبوع! اضغطي على الشتلة اللي نمت <b>بدون</b> ضوء الشمس.')), 'think');
   await g.spot([{ id: 'A', name: T('Pot A', 'الإناء (أ)'), ring: ring(XA, 150, 74, 110) }, { id: 'B', name: T('Pot B', 'الإناء (ب)'), ring: ring(XB, 150, 74, 110) }], 'B', {
-    hint: T('Which one has yellowish leaves?', 'أنهي واحدة أوراقها مائلة للاصفرار؟'),
+    hint: T('Which one has yellowish leaves?', 'أيها أوراقها مائلة للاصفرار؟'),
     ok: T(`Pot B was in the dark. Its leaves are ${kw('yellowish')} and its stem is ${kw('thin and long')}.`, `الإناء (ب) كان في الظلام. أوراقه ${kw('مائلة للاصفرار')} وساقه ${kw('رفيعة وطويلة')}.`) });
 }
 
@@ -195,9 +195,9 @@ async function mission2() {
   g.say(T('Put both pots in the same sunny place, measure the height every few days… and wait!', 'ضع الإناءين في نفس المكان المشمس، وقِس الارتفاع كل بضعة أيام… واستنَّ!'), 'point');
   await g.next(T('Wait ▸', P('استنى ◂', 'استني ◂')));
   sc.bag = false; await g.tween(1500, k => { sc.grow = k; });
-  g.say(T('Which seedling grew much taller? Tap it!', P('أنهي شتلة طالت أكتر بكتير؟ اضغط عليها!', 'أنهي شتلة طالت أكتر بكتير؟ اضغطي عليها!')), 'think');
+  g.say(T('Which seedling grew much taller? Tap it!', P('أي شتلة طالت أكتر بكتير؟ اضغط عليها!', 'أي شتلة طالت أكتر بكتير؟ اضغطي عليها!')), 'think');
   await g.spot([{ id: 'A', name: T('Pot A', 'الإناء (ب)'), ring: ring(XA, 160, 74, 100) }, { id: 'B', name: T('Pot B', 'الإناء (أ)'), ring: ring(XB, 120, 74, 124) }], 'B', {
-    hint: T('Which pot got fertilizer?', 'أنهي إناء أخد سماد؟'),
+    hint: T('Which pot got fertilizer?', 'أي إناء أخد سماد؟'),
     ok: T(`The seedling with fertilizer is ${kw('taller, bigger and stronger')}. Plants absorb ${kw('nutrients')} from the fertilizer.`, `الشتلة التي أخذت السماد ${kw('أطول وأكبر وأقوى')}. تمتص النباتات ${kw('العناصر الغذائية')} من السماد.`) });
   g.say(T('Fertilizer is like a <b>supplement</b> for plants!', 'السماد مثل <b>المكمّل الغذائي</b> للنباتات!'), 'celebrate');
   await g.next();

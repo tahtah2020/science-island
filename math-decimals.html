@@ -72,7 +72,7 @@ async function stage1() {
     ok: T('The 2 is in the hundredths place: it is worth 0.02.', `الرقم ٢ في خانة الأجزاء من مئة: قيمته ${L('0.02')}.`), reveal: () => { sc.hl = 'hundredths'; g.paint(); } });
   sc.hl = null; g.paint();
   g.say(T('What is the value of the digit <b>5</b> in 34.527?', `إيه قيمة الرقم <b>٥</b> في ${L('34.527')}؟`), 'think');
-  await g.choice({ options: ['0.5', '0.05', '5', '0.005'], correct: '0.5', hint: T('Which place is right after the decimal point?', 'أنهي خانة بعد العلامة العشرية على طول؟'),
+  await g.choice({ options: ['0.5', '0.05', '5', '0.005'], correct: '0.5', hint: T('Which place is right after the decimal point?', 'أي خانة بعد العلامة العشرية على طول؟'),
     ok: T('5 tenths = 0.5. So 34.527 = 30 + 4 + 0.5 + 0.02 + 0.007.', `٥ أجزاء من عشرة = ${L('0.5')}. يعني ${L('34.527 = 30 + 4 + 0.5 + 0.02 + 0.007')}.`), reveal: () => { sc.hl = 'tenths'; g.paint(); } });
 }
 
@@ -90,7 +90,7 @@ async function mission1() {                 // lesson 2: place value shuffle
 }
 async function mission2() {                 // lesson 4: compare
   Object.assign(sc, { mode: 'chart', num: '', cap: '', note: '' }); g.paint();
-  g.say(T(`Mission 2: two crates, ${kw('45.057')} and ${kw('45.100')}. Which sign goes between them?`, `المهمة ٢: صندوقين ${kw(L('45.057'))} و${kw(L('45.100'))}. أنهي علامة تتحط بينهم؟`), 'point');
+  g.say(T(`Mission 2: two crates, ${kw('45.057')} and ${kw('45.100')}. Which sign goes between them?`, `المهمة ٢: صندوقين ${kw(L('45.057'))} و${kw(L('45.100'))}. أي علامة تتحط بينهم؟`), 'point');
   sc.mode = 'chart'; sc.num = '45.057'; sc.note = '45.057  ?  45.100'; g.paint();
   await g.pick({ buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }], correct: '<', points: 20,
     ok: T('45.057 < 45.100: both have 45 ones, but 45.100 has 1 tenth and 45.057 has 0 tenths. More digits does not mean greater!', `${L('45.057 < 45.100')}: الاتنين فيهم ٤٥ آحاد، بس ${L('45.100')} فيه ١ جزء من عشرة و${L('45.057')} فيه صفر. عدد الأرقام الأكتر مش معناه أكبر!`),
@@ -142,7 +142,7 @@ async function stage3() {
   Object.assign(sc, { mode: 'chart', num: '', note: '', cap: '', hl: null }); g.paint();
   await g.speedRound({ items: PAIRS.map(([a, b, r]) => ({ t: `${L(a)} <span style="opacity:.5">?</span> ${L(b)}`, ans: r, why: T(`${a} ${r} ${b}.`, L(`${a} ${r} ${b}`) + '.') })), rounds: 8, ms: 10000,
     buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }],
-    ask: T('Which sign: <, = or >?', 'أنهي علامة: <، = ولا >؟'), intro: T('Speed Round! Two crates come in. Press the sign that fits. Compare place by place, and remember: zeros at the end do not change a decimal.', 'جولة السرعة! صندوقين هيظهروا. اضغط على العلامة المناسبة. قارن خانة خانة، وافتكر: الأصفار في الآخر مبتغيّرش قيمة العدد العشري.'), think: T('Place by place, from the left!', 'خانة خانة من الشمال!') });
+    ask: T('Which sign: <, = or >?', 'أي علامة: <، = ولا >؟'), intro: T('Speed Round! Two crates come in. Press the sign that fits. Compare place by place, and remember: zeros at the end do not change a decimal.', 'جولة السرعة! صندوقين هيظهروا. اضغط على العلامة المناسبة. قارن خانة خانة، وافتكر: الأصفار في الآخر مبتغيّرش قيمة العدد العشري.'), think: T('Place by place, from the left!', 'خانة خانة من الشمال!') });
 }
 
 g.run({

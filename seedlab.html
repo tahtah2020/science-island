@@ -506,7 +506,7 @@ async function stage1() {
   });
   say(T(`Now <b>tap the part that makes up most of the seed</b>.`, G(`دلوقتي <b>اضغط على الجزء الذي يشكّل معظم البذرة</b>.`, `دلوقتي <b>اضغطي على الجزء الذي يشكّل معظم البذرة</b>.`)), 'think');
   await askSpot('cotyledon', {
-    hint: T(`Not that one. Which part is the biggest? Try again!`, G(`مش ده. أنهي جزء هو الأكبر؟ جرّب تاني!`, `مش ده. أنهي جزء هو الأكبر؟ جرّبي تاني!`)),
+    hint: T(`Not that one. Which part is the biggest? Try again!`, G(`مش ده. أي جزء هو الأكبر؟ جرّب تاني!`, `مش ده. أي جزء هو الأكبر؟ جرّبي تاني!`)),
     ok: T(`This is a ${kw('cotyledon')}. It makes up most of the seed. What is packed inside it? Let’s test it!`, `دي ${kw('الفلقة')}. هي الجزء الذي يشكّل معظم البذرة. يا ترى فيها إيه؟ يلّا نختبرها!`)
   });
   say(T(`We use ${kw('iodine solution')} to check if there is starch. Add a drop on the cotyledon and watch the colour.`, G(`بنستخدم ${kw('محلول اليود')} للكشف عن النشا. أضف قطرة واحدة على السطح الداخلي للفلقة، ولاحظ تغيّر اللون.`, `بنستخدم ${kw('محلول اليود')} للكشف عن النشا. أضيفي قطرة واحدة على السطح الداخلي للفلقة، ولاحظي تغيّر اللون.`)), 'point');
@@ -594,9 +594,9 @@ async function mission(n, key, text) {
   say(T(`${text.same} Now we wait a few days and observe the seeds every day…`, `${text.same} دلوقتي نستنى بضعة أيام ونراقب البذور كل يوم…`), 'point');
   actions.innerHTML = '';
   await runDays();
-  say(T(`Five days have passed. Which cup sprouted?`, `عدّت خمسة أيام. أنهي كوب نبتت فيه البذور؟`), 'think');
+  say(T(`Five days have passed. Which cup sprouted?`, `عدّت خمسة أيام. أي الكوبين نبتت فيه البذور؟`), 'think');
   await askChoice({ options: [text.a, text.b, T('Both cups', 'الكوبان معًا')], correct: text.a,
-    hint: T(`Look at the two cups again. Which one has green sprouts? Try again!`, G(`بص على الكوبين تاني. أنهي كوب فيه نبتات خضراء؟ جرّب تاني!`, `بصي على الكوبين تاني. أنهي كوب فيه نبتات خضراء؟ جرّبي تاني!`)), ok: text.ok });
+    hint: T(`Look at the two cups again. Which one has green sprouts? Try again!`, G(`بص على الكوبين تاني. أي الكوبين فيه نبتات خضراء؟ جرّب تاني!`, `بصي على الكوبين تاني. أي الكوبين فيه نبتات خضراء؟ جرّبي تاني!`)), ok: text.ok });
 }
 async function stage2() {
   setStage(2, T('Missions', 'المهمات'));

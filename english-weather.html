@@ -179,13 +179,13 @@ async function mission4() {                 // lesson 3: The Two Frogs
 }
 async function mission5() {                 // lesson 3: vowel digraphs
   set('card', { lines: ['leap', 'flood', 'boat'] });
-  g.say(T('Mission 5: vowel digraphs. Two vowels together make one sound: “ea” in leap, “oo” in flood, “oa” in boat. Which digraph is in each word?', 'المهمة ٥: حروف العلة المزدوجة. حرفين علة مع بعض بيطلّعوا صوت واحد: ea في leap وoo في flood وoa في boat. أنهي زوج في كل كلمة؟'), 'point');
+  g.say(T('Mission 5: vowel digraphs. Two vowels together make one sound: “ea” in leap, “oo” in flood, “oa” in boat. Which digraph is in each word?', 'المهمة ٥: حروف العلة المزدوجة. حرفين علة مع بعض بيطلّعوا صوت واحد: ea في leap وoo في flood وoa في boat. أي زوج في كل كلمة؟'), 'point');
   await g.next();
   const buttons = [{ label: 'ea', value: 'ea', c: 1 }, { label: 'oo', value: 'oo', c: 3 }, { label: 'oa', value: 'oa', c: 0 }];
   await sortCards(buttons, [['leap', 'ea', 'leap has “ea”: the long e sound.'], ['flood', 'oo', 'flood has “oo”: the short u sound.'], ['boat', 'oa', 'boat has “oa”: the long o sound.'],
-    ['goat', 'oa', 'goat has “oa”.'], ['book', 'oo', 'book has “oo”.'], ['read', 'ea', 'read has “ea”.'], ['foot', 'oo', 'foot has “oo”.'], ['peas', 'ea', 'peas has “ea”.']], 'word', T('Which digraph is in this word?', 'أنهي زوج حروف في الكلمة دي؟'));
+    ['goat', 'oa', 'goat has “oa”.'], ['book', 'oo', 'book has “oo”.'], ['read', 'ea', 'read has “ea”.'], ['foot', 'oo', 'foot has “oo”.'], ['peas', 'ea', 'peas has “ea”.']], 'word', T('Which digraph is in this word?', 'أي زوج حروف في الكلمة دي؟'));
   set('photo', { sub: 'boat' });
-  await ask('Look at the picture. Which word has “oa”, the long o sound?', 'بص على الصورة. أنهي كلمة فيها oa بصوت o الطويل؟', ['boat', 'book', 'leap'], 'boat', 'It sails across the lake.', 'بتبحر عبر البحيرة.', `${kw('boat')} has “oa”: the long o sound.`, `${L('boat')} فيها ${L('oa')}.`);
+  await ask('Look at the picture. Which word has “oa”, the long o sound?', 'بص على الصورة. أي كلمة فيها oa بصوت o الطويل؟', ['boat', 'book', 'leap'], 'boat', 'It sails across the lake.', 'بتبحر عبر البحيرة.', `${kw('boat')} has “oa”: the long o sound.`, `${L('boat')} فيها ${L('oa')}.`);
   await fillCard(['The ___ sailed', 'across the lake.'], ['boat', 'meet', 'weak'], 'boat', 'Choose the word.', 'اختار الكلمة.', 'It floats on water.', 'بتطفو على المية.', `A ${kw('boat')} sails across the lake.`, `${L('boat')} بتبحر عبر البحيرة.`);
 }
 async function mission6() {                 // lesson 4: fiction
@@ -194,7 +194,7 @@ async function mission6() {                 // lesson 4: fiction
   await g.next();
   const buttons = [{ label: T('Beginning', 'Beginning'), value: 'b', c: 0 }, { label: T('Problem', 'Problem'), value: 'p', c: 3 }, { label: T('Middle', 'Middle'), value: 'm', c: 2 }, { label: T('Ending', 'Ending'), value: 'e', c: 1 }];
   await sortCards(buttons, [['Lily lives in a cozy little house', 'b', 'The beginning meets the characters and setting.', '🏠'], ['The clouds are upside down', 'p', 'The problem is when something goes wrong.', '☁️'],
-    ['Lily whispers to the clouds', 'm', 'In the middle, the character tries to fix it.', '🗣️'], ['The sun shines and the flowers smile', 'e', 'In the ending, the problem is solved.', '🌻']], 'plate', T('Which part of the story is this?', 'ده أنهي جزء من القصة؟'));
+    ['Lily whispers to the clouds', 'm', 'In the middle, the character tries to fix it.', '🗣️'], ['The sun shines and the flowers smile', 'e', 'In the ending, the problem is solved.', '🌻']], 'plate', T('Which part of the story is this?', 'ده أي جزء من القصة؟'));
   set('plate', { emoji: '🌟', word: 'The plot' });
   await ask('What is the most exciting part of a story called?', 'اسم أكتر جزء مثير في القصة إيه؟', ['The climax', 'The beginning', 'The ending'], 'The climax', 'It comes before the ending.', 'بتيجي قبل النهاية.', `The most exciting part is the ${kw('climax')}.`, `أكتر جزء مثير اسمه ${L('climax')}.`);
   set('stars', { n: 3, word: '' });
@@ -216,8 +216,8 @@ async function stage3() {
     { t: 'Dangerously high temperature for days', ans: 'he', why: 'In a heat wave, the temperature is dangerously high for days.' }, { t: 'Lightning and dark clouds', ans: 'th', why: 'In a thunderstorm, children are afraid of the lightning.' },
     { t: 'Farmers can’t grow crops: no water', ans: 'dr', why: 'A drought can prevent farmers from growing food.' }, { t: 'Cars got stuck in the streets', ans: 'fl', why: 'In a flood, the water covers the streets.' }];
   await g.speedRound({ items, buttons, rounds: 8,
-    ask: T('Which weather?', 'أنهي طقس؟'), intro: T('Speed Round! I describe the weather. Press the right weather word. Be quick!', 'جولة السرعة! هوصف الطقس، واضغط على الكلمة الصح. بسرعة!'),
-    think: T('Which weather?', 'أنهي طقس؟') });
+    ask: T('Which weather?', 'أي طقس؟'), intro: T('Speed Round! I describe the weather. Press the right weather word. Be quick!', 'جولة السرعة! هوصف الطقس، واضغط على الكلمة الصح. بسرعة!'),
+    think: T('Which weather?', 'أي طقس؟') });
 }
 
 g.run({

@@ -83,7 +83,7 @@ async function stage1() {
   g.say(T(`What is the value of the digit <b>9</b> in ${kw('35,891,455')}?`, `إيه قيمة الرقم <b>٩</b> في ${kw(L('35,891,455'))}؟`), 'think');
   await g.choice({ options: ['90,000', '9,000', '900,000', '9'], correct: '90,000', hint: T('The 9 is in the thousands group, in the tens column.', 'الرقم ٩ في مجموعة الألوف، في خانة العشرات.'),
     ok: T('9 tens of thousands = 90,000.', `٩ عشرات ألوف = ${L('90,000')}.`) });
-  g.say(T('Which group comes right after the thousands?', 'أنهي مجموعة بتيجي بعد الألوف على طول؟'), 'think');
+  g.say(T('Which group comes right after the thousands?', 'أي مجموعة بتيجي بعد الألوف على طول؟'), 'think');
   await g.choice({ options: [T('Millions', 'الملايين'), T('Ones', 'الوحدات'), T('Milliards', 'المليارات')], correct: T('Millions', 'الملايين'), hint: T('The groups grow from the right: units, thousands, millions, billions.', 'المجموعات بتكبر من اليمين: وحدات، ألوف، ملايين، مليارات.'),
     ok: T('After thousands come the millions, then the milliards.', 'بعد الألوف بتيجي الملايين وبعدها المليارات.') });
   g.say(T(`Amir says every digit in the number 222 has the same value. Do you agree?`, `أمير بيقول إن كل الأرقام في العدد ${L('222')} ليها نفس القيمة. موافق؟`), 'think');
@@ -113,7 +113,7 @@ async function mission2() {                 // lesson 3: three forms
 }
 async function mission3() {                 // lessons 5 and 6: compare hills
   Object.assign(sc, { mode: 'hills', a: '14,108', b: '15,108', cap: '' }); g.paint();
-  g.say(T('Mission 3: two hills. Hill 1 has 14,108 ants and Hill 2 has 15,108. Which sign goes in between?', `المهمة ٣: تلين. التل ١ فيه ${L('14,108')} نملة والتل ٢ فيه ${L('15,108')}. أنهي علامة تتحط بينهم؟`), 'point');
+  g.say(T('Mission 3: two hills. Hill 1 has 14,108 ants and Hill 2 has 15,108. Which sign goes in between?', `المهمة ٣: تلين. التل ١ فيه ${L('14,108')} نملة والتل ٢ فيه ${L('15,108')}. أي علامة تتحط بينهم؟`), 'point');
   await g.pick({ buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }], correct: '<', points: 20,
     ok: T('14,108 < 15,108: start from the left; the first place that differs is the thousands, 4 < 5.', `${L('14,108 < 15,108')}: ابدأ من الشمال؛ أول خانة بتختلف هي الألوف، ٤ أقل من ٥.`), reveal: () => { sc.cap = '14,108 < 15,108'; g.paint(); } });
   Object.assign(sc, { a: '2,450,890,007', b: '2,500,000,000', cap: '' }); g.paint(); g.setTray(null);
@@ -125,7 +125,7 @@ async function mission3() {                 // lessons 5 and 6: compare hills
 }
 async function mission4() {                 // lesson 7: smallest of the ants' week
   Object.assign(sc, { mode: 'hills', a: '78,999', b: '79,100', cap: '' }); g.paint();
-  g.say(T('Mission 4: Omar counted 78,999 · 79,100 · 78,091 · 79,010 · 78,090 ants on five days. Which is the <b>smallest</b>, the first in an ascending order?', `المهمة ٤: عمر عدّ ${L('78,999 · 79,100 · 78,091 · 79,010 · 78,090')} نملة في ٥ أيام. أنهي أصغر عدد، يعني أول واحد في الترتيب التصاعدي؟`), 'point');
+  g.say(T('Mission 4: Omar counted 78,999 · 79,100 · 78,091 · 79,010 · 78,090 ants on five days. Which is the <b>smallest</b>, the first in an ascending order?', `المهمة ٤: عمر عدّ ${L('78,999 · 79,100 · 78,091 · 79,010 · 78,090')} نملة في ٥ أيام. ما أصغر عدد، يعني أول واحد في الترتيب التصاعدي؟`), 'point');
   await g.choice({ options: ['78,090', '78,091', '78,999', '79,010'], correct: '78,090', hint: T('All start with 7; compare the thousands, then the hundreds.', 'كلهم بيبدأوا بـ ٧؛ قارن الألوف وبعدين المئات.'),
     ok: T('Ascending: 78,090 < 78,091 < 78,999 < 79,010 < 79,100.', `التصاعدي: ${L('78,090 < 78,091 < 78,999 < 79,010 < 79,100')}.`) });
 }
@@ -151,8 +151,8 @@ async function stage3() {
   Object.assign(sc, { mode: 'hills', a: '', b: '', cap: '' }); g.paint();
   await g.speedRound({ items: PAIRS.map(([a, b, r]) => ({ t: `${L(a)} <span style="opacity:.5">?</span> ${L(b)}`, ans: r, why: T(`${a} ${r} ${b}.`, L(`${a} ${r} ${b}`) + '.') })), rounds: 8, ms: 10000,
     buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }],
-    ask: T('Which sign: <, = or >?', 'أنهي علامة: <، = ولا >؟'), intro: T('Speed Round! Two hills come in. Press the sign that fits. Start from the left and stop at the first place that differs.', 'جولة السرعة! تلين هيظهروا. اضغط على العلامة المناسبة. ابدأ من الشمال وقف عند أول خانة بتختلف.'),
-    think: T('Which sign: <, = or >?', 'أنهي علامة: <، = ولا >؟') });
+    ask: T('Which sign: <, = or >?', 'أي علامة: <، = ولا >؟'), intro: T('Speed Round! Two hills come in. Press the sign that fits. Start from the left and stop at the first place that differs.', 'جولة السرعة! تلين هيظهروا. اضغط على العلامة المناسبة. ابدأ من الشمال وقف عند أول خانة بتختلف.'),
+    think: T('Which sign: <, = or >?', 'أي علامة: <، = ولا >؟') });
 }
 
 g.run({
