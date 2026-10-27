@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-27', title: 'Math Grade 5: new adventure «The Kitten’s Ladder»',
+    items: [
+      { text: 'Unit 1 lessons 6-11: add decimal ladder pieces to reach the roof exactly, then cut the last piece (subtraction)', links: [{ label: 'The Kitten’s Ladder', href: 'math-ladder.html', ch: 'm5c1' }] }
+    ] },
   { date: '2026-10-27', title: 'New adventure: Reesho’s City',
     items: [
       { text: 'Math Grade 5 Unit 1: colour the land of each order exactly (tenths, hundredths, thousandths); 6 districts × 3 orders', links: [{ label: 'Reesho’s City', href: 'math-city.html', ch: 'm5c1' }] }

@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>The Kitten’s Ladder · Adding and Subtracting Decimals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 5 · Unit 1 (m5c1) adventure «سلّم القطة / The Kitten’s Ladder», lessons 6-11 (estimating sums, modelling addition and
+     subtraction of decimals, subtracting to thousandths, estimating differences, word problems).
+     A kitten is stuck on a roof in the rain. Rounds 1-4: tap ladder pieces (decimal lengths) to stack them; the total is NOT shown, the child
+     adds in the head and presses «ثبّت السلم»; the scene answers: too short (the kitten reaches down, gap shown) or too long (the ladder
+     overshoots and shakes). Rounds 5-6: two pieces are already up; the child sets the missing piece on digit wheels (roof − pieces).
+     Any set of pieces with the exact sum wins. Hint = estimate by rounding to whole metres (never the answer). Wrong check = rain drop, 5 = lost.
+     Pictures: the owner's Gemini sheet of 27 Oct 2026 (kitten ×4, house, worried Reesho, rainy village), cut out to math/assets/;
+     happy Reesho = math/assets/reesho_happy.webp. Rain, music and sounds are made in the page (SVG + Web Audio).
+     Progress: SI.chProf('m5c1').ladder = { lvl, best, stars[] }. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--mint:#bfe8d6;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134;--wood:#b9834f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#36485a,#56697a 45%,#cdb98f 45.1%,#b9a274);color:var(--navy);min-height:100svh}
+.wrap{max-width:720px;margin:0 auto;padding:10px 14px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#fff;flex-wrap:wrap}
+.top h1{font-size:22px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffff22;border-radius:99px;padding:3px 12px;font-weight:700;font-size:14px}
+.snd,.home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffff22;border:0;border-radius:99px;color:#fff;font-size:16px;width:34px;height:30px;cursor:pointer}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:16px}
+.say{display:flex;gap:8px;align-items:flex-start;margin:6px 0 10px}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;flex:1;min-height:44px;box-shadow:0 3px 10px #0002}
+.panel{background:var(--card);border-radius:20px;padding:12px;box-shadow:0 6px 20px #1f3d5733}
+.ask{font-weight:900;font-size:16px;text-align:center;margin:0 0 10px}
+bdi{font-weight:900;color:var(--pri)}
+.tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.piece{position:relative;border:0;cursor:pointer;border-radius:12px;padding:0;background:none;font:inherit}
+.piece .bar{display:flex;align-items:center;justify-content:center;min-width:84px;height:46px;padding:0 12px;border-radius:12px;background:repeating-linear-gradient(90deg,#d9a46a 0 6px,#b9834f 6px 9px);
+  box-shadow:inset 0 0 0 3px #8a5a2b,0 3px 0 #7a4c22;color:#fff;font:900 22px Nunito,Cairo;text-shadow:0 1px 2px #0008;direction:ltr}
+.piece.on .bar{opacity:.35;box-shadow:inset 0 0 0 3px #8a5a2b}
+.piece .ord{position:absolute;top:-8px;inset-inline-end:-6px;width:24px;height:24px;border-radius:50%;background:var(--ok);color:#fff;font-size:13px;font-weight:900;display:none;place-items:center}
+.piece.on .ord{display:grid}
+.piece:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.lock{direction:ltr;display:flex;justify-content:center;align-items:flex-start;gap:6px;background:#2b3f52;border-radius:16px;padding:10px 8px 6px}
+.wheel{display:flex;flex-direction:column;align-items:center;gap:3px}
+.wheel button{width:52px;height:34px;border:0;border-radius:10px;background:#3f5a72;color:#fff;font-size:18px;cursor:pointer}
+.wheel button:active{background:var(--pri)}
+.digit{width:52px;height:62px;border-radius:10px;background:#fffaf0;font:900 38px Nunito,Cairo;display:flex;align-items:center;justify-content:center;color:var(--navy)}
+.wheel small{color:#cfe3ee;font-size:10.5px;width:56px;text-align:center;line-height:1.3;min-height:28px}
+.dot{color:#fffaf0;font:900 40px/1 Nunito,Cairo;height:99px;display:flex;align-items:flex-end;padding-bottom:8px}
+.unit{color:#fffaf0;font:900 24px/1 Nunito,Cairo;height:99px;display:flex;align-items:flex-end;padding:0 0 14px 4px}
+.row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.btn:disabled{opacity:.5}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:20px;max-width:380px;text-align:center}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.9;margin:6px 0 12px}
+.stars{font-size:34px;letter-spacing:4px}
+.rain line{animation:fall .55s linear infinite}
+@keyframes fall{from{transform:translate(0,-40px)}to{transform:translate(-14px,40px)}}
+.shake{animation:shake .12s 6}
+@keyframes shake{50%{transform:translateX(4px)}}
+.hop{animation:hop .6s ease-in-out infinite;transform-box:fill-box}
+@keyframes hop{50%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion:reduce){.rain line,.hop,.shake{animation:none}}
+@media (max-width:420px){.wheel button,.digit{width:44px}.digit{height:54px;font-size:32px}.wheel small{width:46px;font-size:9.5px}.dot,.unit{height:91px}.piece .bar{min-width:70px;font-size:19px;height:42px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🪜 سلّم القطة">🪜 The Kitten’s Ladder</h1><div class="pills"><span class="pill"><span data-ar="الجولة">Round</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="map.html" aria-label="Back to the map" data-ar-label="رجوع للخريطة">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 300" role="img" aria-label="A kitten is stuck on a roof in the rain; a ladder is built next to the house" data-ar-label="قطة محبوسة فوق سطح بيت تحت المطر، وجنب البيت سلم بيتبني"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <p class="ask" id="ask"></p>
+    <div id="work"></div>
+    <div class="row"><button class="btn" id="check" type="button"></button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="box">
+  <div style="font-size:46px" aria-hidden="true">🌧️🐱🪜</div>
+  <h2 data-ar="القطة محبوسة فوق السطح!">The kitten is stuck on the roof!</h2>
+  <ol id="rules"></ol>
+  <button class="btn" id="go" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261027f"></script>
+<script src="chapters.js?v=20261027f"></script>
+<script src="common.js?v=20261027f"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('m5c1'); if (!CH) return;
+const T = SI.T, GAME = 'math-ladder.html', M = T('m', 'م');
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+document.title = T('The Kitten’s Ladder · Adding and Subtracting Decimals', 'سلّم القطة · جمع الكسور العشرية وطرحها');
+$('#rules').innerHTML = [T('The roof height is written next to the house.', 'ارتفاع السطح مكتوب جنب البيت.'),
+  T('Tap ladder pieces to stack them. Add their lengths in your head: the ladder must reach the roof <b>exactly</b>.', 'اضغط على قطع السلم عشان تركّبها فوق بعض. اجمع أطوالها في دماغك: السلم لازم يوصل للسطح <b>بالظبط</b>.'),
+  T('Press <b>Fix the ladder</b>. Too short or too long, and the rain gets heavier.', 'اضغط <b>ثبّت السلم</b>. لو أقصر أو أطول، المطر هيزيد.'),
+  T('After <b>5 raindrops</b> the kitten has to hide. Be quick and exact!', 'بعد <b>٥ نقط مطر</b> القطة هتضطر تستخبى. ركّز واحسب صح!')].map(x => `<li>${x}</li>`).join('');
+$('#go').textContent = T('Let’s save the kitten! 💪', 'يلا ننقذ القطة 💪');
+
+/* ---------- rounds ---------- */
+const ROUNDS = [
+  { d: 1, need: 2, extra: 3 }, { d: 1, need: 3, extra: 3 },
+  { d: 2, need: 2, extra: 4 }, { d: 2, need: 3, extra: 3 },
+  { d: 2, cut: true }, { d: 3, cut: true }
+];
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).ladder || {}).lvl) || 0), score: 0, rain: 0, misses: 0, busy: false };
+const R = () => ROUNDS[S.lvl];
+const toU = (x, d) => Math.round(x * 10 ** d);                 // work in whole units (tenths, hundredths…) to avoid float errors
+const fmt = (u, d) => String(+(u / 10 ** d).toFixed(d));        // 2.40 shows as 2.4, as in the book
+const len = (lo, hi, d) => { const f = 10 ** d; let u; do { u = lo * f + rnd((hi - lo) * f + 1); } while (u % f === 0 || (d > 1 && u % 10 === 0 && Math.random() < .7)); return u; };   // never a whole number; usually uses the last decimal place
+function makeRound() {
+  const r = R(), d = r.d;
+  for (;;) {
+    if (r.cut) {
+      const a = len(1, 3, d), b = len(1, 3, d), c = len(1, 3, d);
+      if (new Set([a, b, c]).size < 3) continue;
+      if ((a + b + c) % 10 ** d === 0) continue;
+      return { d, cut: true, fixed: [a, b], answer: c, target: a + b + c };
+    }
+    const sol = Array.from({ length: r.need }, () => len(1, 3, d));
+    const pool = new Set(sol); if (pool.size < sol.length) continue;
+    const target = sol.reduce((x, y) => x + y, 0);
+    if (target % 10 ** d === 0) continue;   // a roof like 6 m would hide the decimals
+    const extra = [];
+    while (extra.length < r.extra) { const u = len(0, 3, d); if (u >= 10 ** d / 2 && !pool.has(u) && u !== target) { pool.add(u); extra.push(u); } }
+    if ([...pool].some(u => u === target)) continue;
+    return { d, pieces: shuffle([...sol, ...extra]), target, sol };
+  }
+}
+
+/* ---------- scene ---------- */
+const IMG_DIR = 'math/assets/';
+const IMG = { bg: 'bg_rain_village.jpg', house: 'house.webp', scared: 'kitten_scared.webp', reach: 'kitten_reach.webp', climb: 'kitten_climb.webp',
+  happy: 'kitten_happy.webp', worried: 'reesho_worried.webp', cheer: 'reesho_happy.webp' };
+const src = k => (window.IMG_DATA && IMG_DATA[k]) || IMG_DIR + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+const flip = (k, x, y, w, h, extra = '') => `<g transform="translate(${2 * x + w},0) scale(-1,1)">${im(k, x, y, w, h)}</g>`;
+const GROUND = 284, EAVE = 148, LX = 132, LW = 30;                 // ground line, roof edge, ladder left and width
+const PPM = () => (GROUND - EAVE) / (S.round.target / 10 ** S.round.d); // pixels per metre for this round
+function ladderSvg(units, d, { overshoot = false, highlight = -1 } = {}) {
+  let y = GROUND, h = '';
+  units.forEach((u, i) => {
+    const hpx = u / 10 ** d * PPM(), top = Math.max(4, y - hpx), rungs = Math.max(1, Math.round(hpx / 12));
+    h += `<g><rect x="${LX}" y="${top}" width="${LW}" height="${y - top}" fill="${i === highlight ? '#fff3' : 'none'}"/>
+      <line x1="${LX + 3}" y1="${y}" x2="${LX + 3}" y2="${top}" stroke="#8a5a2b" stroke-width="5"/><line x1="${LX + LW - 3}" y1="${y}" x2="${LX + LW - 3}" y2="${top}" stroke="#8a5a2b" stroke-width="5"/>`;
+    for (let k = 1; k <= rungs; k++) { const ry = y - (y - top) * k / (rungs + .5); h += `<line x1="${LX + 3}" y1="${ry}" x2="${LX + LW - 3}" y2="${ry}" stroke="#c48a52" stroke-width="3.5"/>`; }
+    h += `<line x1="${LX}" y1="${top}" x2="${LX + LW}" y2="${top}" stroke="#fff" stroke-width="1.5" opacity=".8"/>`;
+    const my = (y + top) / 2;
+    h += `<rect x="${LX - 50}" y="${my - 10}" width="44" height="20" rx="8" fill="#fffaf0" opacity=".95"/><text x="${LX - 28}" y="${my + 5}" font-size="13" font-weight="900" text-anchor="middle" direction="ltr" fill="#1f3d57" font-family="Nunito,Cairo">${fmt(u, d)}</text></g>`;
+    y = top;
+  });
+  return `<g class="${overshoot ? 'shake' : ''}">${h}</g>`;
+}
+function drawScene(state = 'wait', extra = {}) {
+  const r = S.round, units = extra.units || S.stack.map(i => r.pieces ? r.pieces[i] : i);
+  let h = `<image href="${src('bg')}" x="0" y="0" width="440" height="300" preserveAspectRatio="xMidYMax slice"/>`;
+  h += im('house', 168, 62, 268, 236);
+  // roof height mark
+  h += `<line x1="40" y1="${EAVE}" x2="196" y2="${EAVE}" stroke="#fff" stroke-width="2" stroke-dasharray="6 5" opacity=".9"/>
+    <rect x="8" y="${EAVE - 30}" width="82" height="24" rx="12" fill="#1f3d57e6"/><text x="49" y="${EAVE - 13}" font-size="15" font-weight="900" text-anchor="middle" direction="ltr" fill="#fff" font-family="Nunito,Cairo">${fmt(r.target, r.d)} ${M}</text>`;
+  h += `<line x1="49" y1="${EAVE - 4}" x2="49" y2="${GROUND}" stroke="#fff" stroke-width="1.5" opacity=".6"/><path d="M45 ${GROUND} h8 M45 ${EAVE} h8" stroke="#fff" stroke-width="2" opacity=".8"/>`;
+  h += ladderSvg(units, r.d, extra);
+  // characters
+  if (state === 'won') h += im('happy', 60, GROUND - 74, 52, 74) + `<g class="hop">${im('cheer', 2, GROUND - 92, 64, 74)}</g>`;
+  else h += im('worried', 4, GROUND - 82, 54, 82);
+  if (state === 'short') h += flip('reach', 158, EAVE - 44, 82, 46);
+  else if (state === 'climb') h += im('climb', LX - 6, extra.cy, 40, 74);
+  else if (state !== 'won') h += flip('scared', 162, EAVE - 58, 78, 66);
+  // gap bracket after a check
+  if (extra.gap) {
+    const y1 = Math.max(4, GROUND - extra.gap.reach * PPM()), col = '#ffd166'; const gw = extra.gap.label.length * 8.6 + 22;
+    h += `<path d="M${LX + LW + 6} ${EAVE} h8 V${y1} h-8" fill="none" stroke="${col}" stroke-width="3"/>
+      <rect x="${LX + LW + 18}" y="${(EAVE + y1) / 2 - 13}" width="${gw}" height="26" rx="11" fill="#1f3d57ee"/>
+      <text x="${LX + LW + 18 + gw / 2}" y="${(EAVE + y1) / 2 + 5}" font-size="13.5" font-weight="900" text-anchor="middle" direction="${SI.isAr() ? 'rtl' : 'ltr'}" fill="${col}" font-family="Nunito,Cairo">${extra.gap.label}</text>`;
+  }
+  // rain
+  const drops = state === 'won' ? 0 : 26 + S.rain * 16;
+  if (drops) { let r2 = ''; for (let i = 0; i < drops; i++) { const x = (i * 97) % 460, y = (i * 53) % 300, dl = ((i * 7) % 10) / 10; r2 += `<line x1="${x}" y1="${y}" x2="${x - 5}" y2="${y + 14}" stroke="#cfe3f5" stroke-width="1.6" opacity=".7" style="animation-delay:-${dl}s"/>`; } h += `<g class="rain">${r2}</g>`; }
+  // rain meter
+  h += `<rect x="296" y="8" width="136" height="32" rx="16" fill="#0008"/>`;
+  for (let i = 0; i < 5; i++) h += `<path transform="translate(${312 + i * 18},16)" d="M0 0 C-6 8 -6 14 0 14 C6 14 6 8 0 0z" fill="${i < S.rain ? '#5cb8dd' : '#ffffff40'}"/>`;
+  $('#scene').innerHTML = h;
+}
+
+/* ---------- work area ---------- */
+function drawWork() {
+  const r = S.round;
+  if (r.cut) {
+    $('#ask').innerHTML = T(`Two pieces are already up. How long must the <b>last piece</b> be?`, `فيه قطعتين متركّبين. لازم <b>القطعة الأخيرة</b> يكون طولها كام؟`);
+    const places = ['o'].concat(r.d === 2 ? ['d1', 'd2'] : ['d1', 'd2', 'd3']);
+    const NAME = { o: T('ones', 'الآحاد'), d1: T('tenths', 'الأجزاء من عشرة'), d2: T('hundredths', 'الأجزاء من مئة'), d3: T('thousandths', 'الأجزاء من ألف') };
+    $('#work').innerHTML = `<div class="lock">${places.map((p, i) => (p === 'd1' ? '<div class="dot">.</div>' : '') + `<div class="wheel"><button type="button" data-i="${i}" data-d="1" aria-label="${T('Up: ', 'زوّد ')}${NAME[p]}">▲</button><div class="digit" id="dg${i}">${S.wheels[i]}</div><button type="button" data-i="${i}" data-d="-1" aria-label="${T('Down: ', 'قلّل ')}${NAME[p]}">▼</button><small>${NAME[p]}</small></div>`).join('')}<div class="unit">${M}</div></div>`;
+    $('#work').querySelectorAll('.wheel button').forEach(b => b.onclick = () => { if (S.busy) return; const i = +b.dataset.i; S.wheels[i] = (S.wheels[i] + +b.dataset.d + 10) % 10; $('#dg' + i).textContent = S.wheels[i]; SFX.click(); });
+    $('#check').textContent = T('✂️ Cut and fix', '✂️ قصّ وركّب');
+    return;
+  }
+  $('#ask').innerHTML = T('Tap pieces to build the ladder. Which pieces add up to the roof height <b>exactly</b>?', 'اضغط على القطع عشان تبني السلم. أنهي قطع مجموعها يساوي ارتفاع السطح <b>بالظبط</b>؟');
+  $('#work').innerHTML = `<div class="tray">${r.pieces.map((u, i) => { const k = S.stack.indexOf(i); return `<button class="piece${k >= 0 ? ' on' : ''}" type="button" data-i="${i}" aria-pressed="${k >= 0}"><span class="bar">${fmt(u, r.d)}</span><span class="ord">${k + 1}</span></button>`; }).join('')}</div>`;
+  $('#work').querySelectorAll('.piece').forEach(b => b.onclick = () => togglePiece(+b.dataset.i));
+  $('#check').textContent = T('✔ Fix the ladder', '✔ ثبّت السلم');
+  $('#check').disabled = !S.stack.length;
+}
+function togglePiece(i) {
+  if (S.busy) return;
+  const k = S.stack.indexOf(i);
+  if (k >= 0) S.stack.splice(k, 1); else S.stack.push(i);
+  SFX.wood(); drawWork(); drawScene();
+}
+
+/* ---------- music and sound (Web Audio, no files): rain noise that grows with the raindrops, a slow minor tune, thunder ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(dur) { const c = A.ctx, b = c.createBuffer(1, c.sampleRate * dur, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+let rainNode = null;
+function rainOn() { if (rainNode || !A.ctx) return; const c = A.ctx, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = noise(2); s.loop = true; f.type = 'bandpass'; f.frequency.value = 2400; f.Q.value = .6; g.gain.value = 0; s.connect(f); f.connect(g); g.connect(A.master); s.start(); rainNode = { s, g }; rainLevel(); }
+function rainLevel() { if (rainNode) rainNode.g.gain.setTargetAtTime(.04 + S.rain * .03, A.ctx.currentTime, .4); }
+function rainOff() { if (!rainNode) return; const r = rainNode; rainNode = null; r.g.gain.setTargetAtTime(0, A.ctx.currentTime, .3); setTimeout(() => r.s.stop(), 1200); }
+function thunder() { if (!ac()) return; const c = A.ctx, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(), t = c.currentTime; s.buffer = noise(1.6); f.type = 'lowpass'; f.frequency.value = 220; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.9, t + .08); g.gain.exponentialRampToValueAtTime(.0001, t + 1.5); s.connect(f); f.connect(g); g.connect(A.master); s.start(t); }
+const TUNE = [62, 65, 69, 67, 65, 64, 62, 60, 62, 65, 69, 72, 70, 69, 67, 65];
+function musicTick() {
+  const c = A.ctx; if (!c) return; const spb = 60 / (72 + S.rain * 8);
+  while (A.next < c.currentTime + .15) {
+    const i = A.beat % 16, t = A.next;
+    tone(TUNE[i], t, spb * 1.6, { type: 'sine', vol: .09, cut: 1800 });
+    if (i % 4 === 0) tone(TUNE[i] - 24, t, spb * 3.8, { type: 'triangle', vol: .1, cut: 500 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) {
+  if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null;
+  if (mode === 'rain') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 40); rainOn(); } else rainOff();
+}
+const SFX = {
+  click() { if (!ac()) return; tone(96, A.ctx.currentTime, .04, { type: 'square', vol: .05, cut: 5000 }); },
+  wood() { if (!ac()) return; const t = A.ctx.currentTime; tone(57, t, .09, { type: 'square', vol: .1, cut: 900 }); tone(64, t + .05, .08, { type: 'square', vol: .07, cut: 900 }); },
+  wrong() { thunder(); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [60, 64, 67, 72, 76, 79, 84].forEach((m, i) => tone(m, t + i * .09, .5, { type: 'triangle', vol: .16 })); [[72, .8], [76, .95], [79, 1.1], [84, 1.25]].forEach(([m, d]) => tone(m, t + d, .6, { type: 'sine', vol: .14 })); },
+  meow() { if (!ac()) return; const c = A.ctx, o = c.createOscillator(), g = c.createGain(), t = c.currentTime; o.type = 'sawtooth'; o.frequency.setValueAtTime(700, t); o.frequency.linearRampToValueAtTime(1050, t + .15); o.frequency.linearRampToValueAtTime(600, t + .5); const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1100; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.12, t + .05); g.gain.exponentialRampToValueAtTime(.0001, t + .55); o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + .6); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [64, 63, 62, 57].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+/* ---------- flow ---------- */
+function startRound() {
+  S.t0 = Date.now(); S.round = makeRound(); S.rain = 0; S.misses = 0; S.busy = false;
+  S.stack = []; S.wheels = S.round.cut ? Array(S.round.d + 1).fill(0) : [];
+  if (A.ctx && A.mode !== 'rain') music('rain'); else rainLevel();
+  $('#lvl').textContent = S.lvl + 1;
+  if (S.round.cut) S.stack = S.round.fixed.slice();
+  drawScene(); drawWork();
+  const r = S.round;
+  $('#say').innerHTML = r.cut
+    ? T(`🦜 The shop has one long piece left. We already put up ${n(fmt(r.fixed[0], r.d))} ${M} and ${n(fmt(r.fixed[1], r.d))} ${M}. The roof is ${n(fmt(r.target, r.d))} ${M}. Cut the last piece exactly!`, `🦜 المحل فاضل فيه قطعة طويلة واحدة. ركّبنا ${n(fmt(r.fixed[0], r.d))} ${M} و ${n(fmt(r.fixed[1], r.d))} ${M}، والسطح ${n(fmt(r.target, r.d))} ${M}. قصّ القطعة الأخيرة بالظبط!`)
+    : S.lvl === 0 ? T(`🦜 Oh no! The kitten is up there and it’s raining. The roof is ${n(fmt(r.target, r.d))} ${M} high. Build the ladder!`, `🦜 يا خبر! القطة فوق والدنيا بتمطر. السطح ارتفاعه ${n(fmt(r.target, r.d))} ${M}. ابني السلم!`)
+    : T(`🦜 Another kitten on another roof: ${n(fmt(r.target, r.d))} ${M}. Line up the decimal points in your head!`, `🦜 قطة تانية على سطح تاني: ${n(fmt(r.target, r.d))} ${M}. رتّب العلامات العشرية تحت بعض في دماغك!`);
+}
+function currentUnits() {
+  const r = S.round;
+  if (r.cut) { const v = S.wheels.reduce((a, x) => a * 10 + x, 0); return r.fixed.concat(v ? [v] : []); }
+  return S.stack.map(i => r.pieces[i]);
+}
+async function check() {
+  if (S.busy) return; const r = S.round, units = currentUnits(); if (!units.length) return;
+  S.busy = true;
+  const total = units.reduce((a, b) => a + b, 0), diff = total - r.target;
+  if (diff === 0) return win(units);
+  S.rain++; S.misses++; SFX.wrong(); rainLevel();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.rain });
+  const gap = fmt(Math.abs(diff), r.d), short = diff < 0;
+  drawScene(short ? 'short' : 'long', { units, overshoot: !short, gap: { reach: total / 10 ** r.d, label: short ? T(`${gap} m short`, `ناقص ${gap} م`) : T(`${gap} m too long`, `زيادة ${gap} م`) } });
+  SFX.meow();
+  if (S.rain >= 5) { await sleep(1300); music('off'); SFX.lose(); SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 }); return showEnd('lose'); }
+  $('#say').innerHTML = short
+    ? T(`🦜 Too short! The kitten can’t reach it: ${n(gap)} ${M} missing.`, `🦜 السلم قصير! القطة مش طايلاه: ناقص ${n(gap)} ${M}.`)
+    : T(`🦜 Too long! It sticks out ${n(gap)} ${M} above the roof and wobbles.`, `🦜 السلم طويل! طالع ${n(gap)} ${M} فوق السطح وبيتهز.`);
+  await sleep(1500); drawScene(); S.busy = false;
+}
+async function win(units) {
+  const r = S.round, stars = S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1, pts = 20 + stars * 10, total = units.reduce((a, b) => a + b, 0);
+  S.score += pts; $('#score').textContent = S.score;
+  music('off'); SFX.win();
+  const sum = units.map(u => fmt(u, r.d)).join(' + ') + ' = ' + fmt(total, r.d);
+  $('#say').innerHTML = T(`🦜 Exactly! ${n(sum)} ${M}. +${n(pts)}`, `🦜 بالظبط! ${n(sum)} ${M}. +${n(pts)}`);
+  const t0 = performance.now(), y0 = EAVE - 50, y1 = GROUND - 74;
+  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 1300); drawScene('climb', { units, cy: y0 + (y1 - y0) * k }); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
+  drawScene('won', { units }); SFX.meow();
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.ladder = c.ladder || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= ROUNDS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+  await sleep(1500);
+  showEnd(S.lvl === ROUNDS.length - 1 ? 'all' : 'win', stars);
+}
+function hint() {
+  if (S.busy) return;
+  const r = S.round, f = 10 ** r.d, rd = u => Math.round(u / f), tgt = rd(r.target);
+  if (r.cut) { const a = rd(r.fixed[0]), b = rd(r.fixed[1]);
+    $('#say').innerHTML = T(`🦜 Estimate first: the roof is about ${n(tgt)} ${M}, the two pieces about ${n(`${a} + ${b} = ${a + b}`)} ${M}. So the last piece is about ${n(tgt - a - b)} ${M}. Now find the exact length.`, `🦜 قدّر الأول: السطح حوالي ${n(tgt)} ${M}، والقطعتين حوالي ${n(`${a} + ${b} = ${a + b}`)} ${M}. يعني القطعة الأخيرة حوالي ${n(tgt - a - b)} ${M}. دلوقتي احسب الطول بالظبط.`); return; }
+  const units = currentUnits();
+  if (!units.length) { $('#say').innerHTML = T(`🦜 Round to whole metres: the roof is about ${n(tgt)} ${M}. Look for pieces that add up to about ${n(tgt)}.`, `🦜 قرّب لأقرب متر: السطح حوالي ${n(tgt)} ${M}. دوّر على قطع مجموعها حوالي ${n(tgt)}.`); return; }
+  const est = units.map(rd), s = est.reduce((a, b) => a + b, 0);
+  $('#say').innerHTML = T(`🦜 Estimate: your ladder is about ${n(est.join(' + ') + ' = ' + s)} ${M}, the roof about ${n(tgt)} ${M}. ${s < tgt ? 'Add a little more.' : s > tgt ? 'Take something away.' : 'Close! Now check the decimals.'}`, `🦜 قدّر: السلم حوالي ${n(est.join(' + ') + ' = ' + s)} ${M}، والسطح حوالي ${n(tgt)} ${M}. ${s < tgt ? 'زوّد شوية.' : s > tgt ? 'شيل حاجة.' : 'قريب! راجع الأجزاء العشرية.'}`);
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const r = S.round, ans = r.cut ? fmt(r.answer, r.d) : r.sol.map(u => fmt(u, r.d)).join(' + ');
+  const cfg = {
+    win: ['🐱🎉', T('The kitten is safe!', 'القطة نزلت بالسلامة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('Another kitten is stuck on a taller roof… ready?', 'فيه قطة تانية على سطح أعلى… جاهز؟'), T('Next round ➜', 'الجولة اللي بعدها ⬅')],
+    all: ['🏆🐱', T('You saved six kittens!', 'أنقذت ست قطط!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You add and subtract decimals like a pro.`, `مجموع نقطك ${n(S.score)}. بقيت شاطر في جمع وطرح الأعداد العشرية.`), T('Play again', 'العب من الأول')],
+    lose: ['🌧️🐱', T('The rain got too heavy', 'المطر بقى شديد'), '', T(`One answer was ${n(ans)} ${M}. Line up the decimal points: tenths with tenths, hundredths with hundredths.`, `واحد من الحلول كان ${n(ans)} ${M}. رتّب العلامات العشرية تحت بعض: الأجزاء من عشرة مع بعض، والأجزاء من مئة مع بعض.`), T('Try again', 'جرّب تاني')]
+  }[kind];
+  $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startRound(); };
+}
+$('#check').onclick = check; $('#hint').onclick = hint;
+$('#go').onclick = () => { $('#intro').hidden = true; music('rain'); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+window.__ladder = S; window.__ladderApi = { makeRound, startRound, drawWork, drawScene, currentUnits };
+startRound();
+})();
+</script>
+</body>
+</html>
