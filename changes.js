@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-28', title: 'The Crate Train (Grade 4 math adventure)',
+    items: [
+      { text: 'Math Grade 4 Unit 1 lessons 3-4: load orders written in words, expanded form or groups, unload a train into expanded form; race the fox\'s train to the city', links: [{ label: 'The Crate Train', href: 'math-train.html', ch: 'mg4u1' }] }
+    ] },
   { date: '2026-10-28', title: 'Save the Ant Colony (Grade 4 math adventure)',
     items: [
       { text: 'Math Grade 4 Unit 1 lessons 1-2: send every ant to its chamber, move ants ×10 / ×100, the book\'s 10 and 100 anthills; anteater, sand timer and pebble attack, with the owner\'s pictures' },
