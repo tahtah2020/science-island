@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Reesho’s Cage · Place Value of Decimals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 5 · Unit 1 (m5c1) adventure «قفص ريشو / Reesho’s Cage», lessons 1-4 (decimals to thousandths, changing place values,
+     composing and decomposing, comparing). The child turns the digit wheels of a lock until every clue lights; each clue is a test on the digits,
+     clues are generated at random and the lock always has exactly one answer. 6 locks, harder each time; a wrong try moves the fox one step (5 = lost).
+     Pictures: Reesho from assets/ (sad, celebrate); scared Reesho, the fox poses and the night background made by the owner with Gemini (27 Oct 2026),
+     cut out and saved in math/assets/. Music and sounds are made in the page with Web Audio (no files). Progress: SI.chProf('m5c1').cage. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--mint:#bfe8d6;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#1d3a52,#33597a 45%,#e9d8ae 45.1%,#d9c38e);color:var(--navy);min-height:100svh}
+.wrap{max-width:720px;margin:0 auto;padding:10px 14px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#fff;flex-wrap:wrap}
+.top h1{font-size:22px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffff22;border-radius:99px;padding:3px 12px;font-weight:700;font-size:14px}
+#scene{width:100%;height:auto;display:block;margin-top:6px}
+.say{display:flex;gap:8px;align-items:flex-start;margin:-4px 0 10px}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;flex:1;min-height:44px;box-shadow:0 3px 10px #0002}
+.panel{background:var(--card);border-radius:20px;padding:12px;box-shadow:0 6px 20px #1f3d5733}
+.clues{display:grid;gap:8px;margin-bottom:12px}
+.clue{display:flex;gap:10px;align-items:center;background:#fff;border-radius:12px;padding:8px 10px;font-size:15.5px;font-weight:700;border:2px solid #e5ece9;transition:.25s}
+.clue .lamp{flex:none;width:22px;height:22px;border-radius:50%;background:#cfd8d4;box-shadow:inset 0 -3px 0 #0001;transition:.25s}
+.clue.on{border-color:var(--ok);background:#eefaf4}
+.clue.on .lamp{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.clue.bad{border-color:var(--coral);animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+bdi{font-weight:900;color:var(--pri)}
+.lock{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:6px;background:#2b3f52;border-radius:16px;padding:10px 8px 6px}
+.wheel{display:flex;flex-direction:column;align-items:center;gap:3px}
+.wheel button{width:52px;height:34px;border:0;border-radius:10px;background:#3f5a72;color:#fff;font-size:18px;cursor:pointer}
+.wheel button:active{background:var(--pri)}
+.digit{width:52px;height:62px;border-radius:10px;background:#fffaf0;font:900 38px Nunito,Cairo;display:flex;align-items:center;justify-content:center;color:var(--navy);transition:transform .15s}
+.digit.spin{transform:scaleY(.6)}
+.wheel small{color:#cfe3ee;font-size:10.5px;width:56px;text-align:center;line-height:1.3;min-height:28px}
+.dot{color:#fffaf0;font:900 40px Nunito,Cairo;padding-bottom:42px}
+.row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:20px;max-width:380px;text-align:center}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.9;margin:6px 0 12px}
+.stars{font-size:34px;letter-spacing:4px}
+.tear{animation:tear 1.8s ease-in infinite;transform-box:fill-box}
+@keyframes tear{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(22px);opacity:0}}
+.shiver{animation:shiver .18s infinite}
+@keyframes shiver{50%{transform:translate(1.5px,0)}}
+#scene .shiver{transform-box:fill-box}
+.fly{animation:fly 1.2s ease-in-out infinite;transform-box:fill-box}
+@keyframes fly{50%{transform:translateY(-8px)}}
+.home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffff22;border-radius:99px;color:#fff;font-size:16px;width:34px;height:30px}
+.snd{background:#ffffff22;border:0;border-radius:99px;color:#fff;font-size:16px;width:34px;height:30px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.tear,.shiver,.fly{animation:none}}
+@media (max-width:420px){.wheel button,.digit{width:44px}.digit{height:54px;font-size:32px}.wheel small{width:46px;font-size:9.5px}.clue{font-size:14.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🔒 قفص ريشو">🔒 Reesho’s Cage</h1><div class="pills"><span class="pill"><span data-ar="القفل">Lock</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="map.html" aria-label="Back to the map" data-ar-label="رجوع للخريطة">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 280" role="img" aria-label="Reesho is locked in a cage and the fox is coming closer" data-ar-label="ريشو محبوس في قفص والثعلب بيقرّب"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="clues" id="clues"></div>
+    <div class="lock" id="lock"></div>
+    <div class="row"><button class="btn" id="open" type="button" data-ar="🔓 افتح القفل">🔓 Open the lock</button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="box">
+  <div style="font-size:46px" aria-hidden="true">🦊🔒🦜</div>
+  <h2 data-ar="الثعلب حبس ريشو!">The fox locked Reesho up!</h2>
+  <ol id="rules"></ol>
+  <button class="btn" id="go" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261027a"></script>
+<script src="chapters.js?v=20261027a"></script>
+<script src="common.js?v=20261027a"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('m5c1'); if (!CH) return;
+const T = SI.T, AR = SI.isAr(), GAME = 'math-cage.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+document.title = T('Reesho’s Cage · Place Value of Decimals', 'قفص ريشو · القيمة المكانية للأعداد العشرية');
+$('#rules').innerHTML = [T('The lock opens with a secret decimal number.', 'القفل بيتفتح بعدد عشري سرّي.'),
+  T('The note has clues about the number. Turn the digit wheels: each clue that comes true lights up green.', 'على الورقة ألغاز عن العدد. لفّ الأرقام في الخانات، وكل لغز يتحقق ينوّر بالأخضر.'),
+  T('When every clue is lit, press <b>Open</b>.', 'لما كل الألغاز تنوّر اضغط <b>افتح</b>.'),
+  T('Each wrong try moves the fox one step closer. He needs only <b>5 steps</b>!', 'كل محاولة غلط الثعلب بيقرّب خطوة. عنده <b>٥ خطوات</b> بس!')].map(x => `<li>${x}</li>`).join('');
+$('#go').textContent = T('Let’s save Reesho! 💪', 'يلا ننقذ ريشو 💪');
+const PLACE = { t: { name: T('tens', 'العشرات'), v: 10, dec: 0 }, o: { name: T('ones', 'الآحاد'), v: 1, dec: 0 }, d1: { name: T('tenths', 'الأجزاء من عشرة'), none: T('tenths', 'جزء من عشرة'), v: .1, dec: 1 }, d2: { name: T('hundredths', 'الأجزاء من مئة'), none: T('hundredths', 'جزء من مئة'), v: .01, dec: 2 }, d3: { name: T('thousandths', 'الأجزاء من ألف'), none: T('thousandths', 'جزء من ألف'), v: .001, dec: 3 } };
+/* six locks, harder each time: places used, clue kinds allowed */
+const LEVELS = [
+  { places: ['o', 'd1', 'd2'], kinds: ['band', 'digit', 'value'], max: 3 },
+  { places: ['o', 'd1', 'd2'], kinds: ['band', 'value', 'expanded', 'zero'], max: 3 },
+  { places: ['o', 'd1', 'd2', 'd3'], kinds: ['band', 'value', 'expanded', 'digit'], max: 4 },
+  { places: ['o', 'd1', 'd2', 'd3'], kinds: ['band', 'times10', 'div10', 'value', 'expanded'], max: 4 },
+  { places: ['t', 'o', 'd1', 'd2', 'd3'], kinds: ['band', 'times10', 'value', 'expanded', 'zero'], max: 4 },
+  { places: ['t', 'o', 'd1', 'd2', 'd3'], kinds: ['band', 'times10', 'div10', 'value', 'expanded', 'zero'], max: 5 }
+];
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).cage || {}).lvl) || 0), score: 0, fox: 0, digits: [], secret: [], clues: [], misses: 0, busy: false, hintN: 0 };
+const L = () => LEVELS[S.lvl];
+const fmtNum = (d, places) => { let s = ''; places.forEach((p, i) => { if (p === 'd1') s += '.'; s += d[i]; }); return s; };
+const valueOf = (d, places) => places.reduce((a, p, i) => a + d[i] * PLACE[p].v, 0);
+const fixed = (x, k = 3) => +x.toFixed(k);
+const strip = x => String(fixed(x, 4));
+
+/* ---------- clue generator: every clue is a predicate on the digits ---------- */
+function makePool(sec, places) {
+  const pool = [], idx = p => places.indexOf(p), val = valueOf(sec, places);
+  const decs = places.filter(p => PLACE[p].dec);
+  // band: between two numbers one step apart at some place
+  for (const p of ['o', 'd1']) {
+    const step = PLACE[p].v, lo = fixed(Math.floor(val / step + 1e-9) * step), hi = fixed(lo + step);
+    if (lo === val) continue;
+    pool.push({ kind: 'band', text: T(`The number is greater than ${n(strip(lo))} and less than ${n(strip(hi))}`, `العدد أكبر من ${n(strip(lo))} وأصغر من ${n(strip(hi))}`), test: d => { const v = valueOf(d, places); return v > lo + 1e-9 && v < hi - 1e-9; }, hint: T(`Start with the places on the left: the number must begin with ${n(strip(lo))}.`, `ابدأ بالخانات اللي ناحية الشمال: لازم العدد يبدأ بـ ${n(strip(lo))}.`) });
+  }
+  places.forEach((p, i) => {
+    const dg = sec[i];
+    pool.push({ kind: 'digit', text: T(`The ${PLACE[p].name} digit is ${n(dg)}`, `رقم خانة ${PLACE[p].name} هو ${n(dg)}`), test: d => d[i] === dg, hint: T(`Find the ${PLACE[p].name} wheel on the lock.`, `دوّر على خانة ${PLACE[p].name} في القفل.`) });
+    if (dg === 0 && PLACE[p].dec) pool.push({ kind: 'zero', text: T(`There are no ${PLACE[p].none}`, `مفيش ولا ${PLACE[p].none}`), test: d => d[i] === 0, hint: T(`“No ${PLACE[p].none}” means a 0 in that place.`, `«مفيش» يعني الخانة دي فيها صفر.`) });
+    if (dg && PLACE[p].dec) pool.push({ kind: 'expanded', text: T(`The expanded form of the number has ${n(strip(dg * PLACE[p].v))}`, `في الصيغة الممتدة للعدد فيه ${n(strip(dg * PLACE[p].v))}`), test: d => d[i] === dg, hint: T(`${n(strip(dg * PLACE[p].v))} means ${n(dg)} in the ${PLACE[p].name} place.`, `${n(strip(dg * PLACE[p].v))} يعني ${n(dg)} في خانة ${PLACE[p].name}.`) });
+    if (dg && sec.filter(x => x === dg).length === 1) pool.push({ kind: 'value', text: T(`The value of the digit ${n(dg)} is ${n(strip(dg * PLACE[p].v))}`, `قيمة الرقم ${n(dg)} في العدد هي ${n(strip(dg * PLACE[p].v))}`), test: d => d[i] === dg, hint: T(`A value of ${n(strip(dg * PLACE[p].v))} means the digit is in the ${PLACE[p].name} place.`, `القيمة ${n(strip(dg * PLACE[p].v))} معناها إن الرقم في خانة ${PLACE[p].name}.`) });
+  });
+  // ×10 / ÷10 : where a digit moves (lesson «تغيير القيم المكانية»)
+  places.forEach((p, i) => {
+    const dg = sec[i]; if (!dg || sec.filter(x => x === dg).length > 1) return;
+    if (i > 0 && places[i - 1] !== 't') pool.push({ kind: 'times10', text: T(`If we multiply the number by ${n(10)}, the digit ${n(dg)} moves to the ${PLACE[places[i - 1]].name} place`, `لو ضربنا العدد في ${n(10)}، الرقم ${n(dg)} ينتقل لخانة ${PLACE[places[i - 1]].name}`), test: d => d[i] === dg, hint: T(`Multiplying by ${n(10)} moves every digit one place to the left. So the ${n(dg)} is now one place to the right of the ${PLACE[places[i - 1]].name}.`, `الضرب في ${n(10)} بيحرّك كل رقم خانة لليسار. يعني الرقم ${n(dg)} دلوقتي في الخانة اللي يمين ${PLACE[places[i - 1]].name}.`) });
+    if (i < places.length - 1 && PLACE[places[i + 1]].dec) pool.push({ kind: 'div10', text: T(`If we divide the number by ${n(10)}, the digit ${n(dg)} moves to the ${PLACE[places[i + 1]].name} place`, `لو قسمنا العدد على ${n(10)}، الرقم ${n(dg)} ينتقل لخانة ${PLACE[places[i + 1]].name}`), test: d => d[i] === dg, hint: T(`Dividing by ${n(10)} moves every digit one place to the right. So the ${n(dg)} is now one place to the left of the ${PLACE[places[i + 1]].name}.`, `القسمة على ${n(10)} بتحرّك كل رقم خانة لليمين. يعني الرقم ${n(dg)} دلوقتي في الخانة اللي شمال ${PLACE[places[i + 1]].name}.`) });
+  });
+  return pool;
+}
+function allCombos(k) { const out = []; const total = 10 ** k; for (let x = 0; x < total; x++) out.push(String(x).padStart(k, '0').split('').map(Number)); return out; }
+function buildLock() {
+  const lv = L(), k = lv.places.length;
+  for (let tries = 0; tries < 200; tries++) {
+    const sec = lv.places.map((p, i) => (i === 0 ? 1 + rnd(9) : rnd(10)));
+    if (lv.kinds.includes('zero') && Math.random() < .5) { const z = 1 + rnd(k - 1); sec[z] = 0; }
+    const pool = shuffle(makePool(sec, lv.places)).filter(c => lv.kinds.includes(c.kind));
+    // put a band clue first (it narrows a lot and practises comparing)
+    pool.sort((a, b) => (b.kind === 'band') - (a.kind === 'band'));
+    let left = allCombos(k), chosen = [];
+    for (const c of pool) {
+      if (chosen.length >= lv.max) break;
+      if (chosen.some(x => x.kind === c.kind && c.kind !== 'value' && c.kind !== 'expanded')) continue;
+      const nxt = left.filter(c.test);
+      if (nxt.length < left.length) { chosen.push(c); left = nxt; }
+      if (left.length === 1) break;
+    }
+    if (left.length === 1 && chosen.length >= Math.min(2, lv.max)) return { sec, clues: shuffle(chosen) };
+  }
+  throw new Error('no lock');
+}
+
+/* ---------- scene ---------- */
+const FOX_X = [312, 284, 256, 228, 200, 172];
+/* pictures: Reesho from the site, fox and night background made by the owner with Gemini (27 Oct 2026) */
+const IMG_DIR = 'math/assets/';
+const IMG = { bg: 'bg_cage_night.jpg', sad: 'reesho_sad.webp', scared: 'reesho_scared.webp', happy: 'reesho_happy.webp',
+  sneak: 'fox_sneak.webp', laugh: 'fox_laugh.webp', surprised: 'fox_surprised.webp', angry: 'fox_angry.webp' };
+const src = k => (window.IMG_DATA && IMG_DATA[k]) || IMG_DIR + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });   // preload, so no flicker on the first change
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+/* fox: x = left edge; pose by state */
+function fox(x, pose = 'sneak') {
+  const sz = { sneak: [132, 99], laugh: [86, 114], surprised: [92, 82], angry: [118, 101] }[pose];
+  return im(pose, x, 256 - sz[1], sz[0], sz[1]);
+}
+function drawScene(state = 'locked', foxPose, foxX) {
+  const open = state === 'open', fx = foxX ?? FOX_X[Math.min(S.fox, 5)];
+  const pose = foxPose || (state === 'caught' ? 'laugh' : 'sneak');
+  const mood = (S.fox >= 3 || state === 'caught') ? 'scared' : 'sad';
+  let h = `<image href="${src('bg')}" x="0" y="0" width="440" height="280" preserveAspectRatio="xMidYMax slice"/>`;
+  // fox steps meter
+  h += `<rect x="256" y="8" width="176" height="34" rx="17" fill="#0007"/><text x="398" y="31" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" font-family="Nunito,Cairo">${T('Fox', 'الثعلب')}</text>`;
+  for (let i = 0; i < 5; i++) { const c = i < S.fox ? '#e2603f' : '#ffffff40'; h += `<g transform="translate(${274 + i * 22},25)"><ellipse rx="7" ry="8" fill="${c}"/><circle cx="-6" cy="-9" r="2.6" fill="${c}"/><circle cx="0" cy="-11" r="2.6" fill="${c}"/><circle cx="6" cy="-9" r="2.6" fill="${c}"/></g>`; }
+  // cage (drawn over Reesho, so he is behind the bars)
+  h += `<g transform="translate(14,48) scale(1.24)">
+    <ellipse cx="70" cy="170" rx="80" ry="9" fill="#0004"/>
+    ${open ? '' : im(mood, mood === 'sad' ? 30 : 26, 16, mood === 'sad' ? 76 : 86, 146, mood === 'scared' ? 'class="shiver"' : '')}
+    <path d="M10 18 q60 -50 120 0" fill="none" stroke="#2b3f52" stroke-width="6"/>
+    <circle cx="70" cy="-14" r="8" fill="none" stroke="#2b3f52" stroke-width="5"/>
+    <rect x="4" y="160" width="132" height="12" rx="4" fill="#2b3f52"/>
+    <g style="transition:transform .7s;transform-origin:136px 90px;${open ? 'transform:rotateY(80deg) translateX(30px)' : ''}">
+      ${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<line x1="${10 + i * 17}" y1="${i === 0 || i === 7 ? 18 : 8}" x2="${10 + i * 17}" y2="160" stroke="#2b3f52" stroke-width="3"/>`).join('')}
+      <rect x="98" y="118" width="34" height="30" rx="6" fill="${open ? '#2e9e6b' : '#e2603f'}"/>
+      <path d="M105 118 v-8 q10 -14 20 0 v8" fill="none" stroke="${open ? '#2e9e6b' : '#e2603f'}" stroke-width="6" ${open ? 'transform="translate(10,-8) rotate(-20 84 84)"' : ''}/>
+      <circle cx="115" cy="130" r="4" fill="#fff"/><rect x="113.5" y="132" width="3" height="9" fill="#fff"/></g>
+  </g>`;
+  if (open) h += `<g class="fly">${im('happy', 150, 30, 130, 150)}</g>`;
+  h += fox(fx, pose);
+  if (state === 'caught') h += `<rect x="120" y="54" width="200" height="40" rx="20" fill="#0008"/><text x="220" y="82" font-size="24" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The fox got here!', 'الثعلب وصل!')}</text>`;
+  if (open) for (let i = 0; i < 26; i++) h += `<rect x="${20 + rnd(400)}" y="${20 + rnd(200)}" width="8" height="12" rx="2" fill="${pick(['#f2b134', '#e2603f', '#45b36b', '#23799f', '#fff'])}" opacity=".9"/>`;
+  $('#scene').innerHTML = h;
+}
+/* after a win: the fox is surprised, then runs away to the right */
+async function foxRunAway() {
+  const x0 = FOX_X[Math.min(S.fox, 5)];
+  drawScene('open', 'surprised', x0 + 20); await sleep(650);
+  const t0 = performance.now();
+  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 700); drawScene('open', 'angry', x0 + (480 - x0) * k * k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
+}
+async function foxStep() {
+  const from = FOX_X[S.fox - 1], to = FOX_X[Math.min(S.fox, 5)], t0 = performance.now();
+  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 500); drawSceneFox(from + (to - from) * k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
+}
+function drawSceneFox(x) { drawScene('locked', 'sneak', x); }
+
+/* ---------- lock UI ---------- */
+function drawLock() {
+  const lv = L();
+  $('#lock').innerHTML = lv.places.map((p, i) => (p === 'd1' ? '<div class="dot">.</div>' : '') + `
+    <div class="wheel"><button type="button" data-i="${i}" data-d="1" aria-label="${T('Up: ', 'زوّد ')}${PLACE[p].name}">▲</button>
+    <div class="digit" id="dg${i}">${S.digits[i]}</div>
+    <button type="button" data-i="${i}" data-d="-1" aria-label="${T('Down: ', 'قلّل ')}${PLACE[p].name}">▼</button>
+    <small>${PLACE[p].name}</small></div>`).join('');
+  $('#lock').querySelectorAll('button').forEach(b => b.onclick = () => turn(+b.dataset.i, +b.dataset.d));
+}
+async function turn(i, d) {
+  if (S.busy) return;
+  S.digits[i] = (S.digits[i] + d + 10) % 10; SFX.click();
+  const el = $('#dg' + i); el.classList.add('spin'); await sleep(90); el.textContent = S.digits[i]; el.classList.remove('spin');
+  checkClues();
+}
+function drawClues() {
+  $('#clues').innerHTML = S.clues.map((c, i) => `<div class="clue" id="c${i}"><span class="lamp"></span><span>${c.text}</span></div>`).join('');
+  checkClues();
+}
+function checkClues() { let all = true; S.clues.forEach((c, i) => { const ok = c.test(S.digits), el = $('#c' + i); if (ok && !el.classList.contains('on') && S.lit) SFX.lamp(i); el.classList.toggle('on', ok); if (!ok) all = false; }); S.lit = true; return all; }
+
+/* ---------- music and sound (Web Audio, no files) ----------
+   Night tension: A-minor drone + plucked ostinato; tempo and a heartbeat rise as the fox comes closer.
+   Win: bright C-major fanfare. Lose: falling minor phrase. */
+const A = { ctx: null, on: true, timer: null, beat: 0, next: 0, mode: 'off' };
+A.on = !SI.isMuted();
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function thump(t, vol = .5) { const c = A.ctx, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + .16); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + .2); o.connect(g); g.connect(A.master); o.start(t); o.stop(t + .25); }
+let drone = null;
+function startDrone() { stopDrone(); const c = A.ctx, g = c.createGain(); g.gain.value = 0; g.gain.linearRampToValueAtTime(.07, c.currentTime + 1.5); g.connect(A.master);
+  drone = { g, os: [45, 52].map(m => { const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(m); const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 380; o.connect(f); f.connect(g); o.start(); return o; }) }; }
+function stopDrone() { if (!drone) return; const d = drone; drone = null; d.g.gain.linearRampToValueAtTime(0, A.ctx.currentTime + .4); setTimeout(() => d.os.forEach(o => o.stop()), 500); }
+/* the ostinato: A minor, sneaky steps */
+const RIFF = [57, 60, 64, 62, 60, 64, 65, 64, 57, 60, 64, 62, 59, 62, 64, 63];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const bpm = 84 + Math.min(S.fox, 4) * 14, spb = 60 / bpm / 2;   // eighth notes
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    tone(RIFF[i], t, spb * .9, { type: 'triangle', vol: .13, cut: 1500 });
+    if (i % 4 === 0) tone(RIFF[i] - 24, t, spb * 3.5, { type: 'sine', vol: .14, cut: 600 });
+    if (S.fox >= 2 && i % 4 === 0) thump(t, .25 + S.fox * .07);          // heartbeat
+    if (S.fox >= 2 && i % 4 === 1) thump(t + spb * .35, .15 + S.fox * .05);
+    if (S.fox >= 4 && i % 2 === 1) tone(81, t, .05, { type: 'square', vol: .03, cut: 4000 }); // ticking
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) {
+  if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null;
+  if (mode === 'tension') { A.beat = 0; A.next = A.ctx.currentTime + .1; startDrone(); A.timer = setInterval(musicTick, 30); }
+  else stopDrone();
+}
+const SFX = {
+  click() { if (!ac()) return; const t = A.ctx.currentTime; tone(96, t, .04, { type: 'square', vol: .05, cut: 5000 }); },
+  lamp(k) { if (!ac()) return; const t = A.ctx.currentTime; tone(76 + k * 2, t, .25, { type: 'sine', vol: .14 }); tone(83 + k * 2, t + .06, .3, { type: 'sine', vol: .1 }); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(52, t, .35, { type: 'sawtooth', vol: .12, cut: 900, glide: -5 }); tone(51, t + .02, .35, { type: 'square', vol: .06, cut: 700 }); },
+  step() { if (!ac()) return; const t = A.ctx.currentTime; thump(t, .55); thump(t + .22, .45); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [60, 64, 67, 72, 76, 79, 84].forEach((m, i) => tone(m, t + i * .09, .5, { type: 'triangle', vol: .16 }));
+    [[72, .8], [76, .95], [79, 1.1], [84, 1.25]].forEach(([m, d]) => tone(m, t + d, .6, { type: 'sine', vol: .14 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [64, 63, 62, 57].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); thump(t + 1.1, .6); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+/* ---------- flow ---------- */
+function startLock() {
+  S.t0 = Date.now();
+  S.lit = false; if (A.ctx && A.mode !== 'tension') music('tension');
+  const { sec, clues } = buildLock();
+  S.secret = sec; S.clues = clues; S.digits = L().places.map(() => 0); S.fox = 0; S.misses = 0; S.hintN = 0; S.busy = false;
+  $('#lvl').textContent = S.lvl + 1;
+  drawScene(); drawLock(); drawClues();
+  $('#say').innerHTML = S.lvl === 0 ? T('🦜 Help me! Turn the wheels until every lamp is green, then open.', '🦜 الحقني! لفّ الأرقام لحد ما كل لمبة تنوّر بالأخضر، وبعدين افتح.') : T(`🦜 Lock number ${n(S.lvl + 1)}! The fox is back… read the clues carefully.`, `🦜 القفل رقم ${n(S.lvl + 1)}! الثعلب رجع تاني… ركّز في الألغاز.`);
+}
+async function tryOpen() {
+  if (S.busy) return; S.busy = true;
+  if (checkClues()) {
+    const stars = S.fox === 0 ? 3 : S.fox <= 2 ? 2 : 1, pts = 20 + stars * 10;
+    S.score += pts; $('#score').textContent = S.score;
+    music('off'); SFX.win(); drawScene('open', 'surprised', FOX_X[Math.min(S.fox, 5)] + 20); $('#say').innerHTML = T(`🦜 Free!! The number was ${n(fmtNum(S.secret, L().places))}. +${n(pts)}`, `🦜 حرية!! العدد كان ${n(fmtNum(S.secret, L().places))}. +${n(pts)}`);
+    saveWin(stars, pts);
+    await foxRunAway(); await sleep(500);
+    showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+    return;
+  }
+  S.fox++; S.misses++; SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.fox });
+  S.clues.forEach((c, i) => { if (!c.test(S.digits)) { const e = $('#c' + i); e.classList.remove('bad'); void e.offsetWidth; e.classList.add('bad'); } });
+  SFX.wrong(); SFX.step(); await foxStep(); drawScene();
+  if (S.fox >= 5) { music('off'); SFX.lose(); drawScene('caught'); $('#say').innerHTML = T('🦊 Ha ha… better luck next time!', '🦊 هههه… المرة الجاية!'); SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 }); await sleep(1200); showEnd('lose'); return; }
+  const bad = S.clues.find(c => !c.test(S.digits));
+  $('#say').innerHTML = T(`🦜 It didn’t open! The red clue is not true yet. The fox has ${n(5 - S.fox)} steps left.`, `🦜 القفل ما اتفتحش! اللغز اللي بيلمع بالأحمر لسه مش متحقق. فاضل ${n(5 - S.fox)} خطوات للثعلب.`);
+  S.busy = false;
+}
+function hint() {
+  if (S.busy) return;
+  const bad = S.clues.find(c => !c.test(S.digits));
+  if (!bad) { $('#say').innerHTML = T('🦜 Every lamp is on! Press Open, quick!', '🦜 كل اللمبات منوّرة! اضغط افتح بسرعة!'); return; }
+  S.hintN++; $('#say').innerHTML = '🦜 ' + bad.hint;
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['🦜🎉', T('Reesho is out of the cage!', 'ريشو خرج من القفص!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('But the fox has a harder lock… ready?', 'بس الثعلب عنده قفل أصعب… جاهز؟'), T('Next lock ➜', 'القفل اللي بعده ⬅')],
+    all: ['🏆🦜', T('You opened all six locks!', 'فتحت الستة أقفال!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You are a decimal place value expert now.`, `مجموع نقطك ${n(S.score)}. بقيت خبير القيمة المكانية للأعداد العشرية.`), T('Play again', 'العب من الأول')],
+    lose: ['🦊🔒', T('The fox got there first', 'الثعلب وصل قبلك'), '', T(`The number was ${n(fmtNum(S.secret, L().places))}. Read each clue on its own and see which place it talks about.`, `العدد كان ${n(fmtNum(S.secret, L().places))}. اقرأ كل لغز لوحده، وشوف بيتكلم عن أنهي خانة.`), T('Try a new lock', 'جرّب قفل جديد')]
+  }[kind];
+  $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLock(); };
+}
+$('#open').onclick = tryOpen; $('#hint').onclick = hint;
+$('#go').onclick = () => { $('#intro').hidden = true; music('tension'); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+/* progress: SI.chProf('m5c1').cage = { lvl: next lock to play, best: highest lock opened (1-6), stars: [per lock] } */
+function saveWin(stars, pts) {
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.cage = c.cage || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+window.__cage = S; window.__cageApi = { buildLock, drawLock, drawClues, startLock };
+startLock();
+})();
+</script>
+</body>
+</html>

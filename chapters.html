@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261026f">
+<link rel="stylesheet" href="common.css?v=20261027a">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -20,6 +20,22 @@
 .lvl small{font-weight:800;color:var(--ink);font-size:12.5px}
 .sect{margin:4px 2px 0;font-size:15px;font-weight:900;color:var(--ink);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
 .sect .ar{direction:rtl;unicode-bidi:isolate;font-size:14px}
+.adv{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;border-radius:var(--radius);padding:10px 14px 10px 10px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1d3a52,#2f5f7d 60%,#c58b4a);box-shadow:0 8px 22px rgba(31,61,87,.3);border:3px solid #f2b134;transition:transform .12s}
+.adv:hover{transform:translateY(-2px)}
+.adv:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.adv img{height:86px;width:auto;flex:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.adv .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.adv .k{font-size:12.5px;font-weight:900;color:#f8d78a;letter-spacing:.5px}
+.adv b{font-size:21px;line-height:1.2}
+.adv small{font-size:13.5px;font-weight:700;color:#e3eef5}
+.adv .new{position:absolute;top:8px;inset-inline-end:10px;background:#e2603f;color:#fff;border-radius:99px;padding:1px 10px;font-size:12.5px;font-weight:900;animation:advPulse 1.6s infinite}
+.adv .st{color:#f2b134;font-size:13px;letter-spacing:1px}
+.adv .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:6px 12px;font-weight:900;font-size:15px}
+@keyframes advPulse{50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.adv .new{animation:none}}
+.advs{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.advs:empty{display:none}
 .list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
 .ch{display:flex;align-items:center;gap:12px;width:100%;height:100%;text-align:left;font:inherit;color:var(--navy);text-decoration:none;
   background:var(--card);border:3px solid transparent;border-radius:var(--radius);padding:10px 12px 10px 10px;box-shadow:0 6px 20px rgba(31,61,87,.13);transition:transform .12s,border-color .12s}
@@ -100,14 +116,15 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
       </div>
     </div>
     <div class="subj" id="subj" role="group" aria-label="Subject" data-ar-label="المادة"></div>
+    <div class="advs" id="advs"></div>
     <div class="exams" id="exams"></div>
     <h2 class="sect" id="sect" data-ar="اختر الفصل">Choose a chapter <span class="ar">اختر الفصل</span></h2>
     <ol class="list" id="list"></ol>
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261026f"></script>
-<script src="common.js?v=20261026f"></script>
+<script src="chapters.js?v=20261027a"></script>
+<script src="common.js?v=20261027a"></script>
 <script>
 (() => {
   'use strict';
@@ -151,6 +168,16 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   $('#sub').textContent = T(`${SI.gradeName()} · ${SI.subjectName()} · Languages · First term`, `${SI.gradeName()} · ${SI.subjectName()} · عربي · الفصل الدراسي الأول`);
   tabs();
   const box = $('#list'); box.innerHTML = ''; $('#exams').innerHTML = '';
+  /* adventures of this subject and grade (window.ADVENTURES in chapters.js): a big card above the units, "New" until played */
+  $('#advs').innerHTML = '';
+  (window.ADVENTURES || []).filter(v => v.subject === SI.subjectId() && v.grade === SI.grade() && SI.chReady(SI.chapterById(v.ch))).forEach(v => {
+    const P = SI.chProf(v.ch)[v.id] || {}, a = document.createElement('a');
+    a.className = 'adv'; a.href = v.href;
+    a.innerHTML = `<img src="${v.img}" alt="" aria-hidden="true"><span class="tx"><span class="k">${T('ADVENTURE', 'مغامرة')} · ${esc(SI.chWord(SI.chapterById(v.ch)))} ${SI.chapterById(v.ch).n}</span><b>${esc(T(v.title, v.titleAr))}</b><small>${esc(T(v.hint, v.hintAr))}</small>
+      ${P.best ? `<span class="st">${T('Locks opened', 'الأقفال المفتوحة')}: ${P.best} / ${v.of}</span>` : ''}</span>${P.best ? '' : `<span class="new">${T('New', 'جديد')}</span>`}<span class="go" aria-hidden="true">${T('Play ▸', 'العب ◂')}</span>`;
+    a.onclick = () => { SI.setChapter(v.ch); SI.sfx.tick(); };
+    $('#advs').appendChild(a);
+  });
   list.forEach(c => {
     const li = document.createElement('li');
     const s = SI.chapterStars(c.id); total += s.got; if (s.got) started = true;

@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-27', title: 'Math Grade 5: new adventure «Reesho’s Cage»',
+    items: [
+      { text: 'Unit 1 adventure: crack the decimal lock before the fox arrives (6 locks, clues made at random, music)' },
+      { text: 'New adventure cards on the units page and the unit map', links: [{ label: 'Reesho’s Cage', href: 'math-cage.html', ch: 'm5c1' }] }
+    ] },
   { date: '2026-10-26', title: 'تغيير اسم لعبة الوحدة 5 في رياضيات الصف الخامس',
     items: [
       { text: 'لعبة الوحدة 5 أصبح اسمها «مغامرة الكسور العشرية» بدل «نسّاجو خان الخليلي»، بمشهد جديد (طريق مغامرة) وخريطة جديدة، والأسئلة كما هي', links: [{ label: 'اللعبة', href: 'math-adventure.html', ch: 'm5c5' }] }
