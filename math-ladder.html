@@ -93,9 +93,9 @@ bdi{font-weight:900;color:var(--pri)}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261028b"></script>
-<script src="chapters.js?v=20261028b"></script>
-<script src="common.js?v=20261028b"></script>
+<script src="firebase-config.js?v=20261028c"></script>
+<script src="chapters.js?v=20261028c"></script>
+<script src="common.js?v=20261028c"></script>
 <script>
 (() => {
 'use strict';
@@ -111,7 +111,7 @@ document.title = T('The Kitten’s Ladder · Adding and Subtracting Decimals', '
 $('#rules').innerHTML = [T('The roof height is written next to the house.', 'ارتفاع السطح مكتوب جنب البيت.'),
   T('Tap ladder pieces to stack them. Add their lengths in your head: the ladder must reach the roof <b>exactly</b>.', 'اضغط على قطع السلم عشان تركّبها فوق بعض. اجمع أطوالها في دماغك: السلم لازم يوصل للسطح <b>بالظبط</b>.'),
   T('Press <b>Fix the ladder</b>. Too short or too long, and the rain gets heavier.', 'اضغط <b>ثبّت السلم</b>. لو أقصر أو أطول، المطر هيزيد.'),
-  T('After <b>5 raindrops</b> the kitten has to hide. Be quick and exact!', 'بعد <b>٥ نقط مطر</b> القطة هتضطر تستخبى. ركّز واحسب صح!')].map(x => `<li>${x}</li>`).join('');
+  T('After <b>5 raindrops</b> the kitten has to hide. Be quick and exact!', 'بعد <b>5 نقط مطر</b> القطة هتضطر تستخبى. ركّز واحسب صح!')].map(x => `<li>${x}</li>`).join('');
 $('#go').textContent = T('Let’s save the kitten! 💪', 'يلا ننقذ القطة 💪');
 
 /* ---------- rounds ---------- */
@@ -206,7 +206,7 @@ function drawWork() {
   if (r.cut) {
     $('#ask').innerHTML = T(`Two pieces are already up. How long must the <b>last piece</b> be?`, `فيه قطعتين متركّبين. لازم <b>القطعة الأخيرة</b> يكون طولها كام؟`);
     const places = ['o'].concat(r.d === 2 ? ['d1', 'd2'] : ['d1', 'd2', 'd3']);
-    const NAME = { o: T('ones', 'الآحاد'), d1: T('tenths', 'الأجزاء من عشرة'), d2: T('hundredths', 'الأجزاء من مئة'), d3: T('thousandths', 'الأجزاء من ألف') };
+    const NAME = { o: T('ones', 'الآحاد'), d1: T('tenths', 'الأجزاء من عشرة'), d2: T('hundredths', 'الأجزاء من مائة'), d3: T('thousandths', 'الأجزاء من ألف') };
     $('#work').innerHTML = `<div class="lock">${places.map((p, i) => (p === 'd1' ? '<div class="dot">.</div>' : '') + `<div class="wheel"><button type="button" data-i="${i}" data-d="1" aria-label="${T('Up: ', 'زوّد ')}${NAME[p]}">▲</button><div class="digit" id="dg${i}">${S.wheels[i]}</div><button type="button" data-i="${i}" data-d="-1" aria-label="${T('Down: ', 'قلّل ')}${NAME[p]}">▼</button><small>${NAME[p]}</small></div>`).join('')}<div class="unit">${M}</div></div>`;
     $('#work').querySelectorAll('.wheel button').forEach(b => b.onclick = () => { if (S.busy) return; const i = +b.dataset.i; S.wheels[i] = (S.wheels[i] + +b.dataset.d + 10) % 10; $('#dg' + i).textContent = S.wheels[i]; SFX.click(); });
     $('#check').textContent = T('✂️ Cut and fix', '✂️ قصّ وركّب');
@@ -334,7 +334,7 @@ function showEnd(kind, stars = 0) {
   const cfg = {
     win: ['🐱🎉', T('The kitten is safe!', 'القطة نزلت بالسلامة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('Another kitten is stuck on a taller roof… ready?', 'فيه قطة تانية على سطح أعلى… جاهز؟'), T('Next round ➜', 'الجولة اللي بعدها ⬅')],
     all: ['🏆🐱', T('You saved six kittens!', 'أنقذت ست قطط!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You add and subtract decimals like a pro.`, `مجموع نقطك ${n(S.score)}. بقيت شاطر في جمع وطرح الأعداد العشرية.`), T('Play again', 'العب من الأول')],
-    lose: ['🌧️🐱', T('The rain got too heavy', 'المطر بقى شديد'), '', T(`One answer was ${n(ans)} ${M}. Line up the decimal points: tenths with tenths, hundredths with hundredths.`, `واحد من الحلول كان ${n(ans)} ${M}. رتّب العلامات العشرية تحت بعض: الأجزاء من عشرة مع بعض، والأجزاء من مئة مع بعض.`), T('Try again', 'جرّب تاني')]
+    lose: ['🌧️🐱', T('The rain got too heavy', 'المطر بقى شديد'), '', T(`One answer was ${n(ans)} ${M}. Line up the decimal points: tenths with tenths, hundredths with hundredths.`, `واحد من الحلول كان ${n(ans)} ${M}. رتّب العلامات العشرية تحت بعض: الأجزاء من عشرة مع بعض، والأجزاء من مائة مع بعض.`), T('Try again', 'جرّب تاني')]
   }[kind];
   $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
   $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startRound(); };

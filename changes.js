@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-28', title: 'Reesho’s Adventures page',
+    items: [
+      { text: 'Adventures moved to their own page (button on the home page, slim strip above the units and on the unit map); each card shows its unit, lessons and concept', links: [{ label: 'Reesho’s Adventures', href: 'adventures.html', ch: 'm5c1' }] },
+      { text: 'The active subject button is now navy with a gold edge and a tick' },
+      { text: 'Adventure games: ordinary digits (3, not ٣) and the book’s spelling «مائة»' }
+    ] },
   { date: '2026-10-28', title: 'Treasure Underground: the owner\'s pictures',
     items: [
       { text: 'Miner Reesho, the fox with his map, chests, scorpion, water spring and the underground background; the shaft goes deeper with each layer', links: [{ label: 'Treasure Underground', href: 'math-treasure.html', ch: 'm5c1' }] }

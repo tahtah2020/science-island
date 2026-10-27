@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261028b">
+<link rel="stylesheet" href="common.css?v=20261028c">
 <style>
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}
 .mapWrap{position:relative;width:100%;max-width:min(680px, calc((100vh - 120px) * 1224 / 1285));margin:0 auto;aspect-ratio:1224/1285;border-radius:26px;
@@ -34,6 +34,12 @@
 .coachCard{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .coachCard img{height:160px}
 .coachCard .bubble{width:100%}
+.advStrip{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;border-radius:18px;padding:8px 14px;background:linear-gradient(135deg,#1d3a52,#2f5f7d 70%,#c58b4a);border:3px solid #f2b134;box-shadow:0 6px 16px rgba(31,61,87,.25);font-weight:900}
+.advStrip img{height:46px;width:auto;flex:none}
+.advStrip .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.advStrip .t b{font-size:17px}.advStrip .t small{font-size:12.5px;color:#e3eef5;font-weight:700}
+.advStrip .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:5px 12px;font-size:14.5px}
+.advStrip:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .adv{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;border-radius:var(--radius);padding:10px 14px 10px 10px;position:relative;overflow:hidden;
   background:linear-gradient(135deg,#1d3a52,#2f5f7d 60%,#c58b4a);box-shadow:0 8px 22px rgba(31,61,87,.3);border:3px solid #f2b134;transition:transform .12s}
 .adv:hover{transform:translateY(-2px)}
@@ -59,7 +65,7 @@
   .side{display:contents}
   .coachCard{order:-1}
   .lvl{order:2}
-  .side .adv{order:-1}
+  .side .adv,.side .advStrip{order:-1}
   .coachCard{flex-direction:row;text-align:left;align-items:center}
   .coachCard img{height:84px}
   .coachCard .btn{display:none}
@@ -114,9 +120,9 @@
     </aside>
   </main>
 </div>
-<script src="firebase-config.js?v=20261028b"></script>
-<script src="chapters.js?v=20261028b"></script>
-<script src="common.js?v=20261028b"></script>
+<script src="firebase-config.js?v=20261028c"></script>
+<script src="chapters.js?v=20261028c"></script>
+<script src="common.js?v=20261028c"></script>
 <script>
 (async () => {
   'use strict';
@@ -126,14 +132,15 @@
   const $ = s => document.querySelector(s), T = SI.T, AR = SI.isAr(), TITLE = SI.chTitle(CH);
   const P = SI.chProf(), now = Date.now();
   /* this unit's adventures (window.ADVENTURES in chapters.js) */
-  (window.ADVENTURES || []).filter(v => v.ch === CH.id).forEach(v => {
-    const V = P[v.id] || {}, a = document.createElement('a');
-    a.className = 'adv'; a.href = v.href;
-    a.innerHTML = `<img src="${v.img}" alt="" aria-hidden="true"><span class="tx"><span class="k">${T('ADVENTURE', 'مغامرة')}</span><b>${SI.esc(T(v.title, v.titleAr))}</b><small>${SI.esc(T(v.hint, v.hintAr))}</small>
-      ${V.best ? `<span class="st">${T(v.stat || 'Locks opened', v.statAr || 'الأقفال المفتوحة')}: ${V.best} / ${v.of}</span>` : ''}</span>${V.best ? '' : `<span class="new">${T('New', 'جديد')}</span>`}`;
-    a.onclick = () => SI.sfx.tick();
-    document.getElementById('advs').appendChild(a);
-  });
+  {
+    const advN = (window.ADVENTURES || []).filter(v => v.ch === CH.id).length;
+    if (advN) {
+      const a = document.createElement('a'); a.className = 'advStrip'; a.href = `adventures.html?grade=${SI.chGrade(CH)}&subject=${SI.chSubject(CH)}`;
+      a.innerHTML = `<img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><span class="t"><b>${T('🎮 Reesho’s Adventures', '🎮 مغامرات ريشو')}</b><small>${T(`${advN} game${advN > 1 ? 's' : ''} for this unit`, `${advN} ${advN > 2 && advN < 11 ? 'ألعاب' : 'لعبة'} للوحدة دي`)}</small></span><span class="go">${T('Open ▸', 'افتح ◂')}</span>`;
+      a.onclick = () => SI.sfx.tick();
+      document.getElementById('advs').appendChild(a);
+    }
+  }
   const arm = P.game || {}, quest = P.quest || {}, daily = SI.dailyState();   // "arm" = this chapter's own game
   document.title = `${TITLE} · ${T('Motafawek', 'متفوّق')}`;
   $('#chTitle').textContent = TITLE;

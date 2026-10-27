@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,follow">
+<title>Reesho’s Adventures · Motafawek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- «مغامرات ريشو / Reesho’s Adventures» (owner, 28 Oct 2026): every adventure of the site in one page, reached from a button on the home page
+     and a slim strip on chapters.html / map.html (the big cards there pushed the units down). Grade chips, then subject chips, then one card per
+     adventure with its unit, lessons and the concept it teaches (window.ADVENTURES in chapters.js: lessons, concept, conceptAr).
+     Playing needs a player of that grade: the current one, else another player of that grade on this device (switched to), else the home page
+     makes a new player with the grade already chosen and then opens the adventure (sessionStorage «si.adv»). -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--gold:#f2b134;--coral:#e2603f;--ok:#2e9e6b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;color:var(--navy);min-height:100svh;background:linear-gradient(160deg,#16314a,#24506e 55%,#3d6f8e)}
+.wrap{max-width:980px;margin:0 auto;padding:14px 16px 34px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;align-items:center;gap:12px;color:#fff}
+.top img{height:84px;width:auto;flex:none;filter:drop-shadow(0 4px 8px #0006)}
+.top h1{margin:0;font-size:26px}
+.top p{margin:2px 0 0;font-weight:700;color:#cfe3ee;font-size:14.5px}
+.top .back{margin-inline-start:auto;flex:none;text-decoration:none;background:#ffffff22;color:#fff;border-radius:99px;padding:7px 14px;font-weight:900;font-size:14px}
+.lbl{color:#f8d78a;font-weight:900;font-size:14px;margin:0 2px -6px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{font:inherit;font-weight:900;font-size:15px;border:3px solid transparent;background:var(--card);color:var(--navy);border-radius:99px;padding:7px 15px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.chips button[aria-pressed=true]{background:var(--gold);border-color:#fff;box-shadow:0 4px 0 #c88f1c;transform:translateY(-2px)}
+.chips button[aria-pressed=true]::after{content:'✓'}
+.chips button small{font-size:12px;background:#1f3d5718;border-radius:99px;padding:0 7px}
+.chips button:focus-visible,.card:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;text-decoration:none;color:var(--navy);background:var(--card);border-radius:20px;overflow:hidden;box-shadow:0 8px 22px #0003;border:3px solid var(--gold);position:relative;cursor:pointer;transition:transform .12s}
+.card:hover{transform:translateY(-3px)}
+.card .pic{height:118px;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(135deg,#1d3a52,#2f5f7d 60%,#c58b4a)}
+.card .pic img{height:108px;width:auto;filter:drop-shadow(0 4px 6px #0005)}
+.card .tx{padding:10px 12px 12px;display:flex;flex-direction:column;gap:5px;flex:1}
+.card b{font-size:19px;line-height:1.25}
+.card .where{font-size:12.5px;font-weight:900;color:#fff;background:var(--pri);border-radius:99px;padding:2px 10px;align-self:flex-start}
+.card .what{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.5}
+.card .st{font-size:13px;font-weight:900;color:#a86d00}
+.card .go{margin-top:auto;align-self:stretch;text-align:center;background:var(--gold);border-radius:12px;padding:7px;font-weight:900;font-size:15.5px;box-shadow:0 3px 0 #c88f1c}
+.card .new{position:absolute;top:8px;inset-inline-end:10px;background:var(--coral);color:#fff;border-radius:99px;padding:1px 10px;font-size:12.5px;font-weight:900}
+.empty{background:var(--card);border-radius:20px;padding:22px;text-align:center;font-weight:800;color:var(--ink)}
+.empty img{height:90px}
+@media (max-width:480px){.grid{grid-template-columns:1fr 1fr;gap:10px}.card .pic{height:96px}.card .pic img{height:88px}.card b{font-size:16.5px}.card .what{font-size:12.5px}.top img{height:64px}.top h1{font-size:21px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top"><img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><div><h1 id="h1"></h1><p id="sub"></p></div><a class="back" id="back" href="index.html"></a></header>
+  <div class="lbl" id="lblGrade"></div>
+  <div class="chips" id="grades" role="group"></div>
+  <div class="lbl" id="lblSubj"></div>
+  <div class="chips" id="subjects" role="group"></div>
+  <div class="grid" id="grid"></div>
+</main>
+<script src="firebase-config.js?v=20261028c"></script>
+<script src="chapters.js?v=20261028c"></script>
+<script src="common.js?v=20261028c"></script>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), esc = SI.esc;
+const me = SI.player(), hasMe = !!(me && me.name);
+/* with a player the page follows the player's language; without one it is Arabic (the home page is bilingual) */
+const AR = hasMe ? SI.isAr() : true, T = (en, ar) => (AR ? ar : en);
+document.documentElement.lang = AR ? 'ar' : 'en'; document.documentElement.dir = AR ? 'rtl' : 'ltr';
+const GR = [['g4', 'Grade 4', 'الصف الرابع'], ['g5', 'Grade 5', 'الصف الخامس'], ['g6', 'Grade 6', 'الصف السادس'], ['p1', 'Prep 1', 'الأول الإعدادي'], ['p2', 'Prep 2', 'الثاني الإعدادي']];
+const ALL = (window.ADVENTURES || []).filter(v => { const c = SI.chapterById(v.ch); return c && c.ready; });
+const q = new URLSearchParams(location.search);
+const st = { grade: q.get('grade') || (hasMe ? me.grade || 'g5' : (ALL[0] || {}).grade || 'g5'), subject: q.get('subject') || 'all' };
+document.title = T('Reesho’s Adventures · Motafawek', 'مغامرات ريشو · متفوّق');
+$('#h1').textContent = T('🎮 Reesho’s Adventures', '🎮 مغامرات ريشو');
+$('#sub').textContent = T('Games where the maths is the move: pick your grade and play.', 'ألعاب الحل فيها هو الحركة نفسها: اختار صفك والعب.');
+$('#back').textContent = hasMe ? T('My units ▸', 'وحداتي ◂') : T('Home ▸', 'الرئيسية ◂');
+$('#back').href = hasMe ? 'chapters.html' : 'index.html';
+$('#lblGrade').textContent = T('Grade', 'الصف');
+$('#lblSubj').textContent = T('Subject', 'المادة');
+const subjOf = id => (SI.subjects().find(s => s.id === id) || { id, title: id, titleAr: id, icon: '📘' });
+
+function render() {
+  $('#grades').innerHTML = GR.map(([id, en, ar]) => { const k = ALL.filter(v => v.grade === id).length;
+    return `<button type="button" data-g="${id}" aria-pressed="${id === st.grade}">${T(en, ar)}${k ? ` <small>${k}</small>` : ''}</button>`; }).join('');
+  const inGrade = ALL.filter(v => v.grade === st.grade), subs = [...new Set(inGrade.map(v => v.subject || 'science'))];
+  if (st.subject !== 'all' && !subs.includes(st.subject)) st.subject = 'all';
+  $('#subjects').innerHTML = [['all', '🎯', T('All', 'الكل'), inGrade.length], ...subs.map(s => { const o = subjOf(s); return [s, o.icon || '📘', T(o.title, o.titleAr), inGrade.filter(v => (v.subject || 'science') === s).length]; })]
+    .map(([id, ic, name, k]) => `<button type="button" data-s="${id}" aria-pressed="${id === st.subject}"><span aria-hidden="true">${ic}</span>${esc(name)} <small>${k}</small></button>`).join('');
+  $('#lblSubj').hidden = $('#subjects').hidden = !inGrade.length;
+  const list = inGrade.filter(v => st.subject === 'all' || (v.subject || 'science') === st.subject);
+  $('#grid').innerHTML = list.length ? '' : `<div class="empty" style="grid-column:1/-1"><img src="assets/parrot_think.png" alt=""><p>${T('No adventures for this grade yet… coming soon!', 'لسه مفيش مغامرات للصف ده… قريبًا!')}</p></div>`;
+  list.forEach(v => {
+    const c = SI.chapterById(v.ch), o = subjOf(v.subject || 'science');
+    const P = (hasMe && (me.grade || 'g5') === v.grade) ? (SI.chProf(v.ch)[v.id] || {}) : {};
+    const unit = c.n ? `${T(o.title, o.titleAr)} · ${T('Unit', 'الوحدة')} ${c.n}` : T(o.title, o.titleAr);
+    const les = v.lessons ? ` · ${T('Lessons', 'الدروس')} <bdi dir="ltr">${esc(v.lessons)}</bdi>` : '';
+    const a = document.createElement('a'); a.className = 'card'; a.href = v.href;
+    a.innerHTML = `<span class="pic"><img src="${v.img}" alt="" aria-hidden="true"></span><span class="tx"><span class="where">${esc(unit)}${les}</span>
+      <b>${esc(T(v.title, v.titleAr))}</b><span class="what">${esc(T(v.concept || v.hint, v.conceptAr || v.hintAr))}</span>
+      ${P.best ? `<span class="st">${esc(T(v.stat || 'Levels won', v.statAr || 'المراحل اللي كسبتها'))}: ${P.best} / ${v.of}</span>` : ''}
+      <span class="go">${T('Play ▸', 'العب ◂')}</span></span>${P.best ? '' : `<span class="new">${T('New', 'جديد')}</span>`}`;
+    a.onclick = e => { e.preventDefault(); play(v); };
+    $('#grid').appendChild(a);
+  });
+  document.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { st.grade = b.dataset.g; st.subject = 'all'; SI.sfx.tick(); render(); });
+  document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { st.subject = b.dataset.s; SI.sfx.tick(); render(); });
+}
+/* open an adventure with a player of its grade */
+function play(v) {
+  SI.sfx.tick();
+  SI.ga('adventure_open', { game: v.href, chapter: v.ch });
+  const cur = SI.player();
+  if (cur && cur.name && (cur.grade || 'g5') === v.grade) return go(v);
+  const other = Object.entries(SI.players()).find(([, p]) => p && p.name && (p.grade || 'g5') === v.grade);
+  if (other) { SI.usePlayer(other[0]); return go(v); }
+  try { sessionStorage.setItem('si.adv', JSON.stringify({ href: v.href, ch: v.ch, grade: v.grade })); } catch (e) {}
+  location.href = 'index.html?adv=1';
+}
+function go(v) { SI.setChapter(v.ch); location.href = v.href; }
+render();
+})();
+</script>
+</body>
+</html>

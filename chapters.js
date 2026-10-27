@@ -486,11 +486,15 @@ window.EXAMS = [
    once its unit is open) and on the map of its unit. Progress is kept in SI.chProf(ch)[id]. Add one line per new adventure. */
 window.ADVENTURES = [
   { id: 'cage', href: 'math-cage.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/reesho_sad.webp', of: 6,
+    lessons: '1-4', concept: 'Place value of decimals: the digit, its value, expanded form, ×10 and ÷10', conceptAr: 'القيمة المكانية للكسور العشرية: الرقم وقيمته، والصيغة الممتدة، والضرب والقسمة على 10',
     title: 'Save Reesho!', titleAr: 'أنقذ ريشو!', hint: 'Crack the decimal lock before the fox gets there', hintAr: 'افتح قفل الأعداد العشرية قبل ما الثعلب يوصل' },
   { id: 'city', href: 'math-city.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/reesho_point.webp', of: 6, stat: 'Districts built', statAr: 'الأحياء المبنية',
+    lessons: '1-3', concept: 'Modelling decimals to the thousandths on a grid, and composing them', conceptAr: 'تمثيل الكسور العشرية حتى جزء من الألف على الشبكة، وتكوينها',
     title: 'Reesho’s City', titleAr: 'مدينة ريشو', hint: 'Colour exactly the land in each order: tenths, hundredths, thousandths', hintAr: 'لوّن الأرض المطلوبة بالظبط: أعشار وأجزاء من مئة وأجزاء من ألف' },
   { id: 'ladder', href: 'math-ladder.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/kitten_scared.webp', of: 6, stat: 'Kittens saved', statAr: 'القطط اللي أنقذتها',
+    lessons: '6-11', concept: 'Estimating, adding and subtracting decimals', conceptAr: 'تقدير الكسور العشرية وجمعها وطرحها',
     title: 'The Kitten’s Ladder', titleAr: 'سلّم القطة', hint: 'Add decimal ladder pieces to reach the roof exactly, before the rain gets heavy', hintAr: 'اجمع قطع السلم العشرية عشان توصل للسطح بالظبط قبل ما المطر يشتد' },
   { id: 'treasure', href: 'math-treasure.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/reesho_miner.webp', of: 6, stat: 'Maps solved', statAr: 'الخرائط اللي حلّيتها',
+    lessons: '1-4', concept: 'Reading and writing decimals to the thousandths (words, fractions, expanded form) on the number line', conceptAr: 'قراءة الكسور العشرية حتى جزء من الألف وكتابتها (بالكلمات، وككسر، وبالصيغة الممتدة) على خط الأعداد',
     title: 'Treasure Underground', titleAr: 'كنز تحت الأرض', hint: 'Dig layer by layer (tenths, hundredths, thousandths) to the fox’s treasure', hintAr: 'احفر طبقة طبقة (أعشار، أجزاء من مئة، أجزاء من ألف) لحد كنز الثعلب' }
 ];

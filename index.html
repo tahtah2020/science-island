@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261028b">
+<link rel="stylesheet" href="common.css?v=20261028c">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -94,6 +94,13 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 .about p,.about li{font-weight:700;font-size:15px;line-height:1.75}
 .about p{margin:0}
 .about ul{margin:0;padding:0 18px 0 0}
+.advBtn{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;border-radius:20px;padding:8px 16px;background:linear-gradient(135deg,#1d3a52,#2f5f7d 70%,#c58b4a);border:3px solid #f2b134;box-shadow:0 6px 18px rgba(31,61,87,.3);font-weight:900}
+.advBtn img{height:58px;width:auto;flex:none}
+.advBtn span{display:flex;flex-direction:column;flex:1;min-width:0}
+.advBtn b{font-size:18px}.advBtn small{font-size:13px;color:#e3eef5;font-weight:700}
+.advBtn .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:4px 12px;font-size:20px}
+.advBtn:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.advBtn[hidden]{display:none}
 .foot{margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .foot a.tg{align-items:center;background:#229ed9;color:#fff}
 .foot a.tg svg{flex:none;align-self:center}
@@ -116,11 +123,14 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261028b">
-      <img src="assets/banner.jpg?v=20261028b" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261028c">
+      <img src="assets/banner.jpg?v=20261028c" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
+
+  <!-- Reesho's adventures: one page with every adventure, by grade (owner, 28 Oct 2026) -->
+  <a class="advBtn" href="adventures.html"><img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><span><b>🎮 مغامرات ريشو</b><small>Reesho’s Adventures · اختار صفك والعب</small></span><span class="go" aria-hidden="true">▸</span></a>
 
   <!-- step 0: who is playing (only when this device already has players) -->
   <section class="step" id="stepWho" hidden>
@@ -235,9 +245,9 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <p class="foot"><a href="contact.html">For parents and teachers <span class="ar">لأولياء الأمور والمعلمين</span></a>
     <a class="tg" href="https://t.me/motafawek" target="_blank" rel="noopener" data-tg="home"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.6c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.5-.6-.2L6.2 13.3l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>What is new, on Telegram <span class="ar">الجديد على تليجرام</span></a></p>
 </main>
-<script src="firebase-config.js?v=20261028b"></script>
-<script src="common.js?v=20261028b"></script>
-<script src="chapters.js?v=20261028b"></script>
+<script src="firebase-config.js?v=20261028c"></script>
+<script src="common.js?v=20261028c"></script>
+<script src="chapters.js?v=20261028c"></script>
 <script>
 (() => {
   'use strict';
@@ -250,7 +260,13 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   const show = id => { if (!seen.has(id)) { seen.add(id); ga(STEP_EVENT[id]); } steps.forEach(s => $('#' + s).hidden = s !== id); const f = $('#' + id).querySelector('button:not(:disabled), input'); if (f) f.focus({ preventScroll: true }); };
   const choice = { grade: 'g5', track: 'lang', g: '' };
   let fixId = null;   // an existing player who has not said boy or girl yet
-  const enter = () => SI.greet().then(() => { location.href = MAP; });
+  /* coming from adventures.html with no player of that grade: the new player gets that grade, then the adventure opens */
+  let advPending = null;
+  try { advPending = /[?&]adv=1\b/.test(location.search) ? JSON.parse(sessionStorage.getItem('si.adv') || 'null') : null; } catch (e) {}
+  const enter = () => SI.greet().then(() => {
+    if (advPending && (SI.player() || {}).grade === advPending.grade) { try { sessionStorage.removeItem('si.adv'); } catch (e) {} SI.setChapter(advPending.ch); location.href = advPending.href; return; }
+    location.href = MAP;
+  });
 
   const list = Object.entries(SI.players());
   const GRADE_TAG = { g4: ['Grade 4', 'الصف ٤'], g5: ['Grade 5', 'الصف ٥'], g6: ['Grade 6', 'الصف ٦'], p1: ['Prep 1', 'أولى إعدادي'], p2: ['Prep 2', 'تانية إعدادي'] }, GRADE_HINT = { g4: 'Grade 4 · الصف الرابع', g5: 'Grade 5 · الصف الخامس', g6: 'Grade 6 · الصف السادس', p1: 'Prep 1 · الصف الأول الإعدادي', p2: 'Prep 2 · الصف الثاني الإعدادي' };
@@ -275,6 +291,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
       }
     } catch (e) { console.warn(e); }
   } else show('stepGrade');
+  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('.advBtn').hidden = true; show('stepTrack'); }
 
   $('#newPlayer').onclick = () => { SI.sfx.tick(); show('stepGrade'); };
   /* recovery code: the server copy comes back on this device (merged with it if the player is already here) */

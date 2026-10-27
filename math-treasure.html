@@ -97,9 +97,9 @@ bdi{font-weight:900}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261028b"></script>
-<script src="chapters.js?v=20261028b"></script>
-<script src="common.js?v=20261028b"></script>
+<script src="firebase-config.js?v=20261028c"></script>
+<script src="chapters.js?v=20261028c"></script>
+<script src="common.js?v=20261028c"></script>
 <script>
 (() => {
 'use strict';
@@ -129,7 +129,7 @@ const LAYER = [   // by digging depth from the top
   { en: 'Cave', ar: 'الكهف', c: '#6a3f8a', img: 'cave' },
   { en: 'Deep cave', ar: 'الكهف العميق', c: '#3f2a58', img: 'deep' }
 ];
-const UNIT = { 1000: T('1 whole', 'واحد صحيح'), 100: T('one tenth', 'جزء من عشرة'), 10: T('one hundredth', 'جزء من مئة'), 1: T('one thousandth', 'جزء من ألف') };
+const UNIT = { 1000: T('1 whole', 'واحد صحيح'), 100: T('one tenth', 'جزء من عشرة'), 10: T('one hundredth', 'جزء من مائة'), 1: T('one thousandth', 'جزء من ألف') };
 
 /* ---------- number words ---------- */
 const AU = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
@@ -150,7 +150,7 @@ function enWords(v, per = 'thousandth') {
   const rw = !r ? '' : r < 20 ? EU[r] : ET[Math.floor(r / 10)] + (r % 10 ? '-' + EU[r % 10] : '');
   return [h ? EU[h] + ' hundred' : '', rw].filter(Boolean).join(' ') + ' ' + per + (v === 1 ? '' : 's');
 }
-const words = (v, per) => (AR ? arWords(v, per === 'h' ? 'مئة' : 'ألف') : enWords(v, per === 'h' ? 'hundredth' : 'thousandth'));
+const words = (v, per) => (AR ? arWords(v, per === 'h' ? 'مائة' : 'ألف') : enWords(v, per === 'h' ? 'hundredth' : 'thousandth'));
 /* v in thousandths → decimal text with k places */
 const dec = (v, k = 3) => (v / 1000).toFixed(k);
 const frac = (a, b) => `<span class="frac" dir="ltr"><b>${a}</b><i>${b}</i></span>`;
@@ -187,7 +187,7 @@ const L = () => LEVELS[S.lvl];
 const depths = () => Math.round(Math.log10(L().full));   // 3 layers for 0-1, 4 for 0-10
 const seg = () => S.span / 10;                            // value of one section of the layer
 const last = () => S.span === 10;                         // the cave: tap a mark
-const placeOf = w => ({ 1000: T('ones', 'الآحاد'), 100: T('tenths', 'الأجزاء من عشرة'), 10: T('hundredths', 'الأجزاء من مئة'), 1: T('thousandths', 'الأجزاء من ألف') }[w]);
+const placeOf = w => ({ 1000: T('ones', 'الآحاد'), 100: T('tenths', 'الأجزاء من عشرة'), 10: T('hundredths', 'الأجزاء من مائة'), 1: T('thousandths', 'الأجزاء من ألف') }[w]);
 
 /* ---------- scene: the owner's underground picture; Reesho digs a shaft, the fox walks to it with his map ---------- */
 const IMG_DIR = 'math/assets/';
@@ -333,8 +333,8 @@ function hint() {
   S.hintN++;
   const f = S.tr.form, w = seg();
   if (S.hintN === 1 && S.depth === 0) {
-    say(f === 'words' || f === 'zwordsH' ? T('Write the words as a decimal in your head first: “thousandths” = 3 places after the point, “hundredths” = 2.', 'حوّل الكلام لعدد عشري في دماغك الأول: «من ألف» = ٣ خانات بعد العلامة، و«من مئة» = خانتين.')
-      : f === 'frac' || f === 'zfracH' ? T('Over 1000 = thousandths, over 100 = hundredths. Write the top number after the point with that many places.', 'المقام ١٠٠٠ = أجزاء من ألف، والمقام ١٠٠ = أجزاء من مئة. اكتب البسط بعد العلامة العشرية بعدد الخانات ده.')
+    say(f === 'words' || f === 'zwordsH' ? T('Write the words as a decimal in your head first: “thousandths” = 3 places after the point, “hundredths” = 2.', 'حوّل الكلام لعدد عشري في دماغك الأول: «من ألف» = 3 خانات بعد العلامة، و«من مائة» = خانتين.')
+      : f === 'frac' || f === 'zfracH' ? T('Over 1000 = thousandths, over 100 = hundredths. Write the top number after the point with that many places.', 'المقام 1000 = أجزاء من ألف، والمقام 100 = أجزاء من مائة. اكتب البسط بعد العلامة العشرية بعدد الخانات ده.')
       : f === 'exp' || f === 'wexp' ? T('Each part of the sum is one place. A missing part means a 0 in that place.', 'كل جزء في المجموع خانة لوحده. الجزء اللي مش موجود يعني صفر في الخانة دي.')
       : T('Read the number place by place: each layer you dig is one place.', 'اقرأ العدد خانة خانة: كل طبقة بتحفرها = خانة واحدة.'));
     return;
@@ -426,7 +426,7 @@ function showEnd(kind, stars = 0) {
   $('#ex').innerHTML = line(22, '#b98a55', '0', '1', 3) + line(72, '#8d8f94', '0.3', '0.4', 0) + line(122, '#5a4a6a', '0.30', '0.31', 7, true);
   $('#rules').innerHTML = [
     T('The fox’s note says where each treasure is, for example <b dir="ltr">0.307</b>.', 'ورقة الثعلب بتقول الكنز مدفون فين، مثلًا <b dir="ltr">0.307</b>.'),
-    T('Dig one layer at a time. Soil = tenths: pick the section <b dir="ltr">0.3</b>. Rock = hundredths: pick <b dir="ltr">0.30</b>. Cave = thousandths: tap the mark <b dir="ltr">0.307</b>.', 'احفر طبقة طبقة. التراب = أعشار: اختار القسم <b dir="ltr">0.3</b>. الصخر = أجزاء من مئة: اختار <b dir="ltr">0.30</b>. الكهف = أجزاء من ألف: اضغط العلامة <b dir="ltr">0.307</b>.'),
+    T('Dig one layer at a time. Soil = tenths: pick the section <b dir="ltr">0.3</b>. Rock = hundredths: pick <b dir="ltr">0.30</b>. Cave = thousandths: tap the mark <b dir="ltr">0.307</b>.', 'احفر طبقة طبقة. التراب = أعشار: اختار القسم <b dir="ltr">0.3</b>. الصخر = أجزاء من مائة: اختار <b dir="ltr">0.30</b>. الكهف = أجزاء من ألف: اضغط العلامة <b dir="ltr">0.307</b>.'),
     T('Only the ends and the middle have numbers: count the marks.', 'الأرقام مكتوبة على الطرفين والنص بس: عدّ العلامات.'),
     T(`A wrong place = water or a scorpion, and the fox steps closer. ${STEPS} steps and he takes the treasure! Find ${TREASURES} treasures on each map.`, `مكان غلط = مية أو عقرب، والثعلب يقرّب خطوة. ${STEPS} خطوات وياخد الكنز! لاقي ${TREASURES} كنوز في كل خريطة.`)
   ].map(x => `<li>${x}</li>`).join('');

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261028b">
+<link rel="stylesheet" href="common.css?v=20261028c">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -34,7 +34,13 @@
 .adv .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:6px 12px;font-weight:900;font-size:15px}
 @keyframes advPulse{50%{transform:scale(1.08)}}
 @media (prefers-reduced-motion:reduce){.adv .new{animation:none}}
-.advs{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.advStrip{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;border-radius:18px;padding:8px 14px;background:linear-gradient(135deg,#1d3a52,#2f5f7d 70%,#c58b4a);border:3px solid #f2b134;box-shadow:0 6px 16px rgba(31,61,87,.25);font-weight:900}
+.advStrip img{height:46px;width:auto;flex:none}
+.advStrip .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.advStrip .t b{font-size:17px}.advStrip .t small{font-size:12.5px;color:#e3eef5;font-weight:700}
+.advStrip .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:5px 12px;font-size:14.5px}
+.advStrip:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.advs{display:grid;grid-template-columns:1fr;gap:12px}
 .advs:empty{display:none}
 .list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
 .ch{display:flex;align-items:center;gap:12px;width:100%;height:100%;text-align:left;font:inherit;color:var(--navy);text-decoration:none;
@@ -63,7 +69,9 @@ html[dir=rtl] button.ch{text-align:right}
   background:var(--card);border:3px solid transparent;border-radius:99px;padding:7px 15px 7px 9px;box-shadow:0 4px 14px rgba(31,61,87,.12)}
 html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
 .subj button .i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:18px}
-.subj button[aria-pressed=true]{border-color:var(--primary);background:#fff}
+.subj button[aria-pressed=true]{border-color:#1f3d57;background:#1f3d57;color:#fff;box-shadow:0 4px 0 #f2b134;transform:translateY(-2px)}
+.subj button[aria-pressed=true] .i{box-shadow:0 0 0 3px #f2b134}
+.subj button[aria-pressed=true]::after{content:'✓';font-size:14px;color:#f2b134;margin-inline-start:2px}
 .subj button.later{opacity:.75}
 .subj button small{font-size:11.5px;font-weight:900;color:#8a5a00;background:#ffe9b3;border-radius:99px;padding:1px 8px}
 .subj button:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
@@ -123,8 +131,8 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261028b"></script>
-<script src="common.js?v=20261028b"></script>
+<script src="chapters.js?v=20261028c"></script>
+<script src="common.js?v=20261028c"></script>
 <script>
 (() => {
   'use strict';
@@ -170,14 +178,14 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   const box = $('#list'); box.innerHTML = ''; $('#exams').innerHTML = '';
   /* adventures of this subject and grade (window.ADVENTURES in chapters.js): a big card above the units, "New" until played */
   $('#advs').innerHTML = '';
-  (window.ADVENTURES || []).filter(v => v.subject === SI.subjectId() && v.grade === SI.grade() && SI.chReady(SI.chapterById(v.ch))).forEach(v => {
-    const P = SI.chProf(v.ch)[v.id] || {}, a = document.createElement('a');
-    a.className = 'adv'; a.href = v.href;
-    a.innerHTML = `<img src="${v.img}" alt="" aria-hidden="true"><span class="tx"><span class="k">${T('ADVENTURE', 'مغامرة')} · ${esc(SI.chWord(SI.chapterById(v.ch)))} ${SI.chapterById(v.ch).n}</span><b>${esc(T(v.title, v.titleAr))}</b><small>${esc(T(v.hint, v.hintAr))}</small>
-      ${P.best ? `<span class="st">${T(v.stat || 'Locks opened', v.statAr || 'الأقفال المفتوحة')}: ${P.best} / ${v.of}</span>` : ''}</span>${P.best ? '' : `<span class="new">${T('New', 'جديد')}</span>`}<span class="go" aria-hidden="true">${T('Play ▸', 'العب ◂')}</span>`;
-    a.onclick = () => { SI.setChapter(v.ch); SI.sfx.tick(); };
+  /* adventures live on their own page (owner, 28 Oct 2026): here only one slim strip, so the units stay at the top */
+  const advN = (window.ADVENTURES || []).filter(v => v.subject === SI.subjectId() && v.grade === SI.grade() && SI.chReady(SI.chapterById(v.ch))).length;
+  if (advN) {
+    const a = document.createElement('a'); a.className = 'advStrip'; a.href = `adventures.html?grade=${SI.grade()}&subject=${SI.subjectId()}`;
+    a.innerHTML = `<img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><span class="t"><b>${T('🎮 Reesho’s Adventures', '🎮 مغامرات ريشو')}</b><small>${T(`${advN} game${advN > 1 ? 's' : ''} for ${esc(SI.subjectName())}`, `${advN} ${advN > 2 && advN < 11 ? 'ألعاب' : 'لعبة'} في ${esc(SI.subjectName())}`)}</small></span><span class="go">${T('Open ▸', 'افتح ◂')}</span>`;
+    a.onclick = () => SI.sfx.tick();
     $('#advs').appendChild(a);
-  });
+  }
   list.forEach(c => {
     const li = document.createElement('li');
     const s = SI.chapterStars(c.id); total += s.got; if (s.got) started = true;

@@ -88,9 +88,9 @@ bdi{font-weight:900;color:var(--pri)}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261028b"></script>
-<script src="chapters.js?v=20261028b"></script>
-<script src="common.js?v=20261028b"></script>
+<script src="firebase-config.js?v=20261028c"></script>
+<script src="chapters.js?v=20261028c"></script>
+<script src="common.js?v=20261028c"></script>
 <script>
 (() => {
 'use strict';
@@ -107,9 +107,9 @@ document.title = T('Reesho’s Cage · Place Value of Decimals', 'قفص ريش�
 $('#rules').innerHTML = [T('The lock opens with a secret decimal number.', 'القفل بيتفتح بعدد عشري سرّي.'),
   T('The note has clues about the number. Turn the digit wheels: each clue that comes true lights up green.', 'على الورقة ألغاز عن العدد. لفّ الأرقام في الخانات، وكل لغز يتحقق ينوّر بالأخضر.'),
   T('When every clue is lit, press <b>Open</b>.', 'لما كل الألغاز تنوّر اضغط <b>افتح</b>.'),
-  T('Each wrong try moves the fox one step closer. He needs only <b>5 steps</b>!', 'كل محاولة غلط الثعلب بيقرّب خطوة. عنده <b>٥ خطوات</b> بس!')].map(x => `<li>${x}</li>`).join('');
+  T('Each wrong try moves the fox one step closer. He needs only <b>5 steps</b>!', 'كل محاولة غلط الثعلب بيقرّب خطوة. عنده <b>5 خطوات</b> بس!')].map(x => `<li>${x}</li>`).join('');
 $('#go').textContent = T('Let’s save Reesho! 💪', 'يلا ننقذ ريشو 💪');
-const PLACE = { t: { name: T('tens', 'العشرات'), v: 10, dec: 0 }, o: { name: T('ones', 'الآحاد'), v: 1, dec: 0 }, d1: { name: T('tenths', 'الأجزاء من عشرة'), none: T('tenths', 'جزء من عشرة'), v: .1, dec: 1 }, d2: { name: T('hundredths', 'الأجزاء من مئة'), none: T('hundredths', 'جزء من مئة'), v: .01, dec: 2 }, d3: { name: T('thousandths', 'الأجزاء من ألف'), none: T('thousandths', 'جزء من ألف'), v: .001, dec: 3 } };
+const PLACE = { t: { name: T('tens', 'العشرات'), v: 10, dec: 0 }, o: { name: T('ones', 'الآحاد'), v: 1, dec: 0 }, d1: { name: T('tenths', 'الأجزاء من عشرة'), none: T('tenths', 'جزء من عشرة'), v: .1, dec: 1 }, d2: { name: T('hundredths', 'الأجزاء من مائة'), none: T('hundredths', 'جزء من مائة'), v: .01, dec: 2 }, d3: { name: T('thousandths', 'الأجزاء من ألف'), none: T('thousandths', 'جزء من ألف'), v: .001, dec: 3 } };
 /* six locks, harder each time: places used, clue kinds allowed */
 const LEVELS = [
   { places: ['o', 'd1', 'd2'], kinds: ['band', 'digit', 'value'], max: 3 },
