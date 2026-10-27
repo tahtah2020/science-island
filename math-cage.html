@@ -88,9 +88,9 @@ bdi{font-weight:900;color:var(--pri)}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261027b"></script>
-<script src="chapters.js?v=20261027b"></script>
-<script src="common.js?v=20261027b"></script>
+<script src="firebase-config.js?v=20261027c"></script>
+<script src="chapters.js?v=20261027c"></script>
+<script src="common.js?v=20261027c"></script>
 <script>
 (() => {
 'use strict';
@@ -116,7 +116,7 @@ const LEVELS = [
   { places: ['o', 'd1', 'd2'], kinds: ['band', 'value', 'expanded', 'zero'], max: 3 },
   { places: ['o', 'd1', 'd2', 'd3'], kinds: ['band', 'value', 'expanded', 'digit'], max: 4 },
   { places: ['o', 'd1', 'd2', 'd3'], kinds: ['band', 'times10', 'div10', 'value', 'expanded'], max: 4 },
-  { places: ['t', 'o', 'd1', 'd2', 'd3'], kinds: ['band', 'times10', 'value', 'expanded', 'zero'], max: 4 },
+  { places: ['t', 'o', 'd1', 'd2', 'd3'], kinds: ['band', 'times10', 'value', 'expanded', 'zero'], max: 5 },
   { places: ['t', 'o', 'd1', 'd2', 'd3'], kinds: ['band', 'times10', 'div10', 'value', 'expanded', 'zero'], max: 5 }
 ];
 const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).cage || {}).lvl) || 0), score: 0, fox: 0, digits: [], secret: [], clues: [], misses: 0, busy: false, hintN: 0 };
@@ -130,8 +130,8 @@ const strip = x => String(fixed(x, 4));
 function makePool(sec, places) {
   const pool = [], idx = p => places.indexOf(p), val = valueOf(sec, places);
   const decs = places.filter(p => PLACE[p].dec);
-  // band: between two numbers one step apart at some place
-  for (const p of ['o', 'd1']) {
+  // band: between two numbers one step apart at the first place, so it fixes the first wheel only (one clue = one wheel, owner 27 Oct 2026)
+  for (const p of [places[0]]) {
     const step = PLACE[p].v, lo = fixed(Math.floor(val / step + 1e-9) * step), hi = fixed(lo + step);
     if (lo === val) continue;
     pool.push({ kind: 'band', text: T(`The number is greater than ${n(strip(lo))} and less than ${n(strip(hi))}`, `العدد أكبر من ${n(strip(lo))} وأصغر من ${n(strip(hi))}`), test: d => { const v = valueOf(d, places); return v > lo + 1e-9 && v < hi - 1e-9; }, hint: T(`Start with the places on the left: the number must begin with ${n(strip(lo))}.`, `ابدأ بالخانات اللي ناحية الشمال: لازم العدد يبدأ بـ ${n(strip(lo))}.`) });
@@ -154,7 +154,7 @@ function makePool(sec, places) {
 function allCombos(k) { const out = []; const total = 10 ** k; for (let x = 0; x < total; x++) out.push(String(x).padStart(k, '0').split('').map(Number)); return out; }
 function buildLock() {
   const lv = L(), k = lv.places.length;
-  for (let tries = 0; tries < 200; tries++) {
+  for (let tries = 0; tries < 2000; tries++) {
     const sec = lv.places.map((p, i) => (i === 0 ? 1 + rnd(9) : rnd(10)));
     if (lv.kinds.includes('zero') && Math.random() < .5) { const z = 1 + rnd(k - 1); sec[z] = 0; }
     const pool = shuffle(makePool(sec, lv.places)).filter(c => lv.kinds.includes(c.kind));
@@ -168,7 +168,7 @@ function buildLock() {
       if (nxt.length < left.length) { chosen.push(c); left = nxt; }
       if (left.length === 1) break;
     }
-    if (left.length === 1 && chosen.length >= Math.min(2, lv.max)) return { sec, clues: shuffle(chosen) };
+    if (left.length === 1 && chosen.length === k) return { sec, clues: shuffle(chosen) };
   }
   throw new Error('no lock');
 }
