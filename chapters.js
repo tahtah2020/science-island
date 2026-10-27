@@ -491,6 +491,6 @@ window.ADVENTURES = [
     title: 'Reesho’s City', titleAr: 'مدينة ريشو', hint: 'Colour exactly the land in each order: tenths, hundredths, thousandths', hintAr: 'لوّن الأرض المطلوبة بالظبط: أعشار وأجزاء من مئة وأجزاء من ألف' },
   { id: 'ladder', href: 'math-ladder.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/kitten_scared.webp', of: 6, stat: 'Kittens saved', statAr: 'القطط اللي أنقذتها',
     title: 'The Kitten’s Ladder', titleAr: 'سلّم القطة', hint: 'Add decimal ladder pieces to reach the roof exactly, before the rain gets heavy', hintAr: 'اجمع قطع السلم العشرية عشان توصل للسطح بالظبط قبل ما المطر يشتد' },
-  { id: 'treasure', href: 'math-treasure.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/fox_sneak.webp', of: 6, stat: 'Maps solved', statAr: 'الخرائط اللي حلّيتها',
+  { id: 'treasure', href: 'math-treasure.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/reesho_miner.webp', of: 6, stat: 'Maps solved', statAr: 'الخرائط اللي حلّيتها',
     title: 'Treasure Underground', titleAr: 'كنز تحت الأرض', hint: 'Dig layer by layer (tenths, hundredths, thousandths) to the fox’s treasure', hintAr: 'احفر طبقة طبقة (أعشار، أجزاء من مئة، أجزاء من ألف) لحد كنز الثعلب' }
 ];

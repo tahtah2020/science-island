@@ -18,7 +18,8 @@
      thousandths (tap the exact mark). One layer = one place, so one tap = one digit. Only the ends and the middle of each layer are labelled:
      the child counts the marks. A wrong section = water / a scorpion and the fox steps closer (5 = lost); the message says only «closer to 0» or
      «farther from 0». 6 maps × 3 treasures; map 6 starts from 0 to 10 (ones layer, 4 layers).
-     Pictures: Reesho, the fox and the night background from math/assets/ (owner, Gemini, 27 Oct 2026); layers, chest, water, scorpion drawn in code.
+     Pictures (owner, Gemini, 28 Oct 2026, cut out with PIL): bg_dig.jpg (night, soil / rock / cave cross-section; board_soil/rock/cave/deep.jpg are
+     crops of it), reesho_miner, reesho_key, fox_map, chest_open, chest_closed, scorpion, water_spring (.webp); fox_laugh/surprised/angry from the cage.
      Music and sounds made in the page with Web Audio. Progress: SI.chProf('m5c1').treasure = { lvl, best, stars[] }. -->
 <style>
 :root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--mint:#bfe8d6;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134}
@@ -76,7 +77,7 @@ bdi{font-weight:900}
 <body>
 <div class="wrap">
   <div class="top"><h1 data-ar="🗺️ كنز تحت الأرض">🗺️ Treasure Underground</h1><div class="pills"><span class="pill"><span data-ar="الخريطة">Map</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="map.html" aria-label="Back to the map" data-ar-label="رجوع للخريطة">⌂</a></div></div>
-  <svg id="scene" viewBox="0 0 440 210" role="img" aria-label="Reesho is locked in a cage and the fox is coming closer" data-ar-label="ريشو محبوس في قفص والثعلب بيقرّب"></svg>
+  <svg id="scene" viewBox="0 0 440 270" role="img" aria-label="Reesho digs for the treasure while the fox walks closer with his map" data-ar-label="ريشو بيحفر على الكنز والثعلب بيقرّب بالخريطة"></svg>
   <div class="note" id="note"></div>
   <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
   <div class="panel">
@@ -88,16 +89,17 @@ bdi{font-weight:900}
 </div>
 
 <div class="veil" id="intro"><div class="box">
-  <h2 data-ar="الثعلب دفن المفتاح!">The fox buried the key!</h2>
+  <div aria-hidden="true"><img src="math/assets/reesho_miner.webp" alt="" style="height:86px"><img src="math/assets/fox_map.webp" alt="" style="height:80px"></div>
+  <h2 data-ar="الثعلب دفن الكنوز!">The fox buried the treasures!</h2>
   <svg viewBox="0 0 300 150" width="100%" style="max-width:300px" aria-hidden="true" id="ex"></svg>
   <ol id="rules"></ol>
   <button class="btn" id="go" type="button"></button></div></div>
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:46px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261028a"></script>
-<script src="chapters.js?v=20261028a"></script>
-<script src="common.js?v=20261028a"></script>
+<script src="firebase-config.js?v=20261028b"></script>
+<script src="chapters.js?v=20261028b"></script>
+<script src="common.js?v=20261028b"></script>
 <script>
 (() => {
 'use strict';
@@ -122,10 +124,10 @@ const LEVELS = [
 ];
 const TREASURES = 3, STEPS = 5;
 const LAYER = [   // by digging depth from the top
-  { en: 'Soil', ar: 'التراب', c: '#b98a55', c2: '#a0723f' },
-  { en: 'Rock', ar: 'الصخر', c: '#8d8f94', c2: '#77797f' },
-  { en: 'Cave', ar: 'الكهف', c: '#5a4a6a', c2: '#493b58' },
-  { en: 'Deep cave', ar: 'الكهف العميق', c: '#2f3b5a', c2: '#26304b' }
+  { en: 'Soil', ar: 'التراب', c: '#8a5a32', img: 'soil' },
+  { en: 'Rock', ar: 'الصخر', c: '#8d8f94', img: 'rock' },
+  { en: 'Cave', ar: 'الكهف', c: '#6a3f8a', img: 'cave' },
+  { en: 'Deep cave', ar: 'الكهف العميق', c: '#3f2a58', img: 'deep' }
 ];
 const UNIT = { 1000: T('1 whole', 'واحد صحيح'), 100: T('one tenth', 'جزء من عشرة'), 10: T('one hundredth', 'جزء من مئة'), 1: T('one thousandth', 'جزء من ألف') };
 
@@ -187,54 +189,45 @@ const seg = () => S.span / 10;                            // value of one sectio
 const last = () => S.span === 10;                         // the cave: tap a mark
 const placeOf = w => ({ 1000: T('ones', 'الآحاد'), 100: T('tenths', 'الأجزاء من عشرة'), 10: T('hundredths', 'الأجزاء من مئة'), 1: T('thousandths', 'الأجزاء من ألف') }[w]);
 
-/* ---------- scene: Reesho in the cage, the fox comes closer ---------- */
+/* ---------- scene: the owner's underground picture; Reesho digs a shaft, the fox walks to it with his map ---------- */
 const IMG_DIR = 'math/assets/';
-const IMG = { bg: 'bg_cage_night.jpg', sad: 'reesho_sad.webp', scared: 'reesho_scared.webp', happy: 'reesho_happy.webp',
-  sneak: 'fox_sneak.webp', laugh: 'fox_laugh.webp', surprised: 'fox_surprised.webp', angry: 'fox_angry.webp' };
+const IMG = { bg: 'bg_dig.jpg', miner: 'reesho_miner.webp', key: 'reesho_key.webp', foxmap: 'fox_map.webp', laugh: 'fox_laugh.webp', surprised: 'fox_surprised.webp', angry: 'fox_angry.webp',
+  open: 'chest_open.webp', closed: 'chest_closed.webp', water: 'water_spring.webp', scorpion: 'scorpion.webp',
+  soil: 'board_soil.jpg', rock: 'board_rock.jpg', cave: 'board_cave.jpg', deep: 'board_deep.jpg' };
 const src = k => IMG_DIR + IMG[k];
 Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
 const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
-const FOX_X = [318, 292, 266, 240, 214, 188];
-function fox(x, pose = 'sneak') { const sz = { sneak: [118, 88], laugh: [76, 101], surprised: [82, 73], angry: [105, 90] }[pose]; return im(pose, x, 196 - sz[1], sz[0], sz[1]); }
-function drawScene(state = 'locked', foxPose, foxX) {
-  const open = state === 'open', fx = foxX ?? FOX_X[Math.min(S.fox, 5)];
-  const pose = foxPose || (state === 'caught' ? 'laugh' : 'sneak'), mood = (S.fox >= 3 || state === 'caught') ? 'scared' : 'sad';
-  let h = `<image href="${src('bg')}" x="0" y="0" width="440" height="210" preserveAspectRatio="xMidYMax slice"/>`;
-  h += `<rect x="256" y="8" width="176" height="34" rx="17" fill="#0007"/><text x="${AR ? 404 : 398}" y="31" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" font-family="Nunito,Cairo">${T('Fox', 'الثعلب')}</text>`;
+const OFF = 24, GROUND = 76 + OFF, SHAFT = 176, FOX_X = [350, 322, 294, 266, 238, 212];
+/* how deep the shaft is after each layer (bands of the background picture) */
+const shaftBottom = d => (depths() === 4 ? [GROUND, 104, 140, 186, 236] : [GROUND, 120, 180, 236])[d] + (d ? OFF : 0);
+function fox(x, pose = 'foxmap') { const sz = { foxmap: [80, 92], laugh: [70, 94], surprised: [86, 76], angry: [106, 91] }[pose]; return im(pose, x, GROUND + 2 - sz[1], sz[0], sz[1]); }
+function drawScene(state = 'dig', foxPose, foxX) {
+  const fx = foxX ?? FOX_X[Math.min(S.fox, 5)], bot = shaftBottom(S.depth);
+  let h = `<rect width="440" height="${OFF + 2}" fill="#0f2148"/><image href="${src('bg')}" x="0" y="${OFF}" width="440" height="246" preserveAspectRatio="xMidYMid slice"/>`;
+  h += `<path d="M${SHAFT - 6} ${GROUND - 2} q-14 -10 -26 2z" fill="#6b4a2e"/>`;
+  if (bot > GROUND) h += `<rect x="${SHAFT}" y="${GROUND - 3}" width="34" height="${bot - GROUND + 3}" rx="6" fill="#140d09" opacity=".88"/><rect x="${SHAFT + 3}" y="${GROUND - 3}" width="4" height="${bot - GROUND}" fill="#ffffff14"/>`;
+  else h += `<ellipse cx="${SHAFT + 17}" cy="${GROUND}" rx="17" ry="4" fill="#140d09" opacity=".8"/>`;
+  if (state === 'found') h += `<g class="pop">${im('open', SHAFT - 8, bot - 44, 50, 46)}</g>`;
+  h += state === 'won' ? `<g class="fly">${im('key', 80, GROUND - 100, 86, 100)}</g>` : im('miner', 86, GROUND + 2 - 96, 82, 96);
+  h += fox(fx, foxPose || (state === 'caught' ? 'laugh' : 'foxmap'));
+  h += `<g transform="translate(0,220)"><rect x="256" y="8" width="176" height="34" rx="17" fill="#0007"/><text x="${AR ? 404 : 398}" y="31" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" font-family="Nunito,Cairo">${T('Fox', 'الثعلب')}</text>`;
   for (let i = 0; i < STEPS; i++) { const c = i < S.fox ? '#e2603f' : '#ffffff40'; h += `<g transform="translate(${274 + i * 22},25)"><ellipse rx="7" ry="8" fill="${c}"/><circle cx="-6" cy="-9" r="2.6" fill="${c}"/><circle cx="0" cy="-11" r="2.6" fill="${c}"/><circle cx="6" cy="-9" r="2.6" fill="${c}"/></g>`; }
-  // treasures found on this map
-  for (let i = 0; i < TREASURES; i++) h += `<g transform="translate(${30 + i * 30},24)" opacity="${i < S.found ? 1 : .35}">${chest(0, 0, .55, i < S.found)}</g>`;
-  h += `<g transform="translate(18,44) scale(.95)">
-    <ellipse cx="70" cy="170" rx="80" ry="9" fill="#0004"/>
-    ${open ? '' : im(mood, mood === 'sad' ? 30 : 26, 16, mood === 'sad' ? 76 : 86, 146, mood === 'scared' ? 'class="shiver"' : '')}
-    <path d="M10 18 q60 -50 120 0" fill="none" stroke="#2b3f52" stroke-width="6"/><circle cx="70" cy="-14" r="8" fill="none" stroke="#2b3f52" stroke-width="5"/>
-    <rect x="4" y="160" width="132" height="12" rx="4" fill="#2b3f52"/>
-    <g style="transition:transform .7s;transform-origin:136px 90px;${open ? 'transform:rotateY(80deg) translateX(30px)' : ''}">
-      ${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<line x1="${10 + i * 17}" y1="${i === 0 || i === 7 ? 18 : 8}" x2="${10 + i * 17}" y2="160" stroke="#2b3f52" stroke-width="3"/>`).join('')}
-      <rect x="98" y="118" width="34" height="30" rx="6" fill="${open ? '#2e9e6b' : '#e2603f'}"/>
-      <circle cx="115" cy="130" r="4" fill="#fff"/><rect x="113.5" y="132" width="3" height="9" fill="#fff"/></g></g>`;
-  if (open) h += `<g class="fly">${im('happy', 150, 20, 120, 140)}</g>`;
-  h += fox(fx, pose);
-  if (state === 'caught') h += `<rect x="120" y="70" width="200" height="40" rx="20" fill="#0008"/><text x="220" y="98" font-size="24" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The fox got here!', 'الثعلب وصل!')}</text>`;
+  h += `</g>`;
+  // treasures of this map, in the cave on the left
+  h += `<rect x="8" y="228" width="112" height="34" rx="17" fill="#0007"/>`;
+  for (let i = 0; i < TREASURES; i++) h += im(i < S.found ? 'open' : 'closed', 18 + i * 34, 231, 28, 28, i < S.found ? '' : 'opacity=".45"');
+  if (state === 'caught') h += `<rect x="120" y="150" width="200" height="40" rx="20" fill="#0009"/><text x="220" y="178" font-size="22" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The fox got here!', 'الثعلب وصل!')}</text>`;
   $('#scene').innerHTML = h;
 }
 async function foxStep() {
   const from = FOX_X[S.fox - 1], to = FOX_X[Math.min(S.fox, 5)], t0 = performance.now();
-  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 500); drawScene('locked', 'sneak', from + (to - from) * k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
+  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 500); drawScene('dig', 'foxmap', from + (to - from) * k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
 }
 async function foxRunAway() {
   const x0 = FOX_X[Math.min(S.fox, 5)];
-  drawScene('open', 'surprised', x0 + 20); await sleep(650);
+  drawScene('won', 'surprised', x0 + 10); await sleep(650);
   const t0 = performance.now();
-  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 700); drawScene('open', 'angry', x0 + (480 - x0) * k * k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
-}
-/* treasure chest drawn in code (x, y = bottom centre) */
-function chest(x, y, s = 1, open = false) {
-  return `<g transform="translate(${x},${y}) scale(${s})">
-    ${open ? '<path d="M-17 -22 l-3 -14 h40 l-3 14z" fill="#9a5b2a" stroke="#5b3a1c" stroke-width="2"/><circle cx="-6" cy="-24" r="5" fill="#f2b134"/><circle cx="5" cy="-25" r="5" fill="#ffd767"/><circle cx="0" cy="-29" r="4" fill="#f2b134"/>'
-      : '<path d="M-18 -22 q18 -16 36 0z" fill="#9a5b2a" stroke="#5b3a1c" stroke-width="2"/>'}
-    <rect x="-18" y="-22" width="36" height="22" rx="3" fill="#b06d34" stroke="#5b3a1c" stroke-width="2"/>
-    <rect x="-18" y="-15" width="36" height="4" fill="#f2b134"/><rect x="-4" y="-17" width="8" height="9" rx="2" fill="#f2b134" stroke="#5b3a1c"/></g>`;
+  await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 700); drawScene('won', 'angry', x0 + (480 - x0) * k * k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); });
 }
 
 /* ---------- the board: the layer being dug, a number line from lo to lo + span ---------- */
@@ -243,8 +236,8 @@ const xOf = (v, lo, span) => X0 + (v - lo) / span * W;
 const places = w => (w >= 1000 ? 0 : w >= 100 ? 1 : w >= 10 ? 2 : 3);
 function drawBoard({ lo = S.lo, span = S.span, depth = S.depth, fine = null, mark = S.mark, boom = null, found = false } = {}) {
   const Ly = LAYER[depth], w = span / 10, k = places(w);
-  let h = `<defs><clipPath id="clip"><rect x="0" y="0" width="440" height="170" rx="14"/></clipPath><pattern id="dots${depth}" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r="1.6" fill="${Ly.c2}"/><circle cx="10" cy="11" r="1.2" fill="${Ly.c2}"/></pattern></defs>
-    <g clip-path="url(#clip)"><rect width="440" height="170" fill="${Ly.c}"/><rect width="440" height="170" fill="url(#dots${depth})"/>`;
+  let h = `<defs><clipPath id="clip"><rect x="0" y="0" width="440" height="170" rx="14"/></clipPath></defs>
+    <g clip-path="url(#clip)"><rect width="440" height="170" fill="${Ly.c}"/><image href="${src(Ly.img)}" x="0" y="0" width="440" height="170" preserveAspectRatio="xMidYMid slice"/><rect width="440" height="170" fill="#0000001f"/>`;
   // sections of this layer (taps), alternating shade
   if (!last() || fine) for (let i = 0; i < 10; i++) {
     const x = xOf(lo + i * w, lo, span);
@@ -257,7 +250,7 @@ function drawBoard({ lo = S.lo, span = S.span, depth = S.depth, fine = null, mar
   for (let i = 0; i <= 10; i++) { const x = xOf(lo + i * w, lo, span), big = i === 0 || i === 5 || i === 10; h += `<line x1="${x}" y1="${LY - (big ? 14 : 10)}" x2="${x}" y2="${LY + (big ? 14 : 10)}" stroke="#fff" stroke-width="${big ? 3 : 2}"/>`; }
   // labels only at the ends and the middle: the child counts the marks
   if (!fine) [0, 5, 10].forEach(i => { const v = lo + i * w; h += `<text x="${xOf(v, lo, span)}" y="${LY + 34}" font-size="15" font-weight="900" text-anchor="middle" fill="#fff" font-family="Nunito,Cairo" direction="ltr" stroke="#0005" stroke-width="3" paint-order="stroke">${v % 1000 ? dec(v, k) : v / 1000}</text>`; });
-  if (mark) h += `<g transform="translate(${xOf(mark.v, lo, span)},${LY - 16})">${mark.ok ? chest(0, 0, 1.15, true) + '<g fill="#ffd767">' + [[-26, -30], [24, -34], [-30, -8], [30, -10], [0, -48]].map(([a, b]) => `<path d="M${a} ${b} l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/>`).join('') + '</g>' : ''}</g>`;
+  if (mark) h += `<g class="pop">${im('open', xOf(mark.v, lo, span) - 30, LY - 66, 60, 58)}</g><g fill="#ffd767">${[[-34, -50], [32, -58], [-38, -20], [38, -24], [0, -76]].map(([a, b]) => `<path transform="translate(${xOf(mark.v, lo, span) + a},${LY + b})" d="M0 0 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/>`).join('')}</g>`;
   if (boom) h += boom;
   h += `</g>`;
   // tap targets
@@ -302,7 +295,7 @@ async function dig(i) {
     k < 1 ? requestAnimationFrame(f) : res();
   })(t0); });
   S.lo = lo1; S.span = sp1; S.depth++;
-  drawLayers(); drawBoard();
+  drawLayers(); drawBoard(); drawScene();
   say(last() ? T('The cave! Now count the marks and tap the treasure’s mark.', 'وصلت للكهف! عدّ العلامات واضغط على علامة الكنز.') : T(`Deeper! You are in the ${LAYER[S.depth].en.toLowerCase()} layer now.`, `أعمق! دلوقتي إنت في طبقة ${LAYER[S.depth].ar}.`));
   S.busy = false;
 }
@@ -311,13 +304,12 @@ async function miss(at, tooSmall, i) {
   S.fox++; S.misses++; S.trMiss++;
   SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.fox });
   const w = seg(), x = last() ? xOf(at, S.lo, S.span) : xOf(at + w / 2, S.lo, S.span), water = Math.random() < .5;
-  const boom = water ? `<g class="pop"><ellipse cx="${x}" cy="${LY - 6}" rx="16" ry="6" fill="#4fb3e8"/>${[-12, -4, 4, 12].map((d, j) => `<path d="M${x + d} ${LY - 16 - (j % 2) * 10} q4 6 0 9 q-4 -3 0 -9z" fill="#7fd0f5"/>`).join('')}</g>`
-    : `<g class="pop" transform="translate(${x},${LY - 22})"><ellipse rx="9" ry="6" fill="#2b1d14"/><circle cx="-10" cy="0" r="4.5" fill="#2b1d14"/><path d="M8 0 q14 -4 10 -16 q-2 -4 -5 -1" fill="none" stroke="#2b1d14" stroke-width="3.5" stroke-linecap="round"/><path d="M-12 -3 l-7 -5 M-12 3 l-7 5 M-4 5 l-3 7 M2 5 l2 7 M-4 -5 l-3 -7 M2 -5 l2 -7" stroke="#2b1d14" stroke-width="2"/></g>`;
+  const boom = water ? `<g class="pop">${im('water', x - 34, LY - 52, 68, 50)}</g>` : `<g class="pop">${im('scorpion', x - 30, LY - 54, 60, 54)}</g>`;
   drawBoard({ boom }); $('#board').classList.remove('shake'); void $('#board').offsetWidth; $('#board').classList.add('shake');
-  SFX.wrong(); SFX.step(); await foxStep();
+  SFX.wrong(); SFX.step(); await foxStep(); drawScene();
   if (S.fox >= STEPS) {
     music('off'); SFX.lose(); drawScene('caught');
-    say(T('🦊 Ha ha… the treasure stays mine!', '🦊 هههه… الكنز هيفضل بتاعي!'));
+    say(T('🦊 Ha ha… this treasure is mine!', '🦊 هههه… الكنز ده بقى بتاعي!'));
     SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
     await sleep(1300); showEnd('lose'); return;
   }
@@ -327,7 +319,7 @@ async function miss(at, tooSmall, i) {
 }
 async function treasureFound() {
   S.found++; const pts = 10 + (S.trMiss ? 0 : 5); S.score += pts; $('#score').textContent = S.score;
-  S.mark = { v: S.tr.v, ok: true }; drawBoard(); drawScene(); drawNote(); SFX.win();
+  S.mark = { v: S.tr.v, ok: true }; drawBoard(); drawScene('found'); drawNote(); SFX.win();
   const shown = S.tr.form === 'zdec' && S.tr.goal.includes(dec(S.tr.v, 2) + '<') ? dec(S.tr.v, 2) + ' = ' + dec(S.tr.v) : dec(S.tr.v);
   say(T(`Treasure! It was at ${n(shown)}. +${n(pts)}`, `كنز! كان مدفون عند ${n(shown)}. +${n(pts)}`));
   await sleep(2200); S.mark = null;
@@ -392,13 +384,13 @@ $('#snd').textContent = A.on ? '🔊' : '🔇';
 /* ---------- flow ---------- */
 function newTreasure() {
   S.tr = makeTreasure(pick(L().forms)); S.lo = 0; S.span = L().full; S.depth = 0; S.hintN = 0; S.trMiss = 0; S.mark = null;
-  drawNote(); drawLayers(); drawBoard();
+  drawNote(); drawLayers(); drawBoard(); drawScene();
 }
 function startMap() {
   S.found = 0; S.fox = 0; S.misses = 0; S.t0 = Date.now(); S.busy = false;
   $('#lvl').textContent = S.lvl + 1;
-  drawScene(); newTreasure();
-  say(S.lvl === 0 ? T('The fox buried the key to my cage in a treasure! Dig layer by layer: pick the section, then go deeper.', 'الثعلب دفن مفتاح قفصي في كنز! احفر طبقة طبقة: اختار القسم، وبعدين انزل أعمق.')
+  newTreasure();
+  say(S.lvl === 0 ? T('The fox buried the island’s treasures and he is coming back with his map! Let’s dig them up first: pick the section, then go deeper.', 'الثعلب دفن كنوز الجزيرة وراجع بالخريطة! يلا نطلّعها قبله: اختار القسم، وبعدين انزل أعمق.')
     : S.lvl === 5 ? T(`Map ${n(6)}! This land goes from ${n(0)} to ${n(10)}: the first layer is the ones.`, `الخريطة ${n(6)}! الأرض دي من ${n(0)} لـ ${n(10)}: أول طبقة هي الآحاد.`)
     : T(`Map ${n(S.lvl + 1)}! The fox writes his notes in a new way now. Read carefully.`, `الخريطة ${n(S.lvl + 1)}! الثعلب بقى يكتب ورقته بطريقة جديدة. ركّز.`));
 }
@@ -414,11 +406,11 @@ async function mapDone() {
 function showEnd(kind, stars = 0) {
   $('#end').hidden = false;
   const cfg = {
-    win: ['💰💰💰', T('You found all three treasures!', 'لقيت الكنوز التلاتة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('But the key was not in them… the fox has another map. Ready?', 'بس المفتاح ما كانش فيهم… الثعلب عنده خريطة تانية. جاهز؟'), T('Next map ➜', 'الخريطة اللي بعدها ⬅')],
-    all: ['🗝️🦜', T('You found the key and freed Reesho!', 'لقيت المفتاح وحرّرت ريشو!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You can find any decimal down to the thousandths.`, `مجموع نقطك ${n(S.score)}. بقيت تلاقي أي عدد عشري لحد جزء من الألف.`), T('Play again', 'العب من الأول')],
+    win: ['💰💰💰', T('You found all three treasures!', 'لقيت الكنوز التلاتة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('But the golden key of the island is not in them… the fox has another map. Ready?', 'بس مفتاح الجزيرة الذهبي ما كانش فيهم… الثعلب عنده خريطة تانية. جاهز؟'), T('Next map ➜', 'الخريطة اللي بعدها ⬅')],
+    all: ['🗝️🦜', T('You found the golden key of the island!', 'لقيت مفتاح الجزيرة الذهبي!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You can find any decimal down to the thousandths.`, `مجموع نقطك ${n(S.score)}. بقيت تلاقي أي عدد عشري لحد جزء من الألف.`), T('Play again', 'العب من الأول')],
     lose: ['🦊💰', T('The fox got there first', 'الثعلب وصل قبلك'), '', T(`The treasure was at ${n(dec(S.tr.v))}. Dig one place at a time: first digit = first layer.`, `الكنز كان عند ${n(dec(S.tr.v))}. احفر خانة خانة: أول رقم = أول طبقة.`), T('Try this map again', 'جرّب الخريطة دي تاني')]
   }[kind];
-  $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endArt').innerHTML = { all: `<img src="${src('key')}" alt="" style="height:96px">`, win: `<img src="${src('open')}" alt="" style="height:80px">`, lose: `<img src="${src('laugh')}" alt="" style="height:90px">` }[kind]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
   $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } music('on'); startMap(); };
 }
 
@@ -436,7 +428,7 @@ function showEnd(kind, stars = 0) {
     T('The fox’s note says where each treasure is, for example <b dir="ltr">0.307</b>.', 'ورقة الثعلب بتقول الكنز مدفون فين، مثلًا <b dir="ltr">0.307</b>.'),
     T('Dig one layer at a time. Soil = tenths: pick the section <b dir="ltr">0.3</b>. Rock = hundredths: pick <b dir="ltr">0.30</b>. Cave = thousandths: tap the mark <b dir="ltr">0.307</b>.', 'احفر طبقة طبقة. التراب = أعشار: اختار القسم <b dir="ltr">0.3</b>. الصخر = أجزاء من مئة: اختار <b dir="ltr">0.30</b>. الكهف = أجزاء من ألف: اضغط العلامة <b dir="ltr">0.307</b>.'),
     T('Only the ends and the middle have numbers: count the marks.', 'الأرقام مكتوبة على الطرفين والنص بس: عدّ العلامات.'),
-    T(`A wrong place = water or a scorpion, and the fox steps closer. ${STEPS} steps and he wins! Find ${TREASURES} treasures on each map.`, `مكان غلط = مية أو عقرب، والثعلب يقرّب خطوة. ${STEPS} خطوات ويكسب! لاقي ${TREASURES} كنوز في كل خريطة.`)
+    T(`A wrong place = water or a scorpion, and the fox steps closer. ${STEPS} steps and he takes the treasure! Find ${TREASURES} treasures on each map.`, `مكان غلط = مية أو عقرب، والثعلب يقرّب خطوة. ${STEPS} خطوات وياخد الكنز! لاقي ${TREASURES} كنوز في كل خريطة.`)
   ].map(x => `<li>${x}</li>`).join('');
   $('#go').textContent = T('Let’s dig! ⛏️', 'يلا نحفر ⛏️');
 })();

@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-28', title: 'Treasure Underground: the owner\'s pictures',
+    items: [
+      { text: 'Miner Reesho, the fox with his map, chests, scorpion, water spring and the underground background; the shaft goes deeper with each layer', links: [{ label: 'Treasure Underground', href: 'math-treasure.html', ch: 'm5c1' }] }
+    ] },
   { date: '2026-10-28', title: 'New adventure: Treasure Underground',
     items: [
       { text: 'Math Grade 5 Unit 1: dig layer by layer (tenths, hundredths, thousandths) to the treasure in the fox’s note; 6 maps × 3 treasures', links: [{ label: 'Treasure Underground', href: 'math-treasure.html', ch: 'm5c1' }] }
