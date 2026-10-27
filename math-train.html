@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>The Crate Train · Forms of Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 4 · Unit 1 (mg4u1) adventure «قطار الصناديق / The Crate Train», lessons 3-4 (standard, expanded and word form;
+     composing a number from its parts and decomposing it; a zero in every empty place, no term for a zero place).
+     Moves (no multiple choice):
+       LOAD (compose) an order in words, expanded form or period groups («5 مليارات و400 مليون و159 ألفًا و24»): tap a wagon to put one crate
+            in it (wagon = place, crates = digit), «−» takes one out, then blow the whistle. The load must equal the order.
+       UNLOAD (decompose) a train shows a number in standard form; the platform has crate piles labelled only by VALUE (1, 10, 100 …):
+            tap a pile to unload one crate; the expanded form builds itself (zero places never appear), then «done».
+     Excitement: a race against the fox's train to the city (5 stations each). A right delivery = Reesho moves a station; two right on the
+     first try in a row = steam boost (two stations). A wrong delivery or a signal that turns red = the fox moves a station.
+     The wrong answer is told in words (what was loaded, bigger or smaller than the order), never the answer.
+     Pictures: the owner's Gemini sheet (28 Oct 2026) cut out into math/assets/: reesho_loco (mirrored to face right), wagon_open, crate,
+     fox_loco, fox_wagon, bg_rails.jpg; fox_laugh / fox_angry from the cage; Reesho happy. Progress: SI.chProf('mg4u1').train = { lvl, best, stars[] }.
+     Test hooks window.__train, window.__trainApi. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#8ccdee,#d9f0f7 30%,#a9d47f 30.1%,#7fb35c);color:var(--navy);min-height:100svh}
+.wrap{max-width:600px;margin:0 auto;padding:10px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffffaa;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:16px;background:#bfe3f2}
+.say{margin:8px 0}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;min-height:44px;box-shadow:0 3px 10px #0002;line-height:1.6}
+.panel{background:var(--card);border-radius:20px;padding:10px;box-shadow:0 6px 20px #0003}
+bdi{font-weight:900;color:var(--pri)}
+.eq{direction:ltr;unicode-bidi:isolate;text-align:center;font:900 16px Nunito,sans-serif;color:var(--pri)}
+.order{display:flex;gap:10px;align-items:center;background:#fff;border-radius:14px;padding:8px 10px;border:2px solid #f2e3c4;margin-bottom:8px}
+.order .txt{flex:1;font-weight:800;font-size:15px;line-height:1.55}
+.order .form{display:inline-block;background:#fff4dc;border-radius:10px;padding:4px 8px;margin-top:4px;font-size:16.5px;color:var(--navy)}
+.order .form.ltr{direction:ltr;unicode-bidi:isolate;font-family:Nunito,sans-serif;font-weight:900}
+.order .form.num{direction:ltr;unicode-bidi:isolate;font:900 22px Nunito,Cairo,sans-serif;color:var(--coral)}
+.order.pop{animation:pop .35s}
+@keyframes pop{40%{transform:scale(1.03)}}
+/* the signal: green → yellow → red */
+.signal{flex:none;background:#2b3f52;border-radius:12px;padding:5px 4px;display:grid;gap:4px}
+.signal i{width:15px;height:15px;border-radius:50%;background:#46596b;display:block}
+.signal .r.on{background:#ff5a4a;box-shadow:0 0 8px #ff5a4a}
+.signal .y.on{background:#ffd34a;box-shadow:0 0 8px #ffd34a}
+.signal .g.on{background:#45d07a;box-shadow:0 0 8px #45d07a}
+.signal.blink .r.on{animation:blink .4s infinite}
+@keyframes blink{50%{opacity:.3}}
+/* the wagons (always left to right, like the place value chart) */
+.yard{direction:ltr;display:grid;gap:3px;background:#6f8f5a;border-radius:14px;padding:6px}
+.per{border-radius:7px;text-align:center;font:900 11px/1.2 Nunito,Cairo,sans-serif;padding:4px 1px;color:var(--navy);white-space:nowrap;overflow:hidden}
+.per.one{font-size:8px;letter-spacing:-.3px;padding:5px 0}
+.plc{border-radius:5px;text-align:center;font:800 9.5px/1.15 Nunito,Cairo,sans-serif;padding:3px 0;color:var(--navy);overflow:hidden}
+.wag{position:relative;border:0;padding:0;background:none;cursor:pointer;height:92px;display:flex;flex-direction:column;justify-content:flex-end}
+.wag .crates{display:flex;flex-wrap:wrap-reverse;justify-content:center;gap:1px;padding:0 3px 2px;align-content:flex-start}
+.wag .crates img{width:13px;height:13px}
+.wag .car{width:100%;height:24px;object-fit:fill;display:block}
+.wag .dg{position:absolute;left:0;right:0;bottom:3px;text-align:center;font:900 15px Nunito,sans-serif;color:#fff;text-shadow:0 1px 2px #000}
+.wag:active{transform:scale(.95)}
+.wag.full .car{filter:drop-shadow(0 0 4px #ffd34a)}
+.wag.bad{animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.minus{border:0;border-radius:8px;background:#fff;color:var(--navy);font:900 15px Nunito;height:24px;cursor:pointer;box-shadow:0 2px 0 #0002}
+/* unloading: crate piles by value, and the expanded form on the platform */
+.piles{direction:ltr;display:grid;gap:4px}
+.pile{border:0;border-radius:10px;background:#fff4dc;padding:4px 1px 3px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 3px 0 #d8c79f}
+.pile img{width:26px;height:26px}
+.pile b{font:900 9.5px/1.15 Nunito,sans-serif;color:var(--navy);text-align:center;word-break:normal}
+.pile:active{transform:translateY(2px)}
+.platform{direction:ltr;margin-top:8px;background:#e9e1cf;border-radius:12px;padding:8px;min-height:52px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;font:900 17px Nunito,sans-serif}
+.platform .t{background:#fff;border-radius:9px;padding:4px 8px;display:inline-flex;gap:6px;align-items:center;color:var(--navy);border:2px solid #f2e3c4}
+.platform .t button{border:0;background:#f5d3c2;border-radius:6px;width:20px;height:20px;font:900 12px Nunito;cursor:pointer;color:var(--coral);padding:0}
+.platform .plus{color:var(--ink)}
+.platform .empty{color:#8a7d66;font:800 13px Nunito,Cairo,sans-serif}
+.row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:14px;padding:11px 20px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.steam{display:flex;align-items:center;gap:4px;font-weight:900;font-size:13px;color:var(--ink)}
+.steam i{width:14px;height:14px;border-radius:50%;background:#e6dccb;display:inline-block;transition:.2s}
+.steam i.on{background:#fff;box-shadow:0 0 0 2px #9fb6c8,0 0 8px #fff}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:20px;max-width:390px;text-align:center}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 12px}
+.introart{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:10px}.introart img{height:62px}
+#endArt img{height:100px}
+.stars{font-size:34px;letter-spacing:4px}
+.home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffffaa;border-radius:99px;color:var(--navy);font-size:16px;width:34px;height:30px}
+.snd{background:#ffffffaa;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer}
+.banner{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.6);background:var(--coral);color:#fff;font:900 25px Nunito,Cairo;padding:12px 26px;border-radius:18px;box-shadow:0 8px 24px #0006;opacity:0;pointer-events:none;z-index:8;transition:.3s;text-align:center;white-space:nowrap}
+.banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.banner.good{background:var(--ok)}
+.shake{animation:shk .12s infinite;transform-box:fill-box}
+@keyframes shk{50%{transform:translate(1.5px,-1px)}}
+@media (prefers-reduced-motion:reduce){.shake,.signal.blink .r.on{animation:none}}
+@media (max-width:420px){.wag{height:84px}.wag .crates img{width:11px;height:11px}.order .txt{font-size:14px}.order .form{font-size:15px}.order .form.ltr{direction:ltr;unicode-bidi:isolate;font-family:Nunito,sans-serif;font-weight:900}
+.order .form.num{font-size:19px}.plc{font-size:8.5px}.per{font-size:10px}.pile b{font-size:8px}.pile img{width:22px;height:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🚂 قطار الصناديق">🚂 The Crate Train</h1><div class="pills"><span class="pill"><span data-ar="السباق">Race</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="adventures.html" aria-label="Back to the adventures" data-ar-label="رجوع للمغامرات">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 246" role="img" aria-label="Reesho’s train and the fox’s train race to the city" data-ar-label="قطار ريشو وقطار الثعلب في سباق للمدينة"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="order" id="order"></div>
+    <div id="work"></div>
+    <div class="row"><span class="steam" id="steam"></span><button class="btn" id="go" type="button"></button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+<div class="banner" id="banner"></div>
+
+<div class="veil" id="intro"><div class="box">
+  <div class="introart" aria-hidden="true"><img src="math/assets/reesho_loco.webp" alt=""><img src="math/assets/crate.webp" alt="" style="height:34px"><img src="math/assets/fox_loco.webp" alt=""></div>
+  <h2 data-ar="سباق للمدينة!">Race to the city!</h2>
+  <ol id="rules"></ol>
+  <button class="btn" id="start" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261028e"></script>
+<script src="chapters.js?v=20261028e"></script>
+<script src="common.js?v=20261028e"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg4u1'); if (!CH) return;
+const T = SI.T, GAME = 'math-train.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+const fmt = x => Number(x).toLocaleString('en-US');
+const P10 = e => 10 ** e;
+document.title = T('The Crate Train · Forms of Numbers', 'قطار الصناديق · صيغ كتابة العدد');
+$('#rules').innerHTML = [
+  T('Read the order: in words, in expanded form or in groups.', 'اقرأ الطلبية: بالكلمات، أو بالصيغة الممتدة، أو بالمجموعات.'),
+  T('Each wagon is a place. Tap it to load a crate: the number of crates is the digit. Then blow the whistle 📯.', 'كل عربة خانة. اضغط عليها عشان تحط صندوق: عدد الصناديق هو الرقم. وبعدين اضرب الصفارة 📯.'),
+  T('Right load = your train moves a station. Wrong load or a red signal 🔴 = the fox moves!', 'حمولة صح = قطارك يتقدم محطة. حمولة غلط أو الإشارة حمرا 🔴 = الثعلب يتقدم!'),
+  T('Two right in a row on the first try = <b>steam boost</b>: two stations! 💨', 'اتنين صح ورا بعض من أول مرة = <b>دفعة بخار</b>: محطتين! 💨')].map(x => `<li>${x}</li>`).join('');
+$('#start').textContent = T('Full steam ahead! 🚂', 'يلا ننطلق 🚂');
+
+/* ---------- places and number words (the books' style; tested on their examples) ---------- */
+const PER = [
+  { en: 'Ones', ar: 'الوحدات', head: '#7fb0dc', cell: '#bcd9f2' },
+  { en: 'Thousands', ar: 'الألوف', head: '#f5c93f', cell: '#fbe38c' },
+  { en: 'Millions', ar: 'الملايين', head: '#8fa383', cell: '#c3cfba' },
+  { en: 'Milliards', ar: 'المليارات', head: '#eba98a', cell: '#f5d3c2' }];
+const SHORT = [['O', 'آحاد'], ['T', 'عشرات'], ['H', 'مئات']];
+const EN1 = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const EN10 = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+function en3(x) { const h = Math.floor(x / 100), r = x % 100, out = []; if (h) out.push(EN1[h] + ' hundred'); if (r) out.push(r < 20 ? EN1[r] : EN10[Math.floor(r / 10)] + (r % 10 ? '-' + EN1[r % 10] : '')); return out.join(' '); }
+function enWords(x) { const P = ['', ' thousand', ' million', ' milliard'], out = []; for (let p = 3; p >= 0; p--) { const c = Math.floor(x / 1000 ** p) % 1000; if (c) out.push(en3(c) + P[p]); } return out.join(', '); }
+const AR1 = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+const AR10 = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+const ARH = ['', 'مائة', 'مائتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+const ar2 = r => r < 20 ? AR1[r] : (r % 10 ? AR1[r % 10] + ' و' : '') + AR10[Math.floor(r / 10)];
+function ar3(x) { const h = Math.floor(x / 100), r = x % 100, out = []; if (h) out.push(ARH[h]); if (r) out.push(ar2(r)); return out.join(' و'); }
+/* a count of thousands / millions / milliards with its noun (العدد والمعدود) */
+const NOUN = { 1: ['ألف', 'ألفان', 'آلاف', 'ألفًا'], 2: ['مليون', 'مليونان', 'ملايين', 'مليونًا'], 3: ['مليار', 'ملياران', 'مليارات', 'مليارًا'] };
+function arCount(c, p) {
+  const [one, two, many, acc] = NOUN[p], h = Math.floor(c / 100), r = c % 100;
+  if (c === 1) return one; if (c === 2) return two;
+  if (c <= 10) return AR1[c] + ' ' + many;
+  if (r === 0) return (h === 2 ? 'مائتا' : ARH[h]) + ' ' + one;
+  if (r <= 10) return ARH[h] + ' و' + AR1[r] + ' ' + many;
+  return (h ? ARH[h] + ' و' : '') + ar2(r) + ' ' + acc;
+}
+function arWords(x) { const out = []; for (let p = 3; p >= 0; p--) { const c = Math.floor(x / 1000 ** p) % 1000; if (c) out.push(p ? arCount(c, p) : ar3(c)); } return out.join(' و'); }
+/* the book's groups: «5 مليارات و400 مليون و159 ألفًا و24» */
+function arGroupNoun(c, p) { const [one, , many, acc] = NOUN[p], r = c % 100; return r >= 3 && r <= 10 ? many : r >= 11 ? acc : one; }
+function groups(x) {
+  const en = [], ar = [];
+  for (let p = 3; p >= 0; p--) { const c = Math.floor(x / 1000 ** p) % 1000; if (!c) continue;
+    en.push(fmt(c) + (p ? ' ' + ['', 'thousand', 'million', 'milliard'][p] : '')); ar.push(fmt(c) + (p ? ' ' + arGroupNoun(c, p) : '')); }
+  const enS = en.length > 1 ? en.slice(0, -1).join(', ') + ' and ' + en[en.length - 1] : en[0];
+  return T(enS, ar.join(' و'));
+}
+/* a number the books' word rules cover (no 101 / 202 thousand: other grammar) */
+function wordsOk(x) { for (let p = 1; p <= 3; p++) { const c = Math.floor(x / 1000 ** p) % 1000; if (c > 100 && (c % 100 === 1 || c % 100 === 2)) return false; } return true; }
+const eq = x => `<div class="eq">${fmt(x)} = ${expanded(x)}</div>`;
+const expanded = x => String(x).split('').map((d, i, a) => +d ? fmt(+d * P10(a.length - 1 - i)) : null).filter(Boolean).join(' + ');
+
+/* six races; k = wagons; plan = the deliveries, repeated until someone reaches the city */
+const LEVELS = [
+  { k: 6, time: 60, nd: [4, 6], zeros: 0, plan: ['L:expanded', 'L:expanded', 'L:expanded', 'L:words'] },
+  { k: 6, time: 60, nd: [5, 6], zeros: 1, plan: ['L:words', 'L:expanded', 'L:words', 'U'] },
+  { k: 9, time: 55, nd: [7, 9], zeros: 2, plan: ['L:expanded', 'U', 'L:words', 'L:groups', 'U'] },
+  { k: 9, time: 50, nd: [8, 9], zeros: 2, plan: ['L:groups', 'L:words', 'U', 'L:expanded', 'U'] },
+  { k: 10, time: 48, nd: [10, 10], zeros: 3, plan: ['L:words', 'U', 'L:groups', 'L:expanded', 'U'] },
+  { k: 10, time: 40, nd: [10, 10], zeros: 4, boss: true, plan: ['L:groups', 'U', 'L:words', 'U', 'L:expanded'] }];
+const GOAL = 5;
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).train || {}).lvl) || 0), score: 0, me: 0, fox: 0, misses: 0, streak: 0, tries: 0, busy: true, task: null, pi: 0, deadline: 0, started: false, hintN: 0 };
+const L = () => LEVELS[S.lvl];
+
+function makeNumber() {
+  const lv = L();
+  for (;;) {
+    const nd = lv.nd[0] + rnd(lv.nd[1] - lv.nd[0] + 1), d = Array.from({ length: nd }, (_, i) => 1 + rnd(9));
+    for (let z = 0; z < lv.zeros; z++) d[1 + rnd(nd - 1)] = 0;
+    const x = +d.join('');
+    if (wordsOk(x)) return x;
+  }
+}
+function makeTask(kind) {
+  const x = makeNumber();
+  if (kind === 'U') return { t: 'U', x, load: {} };
+  return { t: 'L', form: kind.split(':')[1], x, load: {} };
+}
+const loaded = k => Object.entries(k.load).reduce((a, [e, c]) => a + c * P10(+e), 0);
+
+/* ---------- the order card and the signal ---------- */
+function drawOrder() {
+  const k = S.task; let txt;
+  if (k.t === 'L') {
+    const form = k.form === 'words' ? T(enWords(k.x), arWords(k.x)) : k.form === 'groups' ? groups(k.x) : expanded(k.x);
+    const what = { words: T('in words', 'بالكلمات'), expanded: T('in expanded form', 'بالصيغة الممتدة'), groups: T('in groups', 'بالمجموعات') }[k.form];
+    txt = T(`📦 Order (${what}): load exactly`, `📦 طلبية (${what}): حمّل بالظبط`) + `<br><span class="form${k.form === 'expanded' ? ' ltr' : ''}">${form}</span>`;
+  } else {
+    txt = T('🚚 A train arrived with this number. Unload its crates on the platform:', '🚚 وصل قطار عليه العدد ده. نزّل صناديقه على الرصيف:') + `<br><span class="form num">${fmt(k.x)}</span>`;
+  }
+  $('#order').innerHTML = `<div class="signal" id="signal" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="g on"></i></div><div class="txt">${txt}</div>`;
+  const o = $('#order'); o.classList.remove('pop'); void o.offsetWidth; o.classList.add('pop');
+  $('#go').textContent = k.t === 'L' ? T('📯 Whistle!', '📯 اضرب الصفارة') : T('✅ Done unloading', '✅ خلّصت التفريغ');
+}
+function drawSignal(frac) {
+  const s = $('#signal'); if (!s) return;
+  const st = frac > .5 ? 'g' : frac > .2 ? 'y' : 'r';
+  s.querySelectorAll('i').forEach(i => i.classList.toggle('on', i.classList.contains(st)));
+  s.classList.toggle('blink', st === 'r');
+}
+
+/* ---------- the yard: wagons (load) or crate piles (unload) ---------- */
+const crateImg = 'math/assets/crate.webp';
+function header(es) {
+  let h = '';
+  for (let p = 3; p >= 0; p--) { const span = es.filter(e => Math.min(3, Math.floor(e / 3)) === p).length; if (span) h += `<div class="per${span === 1 ? ' one' : ''}" style="grid-column:span ${span};background:${PER[p].head}">${T(PER[p].en, PER[p].ar)}</div>`; }
+  es.forEach(e => { const p = Math.min(3, Math.floor(e / 3)); h += `<div class="plc" style="background:${PER[p].cell}">${T(SHORT[e === 9 ? 0 : e % 3][0], SHORT[e === 9 ? 0 : e % 3][1])}</div>`; });
+  return h;
+}
+function drawWork() {
+  const k = S.task, cols = L().k, es = Array.from({ length: cols }, (_, i) => cols - 1 - i);
+  if (k.t === 'L') {
+    let h = `<div class="yard" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">` + header(es);
+    es.forEach(e => { const c = k.load[e] || 0;
+      h += `<button type="button" class="wag${c ? ' full' : ''}" data-e="${e}" aria-label="${T('Wagon', 'عربة')} ${e}: ${c}"><span class="crates">${('<img src="' + crateImg + '" alt="">').repeat(c)}</span><img class="car" src="math/assets/wagon_open.webp" alt=""><span class="dg">${c}</span></button>`; });
+    es.forEach(e => { h += `<button type="button" class="minus" data-m="${e}" aria-label="${T('Take a crate out', 'شيل صندوق')}">−</button>`; });
+    $('#work').innerHTML = h + '</div>';
+    $('#work').querySelectorAll('.wag').forEach(b => b.onclick = () => addCrate(+b.dataset.e, 1, b));
+    $('#work').querySelectorAll('.minus').forEach(b => b.onclick = () => addCrate(+b.dataset.m, -1));
+  } else {
+    let h = `<div class="piles" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">`;
+    es.forEach(e => { h += `<button type="button" class="pile" data-e="${e}" aria-label="${T('Unload a crate worth', 'نزّل صندوق قيمته')} ${fmt(P10(e))}"><img src="${crateImg}" alt=""><b>${fmt(P10(e)).replace(/,/g, ',<wbr>')}</b></button>`; });
+    h += '</div><div class="platform" id="platform"></div>';
+    $('#work').innerHTML = h;
+    $('#work').querySelectorAll('.pile').forEach(b => b.onclick = () => addCrate(+b.dataset.e, 1, b));
+    drawPlatform();
+  }
+}
+function drawPlatform() {
+  const k = S.task, es = Object.keys(k.load).map(Number).filter(e => k.load[e]).sort((a, b) => b - a);
+  $('#platform').innerHTML = es.length ? es.map(e => `<span class="t">${fmt(k.load[e] * P10(e))}<button type="button" data-x="${e}" aria-label="${T('Put one crate back', 'رجّع صندوق')}">−</button></span>`).join('<span class="plus">+</span>')
+    : `<span class="empty">${T('The platform is empty', 'الرصيف فاضي')}</span>`;
+  $('#platform').querySelectorAll('button').forEach(b => b.onclick = () => addCrate(+b.dataset.x, -1));
+}
+function addCrate(e, d, el) {
+  if (S.busy || !S.started) return;
+  const k = S.task, c = (k.load[e] || 0) + d;
+  if (c < 0) return;
+  if (c > 9) { $('#say').innerHTML = T(`🦜 A wagon holds at most ${n(9)} crates: one place takes one digit.`, `🦜 العربة تشيل ${n(9)} صناديق بس: الخانة فيها رقم واحد.`); if (el) { el.classList.remove('bad'); void el.offsetWidth; el.classList.add('bad'); } SFX.wrong(); return; }
+  k.load[e] = c; d > 0 ? SFX.crate() : SFX.click();
+  if (k.t === 'L') drawWork(); else drawPlatform();
+}
+
+/* ---------- scene ----------
+   bg_rails.jpg drawn whole (1024×572 → 440×246); the fox runs on the upper track (rail y ≈ 135), Reesho on the lower one (rail y ≈ 171,
+   with the bridge). Station i (0 = start, 5 = the city): the front of the train is at FRONT[i]. */
+const FRONT = [150, 205, 260, 315, 370, 425];
+const IMG = { bg: 'bg_rails.jpg', rl: 'reesho_loco.webp', rw: 'wagon_open.webp', fl: 'fox_loco.webp', fw: 'fox_wagon.webp', laugh: 'fox_laugh.webp', angry: 'fox_angry.webp', happy: 'reesho_happy.webp' };
+const src = k => 'math/assets/' + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+function train(front, rail, who, cls = '') {
+  const lw = 84, lh = 54, ww = 60, wh = 26;
+  return `<g class="${cls}">${im(who === 'r' ? 'rw' : 'fw', front - lw - ww + 4, rail - wh + 1, ww, wh)}${im(who === 'r' ? 'rl' : 'fl', front - lw, rail - lh + 2, lw, lh)}</g>`;
+}
+const pos = i => FRONT[Math.max(0, Math.min(GOAL, i))];
+function drawScene(o = {}) {
+  const rx = o.rx ?? pos(S.me), fx = o.fx ?? pos(S.fox);
+  let h = `<image href="${src('bg')}" x="0" y="0" width="440" height="246" preserveAspectRatio="none"/>`;
+  // station marks on both tracks
+  for (let i = 1; i < GOAL; i++) h += `<rect x="${FRONT[i] - 1}" y="124" width="2" height="9" fill="#fff8" /><rect x="${FRONT[i] - 1}" y="158" width="2" height="9" fill="#fff8"/>`;
+  h += train(fx, 136, 'f', o.foxShake ? 'shake' : '');
+  h += train(rx, 172, 'r', o.shake ? 'shake' : '');
+  if (o.puff) for (let i = 0; i < 4; i++) h += `<circle cx="${rx - 50 - i * 14}" cy="${150 - i * 6}" r="${7 + i * 2}" fill="#fff" opacity="${.85 - i * .18}"/>`;
+  // score of the race: stations
+  h += `<rect x="8" y="6" width="190" height="26" rx="13" fill="#0006"/><text x="103" y="24" font-size="12.5" font-weight="800" fill="#fff" text-anchor="middle" font-family="Nunito,Cairo">${T(`Reesho ${S.me}/${GOAL} · Fox ${S.fox}/${GOAL}`, `ريشو ${S.me}/${GOAL} · الثعلب ${S.fox}/${GOAL}`)}</text>`;
+  if (o.end === 'win') { h += im('happy', 330, 40, 70, 80); for (let i = 0; i < 24; i++) h += `<rect x="${20 + rnd(400)}" y="${10 + rnd(140)}" width="7" height="11" rx="2" fill="${pick(['#f2b134', '#e2603f', '#45b36b', '#23799f', '#fff'])}"/>`; }
+  if (o.end === 'lose') h += im('laugh', 320, 30, 70, 92) + `<rect x="90" y="190" width="260" height="36" rx="18" fill="#000a"/><text x="220" y="214" font-size="18" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The fox got to the city first!', 'الثعلب وصل المدينة الأول!')}</text>`;
+  $('#scene').innerHTML = h;
+}
+const anim = (ms, f) => new Promise(res => { const t0 = performance.now(); (function g(t) { const k = Math.min(1, (t - t0) / ms); f(k); k < 1 ? requestAnimationFrame(g) : res(); })(t0); });
+async function moveMe(steps) { const a = pos(S.me), b = pos(S.me + steps); S.me = Math.min(GOAL, S.me + steps); await anim(700 + 250 * steps, k => drawScene({ rx: a + (b - a) * (1 - (1 - k) ** 2), puff: true, fx: pos(S.fox) })); drawScene(); }
+async function moveFox() { const a = pos(S.fox), b = pos(S.fox + 1); S.fox = Math.min(GOAL, S.fox + 1); SFX.foxWhistle(); await anim(700, k => drawScene({ fx: a + (b - a) * k })); drawScene(); }
+
+function banner(txt, good) { const b = $('#banner'); b.innerHTML = txt; b.classList.toggle('good', !!good); b.classList.add('show'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('show'), 1200); }
+function drawSteam() { $('#steam').innerHTML = `${T('Steam', 'البخار')} ` + [0, 1].map(i => `<i class="${i < S.streak ? 'on' : ''}"></i>`).join(''); }
+
+/* ---------- the signal timer ---------- */
+function startTimer() { S.deadline = performance.now() + L().time * 1000; S.ticked = 0; }
+setInterval(() => {
+  if (S.busy || !S.started || !S.task) return;
+  const ms = S.deadline - performance.now(); drawSignal(ms / (L().time * 1000));
+  if (ms < 5000 && ms > 0 && Math.ceil(ms / 1000) !== S.ticked) { S.ticked = Math.ceil(ms / 1000); SFX.tick(); }
+  if (ms <= 0) late();
+}, 120);
+async function late() {
+  S.busy = true; banner(T('🔴 Red signal!', '🔴 الإشارة حمرا!'));
+  $('#say').innerHTML = T('🦜 We missed our slot and the fox went ahead! Same order, quick!', '🦜 فاتنا الدور والثعلب سبقنا! نفس الطلبية، بسرعة!');
+  await mistake();
+}
+
+/* ---------- checking a delivery ---------- */
+async function go() {
+  if (S.busy || !S.started) return;
+  const k = S.task, got = loaded(k);
+  S.busy = true; S.tries++;
+  if (got === k.x) {
+    SFX.whistle();
+    const first = S.tries === 1; S.streak = first ? S.streak + 1 : 0;
+    const pts = first ? 15 : 8; S.score += pts; $('#score').textContent = S.score;
+    const boost = S.streak >= 2; if (boost) S.streak = 0; drawSteam();
+    $('#say').innerHTML = k.t === 'L'
+      ? T('🦜 Right load!', '🦜 حمولة مظبوطة!') + eq(k.x)
+      : T('🦜 All unloaded! No crates for the zero places.', '🦜 فرّغت كل حاجة! الخانات اللي فيها صفر ملهاش صناديق.') + eq(k.x);
+    if (boost) { banner(T('💨 Steam boost! Two stations!', '💨 دفعة بخار! محطتين!'), true); SFX.boost(); }
+    await moveMe(boost ? 2 : 1);
+    if (S.me >= GOAL) { win(); return; }
+    await sleep(900); nextTask(); return;
+  }
+  // wrong: say in words what was loaded, never the answer
+  SFX.wrong(); S.streak = 0; drawSteam();
+  const big = got > k.x;
+  $('#say').innerHTML = got === 0 ? T('🦜 The train is empty!', '🦜 القطر فاضي!')
+    : k.t === 'L' ? T(`🦜 You loaded ${n(fmt(got))}: that is ${big ? 'MORE' : 'LESS'} than the order. ${big ? 'The wagons are too heavy for the bridge!' : 'The customer says the order is short!'}`, `🦜 إنت حمّلت ${n(fmt(got))}: ده ${big ? 'أكبر' : 'أصغر'} من الطلبية. ${big ? 'العربات تقيلة على الكوبري!' : 'الزبون بيقول الطلبية ناقصة!'}`)
+    : T(`🦜 The platform has ${n(fmt(got))}: that is ${big ? 'more' : 'less'} than the number on the train.`, `🦜 اللي على الرصيف ${n(fmt(got))}: ده ${big ? 'أكبر' : 'أصغر'} من العدد اللي على القطار.`);
+  await anim(600, () => drawScene({ shake: true }));
+  await mistake();
+}
+async function mistake() {
+  S.misses++; S.streak = 0; drawSteam();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.fox + 1 });
+  await moveFox();
+  if (S.fox >= GOAL) { lose(); return; }
+  if (S.fox === GOAL - 1) banner(T('⚠️ The fox is one station away!', '⚠️ الثعلب فاضله محطة!'));
+  startTimer(); S.busy = false;
+}
+function nextTask() {
+  const lv = L(); S.task = makeTask(lv.plan[S.pi % lv.plan.length]); S.pi++; S.tries = 0; S.hintN = 0;
+  drawOrder(); drawWork(); startTimer(); S.busy = false;
+  if (S.task.t === 'U') $('#say').innerHTML = T('🦜 Unloading time! Each pile is a crate VALUE. How many crates of each?', '🦜 وقت التفريغ! كل كومة مكتوب عليها قيمة الصندوق. كام صندوق من كل قيمة؟');
+  else $('#say').innerHTML = pick([T('🦜 New order! Load it fast.', '🦜 طلبية جديدة! حمّلها بسرعة.'), T('🦜 The city is waiting. Load it!', '🦜 المدينة مستنية. حمّل!'), T('🦜 Read it carefully, then load.', '🦜 اقرأها كويس، وبعدين حمّل.')]);
+}
+function hint() {
+  if (S.busy || !S.started) return;
+  const k = S.task; S.hintN++;
+  let h;
+  if (k.t === 'U') h = S.hintN === 1 ? T('Read the number from the left. Each digit tells how many crates of its place value.', 'اقرأ العدد من الشمال. كل رقم بيقولك كام صندوق من قيمة خانته.') : T('A zero means no crates of that value.', 'الصفر معناه مفيش صناديق من القيمة دي.');
+  else if (k.form === 'words') h = S.hintN === 1 ? T('Read group by group: milliards, then millions, then thousands, then the rest.', 'اقرأ مجموعة مجموعة: المليارات، وبعدين الملايين، وبعدين الألوف، وبعدين الباقي.') : T('A group that is not said gets zeros in its wagons.', 'المجموعة اللي مش مذكورة عرباتها فاضية (صفر).');
+  else if (k.form === 'groups') h = T('Each group fills the three wagons of its period: hundreds, tens, ones.', 'كل مجموعة بتملا التلات عربات بتوعها: مئات وعشرات وآحاد.');
+  else h = T('Each term is one digit: count its zeros to find its wagon.', 'كل جزء هو رقم واحد: عِدّ أصفاره عشان تعرف عربته.');
+  $('#say').innerHTML = '🦜 ' + h;
+}
+
+/* ---------- races ---------- */
+function startLevel() {
+  S.t0 = Date.now(); S.me = 0; S.fox = 0; S.misses = 0; S.streak = 0; S.pi = 0;
+  $('#lvl').textContent = S.lvl + 1; drawSteam(); drawScene(); nextTask();
+  if (L().boss) banner(T('🏁 Final race: milliards!', '🏁 السباق الأخير: مليارات!'));
+  if (A.ctx && A.mode !== 'run') music('run');
+}
+async function win() {
+  S.busy = true; const stars = S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1, pts = 20 + stars * 10;
+  S.score += pts; $('#score').textContent = S.score; music('off'); SFX.win(); drawScene({ end: 'win' });
+  banner(T('🏆 Reesho reached the city first!', '🏆 ريشو وصل المدينة الأول!'), true);
+  saveWin(stars, pts); await sleep(1800); showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+async function lose() {
+  S.busy = true; music('off'); SFX.lose(); drawScene({ end: 'lose' });
+  $('#say').innerHTML = T('🦊 Ha! My train was faster!', '🦊 هاها! قطري كان أسرع!');
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+  await sleep(1500); showEnd('lose');
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['happy', T('Reesho won the race!', 'ريشو كسب السباق!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('The fox wants a rematch with bigger orders… ready?', 'الثعلب عايز سباق تاني بطلبيات أكبر… جاهز؟'), T('Next race ➜', 'السباق اللي بعده ⬅')],
+    all: ['happy', T('Champion of the rails!', 'بطل السكة الحديد!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You can read and write numbers in every form!`, `مجموع نقطك ${n(S.score)}. بقيت بتقرا وتكتب العدد بكل صيغه!`), T('Play again', 'العب من الأول')],
+    lose: ['laugh', T('The fox won this race', 'الثعلب كسب السباق ده'), '', T('Read the order group by group, and leave the wagons of a missing place empty. Try again!', 'اقرأ الطلبية مجموعة مجموعة، وسيب عربة الخانة المش مذكورة فاضية. جرّب تاني!'), T('Race again', 'سابق تاني')]
+  }[kind];
+  $('#endArt').innerHTML = `<img src="${src(cfg[0])}" alt="">`; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLevel(); };
+}
+/* progress: SI.chProf('mg4u1').train = { lvl: next race, best: highest race won (1-6), stars: [per race] } */
+function saveWin(stars, pts) {
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.train = c.train || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+
+/* ---------- music and sound (Web Audio, no files): a chugging train rhythm; it speeds up as the fox gets closer ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol, from, to) { const c = A.ctx, b = c.createBuffer(1, Math.max(1, c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.setValueAtTime(from, t); f.frequency.exponentialRampToValueAtTime(to, t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(f); f.connect(g); g.connect(A.master); s.start(t); }
+const TUNE = [67, 0, 71, 74, 72, 0, 71, 69, 67, 0, 69, 71, 72, 71, 69, 0];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const bpm = 104 + S.fox * 12 + (L().boss ? 8 : 0), spb = 60 / bpm / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    noise(t, .07, i % 2 ? .07 : .13, 2500, 900);                                   // chuff-chuff
+    if (i % 4 === 0) tone(43, t, spb * 1.8, { type: 'triangle', vol: .13, cut: 500 });
+    if (TUNE[i]) tone(TUNE[i], t, spb * .8, { type: 'square', vol: .035, cut: 2000 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null; if (mode === 'run') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  crate() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .06, .3, 900, 300); tone(50, t, .08, { type: 'sine', vol: .2 }); },
+  click() { if (!ac()) return; tone(84, A.ctx.currentTime, .05, { type: 'square', vol: .04, cut: 4000 }); },
+  whistle() { if (!ac()) return; const t = A.ctx.currentTime; [[79, 0, .45], [83, .5, .7]].forEach(([m, d, l]) => { tone(m, t + d, l, { type: 'sine', vol: .14, glide: .3 }); tone(m + 4, t + d, l, { type: 'sine', vol: .08 }); }); },
+  foxWhistle() { if (!ac()) return; const t = A.ctx.currentTime; tone(72, t, .5, { type: 'sawtooth', vol: .05, cut: 1600, glide: -2 }); },
+  boost() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .7, .3, 6000, 1500); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(52, t, .35, { type: 'sawtooth', vol: .12, cut: 900, glide: -5 }); },
+  tick() { if (!ac()) return; tone(93, A.ctx.currentTime, .04, { type: 'square', vol: .05, cut: 5000 }); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [67, 71, 74, 79, 83, 86].forEach((m, i) => tone(m, t + i * .1, .5, { type: 'triangle', vol: .16 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [67, 66, 65, 60].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+$('#go').onclick = go; $('#hint').onclick = hint;
+$('#start').onclick = () => { $('#intro').hidden = true; S.started = true; music('run'); startTimer(); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+window.__train = S; window.__trainApi = { startLevel, makeTask, LEVELS, enWords, arWords, groups, expanded,
+  solve: () => { const k = S.task; k.load = {}; String(k.x).split('').reverse().forEach((d, e) => { if (+d) k.load[e] = +d; }); drawWork(); },
+  redraw: () => { drawScene(); drawOrder(); drawWork(); drawSteam(); } };
+startLevel(); S.busy = false;
+})();
+</script>
+</body>
+</html>
