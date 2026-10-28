@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Fox Duel · Comparing Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 4 · Unit 1 (mg4u1) adventure «مبارزة الثعلب / Fox Duel», lessons 5-6 (comparing big numbers place by place from the left;
+     comparing numbers written in different forms with >, < and =). One goal, always on screen: the BIGGER number wins.
+     A round: a digit card is drawn; the child puts it in an empty slot (it cannot move); the fox puts his own card face down. When all slots are
+     full, the fox's number is shown in the duel's form (standard, expanded or words) and the child sets the sign between the two numbers.
+     The scale tips by the real values, then the places light up from the left to the first different place, and the reason is said in words.
+     Hearts: 3 each. Smaller number = lose a heart; a wrong sign = the child loses a heart. Two round wins in a row = a golden 9 next round.
+     The fox plays at random in duels 1-2, then keeps big digits for the left slots.
+     Pictures: the owner's Gemini sheet (28 Oct 2026) cut out into math/assets/: reesho_cards_{think,happy,sad}, fox_cards_{plan,laugh,angry},
+     card_back, bg_tent.jpg. Progress: SI.chProf('mg4u1').duel = { lvl, best, stars[] }. Test hooks window.__duel, window.__duelApi. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#2a1d17,#4a3324 40%,#6b4a30);color:var(--navy);min-height:100svh}
+.wrap{max-width:600px;margin:0 auto;padding:10px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;color:#fbe9c9}
+.top h1{font-size:21px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffff22;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:16px;background:#3b2a1f}
+.say{margin:8px 0}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;min-height:44px;box-shadow:0 3px 10px #0004;line-height:1.6}
+.panel{background:var(--card);border-radius:20px;padding:10px;box-shadow:0 6px 20px #0005}
+bdi{font-weight:900;color:var(--pri)}
+.goal{text-align:center;background:#1f3d57;color:#ffe39a;border-radius:99px;font-weight:900;font-size:14px;padding:4px 10px;margin-bottom:8px}
+.lab{font-weight:900;font-size:13px;color:var(--ink);margin:2px 2px 4px;display:flex;justify-content:space-between;align-items:center}
+.slots{direction:ltr;display:grid;gap:4px}
+.slot{height:58px;border-radius:9px;border:2px dashed #c9b48a;background:#fff8e8;font:900 30px Nunito,sans-serif;color:var(--navy);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;position:relative;transition:transform .15s}
+.slot.full{border:2px solid #e0c98f;background:#fff;cursor:default}
+.slot.gold{color:#c98a00;background:#fff3c4}
+.slot.back{background:url(math/assets/card_back.webp) center/cover;border:0}
+.slot.open{animation:flip .35s}
+@keyframes flip{0%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+.slot.same{outline:3px solid #9fb6c8;outline-offset:-3px}
+.slot.win{outline:4px solid var(--ok);outline-offset:-4px;background:#e4f7ec}
+.slot.lose{outline:4px solid var(--coral);outline-offset:-4px;background:#fde6df}
+.slot.can{animation:pulse 1s infinite}
+@keyframes pulse{50%{border-color:var(--gold);background:#fff3c4}}
+.plc{direction:ltr;display:grid;gap:4px;margin-top:2px}
+.plc span{text-align:center;font:800 9.5px/1.15 Nunito,Cairo,sans-serif;color:var(--navy);overflow:hidden;border-radius:5px;padding:2px 0}
+.plc .per{font-weight:900;font-size:10.5px;white-space:nowrap}
+.foxform{margin-top:6px;background:#fde9df;border-radius:10px;padding:6px 10px;font-weight:800;font-size:15.5px;line-height:1.55;min-height:20px}
+.foxform:empty{display:none}
+.foxform .ltr{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:Nunito,sans-serif;font-weight:900}
+.deal{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px 0}
+.card{width:58px;height:82px;border-radius:10px;background:#fff;border:3px solid var(--gold);font:900 40px Nunito,sans-serif;color:var(--navy);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px #0003}
+.card.gold{background:#fff3c4;color:#c98a00;box-shadow:0 0 14px #f2b134}
+.card.deal-in{animation:dealin .35s}
+@keyframes dealin{0%{transform:translateY(-30px) rotate(-15deg);opacity:0}}
+.deal .txt{font-weight:800;font-size:14.5px;max-width:230px}
+.cmp{direction:ltr;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.cmp .side{background:#fff;border-radius:10px;padding:6px 10px;text-align:center;font:900 20px Nunito,sans-serif;border:2px solid #e8dcc0;min-width:96px}
+.cmp .side small{display:block;font:800 11px Nunito,Cairo,sans-serif;color:var(--ink)}
+.signs{display:flex;gap:6px}
+.sign{width:50px;height:50px;border:0;border-radius:12px;background:var(--gold);font:900 28px Nunito,sans-serif;color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.sign:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.sign.pickd{background:var(--pri);color:#fff}
+.cmp[hidden]{display:none}
+.row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 20px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.btn[hidden]{display:none}
+.veil{position:fixed;inset:0;background:#1f1510cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:20px;max-width:390px;text-align:center}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 12px}
+.introart{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:10px}.introart img{height:84px}
+#endArt img{height:110px}
+.stars{font-size:34px;letter-spacing:4px}
+.home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffff22;border-radius:99px;color:#fff;font-size:16px;width:34px;height:30px}
+.snd{background:#ffffff22;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer;color:#fff}
+.banner{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%) scale(.6);background:var(--coral);color:#fff;font:900 24px Nunito,Cairo;padding:12px 24px;border-radius:18px;box-shadow:0 8px 24px #0006;opacity:0;pointer-events:none;z-index:8;transition:.3s;text-align:center;white-space:nowrap}
+.banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.banner.good{background:var(--ok)}
+.banner.gold{background:#c98a00}
+@media (prefers-reduced-motion:reduce){.slot.can,.slot.open,.card.deal-in{animation:none}}
+@media (max-width:420px){.slot{height:50px;font-size:25px}.card{width:50px;height:72px;font-size:34px}.cmp .side{font-size:17px;min-width:84px}.sign{width:44px;height:44px;font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🃏 مبارزة الثعلب">🃏 Fox Duel</h1><div class="pills"><span class="pill"><span data-ar="المبارزة">Duel</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="adventures.html" aria-label="Back to the adventures" data-ar-label="رجوع للمغامرات">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 246" role="img" aria-label="Reesho and the fox play cards at a table in a tent" data-ar-label="ريشو والثعلب بيلعبوا كوتشينة على ترابيزة في خيمة"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="goal" data-ar="🎯 الهدف: العدد الأكبر يكسب">🎯 Goal: the BIGGER number wins</div>
+    <div class="lab"><span data-ar="🦊 عدد الثعلب">🦊 Fox’s number</span></div>
+    <div class="slots" id="foxSlots"></div>
+    <div class="foxform" id="foxForm"></div>
+    <div class="deal" id="deal"></div>
+    <div class="lab"><span data-ar="🦜 عددك">🦜 Your number</span></div>
+    <div class="slots" id="mySlots"></div>
+    <div class="plc" id="plc"></div>
+    <div class="cmp" id="cmp" hidden></div>
+    <div class="row"><button class="btn" id="next" type="button" hidden></button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+<div class="banner" id="banner"></div>
+
+<div class="veil" id="intro"><div class="box">
+  <div class="introart" aria-hidden="true"><img src="math/assets/reesho_cards_think.webp" alt=""><img src="math/assets/card_back.webp" alt="" style="height:56px"><img src="math/assets/fox_cards_plan.webp" alt=""></div>
+  <h2 data-ar="الثعلب بيتحداك!">The fox challenges you!</h2>
+  <ol id="rules"></ol>
+  <button class="btn" id="start" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261028g"></script>
+<script src="chapters.js?v=20261028g"></script>
+<script src="common.js?v=20261028g"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg4u1'); if (!CH) return;
+const T = SI.T, GAME = 'math-duel.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+const fmt = x => Number(x).toLocaleString('en-US');
+const P10 = e => 10 ** e;
+document.title = T('Fox Duel · Comparing Numbers', 'مبارزة الثعلب · مقارنة الأعداد');
+$('#rules').innerHTML = [
+  T('A digit card comes. Put it in one of your slots: it stays there!', 'بتيجي بطاقة رقم. حطها في خانة من خاناتك: مش هتتحرك تاني!'),
+  T('The fox fills his slots too, face down. The <b>bigger number wins</b>.', 'الثعلب كمان بيملا خاناته والبطاقات مقلوبة. <b>العدد الأكبر يكسب</b>.'),
+  T('At the end his number is shown, sometimes in words or expanded form. Put the right sign: &gt; &lt; or =.', 'في الآخر بيظهر عدده، ساعات بالكلمات أو بالصيغة الممتدة. حط العلامة الصح: &gt; أو &lt; أو =.'),
+  T('Smaller number or a wrong sign = you lose a heart ❤️. Take all 3 of his hearts!', 'عدد أصغر أو علامة غلط = تخسر قلب ❤️. خد قلوبه التلاتة!')].map(x => `<li>${x}</li>`).join('');
+$('#start').textContent = T('Deal the cards! 🃏', 'وزّع الكروت 🃏');
+
+/* ---------- number words (the books' style, same code as math-train.html) ---------- */
+const EN1 = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const EN10 = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+function en3(x) { const h = Math.floor(x / 100), r = x % 100, out = []; if (h) out.push(EN1[h] + ' hundred'); if (r) out.push(r < 20 ? EN1[r] : EN10[Math.floor(r / 10)] + (r % 10 ? '-' + EN1[r % 10] : '')); return out.join(' '); }
+function enWords(x) { const P = ['', ' thousand', ' million', ' milliard'], out = []; for (let p = 3; p >= 0; p--) { const c = Math.floor(x / 1000 ** p) % 1000; if (c) out.push(en3(c) + P[p]); } return out.join(', '); }
+const AR1 = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+const AR10 = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+const ARH = ['', 'مائة', 'مائتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+const ar2 = r => r < 20 ? AR1[r] : (r % 10 ? AR1[r % 10] + ' و' : '') + AR10[Math.floor(r / 10)];
+function ar3(x) { const h = Math.floor(x / 100), r = x % 100, out = []; if (h) out.push(ARH[h]); if (r) out.push(ar2(r)); return out.join(' و'); }
+/* a count of thousands / millions / milliards with its noun (العدد والمعدود) */
+const NOUN = { 1: ['ألف', 'ألفان', 'آلاف', 'ألفًا'], 2: ['مليون', 'مليونان', 'ملايين', 'مليونًا'], 3: ['مليار', 'ملياران', 'مليارات', 'مليارًا'] };
+function arCount(c, p) {
+  const [one, two, many, acc] = NOUN[p], h = Math.floor(c / 100), r = c % 100;
+  if (c === 1) return one; if (c === 2) return two;
+  if (c <= 10) return AR1[c] + ' ' + many;
+  if (r === 0) return (h === 2 ? 'مائتا' : ARH[h]) + ' ' + one;
+  if (r <= 10) return ARH[h] + ' و' + AR1[r] + ' ' + many;
+  return (h ? ARH[h] + ' و' : '') + ar2(r) + ' ' + acc;
+}
+function arWords(x) { const out = []; for (let p = 3; p >= 0; p--) { const c = Math.floor(x / 1000 ** p) % 1000; if (c) out.push(p ? arCount(c, p) : ar3(c)); } return out.join(' و'); }
+function wordsOk(x) { for (let p = 1; p <= 3; p++) { const c = Math.floor(x / 1000 ** p) % 1000; if (c > 100 && (c % 100 === 1 || c % 100 === 2)) return false; } return true; }
+const expanded = x => String(x).split('').map((d, i, a) => +d ? fmt(+d * P10(a.length - 1 - i)) : null).filter(Boolean).join(' + ') || '0';
+const PLACE = [['ones', 'الآحاد'], ['tens', 'العشرات'], ['hundreds', 'المئات'], ['thousands', 'آحاد الألوف'], ['ten thousands', 'عشرات الألوف'], ['hundred thousands', 'مئات الألوف'], ['millions', 'آحاد الملايين']];
+const SHORT = [['O', 'آحاد'], ['T', 'عشرات'], ['H', 'مئات']];
+const PER = [{ en: 'Ones', ar: 'الوحدات', head: '#7fb0dc', cell: '#bcd9f2' }, { en: 'Thousands', ar: 'الألوف', head: '#f5c93f', cell: '#fbe38c' }, { en: 'Millions', ar: 'الملايين', head: '#8fa383', cell: '#c3cfba' }];
+
+/* six duels; k = slots; form = how the fox's number is shown; smart = the fox keeps big digits for the left */
+const LEVELS = [
+  { k: 4, forms: ['std'], smart: 0 },
+  { k: 5, forms: ['std'], smart: 0 },
+  { k: 5, forms: ['expanded'], smart: 1 },
+  { k: 6, forms: ['words'], smart: 1 },
+  { k: 6, forms: ['words', 'expanded'], smart: 1 },
+  { k: 7, forms: ['words', 'expanded', 'std'], smart: 2, boss: true }];
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).duel || {}).lvl) || 0), score: 0, myH: 3, foxH: 3, misses: 0, wins: 0, gold: false, busy: true, started: false,
+  mine: [], fox: [], card: null, form: 'std', phase: 'deal', hintN: 0 };
+const L = () => LEVELS[S.lvl];
+const num = a => +a.join('');
+
+/* ---------- the fox's move ---------- */
+function foxPlace(d) {
+  const empty = S.fox.map((v, i) => v == null ? i : -1).filter(i => i >= 0);
+  if (!L().smart) return pick(empty);
+  // keep big digits for the left, small ones for the right; the smarter fox raises the bar when many slots are left
+  const hi = L().smart === 2 ? (empty.length > 3 ? 8 : 6) : 7, lo = 3;
+  if (d >= hi) return empty[0];
+  if (d <= lo) return empty[empty.length - 1];
+  return empty[Math.min(empty.length - 1, 1 + rnd(Math.max(1, empty.length - 2)))];
+}
+
+/* ---------- drawing the table ---------- */
+function drawSlots() {
+  const k = L().k, cols = `repeat(${k},minmax(0,1fr))`;
+  ['#foxSlots', '#mySlots', '#plc'].forEach(s => $(s).style.gridTemplateColumns = cols);
+  $('#foxSlots').innerHTML = S.fox.map((v, i) => `<div class="slot ${v == null ? '' : S.phase === 'judged' ? 'full' : 'back'}" id="f${i}" aria-label="${T('Fox slot', 'خانة الثعلب')}">${S.phase === 'judged' && v != null ? v : ''}</div>`).join('');
+  $('#mySlots').innerHTML = S.mine.map((v, i) => `<button type="button" class="slot ${v == null ? (S.phase === 'deal' && S.card != null ? 'can' : '') : 'full'}${S.goldAt === i ? ' gold' : ''}" id="m${i}" data-i="${i}" aria-label="${T('Your slot: ', 'خانتك: ')}${T(PLACE[k - 1 - i][0], PLACE[k - 1 - i][1])}">${v ?? ''}</button>`).join('');
+  $('#mySlots').querySelectorAll('button').forEach(b => b.onclick = () => place(+b.dataset.i));
+  const es = S.mine.map((_, i) => k - 1 - i); let ph = '';
+  es.forEach(e => { const p = Math.floor(e / 3); ph += `<span style="background:${PER[p].cell}">${T(SHORT[e % 3][0], SHORT[e % 3][1])}</span>`; });
+  for (let p = 2; p >= 0; p--) { const span = es.filter(e => Math.floor(e / 3) === p).length; if (span) ph += `<span class="per" style="grid-column:span ${span};background:${PER[p].head}">${T(PER[p].en, PER[p].ar)}</span>`; }
+  $('#plc').innerHTML = ph;
+}
+function drawDeal() {
+  if (S.card == null) { $('#deal').innerHTML = ''; return; }
+  $('#deal').innerHTML = `<div class="card deal-in${S.cardGold ? ' gold' : ''}" aria-label="${T('Card', 'بطاقة')} ${S.card}">${S.card}</div><div class="txt">${S.cardGold ? T('✨ Golden 9! Put it anywhere.', '✨ الـ 9 الذهبية! حطها في أي خانة.') : T('Tap an empty slot for this card.', 'اضغط على خانة فاضية للبطاقة دي.')}</div>`;
+}
+
+/* ---------- scene: the tent, the table, Reesho on the left, the fox on the right, a scale and the hearts ----------
+   bg_tent.jpg drawn whole (1024×572 → 440×246); the table top is at y ≈ 160. */
+const IMG = { bg: 'bg_tent.jpg', think: 'reesho_cards_think.webp', happy: 'reesho_cards_happy.webp', sad: 'reesho_cards_sad.webp', plan: 'fox_cards_plan.webp', laugh: 'fox_cards_laugh.webp', angry: 'fox_cards_angry.webp', back: 'card_back.webp' };
+const src = k => 'math/assets/' + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+const heart = (x, y, on) => `<path transform="translate(${x},${y}) scale(.9)" d="M0 4 C0 -2 8 -4 10 2 C12 -4 20 -2 20 4 C20 11 10 16 10 18 C10 16 0 11 0 4z" fill="${on ? '#e2603f' : '#ffffff40'}" stroke="#fff" stroke-width="1"/>`;
+function drawScene(o = {}) {
+  const r = o.r || 'think', f = o.f || 'plan', tilt = o.tilt || 0;   // tilt > 0: the left (Reesho) pan goes down
+  let h = `<image href="${src('bg')}" x="0" y="0" width="440" height="246" preserveAspectRatio="none"/>`;
+  h += im(r, 30, 52, 112, 128) + im(f, 296, 46, 116, 134);
+  // the scale on the table
+  const a = tilt * 12, cx = 220, cy = 110, L2 = 54, dy = Math.sin(a * Math.PI / 180) * L2;
+  h += `<rect x="217" y="${cy}" width="6" height="52" fill="#7a5235"/><rect x="200" y="158" width="40" height="7" rx="3" fill="#5e3d26"/>`;
+  h += `<line x1="${cx - L2}" y1="${cy + dy}" x2="${cx + L2}" y2="${cy - dy}" stroke="#c98a00" stroke-width="4" stroke-linecap="round"/>`;
+  [[cx - L2, cy + dy, '🦜'], [cx + L2, cy - dy, '🦊']].forEach(([x, y, e]) => { h += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + 18}" stroke="#c98a00" stroke-width="1.5"/><path d="M${x - 16} ${y + 18} q16 12 32 0z" fill="#f2b134" stroke="#c98a00"/><text x="${x}" y="${y + 16}" font-size="12" text-anchor="middle">${e}</text>`; });
+  h += `<circle cx="${cx}" cy="${cy}" r="4" fill="#c98a00"/>`;
+  // hearts
+  h += `<rect x="8" y="6" width="88" height="26" rx="13" fill="#0007"/>` + [0, 1, 2].map(i => heart(14 + i * 26, 11, i < S.myH)).join('');
+  h += `<rect x="344" y="6" width="88" height="26" rx="13" fill="#0007"/>` + [0, 1, 2].map(i => heart(350 + i * 26, 11, i < S.foxH)).join('');
+  // cards on the table: how many each has played
+  const nm = S.mine.filter(v => v != null).length, nf = S.fox.filter(v => v != null).length;
+  for (let i = 0; i < nm; i++) h += im('back', 146 + i * 8, 168, 14, 21);
+  for (let i = 0; i < nf; i++) h += im('back', 280 - i * 8, 168, 14, 21);
+  if (o.msg) h += `<rect x="70" y="200" width="300" height="34" rx="17" fill="#000a"/><text x="220" y="223" font-size="17" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${o.msg}</text>`;
+  $('#scene').innerHTML = h;
+}
+const anim = (ms, f) => new Promise(res => { const t0 = performance.now(); (function g(t) { const k = Math.min(1, (t - t0) / ms); f(k); k < 1 ? requestAnimationFrame(g) : res(); })(t0); });
+function banner(txt, cls) { const b = $('#banner'); b.innerHTML = txt; b.className = 'banner show ' + (cls || ''); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('show'), 1300); }
+
+/* ---------- a round ---------- */
+function startRound() {
+  const k = L().k; S.mine = Array(k).fill(null); S.fox = Array(k).fill(null); S.phase = 'deal'; S.goldAt = -1; S.hintN = 0; S.pick = null;
+  S.form = pick(L().forms);
+  $('#foxForm').innerHTML = ''; $('#cmp').hidden = true; $('#next').hidden = true;
+  drawScene(); drawSlots(); dealCard();
+  $('#say').innerHTML = S.gold ? T('🦜 You won two in a row: your first card is a golden 9!', '🦜 كسبت مرتين ورا بعض: أول بطاقة ليك 9 ذهبية!') : pick([T('🦜 New round! Think before you place: the left slots are worth the most.', '🦜 جولة جديدة! فكّر قبل ما تحط: الخانات اللي على الشمال قيمتها أكبر.'), T('🦜 Your turn. Where does this card go?', '🦜 دورك. البطاقة دي تروح فين؟')]);
+}
+function dealCard() {
+  S.cardGold = S.gold && S.mine.every(v => v == null);
+  S.card = S.cardGold ? 9 : rnd(10); SFX.deal();
+  drawDeal(); drawSlots(); S.busy = false;
+}
+async function place(i) {
+  if (S.busy || !S.started || S.phase !== 'deal' || S.mine[i] != null) return;
+  S.busy = true; S.mine[i] = S.card; if (S.cardGold) { S.goldAt = i; S.gold = false; }
+  S.card = null; SFX.place(); drawDeal(); drawSlots(); drawScene();
+  // the fox draws and places his card face down
+  await sleep(350);
+  const fd = rnd(10), fi = foxPlace(fd); S.fox[fi] = fd; SFX.place(); drawSlots(); drawScene({ f: 'plan' });
+  await sleep(300);
+  if (S.mine.some(v => v == null)) { dealCard(); return; }
+  reveal();
+}
+async function reveal() {
+  S.phase = 'reveal';
+  const fx = num(S.fox), form = S.form === 'words' && !wordsOk(fx) ? 'expanded' : S.form;
+  S.shown = form;
+  await drumroll();
+  const what = { std: T('in standard form', 'بالصيغة القياسية'), expanded: T('in expanded form', 'بالصيغة الممتدة'), words: T('in words', 'بالكلمات') }[form];
+  const body = form === 'words' ? (fx ? T(enWords(fx), arWords(fx)) : T('zero', 'صفر')) : `<span class="ltr">${form === 'std' ? fmt(fx) : expanded(fx)}</span>`;
+  $('#foxForm').innerHTML = `🦊 ${T(`My number ${what}:`, `عددي ${what}:`)} ${body}`;
+  $('#cmp').innerHTML = `<div class="side">${fmt(num(S.mine))}<small>${T('your number', 'عددك')}</small></div><div class="signs">${['>', '<', '='].map(s => `<button type="button" class="sign" data-s="${s}" aria-label="${s}">${s}</button>`).join('')}</div><div class="side">🦊<small>${T('fox’s number', 'عدد الثعلب')}</small></div>`;
+  $('#cmp').hidden = false;
+  $('#cmp').querySelectorAll('.sign').forEach(b => b.onclick = () => judge(b.dataset.s, b));
+  $('#say').innerHTML = T('🦜 Compare your number with the fox’s. Which sign goes between them? (your number ? fox’s number)', '🦜 قارن عددك بعدد الثعلب. أي علامة تتحط بينهم؟ (عددك ؟ عدد الثعلب)');
+  S.busy = false;
+}
+async function drumroll() { for (let i = 0; i < 8; i++) { SFX.drum(i); await sleep(70); } }
+async function judge(sign, btn) {
+  if (S.busy || S.phase !== 'reveal') return;
+  S.busy = true; btn.classList.add('pickd');
+  const a = num(S.mine), b = num(S.fox), truth = a > b ? '>' : a < b ? '<' : '=', right = sign === truth;
+  // the scale tips by the real values
+  const tilt = truth === '>' ? 1 : truth === '<' ? -1 : 0;
+  SFX.creak(); await anim(600, k => drawScene({ tilt: tilt * k }));
+  // flip the fox's cards, then light the places from the left to the first different one
+  S.phase = 'judged'; drawSlots();
+  for (let i = 0; i < S.fox.length; i++) { $('#f' + i).classList.add('open'); SFX.flip(); await sleep(90); }
+  const k = L().k; let diff = -1;
+  for (let i = 0; i < k; i++) {
+    const m = $('#m' + i), f = $('#f' + i);
+    if (S.mine[i] === S.fox[i]) { m.classList.add('same'); f.classList.add('same'); SFX.tick(); await sleep(260); continue; }
+    diff = i; m.classList.add(S.mine[i] > S.fox[i] ? 'win' : 'lose'); f.classList.add(S.mine[i] > S.fox[i] ? 'lose' : 'win'); break;
+  }
+  const where = diff >= 0 ? T(PLACE[k - 1 - diff][0], PLACE[k - 1 - diff][1]) : '';
+  const why = diff < 0 ? T('All the places are the same: the numbers are equal.', 'كل الخانات زي بعض: العددين متساويين.')
+    : T(`From the left, the first different place is the ${where}: you have ${n(S.mine[diff])} and the fox has ${n(S.fox[diff])}.`, `من الشمال، أول خانة مختلفة هي ${where}: عندك ${n(S.mine[diff])} والثعلب عنده ${n(S.fox[diff])}.`);
+  const line = `<div style="direction:ltr;text-align:center;font:900 18px Nunito,sans-serif;color:#1f3d57">${fmt(a)} ${truth} ${fmt(b)}</div>`;
+  let r = 'think', f = 'plan';
+  if (!right) {
+    S.myH--; S.misses++; S.wins = 0; r = 'sad'; f = 'laugh'; SFX.wrong();
+    banner(T('❌ Wrong sign!', '❌ العلامة غلط!'));
+    $('#say').innerHTML = T(`🦜 The sign was ${n(truth)}, so you lose a heart. ${why}`, `🦜 العلامة الصح ${n(truth)}، فخسرت قلب. ${why}`) + line;
+    SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: 3 - S.myH });
+  } else if (truth === '>') {
+    S.foxH--; S.wins++; r = 'happy'; f = 'angry'; S.score += 15; SFX.win1();
+    banner(T('🏆 Your number is bigger!', '🏆 عددك أكبر!'), 'good');
+    $('#say').innerHTML = T(`🦜 Right sign, and you win the round! ${why}`, `🦜 علامة صح، وكسبت الجولة! ${why}`) + line;
+  } else if (truth === '<') {
+    S.myH--; S.wins = 0; r = 'sad'; f = 'laugh'; S.score += 5; SFX.lose1();
+    banner(T('🦊 The fox’s number is bigger', '🦊 عدد الثعلب أكبر'));
+    $('#say').innerHTML = T(`🦜 Right sign (+5), but the fox’s number is bigger. ${why}`, `🦜 علامتك صح (+5)، بس عدد الثعلب أكبر. ${why}`) + line;
+  } else { S.score += 10; $('#say').innerHTML = T('🦜 Right! A draw: nobody loses a heart.', '🦜 صح! تعادل: محدش بيخسر قلب.') + line; }
+  $('#score').textContent = S.score;
+  if (S.wins >= 2) { S.gold = true; S.wins = 0; setTimeout(() => banner(T('✨ Golden 9 next round!', '✨ 9 ذهبية في الجولة الجاية!'), 'gold'), 1400); }
+  drawScene({ tilt, r, f });
+  if (S.foxH <= 0) { await sleep(1600); win(); return; }
+  if (S.myH <= 0) { await sleep(1600); lose(); return; }
+  $('#next').textContent = T('Next round ➜', 'الجولة اللي بعدها ⬅'); $('#next').hidden = false; S.busy = false;
+}
+function hint() {
+  if (S.busy || !S.started) return;
+  S.hintN++;
+  let h;
+  if (S.phase === 'deal') h = S.card >= 7 ? T('A big digit is worth most in a left slot.', 'الرقم الكبير قيمته أكبر في خانة على الشمال.') : S.card <= 2 ? T('Keep the left slots for big digits: put a small one on the right.', 'سيب الخانات اللي على الشمال للأرقام الكبيرة: حط الصغير على اليمين.') : T('Think: will a bigger card come later?', 'فكّر: ممكن تيجي بطاقة أكبر بعدين؟');
+  else if (S.shown === 'words') h = T('Write the fox’s number with digits in your head, group by group, then compare from the left.', 'اكتب عدد الثعلب بالأرقام في دماغك مجموعة مجموعة، وبعدين قارن من الشمال.');
+  else if (S.shown === 'expanded') h = T('Add the parts in your head to get the standard form, then compare from the left.', 'اجمع الأجزاء في دماغك عشان تطلع الصيغة القياسية، وبعدين قارن من الشمال.');
+  else h = T('Compare place by place from the left. The first place that is different decides.', 'قارن خانة خانة من الشمال. أول خانة مختلفة هي اللي بتحكم.');
+  $('#say').innerHTML = '🦜 ' + h;
+}
+
+/* ---------- duels ---------- */
+function startLevel() {
+  S.t0 = Date.now(); S.myH = 3; S.foxH = 3; S.misses = 0; S.wins = 0; S.gold = false;
+  $('#lvl').textContent = S.lvl + 1;
+  if (L().boss) banner(T('👑 Final duel: 7 digits!', '👑 المبارزة الأخيرة: 7 أرقام!'));
+  if (A.ctx && A.mode !== 'run') music('run');
+  startRound();
+}
+async function win() {
+  S.busy = true; const stars = S.myH >= 3 ? 3 : S.myH === 2 ? 2 : 1, pts = 20 + stars * 10;
+  S.score += pts; $('#score').textContent = S.score; music('off'); SFX.win(); drawScene({ r: 'happy', f: 'angry', msg: T('The fox has no hearts left!', 'الثعلب خلصت قلوبه!') });
+  saveWin(stars, pts); await sleep(1500); showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+async function lose() {
+  S.busy = true; music('off'); SFX.lose(); drawScene({ r: 'sad', f: 'laugh', msg: T('The fox won the duel', 'الثعلب كسب المبارزة') });
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+  await sleep(1400); showEnd('lose');
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['happy', T('You beat the fox!', 'غلبت الثعلب!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('He wants a rematch with longer numbers… ready?', 'هو عايز مبارزة تانية بأعداد أطول… جاهز؟'), T('Next duel ➜', 'المبارزة اللي بعدها ⬅')],
+    all: ['happy', T('Card champion!', 'بطل الكروت!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You compare numbers in every form!`, `مجموع نقطك ${n(S.score)}. بقيت بتقارن الأعداد بكل صيغها!`), T('Play again', 'العب من الأول')],
+    lose: ['laugh', T('The fox won this duel', 'الثعلب كسب المبارزة دي'), '', T('Keep big digits for the left slots, and compare from the left. Try again!', 'خلّي الأرقام الكبيرة للخانات اللي على الشمال، وقارن من الشمال. جرّب تاني!'), T('Duel again', 'بارز تاني')]
+  }[kind];
+  $('#endArt').innerHTML = `<img src="${src(cfg[0])}" alt="">`; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLevel(); };
+}
+/* progress: SI.chProf('mg4u1').duel = { lvl: next duel, best: highest duel won (1-6), stars: [per duel] } */
+function saveWin(stars, pts) {
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.duel = c.duel || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+
+/* ---------- music and sound (Web Audio, no files): a sly card-table tune; it speeds up when hearts run low ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol, from, to) { const c = A.ctx, b = c.createBuffer(1, Math.max(1, c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.setValueAtTime(from, t); f.frequency.exponentialRampToValueAtTime(to, t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(f); f.connect(g); g.connect(A.master); s.start(t); }
+const TUNE = [64, 0, 67, 0, 71, 70, 69, 0, 64, 0, 67, 0, 66, 65, 64, 0];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const low = Math.min(S.myH, S.foxH), bpm = 92 + (3 - low) * 14 + (L().boss ? 8 : 0), spb = 60 / bpm / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    if (i % 4 === 0) tone(40, t, spb * 1.6, { type: 'triangle', vol: .14, cut: 500 });
+    if (i % 4 === 2) tone(47, t, spb * 1.2, { type: 'triangle', vol: .1, cut: 500 });
+    if (TUNE[i]) tone(TUNE[i], t, spb * .7, { type: 'triangle', vol: .07, cut: 1800 });
+    if (i % 2 === 1) noise(t, .03, .04, 7000, 5000);
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null; if (mode === 'run') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  deal() { if (!ac()) return; noise(A.ctx.currentTime, .08, .2, 3000, 1200); },
+  place() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .05, .25, 1500, 600); tone(72, t, .08, { type: 'sine', vol: .08 }); },
+  flip() { if (!ac()) return; noise(A.ctx.currentTime, .05, .18, 4000, 2000); },
+  drum(i) { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .06, .12 + i * .03, 400, 150); },
+  creak() { if (!ac()) return; const t = A.ctx.currentTime; tone(55, t, .5, { type: 'sawtooth', vol: .05, cut: 700, glide: 4 }); },
+  tick() { if (!ac()) return; tone(88, A.ctx.currentTime, .05, { type: 'square', vol: .04, cut: 4000 }); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(52, t, .35, { type: 'sawtooth', vol: .12, cut: 900, glide: -5 }); },
+  win1() { if (!ac()) return; const t = A.ctx.currentTime; [72, 76, 79, 84].forEach((m, i) => tone(m, t + i * .08, .3, { type: 'triangle', vol: .14 })); },
+  lose1() { if (!ac()) return; const t = A.ctx.currentTime; [67, 63].forEach((m, i) => tone(m, t + i * .2, .35, { type: 'triangle', vol: .12 })); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [64, 68, 71, 76, 80, 83].forEach((m, i) => tone(m, t + i * .1, .5, { type: 'triangle', vol: .16 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [64, 63, 62, 57].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+$('#hint').onclick = hint;
+$('#next').onclick = () => { if (S.busy) return; startRound(); };
+$('#start').onclick = () => { $('#intro').hidden = true; S.started = true; music('run'); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+window.__duel = S; window.__duelApi = { startLevel, startRound, place, judge: s => judge(s, document.querySelector(`.sign[data-s="${s}"]`)), foxPlace, LEVELS, enWords, arWords,
+  truth: () => { const a = num(S.mine), b = num(S.fox); return a > b ? '>' : a < b ? '<' : '='; } };
+startLevel();
+})();
+</script>
+</body>
+</html>

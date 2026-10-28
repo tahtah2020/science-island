@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-28', title: 'Fox Duel (Grade 4 math adventure)',
+    items: [
+      { text: 'Math Grade 4 Unit 1 lessons 5-6: build the bigger number card by card, then compare it with the fox\'s number in standard, expanded or word form (>, <, =); the places light up from the left to the first different one', links: [{ label: 'Fox Duel', href: 'math-duel.html', ch: 'mg4u1' }] }
+    ] },
   { date: '2026-10-28', title: 'The Crate Train (Grade 4 math adventure)',
     items: [
       { text: 'Math Grade 4 Unit 1 lessons 3-4: load orders written in words, expanded form or groups, unload a train into expanded form; race the fox\'s train to the city', links: [{ label: 'The Crate Train', href: 'math-train.html', ch: 'mg4u1' }] }
