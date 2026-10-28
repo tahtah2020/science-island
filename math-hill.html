@@ -74,6 +74,16 @@ bdi{font-weight:900;color:var(--pri)}
 .erow .lb{font-weight:900;font-size:13.5px;min-width:64px;text-align:end;direction:ltr;unicode-bidi:isolate;color:var(--ink)}
 .erow .lb.t{direction:inherit}
 .prob{direction:ltr;text-align:center;font:900 28px Nunito,sans-serif;color:#7a4e12;margin:2px 0 6px}
+.valleys{direction:ltr;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.vb{border:0;border-radius:12px;padding:12px 14px;font:900 19px Nunito,sans-serif;color:#fff;background:linear-gradient(#3a8f6a,#2e7d5b);box-shadow:0 4px 0 #1f5a40;cursor:pointer;flex:1;max-width:44%}
+.vb:active{transform:translateY(3px);box-shadow:0 1px 0 #1f5a40}
+.valleys .mid{font:800 11px Nunito,Cairo,sans-serif;color:var(--ink);text-align:center}
+.valleys .mid b{display:block;font:900 15px Nunito,sans-serif;color:#8a5a2b}
+.chips{direction:ltr;display:flex;gap:6px}
+.chip{border:2px solid #d8c7a6;border-radius:10px;background:#fff;padding:7px 12px;font:900 17px Nunito,sans-serif;color:var(--navy);cursor:pointer}
+.chip.on{background:var(--gold);border-color:#c88f1c}
+.est{text-align:center;font-weight:900;font-size:16px;margin:8px 0 2px;color:var(--ink)}
+.est b{color:#7a4e12}
 .ruler{margin-top:8px;background:#fff;border-radius:12px;padding:8px 10px;border:2px solid #f2e3c4;font-weight:800;font-size:14px;line-height:1.7}
 .ruler[hidden]{display:none}
 .ruler .win{color:var(--ok)}
@@ -137,9 +147,9 @@ bdi{font-weight:900;color:var(--pri)}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261028i"></script>
-<script src="chapters.js?v=20261028i"></script>
-<script src="common.js?v=20261028i"></script>
+<script src="firebase-config.js?v=20261028j"></script>
+<script src="chapters.js?v=20261028j"></script>
+<script src="common.js?v=20261028j"></script>
 <script>
 (() => {
 'use strict';
@@ -156,7 +166,7 @@ const P10 = e => 10 ** e;
 document.title = T('Rounding Hill · Rounding Numbers', 'تلّ التقريب · تقريب الأعداد');
 $('#rules').innerHTML = [
   T('Each boulder has a number. First tap the digit to <b>circle</b>: the one right of the rounding place.', 'كل صخرة عليها عدد. الأول اضغط على الرقم اللي <b>هتحوّطه</b>: اللي على يمين خانة التقريب.'),
-  T('The hill is a number line: two valleys and the midpoint on top. Set the rounded number and throw the net 🥅.', 'التل خط أعداد: واديين والمنتصف فوق. اضبط العدد المقرّب وارمِ الشبكة 🥅.'),
+  T('The hill is a number line: two valleys and the midpoint on top. Tap the valley where it will roll to throw the net 🥅.', 'التل خط أعداد: واديين والمنتصف فوق. اضغط على الوادي اللي الصخرة هتتدحرج له عشان ترمي الشبكة 🥅.'),
   T('Wrong valley or too slow = the boulder smashes a house 🏚️. <b>5 houses</b> and the village is lost!', 'وادي غلط أو اتأخرت = الصخرة تهد بيت 🏚️. <b>5 بيوت</b> والقرية تضيع!'),
   T('The giant boulder at the end: estimate a sum by rounding and beat the fox’s estimate!', 'الصخرة العملاقة في الآخر: قدّر ناتج الجمع بالتقريب واغلب تقدير الثعلب!')].map(x => `<li>${x}</li>`).join('');
 $('#start').textContent = T('Save the village! 🥅', 'يلا ننقذ القرية 🥅');
@@ -172,15 +182,18 @@ const roundTo = (x, e) => { const u = P10(e), lo = Math.floor(x / u) * u; return
 
 /* six rounds: places = rounding places (powers of ten); dg = digits; five = share exactly on the midpoint; carry = share where rounding up
    changes the place above (49,682 → 50,000); est = digits of the giant boulder's two numbers; sec = seconds per boulder */
+/* owner (28 Oct 2026): difficulty grows step by step, one small new thing per round:
+   1 tens (2-3 digits) · 2 hundreds (3 digits) · 3 thousands (4 digits, first carries) · 4 thousands and ten thousands (5 digits)
+   5 hundred thousands and millions (6-7 digits) · 6 millions and milliards (7-10 digits) */
 const LEVELS = [
-  { places: [1, 2], dg: [3, 4], five: .15, carry: 0, boulders: 5, est: 2, sec: 25 },
-  { places: [3], dg: [4, 5], five: .15, carry: .1, boulders: 5, est: 3, sec: 24 },
-  { places: [3, 4, 5], dg: [5, 6], five: .1, carry: .2, boulders: 5, est: 4, sec: 22 },
-  { places: [2, 3, 4, 5], dg: [5, 7], five: .25, carry: .3, boulders: 5, est: 4, sec: 20 },
-  { places: [5, 6], dg: [7, 9], five: .1, carry: .2, boulders: 5, est: 4, sec: 18 },
-  { places: [3, 5, 6, 9], dg: [7, 10], five: .15, carry: .2, boulders: 6, est: 5, sec: 15, boss: true }];
+  { places: [1], dg: [2, 3], five: .15, carry: 0, boulders: 5, est: 2, sec: 45 },
+  { places: [2], dg: [3, 3], five: .15, carry: 0, boulders: 5, est: 2, sec: 44 },
+  { places: [3], dg: [4, 4], five: .15, carry: .15, boulders: 5, est: 3, sec: 42 },
+  { places: [3, 4], dg: [5, 5], five: .15, carry: .2, boulders: 5, est: 3, sec: 40 },
+  { places: [5, 6], dg: [6, 7], five: .15, carry: .2, boulders: 5, est: 4, sec: 38 },
+  { places: [6, 9], dg: [7, 10], five: .15, carry: .2, boulders: 5, est: 4, sec: 36, boss: true }];
 const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).hill || {}).lvl) || 0), score: 0, huts: [1, 1, 1, 1, 1], misses: 0, streak: 0, bi: 0, busy: true, started: false,
-  task: null, phase: 'circle', wheels: [], deadline: 0, hintN: 0 };
+  task: null, phase: 'circle', pick: { a: null, b: null }, deadline: 0, hintN: 0 };
 const L = () => LEVELS[S.lvl];
 
 function makeBoulder() {
@@ -256,20 +269,23 @@ function drawWork() {
     let h = `<div class="step${circled ? ' done' : ''}"><span class="no">1</span>${T(`Circle the digit to the right of the ${pname(k.e)} place`, `حوّط الرقم اللي على يمين خانة ${pname(k.e)}`)}</div>`;
     h += digitsHTML(k.x, circled ? k.e - 1 : -1, circled ? k.e : -1, !circled);
     if (circled) {
-      h += `<div class="step"><span class="no">2</span>${T('Set the rounded number, then throw the net', 'اضبط العدد المقرّب، وبعدين ارمِ الشبكة')}</div>`;
-      h += wheelsHTML('r', S.wheels.r, k.e, k.top);
+      h += `<div class="step"><span class="no">2</span>${T('Where will the boulder roll? Tap that valley to throw the net', 'إلى أي وادٍ ستتدحرج الصخرة؟ اضغط عليه لترمي الشبكة')}</div>`;
+      h += `<div class="valleys"><button type="button" class="vb" data-v="${k.lo}">⬅ ${fmt(k.lo)}</button><span class="mid">${T('midpoint', 'المنتصف')}<b>${fmt(k.mid)}</b></span><button type="button" class="vb" data-v="${k.hi}">${fmt(k.hi)} ➡</button></div>`;
     }
     $('#work').innerHTML = h;
     if (!circled) $('#work').querySelectorAll('.dg').forEach(b => b.onclick = () => circle(+b.dataset.p, b));
-    else bindWheels();
-    $('#throw').hidden = !circled; $('#throw').textContent = T('🥅 Throw the net!', '🥅 ارمِ الشبكة!');
+    else $('#work').querySelectorAll('.vb').forEach(b => b.onclick = () => throwNet(+b.dataset.v));
+    $('#throw').hidden = true;
   } else {
     let h = `<div class="prob">${fmt(k.a)} + ${fmt(k.b)}</div>`;
-    h += `<div class="erow"><span class="lb">${fmt(k.a)} ≈</span>${wheelsHTML('a', S.wheels.a, k.e, k.e)}</div>`;
-    h += `<div class="erow"><span class="lb">${fmt(k.b)} ≈</span>${wheelsHTML('b', S.wheels.b, k.e, k.e)}</div>`;
-    h += `<div class="erow"><span class="lb t">${T('estimate ≈', 'التقدير ≈')}</span>${wheelsHTML('s', S.wheels.s, k.e, k.e + 1, true)}</div>`;
-    $('#work').innerHTML = h; bindWheels();
-    $('#throw').hidden = false; $('#throw').textContent = T('🪨 Check my estimate', '🪨 راجع تقديري');
+    const u = P10(k.e), opts = x => { const lo = Math.floor(x / u) * u; return [lo, lo + u]; };
+    const row = (key, x) => `<div class="erow"><span class="lb">${fmt(x)} ≈</span><div class="chips">${opts(x).map(v => `<button type="button" class="chip${S.pick[key] === v ? ' on' : ''}" data-k="${key}" data-v="${v}">${fmt(v)}</button>`).join('')}</div></div>`;
+    h += `<div class="step"><span class="no">1</span>${T(`Round each number ${nearTxt(k.e)}: tap its rounded value`, `قرّب كل عدد ${nearTxt(k.e)}: اضغط على العدد المقرّب`)}</div>` + row('a', k.a) + row('b', k.b);
+    const both = S.pick.a != null && S.pick.b != null;
+    h += `<div class="est">${T('Your estimate', 'تقديرك')} = <span dir="ltr">${both ? `${fmt(S.pick.a)} + ${fmt(S.pick.b)} = <b>${fmt(S.pick.a + S.pick.b)}</b>` : '…'}</span></div>`;
+    $('#work').innerHTML = h;
+    $('#work').querySelectorAll('.chip').forEach(b => b.onclick = () => { if (S.busy) return; S.pick[b.dataset.k] = +b.dataset.v; SFX.click(); drawWork(); });
+    $('#throw').hidden = !both; $('#throw').textContent = T('🪨 Check my estimate', '🪨 راجع تقديري');
   }
 }
 function drawWall() { $('#wall').innerHTML = `🧱 ` + [0, 1, 2].map(i => `<i class="${i < S.streak ? 'on' : ''}"></i>`).join(''); }
@@ -350,7 +366,7 @@ async function smash(fromX, gold) {
 }
 
 /* ---------- timer ---------- */
-function taskTime() { return (S.task.t === 'G' ? L().sec * 2.2 : L().sec) * 1000; }
+function taskTime() { return (S.task.t === 'G' ? L().sec * 1.5 : L().sec) * 1000; }
 function startTimer() { S.deadline = performance.now() + taskTime(); S.ticked = 0; }
 setInterval(() => {
   if (S.busy || !S.started || !S.task) return;
@@ -374,8 +390,7 @@ async function circle(p, el) {
   if (S.busy || S.phase !== 'circle') return;
   const k = S.task;
   if (p === k.e - 1) {
-    SFX.circle(); S.phase = 'wheels';
-    const s = String(k.x).split('').map(Number); S.wheels = { r: s.map((v, i) => (k.d - 1 - i) < k.e ? 0 : v) };
+    SFX.circle(); S.phase = 'valley';
     drawWork(); drawScene({ b: [k.bx, k.by, 0] });
     const dgt = +String(k.x)[k.d - k.e];
     $('#say').innerHTML = T(`🦜 You circled ${n(dgt)}. The signs on the hill show the two valleys and the midpoint. Where will it roll?`, `🦜 حوّطت الرقم ${n(dgt)}. اللافتات على التل بتبيّن الواديين والمنتصف. الصخرة هتتدحرج فين؟`);
@@ -388,11 +403,11 @@ async function circle(p, el) {
     `🦜 الرقم ده في خانة ${pname(p)}. احنا بنقرّب ${nearTxt(k.e)}: حوّط الرقم اللي على يمين خانة ${pname(k.e)} على طول. (الصخرة اتزحلقت: −3 ثواني)`);
   SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: 'circle' });
 }
-async function throwNet() {
+async function throwNet(v) {
   if (S.busy || !S.started) return;
   const k = S.task; S.busy = true;
   if (k.t === 'G') { checkGiant(); return; }
-  const v = wval(S.wheels.r), right = v === k.ans, to = k.ans === k.hi ? XR : XL;
+  const right = v === k.ans, to = k.ans === k.hi ? XR : XL;
   const netX = v === k.lo ? XL - 22 : v === k.hi ? XR + 22 : null;
   SFX.whoosh();
   // Reesho jumps to the valley he chose (or the net lands off the hill)
@@ -415,9 +430,9 @@ async function throwNet() {
   await lost(T(`🦜 It rolled to ${n(fmt(k.ans))}: ${why}.`, `🦜 اتدحرجت لـ ${n(fmt(k.ans))}: ${why}.`));
 }
 function checkGiant() {
-  const k = S.task, a = wval(S.wheels.a), b = wval(S.wheels.b), s = wval(S.wheels.s);
-  if (a !== k.A || b !== k.B || s !== k.E) {
-    const what = a !== k.A ? T(`rounding ${n(fmt(k.a))}`, `تقريب ${n(fmt(k.a))}`) : b !== k.B ? T(`rounding ${n(fmt(k.b))}`, `تقريب ${n(fmt(k.b))}`) : T('the sum of the two rounded numbers', 'مجموع العددين المقرّبين');
+  const k = S.task, a = S.pick.a, b = S.pick.b;
+  if (a !== k.A || b !== k.B) {
+    const what = a !== k.A ? T(`rounding ${n(fmt(k.a))}`, `تقريب ${n(fmt(k.a))}`) : T(`rounding ${n(fmt(k.b))}`, `تقريب ${n(fmt(k.b))}`);
     return (async () => { SFX.wrong(); await roll(XP, XR + 20, 800); await smash(XR + 20); await lost(T(`🦜 Check ${what}, then try the next giant!`, `🦜 راجع ${what}، وجرّب الصخرة الجاية!`)); })();
   }
   return (async () => {
@@ -460,8 +475,7 @@ function next() {
 }
 function startGiant() {
   S.task = makeGiant(); S.hintN = 0;
-  const k = S.task, lead = x => { const s = String(x).split('').map(Number); return s.map((v, i) => i === 0 ? v : 0); };
-  S.wheels = { a: lead(k.a), b: lead(k.b), s: Array(k.d + 1).fill(0) };
+  S.pick = { a: null, b: null };
   drawOrder(); drawWork(); drawScene();
   banner(T('🪨 The giant boulder!', '🪨 الصخرة العملاقة!'), 'gold');
   (async () => { await boulderIn(); startTimer(); S.busy = false;
@@ -471,9 +485,9 @@ function hint() {
   if (S.busy || !S.started) return;
   const k = S.task; S.hintN++;
   let h;
-  if (k.t === 'G') h = S.hintN === 1 ? T('Round each number by its second digit: 5 or more → add one to the first digit; 4 or less → keep it.', 'قرّب كل عدد حسب تاني رقم فيه: 5 أو أكبر → زوّد الرقم الأول واحد؛ 4 أو أقل → سيبه.') : T('Then add the two rounded numbers: only the first digits change.', 'وبعدين اجمع العددين المقرّبين: الأرقام الأولى بس هي اللي بتتجمع.');
+  if (k.t === 'G') h = T('Look at the second digit of each number: 5 or more → the bigger choice; 4 or less → the smaller one.', 'بُص على تاني رقم في كل عدد: 5 أو أكبر → الاختيار الأكبر؛ 4 أو أقل → الأصغر.');
   else if (S.phase === 'circle') h = T(`Find the ${pname(k.e)} place first, then look one place to its right.`, `دوّر على خانة ${pname(k.e)} الأول، وبعدين بُص خانة واحدة على يمينها.`);
-  else h = S.hintN === 1 ? T('Circled digit 5 or more → add one to the rounding place. 4 or less → keep it. The places after it become zeros.', 'الرقم المحوّط 5 أو أكبر → زوّد خانة التقريب واحد. 4 أو أقل → سيبها. والخانات اللي بعدها أصفار.') : T('Look at the hill: before the midpoint it rolls back, after it (or exactly on it) it rolls forward.', 'بُص على التل: قبل المنتصف بتتدحرج لورا، وبعده (أو عليه بالظبط) بتتدحرج لقدّام.');
+  else h = S.hintN === 1 ? T('Circled digit 5 or more → the bigger valley. 4 or less → the smaller valley.', 'الرقم المحوّط 5 أو أكبر → الوادي الأكبر. 4 أو أقل → الوادي الأصغر.') : T('Look at the hill: before the midpoint it rolls back, after it (or exactly on it) it rolls forward.', 'بُص على التل: قبل المنتصف بتتدحرج لورا، وبعده (أو عليه بالظبط) بتتدحرج لقدّام.');
   $('#say').innerHTML = '🦜 ' + h;
 }
 
@@ -559,12 +573,13 @@ function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on 
 $('#snd').onclick = () => { ac(); setSound(!A.on); };
 $('#snd').textContent = A.on ? '🔊' : '🔇';
 
-$('#throw').onclick = throwNet; $('#hint').onclick = hint;
+$('#throw').onclick = () => throwNet(); $('#hint').onclick = hint;
 $('#start').onclick = () => { $('#intro').hidden = true; S.started = true; music('run'); startTimer(); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
 window.__hill = S; window.__hillApi = { startLevel, makeBoulder, makeGiant, LEVELS, roundTo, xOf, hillY,
+  side: () => S.task.ans,
   solve: () => { const k = S.task;
-    if (k.t === 'R') { if (S.phase === 'circle') { document.querySelector(`.dg[data-p="${k.e - 1}"]`).click(); } S.wheels.r = String(k.ans).padStart(k.d, '0').split('').map(Number); drawWork(); return; }
-    S.wheels.a = String(k.A).split('').map(Number); S.wheels.b = String(k.B).split('').map(Number); S.wheels.s = String(k.E).padStart(k.d + 1, '0').split('').map(Number); drawWork(); } };
+    if (k.t === 'R') { if (S.phase === 'circle') document.querySelector(`.dg[data-p="${k.e - 1}"]`).click(); return; }
+    S.pick = { a: k.A, b: k.B }; drawWork(); } };
 drawScene(); startLevel();
 })();
 </script>

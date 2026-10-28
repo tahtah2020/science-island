@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-28', title: 'Rounding Hill made easier',
+    items: [
+      { text: 'Rounding Hill: tap the valley instead of turning wheels, more time per boulder, rounds grow one small step at a time (tens → hundreds → thousands → … → milliards); the giant boulder: tap each rounded value', links: [{ label: 'Rounding Hill', href: 'math-hill.html', ch: 'mg4u1' }] }
+    ] },
   { date: '2026-10-28', title: 'Rounding Hill (Grade 4 math adventure)',
     items: [
       { text: 'Math Grade 4 Unit 1 lesson 8: circle the deciding digit, round the boulder\'s number on the hill (valleys and midpoint) and catch it before it hits the village; the giant boulder: estimate a sum by rounding and beat the fox\'s first-digit estimate', links: [{ label: 'Rounding Hill', href: 'math-hill.html', ch: 'mg4u1' }] }
