@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-28', title: 'The Tilting Ferry (Grade 4 math adventure)',
+    items: [
+      { text: 'Math Grade 4 Unit 1 lesson 7: load trucks onto the ferry in ascending or descending order (numbers in standard form, words or expanded form), and fix the fox\'s swapped trucks before the storm floods the dock', links: [{ label: 'The Tilting Ferry', href: 'math-ferry.html', ch: 'mg4u1' }] }
+    ] },
   { date: '2026-10-28', title: 'Fox Duel (Grade 4 math adventure)',
     items: [
       { text: 'Math Grade 4 Unit 1 lessons 5-6: build the bigger number card by card, then compare it with the fox\'s number in standard, expanded or word form (>, <, =); the places light up from the left to the first different one', links: [{ label: 'Fox Duel', href: 'math-duel.html', ch: 'mg4u1' }] }
