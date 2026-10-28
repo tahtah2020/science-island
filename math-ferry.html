@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>The Tilting Ferry · Ordering Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 4 · Unit 1 (mg4u1) adventure «العبّارة المائلة / The Tilting Ferry», lesson 7 (ordering big numbers ascending and descending,
+     ordering numbers written in different forms, finding the mistake in an ordering).
+     LOAD: the loading order (ascending ⬆ / descending ⬇) is fixed on screen; trucks wait on the dock, each with a number (standard form, words
+           or expanded form); tap them in order, each tap drives one truck onto the ferry. A wrong truck tilts the ferry and the water rises.
+     FOX (from tunnel… ferry rounds of races 4-6): the fox loaded a full ferry but swapped two trucks; tap two trucks on the deck to swap them back.
+     Excitement: a storm; the water rises one mark on a wrong truck or when the ferry's timer runs out; 5 marks = the dock floods (lost).
+     Three right in a row = the ferry's horn, the water goes down a mark. Each full ferry sails to the other bank (water −1).
+     Pictures: the owner's Gemini sheets (28 Oct 2026) cut out into math/assets/: ferry, truck (its white panel is painted with the truck's
+     colour), reesho_captain_point / _worried, fox_swap (mirrored so the truck faces right), bg_nile_side.jpg; Reesho happy reused.
+     Progress: SI.chProf('mg4u1').ferry = { lvl, best, stars[] }. Test hooks window.__ferry, window.__ferryApi. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#a9d8ee,#d6eef6 32%,#7fbad6 32.1%,#4f8fb3);color:var(--navy);min-height:100svh}
+.wrap{max-width:600px;margin:0 auto;padding:10px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffffaa;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:16px;background:#bfe3f2}
+.say{margin:8px 0}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;min-height:44px;box-shadow:0 3px 10px #0002;line-height:1.6}
+.panel{background:var(--card);border-radius:20px;padding:10px;box-shadow:0 6px 20px #0003}
+bdi{font-weight:900;color:var(--pri)}
+.sign{border-radius:14px;padding:7px 10px;margin-bottom:8px;color:#fff;font-weight:900;font-size:17px;text-align:center;background:var(--pri)}
+.sign.desc{background:#8e5bd0}
+.sign.fox{background:var(--coral)}
+.sign small{display:block;font-size:12.5px;font-weight:800;opacity:.92}
+.timer{height:8px;border-radius:8px;background:#ffffff55;overflow:hidden;margin-top:5px}
+.timer i{display:block;height:100%;width:100%;background:#fff;border-radius:8px}
+.timer.low i{background:#ffd34a;animation:blink .5s infinite}
+@keyframes blink{50%{opacity:.4}}
+.lab{font-weight:900;font-size:13px;color:var(--ink);margin:2px 2px 4px}
+.deck{display:grid;gap:4px;background:#d9e6ee;border-radius:12px;padding:5px;margin-bottom:8px}
+.slot{min-height:44px;border-radius:9px;border:2px dashed #a9bfcc;background:#f3f8fb;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;font:900 12.5px/1.15 Nunito,Cairo,sans-serif;color:var(--navy);text-align:center;cursor:default;position:relative}
+.slot.full{border:2px solid var(--c);background:#fff}
+.slot .k{font-size:9.5px;color:var(--ink)}
+.slot .v{direction:ltr;unicode-bidi:isolate;white-space:nowrap;font-size:13.5px}
+.slot.pick{cursor:pointer}
+.slot.sel{outline:3px solid var(--gold);outline-offset:1px;background:#fff3c4}
+.slot.new{animation:land .4s}
+@keyframes land{0%{transform:translateY(-10px) scale(1.1)}}
+.slot.bad{animation:sh .4s}
+.ends{display:flex;justify-content:space-between;font:800 11px Nunito,Cairo,sans-serif;color:var(--ink);margin:-4px 4px 6px}
+.queue{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+@media (min-width:480px){.queue{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tk{border:2px solid #e8dcc0;border-radius:12px;background:#fff;display:flex;align-items:center;gap:6px;padding:4px 6px;cursor:pointer;min-height:54px;text-align:start;font:inherit;color:var(--navy);box-shadow:0 3px 0 #e2d4b2}
+.tk:active{transform:translateY(2px)}
+.tk .pic{position:relative;flex:none;width:52px}
+.tk .pic img{width:52px;display:block}
+.tk .pan{position:absolute;left:6%;top:17%;width:52%;height:41%;background:var(--c);border-radius:2px;opacity:.9}
+.tk .num{flex:1;min-width:0;font-weight:900;font-size:15.5px;line-height:1.3}
+.tk .num.std{direction:ltr;unicode-bidi:isolate;font:900 17px Nunito,sans-serif;text-align:center}
+.tk .num.exp{direction:ltr;unicode-bidi:isolate;font:900 12.5px/1.35 Nunito,sans-serif}
+.tk .num.words{font-size:12.5px;line-height:1.45;font-weight:800}
+.tk.bad{animation:sh .4s;border-color:var(--coral)}
+.tk.gone{display:none}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:14px;padding:11px 20px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.horn{display:flex;align-items:center;gap:4px;font-weight:900;font-size:13px;color:var(--ink)}
+.horn i{width:14px;height:14px;border-radius:50%;background:#e6dccb;display:inline-block;transition:.2s}
+.horn i.on{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:20px;max-width:390px;text-align:center}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 12px}
+.introart{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:8px}.introart img{height:80px}
+#endArt img{height:110px}
+.stars{font-size:34px;letter-spacing:4px}
+.home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffffaa;border-radius:99px;color:var(--navy);font-size:16px;width:34px;height:30px}
+.snd{background:#ffffffaa;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer}
+.banner{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%) scale(.6);background:var(--coral);color:#fff;font:900 24px Nunito,Cairo;padding:12px 24px;border-radius:18px;box-shadow:0 8px 24px #0006;opacity:0;pointer-events:none;z-index:8;transition:.3s;text-align:center;white-space:nowrap}
+.banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.banner.good{background:var(--ok)}
+#scene .rain{animation:rain .5s linear infinite}
+@keyframes rain{to{transform:translate(-8px,22px)}}
+#scene .bob{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(1.5px)}}
+#scene .shake{animation:shk .14s infinite;transform-box:fill-box}
+@keyframes shk{50%{transform:translate(1px,-1px)}}
+@media (prefers-reduced-motion:reduce){#scene .rain,#scene .bob,#scene .shake,.timer.low i{animation:none}}
+@media (max-width:420px){.tk .num.std{font-size:15.5px}.tk .pic,.tk .pic img{width:44px}.sign{font-size:15.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="⛴️ العبّارة المائلة">⛴️ The Tilting Ferry</h1><div class="pills"><span class="pill"><span data-ar="الرحلة">Trip</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="adventures.html" aria-label="Back to the adventures" data-ar-label="رجوع للمغامرات">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 273" role="img" aria-label="Reesho’s ferry at the dock on the Nile, a storm is coming" data-ar-label="عبّارة ريشو عند الرصيف على النيل والعاصفة جاية"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="sign" id="sign"></div>
+    <div class="lab" data-ar="⛴️ على العبّارة">⛴️ On the ferry</div>
+    <div class="deck" id="deck"></div>
+    <div class="ends" id="ends"></div>
+    <div class="lab" id="qlab" data-ar="🚚 على الرصيف">🚚 On the dock</div>
+    <div class="queue" id="queue"></div>
+    <div class="row"><span class="horn" id="horn"></span><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+<div class="banner" id="banner"></div>
+
+<div class="veil" id="intro"><div class="box">
+  <div class="introart" aria-hidden="true"><img src="math/assets/reesho_captain_point.webp" alt=""><img src="math/assets/truck.webp" alt="" style="height:44px"></div>
+  <h2 data-ar="العاصفة جاية!">A storm is coming!</h2>
+  <ol id="rules"></ol>
+  <button class="btn" id="start" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261028g"></script>
+<script src="chapters.js?v=20261028g"></script>
+<script src="common.js?v=20261028g"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg4u1'); if (!CH) return;
+const T = SI.T, AR = SI.isAr(), GAME = 'math-ferry.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const fmt = x => Number(x).toLocaleString('en-US');
+const P10 = e => 10 ** e;
+document.title = T('The Tilting Ferry · Ordering Numbers', 'العبّارة المائلة · ترتيب الأعداد');
+$('#rules').innerHTML = [
+  T('The sign says how to load: <b>ascending ⬆</b> (smallest first) or <b>descending ⬇</b> (biggest first).', 'اللافتة بتقولك تحمّل إزاي: <b>تصاعديًا ⬆</b> (الأصغر الأول) أو <b>تنازليًا ⬇</b> (الأكبر الأول).'),
+  T('Tap the trucks on the dock in that order. Some numbers are written in words or expanded form!', 'اضغط على الشاحنات اللي على الرصيف بالترتيب ده. فيه أعداد مكتوبة بالكلمات أو بالصيغة الممتدة!'),
+  T('A wrong truck or a slow ferry = the water rises 🌊. <b>5 marks</b> and the dock floods!', 'شاحنة غلط أو عبّارة متأخرة = الميه تعلى 🌊. <b>5 علامات</b> والرصيف يغرق!'),
+  T('3 right in a row = the horn 📯: the water goes down.', '3 صح ورا بعض = البوق 📯: الميه تنزل.')].map(x => `<li>${x}</li>`).join('');
+$('#start').textContent = T('Cast off! ⛴️', 'يلا نبحر ⛴️');
+
+/* ---------- number words (the books' style, same code as math-train.html) ---------- */
+const EN1 = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const EN10 = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+function en3(x) { const h = Math.floor(x / 100), r = x % 100, out = []; if (h) out.push(EN1[h] + ' hundred'); if (r) out.push(r < 20 ? EN1[r] : EN10[Math.floor(r / 10)] + (r % 10 ? '-' + EN1[r % 10] : '')); return out.join(' '); }
+function enWords(x) { const P = ['', ' thousand', ' million', ' milliard'], out = []; for (let p = 3; p >= 0; p--) { const c = Math.floor(x / 1000 ** p) % 1000; if (c) out.push(en3(c) + P[p]); } return out.join(', '); }
+const AR1 = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+const AR10 = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+const ARH = ['', 'مائة', 'مائتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+const ar2 = r => r < 20 ? AR1[r] : (r % 10 ? AR1[r % 10] + ' و' : '') + AR10[Math.floor(r / 10)];
+function ar3(x) { const h = Math.floor(x / 100), r = x % 100, out = []; if (h) out.push(ARH[h]); if (r) out.push(ar2(r)); return out.join(' و'); }
+/* a count of thousands / millions / milliards with its noun (العدد والمعدود) */
+const NOUN = { 1: ['ألف', 'ألفان', 'آلاف', 'ألفًا'], 2: ['مليون', 'مليونان', 'ملايين', 'مليونًا'], 3: ['مليار', 'ملياران', 'مليارات', 'مليارًا'] };
+function arCount(c, p) {
+  const [one, two, many, acc] = NOUN[p], h = Math.floor(c / 100), r = c % 100;
+  if (c === 1) return one; if (c === 2) return two;
+  if (c <= 10) return AR1[c] + ' ' + many;
+  if (r === 0) return (h === 2 ? 'مائتا' : ARH[h]) + ' ' + one;
+  if (r <= 10) return ARH[h] + ' و' + AR1[r] + ' ' + many;
+  return (h ? ARH[h] + ' و' : '') + ar2(r) + ' ' + acc;
+}
+function arWords(x) { const out = []; for (let p = 3; p >= 0; p--) { const c = Math.floor(x / 1000 ** p) % 1000; if (c) out.push(p ? arCount(c, p) : ar3(c)); } return out.join(' و'); }
+function wordsOk(x) { for (let p = 1; p <= 3; p++) { const c = Math.floor(x / 1000 ** p) % 1000; if (c > 100 && (c % 100 === 1 || c % 100 === 2)) return false; } return true; }
+const expanded = x => String(x).split('').map((d, i, a) => +d ? fmt(+d * P10(a.length - 1 - i)) : null).filter(Boolean).join(' + ');
+const COLORS = ['#e2603f', '#23799f', '#2e9e6b', '#8e5bd0', '#f2b134', '#d94f8a'];
+
+/* six trips; n = trucks; dg = digits; close = share of numbers made by changing one or two digits of the same base (the book's hard pairs);
+   plan = the ferries of the trip (asc / desc / fox); sec = seconds per truck on the timer */
+const LEVELS = [
+  { n: 4, dg: [4, 5], forms: ['std'], close: 0, plan: ['asc', 'desc', 'asc'], sec: 10 },
+  { n: 5, dg: [5, 6], forms: ['std'], close: .4, plan: ['desc', 'asc', 'desc'], sec: 9 },
+  { n: 5, dg: [6, 7], forms: ['std', 'std', 'words'], close: .5, plan: ['asc', 'desc', 'asc'], sec: 10 },
+  { n: 5, dg: [6, 7], forms: ['std', 'expanded', 'words'], close: .6, plan: ['asc', 'fox', 'desc'], sec: 10 },
+  { n: 6, dg: [6, 8], forms: ['std', 'expanded', 'words'], close: .7, plan: ['desc', 'fox', 'asc'], sec: 9 },
+  { n: 6, dg: [7, 9], forms: ['std', 'expanded', 'words'], close: .85, plan: ['asc', 'fox', 'desc', 'fox'], sec: 8, boss: true }];
+const MAXW = 5;
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).ferry || {}).lvl) || 0), score: 0, water: 0, misses: 0, streak: 0, fi: 0, busy: true, started: false,
+  dir: 'asc', fox: false, trucks: [], deck: [], sel: -1, deadline: 0, hintN: 0, x: 0 };
+const L = () => LEVELS[S.lvl];
+
+function randNum(d) { let s = String(1 + rnd(9)); for (let i = 1; i < d; i++) s += rnd(10); return +s; }
+function makeTrucks() {
+  const lv = L(), out = new Set();
+  const base = randNum(lv.dg[0] + rnd(lv.dg[1] - lv.dg[0] + 1));
+  let guard = 0;
+  while (out.size < lv.n && guard++ < 500) {
+    let x;
+    if (Math.random() < lv.close) {           // same digits as the base except one or two (often near the left)
+      const s = String(base).split(''), k = 1 + rnd(2);
+      for (let j = 0; j < k; j++) { const p = Math.min(s.length - 1, rnd(Math.min(4, s.length))); s[p] = String(p === 0 ? 1 + rnd(9) : rnd(10)); }
+      x = +s.join('');
+    } else x = randNum(lv.dg[0] + rnd(lv.dg[1] - lv.dg[0] + 1));
+    out.add(x);
+  }
+  const colors = shuffle(COLORS);
+  return [...out].map((x, i) => { let form = pick(lv.forms); if (form === 'words' && !wordsOk(x)) form = 'expanded'; return { x, form, c: colors[i], id: i }; });
+}
+const sorted = (arr, dir) => arr.slice().sort((a, b) => dir === 'asc' ? a.x - b.x : b.x - a.x);
+const inOrder = (arr, dir) => arr.every((t, i) => !i || (dir === 'asc' ? arr[i - 1].x < t.x : arr[i - 1].x > t.x));
+
+/* ---------- panel ---------- */
+function numHTML(t) {
+  if (t.form === 'words') return `<span class="num words">${T(enWords(t.x), arWords(t.x))}</span>`;
+  if (t.form === 'expanded') return `<span class="num exp">${expanded(t.x)}</span>`;
+  return `<span class="num std">${fmt(t.x)}</span>`;
+}
+function drawSign() {
+  const lv = L(), cls = S.fox ? 'fox' : S.dir;
+  const main = S.fox ? T('🦊 The fox swapped two trucks!', '🦊 الثعلب بدّل شاحنتين!') : S.dir === 'asc' ? T('Load in ASCENDING order ⬆', 'حمّل تصاعديًا ⬆') : T('Load in DESCENDING order ⬇', 'حمّل تنازليًا ⬇');
+  const sub = S.fox ? (S.dir === 'asc' ? T('The ferry must be ascending: tap the two wrong trucks to swap them.', 'العبّارة لازم تكون تصاعدي: اضغط على الشاحنتين الغلط عشان تبدّلهم.') : T('The ferry must be descending: tap the two wrong trucks to swap them.', 'العبّارة لازم تكون تنازلي: اضغط على الشاحنتين الغلط عشان تبدّلهم.'))
+    : S.dir === 'asc' ? T('from the smallest to the biggest', 'من الأصغر إلى الأكبر') : T('from the biggest to the smallest', 'من الأكبر إلى الأصغر');
+  $('#sign').className = 'sign ' + cls;
+  $('#sign').innerHTML = `${main}<small>${sub}</small><div class="timer" id="timer"><i></i></div>`;
+  void lv;
+}
+function drawDeck(flash = -1) {
+  const k = L().n;
+  const cols = innerWidth < 480 && k > 4 ? 3 : k;
+  $('#deck').style.gridTemplateColumns = `repeat(${cols},minmax(0,1fr))`;
+  let h = '';
+  for (let i = 0; i < k; i++) {
+    const t = S.deck[i];
+    h += t ? `<div class="slot full${S.fox ? ' pick' : ''}${S.sel === i ? ' sel' : ''}${flash === i ? ' new' : ''}" style="--c:${t.c}" data-i="${i}" ${S.fox ? 'role="button" tabindex="0"' : ''}><span class="k" style="color:${t.c}">■ ${i + 1}</span><span class="v">${fmt(t.x)}</span></div>`
+      : `<div class="slot" data-i="${i}"><span class="k">${i + 1}</span></div>`;
+  }
+  $('#deck').innerHTML = h;
+  $('#ends').innerHTML = S.dir === 'asc' ? `<span>${T('1 = smallest', '1 = الأصغر')}</span><span>${T('biggest', 'الأكبر')}</span>` : `<span>${T('1 = biggest', '1 = الأكبر')}</span><span>${T('smallest', 'الأصغر')}</span>`;
+  if (S.fox) $('#deck').querySelectorAll('.slot.full').forEach(b => b.onclick = () => pickSwap(+b.dataset.i));
+}
+function drawQueue() {
+  $('#qlab').hidden = S.fox; $('#queue').hidden = S.fox;
+  if (S.fox) { $('#queue').innerHTML = ''; return; }
+  $('#queue').innerHTML = S.trucks.map(t => `<button type="button" class="tk${t.on ? ' gone' : ''}" style="--c:${t.c}" data-id="${t.id}" aria-label="${T('Truck', 'شاحنة')} ${fmt(t.x)}"><span class="pic"><img src="math/assets/truck.webp" alt=""><i class="pan"></i></span>${numHTML(t)}</button>`).join('');
+  $('#queue').querySelectorAll('.tk').forEach(b => b.onclick = () => load(+b.dataset.id, b));
+}
+function drawHorn() { $('#horn').innerHTML = `📯 ` + [0, 1, 2].map(i => `<i class="${i < S.streak ? 'on' : ''}"></i>`).join(''); }
+
+/* ---------- scene ----------
+   bg_nile_side.jpg (632×392) fills the 440×273 scene; the dock's top is at y ≈ 191, its right edge at x ≈ 149, the water starts at y ≈ 176.
+   ferry.webp (588×152) at scale .47: its ramp tip (image y ≈ 120) rests on the dock's edge; trucks stand on the deck (image x 140-450, wheels y ≈ 102). */
+const IMG = { bg: 'bg_nile_side.jpg', ferry: 'ferry.webp', truck: 'truck.webp', point: 'reesho_captain_point.webp', worried: 'reesho_captain_worried.webp', fox: 'fox_swap.webp', happy: 'reesho_happy.webp' };
+const src = k => 'math/assets/' + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+const FK = .5, FX = 146, FY = 131, DOCK = 191;
+function truckSVG(x, yb, w, c) {      // x = left, yb = bottom of the wheels; the white panel is painted with the truck's colour
+  const h = w * 232 / 386;
+  return im('truck', x, yb - h, w, h) + `<rect x="${x + w * .06}" y="${yb - h + h * .168}" width="${w * .523}" height="${h * .41}" rx="1" fill="${c}" opacity=".9"/>`;
+}
+function drawScene(o = {}) {
+  const fx = FX + (o.dx || 0), tilt = o.tilt || 0, lvl = Math.min(MAXW, S.water + (o.rise || 0));
+  let h = `<image href="${src('bg')}" x="0" y="0" width="440" height="273" preserveAspectRatio="none"/>`;
+  // the storm: darker sky with each water mark, darkest in the night trip
+  const dark = Math.min(.55, lvl * .07 + (L().boss ? .3 : 0));
+  if (dark) h += `<rect width="440" height="273" fill="#1b2a3a" opacity="${dark}"/>`;
+  if (lvl >= 2 || L().boss) h += `<g opacity=".55">${[0, 1, 2, 3].map(i => `<path d="M${40 + i * 110} 10 q30 -14 60 0 q22 -6 30 8 h-90z" fill="#5b6876"/>`).join('')}</g>`;
+  // trucks waiting on the dock
+  const wait = S.trucks.filter(t => !t.on), dw = Math.min(30, 140 / Math.max(1, wait.length));
+  wait.forEach((t, i) => { h += truckSVG(6 + i * dw, DOCK + 1, Math.max(24, dw + 2), t.c); });
+  // the ferry with its trucks and the captain
+  const deckN = L().n, tw = Math.min(34, 160 / deckN), x0 = fx + 138 * FK, yb = FY + 104 * FK;
+  let f = im('ferry', fx, FY, 588 * FK, 152 * FK);
+  // first truck drives to the front (right), the next ones behind it
+  S.deck.forEach((t, i) => { if (t) f += truckSVG(x0 + (deckN - 1 - i) * tw * .98, yb, tw, t.c); });
+  f += o.fox ? im('fox', fx + 150 * FK, FY - 26, 72, 66) : '';
+  f += im(o.win ? 'happy' : lvl >= 3 ? 'worried' : 'point', fx + 468 * FK, FY - 44, 46, 50, lvl >= 3 && !o.win ? 'class="shake"' : '');
+  h += `<g transform="rotate(${tilt} ${fx + 140} ${FY + 50})"><g class="bob">${f}</g></g>`;
+  // the river rises: a band of water in front of the hull, up to the dock's top at 5 marks
+  const wy = 214 - lvl * (214 - DOCK) / MAXW;
+  h += `<path d="M0 ${wy} q20 -3 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 V273 H0z" fill="#3f86b4" opacity=".55"/>`;
+  if (o.splash) for (let i = 0; i < 9; i++) h += `<circle cx="${fx + 60 + rnd(220)}" cy="${wy - 4 - rnd(22)}" r="${2 + rnd(3)}" fill="#fff" opacity=".85"/>`;
+  if (lvl >= 2 || L().boss) { let r = ''; for (let i = 0; i < 46; i++) { const x = rnd(470), y = rnd(300) - 30; r += `<line x1="${x}" y1="${y}" x2="${x - 6}" y2="${y + 16}" stroke="#dfeaf3" stroke-width="1" opacity=".55"/>`; } h += `<g class="rain">${r}</g>`; }
+  if (o.flash) h += `<rect width="440" height="273" fill="#fff" opacity=".7"/>`;
+  // water meter
+  h += `<rect x="262" y="6" width="172" height="28" rx="14" fill="#0007"/><text x="410" y="25" font-size="14" text-anchor="middle">🌊</text>`;
+  for (let i = 0; i < MAXW; i++) h += `<rect x="${272 + i * 24}" y="13" width="18" height="14" rx="4" fill="${i < lvl ? '#4fb3e8' : '#ffffff40'}"/>`;
+  if (o.msg) h += `<rect x="70" y="60" width="300" height="36" rx="18" fill="#000a"/><text x="220" y="84" font-size="17" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${o.msg}</text>`;
+  $('#scene').innerHTML = h;
+}
+const anim = (ms, f) => new Promise(res => { const t0 = performance.now(); (function g(t) { const k = Math.min(1, (t - t0) / ms); f(k); k < 1 ? requestAnimationFrame(g) : res(); })(t0); });
+async function tiltShake() { SFX.splash(); await anim(700, k => drawScene({ tilt: Math.sin(k * Math.PI * 3) * 7 * (1 - k), splash: k < .5, flash: k < .08 })); drawScene(); }
+async function sail() {
+  SFX.horn(); await anim(1300, k => drawScene({ dx: 330 * k * k }));
+  S.deck = Array(L().n).fill(null);
+  await anim(800, k => drawScene({ dx: 330 * (1 - k) }));
+}
+function banner(txt, good) { const b = $('#banner'); b.innerHTML = txt; b.classList.toggle('good', !!good); b.classList.add('show'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('show'), 1200); }
+
+/* ---------- timer ---------- */
+function ferryTime() { return (S.fox ? 25 : L().n * L().sec) * 1000; }
+function startTimer() { S.deadline = performance.now() + ferryTime(); S.ticked = 0; }
+setInterval(() => {
+  if (S.busy || !S.started) return;
+  const ms = S.deadline - performance.now(), bar = $('#timer');
+  if (bar) { bar.firstChild.style.width = Math.max(0, ms / ferryTime() * 100) + '%'; bar.classList.toggle('low', ms < 6000); }
+  if (ms < 5000 && ms > 0 && Math.ceil(ms / 1000) !== S.ticked) { S.ticked = Math.ceil(ms / 1000); SFX.tick(); }
+  if (ms <= 0) late();
+}, 120);
+async function late() {
+  S.busy = true; banner(T('⏳ Too slow! The water rises', '⏳ اتأخرنا! الميه عليت'));
+  $('#say').innerHTML = T('🦜 The storm is getting closer! Keep loading, quick!', '🦜 العاصفة بتقرّب! كمّل تحميل بسرعة!');
+  await mistake();
+}
+
+/* ---------- moves ---------- */
+async function load(id, el) {
+  if (S.busy || !S.started || S.fox) return;
+  const t = S.trucks[id]; if (t.on) return;
+  const left = S.trucks.filter(x => !x.on), want = sorted(left, S.dir)[0];
+  if (t.id === want.id) {
+    S.busy = true; t.on = true; const slot = S.deck.indexOf(null); S.deck[slot] = t; SFX.engine();
+    S.streak++; const pts = 5 + (S.deadline - performance.now() > ferryTime() / 2 ? 3 : 0); S.score += pts; $('#score').textContent = S.score;
+    drawQueue(); drawDeck(slot); drawScene();
+    const more = left.length - 1;
+    $('#say').innerHTML = more ? pick([T('🦜 Good, on board!', '🦜 تمام، طلعت العبّارة!'), T('🦜 Right truck!', '🦜 شاحنة صح!'), T('🦜 Next one!', '🦜 اللي بعدها!')]) + ` ${T(`(${n(fmt(t.x))})`, `(${n(fmt(t.x))})`)}` : T('🦜 The ferry is full!', '🦜 العبّارة اتملت!');
+    await hornCheck();
+    if (!more) { await ferryDone(); return; }
+    S.busy = false; return;
+  }
+  // wrong: the world answers in words, without pointing at the right truck
+  S.busy = true; el.classList.remove('bad'); void el.offsetWidth; el.classList.add('bad'); SFX.wrong();
+  $('#say').innerHTML = S.dir === 'asc'
+    ? T(`🦜 ${n(fmt(t.x))} is not the smallest truck left: another truck on the dock is smaller!`, `🦜 ${n(fmt(t.x))} مش أصغر شاحنة فاضلة: فيه شاحنة تانية على الرصيف أصغر منها!`)
+    : T(`🦜 ${n(fmt(t.x))} is not the biggest truck left: another truck on the dock is bigger!`, `🦜 ${n(fmt(t.x))} مش أكبر شاحنة فاضلة: فيه شاحنة تانية على الرصيف أكبر منها!`);
+  await tiltShake(); await mistake();
+}
+async function pickSwap(i) {
+  if (S.busy || !S.fox) return;
+  if (S.sel < 0) { S.sel = i; SFX.click(); drawDeck(); return; }
+  if (S.sel === i) { S.sel = -1; drawDeck(); return; }
+  S.busy = true; const a = S.sel; S.sel = -1;
+  [S.deck[a], S.deck[i]] = [S.deck[i], S.deck[a]]; SFX.engine(); drawDeck(); drawScene();
+  await sleep(350);
+  if (inOrder(S.deck, S.dir)) {
+    S.streak++; S.score += 15; $('#score').textContent = S.score;
+    $('#say').innerHTML = T('🦜 You caught the fox’s trick! The order is right again.', '🦜 كشفت خدعة الثعلب! الترتيب رجع مظبوط.');
+    await hornCheck(); await ferryDone(); return;
+  }
+  [S.deck[a], S.deck[i]] = [S.deck[i], S.deck[a]]; drawDeck(); SFX.wrong();
+  $('#deck').querySelectorAll('.slot').forEach(e => { if (+e.dataset.i === a || +e.dataset.i === i) e.classList.add('bad'); });
+  $('#say').innerHTML = T('🦜 That swap does not fix it. Compare each truck with the one next to it.', '🦜 التبديل ده ما صلّحش الترتيب. قارن كل شاحنة باللي جنبها.');
+  await tiltShake(); await mistake();
+}
+async function hornCheck() {
+  if (S.streak >= 3) {
+    S.streak = 0;
+    if (S.water > 0) { S.water--; banner(T('📯 Horn! The water goes down', '📯 البوق! الميه نزلت'), true); SFX.horn(); }
+    else { S.score += 5; $('#score').textContent = S.score; banner(T('📯 +5 Full speed!', '📯 +5 سرعة كاملة!'), true); SFX.horn(); }
+    drawScene();
+  }
+  drawHorn();
+}
+async function mistake() {
+  S.misses++; S.streak = 0; drawHorn();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.water + 1 });
+  S.water++; SFX.thunder(); await anim(500, k => drawScene({ flash: k < .12 })); drawScene();
+  if (S.water >= MAXW) { lose(); return; }
+  if (S.water === MAXW - 1) banner(T('⚠️ One more mark and the dock floods!', '⚠️ علامة كمان والرصيف يغرق!'));
+  startTimer(); S.busy = false;
+}
+async function ferryDone() {
+  S.busy = true; S.score += 10; $('#score').textContent = S.score;
+  banner(T('⛴️ Sail away!', '⛴️ يلا نبحر!'), true);
+  await sail();
+  if (S.water > 0) S.water--;
+  S.fi++;
+  if (S.fi >= L().plan.length) { win(); return; }
+  nextFerry();
+}
+function nextFerry() {
+  const kind = L().plan[S.fi];
+  S.fox = kind === 'fox'; S.dir = S.fox ? pick(['asc', 'desc']) : kind; S.sel = -1; S.hintN = 0;
+  S.trucks = makeTrucks(); S.deck = Array(L().n).fill(null);
+  if (S.fox) {
+    const ok = sorted(S.trucks, S.dir); S.trucks.forEach(t => t.on = true);
+    const i = rnd(ok.length - 1), j = S.lvl >= 5 ? i + 1 + rnd(ok.length - 1 - i) : i + 1;
+    [ok[i], ok[j]] = [ok[j], ok[i]]; S.deck = ok;
+  }
+  drawSign(); drawDeck(); drawQueue(); drawHorn(); startTimer();
+  if (S.fox) { drawScene({ fox: true }); banner(T('🦊 The fox was here!', '🦊 الثعلب كان هنا!')); SFX.sneak(); setTimeout(() => { if (S.fox && !S.busy) drawScene(); }, 1600); }
+  else drawScene();
+  $('#say').innerHTML = S.fox ? T('🦜 The fox loaded this ferry and swapped two trucks. Find them!', '🦜 الثعلب حمّل العبّارة دي وبدّل شاحنتين. لاقيهم!')
+    : S.dir === 'asc' ? T('🦜 Smallest truck first! Look at all the numbers before you tap.', '🦜 أصغر شاحنة الأول! بُص على كل الأعداد قبل ما تضغط.')
+    : T('🦜 Biggest truck first! Look at all the numbers before you tap.', '🦜 أكبر شاحنة الأول! بُص على كل الأعداد قبل ما تضغط.');
+  S.busy = false;
+}
+function hint() {
+  if (S.busy || !S.started) return;
+  S.hintN++;
+  let h;
+  if (S.fox) h = S.dir === 'asc' ? T('Each number must be bigger than the one before it. Find where that breaks.', 'كل عدد لازم يكون أكبر من اللي قبله. دوّر فين القاعدة دي اتكسرت.') : T('Each number must be smaller than the one before it. Find where that breaks.', 'كل عدد لازم يكون أصغر من اللي قبله. دوّر فين القاعدة دي اتكسرت.');
+  else if (S.hintN === 1 && S.trucks.some(t => !t.on && t.form !== 'std')) h = T('First write the numbers in words or expanded form as digits in your head.', 'الأول حوّل الأعداد المكتوبة بالكلمات أو بالصيغة الممتدة لأرقام في دماغك.');
+  else h = T('More digits = a bigger number. Same number of digits? Compare from the left, place by place.', 'أرقام أكتر = عدد أكبر. نفس عدد الأرقام؟ قارن من الشمال خانة خانة.');
+  $('#say').innerHTML = '🦜 ' + h;
+}
+
+/* ---------- trips ---------- */
+function startLevel() {
+  S.t0 = Date.now(); S.water = 0; S.misses = 0; S.streak = 0; S.fi = 0;
+  $('#lvl').textContent = S.lvl + 1;
+  if (L().boss) banner(T('🌩️ Night storm trip!', '🌩️ رحلة عاصفة الليل!'));
+  if (A.ctx && A.mode !== 'run') music('run');
+  nextFerry();
+}
+async function win() {
+  S.busy = true; const stars = S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1, pts = 20 + stars * 10;
+  S.score += pts; $('#score').textContent = S.score; music('off'); SFX.win(); drawScene({ win: true, msg: T('All the trucks crossed safely!', 'كل الشاحنات عدّت بسلام!') });
+  saveWin(stars, pts); await sleep(1600); showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+async function lose() {
+  S.busy = true; music('off'); SFX.lose(); drawScene({ msg: T('The dock is flooded!', 'الرصيف غرق!') });
+  $('#say').innerHTML = T('🦜 The storm was faster this time…', '🦜 العاصفة كانت أسرع المرة دي…');
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+  await sleep(1400); showEnd('lose');
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['happy', T('Trip done!', 'الرحلة خلصت!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('A bigger storm is coming with more trucks… ready?', 'جاية عاصفة أكبر وشاحنات أكتر… جاهز؟'), T('Next trip ➜', 'الرحلة اللي بعدها ⬅')],
+    all: ['happy', T('Captain of the Nile!', 'قبطان النيل!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You order big numbers like a pro!`, `مجموع نقطك ${n(S.score)}. بقيت بترتب الأعداد الكبيرة زي المحترفين!`), T('Play again', 'العب من الأول')],
+    lose: ['worried', T('The dock flooded', 'الرصيف غرق'), '', T('Count the digits first, then compare from the left. Try again!', 'عِدّ الأرقام الأول، وبعدين قارن من الشمال. جرّب تاني!'), T('Try again', 'جرّب تاني')]
+  }[kind];
+  $('#endArt').innerHTML = `<img src="${src(cfg[0])}" alt="">`; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLevel(); };
+}
+/* progress: SI.chProf('mg4u1').ferry = { lvl: next trip, best: highest trip done (1-6), stars: [per trip] } */
+function saveWin(stars, pts) {
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.ferry = c.ferry || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+
+/* ---------- music and sound (Web Audio, no files): a rolling river tune; faster as the water rises ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol, from, to) { const c = A.ctx, b = c.createBuffer(1, Math.max(1, c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.setValueAtTime(from, t); f.frequency.exponentialRampToValueAtTime(to, t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(f); f.connect(g); g.connect(A.master); s.start(t); }
+const TUNE = [62, 0, 65, 69, 0, 67, 65, 0, 62, 0, 65, 69, 72, 69, 67, 0];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const bpm = 92 + S.water * 12 + (L().boss ? 10 : 0), spb = 60 / bpm / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    if (i % 4 === 0) tone(38, t, spb * 2.6, { type: 'triangle', vol: .14, cut: 420 });
+    if (TUNE[i]) tone(TUNE[i], t, spb * .8, { type: 'triangle', vol: .07, cut: 1600 });
+    if (i % 8 === 4) noise(t, .5, .05, 600, 300);                                    // waves
+    if (S.water >= 3 && i % 4 === 2) tone(86, t, .04, { type: 'square', vol: .03, cut: 4000 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null; if (mode === 'run') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  engine() { if (!ac()) return; const t = A.ctx.currentTime; tone(40, t, .35, { type: 'sawtooth', vol: .07, cut: 400, glide: 5 }); tone(81, t + .05, .12, { type: 'sine', vol: .08 }); },
+  click() { if (!ac()) return; tone(84, A.ctx.currentTime, .05, { type: 'square', vol: .04, cut: 4000 }); },
+  splash() { if (!ac()) return; noise(A.ctx.currentTime, .6, .35, 3000, 400); },
+  thunder() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, 1.1, .45, 260, 50); },
+  horn() { if (!ac()) return; const t = A.ctx.currentTime; tone(43, t, .9, { type: 'sawtooth', vol: .1, cut: 700 }); tone(50, t, .9, { type: 'sawtooth', vol: .07, cut: 700 }); },
+  sneak() { if (!ac()) return; const t = A.ctx.currentTime; [76, 72, 76, 72].forEach((m, i) => tone(m, t + i * .14, .1, { type: 'sine', vol: .07 })); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(52, t, .35, { type: 'sawtooth', vol: .12, cut: 900, glide: -5 }); },
+  tick() { if (!ac()) return; tone(93, A.ctx.currentTime, .04, { type: 'square', vol: .05, cut: 5000 }); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [62, 66, 69, 74, 78, 81].forEach((m, i) => tone(m, t + i * .1, .5, { type: 'triangle', vol: .16 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [62, 61, 60, 55].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+$('#hint').onclick = hint;
+$('#start').onclick = () => { $('#intro').hidden = true; S.started = true; music('run'); startTimer(); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+window.__ferry = S; window.__ferryApi = { startLevel, nextFerry, LEVELS, sorted, inOrder,
+  want: () => sorted(S.trucks.filter(t => !t.on), S.dir)[0],
+  badPair: () => { const ok = sorted(S.deck, S.dir); const d = S.deck.map((t, i) => t.id !== ok[i].id ? i : -1).filter(i => i >= 0); return d; } };
+startLevel();
+})();
+</script>
+</body>
+</html>
