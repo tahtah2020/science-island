@@ -117,9 +117,9 @@ bdi{font-weight:900;color:var(--pri)}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261028j"></script>
-<script src="chapters.js?v=20261028j"></script>
-<script src="common.js?v=20261028j"></script>
+<script src="firebase-config.js?v=20261028k"></script>
+<script src="chapters.js?v=20261028k"></script>
+<script src="common.js?v=20261028k"></script>
 <script>
 (() => {
 'use strict';
@@ -157,14 +157,16 @@ const cardText = (d, e, form) => form === 'words'
   ? T(`${n(d)} ${NAME[e][0]}`, `${n(d)} من ${NAME[e][1]}`)
   : `<span class="big">${fmt(d * P10(e))}</span>`;
 
-/* six tunnels, harder each time. k = chambers on the board; tasks: A (place the ants), B1 (move one ant), B2 (10 / 100 anthills) */
+/* six tunnels; k = chambers on the board; tasks: A (place the ants), B1 (move one ant), B2 (10 / 100 anthills).
+   Owner (28 Oct 2026): one small new thing per tunnel: 1 thousands chart · 2 + move an ant ×10 · 3 + a zero and the book's 10 anthills
+   4 + the millions · 5 + place written in words · 6 + the milliards and ×100 (final tunnel). Time per ant goes down slowly (28 → 22 s). */
 const LEVELS = [
-  { k: 6, time: 25, tasks: [{ t: 'A', nd: 4, forms: ['value'] }] },
-  { k: 6, time: 22, tasks: [{ t: 'A', nd: 6, zeros: 1, forms: ['value'] }, { t: 'B1', s: [1], forms: ['times'] }] },
-  { k: 9, time: 20, tasks: [{ t: 'A', nd: 7, zeros: 1, forms: ['value'] }, { t: 'B2', nd: 2, s: 1 }] },
-  { k: 9, time: 18, tasks: [{ t: 'A', nd: 9, zeros: 2, forms: ['value', 'words'] }, { t: 'B1', s: [1, 2], forms: ['times', 'value'] }] },
-  { k: 10, time: 15, tasks: [{ t: 'A', nd: 10, zeros: 2, forms: ['value', 'words'] }, { t: 'B2', nd: 3, s: 2 }] },
-  { k: 10, time: 12, boss: true, tasks: [{ t: 'B1', s: [2], forms: ['value'] }, { t: 'A', nd: 10, zeros: 3, forms: ['words', 'value'] }, { t: 'B2', nd: 4, s: 1 }] }];
+  { k: 6, time: 28, tasks: [{ t: 'A', nd: 4, forms: ['value'] }] },
+  { k: 6, time: 27, tasks: [{ t: 'A', nd: 5, forms: ['value'] }, { t: 'B1', s: [1], forms: ['times'] }] },
+  { k: 6, time: 26, tasks: [{ t: 'A', nd: 6, zeros: 1, forms: ['value'] }, { t: 'B2', nd: 2, s: 1 }] },
+  { k: 9, time: 25, tasks: [{ t: 'A', nd: 7, zeros: 1, forms: ['value'] }, { t: 'B1', s: [1], forms: ['times'] }, { t: 'B2', nd: 3, s: 1 }] },
+  { k: 9, time: 24, tasks: [{ t: 'A', nd: 8, zeros: 2, forms: ['value', 'words'] }, { t: 'B2', nd: 3, s: 1 }] },
+  { k: 10, time: 22, boss: true, tasks: [{ t: 'B1', s: [2], forms: ['times'] }, { t: 'A', nd: 10, zeros: 2, forms: ['value', 'words'] }, { t: 'B2', nd: 3, s: 2 }] }];
 
 const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).ants || {}).lvl) || 0), score: 0, fox: 0, misses: 0, combo: 0, busy: true, task: null, ti: 0, deadline: 0, left: 1, started: false, hintN: 0 };
 const L = () => LEVELS[S.lvl];

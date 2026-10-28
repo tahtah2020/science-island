@@ -128,9 +128,9 @@ bdi{font-weight:900;color:var(--pri)}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261028j"></script>
-<script src="chapters.js?v=20261028j"></script>
-<script src="common.js?v=20261028j"></script>
+<script src="firebase-config.js?v=20261028k"></script>
+<script src="chapters.js?v=20261028k"></script>
+<script src="common.js?v=20261028k"></script>
 <script>
 (() => {
 'use strict';
@@ -193,14 +193,16 @@ function wordsOk(x) { for (let p = 1; p <= 3; p++) { const c = Math.floor(x / 10
 const eq = x => `<div class="eq">${fmt(x)} = ${expanded(x)}</div>`;
 const expanded = x => String(x).split('').map((d, i, a) => +d ? fmt(+d * P10(a.length - 1 - i)) : null).filter(Boolean).join(' + ');
 
-/* six races; k = wagons; plan = the deliveries, repeated until someone reaches the city */
+/* six races; k = wagons; plan = the deliveries, repeated until someone reaches the city.
+   Owner (28 Oct 2026): one small new thing per race: 1 expanded form · 2 + word form · 3 + unloading and a zero
+   4 + the millions · 5 + the book's groups («5 مليارات و400 مليون…») · 6 + the milliards. The signal slows down only a little (60 → 50 s). */
 const LEVELS = [
-  { k: 6, time: 60, nd: [4, 6], zeros: 0, plan: ['L:expanded', 'L:expanded', 'L:expanded', 'L:words'] },
-  { k: 6, time: 60, nd: [5, 6], zeros: 1, plan: ['L:words', 'L:expanded', 'L:words', 'U'] },
-  { k: 9, time: 55, nd: [7, 9], zeros: 2, plan: ['L:expanded', 'U', 'L:words', 'L:groups', 'U'] },
-  { k: 9, time: 50, nd: [8, 9], zeros: 2, plan: ['L:groups', 'L:words', 'U', 'L:expanded', 'U'] },
-  { k: 10, time: 48, nd: [10, 10], zeros: 3, plan: ['L:words', 'U', 'L:groups', 'L:expanded', 'U'] },
-  { k: 10, time: 40, nd: [10, 10], zeros: 4, boss: true, plan: ['L:groups', 'U', 'L:words', 'U', 'L:expanded'] }];
+  { k: 6, time: 60, nd: [4, 5], zeros: 0, plan: ['L:expanded', 'L:expanded', 'L:expanded', 'L:expanded'] },
+  { k: 6, time: 60, nd: [5, 6], zeros: 0, plan: ['L:expanded', 'L:words', 'L:expanded', 'L:words'] },
+  { k: 6, time: 58, nd: [5, 6], zeros: 1, plan: ['L:words', 'L:expanded', 'U', 'L:words'] },
+  { k: 9, time: 56, nd: [7, 7], zeros: 1, plan: ['L:expanded', 'L:words', 'U', 'L:words'] },
+  { k: 9, time: 54, nd: [7, 9], zeros: 2, plan: ['L:groups', 'L:words', 'U', 'L:groups', 'L:expanded'] },
+  { k: 10, time: 50, nd: [9, 10], zeros: 2, boss: true, plan: ['L:groups', 'U', 'L:words', 'L:expanded', 'U'] }];
 const GOAL = 5;
 const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).train || {}).lvl) || 0), score: 0, me: 0, fox: 0, misses: 0, streak: 0, tries: 0, busy: true, task: null, pi: 0, deadline: 0, started: false, hintN: 0 };
 const L = () => LEVELS[S.lvl];
