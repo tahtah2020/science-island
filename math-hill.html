@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Rounding Hill · Rounding Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 4 · Unit 1 (mg4u1) adventure «تلّ التقريب / Rounding Hill», lesson 8 (rounding with the midpoint on the number line; the rounding
+     rule: circle the digit to the right of the rounding place, 5 or more → add one, 4 or less → keep, then zeros; rounding up to the milliards;
+     estimating a sum by rounding versus the «first digit from the left» strategy: the book's 47 + 31 → 50 + 30 = 80 vs 40 + 30 = 70, exact 78).
+     A BOULDER (the fox rolls it from the mountain): 1) tap the digit to circle (the one right of the rounding place); 2) the hill is the number
+     line: valleys = the two round numbers, the top = the midpoint, the boulder sits at its number; set the wheels of the rounded number and
+     throw the net. The boulder rolls by the rule (exactly 5 rolls forward); the net catches it only in the right valley, else it smashes a house.
+     THE GIANT BOULDER (last of each round): a + b; round each number to its leading place, set the estimate; then the exact sum, your estimate
+     and the fox's «first digit from the left» estimate are compared on a ruler.
+     Excitement: 5 village houses; a house falls on each missed boulder (all 5 = lost); the boulder shakes harder as its timer runs and rolls
+     by itself at 0; 3 catches in a row = Reesho builds a stone wall and repairs a house. Clouds and birds move, the boulder spins as it rolls,
+     dust and a screen shake on a crash, sun rays when you win.
+     Pictures: the owner's Gemini sheet (28 Oct 2026) cut out into math/assets/: bg_mountain.jpg, hill.webp (the hill's top is approximated
+     by a smooth curve: valleys x 46 / 392, top x 243 in the 440-wide scene), boulder, boulder_gold, fox_push (cliff cut off), reesho_net,
+     reesho_catch, hut_ok, hut_broken, stone_wall; fox_laugh reused. Progress: SI.chProf('mg4u1').hill = { lvl, best, stars[] }.
+     Test hooks window.__hill, window.__hillApi. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#f6dca8,#f3e6c4 28%,#9cc874 28.1%,#6fa850);color:var(--navy);min-height:100svh}
+.wrap{max-width:600px;margin:0 auto;padding:10px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffffaa;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:18px;background:#e9dcc0;box-shadow:0 6px 18px #5a3d1a33}
+#scene.quake{animation:quake .45s}
+@keyframes quake{20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-2px)}60%{transform:translate(-3px,1px)}80%{transform:translate(2px,0)}}
+.say{margin:8px 0}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;min-height:44px;box-shadow:0 3px 10px #0002;line-height:1.6}
+.panel{background:var(--card);border-radius:20px;padding:10px;box-shadow:0 6px 20px #0003}
+bdi{font-weight:900;color:var(--pri)}
+.order{border-radius:14px;padding:7px 10px;margin-bottom:8px;color:#fff;font-weight:900;font-size:17px;text-align:center;background:linear-gradient(135deg,#8a5a2b,#b07a3c)}
+.order.giant{background:linear-gradient(135deg,#b8860b,#e0a82e)}
+.order small{display:block;font-size:12.5px;font-weight:800;opacity:.95}
+.timer{height:8px;border-radius:8px;background:#ffffff55;overflow:hidden;margin-top:5px}
+.timer i{display:block;height:100%;width:100%;background:#fff;border-radius:8px}
+.timer.low i{background:#ffd34a;animation:blink .5s infinite}
+@keyframes blink{50%{opacity:.4}}
+.step{font-weight:900;font-size:13.5px;color:var(--ink);margin:4px 2px 6px;display:flex;align-items:center;gap:6px}
+.step .no{background:var(--pri);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+.step.done{opacity:.55}
+.digits{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:2px;flex-wrap:nowrap;background:radial-gradient(ellipse at 50% 40%,#d9d2c4,#b9ae9b);border-radius:40px;padding:10px 14px;box-shadow:inset 0 -5px 0 #0002,0 3px 8px #0002}
+.dg{border:0;background:none;font:900 28px/1 Nunito,sans-serif;color:#3b2f22;width:24px;height:42px;border-radius:50%;cursor:pointer;padding:0;position:relative}
+.dg.ring::after{content:"";position:absolute;inset:-2px -6px;border:3px solid var(--coral);border-radius:50%}
+.dg.place{text-decoration:underline 3px var(--pri);text-underline-offset:5px}
+.dg.bad{color:var(--coral);animation:sh .35s}
+.dg:disabled{cursor:default}
+.comma{font:900 26px/1 Nunito,sans-serif;color:#3b2f22;align-self:flex-end;padding-bottom:4px}
+@keyframes sh{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.wheels{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:3px;flex-wrap:nowrap}
+.wh{display:flex;flex-direction:column;align-items:center;gap:2px}
+.wh button{width:30px;height:24px;border:0;border-radius:8px;background:#6b4a2b;color:#fff;font-size:13px;cursor:pointer;padding:0}
+.wh button:active{background:var(--pri)}
+.wh b{width:30px;height:40px;border-radius:8px;background:#fffaf0;border:2px solid #d8c7a6;display:flex;align-items:center;justify-content:center;font:900 24px Nunito,sans-serif;color:var(--navy)}
+.wh.fixed b{background:#efe8da;color:#9a8f7c;border-color:#e3d9c6}
+.wh.edit b{border-color:var(--gold);background:#fff}
+.wh.lead0 b{color:#c9bda6}
+.wh .sp{height:24px}
+.wcomma{font:900 22px Nunito,sans-serif;color:var(--navy);padding-bottom:30px}
+.erow{display:flex;align-items:center;gap:8px;justify-content:center;margin:6px 0}
+.erow .lb{font-weight:900;font-size:13.5px;min-width:64px;text-align:end;direction:ltr;unicode-bidi:isolate;color:var(--ink)}
+.erow .lb.t{direction:inherit}
+.prob{direction:ltr;text-align:center;font:900 28px Nunito,sans-serif;color:#7a4e12;margin:2px 0 6px}
+.ruler{margin-top:8px;background:#fff;border-radius:12px;padding:8px 10px;border:2px solid #f2e3c4;font-weight:800;font-size:14px;line-height:1.7}
+.ruler[hidden]{display:none}
+.ruler .win{color:var(--ok)}
+.row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:14px;padding:11px 20px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.btn[hidden]{display:none}
+.wall{display:flex;align-items:center;gap:4px;font-weight:900;font-size:13px;color:var(--ink)}
+.wall i{width:16px;height:12px;border-radius:5px;background:#e6dccb;display:inline-block;transition:.2s}
+.wall i.on{background:#8d8273;box-shadow:inset 0 -2px 0 #0003}
+.veil{position:fixed;inset:0;background:#3b2a16cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:20px;max-width:400px;text-align:center}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 12px}
+.introart{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:10px}.introart img{height:82px}
+#endArt{position:relative;height:120px;display:flex;justify-content:center}
+#endArt img{height:116px;position:relative}
+#endArt .rays{position:absolute;left:50%;top:50%;width:220px;height:220px;margin:-110px 0 0 -110px;background:repeating-conic-gradient(#f2b13455 0 10deg,transparent 10deg 20deg);border-radius:50%;animation:spin 8s linear infinite;-webkit-mask:radial-gradient(#000 30%,transparent 70%);mask:radial-gradient(#000 30%,transparent 70%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stars{font-size:34px;letter-spacing:4px}
+.home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffffaa;border-radius:99px;color:var(--navy);font-size:16px;width:34px;height:30px}
+.snd{background:#ffffffaa;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer}
+.banner{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%) scale(.6);background:var(--coral);color:#fff;font:900 24px Nunito,Cairo;padding:12px 24px;border-radius:18px;box-shadow:0 8px 24px #0006;opacity:0;pointer-events:none;z-index:8;transition:.3s;text-align:center;white-space:nowrap}
+.banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.banner.good{background:var(--ok)}
+.banner.gold{background:#c98a00}
+#scene .drift{animation:drift 60s linear infinite}
+#scene .drift2{animation:drift 95s linear infinite}
+@keyframes drift{from{transform:translateX(-120px)}to{transform:translateX(460px)}}
+#scene .birds{animation:birds 26s linear infinite}
+@keyframes birds{from{transform:translate(470px,0)}to{transform:translate(-60px,-14px)}}
+#scene .flap{animation:flap .5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%}
+@keyframes flap{50%{transform:scaleY(.4)}}
+#scene .idle{animation:idle 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes idle{50%{transform:translateY(-2px)}}
+@media (prefers-reduced-motion:reduce){#scene .drift,#scene .drift2,#scene .birds,#scene .flap,#scene .idle,#endArt .rays,#scene.quake{animation:none}}
+@media (max-width:420px){.dg{width:20px;font-size:24px;height:38px}.comma{font-size:22px}.wh button,.wh b{width:26px}.wh b{height:36px;font-size:21px}.order{font-size:15.5px}.prob{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="⛰️ تلّ التقريب">⛰️ Rounding Hill</h1><div class="pills"><span class="pill"><span data-ar="الجولة">Round</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="adventures.html" aria-label="Back to the adventures" data-ar-label="رجوع للمغامرات">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 292" role="img" aria-label="The fox rolls boulders from the mountain toward Reesho’s village" data-ar-label="الثعلب بيدحرج صخور من الجبل ناحية قرية ريشو"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="order" id="order"></div>
+    <div id="work"></div>
+    <div class="ruler" id="ruler" hidden></div>
+    <div class="row"><button class="btn" id="throw" type="button" hidden></button><span class="wall" id="wall"></span><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+<div class="banner" id="banner"></div>
+
+<div class="veil" id="intro"><div class="box">
+  <div class="introart" aria-hidden="true"><img src="math/assets/reesho_net.webp" alt=""><img src="math/assets/hut_ok.webp" alt="" style="height:52px"><img src="math/assets/fox_push.webp" alt="" style="height:66px"></div>
+  <h2 data-ar="الثعلب بيدحرج الصخور!">The fox is rolling boulders!</h2>
+  <ol id="rules"></ol>
+  <button class="btn" id="start" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261028h"></script>
+<script src="chapters.js?v=20261028h"></script>
+<script src="common.js?v=20261028h"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg4u1'); if (!CH) return;
+const T = SI.T, GAME = 'math-hill.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+const fmt = x => Number(x).toLocaleString('en-US');
+const P10 = e => 10 ** e;
+document.title = T('Rounding Hill · Rounding Numbers', 'تلّ التقريب · تقريب الأعداد');
+$('#rules').innerHTML = [
+  T('Each boulder has a number. First tap the digit to <b>circle</b>: the one right of the rounding place.', 'كل صخرة عليها عدد. الأول اضغط على الرقم اللي <b>هتحوّطه</b>: اللي على يمين خانة التقريب.'),
+  T('The hill is a number line: two valleys and the midpoint on top. Set the rounded number and throw the net 🥅.', 'التل خط أعداد: واديين والمنتصف فوق. اضبط العدد المقرّب وارمِ الشبكة 🥅.'),
+  T('Wrong valley or too slow = the boulder smashes a house 🏚️. <b>5 houses</b> and the village is lost!', 'وادي غلط أو اتأخرت = الصخرة تهد بيت 🏚️. <b>5 بيوت</b> والقرية تضيع!'),
+  T('The giant boulder at the end: estimate a sum by rounding and beat the fox’s estimate!', 'الصخرة العملاقة في الآخر: قدّر ناتج الجمع بالتقريب واغلب تقدير الثعلب!')].map(x => `<li>${x}</li>`).join('');
+$('#start').textContent = T('Save the village! 🥅', 'يلا ننقذ القرية 🥅');
+
+/* ---------- places ---------- */
+const NEAR = { 1: ['ten', 'عشرة'], 2: ['hundred', 'مائة'], 3: ['thousand', 'ألف'], 4: ['ten thousand', 'عشرات الألوف'], 5: ['hundred thousand', 'مئات الألوف'],
+  6: ['million', 'مليون'], 7: ['ten million', 'عشرات الملايين'], 8: ['hundred million', 'مئات الملايين'], 9: ['milliard', 'مليار'] };
+const PLACE = { 0: ['ones', 'الآحاد'], 1: ['tens', 'العشرات'], 2: ['hundreds', 'المئات'], 3: ['thousands', 'آحاد الألوف'], 4: ['ten thousands', 'عشرات الألوف'], 5: ['hundred thousands', 'مئات الألوف'],
+  6: ['millions', 'آحاد الملايين'], 7: ['ten millions', 'عشرات الملايين'], 8: ['hundred millions', 'مئات الملايين'], 9: ['milliards', 'المليارات'] };
+const nearTxt = e => T(`to the nearest ${NEAR[e][0]}`, `لأقرب ${NEAR[e][1]}`);
+const pname = e => T(PLACE[e][0], PLACE[e][1]);
+const roundTo = (x, e) => { const u = P10(e), lo = Math.floor(x / u) * u; return x - lo >= u / 2 ? lo + u : lo; };
+
+/* six rounds: places = rounding places (powers of ten); dg = digits; five = share exactly on the midpoint; carry = share where rounding up
+   changes the place above (49,682 → 50,000); est = digits of the giant boulder's two numbers; sec = seconds per boulder */
+const LEVELS = [
+  { places: [1, 2], dg: [3, 4], five: .15, carry: 0, boulders: 5, est: 2, sec: 25 },
+  { places: [3], dg: [4, 5], five: .15, carry: .1, boulders: 5, est: 3, sec: 24 },
+  { places: [3, 4, 5], dg: [5, 6], five: .1, carry: .2, boulders: 5, est: 4, sec: 22 },
+  { places: [2, 3, 4, 5], dg: [5, 7], five: .25, carry: .3, boulders: 5, est: 4, sec: 20 },
+  { places: [5, 6], dg: [7, 9], five: .1, carry: .2, boulders: 5, est: 4, sec: 18 },
+  { places: [3, 5, 6, 9], dg: [7, 10], five: .15, carry: .2, boulders: 6, est: 5, sec: 15, boss: true }];
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).hill || {}).lvl) || 0), score: 0, huts: [1, 1, 1, 1, 1], misses: 0, streak: 0, bi: 0, busy: true, started: false,
+  task: null, phase: 'circle', wheels: [], deadline: 0, hintN: 0 };
+const L = () => LEVELS[S.lvl];
+
+function makeBoulder() {
+  const lv = L();
+  for (let guard = 0; guard < 400; guard++) {
+    const e = pick(lv.places), d = Math.max(e + 1, lv.dg[0] + rnd(lv.dg[1] - lv.dg[0] + 1));
+    const s = [String(1 + rnd(9))]; for (let i = 1; i < d; i++) s.push(String(rnd(10)));
+    const at = p => d - 1 - p;                                            // index of place p in the digit string
+    if (Math.random() < lv.five && e >= 1) { s[at(e - 1)] = '5'; for (let p = e - 2; p >= 0; p--) s[at(p)] = '0'; }
+    else if (Math.random() < lv.carry && e + 1 <= d - 1) { s[at(e)] = '9'; s[at(e - 1)] = String(5 + rnd(5)); }
+    const x = +s.join(''), u = P10(e);
+    if (x % u === 0) continue;                                             // already round: no boulder on a valley
+    const r = roundTo(x, e);
+    if (String(r).length > d) continue;                                    // no new digit (96,000 → 100,000)
+    const top = Math.min(d - 1, e + 2);                                    // the wheels: the rounding place and up to two above it
+    if (Math.floor(r / P10(top + 1)) !== Math.floor(x / P10(top + 1))) continue;
+    const lo = Math.floor(x / u) * u;
+    return { t: 'R', x, e, d, top, lo, hi: lo + u, mid: lo + u / 2, ans: r };
+  }
+  return makeBoulder();
+}
+function makeGiant() {
+  const d = L().est, e = d - 1;
+  for (let guard = 0; guard < 400; guard++) {
+    const mk = () => { const s = [String(1 + rnd(8))]; for (let i = 1; i < d; i++) s.push(String(rnd(10))); return +s.join(''); };
+    const a = mk(), b = mk(), A = roundTo(a, e), B = roundTo(b, e);
+    if (String(A).length > d || String(B).length > d) continue;
+    const F = Math.floor(a / P10(e)) * P10(e) + Math.floor(b / P10(e)) * P10(e), E = A + B, X = a + b;
+    if (a % P10(e) === 0 || b % P10(e) === 0) continue;
+    const better = Math.abs(E - X) < Math.abs(F - X);
+    if (!better && Math.random() < .8) continue;                            // the book's point: rounding is usually closer
+    return { t: 'G', a, b, e, d, A, B, E, F, X };
+  }
+}
+
+/* ---------- panel ---------- */
+function drawOrder() {
+  const k = S.task;
+  $('#order').className = 'order' + (k.t === 'G' ? ' giant' : '');
+  $('#order').innerHTML = k.t === 'R'
+    ? `${T('Round', 'قرّب')} ${nearTxt(k.e)}<small>${T(`Boulder ${S.bi + 1} of ${L().boulders}`, `صخرة ${S.bi + 1} من ${L().boulders}`)}</small><div class="timer" id="timer"><i></i></div>`
+    : `${T('🪨 The giant boulder: estimate the sum', '🪨 الصخرة العملاقة: قدّر ناتج الجمع')}<small>${T(`Round each number ${nearTxt(k.e)}, then add`, `قرّب كل عدد ${nearTxt(k.e)}، وبعدين اجمع`)}</small><div class="timer" id="timer"><i></i></div>`;
+}
+function digitsHTML(x, ringAt, underlineAt, clickable) {
+  const s = String(x), d = s.length; let h = '';
+  s.split('').forEach((c, i) => { const p = d - 1 - i;
+    h += `<button type="button" class="dg${p === ringAt ? ' ring' : ''}${p === underlineAt ? ' place' : ''}" data-p="${p}" ${clickable ? '' : 'disabled'} aria-label="${c}">${c}</button>`;
+    if (p && p % 3 === 0) h += '<span class="comma">,</span>'; });
+  return `<div class="digits">${h}</div>`;
+}
+/* wheels: one per digit; editable places from..to keep their own value, the others are fixed (a digit from the number, or 0) */
+function wheelsHTML(id, digits, from, to, lead0 = false) {
+  const d = digits.length; let h = '';
+  digits.forEach((v, i) => { const p = d - 1 - i, ed = p >= from && p <= to;
+    h += `<div class="wh ${ed ? 'edit' : 'fixed'}${lead0 && i === 0 && v === 0 ? ' lead0' : ''}">${ed ? `<button type="button" data-w="${id}" data-i="${i}" data-d="1" aria-label="${T('up', 'زوّد')}">▲</button>` : '<span class="sp"></span>'}<b id="${id}${i}">${v}</b>${ed ? `<button type="button" data-w="${id}" data-i="${i}" data-d="-1" aria-label="${T('down', 'قلّل')}">▼</button>` : '<span class="sp"></span>'}</div>`;
+    if (p && p % 3 === 0) h += '<span class="wcomma">,</span>'; });
+  return `<div class="wheels">${h}</div>`;
+}
+function bindWheels() {
+  $('#work').querySelectorAll('.wh button').forEach(b => b.onclick = () => {
+    if (S.busy) return; const w = S.wheels[b.dataset.w], i = +b.dataset.i;
+    w[i] = (w[i] + +b.dataset.d + 10) % 10; SFX.click();
+    const el = $('#' + b.dataset.w + i); el.textContent = w[i]; el.parentElement.classList.toggle('lead0', i === 0 && w[i] === 0 && b.dataset.w === 's');
+    if (S.task.t === 'R') drawScene();
+  });
+}
+const wval = w => +w.join('');
+function drawWork() {
+  const k = S.task;
+  $('#ruler').hidden = true;
+  if (k.t === 'R') {
+    const circled = S.phase !== 'circle';
+    let h = `<div class="step${circled ? ' done' : ''}"><span class="no">1</span>${T(`Circle the digit to the right of the ${pname(k.e)} place`, `حوّط الرقم اللي على يمين خانة ${pname(k.e)}`)}</div>`;
+    h += digitsHTML(k.x, circled ? k.e - 1 : -1, circled ? k.e : -1, !circled);
+    if (circled) {
+      h += `<div class="step"><span class="no">2</span>${T('Set the rounded number, then throw the net', 'اضبط العدد المقرّب، وبعدين ارمِ الشبكة')}</div>`;
+      h += wheelsHTML('r', S.wheels.r, k.e, k.top);
+    }
+    $('#work').innerHTML = h;
+    if (!circled) $('#work').querySelectorAll('.dg').forEach(b => b.onclick = () => circle(+b.dataset.p, b));
+    else bindWheels();
+    $('#throw').hidden = !circled; $('#throw').textContent = T('🥅 Throw the net!', '🥅 ارمِ الشبكة!');
+  } else {
+    let h = `<div class="prob">${fmt(k.a)} + ${fmt(k.b)}</div>`;
+    h += `<div class="erow"><span class="lb">${fmt(k.a)} ≈</span>${wheelsHTML('a', S.wheels.a, k.e, k.e)}</div>`;
+    h += `<div class="erow"><span class="lb">${fmt(k.b)} ≈</span>${wheelsHTML('b', S.wheels.b, k.e, k.e)}</div>`;
+    h += `<div class="erow"><span class="lb t">${T('estimate ≈', 'التقدير ≈')}</span>${wheelsHTML('s', S.wheels.s, k.e, k.e + 1, true)}</div>`;
+    $('#work').innerHTML = h; bindWheels();
+    $('#throw').hidden = false; $('#throw').textContent = T('🪨 Check my estimate', '🪨 راجع تقديري');
+  }
+}
+function drawWall() { $('#wall').innerHTML = `🧱 ` + [0, 1, 2].map(i => `<i class="${i < S.streak ? 'on' : ''}"></i>`).join(''); }
+
+/* ---------- scene ----------
+   viewBox 440×292: bg_mountain.jpg (1464×405) drawn 440 wide at y = 20 (sky colour above); the mountain's ledge for the fox is near (40, 48).
+   hill.webp (944×226) at x 5, y 145, 430 wide: its top is a smooth bump, valleys x 46 / 392, top x 243 (the midpoint). Houses along the bottom. */
+const IMG = { bg: 'bg_mountain.jpg', hill: 'hill.webp', boulder: 'boulder.webp', gold: 'boulder_gold.webp', fox: 'fox_push.webp', laugh: 'fox_laugh.webp', net: 'reesho_net.webp', catch: 'reesho_catch.webp', hut: 'hut_ok.webp', broken: 'hut_broken.webp', wall: 'stone_wall.webp' };
+const src = k => 'math/assets/' + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+const XL = 46, XP = 243, XR = 392, BASE = 208, PEAK = 148, R = 12;
+const hillY = x => { if (x <= XL || x >= XR) return BASE; const t = x < XP ? (x - XL) / (XP - XL) : (XR - x) / (XR - XP); return BASE - (BASE - PEAK) * (.5 - .5 * Math.cos(Math.PI * t)); };
+const xOf = (k, v) => v <= k.mid ? XL + (v - k.lo) / (k.mid - k.lo) * (XP - XL) : XP + (v - k.mid) / (k.hi - k.mid) * (XR - XP);
+const HUTX = [8, 70, 132, 262, 324, 386], HUTS = [0, 1, 2, 4, 5];                // house slots (slot 3 is Reesho's spot)
+const CLOUDS = `<g class="drift" opacity=".9"><ellipse cx="0" cy="40" rx="34" ry="10" fill="#fff8ec"/><ellipse cx="18" cy="34" rx="20" ry="10" fill="#fff8ec"/></g><g class="drift2" opacity=".75"><ellipse cx="-60" cy="66" rx="26" ry="7" fill="#fff4e0"/><ellipse cx="-48" cy="61" rx="14" ry="7" fill="#fff4e0"/></g>`;
+const BIRDS = `<g class="birds">${[[0, 30], [14, 36], [26, 28]].map(([x, y]) => `<path class="flap" d="M${x} ${y} q3 -3 6 0 q3 -3 6 0" fill="none" stroke="#5b4636" stroke-width="1.3"/>`).join('')}</g>`;
+function drawScene(o = {}) {
+  const k = S.task;
+  let h = `<defs><linearGradient id="fld" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#97a35f"/><stop offset=".4" stop-color="#7fae55"/><stop offset="1" stop-color="#5f9442"/></linearGradient>
+    <radialGradient id="sun" cx=".72" cy=".25" r=".5"><stop offset="0" stop-color="#fff3c8" stop-opacity=".85"/><stop offset="1" stop-color="#fff3c8" stop-opacity="0"/></radialGradient></defs>
+    <rect width="440" height="24" fill="#bbd5d2"/><image href="${src('bg')}" x="0" y="20" width="440" height="122" preserveAspectRatio="none"/>
+    <rect x="0" y="138" width="440" height="160" fill="url(#fld)"/><rect width="440" height="292" fill="url(#sun)"/>${CLOUDS}${BIRDS}`;
+  // the fox on the mountain ledge (pushing while a boulder waits)
+  h += o.foxLaugh ? im('laugh', 14, 2, 48, 54) : im('fox', 10, 16, 64, 43);
+  // the hill
+  h += im('hill', 5, 145, 430, 103);
+  // the number line on the hill: the two valleys and the midpoint
+  if (k && k.t === 'R' && S.phase !== 'circle') {
+    const sign = (x, y, txt, c) => `<g><rect x="${x - 34}" y="${y}" width="68" height="15" rx="4" fill="${c}" stroke="#5a3d1a" stroke-width=".8"/><text x="${x}" y="${y + 11}" font-size="9.5" font-weight="900" text-anchor="middle" fill="#fff" font-family="Nunito">${txt}</text></g>`;
+    h += `<line x1="${XP}" y1="${PEAK - 2}" x2="${XP}" y2="${PEAK - 14}" stroke="#5a3d1a" stroke-width="1.2"/>` + sign(XP, PEAK - 30, fmt(k.mid), '#8a5a2b');
+    h += `<line x1="${XL - 8}" y1="${BASE - 2}" x2="${XL - 8}" y2="${BASE - 60}" stroke="#5a3d1a" stroke-width="1.5"/>` + sign(Math.max(36, XL - 8), BASE - 74, fmt(k.lo), '#2e7d5b');
+    h += `<line x1="${XR + 8}" y1="${BASE - 2}" x2="${XR + 8}" y2="${BASE - 60}" stroke="#5a3d1a" stroke-width="1.5"/>` + sign(Math.min(404, XR + 8), BASE - 74, fmt(k.hi), '#2e7d5b');
+  }
+  // houses and the wall
+  HUTS.forEach((slot, i) => { h += S.huts[i] ? im('hut', HUTX[slot], 246, 50, 42) : im('broken', HUTX[slot] - 3, 246, 56, 44); });
+  if (o.wall) h += im('wall', 40, 262, 360, 30, `opacity="${o.wall}"`);
+  // dust
+  if (o.dust) o.dust.forEach(([x, y, r, a]) => { h += `<circle cx="${x}" cy="${y}" r="${r}" fill="#d9c7a3" opacity="${a}"/>`; });
+  // Reesho: idle in the middle, or in a valley with his net
+  if (o.rx != null) h += im(o.caught ? 'catch' : 'net', o.rx - 26, BASE - 54 + (o.ry || 0), 52, 56);
+  else h += `<g class="idle">${im('net', 196, 232, 48, 56)}</g>`;
+  // the boulder(s)
+  if (o.b) { const [x, y, rot, big, gold] = o.b, r = big ? 20 : R;
+    h += `<g transform="translate(${x},${y}) rotate(${rot})">${im(gold ? 'gold' : 'boulder', -r, -r, 2 * r, 2 * r)}</g>`; }
+  // houses left
+  h += `<rect x="330" y="6" width="104" height="24" rx="12" fill="#0007"/>` + [0, 1, 2, 3, 4].map(i => `<text x="${344 + i * 19}" y="23" font-size="13" text-anchor="middle" opacity="${S.huts[i] ? 1 : .3}">🏠</text>`).join('');
+  if (o.msg) h += `<rect x="70" y="92" width="300" height="36" rx="18" fill="#000a"/><text x="220" y="116" font-size="17" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${o.msg}</text>`;
+  $('#scene').innerHTML = h;
+}
+const anim = (ms, f) => new Promise(res => { const t0 = performance.now(); (function g(t) { const k = Math.min(1, (t - t0) / ms); f(k); k < 1 ? requestAnimationFrame(g) : res(); })(t0); });
+function quake() { const s = $('#scene'); s.classList.remove('quake'); void s.getBoundingClientRect(); s.classList.add('quake'); }
+function banner(txt, cls) { const b = $('#banner'); b.innerHTML = txt; b.className = 'banner show ' + (cls || ''); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('show'), 1300); }
+
+/* the boulder arrives: from the fox's ledge in an arc to its number on the hill */
+async function boulderIn() {
+  const k = S.task, tx = k.t === 'R' ? xOf(k, k.x) : XP, big = k.t === 'G', ty = hillY(tx) - (big ? 20 : R);
+  SFX.rumble();
+  await anim(900, t => { const x = 58 + (tx - 58) * t, y = 40 + (ty - 40) * t - Math.sin(t * Math.PI) * 40; drawScene({ b: [x, y, t * 540, big] }); });
+  SFX.thud(); k.bx = tx; k.by = ty; drawScene({ b: [tx, ty, 0, big] });
+}
+/* the boulder rolls along the hill to x2; returns the rotation */
+async function roll(x1, x2, ms, extra = {}) {
+  const k = S.task, big = k.t === 'G', r = big ? 20 : R;
+  await anim(ms, t => { const e = t * t, x = x1 + (x2 - x1) * e, y = hillY(x) - r;
+    const dust = Math.abs(x2 - x1) > 4 ? [0, 1, 2].map(i => [x - Math.sign(x2 - x1) * (r + 4 + i * 6), y + r - 2 - i, 2 + i, .5 - i * .14]) : null;
+    drawScene({ ...extra, b: [x, y, (x - x1) / r * 57.3, big, extra.gold], dust }); });
+}
+/* a missed boulder runs on into a house */
+async function smash(fromX, gold) {
+  const k = S.task, big = k.t === 'G', r = big ? 20 : R, i = S.huts.findIndex(v => v), slot = HUTS[i], hx = HUTX[slot] + 25, y0 = hillY(fromX) - r;
+  SFX.rumble();
+  await anim(650, t => { const x = fromX + (hx - fromX) * t, y = y0 + (268 - y0) * t * t; drawScene({ b: [x, y, t * 400, big, gold] }); });
+  S.huts[i] = 0; SFX.crash(); quake();
+  const parts = Array.from({ length: 12 }, () => [hx - 25 + rnd(50), 250 + rnd(30), 2 + rnd(4)]);
+  await anim(700, t => drawScene({ dust: parts.map(([x, y, rr]) => [x, y - t * 14, rr + t * 3, .8 * (1 - t)]) }));
+  drawScene();
+}
+
+/* ---------- timer ---------- */
+function taskTime() { return (S.task.t === 'G' ? L().sec * 2.2 : L().sec) * 1000; }
+function startTimer() { S.deadline = performance.now() + taskTime(); S.ticked = 0; }
+setInterval(() => {
+  if (S.busy || !S.started || !S.task) return;
+  const ms = S.deadline - performance.now(), bar = $('#timer');
+  if (bar) { bar.firstChild.style.width = Math.max(0, ms / taskTime() * 100) + '%'; bar.classList.toggle('low', ms < 6000); }
+  // the boulder shakes harder as time runs out
+  const k = S.task; if (k.bx != null && ms < 8000) { const a = (8000 - ms) / 8000 * 3; drawScene({ b: [k.bx + (Math.random() - .5) * a, k.by + (Math.random() - .5) * a, (Math.random() - .5) * a * 4, k.t === 'G'] }); }
+  if (ms < 5000 && ms > 0 && Math.ceil(ms / 1000) !== S.ticked) { S.ticked = Math.ceil(ms / 1000); SFX.tick(); }
+  if (ms <= 0) late();
+}, 110);
+async function late() {
+  S.busy = true; banner(T('⏳ Too late! It rolls…', '⏳ اتأخرت! الصخرة اتدحرجت…'));
+  const k = S.task;
+  if (k.t === 'R') { const to = k.ans === k.hi ? XR : XL; await roll(k.bx, to, 700); await smash(to); }
+  else { await roll(k.bx, XR, 800); await smash(XR); }
+  await lost(T('🦜 The boulder did not wait for us! Be quicker next time.', '🦜 الصخرة ما استنتش! أسرع المرة الجاية.'));
+}
+
+/* ---------- moves ---------- */
+async function circle(p, el) {
+  if (S.busy || S.phase !== 'circle') return;
+  const k = S.task;
+  if (p === k.e - 1) {
+    SFX.circle(); S.phase = 'wheels';
+    const s = String(k.x).split('').map(Number); S.wheels = { r: s.map((v, i) => (k.d - 1 - i) < k.e ? 0 : v) };
+    drawWork(); drawScene({ b: [k.bx, k.by, 0] });
+    const dgt = +String(k.x)[k.d - k.e];
+    $('#say').innerHTML = T(`🦜 You circled ${n(dgt)}. The signs on the hill show the two valleys and the midpoint. Where will it roll?`, `🦜 حوّطت الرقم ${n(dgt)}. اللافتات على التل بتبيّن الواديين والمنتصف. الصخرة هتتدحرج فين؟`);
+    return;
+  }
+  S.misses++; S.streak = 0; drawWall(); SFX.wrong();
+  el.classList.remove('bad'); void el.offsetWidth; el.classList.add('bad');
+  S.deadline -= 3000;                                              // the boulder slips: 3 seconds lost
+  $('#say').innerHTML = T(`🦜 That digit is in the ${pname(p)} place. We round ${nearTxt(k.e)}: circle the digit just to the RIGHT of the ${pname(k.e)} place. (The boulder slipped: −3 s)`,
+    `🦜 الرقم ده في خانة ${pname(p)}. احنا بنقرّب ${nearTxt(k.e)}: حوّط الرقم اللي على يمين خانة ${pname(k.e)} على طول. (الصخرة اتزحلقت: −3 ثواني)`);
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: 'circle' });
+}
+async function throwNet() {
+  if (S.busy || !S.started) return;
+  const k = S.task; S.busy = true;
+  if (k.t === 'G') { checkGiant(); return; }
+  const v = wval(S.wheels.r), right = v === k.ans, to = k.ans === k.hi ? XR : XL;
+  const netX = v === k.lo ? XL - 22 : v === k.hi ? XR + 22 : null;
+  SFX.whoosh();
+  // Reesho jumps to the valley he chose (or the net lands off the hill)
+  if (netX != null) await anim(420, t => drawScene({ rx: 220 + (netX - 220) * t, ry: -Math.sin(t * Math.PI) * 30, b: [k.bx, k.by, 0] }));
+  else await anim(420, t => drawScene({ rx: 220, ry: 60 - t * 10, b: [k.bx, k.by, 0] }));
+  const rx = netX ?? 220;
+  // exactly on the midpoint: wobble on the top, then forward
+  if (k.x === k.mid) { await anim(500, t => drawScene({ rx, b: [k.bx + Math.sin(t * 18) * 2, k.by, Math.sin(t * 18) * 8] })); }
+  await roll(k.bx, right ? to + (to === XR ? 22 : -22) : to, 800, { rx });
+  if (right) {
+    SFX.catch(); S.streak++; const pts = 10 + (S.deadline - performance.now() > taskTime() / 2 ? 5 : 0); S.score += pts; $('#score').textContent = S.score;
+    drawScene({ rx, caught: true });
+    $('#say').innerHTML = T(`🦜 Caught! ${n(fmt(k.x))} ≈ ${n(fmt(k.ans))} ${nearTxt(k.e)}.`, `🦜 مسكتها! ${n(fmt(k.x))} ≈ ${n(fmt(k.ans))} ${nearTxt(k.e)}.`) + (k.x === k.mid ? T(' Exactly 5 rounds UP.', ' الـ 5 بالظبط بتقرّب لفوق.') : '');
+    await wallCheck(); await sleep(900); next(); return;
+  }
+  // missed: say what happened in words
+  const why = v !== k.lo && v !== k.hi ? T(`your net (${n(fmt(v))}) is not one of the two valleys`, `شبكتك (${n(fmt(v))}) مش عند واحد من الواديين`)
+    : T(`the boulder is on the ${k.x < k.mid ? 'left' : k.x === k.mid ? 'top (exactly 5 goes up)' : 'right'} side of the midpoint ${n(fmt(k.mid))}`, `الصخرة ${k.x < k.mid ? 'قبل' : k.x === k.mid ? 'على' : 'بعد'} المنتصف ${n(fmt(k.mid))}${k.x === k.mid ? ' (الـ 5 بالظبط بتقرّب لفوق)' : ''}`);
+  await smash(to + (to === XR ? 22 : -22));
+  await lost(T(`🦜 It rolled to ${n(fmt(k.ans))}: ${why}.`, `🦜 اتدحرجت لـ ${n(fmt(k.ans))}: ${why}.`));
+}
+function checkGiant() {
+  const k = S.task, a = wval(S.wheels.a), b = wval(S.wheels.b), s = wval(S.wheels.s);
+  if (a !== k.A || b !== k.B || s !== k.E) {
+    const what = a !== k.A ? T(`rounding ${n(fmt(k.a))}`, `تقريب ${n(fmt(k.a))}`) : b !== k.B ? T(`rounding ${n(fmt(k.b))}`, `تقريب ${n(fmt(k.b))}`) : T('the sum of the two rounded numbers', 'مجموع العددين المقرّبين');
+    return (async () => { SFX.wrong(); await roll(XP, XR + 20, 800); await smash(XR + 20); await lost(T(`🦜 Check ${what}, then try the next giant!`, `🦜 راجع ${what}، وجرّب الصخرة الجاية!`)); })();
+  }
+  return (async () => {
+    const dE = Math.abs(k.E - k.X), dF = Math.abs(k.F - k.X), win = dE < dF, tie = dE === dF;
+    $('#ruler').hidden = false;
+    $('#ruler').innerHTML = `${T('Exact sum', 'الناتج الحقيقي')}: ${n(fmt(k.X))}<br>🦜 ${T('Your estimate (rounding)', 'تقديرك (قاعدة التقريب)')}: ${n(fmt(k.E))} → ${T('off by', 'الفرق')} ${n(fmt(dE))}<br>🦊 ${T('Fox (first digit from the left)', 'الثعلب (أول رقم من اليسار)')}: ${n(fmt(k.F))} → ${T('off by', 'الفرق')} ${n(fmt(dF))}<br><b class="${win || tie ? 'win' : ''}">${win ? T('Your estimate is closer! 🏆', 'تقديرك أقرب! 🏆') : tie ? T('A tie: both are just as close.', 'تعادل: الاتنين قريبين بنفس القدر.') : T('This time the fox is closer, but your rounding was right.', 'المرة دي تقدير الثعلب أقرب، بس تقريبك صح.')}</b>`;
+    SFX.sparkle(); S.score += win ? 30 : 20; $('#score').textContent = S.score; S.streak++;
+    banner(win ? T('✨ Golden boulder!', '✨ صخرة ذهبية!') : T('✔ Right estimate', '✔ تقدير صح'), 'gold');
+    await roll(XP, XR + 22, 900, { rx: XR + 22, gold: true }); SFX.catch(); drawScene({ rx: XR + 22, caught: true });
+    $('#say').innerHTML = T(`🦜 ${n(fmt(k.a))} + ${n(fmt(k.b))} ≈ ${n(fmt(k.A))} + ${n(fmt(k.B))} = ${n(fmt(k.E))}.`, `🦜 ${n(fmt(k.a))} + ${n(fmt(k.b))} ≈ ${n(fmt(k.A))} + ${n(fmt(k.B))} = ${n(fmt(k.E))}.`);
+    await wallCheck(); $('#throw').hidden = true; await sleep(2600); win_(); })();
+}
+async function lost(msg) {
+  S.misses++; S.streak = 0; drawWall();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: 5 - S.huts.filter(Boolean).length });
+  $('#say').innerHTML = msg;
+  if (!S.huts.some(Boolean)) { await sleep(900); lose(); return; }
+  if (S.huts.filter(Boolean).length === 1) banner(T('⚠️ One house left!', '⚠️ فاضل بيت واحد!'));
+  await sleep(1500); next();
+}
+async function wallCheck() {
+  if (S.streak >= 3) {
+    S.streak = 0; const i = S.huts.findIndex(v => !v);
+    SFX.build(); await anim(700, t => drawScene({ wall: t }));
+    if (i >= 0) { S.huts[i] = 1; banner(T('🧱 Stone wall! A house is rebuilt', '🧱 سور حجري! بيت اتبنى من جديد'), 'good'); }
+    else { S.score += 5; $('#score').textContent = S.score; banner(T('🧱 +5 Stone wall!', '🧱 +5 سور حجري!'), 'good'); }
+    await anim(500, t => drawScene({ wall: 1 - t }));
+  }
+  drawWall();
+}
+function next() {
+  const k = S.task;
+  if (k && k.t === 'R') S.bi++;
+  if (k && k.t === 'G') { startGiant(); return; }          // a missed giant: a new giant boulder
+  if (S.bi >= L().boulders) { startGiant(); return; }
+  S.task = makeBoulder(); S.phase = 'circle'; S.hintN = 0;
+  drawOrder(); drawWork(); drawWall(); drawScene();
+  (async () => { await boulderIn(); startTimer(); S.busy = false;
+    $('#say').innerHTML = pick([T('🦜 Here comes another one! Circle the deciding digit.', '🦜 جاية صخرة تانية! حوّط الرقم اللي بيحكم.'), T('🦜 Look at the rounding place, then circle the digit on its right.', '🦜 بُص على خانة التقريب، وحوّط الرقم اللي على يمينها.')]); })();
+}
+function startGiant() {
+  S.task = makeGiant(); S.hintN = 0;
+  const k = S.task, lead = x => { const s = String(x).split('').map(Number); return s.map((v, i) => i === 0 ? v : 0); };
+  S.wheels = { a: lead(k.a), b: lead(k.b), s: Array(k.d + 1).fill(0) };
+  drawOrder(); drawWork(); drawScene();
+  banner(T('🪨 The giant boulder!', '🪨 الصخرة العملاقة!'), 'gold');
+  (async () => { await boulderIn(); startTimer(); S.busy = false;
+    $('#say').innerHTML = T('🦜 The fox estimates with the first digit from the left. Round each number, add, and beat him!', '🦜 الثعلب بيقدّر بأول رقم من اليسار. قرّب كل عدد واجمع، واغلبه!'); })();
+}
+function hint() {
+  if (S.busy || !S.started) return;
+  const k = S.task; S.hintN++;
+  let h;
+  if (k.t === 'G') h = S.hintN === 1 ? T('Round each number by its second digit: 5 or more → add one to the first digit; 4 or less → keep it.', 'قرّب كل عدد حسب تاني رقم فيه: 5 أو أكبر → زوّد الرقم الأول واحد؛ 4 أو أقل → سيبه.') : T('Then add the two rounded numbers: only the first digits change.', 'وبعدين اجمع العددين المقرّبين: الأرقام الأولى بس هي اللي بتتجمع.');
+  else if (S.phase === 'circle') h = T(`Find the ${pname(k.e)} place first, then look one place to its right.`, `دوّر على خانة ${pname(k.e)} الأول، وبعدين بُص خانة واحدة على يمينها.`);
+  else h = S.hintN === 1 ? T('Circled digit 5 or more → add one to the rounding place. 4 or less → keep it. The places after it become zeros.', 'الرقم المحوّط 5 أو أكبر → زوّد خانة التقريب واحد. 4 أو أقل → سيبها. والخانات اللي بعدها أصفار.') : T('Look at the hill: before the midpoint it rolls back, after it (or exactly on it) it rolls forward.', 'بُص على التل: قبل المنتصف بتتدحرج لورا، وبعده (أو عليه بالظبط) بتتدحرج لقدّام.');
+  $('#say').innerHTML = '🦜 ' + h;
+}
+
+/* ---------- rounds ---------- */
+function startLevel() {
+  S.t0 = Date.now(); S.huts = [1, 1, 1, 1, 1]; S.misses = 0; S.streak = 0; S.bi = 0; S.task = null;
+  $('#lvl').textContent = S.lvl + 1;
+  if (L().boss) banner(T('⛰️ The big avalanche!', '⛰️ الانهيار الكبير!'));
+  if (A.ctx && A.mode !== 'run') music('run');
+  S.busy = true; next();
+}
+async function win_() {
+  S.busy = true; const stars = S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1, pts = 20 + stars * 10;
+  S.score += pts; $('#score').textContent = S.score; music('off'); SFX.win(); drawScene({ rx: 220, caught: true, msg: T('The village is safe!', 'القرية في أمان!') });
+  saveWin(stars, pts); await sleep(1500); showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+async function lose() {
+  S.busy = true; music('off'); SFX.lose(); drawScene({ foxLaugh: true, msg: T('The fox flattened the village!', 'الثعلب هدّ القرية!') });
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+  await sleep(1500); showEnd('lose');
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['catch', T('The village is safe!', 'القرية في أمان!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('The fox is climbing a higher mountain… ready?', 'الثعلب طالع جبل أعلى… جاهز؟'), T('Next round ➜', 'الجولة اللي بعدها ⬅')],
+    all: ['catch', T('Guardian of the valley!', 'حارس الوادي!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You round and estimate like a pro!`, `مجموع نقطك ${n(S.score)}. بقيت بتقرّب وتقدّر زي المحترفين!`), T('Play again', 'العب من الأول')],
+    lose: ['laugh', T('The village fell', 'القرية اتهدّت'), '', T('Circle the digit right of the rounding place: 5 or more goes up, 4 or less stays. Try again!', 'حوّط الرقم اللي على يمين خانة التقريب: 5 أو أكبر لفوق، 4 أو أقل يفضل زي ما هو. جرّب تاني!'), T('Try again', 'جرّب تاني')]
+  }[kind];
+  $('#endArt').innerHTML = (kind === 'lose' ? '' : '<div class="rays"></div>') + `<img src="${src(cfg[0])}" alt="">`;
+  $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLevel(); };
+}
+/* progress: SI.chProf('mg4u1').hill = { lvl: next round, best: highest round won (1-6), stars: [per round] } */
+function saveWin(stars, pts) {
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.hill = c.hill || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+
+/* ---------- music and sound (Web Audio, no files): a bold mountain march; faster as houses fall ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol, from, to) { const c = A.ctx, b = c.createBuffer(1, Math.max(1, c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.setValueAtTime(from, t); f.frequency.exponentialRampToValueAtTime(to, t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(f); f.connect(g); g.connect(A.master); s.start(t); }
+const TUNE = [62, 0, 69, 0, 67, 65, 64, 0, 62, 0, 65, 69, 74, 0, 72, 69];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const lostH = 5 - S.huts.filter(Boolean).length, bpm = 100 + lostH * 10 + (L().boss ? 10 : 0), spb = 60 / bpm / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    if (i % 4 === 0) { tone(38, t, spb * 1.8, { type: 'triangle', vol: .15, cut: 420 }); noise(t, .12, .12, 300, 120); }
+    if (i % 4 === 2) noise(t, .05, .06, 5000, 2500);
+    if (TUNE[i]) tone(TUNE[i], t, spb * .8, { type: 'square', vol: .035, cut: 1700 });
+    if (i % 8 === 0) tone(TUNE[i] ? TUNE[i] - 12 : 50, t, spb * 3, { type: 'sine', vol: .05, cut: 900 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null; if (mode === 'run') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  rumble() { if (!ac()) return; noise(A.ctx.currentTime, .9, .3, 180, 60); },
+  thud() { if (!ac()) return; const t = A.ctx.currentTime; tone(36, t, .3, { type: 'sine', vol: .35 }); noise(t, .15, .2, 400, 100); },
+  circle() { if (!ac()) return; const t = A.ctx.currentTime; [76, 79, 84].forEach((m, i) => tone(m, t + i * .05, .2, { type: 'sine', vol: .1 })); },
+  click() { if (!ac()) return; tone(84, A.ctx.currentTime, .05, { type: 'square', vol: .04, cut: 4000 }); },
+  whoosh() { if (!ac()) return; noise(A.ctx.currentTime, .35, .25, 800, 4000); },
+  catch() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .12, .2, 600, 300); [72, 76, 79, 84].forEach((m, i) => tone(m, t + .08 + i * .07, .3, { type: 'triangle', vol: .13 })); },
+  crash() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .9, .5, 1200, 80); tone(33, t, .5, { type: 'sine', vol: .35 }); },
+  build() { if (!ac()) return; const t = A.ctx.currentTime; [0, .1, .2, .3].forEach(d => { noise(t + d, .06, .2, 900, 400); }); },
+  sparkle() { if (!ac()) return; const t = A.ctx.currentTime; [84, 88, 91, 96, 100].forEach((m, i) => tone(m, t + i * .06, .3, { type: 'sine', vol: .08 })); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(52, t, .35, { type: 'sawtooth', vol: .12, cut: 900, glide: -5 }); },
+  tick() { if (!ac()) return; tone(93, A.ctx.currentTime, .04, { type: 'square', vol: .05, cut: 5000 }); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [62, 66, 69, 74, 78, 81, 86].forEach((m, i) => tone(m, t + i * .09, .55, { type: 'triangle', vol: .16 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [62, 61, 60, 55].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+$('#throw').onclick = throwNet; $('#hint').onclick = hint;
+$('#start').onclick = () => { $('#intro').hidden = true; S.started = true; music('run'); startTimer(); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+window.__hill = S; window.__hillApi = { startLevel, makeBoulder, makeGiant, LEVELS, roundTo, xOf, hillY,
+  solve: () => { const k = S.task;
+    if (k.t === 'R') { if (S.phase === 'circle') { document.querySelector(`.dg[data-p="${k.e - 1}"]`).click(); } S.wheels.r = String(k.ans).padStart(k.d, '0').split('').map(Number); drawWork(); return; }
+    S.wheels.a = String(k.A).split('').map(Number); S.wheels.b = String(k.B).split('').map(Number); S.wheels.s = String(k.E).padStart(k.d + 1, '0').split('').map(Number); drawWork(); } };
+drawScene(); startLevel();
+})();
+</script>
+</body>
+</html>
