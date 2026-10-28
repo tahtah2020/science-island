@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>The Ants’ Bridge · Properties of Addition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 4 · Unit 2 (mg4u2) adventure «جسر النمل المتوازن / The Ants’ Bridge», lesson 1 (properties of addition: the additive identity
+     0 + 2,345 = 2,345; the commutative property; the associative property with brackets; they do not hold for subtraction:
+     (20 − 10) − 5 = 5 but 20 − (10 − 5) = 15).
+     BUILD: planks with numbers lie in a tray; each stone pillar holds a bracket of two planks and stands only if its sum is whole tens
+     (20, 30, 100…): tap a plank, then a place on a pillar (tap a placed plank to take it back). Grouping and ordering to make tens = the
+     commutative and associative properties as a real strategy; a 0 plank keeps a round number as it is (identity). When every pillar stands,
+     the ants cross and the sign shows the whole sum.
+     FOX (bridge 4+): after a bridge is built the fox swaps the planks and the pillars; the sum stays the same (commutative, associative).
+     TRAP (bridge 5+): a subtraction bridge must equal its sign worked from the left; the fox moved the brackets: tap a number to move the
+     brackets around it and see the value change.
+     Excitement: the crocodile comes one step closer on a pillar that cracks, a wrong bracket or when the ants reach the river first
+     (5 steps = he bites the bridge); 3 strong pillars in a row = an ant throws a pebble, the crocodile swims back a step.
+     Stages grow one small step each (owner's rule, 28 Oct 2026): 1 digits to 10 · 2 two-digit numbers · 3 + the 0 plank · 4 + the fox's swap
+     · 5 + the subtraction trap · 6 three pillars and three-digit numbers.
+     Pictures: the owner's Gemini sheet (28 Oct 2026) cut out into math/assets/: bg_river.jpg, reesho_eng_point / _worried, croc_lurk / _bite /
+     _dizzy, fox_plank, plank, pillar_ok / _cracked, sugar_pile; ant_throw, ants_cheer, reesho_happy, fox_angry reused.
+     Progress: SI.chProf('mg4u2').bridge = { lvl, best, stars[] }. Test hooks window.__bridge, window.__bridgeApi. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134;--wood:#a8743f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#bfe0ef,#e8f3e6 30%,#8cc06a 30.1%,#6a9f4b);color:var(--navy);min-height:100svh}
+.wrap{max-width:600px;margin:0 auto;padding:10px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0}
+.pills{display:flex;gap:6px}
+.pill{background:#ffffffaa;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:18px;background:#cfe6ef;box-shadow:0 6px 18px #1f3d5733}
+#scene.quake{animation:quake .45s}
+@keyframes quake{20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-2px)}60%{transform:translate(-3px,1px)}80%{transform:translate(2px,0)}}
+.say{margin:8px 0}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15px;min-height:44px;box-shadow:0 3px 10px #0002;line-height:1.6}
+.panel{background:var(--card);border-radius:20px;padding:10px;box-shadow:0 6px 20px #0003}
+bdi{font-weight:900;color:var(--pri)}
+.order{border-radius:14px;padding:7px 10px;margin-bottom:8px;color:#fff;font-weight:900;font-size:16.5px;text-align:center;background:linear-gradient(135deg,#7a5a3a,#a8743f)}
+.order.trap{background:linear-gradient(135deg,#b3442a,#e2603f)}
+.order small{display:block;font-size:12.5px;font-weight:800;opacity:.95}
+.march{height:16px;border-radius:9px;background:#ffffff40;margin-top:6px;position:relative;overflow:hidden}
+.march i{position:absolute;top:0;bottom:0;left:0;background:#ffffff70;border-radius:9px}
+.march b{position:absolute;top:-3px;font-size:14px;transition:left .12s linear}
+.march.low i{background:#ffd34a99}
+.pillars{direction:ltr;display:grid;gap:6px;margin-bottom:8px}
+.pil{background:#f4ede0;border:2px solid #d9c9aa;border-radius:12px;padding:6px 4px;text-align:center}
+.pil.ok{background:#e4f6ec;border-color:var(--ok)}
+.pil.bad{animation:sh .45s;border-color:var(--coral);background:#fde6df}
+.pil .lab{font:800 11px Nunito,Cairo,sans-serif;color:var(--ink);direction:rtl}
+.pair{display:flex;align-items:center;justify-content:center;gap:3px;font:900 20px Nunito,sans-serif;color:#7a5a3a;margin:3px 0}
+.slot{min-width:44px;height:38px;border-radius:9px;border:2px dashed #b9a27c;background:#fffaf0;font:900 18px Nunito,sans-serif;color:var(--navy);cursor:pointer;padding:0 4px}
+.slot.full{border:2px solid var(--wood);background:linear-gradient(#e9c28e,#d5a466);color:#3b2a16}
+.slot.want{border-color:var(--gold);background:#fff3c4;animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 3px #f2b13466}}
+.res{font:900 15px Nunito,sans-serif;color:var(--ink);min-height:20px}
+.pil.ok .res{color:var(--ok)}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.trayl{font-weight:900;font-size:13px;color:var(--ink);margin:2px 2px 4px}
+.tray{direction:ltr;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:48px;background:#6b8fa6;border-radius:12px;padding:8px}
+.pl{border:0;min-width:64px;height:40px;border-radius:8px;background:linear-gradient(#e9c28e,#cf9c5c);box-shadow:0 3px 0 #8e6232;font:900 20px Nunito,sans-serif;color:#3b2a16;cursor:pointer;padding:0 10px}
+.pl.sel{outline:3px solid var(--gold);outline-offset:2px;transform:translateY(-3px)}
+.pl.zero{background:linear-gradient(#f3e0bd,#e2c38f)}
+.trapbox{direction:ltr;text-align:center;margin:6px 0}
+.sign{display:inline-block;background:#fff;border:2px solid #e8dcc0;border-radius:10px;padding:5px 12px;font:900 18px Nunito,sans-serif;color:var(--navy);margin-bottom:8px}
+.expr{display:flex;align-items:center;justify-content:center;gap:4px;font:900 26px Nunito,sans-serif;color:#7a4e12}
+.expr .num{border:2px solid #d8c7a6;background:#fff;border-radius:10px;padding:2px 10px;cursor:pointer;font:inherit;color:inherit}
+.expr .br{color:var(--coral);font-size:30px}
+.val{margin-top:8px;font:900 17px Nunito,Cairo,sans-serif}
+.val.ok{color:var(--ok)}.val.no{color:var(--coral)}
+.row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:14px;padding:11px 20px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.btn[hidden]{display:none}
+.combo{display:flex;align-items:center;gap:4px;font-weight:900;font-size:13px;color:var(--ink)}
+.combo i{width:14px;height:14px;border-radius:50%;background:#e6dccb;display:inline-block;transition:.2s}
+.combo i.on{background:#8a8f99;box-shadow:inset -2px -2px 0 #0003,0 0 6px #f2b134}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:20px;max-width:400px;text-align:center}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 12px}
+.introart{direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:10px}.introart img{height:80px}
+#endArt{position:relative;height:120px;display:flex;justify-content:center}
+#endArt img{height:116px;position:relative}
+#endArt .rays{position:absolute;left:50%;top:50%;width:220px;height:220px;margin:-110px 0 0 -110px;background:repeating-conic-gradient(#f2b13455 0 10deg,transparent 10deg 20deg);border-radius:50%;animation:spin 8s linear infinite;-webkit-mask:radial-gradient(#000 30%,transparent 70%);mask:radial-gradient(#000 30%,transparent 70%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stars{font-size:34px;letter-spacing:4px}
+.home{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#ffffffaa;border-radius:99px;color:var(--navy);font-size:16px;width:34px;height:30px}
+.snd{background:#ffffffaa;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer}
+.banner{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%) scale(.6);background:var(--coral);color:#fff;font:900 23px Nunito,Cairo;padding:12px 24px;border-radius:18px;box-shadow:0 8px 24px #0006;opacity:0;pointer-events:none;z-index:8;transition:.3s;text-align:center;white-space:nowrap}
+.banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.banner.good{background:var(--ok)}
+#scene .drift{animation:drift 70s linear infinite}
+@keyframes drift{from{transform:translateX(-100px)}to{transform:translateX(480px)}}
+#scene .bob{animation:bob 2.2s ease-in-out infinite;transform-box:fill-box}
+@keyframes bob{50%{transform:translateY(2px)}}
+#scene .walk{animation:walk .35s steps(2) infinite;transform-box:fill-box}
+@keyframes walk{50%{transform:translateY(-1px)}}
+#scene .shake{animation:shk .14s infinite;transform-box:fill-box}
+@keyframes shk{50%{transform:translate(1px,-1px)}}
+@media (prefers-reduced-motion:reduce){#scene .drift,#scene .bob,#scene .walk,#scene .shake,#endArt .rays,.slot.want,#scene.quake{animation:none}}
+@media (max-width:420px){.slot{min-width:38px;height:36px;font-size:16px}.pair{font-size:17px}.pl{min-width:56px;font-size:18px}.expr{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🌉 جسر النمل المتوازن">🌉 The Ants’ Bridge</h1><div class="pills"><span class="pill"><span data-ar="الجسر">Bridge</span> <b id="lvl">1</b>/6</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="adventures.html" aria-label="Back to the adventures" data-ar-label="رجوع للمغامرات">⌂</a></div></div>
+  <svg id="scene" viewBox="0 0 440 176" role="img" aria-label="Ants want to cross the river on a bridge; a crocodile waits in the water" data-ar-label="النمل عايز يعدّي النهر على جسر، والتمساح مستني في الميه"></svg>
+  <div class="say"><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="order" id="order"></div>
+    <div id="work"></div>
+    <div class="row"><span class="combo" id="combo"></span><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+<div class="banner" id="banner"></div>
+
+<div class="veil" id="intro"><div class="box">
+  <div class="introart" aria-hidden="true"><img src="math/assets/reesho_eng_point.webp" alt=""><img src="math/assets/pillar_ok.webp" alt="" style="height:60px"><img src="math/assets/croc_lurk.webp" alt="" style="height:34px"></div>
+  <h2 data-ar="ابنِ جسر النمل!">Build the ants’ bridge!</h2>
+  <ol id="rules"></ol>
+  <button class="btn" id="start" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261028i"></script>
+<script src="chapters.js?v=20261028i"></script>
+<script src="common.js?v=20261028i"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg4u2'); if (!CH) return;
+const T = SI.T, GAME = 'math-bridge.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const fmt = x => Number(x).toLocaleString('en-US');
+document.title = T('The Ants’ Bridge · Properties of Addition', 'جسر النمل المتوازن · خواص عملية الجمع');
+$('#rules').innerHTML = [
+  T('Each stone pillar holds two planks in brackets. It stands only if their sum is <b>whole tens</b> (10, 20, 30…).', 'كل عمود حجري بيشيل لوحين بين قوسين. العمود يقف بس لو مجموعهم <b>عشرات كاملة</b> (10، 20، 30…).'),
+  T('Tap a plank, then its place on a pillar. Change the order and the grouping to make tens!', 'اضغط على لوح، وبعدين على مكانه في العمود. غيّر الترتيب والتجميع عشان تكوّن عشرات!'),
+  T('A weak pillar or ants that arrive before the bridge = the crocodile comes closer 🐊. <b>5 steps</b> and he bites the bridge!', 'عمود ضعيف أو النمل يوصل قبل الجسر = التمساح يقرّب 🐊. <b>5 خطوات</b> ويعض الجسر!'),
+  T('3 strong pillars in a row = a pebble for the crocodile! 🪨', '3 أعمدة قوية ورا بعض = حصاية للتمساح! 🪨')].map(x => `<li>${x}</li>`).join('');
+$('#start').textContent = T('Let’s build! 🔨', 'يلا نبني 🔨');
+
+/* six bridges, one small new thing each (owner's rule): kinds per bridge set = 'build' | 'trap'; pairs = how a pillar's two planks are made */
+const LEVELS = [
+  { pillars: 2, pairs: ['d'], zero: 0, fox: 0, plan: ['build', 'build', 'build'], sec: 26 },
+  { pillars: 2, pairs: ['t'], zero: 0, fox: 0, plan: ['build', 'build', 'build'], sec: 25 },
+  { pillars: 2, pairs: ['t'], zero: 1, fox: 0, plan: ['build', 'build', 'build'], sec: 24 },
+  { pillars: 2, pairs: ['t'], zero: 1, fox: 1, plan: ['build', 'build', 'build'], sec: 23 },
+  { pillars: 2, pairs: ['t'], zero: 1, fox: 1, plan: ['build', 'trap', 'build'], sec: 22 },
+  { pillars: 3, pairs: ['t', 'h'], zero: 1, fox: 1, plan: ['build', 'trap', 'build'], sec: 21, boss: true }];
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).bridge || {}).lvl) || 0), score: 0, croc: 0, misses: 0, streak: 0, bi: 0, busy: true, started: false,
+  task: null, sel: -1, deadline: 0, hintN: 0 };
+const L = () => LEVELS[S.lvl];
+
+/* a pair whose sum is whole tens */
+function makePair(kind) {
+  if (kind === 'd') { const a = 1 + rnd(9); return [a, 10 - a]; }
+  if (kind === 'h') { let a; do { a = 101 + rnd(199); } while (a % 10 === 0); const b = (10 - a % 10) + 10 * rnd(5); return [a, b]; }
+  let a; do { a = 11 + rnd(79); } while (a % 10 === 0);                     // two-digit + one-digit to the next ten (17 + 3)
+  return [a, 10 - a % 10];
+}
+function makeBuild() {
+  const lv = L(), pairs = [];
+  for (let i = 0; i < lv.pillars; i++) pairs.push(makePair(pick(lv.pairs)));
+  if (lv.zero) { const r = 10 * (1 + rnd(9)); pairs[pairs.length - 1] = [r, 0]; }   // the identity pillar: (40 + 0)
+  const planks = shuffle(pairs.flat()).map((v, i) => ({ v, id: i, at: null }));
+  return { t: 'build', planks, slots: Array.from({ length: lv.pillars }, () => [null, null]), ok: Array(lv.pillars).fill(false) };
+}
+function makeTrap() {
+  const a = 10 * (2 + rnd(8)), b = 10 * (1 + rnd(a / 10 - 1)), c = 1 + rnd(Math.min(9, b - 1));   // a > b > c, all positive
+  return { t: 'trap', a, b, c, target: a - b - c, group: 'right' };                               // the fox's brackets: a − (b − c)
+}
+
+/* ---------- panel ---------- */
+function drawOrder() {
+  const k = S.task;
+  $('#order').className = 'order' + (k.t === 'trap' ? ' trap' : '');
+  $('#order').innerHTML = (k.t === 'build'
+    ? `${T('Build the bridge: every pillar must make whole tens', 'ابنِ الجسر: كل عمود لازم يكوّن عشرات كاملة')}<small>${T(`Bridge ${S.bi + 1} of ${L().plan.length}`, `جسر ${S.bi + 1} من ${L().plan.length}`)}</small>`
+    : `${T('🦊 The fox moved the brackets!', '🦊 الثعلب حرّك القوسين!')}<small>${T('A subtraction bridge must match its sign (worked from the left)', 'جسر الطرح لازم يساوي اللافتة (بنحسب من الشمال)')}</small>`)
+    + `<div class="march" id="march"><i></i><b>🐜</b></div>`;
+}
+function drawWork() {
+  const k = S.task;
+  if (k.t === 'trap') {
+    const g = k.group === 'left', v = g ? (k.a - k.b) - k.c : k.a - (k.b - k.c), ok = v === k.target;
+    $('#work').innerHTML = `<div class="trapbox"><div class="sign">${T('Sign', 'اللافتة')}: ${k.a} − ${k.b} − ${k.c} = ${k.target}</div>
+      <div class="expr">${g ? '<span class="br">(</span>' : ''}<button type="button" class="num" data-n="a">${k.a}</button><span>−</span>${g ? '' : '<span class="br">(</span>'}<button type="button" class="num" data-n="b">${k.b}</button>${g ? '<span class="br">)</span>' : ''}<span>−</span><button type="button" class="num" data-n="c">${k.c}</button>${g ? '' : '<span class="br">)</span>'}</div>
+      <div class="val ${ok ? 'ok' : 'no'}">${T('The bridge now', 'الجسر دلوقتي')} = ${v} ${ok ? '✔' : '✖'}</div></div>
+      <div class="row"><button type="button" class="btn" id="fix">${T('🔨 Fix the bridge', '🔨 ثبّت الجسر')}</button></div>`;
+    $('#work').querySelectorAll('.num').forEach(b => b.onclick = () => moveBrackets(b.dataset.n));
+    $('#fix').onclick = checkTrap;
+    return;
+  }
+  const np = k.slots.length;
+  let h = `<div class="pillars" style="grid-template-columns:repeat(${np},minmax(0,1fr))">`;
+  k.slots.forEach((pair, p) => {
+    const sum = pair[0] != null && pair[1] != null ? k.planks[pair[0]].v + k.planks[pair[1]].v : null;
+    h += `<div class="pil${k.ok[p] ? ' ok' : ''}" id="pil${p}"><div class="lab">${T('Pillar', 'العمود')} ${p + 1}</div><div class="pair">(`
+      + [0, 1].map(s => { const id = pair[s]; return `<button type="button" class="slot${id != null ? ' full' : S.sel >= 0 ? ' want' : ''}" data-p="${p}" data-s="${s}" aria-label="${T('Place', 'مكان')}">${id != null ? fmt(k.planks[id].v) : ''}</button>`; }).join('<span>+</span>')
+      + `)</div><div class="res">${k.ok[p] ? `= ${fmt(sum)} ✔` : ''}</div></div>`;
+  });
+  h += `</div><div class="trayl">${T('🪵 Planks', '🪵 الألواح')}</div><div class="tray">`;
+  k.planks.filter(pl => pl.at == null).forEach(pl => { h += `<button type="button" class="pl${pl.v === 0 ? ' zero' : ''}${S.sel === pl.id ? ' sel' : ''}" data-id="${pl.id}">${fmt(pl.v)}</button>`; });
+  h += '</div>';
+  $('#work').innerHTML = h;
+  $('#work').querySelectorAll('.pl').forEach(b => b.onclick = () => { if (S.busy) return; S.sel = S.sel === +b.dataset.id ? -1 : +b.dataset.id; SFX.click(); drawWork(); });
+  $('#work').querySelectorAll('.slot').forEach(b => b.onclick = () => placeAt(+b.dataset.p, +b.dataset.s));
+}
+function drawCombo() { $('#combo').innerHTML = `🪨 ` + [0, 1, 2].map(i => `<i class="${i < S.streak ? 'on' : ''}"></i>`).join(''); }
+
+/* ---------- scene ----------
+   bg_river.jpg (1464×405) drawn 440 wide at y 54 (sky above); left bank lip ≈ (127, 143), right bank lip ≈ (311, 144), water from y ≈ 150.
+   Anthill on the left bank, sugar on the right; pillars stand in the water under the gap; the crocodile swims toward the middle. */
+const IMG = { bg: 'bg_river.jpg', point: 'reesho_eng_point.webp', worried: 'reesho_eng_worried.webp', happy: 'reesho_happy.webp', lurk: 'croc_lurk.webp', bite: 'croc_bite.webp', dizzy: 'croc_dizzy.webp',
+  fox: 'fox_plank.webp', angry: 'fox_angry.webp', plank: 'plank.webp', pok: 'pillar_ok.webp', pbad: 'pillar_cracked.webp', sugar: 'sugar_pile.webp', thrower: 'ant_throw.webp', cheer: 'ants_cheer.webp' };
+const src = k => 'math/assets/' + IMG[k];
+Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
+const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
+const GL = 127, GR = 311, DECK = 143;
+const CROC = [372, 344, 316, 288, 258, 222];
+const ant = (x, y, s = 1) => `<g transform="translate(${x},${y}) scale(${s})" class="walk"><ellipse cx="-4" cy="0" rx="2.6" ry="2" fill="#2b1d14"/><ellipse cx="0" cy="0" rx="1.8" ry="1.5" fill="#2b1d14"/><circle cx="3.4" cy="-.8" r="1.8" fill="#2b1d14"/><path d="M-3 1.5 l-1.5 2.5 M0 1.4 l0 2.6 M2 1.3 l1.5 2.5 M4 -2 l2 -2.5" stroke="#2b1d14" stroke-width=".7" fill="none"/></g>`;
+function pillarX(p, np) { const w = (GR - GL) / np; return GL + w * (p + .5); }
+function drawScene(o = {}) {
+  const k = S.task, np = L().pillars;
+  let h = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fcde8"/><stop offset="1" stop-color="#cfe6ef"/></linearGradient></defs>
+    <rect width="440" height="60" fill="url(#sky)"/><image href="${src('bg')}" x="0" y="54" width="440" height="122" preserveAspectRatio="none"/>
+    <g class="drift"><ellipse cx="0" cy="22" rx="30" ry="8" fill="#fffaf0" opacity=".9"/><ellipse cx="16" cy="17" rx="16" ry="8" fill="#fffaf0" opacity=".9"/></g>`;
+  // sugar on the right bank, Reesho on the left bank
+  h += im('sugar', 380, 116, 40, 32);
+  const rp = o.win ? 'happy' : S.croc >= 3 ? 'worried' : 'point';
+  h += im(rp, 84, 96, 36, 42, S.croc >= 3 && !o.win ? 'class="shake"' : '');
+  // the crocodile
+  const cx = o.cx ?? CROC[Math.min(S.croc, 5)];
+  if (o.croc === 'bite') h += im('bite', cx - 4, 112, 52, 52);
+  else if (o.croc === 'dizzy') h += im('dizzy', cx, 148, 78, 30);
+  else h += `<g class="bob">${im('lurk', cx, 150, 64, 21)}</g>`;
+  // pillars and planks (a build task), or the subtraction bridge (a trap)
+  if (k && k.t === 'build') {
+    k.slots.forEach((pair, p) => {
+      const x = pillarX(p, np), w = (GR - GL) / np, bad = o.bad === p;
+      h += im(bad ? 'pbad' : 'pok', x - 9, DECK - 2, 18, 36, `opacity="${k.ok[p] || bad ? 1 : .45}"`);
+      if (k.ok[p]) { h += im('plank', x - w / 2 - 1, DECK - 7, w + 2, 10);
+        const [a, b] = pair.map(id => k.planks[id].v);
+        h += `<text x="${x}" y="${DECK - 12}" font-size="9" font-weight="900" text-anchor="middle" fill="#3b2a16" font-family="Nunito" direction="ltr" unicode-bidi="embed" stroke="#fffaf0" stroke-width="2.5" paint-order="stroke">(${fmt(a)} + ${fmt(b)}) = ${fmt(a + b)}</text>`; }
+    });
+  } else if (k && k.t === 'trap') {
+    const g = k.group === 'left', v = g ? (k.a - k.b) - k.c : k.a - (k.b - k.c), ok = v === k.target;
+    [0, 1].forEach(p => { const x = pillarX(p, 2); h += im(ok || o.fixed ? 'pok' : 'pbad', x - 9, DECK - 2, 18, 36); });
+    h += im('plank', GL - 1, DECK - 7, GR - GL + 2, 10, ok ? '' : `transform="rotate(4 ${(GL + GR) / 2} ${DECK})"`);
+    h += `<text x="${(GL + GR) / 2}" y="${DECK - 12}" font-size="10" font-weight="900" text-anchor="middle" fill="${ok ? '#2e7d5b' : '#b3442a'}" font-family="Nunito" direction="ltr" unicode-bidi="embed" stroke="#fffaf0" stroke-width="2.5" paint-order="stroke">${g ? `(${k.a} − ${k.b}) − ${k.c}` : `${k.a} − (${k.b} − ${k.c})`} = ${v}</text>`;
+  }
+  // the fox on the bridge (his swap)
+  if (o.fox != null) h += im('fox', o.fox, 96, 46, 44);
+  if (o.foxAngry) h += im('angry', 316, 98, 44, 40);
+  // ants: a column marching to the river (the timer), or crossing the bridge
+  if (o.cross != null) { for (let i = 0; i < 8; i++) { const x = 70 + (o.cross * 330) - i * 12; if (x > 60 && x < 400) h += ant(x, x > GL && x < GR ? DECK - 6 : 138 - (x < GL ? 0 : 0), 1.2); } }
+  else { const m = o.march ?? 0; for (let i = 0; i < 6; i++) { const x = 52 + m * 70 - i * 9; if (x > 40) h += ant(x, 137, 1.1); } }
+  if (o.pebble != null) { h += im('thrower', 132, 110, 30, 30); const t = o.pebble; h += `<circle cx="${150 + (cx + 30 - 150) * t}" cy="${118 - Math.sin(t * Math.PI) * 40 + t * 32}" r="3.5" fill="#8a8f99" stroke="#5c616a"/>`; }
+  if (o.win) h += im('cheer', 340, 106, 44, 34);
+  // crocodile meter
+  h += `<rect x="300" y="6" width="134" height="24" rx="12" fill="#0007"/><text x="412" y="23" font-size="13" text-anchor="middle">🐊</text>`;
+  for (let i = 0; i < 5; i++) h += `<rect x="${308 + i * 18}" y="12" width="14" height="12" rx="4" fill="${i < S.croc ? '#e2603f' : '#ffffff40'}"/>`;
+  if (o.msg) h += `<rect x="70" y="40" width="300" height="34" rx="17" fill="#000a"/><text x="220" y="63" font-size="16" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${o.msg}</text>`;
+  $('#scene').innerHTML = h;
+}
+const anim = (ms, f) => new Promise(res => { const t0 = performance.now(); (function g(t) { const k = Math.min(1, (t - t0) / ms); f(k); k < 1 ? requestAnimationFrame(g) : res(); })(t0); });
+function quake() { const s = $('#scene'); s.classList.remove('quake'); void s.getBoundingClientRect(); s.classList.add('quake'); }
+function banner(txt, good) { const b = $('#banner'); b.innerHTML = txt; b.classList.toggle('good', !!good); b.classList.add('show'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('show'), 1300); }
+
+/* ---------- the ants' march (timer) ---------- */
+function taskTime() { const k = S.task; return (k.t === 'trap' ? 20 : L().sec * k.slots.length / 2 + 6) * 1000; }
+function startTimer() { S.deadline = performance.now() + taskTime(); S.ticked = 0; }
+setInterval(() => {
+  if (S.busy || !S.started || !S.task) return;
+  const ms = S.deadline - performance.now(), f = 1 - Math.max(0, ms) / taskTime(), m = $('#march');
+  if (m) { m.querySelector('i').style.width = (f * 100) + '%'; m.querySelector('b').style.left = `calc(${f * 100}% - 14px)`; m.classList.toggle('low', ms < 6000); }
+  if (Math.random() < .3) drawScene({ march: f });
+  if (ms < 5000 && ms > 0 && Math.ceil(ms / 1000) !== S.ticked) { S.ticked = Math.ceil(ms / 1000); SFX.tick(); }
+  if (ms <= 0) late();
+}, 120);
+async function late() {
+  S.busy = true; banner(T('🐜 The ants reached the river first!', '🐜 النمل وصل النهر قبل الجسر!'));
+  $('#say').innerHTML = T('🦜 The ants had to wait at the edge… and the crocodile came closer! Keep building.', '🦜 النمل اضطر يستنى على الحافة… والتمساح قرّب! كمّل بناء.');
+  await mistake();
+}
+
+/* ---------- moves ---------- */
+async function placeAt(p, s) {
+  if (S.busy || !S.started) return;
+  const k = S.task, cur = k.slots[p][s];
+  if (k.ok[p]) return;
+  if (cur != null) { k.planks[cur].at = null; k.slots[p][s] = null; SFX.click(); drawWork(); return; }   // take a plank back
+  if (S.sel < 0) { $('#say').innerHTML = T('🦜 First tap a plank, then its place.', '🦜 الأول اضغط على لوح، وبعدين على مكانه.'); return; }
+  const pl = k.planks[S.sel]; pl.at = [p, s]; k.slots[p][s] = pl.id; S.sel = -1; SFX.place(); drawWork();
+  if (k.slots[p][0] == null || k.slots[p][1] == null) return;
+  // the pillar is full: does it make whole tens?
+  const [a, b] = k.slots[p].map(id => k.planks[id].v), sum = a + b;
+  S.busy = true;
+  if (sum % 10 === 0) {
+    k.ok[p] = true; S.streak++; S.score += 5; $('#score').textContent = S.score; SFX.strong(); drawWork(); drawScene();
+    $('#say').innerHTML = (b === 0 || a === 0)
+      ? T(`🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}: adding zero keeps the number the same!`, `🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}: جمع الصفر بيخلّي العدد زي ما هو!`)
+      : T(`🦜 Strong! ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}`, `🦜 عمود قوي! ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}`);
+    await comboCheck();
+    if (k.ok.every(Boolean)) { await bridgeDone(); return; }
+    S.busy = false; return;
+  }
+  // weak: it cracks, the planks go back to the tray
+  SFX.crack(); $('#pil' + p).classList.add('bad'); drawScene({ bad: p });
+  $('#say').innerHTML = T(`🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)} is not whole tens: the pillar cracked! Look for a partner that completes ${n(fmt(a))} to tens.`, `🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)} مش عشرات كاملة: العمود اتشقق! دوّر على لوح يكمّل ${n(fmt(a))} لعشرات.`);
+  await sleep(700);
+  k.slots[p].forEach(id => { k.planks[id].at = null; }); k.slots[p] = [null, null]; drawWork();
+  await mistake();
+}
+function moveBrackets(which) {
+  if (S.busy) return;
+  const k = S.task; const g = which === 'c' ? 'right' : which === 'a' ? 'left' : (k.group === 'left' ? 'right' : 'left');
+  if (g !== k.group) { k.group = g; SFX.click(); drawWork(); drawScene(); }
+}
+async function checkTrap() {
+  if (S.busy) return;
+  const k = S.task; S.busy = true;
+  if (k.group === 'left') {
+    S.streak++; S.score += 10; $('#score').textContent = S.score; SFX.strong();
+    $('#say').innerHTML = T(`🦜 Fixed! ${n(`(${k.a} − ${k.b}) − ${k.c} = ${k.target}`)}, but ${n(`${k.a} − (${k.b} − ${k.c}) = ${k.a - (k.b - k.c)}`)}. In subtraction, moving the brackets changes the answer!`,
+      `🦜 اتصلّح! ${n(`(${k.a} − ${k.b}) − ${k.c} = ${k.target}`)}، لكن ${n(`${k.a} − (${k.b} − ${k.c}) = ${k.a - (k.b - k.c)}`)}. في الطرح، تغيير القوسين بيغيّر الناتج!`);
+    drawScene({ fixed: true }); await comboCheck(); await sleep(1400); await crossAndNext(); return;
+  }
+  SFX.crack(); quake();
+  $('#say').innerHTML = T(`🦜 The bridge is ${n(k.a - (k.b - k.c))}, the sign says ${n(k.target)}. Tap a number to move the brackets: we work from the left.`, `🦜 الجسر = ${n(k.a - (k.b - k.c))}، واللافتة بتقول ${n(k.target)}. اضغط على عدد عشان تحرّك القوسين: بنحسب من الشمال.`);
+  await mistake();
+}
+async function comboCheck() {
+  if (S.streak >= 3) {
+    S.streak = 0;
+    if (S.croc > 0) { S.croc--; SFX.throw(); banner(T('🪨 Pebble! The crocodile swims back', '🪨 حصاية! التمساح رجع لورا'), true);
+      await anim(600, t => drawScene({ pebble: t, cx: CROC[S.croc + 1] })); SFX.bonk(); await anim(500, t => drawScene({ croc: 'dizzy', cx: CROC[S.croc + 1] + (CROC[S.croc] - CROC[S.croc + 1]) * t })); }
+    else { S.score += 5; $('#score').textContent = S.score; banner(T('🪨 +5 The ants cheer!', '🪨 +5 النمل بيهتف!'), true); }
+    drawScene();
+  }
+  drawCombo();
+}
+async function mistake() {
+  S.misses++; S.streak = 0; drawCombo();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: S.croc + 1 });
+  const a = CROC[Math.min(S.croc, 5)], b = CROC[Math.min(S.croc + 1, 5)]; S.croc++;
+  SFX.splash(); await anim(600, t => drawScene({ cx: a + (b - a) * t, bad: S.task.t === 'build' ? -1 : undefined })); drawScene();
+  if (S.croc >= 5) { lose(); return; }
+  if (S.croc === 4) banner(T('⚠️ One more step and he bites!', '⚠️ خطوة كمان ويعض!'));
+  startTimer(); S.busy = false;
+}
+async function bridgeDone() {
+  const k = S.task, sums = k.slots.map(pr => pr.map(id => k.planks[id].v));
+  const total = sums.reduce((s, [a, b]) => s + a + b, 0);
+  S.score += 10; $('#score').textContent = S.score;
+  const eq = sums.map(([a, b]) => `(${fmt(a)} + ${fmt(b)})`).join(' + ') + ` = ${fmt(total)}`;
+  $('#say').innerHTML = T(`🦜 The bridge stands! ${n(eq)}`, `🦜 الجسر واقف! ${n(eq)}`);
+  // the fox's swap (bridge 4+): order and grouping change, the sum does not
+  if (L().fox) {
+    await sleep(900); SFX.sneak(); banner(T('🦊 The fox swaps the planks!', '🦊 الثعلب بيبدّل الألواح!'));
+    await anim(900, t => drawScene({ fox: 120 + 200 * t }));
+    k.slots = k.slots.map(pr => pr.slice().reverse()).reverse(); drawWork();
+    const sums2 = k.slots.map(pr => pr.map(id => k.planks[id].v)), eq2 = sums2.map(([a, b]) => `(${fmt(a)} + ${fmt(b)})`).join(' + ') + ` = ${fmt(total)}`;
+    drawScene({ foxAngry: true });
+    $('#say').innerHTML = T(`🦜 He changed the order: ${n(eq2)}. Still ${n(fmt(total))}! In addition, the order and the grouping do not change the sum.`, `🦜 غيّر الترتيب: ${n(eq2)}. برضه ${n(fmt(total))}! في الجمع، الترتيب والتجميع ما بيغيّروش المجموع.`);
+    await sleep(2200);
+  }
+  await crossAndNext();
+}
+async function crossAndNext() {
+  SFX.march(); await anim(1500, t => drawScene({ cross: t, fixed: true }));
+  S.bi++;
+  if (S.bi >= L().plan.length) { win(); return; }
+  nextBridge();
+}
+function nextBridge() {
+  const kind = L().plan[S.bi];
+  S.task = kind === 'trap' ? makeTrap() : makeBuild(); S.sel = -1; S.hintN = 0;
+  drawOrder(); drawWork(); drawCombo(); drawScene(); startTimer(); S.busy = false;
+  if (kind === 'trap') { banner(T('🦊 A subtraction bridge!', '🦊 جسر طرح!')); $('#say').innerHTML = T('🦜 The fox says brackets never matter. Test it on this subtraction bridge!', '🦜 الثعلب بيقول القوسين مش مهمين أبدًا. جرّب كلامه على جسر الطرح ده!'); }
+  else $('#say').innerHTML = pick([T('🦜 Which planks make whole tens together?', '🦜 أي لوحين مع بعض يعملوا عشرات كاملة؟'), T('🦜 Look at the ones digits: which two make 10?', '🦜 بُص على رقم الآحاد: أي اتنين مجموعهم 10؟')]);
+}
+function hint() {
+  if (S.busy || !S.started) return;
+  const k = S.task; S.hintN++;
+  let h;
+  if (k.t === 'trap') h = T('Work from the left: first the two numbers on the left, then subtract the last one.', 'احسب من الشمال: الأول العددين اللي على الشمال، وبعدين اطرح الأخير.');
+  else if (S.hintN === 1) h = T('Look only at the ones digits: 7 goes with 3, 6 with 4, 8 with 2… and a round number goes with 0.', 'بُص على رقم الآحاد بس: 7 مع 3، و6 مع 4، و8 مع 2… والعدد المدوّر مع 0.');
+  else { const left = k.planks.filter(p => p.at == null && p.v % 10 !== 0); h = left.length ? T(`What completes ${n(fmt(left[0].v))} to the next tens?`, `إيه اللي يكمّل ${n(fmt(left[0].v))} لأقرب عشرات أكبر؟`) : T('Put the round number with the zero.', 'حط العدد المدوّر مع الصفر.'); }
+  $('#say').innerHTML = '🦜 ' + h;
+}
+
+/* ---------- bridges ---------- */
+function startLevel() {
+  S.t0 = Date.now(); S.croc = 0; S.misses = 0; S.streak = 0; S.bi = 0;
+  $('#lvl').textContent = S.lvl + 1;
+  if (L().boss) banner(T('🌉 The long bridge: 3 pillars!', '🌉 الجسر الطويل: 3 أعمدة!'));
+  if (A.ctx && A.mode !== 'run') music('run');
+  nextBridge();
+}
+async function win() {
+  S.busy = true; const stars = S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1, pts = 20 + stars * 10;
+  S.score += pts; $('#score').textContent = S.score; music('off'); SFX.win(); drawScene({ win: true, croc: 'dizzy', msg: T('All the ants crossed!', 'كل النمل عدّى!') });
+  saveWin(stars, pts); await sleep(1500); showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+async function lose() {
+  S.busy = true; music('off'); SFX.lose(); quake(); drawScene({ croc: 'bite', cx: 222, msg: T('Chomp! The crocodile bit the bridge', 'هام! التمساح عض الجسر') });
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+  await sleep(1500); showEnd('lose');
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['happy', T('The ants reached the sugar!', 'النمل وصل للسكر!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T('A wider river is next… ready?', 'النهر اللي جاي أعرض… جاهز؟'), T('Next bridge ➜', 'الجسر اللي بعده ⬅')],
+    all: ['happy', T('Master bridge builder!', 'مهندس الجسور الماهر!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You use the properties of addition like a pro!`, `مجموع نقطك ${n(S.score)}. بقيت بتستخدم خواص الجمع زي المحترفين!`), T('Play again', 'العب من الأول')],
+    lose: ['bite', T('The crocodile won this time', 'التمساح كسب المرة دي'), '', T('Pair the ones digits that make 10, and put a round number with the zero. Try again!', 'جمّع أرقام الآحاد اللي مجموعها 10، وحط العدد المدوّر مع الصفر. جرّب تاني!'), T('Try again', 'جرّب تاني')]
+  }[kind];
+  $('#endArt').innerHTML = (kind === 'lose' ? '' : '<div class="rays"></div>') + `<img src="${src(cfg[0])}" alt="">`;
+  $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLevel(); };
+}
+/* progress: SI.chProf('mg4u2').bridge = { lvl: next bridge set, best: highest set won (1-6), stars: [per set] } */
+function saveWin(stars, pts) {
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.bridge = c.bridge || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+
+/* ---------- music and sound (Web Audio, no files): a light, bouncy riverside tune; faster as the crocodile comes ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .55 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 2400, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol, from, to) { const c = A.ctx, b = c.createBuffer(1, Math.max(1, c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.setValueAtTime(from, t); f.frequency.exponentialRampToValueAtTime(to, t + dur); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(f); f.connect(g); g.connect(A.master); s.start(t); }
+const TUNE = [67, 71, 74, 0, 72, 71, 69, 0, 67, 69, 71, 72, 74, 0, 71, 0];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const bpm = 104 + S.croc * 12 + (L().boss ? 8 : 0), spb = 60 / bpm / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    if (i % 4 === 0) tone(43, t, spb * 1.6, { type: 'triangle', vol: .13, cut: 500 });
+    if (i % 4 === 2) tone(50, t, spb * 1.2, { type: 'triangle', vol: .09, cut: 500 });
+    if (TUNE[i]) tone(TUNE[i], t, spb * .7, { type: 'triangle', vol: .07, cut: 2000 });
+    if (S.croc >= 3 && i % 2 === 1) tone(40, t, .08, { type: 'square', vol: .03, cut: 300 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null; if (mode === 'run') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  click() { if (!ac()) return; tone(84, A.ctx.currentTime, .05, { type: 'square', vol: .04, cut: 4000 }); },
+  place() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .06, .25, 1200, 500); tone(60, t, .08, { type: 'sine', vol: .12 }); },
+  strong() { if (!ac()) return; const t = A.ctx.currentTime; [72, 76, 79].forEach((m, i) => tone(m, t + i * .07, .25, { type: 'triangle', vol: .13 })); noise(t, .1, .15, 700, 300); },
+  crack() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .5, .4, 2500, 200); tone(45, t, .3, { type: 'sawtooth', vol: .08, cut: 600, glide: -6 }); },
+  splash() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .5, .3, 3000, 500); tone(38, t + .1, .4, { type: 'sine', vol: .2 }); },
+  throw() { if (!ac()) return; noise(A.ctx.currentTime, .3, .2, 1500, 600); },
+  bonk() { if (!ac()) return; const t = A.ctx.currentTime; tone(60, t, .2, { type: 'square', vol: .1, cut: 900, glide: -12 }); tone(84, t + .15, .25, { type: 'sine', vol: .1 }); },
+  sneak() { if (!ac()) return; const t = A.ctx.currentTime; [76, 72, 76, 72].forEach((m, i) => tone(m, t + i * .14, .1, { type: 'sine', vol: .07 })); },
+  march() { if (!ac()) return; const t = A.ctx.currentTime; for (let i = 0; i < 10; i++) noise(t + i * .14, .03, .08, 5000, 3000); },
+  tick() { if (!ac()) return; tone(93, A.ctx.currentTime, .04, { type: 'square', vol: .05, cut: 5000 }); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [67, 71, 74, 79, 83, 86].forEach((m, i) => tone(m, t + i * .1, .5, { type: 'triangle', vol: .16 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [67, 66, 65, 60].forEach((m, i) => tone(m, t + i * .28, .5, { type: 'triangle', vol: .15, cut: 1200 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .55 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+$('#hint').onclick = hint;
+$('#start').onclick = () => { $('#intro').hidden = true; S.started = true; music('run'); startTimer(); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+window.__bridge = S; window.__bridgeApi = { startLevel, makeBuild, makeTrap, LEVELS,
+  /* the right moves for the current bridge: [[plankId, pillar, side], …] (pairs whose sum is whole tens) */
+  plan: () => { const k = S.task, free = k.planks.filter(p => p.at == null), out = [], used = new Set();
+    k.slots.forEach((pr, p) => { if (k.ok[p]) return;
+      const have = pr.findIndex(id => id != null);
+      if (have >= 0) { const v = k.planks[pr[have]].v, b = free.find(x => !used.has(x.id) && (v + x.v) % 10 === 0); if (b) { used.add(b.id); out.push([b.id, p, 1 - have]); } return; }
+      for (const a of free) { if (used.has(a.id)) continue; const b = free.find(x => x.id !== a.id && !used.has(x.id) && (a.v + x.v) % 10 === 0); if (b) { used.add(a.id); used.add(b.id); out.push([a.id, p, 0], [b.id, p, 1]); break; } } });
+    return out; } };
+startLevel();
+})();
+</script>
+</body>
+</html>
