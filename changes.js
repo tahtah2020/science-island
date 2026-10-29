@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-10-30', title: 'The Ants’ Bridge made clearer',
+    items: [
+      { text: 'The Ants’ Bridge: each pillar shows its number, one tap puts a plank on the glowing pillar, bigger numbered pillars on the bridge, the ants walk on the bank', links: [{ label: 'The Ants’ Bridge', href: 'math-bridge.html', ch: 'mg4u2' }] }
+    ] },
   { date: '2026-10-29', title: 'The Ants’ Bridge (Grade 4 math adventure)',
     items: [
       { text: 'Math Grade 4 Unit 2 lesson 1: pair number planks into whole tens on each pillar (commutative, associative, adding zero), watch the fox\'s swaps keep the sum, and fix his brackets on a subtraction bridge', links: [{ label: 'The Ants’ Bridge', href: 'math-bridge.html', ch: 'mg4u2' }] }

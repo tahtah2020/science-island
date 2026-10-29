@@ -61,7 +61,10 @@ bdi{font-weight:900;color:var(--pri)}
 .slot.full{border:2px solid var(--wood);background:linear-gradient(#e9c28e,#d5a466);color:#3b2a16}
 .slot.want{border-color:var(--gold);background:#fff3c4;animation:pulse 1s infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 3px #f2b13466}}
-.res{font:900 15px Nunito,sans-serif;color:var(--ink);min-height:20px}
+.res{font:900 15px Nunito,sans-serif;color:var(--ok);min-height:18px}
+.need{font:900 26px Nunito,sans-serif;color:#7a4e12;line-height:1.1}
+.pil.act{border-color:var(--gold);background:#fff6d8;box-shadow:0 0 0 3px #f2b13455}
+.slot{cursor:default}.slot.full{cursor:pointer}
 .pil.ok .res{color:var(--ok)}
 @keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .trayl{font-weight:900;font-size:13px;color:var(--ink);margin:2px 2px 4px}
@@ -133,9 +136,9 @@ bdi{font-weight:900;color:var(--pri)}
 
 <div class="veil" id="end" hidden><div class="box"><div id="endArt" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261029a"></script>
-<script src="chapters.js?v=20261029a"></script>
-<script src="common.js?v=20261029a"></script>
+<script src="firebase-config.js?v=20261030a"></script>
+<script src="chapters.js?v=20261030a"></script>
+<script src="common.js?v=20261030a"></script>
 <script>
 (() => {
 'use strict';
@@ -151,10 +154,10 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const fmt = x => Number(x).toLocaleString('en-US');
 document.title = T('The Ants’ Bridge · Properties of Addition', 'جسر النمل المتوازن · خواص عملية الجمع');
 $('#rules').innerHTML = [
-  T('Each stone pillar holds two planks in brackets. It stands only if their sum is <b>whole tens</b> (10, 20, 30…).', 'كل عمود حجري بيشيل لوحين بين قوسين. العمود يقف بس لو مجموعهم <b>عشرات كاملة</b> (10، 20، 30…).'),
-  T('Tap a plank, then its place on a pillar. Change the order and the grouping to make tens!', 'اضغط على لوح، وبعدين على مكانه في العمود. غيّر الترتيب والتجميع عشان تكوّن عشرات!'),
-  T('A weak pillar or ants that arrive before the bridge = the crocodile comes closer 🐊. <b>5 steps</b> and he bites the bridge!', 'عمود ضعيف أو النمل يوصل قبل الجسر = التمساح يقرّب 🐊. <b>5 خطوات</b> ويعض الجسر!'),
-  T('3 strong pillars in a row = a pebble for the crocodile! 🪨', '3 أعمدة قوية ورا بعض = حصاية للتمساح! 🪨')].map(x => `<li>${x}</li>`).join('');
+  T('Each stone pillar shows a number. Pick <b>two planks that add up to it</b>.', 'كل عمود حجري عليه رقم. اختار <b>لوحين مجموعهم يساوي الرقم ده</b>.'),
+  T('Just tap a plank: it goes on the glowing pillar. Tap a plank on a pillar to take it back.', 'اضغط على اللوح بس: هيروح على العمود اللي بينوّر. ولو عايز ترجّعه اضغط عليه تاني.'),
+  T('A wrong pair or ants that reach the river first = the crocodile comes closer 🐊. <b>5 steps</b> and he bites!', 'لوحين غلط أو النمل يوصل النهر قبل الجسر = التمساح يقرّب 🐊. <b>5 خطوات</b> ويعض!'),
+  T('3 right pillars in a row = a pebble for the crocodile! 🪨', '3 أعمدة صح ورا بعض = حصاية للتمساح! 🪨')].map(x => `<li>${x}</li>`).join('');
 $('#start').textContent = T('Let’s build! 🔨', 'يلا نبني 🔨');
 
 /* six bridges, one small new thing each (owner's rule): kinds per bridge set = 'build' | 'trap'; pairs = how a pillar's two planks are made */
@@ -169,19 +172,29 @@ const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).bridge || {}).lv
   task: null, sel: -1, deadline: 0, hintN: 0 };
 const L = () => LEVELS[S.lvl];
 
-/* a pair whose sum is whole tens */
+/* a pair of planks for one pillar (its sum is the pillar's number) */
 function makePair(kind) {
-  if (kind === 'd') { const a = 1 + rnd(9); return [a, 10 - a]; }
+  if (kind === 'd') { const a = 2 + rnd(8), b = 1 + rnd(9); return [a, b]; }   // two digits, any sum (7 + 6 = 13)
   if (kind === 'h') { let a; do { a = 101 + rnd(199); } while (a % 10 === 0); const b = (10 - a % 10) + 10 * rnd(5); return [a, b]; }
   let a; do { a = 11 + rnd(79); } while (a % 10 === 0);                     // two-digit + one-digit to the next ten (17 + 3)
   return [a, 10 - a % 10];
 }
 function makeBuild() {
-  const lv = L(), pairs = [];
-  for (let i = 0; i < lv.pillars; i++) pairs.push(makePair(pick(lv.pairs)));
-  if (lv.zero) { const r = 10 * (1 + rnd(9)); pairs[pairs.length - 1] = [r, 0]; }   // the identity pillar: (40 + 0)
-  const planks = shuffle(pairs.flat()).map((v, i) => ({ v, id: i, at: null }));
-  return { t: 'build', planks, slots: Array.from({ length: lv.pillars }, () => [null, null]), ok: Array(lv.pillars).fill(false) };
+  const lv = L();
+  for (let guard = 0; guard < 300; guard++) {
+    const pairs = [];
+    for (let i = 0; i < lv.pillars; i++) pairs.push(makePair(pick(lv.pairs)));
+    if (lv.zero) { const r = 10 * (1 + rnd(9)); pairs[pairs.length - 1] = [r, 0]; }   // the identity pillar: (40 + 0)
+    const targets = pairs.map(([a, b]) => a + b), vals = pairs.flat();
+    if (new Set(targets).size < targets.length || new Set(vals).size < vals.length) continue;
+    // only the intended pair may reach each target, so a child never gets stuck
+    let clash = false;
+    for (let i = 0; i < vals.length && !clash; i++) for (let j = i + 1; j < vals.length; j++) { const t = targets.indexOf(vals[i] + vals[j]); if (t >= 0 && !(pairs[t].includes(vals[i]) && pairs[t].includes(vals[j]))) { clash = true; break; } }
+    if (clash) continue;
+    const order = shuffle(vals), planks = order.map((v, i) => ({ v, id: i, at: null }));
+    return { t: 'build', planks, order, targets, slots: Array.from({ length: lv.pillars }, () => [null, null]), ok: Array(lv.pillars).fill(false), active: 0 };
+  }
+  return makeBuild();
 }
 function makeTrap() {
   const a = 10 * (2 + rnd(8)), b = 10 * (1 + rnd(a / 10 - 1)), c = 1 + rnd(Math.min(9, b - 1));   // a > b > c, all positive
@@ -193,8 +206,8 @@ function drawOrder() {
   const k = S.task;
   $('#order').className = 'order' + (k.t === 'trap' ? ' trap' : '');
   $('#order').innerHTML = (k.t === 'build'
-    ? `${T('Build the bridge: every pillar must make whole tens', 'ابنِ الجسر: كل عمود لازم يكوّن عشرات كاملة')}<small>${T(`Bridge ${S.bi + 1} of ${L().plan.length}`, `جسر ${S.bi + 1} من ${L().plan.length}`)}</small>`
-    : `${T('🦊 The fox moved the brackets!', '🦊 الثعلب حرّك القوسين!')}<small>${T('A subtraction bridge must match its sign (worked from the left)', 'جسر الطرح لازم يساوي اللافتة (بنحسب من الشمال)')}</small>`)
+    ? `${T('Two planks for each pillar: their sum = the pillar’s number', 'لكل عمود لوحين: مجموعهم = الرقم اللي على العمود')}<small>${T(`Bridge ${S.bi + 1} of ${L().plan.length}`, `جسر ${S.bi + 1} من ${L().plan.length}`)}</small>`
+    : `${T('🦊 The fox moved the brackets!', '🦊 الثعلب حرّك القوسين!')}<small>${T('Tap the two numbers we must subtract first (from the left)', 'اضغط على العددين اللي لازم نبدأ بيهم (من الشمال)')}</small>`)
     + `<div class="march" id="march"><i></i><b>🐜</b></div>`;
 }
 function drawWork() {
@@ -212,17 +225,18 @@ function drawWork() {
   const np = k.slots.length;
   let h = `<div class="pillars" style="grid-template-columns:repeat(${np},minmax(0,1fr))">`;
   k.slots.forEach((pair, p) => {
-    const sum = pair[0] != null && pair[1] != null ? k.planks[pair[0]].v + k.planks[pair[1]].v : null;
-    h += `<div class="pil${k.ok[p] ? ' ok' : ''}" id="pil${p}"><div class="lab">${T('Pillar', 'العمود')} ${p + 1}</div><div class="pair">(`
-      + [0, 1].map(s => { const id = pair[s]; return `<button type="button" class="slot${id != null ? ' full' : S.sel >= 0 ? ' want' : ''}" data-p="${p}" data-s="${s}" aria-label="${T('Place', 'مكان')}">${id != null ? fmt(k.planks[id].v) : ''}</button>`; }).join('<span>+</span>')
-      + `)</div><div class="res">${k.ok[p] ? `= ${fmt(sum)} ✔` : ''}</div></div>`;
+    const act = !k.ok[p] && k.active === p;
+    h += `<div class="pil${k.ok[p] ? ' ok' : ''}${act ? ' act' : ''}" id="pil${p}" data-p="${p}"><div class="lab">${T('Pillar', 'العمود')} ${p + 1}${act ? ' ⬇' : ''}</div><div class="need">${fmt(k.targets[p])}</div><div class="pair">`
+      + [0, 1].map(s => { const id = pair[s]; return `<button type="button" class="slot${id != null ? ' full' : ''}" data-p="${p}" data-s="${s}" aria-label="${T('Place', 'مكان')}">${id != null ? fmt(k.planks[id].v) : '?'}</button>`; }).join('<span>+</span>')
+      + `</div><div class="res">${k.ok[p] ? '✔' : ''}</div></div>`;
   });
-  h += `</div><div class="trayl">${T('🪵 Planks', '🪵 الألواح')}</div><div class="tray">`;
-  k.planks.filter(pl => pl.at == null).forEach(pl => { h += `<button type="button" class="pl${pl.v === 0 ? ' zero' : ''}${S.sel === pl.id ? ' sel' : ''}" data-id="${pl.id}">${fmt(pl.v)}</button>`; });
+  h += `</div><div class="trayl">${T('🪵 Tap a plank:', '🪵 اضغط على لوح:')}</div><div class="tray">`;
+  k.planks.filter(pl => pl.at == null).forEach(pl => { h += `<button type="button" class="pl${pl.v === 0 ? ' zero' : ''}" data-id="${pl.id}">${fmt(pl.v)}</button>`; });
   h += '</div>';
   $('#work').innerHTML = h;
-  $('#work').querySelectorAll('.pl').forEach(b => b.onclick = () => { if (S.busy) return; S.sel = S.sel === +b.dataset.id ? -1 : +b.dataset.id; SFX.click(); drawWork(); });
-  $('#work').querySelectorAll('.slot').forEach(b => b.onclick = () => placeAt(+b.dataset.p, +b.dataset.s));
+  $('#work').querySelectorAll('.pl').forEach(b => b.onclick = () => placePlank(+b.dataset.id));
+  $('#work').querySelectorAll('.slot.full').forEach(b => b.onclick = e => { e.stopPropagation(); takeBack(+b.dataset.p, +b.dataset.s); });
+  $('#work').querySelectorAll('.pil').forEach(b => b.onclick = () => { const p = +b.dataset.p; if (S.busy || k.ok[p] || k.active === p) return; k.active = p; SFX.click(); drawWork(); drawScene(); });
 }
 function drawCombo() { $('#combo').innerHTML = `🪨 ` + [0, 1, 2].map(i => `<i class="${i < S.streak ? 'on' : ''}"></i>`).join(''); }
 
@@ -236,7 +250,7 @@ Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
 const im = (k, x, y, w, h, extra = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extra}/>`;
 const GL = 127, GR = 311, DECK = 143;
 const CROC = [372, 344, 316, 288, 258, 222];
-const ant = (x, y, s = 1) => `<g transform="translate(${x},${y}) scale(${s})" class="walk"><ellipse cx="-4" cy="0" rx="2.6" ry="2" fill="#2b1d14"/><ellipse cx="0" cy="0" rx="1.8" ry="1.5" fill="#2b1d14"/><circle cx="3.4" cy="-.8" r="1.8" fill="#2b1d14"/><path d="M-3 1.5 l-1.5 2.5 M0 1.4 l0 2.6 M2 1.3 l1.5 2.5 M4 -2 l2 -2.5" stroke="#2b1d14" stroke-width=".7" fill="none"/></g>`;
+const ant = (x, y, s = 1) => `<g transform="translate(${x},${y}) scale(${s})"><g class="walk"><ellipse cx="-4" cy="0" rx="2.6" ry="2" fill="#2b1d14"/><ellipse cx="0" cy="0" rx="1.8" ry="1.5" fill="#2b1d14"/><circle cx="3.4" cy="-.8" r="1.8" fill="#2b1d14"/><path d="M-3 1.5 l-1.5 2.5 M0 1.4 l0 2.6 M2 1.3 l1.5 2.5 M4 -2 l2 -2.5" stroke="#2b1d14" stroke-width=".7" fill="none"/></g></g>`;
 function pillarX(p, np) { const w = (GR - GL) / np; return GL + w * (p + .5); }
 function drawScene(o = {}) {
   const k = S.task, np = L().pillars;
@@ -255,11 +269,12 @@ function drawScene(o = {}) {
   // pillars and planks (a build task), or the subtraction bridge (a trap)
   if (k && k.t === 'build') {
     k.slots.forEach((pair, p) => {
-      const x = pillarX(p, np), w = (GR - GL) / np, bad = o.bad === p;
-      h += im(bad ? 'pbad' : 'pok', x - 9, DECK - 2, 18, 36, `opacity="${k.ok[p] || bad ? 1 : .45}"`);
-      if (k.ok[p]) { h += im('plank', x - w / 2 - 1, DECK - 7, w + 2, 10);
-        const [a, b] = pair.map(id => k.planks[id].v);
-        h += `<text x="${x}" y="${DECK - 12}" font-size="9" font-weight="900" text-anchor="middle" fill="#3b2a16" font-family="Nunito" direction="ltr" unicode-bidi="embed" stroke="#fffaf0" stroke-width="2.5" paint-order="stroke">(${fmt(a)} + ${fmt(b)}) = ${fmt(a + b)}</text>`; }
+      const x = pillarX(p, np), w = (GR - GL) / np, bad = o.bad === p, act = k.active === p && !k.ok[p];
+      h += im(bad ? 'pbad' : 'pok', x - 12, DECK - 4, 24, 40);
+      if (k.ok[p]) h += im('plank', x - w / 2 - 1, DECK - 8, w + 2, 11);
+      else h += `<rect x="${x - w / 2 + 2}" y="${DECK - 7}" width="${w - 4}" height="8" rx="2" fill="#fffaf0" fill-opacity=".35" stroke="${act ? '#f2b134' : '#fffaf0'}" stroke-width="${act ? 2 : 1.2}" stroke-dasharray="4 3"/>`;
+      // the pillar's number on a little sign
+      h += `<g><rect x="${x - 17}" y="${DECK - 27}" width="34" height="15" rx="4" fill="${k.ok[p] ? '#2e9e6b' : act ? '#f2b134' : '#8a5a2b'}" stroke="#5a3d1a" stroke-width=".8"/><text x="${x}" y="${DECK - 16}" font-size="10.5" font-weight="900" text-anchor="middle" fill="#fff" font-family="Nunito" direction="ltr">${fmt(k.targets[p])}</text></g>`;
     });
   } else if (k && k.t === 'trap') {
     const g = k.group === 'left', v = g ? (k.a - k.b) - k.c : k.a - (k.b - k.c), ok = v === k.target;
@@ -271,8 +286,8 @@ function drawScene(o = {}) {
   if (o.fox != null) h += im('fox', o.fox, 96, 46, 44);
   if (o.foxAngry) h += im('angry', 316, 98, 44, 40);
   // ants: a column marching to the river (the timer), or crossing the bridge
-  if (o.cross != null) { for (let i = 0; i < 8; i++) { const x = 70 + (o.cross * 330) - i * 12; if (x > 60 && x < 400) h += ant(x, x > GL && x < GR ? DECK - 6 : 138 - (x < GL ? 0 : 0), 1.2); } }
-  else { const m = o.march ?? 0; for (let i = 0; i < 6; i++) { const x = 52 + m * 70 - i * 9; if (x > 40) h += ant(x, 137, 1.1); } }
+  if (o.cross != null) { for (let i = 0; i < 8; i++) { const x = 70 + (o.cross * 330) - i * 14; if (x > 60 && x < 400) h += ant(x, x > GL - 4 && x < GR + 4 ? DECK - 10 : 137, 1.6); } }
+  else { const m = o.march ?? 0; for (let i = 0; i < 6; i++) { const x = 58 + m * 62 - i * 11; if (x > 44) h += ant(x, 137, 1.6); } }
   if (o.pebble != null) { h += im('thrower', 132, 110, 30, 30); const t = o.pebble; h += `<circle cx="${150 + (cx + 30 - 150) * t}" cy="${118 - Math.sin(t * Math.PI) * 40 + t * 32}" r="3.5" fill="#8a8f99" stroke="#5c616a"/>`; }
   if (o.win) h += im('cheer', 340, 106, 44, 34);
   // crocodile meter
@@ -303,31 +318,36 @@ async function late() {
 }
 
 /* ---------- moves ---------- */
-async function placeAt(p, s) {
+function takeBack(p, s) {
   if (S.busy || !S.started) return;
-  const k = S.task, cur = k.slots[p][s];
-  if (k.ok[p]) return;
-  if (cur != null) { k.planks[cur].at = null; k.slots[p][s] = null; SFX.click(); drawWork(); return; }   // take a plank back
-  if (S.sel < 0) { $('#say').innerHTML = T('🦜 First tap a plank, then its place.', '🦜 الأول اضغط على لوح، وبعدين على مكانه.'); return; }
-  const pl = k.planks[S.sel]; pl.at = [p, s]; k.slots[p][s] = pl.id; S.sel = -1; SFX.place(); drawWork();
+  const k = S.task, id = k.slots[p][s]; if (k.ok[p] || id == null) return;
+  k.planks[id].at = null; k.slots[p][s] = null; k.active = p; SFX.click(); drawWork(); drawScene();
+}
+async function placePlank(id) {
+  if (S.busy || !S.started) return;
+  const k = S.task, p = k.active; if (p == null || k.ok[p]) return;
+  const s = k.slots[p][0] == null ? 0 : 1; if (k.slots[p][s] != null) return;
+  k.planks[id].at = [p, s]; k.slots[p][s] = id; SFX.place(); drawWork(); drawScene();
   if (k.slots[p][0] == null || k.slots[p][1] == null) return;
-  // the pillar is full: does it make whole tens?
-  const [a, b] = k.slots[p].map(id => k.planks[id].v), sum = a + b;
+  // the pillar has two planks: is their sum the pillar's number?
+  const [a, b] = k.slots[p].map(i => k.planks[i].v), sum = a + b, need = k.targets[p];
   S.busy = true;
-  if (sum % 10 === 0) {
-    k.ok[p] = true; S.streak++; S.score += 5; $('#score').textContent = S.score; SFX.strong(); drawWork(); drawScene();
+  if (sum === need) {
+    k.ok[p] = true; S.streak++; S.score += 5; $('#score').textContent = S.score; SFX.strong();
+    k.active = k.ok.findIndex(v => !v); if (k.active < 0) k.active = null;
+    drawWork(); drawScene();
     $('#say').innerHTML = (b === 0 || a === 0)
       ? T(`🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}: adding zero keeps the number the same!`, `🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}: جمع الصفر بيخلّي العدد زي ما هو!`)
-      : T(`🦜 Strong! ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}`, `🦜 عمود قوي! ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}`);
+      : T(`🦜 Right! ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}`, `🦜 صح! ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}`);
     await comboCheck();
     if (k.ok.every(Boolean)) { await bridgeDone(); return; }
     S.busy = false; return;
   }
-  // weak: it cracks, the planks go back to the tray
+  // wrong pair: the pillar cracks, the planks go back (we say only bigger / smaller, never the answer)
   SFX.crack(); $('#pil' + p).classList.add('bad'); drawScene({ bad: p });
-  $('#say').innerHTML = T(`🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)} is not whole tens: the pillar cracked! Look for a partner that completes ${n(fmt(a))} to tens.`, `🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)} مش عشرات كاملة: العمود اتشقق! دوّر على لوح يكمّل ${n(fmt(a))} لعشرات.`);
-  await sleep(700);
-  k.slots[p].forEach(id => { k.planks[id].at = null; }); k.slots[p] = [null, null]; drawWork();
+  $('#say').innerHTML = T(`🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}: that is ${sum > need ? 'MORE' : 'LESS'} than ${n(fmt(need))}. The pillar cracked!`, `🦜 ${n(`${fmt(a)} + ${fmt(b)} = ${fmt(sum)}`)}: ده ${sum > need ? 'أكبر من' : 'أصغر من'} ${n(fmt(need))}. العمود اتشقق!`);
+  await sleep(800);
+  k.slots[p].forEach(i => { k.planks[i].at = null; }); k.slots[p] = [null, null]; drawWork();
   await mistake();
 }
 function moveBrackets(which) {
@@ -371,8 +391,9 @@ async function bridgeDone() {
   const k = S.task, sums = k.slots.map(pr => pr.map(id => k.planks[id].v));
   const total = sums.reduce((s, [a, b]) => s + a + b, 0);
   S.score += 10; $('#score').textContent = S.score;
-  const eq = sums.map(([a, b]) => `(${fmt(a)} + ${fmt(b)})`).join(' + ') + ` = ${fmt(total)}`;
-  $('#say').innerHTML = T(`🦜 The bridge stands! ${n(eq)}`, `🦜 الجسر واقف! ${n(eq)}`);
+  const eq = sums.map(([a, b]) => `(${fmt(a)} + ${fmt(b)})`).join(' + ') + ` = ${fmt(total)}`, eq0 = k.order.map(fmt).join(' + ') + ` = ${fmt(total)}`;
+  $('#say').innerHTML = T(`🦜 The bridge stands! The planks came as ${n(eq0)}; we changed the order and grouping: ${n(eq)}. Same sum!`, `🦜 الجسر واقف! الألواح كانت ${n(eq0)}، وإحنا غيّرنا الترتيب والتجميع: ${n(eq)}. نفس المجموع!`);
+  await sleep(1400);
   // the fox's swap (bridge 4+): order and grouping change, the sum does not
   if (L().fox) {
     await sleep(900); SFX.sneak(); banner(T('🦊 The fox swaps the planks!', '🦊 الثعلب بيبدّل الألواح!'));
@@ -403,8 +424,10 @@ function hint() {
   const k = S.task; S.hintN++;
   let h;
   if (k.t === 'trap') h = T('Work from the left: first the two numbers on the left, then subtract the last one.', 'احسب من الشمال: الأول العددين اللي على الشمال، وبعدين اطرح الأخير.');
-  else if (S.hintN === 1) h = T('Look only at the ones digits: 7 goes with 3, 6 with 4, 8 with 2… and a round number goes with 0.', 'بُص على رقم الآحاد بس: 7 مع 3، و6 مع 4، و8 مع 2… والعدد المدوّر مع 0.');
-  else { const left = k.planks.filter(p => p.at == null && p.v % 10 !== 0); h = left.length ? T(`What completes ${n(fmt(left[0].v))} to the next tens?`, `إيه اللي يكمّل ${n(fmt(left[0].v))} لأقرب عشرات أكبر؟`) : T('Put the round number with the zero.', 'حط العدد المدوّر مع الصفر.'); }
+  else { const p = k.active ?? 0, need = k.targets[p], have = k.slots[p].find(i => i != null);
+    h = have != null ? T(`${n(fmt(k.planks[have].v))} + ? = ${n(fmt(need))}. Which plank completes it?`, `${n(fmt(k.planks[have].v))} + ؟ = ${n(fmt(need))}. أي لوح يكمّله؟`)
+      : S.hintN === 1 ? T(`Start with the biggest plank that is less than ${n(fmt(need))}, then find what completes it.`, `ابدأ بأكبر لوح أصغر من ${n(fmt(need))}، وبعدين دوّر على اللي يكمّله.`)
+      : T('Look at the ones digits: they must add up to the ones digit of the pillar’s number.', 'بُص على رقم الآحاد: لازم مجموعهم يدّي رقم آحاد العمود.'); }
   $('#say').innerHTML = '🦜 ' + h;
 }
 
@@ -493,12 +516,10 @@ $('#hint').onclick = hint;
 $('#start').onclick = () => { $('#intro').hidden = true; S.started = true; music('run'); startTimer(); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
 window.__bridge = S; window.__bridgeApi = { startLevel, makeBuild, makeTrap, LEVELS,
   /* the right moves for the current bridge: [[plankId, pillar, side], …] (pairs whose sum is whole tens) */
-  plan: () => { const k = S.task, free = k.planks.filter(p => p.at == null), out = [], used = new Set();
-    k.slots.forEach((pr, p) => { if (k.ok[p]) return;
-      const have = pr.findIndex(id => id != null);
-      if (have >= 0) { const v = k.planks[pr[have]].v, b = free.find(x => !used.has(x.id) && (v + x.v) % 10 === 0); if (b) { used.add(b.id); out.push([b.id, p, 1 - have]); } return; }
-      for (const a of free) { if (used.has(a.id)) continue; const b = free.find(x => x.id !== a.id && !used.has(x.id) && (a.v + x.v) % 10 === 0); if (b) { used.add(a.id); used.add(b.id); out.push([a.id, p, 0], [b.id, p, 1]); break; } } });
-    return out; } };
+  plan: () => { const k = S.task, p = k.active; if (p == null) return []; const need = k.targets[p], free = k.planks.filter(x => x.at == null);
+    const have = k.slots[p].find(i => i != null);
+    if (have != null) { const b = free.find(x => k.planks[have].v + x.v === need); return b ? [b.id] : []; }
+    for (const a of free) { const b = free.find(x => x.id !== a.id && a.v + x.v === need); if (b) return [a.id, b.id]; } return []; } };
 startLevel();
 })();
 </script>
