@@ -373,3 +373,4 @@ From the English school book, pages 80-91 (three lessons with Try and Exercise, 
 - `weatherlab.html` Arabic text now uses the book terms (غطاء السحب، سحب، ممطر، مثلج).
 
 <!-- Cloudflare Pages auto-deploy test: 2026-10-31 -->
+<!-- Cloudflare Pages auto-deploy test 2: 2026-10-31 -->
