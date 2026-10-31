@@ -371,3 +371,5 @@ From the English school book, pages 80-91 (three lessons with Try and Exercise, 
 - `science/questions_ch8_ar.js`: same 24 ideas and 76 phrasings as the English file (same ids, types, answers), in the Ministry Arabic book's words: غطاء السحب، مشمس، غائم، ممطر، مثلج، نقطة مرجعية، البوصلة، التنبؤ بالطقس، الخماسين. Lessons: السحب والطقس · حركة السحب · التنبؤ بالطقس (`lessonsAr` in chapters.js).
 - The Arabic book fixes the English book's contradictions: Exercise 1(1) (p85) lists 1, 6, 7 (answer 7) and 1(2) answers "sunny". The Arabic file still asks the printed rule (C23).
 - `weatherlab.html` Arabic text now uses the book terms (غطاء السحب، سحب، ممطر، مثلج).
+
+<!-- Cloudflare Pages auto-deploy test: 2026-10-31 -->
