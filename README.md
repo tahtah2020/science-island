@@ -122,6 +122,15 @@ Built from the owner's PDFs on Google Drive (`Motafawek/g4/science/unit 4-en.pdf
 - Maps and backgrounds `assets/map_g4c4.svg` … `map_g4c6.svg`, `bg_g4c4.svg` … `bg_g4c6.svg` from `science/tools/make_g4_maps.js`. `bookOrder: true` on the three chapters.
 - Arabic-book differences: 4-1 adds smooth vs rough surfaces (in the Arabic explanation only); 4-3 says «لوح التظليل» instead of sun-viewing glasses; Chapter 6's Arabic book prints example distances in its record tables (Arabic explanations only).
 
+### Grade 4 · Chapters 7 and 8 (English and Arabic, 1 Nov 2026)
+Same way as Chapters 4-6 (owner's PDFs `unit7 -en.pdf`, `unit 7 -ar.pdf`, `unit 8-en.pdf`, `unit 8 -ar.pdf`; pictures drawn in code). Grade 4 has no free idea letters left, so these ideas reuse letters with numbers from 11 (R11, C11, S11, G11, X11, X21…).
+- `questions_g4c7.js` / `_ar.js`: "The Force of Rubber" (pages 84-91): 9 ideas (R11-R15 stretch length, C11-C14 number of bands) plus 3 bonus ideas from the Column (felucca, power to snap back, Zafarana wind power plant)
+- `questions_g4c8.js` / `_ar.js`: "Soil, Water, and Life in Egypt" (pages 92-99): 10 ideas (S11-S16 particles and water, G11-G14 moving giant statues) plus 4 bonus ideas from the reference pages 100-103 (record card, air temperature, six inquiry steps, fair test)
+- New tap pictures: stretchLengths, bandCounts, soilGrains, soilBottles, statueMove (the ancient mural is not copied: the scene is drawn in code)
+- `rubber.html` (Rubber Band Racer): wind car → rubber band car (sail off, hook, launching pad, 0 cm); stretch 5, 10, 15 cm; 1 then 2 bands at the same 10 cm; Speed Round "farther or shorter?"
+- `soilstone.html` (Soil and Stone): sand and mud under a magnifying glass; two upside-down bottles with a stopwatch; farming by the Nile and in the desert; pulling a statue on a sled (combine forces, water makes the sand slippery); Speed Round "desert sand or Nile mud?"
+- Maps `map_g4c7.svg`, `map_g4c8.svg`, backgrounds `bg_g4c7.svg`, `bg_g4c8.svg` from `make_g4_maps.js`. The Arabic books print example distances in Chapter 7's record tables (not used).
+
 ## Grade 6
 Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2026/2027 (page n is the same in both books):
 - Chapter 1 "Conditions for Burning" / «شروط الاحتراق» (pages 6-17): `questions_g6c1.js` / `_ar.js`, 18 ideas from the three lessons (how things burn and air, the role of oxygen, air after burning), plus 4 bonus ideas ("Let's Expand" and the Column "Combustion and Future Energy"). The Column differs between the two books, so its bonus questions use only what both books say

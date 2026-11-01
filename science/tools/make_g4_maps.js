@@ -212,3 +212,39 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}`;
   b += '</svg>';
   save('bg_g4c6.svg', b);
 })();
+
+/* ---------- Chapter 7 · The Force of Rubber: launching pads and rubber band cars ---------- */
+(function () {
+  seed = 19;
+  let inside = `<ellipse cx="320" cy="1000" rx="260" ry="150" fill="#fbd9cf" opacity=".5"/><ellipse cx="900" cy="980" rx="240" ry="140" fill="#cfeaa6" opacity=".55"/><ellipse cx="960" cy="320" rx="260" ry="200" fill="#fbd9cf" opacity=".45"/>`;
+  for (let i = 0; i < 40; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040));
+  let s = island([[0, '#bfe59c'], [.5, '#cfeaa6'], [1, '#dcefc4']], ['#f6e3ae', '#ece7d8'], inside);
+  s += at(110, 1190, 2, A.launchPad(40, 1)) + at(820, 1090, 1.8, A.launchPad(60, 2)) + at(150, 680, 1.8, A.launchPad(30, 3)) + at(800, 580, 1.6, A.launchPad(50, 1));
+  s += at(260, 330, 1.4, A.windCar({ sail: 0 })) + at(980, 260, 1.3, A.windCar({ sail: 0 }));
+  s += sunAt(1110, 1170, 2.2) + cloud(1085, 118, 1.15, .95) + cloud(140, 110, .8, .85) + '</svg>';
+  save('map_g4c7.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde3dc"/><stop offset=".62" stop-color="#fdf3ef"/><stop offset=".63" stop-color="#e9d3ab"/><stop offset="1" stop-color="#d8bd8c"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>${cloud(260, 170, 1.5, .9)}${cloud(1100, 140, 1.1, .8)}`;
+  b += at(120, 900, 2.6, A.launchPad(60, 2)) + at(900, 900, 2.6, A.launchPad(40, 1));
+  save('bg_g4c7.svg', b + '</svg>');
+})();
+
+/* ---------- Chapter 8 · Soil, Water, and Life in Egypt: the Nile fields, the desert and a stone statue on a sled ---------- */
+(function () {
+  seed = 23;
+  let inside = `<path d="M560 80C520 300 640 520 560 760C500 940 600 1100 560 1240" fill="none" stroke="#8fd3ee" stroke-width="70" opacity=".7"/>
+    <ellipse cx="320" cy="640" rx="230" ry="420" fill="#6b4e32" opacity=".35"/><ellipse cx="900" cy="640" rx="260" ry="420" fill="#f1d9a0" opacity=".6"/>`;
+  for (let i = 0; i < 30; i++) inside += tuft(f(140 + rnd() * 340), f(240 + rnd() * 800), '#5f9548');
+  let s = island([[0, '#cfeaa6'], [.5, '#e9dcae'], [1, '#f3e3c8']], ['#f6e3ae', '#ece7d8'], inside);
+  s += at(240, 1150, 1.2, A.soilBottle({ soil: '#f1d9a0', drops: true, cup: 20 })) + at(330, 1150, 1.2, A.soilBottle({ soil: '#6b4e32', pool: true, cup: 4 }));
+  s += at(960, 1060, 1.3, A.grainsView(true)) + at(240, 560, 1.1, A.grainsView(false));
+  s += at(980, 600, 1.4, A.statueSled()) + [1010, 1040, 1070, 1100].map(x => at(x, 600, 1.1, A.worker({ lean: true }))).join('') + at(985, 600, 1.1, A.worker({ jar: true }));
+  s += sunAt(1110, 1170, 2.2) + cloud(1085, 118, 1.15, .95) + cloud(140, 110, .8, .85) + '</svg>';
+  save('map_g4c8.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe9f6"/><stop offset=".6" stop-color="#f6ead6"/><stop offset=".61" stop-color="#e9d3ab"/><stop offset="1" stop-color="#d8bd8c"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/><rect y="610" width="700" height="390" fill="#6b4e32" opacity=".55"/>${cloud(260, 170, 1.5, .9)}${cloud(1100, 140, 1.1, .8)}`;
+  b += at(1100, 900, 2.6, A.statueSled()) + [1140, 1180, 1220, 1260, 1300].map(x => at(x, 900, 2, A.worker({ lean: true }))).join('');
+  save('bg_g4c8.svg', b + '</svg>');
+})();

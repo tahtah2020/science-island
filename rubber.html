@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rubber Band Racer · The Force of Rubber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261101b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Rubber Band Racer.</noscript>
+<script src="firebase-config.js?v=20261101b"></script>
+<script src="chapters.js?v=20261101b"></script>
+<script src="common.js?v=20261101b"></script>
+<script src="science/g4_art.js?v=20261101b"></script>
+<script src="game_kit.js?v=20261101b"></script>
+<script>
+(() => {
+'use strict';
+/* Rubber Band Racer · the game of Grade 4, Chapter 7 "The Force of Rubber". Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up, lesson 7-1): turn the wind-powered car into a rubber band-powered car (take off the sail, the hook, the launching pad, 0 cm);
+                                  when does a rubber band make power?
+   Stage 2 (Missions): 1) stretch 5, 10, 15 cm from the same pad and measure (7-1); 2) one band, then two bands at the same 10 cm (7-2).
+   Stage 3 (Speed Round): farther or shorter?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 84-91).
+   The scene is set before every question (set()), so no picture is left over from the question before. */
+const A = window.G4ART, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const f1 = n => Math.round(n * 10) / 10;
+const ar = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const cm = n => T(`${n} cm`, `${ar(n)} سم`);
+
+const PAD = 40, GY = 232;
+const BASE = { mode: 'build', sail: true, hook: false, pad: false, zero: false, stretch: 0, n: 1, x: null, marks: [], tape: false };
+const sc = Object.assign({}, BASE);
+const set = o => { Object.assign(sc, BASE, o); g.paint(); };
+const label = (x, y, s, size = 14, fill = '#3a5c75') => `<text x="${x}" y="${y}" text-anchor="middle" font-size="${size}" font-weight="900" fill="${fill}" font-family="Nunito,Cairo,Arial,sans-serif">${s}</text>`;
+
+function build() {
+  return `<rect width="420" height="280" fill="#fbeee8"/><rect x="40" y="200" width="340" height="16" rx="4" fill="#a57b4c"/><path d="M60 216h14v64H60zM346 216h14v64h-14z" fill="#8a5f38"/>
+    ${at(210, 200, 1.8, A.windCar({ sail: sc.sail ? 2 : 0 }))}
+    ${sc.hook ? `<g transform="translate(210 200) scale(1.8)"><path d="M-44 -14h-8v-8" fill="none" stroke="#5b6f86" stroke-width="3" stroke-linecap="round"/></g>${label(110, 186, T('hook', 'الخطاف'), 13, '#5b6f86')}` : ''}`;
+}
+const px = c => c * 2.8;   // 1 cm of stretch drawn as 2.8 units
+function track() {
+  const carX = sc.x == null ? PAD + 20 + px(sc.stretch) + 48 : sc.x;
+  let bands = ''; if (sc.x == null) for (let i = 0; i < sc.n; i++) bands += `<path d="M${PAD + 4} ${GY - 30 - i * 3}L${f1(carX - 48)} ${GY - 22 - i * 2}" stroke="${['#e2603f', '#f2b134', '#7c5cc4'][i % 3]}" stroke-width="3" stroke-linecap="round"/>`;
+  const start = PAD + 20 + 48;
+  return `<rect width="420" height="280" fill="#e6f3f8"/><path d="M0 ${GY}h420v48H0z" fill="#e9d3ab"/><rect y="${GY}" width="420" height="5" fill="#d8bd8c"/>
+    <rect x="${PAD - 14}" y="${GY - 6}" width="130" height="8" rx="3" fill="#bcd0dd" stroke="#8fa9ba" stroke-width="1.6"/><rect x="${PAD - 6}" y="${GY - 44}" width="10" height="40" rx="3" fill="#5b6f86"/>
+    ${sc.zero ? `<path d="M${PAD + 20} ${GY + 4}v14" stroke="#e2603f" stroke-width="3"/>${label(PAD + 20, GY + 34, cm(0), 13, '#e2603f')}` : ''}
+    ${sc.stretch && sc.x == null ? label(PAD + 20 + px(sc.stretch) / 2, GY - 52, cm(sc.stretch), 15) : ''}
+    ${sc.marks.map(m => `<rect x="${m.x - 4}" y="${GY + 8}" width="8" height="14" rx="2" fill="${m.c}"/>`).join('')}
+    ${sc.tape && sc.x != null ? `<rect x="${start}" y="${GY + 26}" width="${f1(sc.x - start)}" height="10" rx="2" fill="#ffd24a" stroke="#d6a51e" stroke-width="1.6"/>` : ''}
+    ${bands}${at(carX, GY, 1, A.windCar({ sail: 0 }))}`;
+}
+const render = () => ({ build, track })[sc.mode]();
+
+const g = G4Game({ ch: 'g4c7', logo: '🏹', title: ['Rubber Band Racer', 'سباق الأشرطة المطاطية'], sub: ['Chapter 7 · The Force of Rubber', 'الفصل ٧ · قوة المطاط'],
+  bg: 'science/assets/bg_g4c7.svg', bgc: '#fde3dc', label: ['Reesho’s rubber band race', 'سباق ريشو بالأشرطة المطاطية'], render });
+const kw = g.kw;
+const START = PAD + 20 + 48;
+const run = (stretch, n, to, color) => { sc.x = START + px(stretch); return g.tween(g.reduceMotion ? 300 : 1300, k => { sc.x = START + px(stretch) + (to - START - px(stretch)) * (1 - Math.pow(1 - k, 2)); }).then(() => { sc.marks = sc.marks.concat([{ x: to, c: color }]); sc.tape = true; g.paint(); }); };
+const D5 = 190, D10 = 268, D15 = 350, D2 = 352;
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set({ mode: 'build', sail: true });
+  g.say(T('This is our wind-powered car from Chapter 6. To make a rubber band-powered car, what do we take off first?', 'دي عربية الرياح بتاعتنا من الفصل ٦. علشان نعمل سيارة تعمل بالشريط المطاطي، نشيل إيه الأول؟'), 'think');
+  await g.choice({
+    options: [T('The sail', 'الشراع'), T('The wheels', 'العجلات'), T('The body', 'الهيكل')], correct: T('The sail', 'الشراع'),
+    hint: T('The wind will not move it any more.', 'الرياح مش هي اللي هتحركها المرة دي.'),
+    ok: T('Take off the sail from the wind-powered car used in 6-1.', 'انزع الشراع من السيارة التي تعمل بقوة الرياح المستخدمة في ٦-١.'),
+    reveal: () => { sc.sail = false; g.paint(); } });
+
+  set({ mode: 'build', sail: false });
+  g.say(T('Now we need a hook for the rubber band. Where do we attach it?', 'دلوقتي محتاجين خطاف للشريط المطاطي. نثبته فين؟'), 'think');
+  await g.choice({
+    options: [T('To the bottom of the car, taped tightly', 'في أسفل السيارة، ونثبته جيدًا بالشريط اللاصق'), T('On top of the wheels', 'فوق العجلات'), T('We do not need a hook', 'لا نحتاج إلى خطاف')], correct: T('To the bottom of the car, taped tightly', 'في أسفل السيارة، ونثبته جيدًا بالشريط اللاصق'),
+    hint: T('It must not come off when the band pulls.', 'لازم مايقعش لما الشريط يشد.'),
+    ok: T(`Attach a ${kw('hook')} to the bottom of the car and tape it tightly so it does not come off.`, `ثبِّت ${kw('خطافًا')} في أسفل السيارة، ثم ثبِّته جيدًا بالشريط اللاصق حتى لا ينفصل.`),
+    reveal: () => { sc.hook = true; g.paint(); } });
+
+  set({ mode: 'track', stretch: 0 });
+  g.say(T('This is the launching pad. We hook the rubber band to the car. Where is “0 cm”?', 'دي منصة الإطلاق. نربط الشريط المطاطي في العربية. فين نقطة «٠ سم»؟'), 'think');
+  await g.choice({
+    options: [T('The point where the rubber band starts to stretch', 'نقطة بداية شد الشريط المطاطي'), T('The end of the track', 'نهاية المسار'), T('The top of the post', 'أعلى العمود')], correct: T('The point where the rubber band starts to stretch', 'نقطة بداية شد الشريط المطاطي'),
+    hint: T('We measure the stretch from there.', 'من هناك بنقيس الشد.'),
+    ok: T('Set the point where the rubber band starts to stretch as 0 cm.', 'حدِّد نقطة بداية شد الشريط المطاطي على أنها ٠ سم.'),
+    reveal: () => { sc.zero = true; g.paint(); } });
+
+  set({ mode: 'track', zero: true, stretch: 10 });
+  g.say(T('We pull the car back and stretch the band. When does a rubber band make power?', 'بنشد العربية لورا والشريط بيتشد. متى يُنتج الشريط المطاطي قوة؟'), 'think');
+  await g.choice({
+    options: [T('When it is stretched and trying to return to its original shape', 'عندما يكون مشدودًا ويحاول العودة إلى شكله الأصلي'), T('When it is loose and relaxed', 'عندما يكون مرتخيًا'), T('When it is cut', 'عندما يُقطع')],
+    correct: T('When it is stretched and trying to return to its original shape', 'عندما يكون مشدودًا ويحاول العودة إلى شكله الأصلي'),
+    hint: T('Let go and see what the band wants to do.', P('سيبه وشوف الشريط عايز يعمل إيه.', 'سيبيه وشوفي الشريط عايز يعمل إيه.')),
+    ok: T(`A rubber band tries to return to its ${kw('original shape')} when it is stretched. We use this power to make things fly or make cars run.`, `للمطاط خاصية تجعله يعود إلى ${kw('شكله الأصلي')} بعد شده، ونستخدم هذه القوة لتحريك الأجسام، مثل جعلها تطير أو تحريك السيارة.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Stretch it longer', 'شُدَّه أكثر'));
+  set({ mode: 'track', zero: true, stretch: 5 });
+  g.say(T('We stretch the band just 5 cm and let go. What do we measure?', 'نشد الشريط ٥ سم بس ونسيبه. نقيس إيه؟'), 'think');
+  await g.choice({
+    options: [T('The distance the car traveled', 'المسافة التي قطعتها السيارة'), T('The color of the band', 'لون الشريط'), T('The weight of the post', 'وزن العمود')], correct: T('The distance the car traveled', 'المسافة التي قطعتها السيارة'),
+    hint: T('We want to know how far it goes.', 'عايزين نعرف هتروح لحد فين.'),
+    ok: T('Stretch the rubber band by just 5 cm, let go, and measure the distance it traveled.', 'شُدَّ الشريط المطاطي بمقدار ٥ سم فقط، ثم اتركه، وقِس المسافة التي قطعتها السيارة.'),
+    reveal: () => run(5, 1, D5, '#f2b134') });
+
+  set({ mode: 'track', zero: true, stretch: 10, marks: [{ x: D5, c: '#f2b134' }] });
+  g.say(T('The 5 cm car stopped at the yellow mark. Now we stretch 10 cm. Where will it stop?', 'عربية الـ ٥ سم وقفت عند العلامة الصفراء. دلوقتي نشد ١٠ سم. هتقف فين؟'), 'think');
+  await g.choice({
+    options: [T('Farther than the yellow mark', 'أبعد من العلامة الصفراء'), T('Closer than the yellow mark', 'أقرب من العلامة الصفراء'), T('Exactly at the yellow mark', 'عند العلامة الصفراء تمامًا')], correct: T('Farther than the yellow mark', 'أبعد من العلامة الصفراء'),
+    hint: T('A longer stretch…', 'شد أطول…'),
+    ok: T('A longer stretch moved the car farther!', 'الشد الأطول حرَّك السيارة أبعد!'),
+    reveal: () => run(10, 1, D10, '#23799f') });
+
+  set({ mode: 'track', zero: true, stretch: 15, marks: [{ x: D5, c: '#f2b134' }, { x: D10, c: '#23799f' }] });
+  g.say(T('And 15 cm goes even farther. Why does a longer stretch move the car farther?', 'و١٥ سم بتروح أبعد كمان. ليه الشد الأطول بيحرك العربية أبعد؟'), 'think');
+  await g.choice({
+    options: [T('The power to return to its original shape is stronger', 'قوة العودة إلى الشكل الأصلي تكون أكبر'), T('The car becomes lighter', 'السيارة تصبح أخف'), T('The band becomes shorter', 'الشريط يصبح أقصر')], correct: T('The power to return to its original shape is stronger', 'قوة العودة إلى الشكل الأصلي تكون أكبر'),
+    hint: T('Think about what the band is trying to do.', 'فكّر الشريط بيحاول يعمل إيه.'),
+    ok: T(`The longer you stretch the rubber band, the ${kw('stronger')} the power to return to its original shape, and the bigger the power to move things.`, `كلما زاد شد الشريط المطاطي زادت القوة التي يؤثر بها في الأجسام عند عودته إلى شكله الأصلي؛ فتتحرك ${kw('مسافة أكبر')}.`),
+    reveal: () => run(15, 1, D15, '#2e9e6b') });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('More rubber bands', 'أشرطة أكثر'));
+  set({ mode: 'track', zero: true, stretch: 10, n: 1, x: D10, tape: true, marks: [{ x: D10, c: '#23799f' }] });
+  g.say(T('With 1 rubber band stretched 10 cm, the car stopped at the blue mark. Now we bundle 2 rubber bands. How far do we stretch them?', 'بشريط واحد مشدود ١٠ سم، العربية وقفت عند العلامة الزرقاء. دلوقتي نجمع شريطين مع بعض. نشدهم قد إيه؟'), 'think');
+  await g.choice({
+    options: [T('The same 10 cm', 'بنفس المقدار ١٠ سم'), T('Only 5 cm', '٥ سم فقط'), T('As far as we like', 'كما نحب')], correct: T('The same 10 cm', 'بنفس المقدار ١٠ سم'),
+    hint: T('We want to test only the number of bands.', 'عايزين نختبر عدد الأشرطة بس.'),
+    ok: T('Increase the rubber bands to 2, bundle them, and stretch them by the same 10 cm.', 'زِد عدد الأشرطة إلى ٢، واجمعهما معًا، وشُدَّهما بنفس المقدار ١٠ سم.'),
+    reveal: () => { sc.x = null; sc.n = 2; sc.tape = false; g.paint(); } });
+
+  set({ mode: 'track', zero: true, stretch: 10, n: 2, marks: [{ x: D10, c: '#23799f' }] });
+  g.say(T('Two bands, stretched 10 cm. Where will the car stop this time?', 'شريطين مشدودين ١٠ سم. العربية هتقف فين المرة دي؟'), 'think');
+  await g.choice({
+    options: [T('Farther than the blue mark', 'أبعد من العلامة الزرقاء'), T('Closer than the blue mark', 'أقرب من العلامة الزرقاء'), T('At the blue mark', 'عند العلامة الزرقاء')], correct: T('Farther than the blue mark', 'أبعد من العلامة الزرقاء'),
+    hint: T('Two bands pull together…', 'شريطين بيشدوا مع بعض…'),
+    ok: T('When you increase the number of rubber bands, the power to move the car goes up!', 'عندما تزيد عدد الأشرطة المطاطية، تزداد القوة التي تحرك السيارة!'),
+    reveal: () => run(10, 2, D2, '#7c5cc4') });
+
+  set({ mode: 'track', zero: true, stretch: 10, n: 2, x: D2, tape: true, marks: [{ x: D10, c: '#23799f' }, { x: D2, c: '#7c5cc4' }] });
+  g.say(T('Why did two bands move the car farther?', 'ليه الشريطين حرّكوا العربية أبعد؟'), 'think');
+  await g.choice({
+    options: [T('The power of each band is combined', 'تتجمع قوى الأشرطة'), T('Two bands are lighter', 'الشريطان أخف'), T('The stretch was longer', 'الشد كان أطول')], correct: T('The power of each band is combined', 'تتجمع قوى الأشرطة'),
+    hint: T('The stretch was the same 10 cm.', 'الشد كان نفس الـ ١٠ سم.'),
+    ok: T(`When you increase the number of rubber bands, the power of each band trying to return to its original shape is ${kw('combined')}, and the power to move the car becomes even stronger.`, `عند زيادة عدد الأشرطة المطاطية ${kw('تتجمع')} القوى الناتجة عن عودة كل شريط إلى شكله الأصلي؛ فتزداد القوة المؤثرة في السيارة، فتتحرك مسافة أكبر.`) });
+
+  set({ mode: 'track', zero: true, stretch: 10, n: 1 });
+  g.say(T('Last one: the car must carry a heavy load. Which idea makes the rubber power stronger?', 'آخر سؤال: العربية لازم تشيل حمولة تقيلة. أنهي فكرة تخلي قوة المطاط أكبر؟'), 'think');
+  await g.choice({
+    options: [T('Add more rubber bands and stretch them longer', 'نزيد عدد الأشرطة ونشدها أكثر'), T('Use fewer bands and stretch them less', 'نقلل الأشرطة ونشدها أقل'), T('Take off the hook', 'ننزع الخطاف')], correct: T('Add more rubber bands and stretch them longer', 'نزيد عدد الأشرطة ونشدها أكثر'),
+    hint: T('Both of today’s ideas help.', 'فكرتين النهارده الاتنين بيساعدوا.'),
+    ok: T('Increase the number of rubber bands, or stretch them longer. Making the power of the wind or rubber bands stronger lets us move the car farther.', 'زِد عدد الأشرطة المطاطية، أو شُدَّها أكثر. فجعل قوة الرياح أو الأشرطة المطاطية أقوى يسمح لنا بتحريك السيارة لمسافة أبعد.'),
+    reveal: () => { sc.n = 3; sc.stretch = 15; g.paint(); } });
+}
+async function stage2() { await mission1(); await mission2(); }
+
+/* ---------- Stage 3 · Speed Round ---------- */
+const SPEED = [
+  { t: T('Stretch the band 15 cm instead of 5 cm', 'شد الشريط ١٥ سم بدل ٥ سم'), ans: 'far' },
+  { t: T('Add a second rubber band', 'إضافة شريط مطاطي ثانٍ'), ans: 'far' },
+  { t: T('Use 3 bands instead of 1', 'استخدام ٣ أشرطة بدل شريط واحد'), ans: 'far' },
+  { t: T('A stronger power to return to its shape', 'قوة أكبر للعودة إلى الشكل الأصلي'), ans: 'far' },
+  { t: T('Stretch the band only 5 cm', 'شد الشريط ٥ سم فقط'), ans: 'short' },
+  { t: T('Use fewer rubber bands', 'تقليل عدد الأشرطة'), ans: 'short' },
+  { t: T('Stretch the band shorter than usual', 'شد الشريط أقل من المعتاد'), ans: 'short' },
+  { t: T('A weaker power to move the car', 'قوة أضعف لتحريك السيارة'), ans: 'short' }
+];
+async function stage3() {
+  set({ mode: 'track', zero: true, stretch: 10, n: 1 });
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Farther', 'أبعد'), value: 'far', c: 2 }, { label: T('Shorter', 'أقصر'), value: 'short', c: 0 }],
+    ask: T('Farther or shorter?', 'أبعد أم أقصر؟'),
+    intro: T('Speed Round! Will the car go <b>farther</b> or <b>shorter</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! العربية هتروح <b>أبعد</b> ولا <b>أقصر</b>؟ دوس على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!', 'جولة السرعة! العربية هتروح <b>أبعد</b> ولا <b>أقصر</b>؟ دوسي على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!')),
+    think: T('Farther or shorter?', 'أبعد ولا أقصر؟'),
+    show: () => { sc.x = null; sc.stretch = 10; sc.n = 1; g.paint(); }, reveal: it => { sc.x = null; sc.stretch = it.ans === 'far' ? 15 : 5; sc.n = it.ans === 'far' ? 2 : 1; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to the rubber band race. We will turn our wind car into a <b>rubber band car</b>, stretch the band <b>longer</b>, and add <b>more bands</b> to launch it farther!`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت سباق الأشرطة المطاطية. هنحوّل عربية الرياح لعربية <b>بالشريط المطاطي</b>، ونشد الشريط <b>أكتر</b>، ونزوّد <b>عدد الأشرطة</b> علشان تروح أبعد!`, `أهلًا يا <b>${g.name()}</b>! نوّرتي سباق الأشرطة المطاطية. هنحوّل عربية الرياح لعربية <b>بالشريط المطاطي</b>، ونشد الشريط <b>أكتر</b>، ونزوّد <b>عدد الأشرطة</b> علشان تروح أبعد!`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Rubber band champion!', P('بقيت بطل المطاط!', 'بقيتي بطلة المطاط!')),
+    text: T('A stretched rubber band tries to return to its <b>original shape</b>. The <b>longer</b> you stretch it, the bigger the power; and <b>more bands</b> combine their power. Both move the car farther.', 'يحاول الشريط المطاطي المشدود العودة إلى <b>شكله الأصلي</b>. كلما زاد <b>الشد</b> زادت القوة، و<b>زيادة عدد الأشرطة</b> تجمِّع قواها، فتتحرك السيارة مسافة أبعد.') }
+}).catch(err => console.error(err));
+window.__rubber = { sc, render, set };
+})();
+</script>
+</body>
+</html>

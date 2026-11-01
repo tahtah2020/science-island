@@ -150,11 +150,21 @@ window.CHAPTERS = [
     lessons: ['Wind-Powered Cars', 'Sail Size'],
     lessonsAr: ['السيارات التي تعمل بقوة الرياح', 'حجم الشراع'] },
 
-  { id: 'g4c7', grade: 'g4', n: 7, title: 'The Force of Rubber', titleAr: 'قوة المطاط', icon: '🏹', tint: '#fde3dc', ready: false,
-    lessons: ['Rubber Band-Powered Cars', 'Power of Rubber Bands'] },
+  { id: 'g4c7', grade: 'g4', n: 7, title: 'The Force of Rubber', titleAr: 'قوة المطاط', icon: '🏹', tint: '#fde3dc', ready: true,
+    questions: 'science/questions_g4c7.js', questionsAr: 'science/questions_g4c7_ar.js', art: 'science/g4_art.js', bookOrder: true,
+    game: { href: 'rubber.html', name: "Rubber Band Racer", nameAr: "سباق الأشرطة المطاطية", icon: '🏹', hint: 'Stretch the rubber band longer, add more bands, and launch your car farther!', hintAr: 'شُدّ الشريط المطاطي أكتر، وزوّد عدد الأشرطة، وخلّي عربيتك تروح أبعد!' },
+    map: { img: 'science/assets/map_g4c7.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g4c7.svg', quizBg: 'science/assets/bg_g4c7.svg',
+    lessons: ['Rubber Band-Powered Cars', 'Power of Rubber Bands'],
+    lessonsAr: ['السيارات التي تعمل بقوة المطاط', 'قوة الأشرطة المطاطية'] },
 
-  { id: 'g4c8', grade: 'g4', n: 8, title: 'Soil, Water, and Life in Egypt', titleAr: 'التربة والماء والحياة في مصر', icon: '🏺', tint: '#f3e3c8', ready: false,
-    lessons: ['The Relationship Between the Ground and Water', 'Transporting Giant Stone Statues'] },
+  { id: 'g4c8', grade: 'g4', n: 8, title: 'Soil, Water, and Life in Egypt', titleAr: 'التربة والماء والحياة في مصر', icon: '🏺', tint: '#f3e3c8', ready: true,
+    questions: 'science/questions_g4c8.js', questionsAr: 'science/questions_g4c8_ar.js', art: 'science/g4_art.js', bookOrder: true,
+    game: { href: 'soilstone.html', name: "Soil and Stone", nameAr: "التربة والحجر", icon: '🏺', hint: 'Race water through desert sand and Nile mud, then move a giant stone statue like the ancient Egyptians!', hintAr: 'سابق الماء في رمل الصحراء وطمي النيل، وبعدين حرّك تمثال حجري ضخم زي المصريين القدماء!' },
+    map: { img: 'science/assets/map_g4c8.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g4c8.svg', quizBg: 'science/assets/bg_g4c8.svg',
+    lessons: ['The Relationship Between the Ground and Water', 'Transporting Giant Stone Statues'],
+    lessonsAr: ['العلاقة بين اليابسة والماء', 'نقل التماثيل الحجرية الضخمة'] },
 
   /* ---------- Grade 6 (school book 2026/2027, 10 chapters in the first term) ---------- */
   { id: 'g6c1', grade: 'g6', n: 1, title: 'Conditions for Burning', titleAr: 'شروط الاحتراق', icon: '🕯️', tint: '#ffe9c9', ready: true,

@@ -8,7 +8,9 @@
      Chapter 3: seedKinds (sunflower | chickpea | fava) · sowDepth (heap | right | deep) · seedlingLeaves (seedleaf | trueleaf) · flowerFruit (bud | flower | fruit) · plantBody (leaves | stem | roots)
      Chapter 4: lightSources (lamp | mirror | ball) · mirrorRelay (sun | mirror | target) · magnifySpots (wide | small) · shadowSide (opposite | same) · shadowTimes (morning | noon | evening) · sunShade (sunny | shady)
      Chapter 5: vibrateThings (guitar | drum | whistle) · stickyDrum (soft | loud) · stringPhone (cupA | string | cupB) · phoneStates (loose | tight | pinched)
-     Chapter 6: windCars (weakWind | strongWind) · sailSizes (sailNone | sailSmall | sailLarge) · carParts (carBody | wheels | sail) */
+     Chapter 6: windCars (weakWind | strongWind) · sailSizes (sailNone | sailSmall | sailLarge) · carParts (carBody | wheels | sail)
+     Chapter 7: stretchLengths (str5 | str10 | str15) · bandCounts (band1 | band2 | band3)
+     Chapter 8: soilGrains (grainsBig | grainsSmall) · soilBottles (sandBottle | mudBottle) · statueMove (pullers | waterman | statue) */
 (function () {
   'use strict';
   const T = (en, ar) => (window.SI ? window.SI.T(en, ar) : en);
@@ -669,16 +671,76 @@
       ${hot('sail', T('The tall white part', 'الجزء الأبيض الطويل'), ringEl(158, 100, 34, 50))}${hot('carBody', T('The flat brown part', 'الجزء البني المسطح'), ringEl(206, 146, 40, 12))}${hot('wheels', T('The round red parts', 'الأجزاء الحمراء المستديرة'), ringEl(180, 168, 68, 14))}</svg>`;
   }
 
+
+  /* ================= Chapter 7 · rubber ================= */
+  /* a launching pad seen from the side: a post at x = 0 and the car's hook at x = d (the band stretched d units); n bands */
+  const launchPad = (d = 30, n = 1, car = true) => { let bands = ''; for (let i = 0; i < n; i++) bands += `<path d="M2 ${-26 - i * 3}L${d} ${-18 - i * 2}" stroke="${['#e2603f', '#f2b134', '#7c5cc4'][i % 3]}" stroke-width="3" stroke-linecap="round"/>`;
+    return `<rect x="-14" y="-4" width="${d + 110}" height="8" rx="3" fill="#bcd0dd" stroke="#8fa9ba" stroke-width="1.6"/><rect x="-6" y="-40" width="10" height="38" rx="3" fill="#5b6f86"/>${bands}${car ? at(d + 48, -4, .9, windCar({ sail: 0 })) + `<path d="M${d} -18v-6" stroke="#5b6f86" stroke-width="3"/>` : ''}`; };
+  const arNum = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  const label = (x, y, s, size = 13) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="${size}" font-weight="900" fill="#3a5c75" font-family="Nunito,Cairo,Arial,sans-serif">${s}</text>`;
+  function stretchLengths() {
+    const cm = n => T(`${n} cm`, `${arNum(n)} سم`);
+    const pane = (d, n) => `${at(8, 92, .55, launchPad(d, 1))}${label(53, 28, cm(n), 16)}`;
+    const pic = { str5: pane(16, 5), str10: pane(34, 10), str15: pane(52, 15) };
+    const names = { str5: T('A rubber band stretched 5 cm', 'شريط مطاطي مشدود ٥ سم'), str10: T('A rubber band stretched 10 cm', 'شريط مطاطي مشدود ١٠ سم'), str15: T('A rubber band stretched 15 cm', 'شريط مطاطي مشدود ١٥ سم') };
+    return `${svgOpen(116, T('Three rubber band cars on launching pads, stretched 5 cm, 10 cm and 15 cm', 'ثلاث سيارات مطاطية على منصات إطلاق، مشدودة ٥ سم و١٠ سم و١٥ سم'))}
+      ${['str10', 'str15', 'str5'].map((k, i) => tile(5 + i * 112, 6, 106, 104, '#fde3dc', pic[k]) + hot(k, names[k], ringRect(5 + i * 112, 6, 106, 104))).join('')}</svg>`;
+  }
+  function bandCounts() {
+    const pane = n => `${at(8, 92, .55, launchPad(52, n))}${label(53, 28, T(`${n} × 15 cm`, `${arNum(n)} × ١٥ سم`), 15)}`;
+    const names = { band1: T('One rubber band', 'شريط مطاطي واحد'), band2: T('Two rubber bands', 'شريطان مطاطيان'), band3: T('Three rubber bands', 'ثلاثة أشرطة مطاطية') };
+    return `${svgOpen(116, T('Three rubber band cars stretched to the same 15 cm, with 1, 2 and 3 rubber bands', 'ثلاث سيارات مطاطية مشدودة إلى ١٥ سم نفسها، بشريط واحد وشريطين وثلاثة أشرطة'))}
+      ${['band2', 'band3', 'band1'].map((k, i) => tile(5 + i * 112, 6, 106, 104, '#fde3dc', pane(+k.slice(4))) + hot(k, names[k], ringRect(5 + i * 112, 6, 106, 104))).join('')}</svg>`;
+  }
+
+  /* ================= Chapter 8 · soil, water and stone ================= */
+  /* a circle of soil seen through a magnifying glass, r = 46: big grains with gaps, or tiny packed grains */
+  const grainsView = (big, r = 46) => { let s = ''; let k = big ? 7 : 3; const id = 'gv' + (++uid);
+    for (let y = -r; y <= r; y += big ? 17 : 6) for (let x = -r; x <= r; x += big ? 17 : 6) { const jx = ((x * 7 + y * 13) % 5) - 2, jy = ((x * 11 - y * 3) % 5) - 2;
+      s += `<circle cx="${x + jx}" cy="${y + jy}" r="${big ? 6.6 + ((x + y) % 3) : 2.9}" fill="${big ? ['#f1d9a0', '#e3c583', '#f6e3ae'][Math.abs(x + y) % 3] : ['#7a5a3a', '#8a6a48', '#6b4e32'][Math.abs(x * 3 + y) % 3]}"/>`; }
+    return `<defs><clipPath id="${id}"><circle r="${r}"/></clipPath></defs><circle r="${r}" fill="${big ? '#fff8ea' : '#5d452c'}"/><g clip-path="url(#${id})">${s}</g><circle r="${r}" fill="none" stroke="#5b6f86" stroke-width="5"/>`; };
+  function soilGrains() {
+    return `${svgOpen(130, T('Two soils seen through a magnifying glass: one with large grains and big gaps, one with tiny grains packed close', 'تربتان تحت العدسة المكبرة: واحدة حبيباتها كبيرة بينها فراغات كبيرة، وواحدة حبيباتها دقيقة متلاصقة'))}
+      ${tile(56, 6, 106, 118, '#f3e3c8', at(53, 59, 1, grainsView(true)))}${tile(178, 6, 106, 118, '#f3e3c8', at(53, 59, 1, grainsView(false)))}
+      ${hot('grainsBig', T('The soil with large grains', 'التربة ذات الحبيبات الكبيرة'), ringRect(56, 6, 106, 118))}${hot('grainsSmall', T('The soil with tiny grains', 'التربة ذات الحبيبات الدقيقة'), ringRect(178, 6, 106, 118))}</svg>`;
+  }
+  /* a plastic bottle cut and turned upside down over a cup, origin at the bottom of the cup. soil: colour; drops; pool = water on top */
+  const soilBottle = (o = {}) => `${shadow(26)}<path d="M-22 0L-26 -44H26L22 0Z" fill="#e6f3f8" stroke="#9aa3ad" stroke-width="2.4"/>${o.cup ? `<path d="M-21 -2L-24 ${-2 - o.cup}H24L21 -2Z" fill="#8fd3ee" opacity=".8"/>` : ''}
+    <path d="M-6 -50H6V-60H-6Z" fill="#fff" stroke="#9aa3ad" stroke-width="2"/><path d="M-30 -136H30V-90L6 -62H-6L-30 -90Z" fill="#eef6fb" stroke="#9aa3ad" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M-28 -118H28V-90L6 -64H-6L-28 -90Z" fill="${o.soil || '#f1d9a0'}"/>${o.pool ? '<rect x="-28" y="-128" width="56" height="10" fill="#8fd3ee" opacity=".85"/>' : ''}
+    ${o.drops ? '<g fill="#8fd3ee"><ellipse cy="-54" rx="2.6" ry="4"/><ellipse cy="-46" rx="2.2" ry="3.4" opacity=".7"/></g>' : ''}<path d="M-6 -62H6" stroke="#fff" stroke-width="3"/>`;
+  function soilBottles() {
+    return `${svgOpen(190, T('Two upside-down bottles over cups: one holds light yellow desert sand, the other dark brown farm mud', 'زجاجتان مقلوبتان فوق كوبين: في إحداهما رمل صحراء أصفر فاتح، وفي الأخرى طمي حقول بني داكن'))}
+      ${frame(190, '#f3e3c8')}<rect x="20" y="172" width="300" height="10" rx="3" fill="#a57b4c"/>${at(110, 172, 1.05, soilBottle({ soil: '#f1d9a0' }))}${at(230, 172, 1.05, soilBottle({ soil: '#6b4e32' }))}
+      ${hot('sandBottle', T('The bottle with light yellow sand', 'الزجاجة التي فيها رمل أصفر فاتح'), ringEl(110, 100, 48, 86))}${hot('mudBottle', T('The bottle with dark brown mud', 'الزجاجة التي فيها طمي بني داكن'), ringEl(230, 100, 48, 86))}</svg>`;
+  }
+  /* a simple person seen from the side, origin at the feet, facing right; lean = pulling, jar = pouring water */
+  const worker = (o = {}) => `<g transform="rotate(${o.lean ? -18 : 0})"><path d="M-4 0L-2 -24M6 0L3 -24" stroke="#8a5a36" stroke-width="5" stroke-linecap="round"/><path d="M-10 -24H12L9 -50H-7Z" fill="#fff8ea" stroke="#d6c7a6" stroke-width="2"/>
+    <circle cx="2" cy="-58" r="8" fill="#a8703f"/><path d="M-6 -62a9 6 0 0 1 16 0" fill="#2a2320"/>
+    ${o.jar ? '<path d="M4 -44L20 -50" stroke="#a8703f" stroke-width="4.4" stroke-linecap="round"/><path d="M16 -58h14l-2 14h-10z" fill="#c9773f" stroke="#9a552a" stroke-width="2" transform="rotate(30 23 -51)"/><path d="M30 -44q4 10 2 22" fill="none" stroke="#8fd3ee" stroke-width="3" stroke-dasharray="3 3"/>' : '<path d="M4 -44L24 -40" stroke="#a8703f" stroke-width="4.4" stroke-linecap="round"/>'}</g>`;
+  /* a seated stone statue on a sled, origin at the front of the sled on the ground (statue to the left) */
+  const statueSled = () => `<path d="M-130 0H6Q14 0 14 -8H-130Z" fill="#a57b4c" stroke="#7a5a3a" stroke-width="2.4"/><rect x="-118" y="-10" width="112" height="6" fill="#8a5f38"/>
+    <g fill="#d9c7a7" stroke="#a89474" stroke-width="2.4" stroke-linejoin="round"><rect x="-116" y="-56" width="84" height="46" rx="3"/><path d="M-104 -56V-104H-68V-56Z"/><path d="M-68 -78H-34V-56H-50V-12H-36V-10H-62V-56H-68Z"/>
+    <path d="M-108 -104L-98 -128H-74L-64 -104Z"/><rect x="-96" y="-124" width="20" height="24" rx="6"/></g><path d="M-86 -100v6" stroke="#a89474" stroke-width="2"/>`;
+  function statueMove() {
+    const rope = `<path d="M10 -4L${300 - 120} -40" stroke="#b98f5c" stroke-width="2.4"/>`;
+    let pulls = ''; [212, 242, 272, 302].forEach(x => { pulls += at(x, 182, .82, worker({ lean: true })); });
+    return `${svgOpen(200, T('An old Egyptian scene: a big stone statue on a sled, people pulling ropes, and one person pouring water on the sand', 'مشهد مصري قديم: تمثال حجري كبير على زلاجة، وأشخاص يسحبون الحبال، وشخص يسكب الماء على الرمال'))}
+      ${frame(200, '#f6ead6')}${ground(200, 182, '#e9d3ab', '#d8bd8c')}<path d="M166 186h34" stroke="#8fd3ee" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+      ${at(150, 182, 1, statueSled())}${at(150, 182, 1, rope)}${pulls}${at(170, 182, .82, worker({ jar: true }))}
+      ${hot('statue', T('The big stone figure', 'الشكل الحجري الكبير'), ringEl(84, 128, 50, 60))}${hot('waterman', T('The person with the jar', 'الشخص الذي يحمل الجرة'), ringEl(176, 150, 22, 36))}${hot('pullers', T('The people holding the ropes', 'الأشخاص الذين يمسكون الحبال'), ringEl(262, 146, 64, 36))}</svg>`;
+  }
+
   window.G4ART = { at, flip, blob, mix, leaf, leafPath, eye, shadow, fox, jerboa, lizard, frog, bee, waterBird, grasshopper, pillbug, spider, scarab, camel,
     acacia, colocynth, lotus, papyrus, palm, orangeTree, grassTuft, stone, rock, sun, moon,
     bigLeaf, egg, larva, pupa, butterflyTop, butterflySide, flowerHead, dragonfly, ant,
     seed, soil, roots, trueLeaf, seedLeaf, sunHead, sunflower, fava, bud, bloom, fruit, wateringCan, ruler, insectBig,
     deskLamp, mirror, ball, stick, stickShadow, magnifier, shadeTree, thermometer, blackPaper, ray,
     soundArcs, shakeLines, triangleInst, drum, guitar, whistle, pressHand, paperCup, phoneString, pinchFingers, rubberBand,
-    windCar, fan };
+    windCar, fan, launchPad, grainsView, soilBottle, worker, statueSled };
   window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { hidePlaces, nileDesert, fennec, desertDay, butterflyStages, insectBody, insectSide, whoIsInsect,
     seedKinds, sowDepth, seedlingLeaves, flowerFruit, plantBody,
     lightSources, mirrorRelay, magnifySpots, shadowSide, shadowTimes, sunShade,
     vibrateThings, stickyDrum, stringPhone, phoneStates,
-    windCars, sailSizes, carParts });
+    windCars, sailSizes, carParts, stretchLengths, bandCounts, soilGrains, soilBottles, statueMove });
 })();

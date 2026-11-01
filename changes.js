@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-01', title: 'Grade 4 Science: Chapters 7 and 8',
+    items: [
+      { text: 'Chapter 7 The Force of Rubber: 9 ideas + 3 bonus, game Rubber Band Racer (rubber.html)' },
+      { text: 'Chapter 8 Soil, Water, and Life in Egypt: 10 ideas + 4 bonus, game Soil and Stone (soilstone.html)' },
+      { text: '5 new tap pictures drawn in code, English and Arabic', links: [{ label: 'Rubber Band Racer', href: 'rubber.html', ch: 'g4c7' }, { label: 'Soil and Stone', href: 'soilstone.html', ch: 'g4c8' }] }
+    ] },
   { date: '2026-11-01', title: 'Grade 4 Science: Chapters 4, 5 and 6',
     items: [
       { text: 'Chapter 4 Properties of Light: 26 ideas + 3 bonus, game Light and Shadow Lab (light.html)' },

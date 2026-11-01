@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soil and Stone · Soil, Water, and Life in Egypt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261101b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Soil and Stone.</noscript>
+<script src="firebase-config.js?v=20261101b"></script>
+<script src="chapters.js?v=20261101b"></script>
+<script src="common.js?v=20261101b"></script>
+<script src="science/g4_art.js?v=20261101b"></script>
+<script src="game_kit.js?v=20261101b"></script>
+<script>
+(() => {
+'use strict';
+/* Soil and Stone · the game of Grade 4, Chapter 8 "Soil, Water, and Life in Egypt". Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up, lesson 8-1): look at desert sand and Nile mud through a magnifying glass; pour the same water at the same time into two bottles;
+                                  which drops first, which keeps water on top, and why.
+   Stage 2 (Missions): 1) farming by the Nile and in the desert (8-1); 2) move a giant stone statue on a sled: combine forces, make the sand slippery (8-2).
+   Stage 3 (Speed Round): desert sand or Nile mud?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 92-99).
+   The ancient mural of the book is not copied: the statue scene is drawn in code. The scene is set before every question (set()). */
+const A = window.G4ART, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);
+const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+
+const BASE = { mode: 'grains', water: 0, sandCup: 0, mudCup: 0, pool: false, drops: false, clock: false, people: 1, wet: false, jar: false, sled: 0, farm: false };
+const sc = Object.assign({}, BASE);
+const set = o => { Object.assign(sc, BASE, o); g.paint(); };
+const label = (x, y, s, size = 14) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="${size}" font-weight="900" fill="#3a5c75" font-family="Nunito,Cairo,Arial,sans-serif">${s}</text>`;
+
+function grains() {
+  return `<rect width="420" height="280" fill="#f3e3c8"/>${at(120, 120, 1.6, A.grainsView(true))}${at(300, 120, 1.6, A.grainsView(false))}
+    ${label(120, 232, T('Desert sand', 'رمال الصحراء'))}${label(300, 232, T('Nile River mud', 'طمي نهر النيل'))}`;
+}
+function bottles() {
+  return `<rect width="420" height="280" fill="#f3e3c8"/><rect x="40" y="250" width="340" height="12" rx="3" fill="#a57b4c"/>
+    ${at(130, 250, 1.4, A.soilBottle({ soil: '#f1d9a0', drops: sc.drops, cup: sc.sandCup }))}${at(290, 250, 1.4, A.soilBottle({ soil: '#6b4e32', pool: sc.pool, cup: sc.mudCup }))}
+    ${label(130, 274, T('Sand', 'رمل'), 13)}${label(290, 274, T('Mud', 'طمي'), 13)}
+    ${sc.clock ? `<g transform="translate(210 40)"><circle r="20" fill="#fff" stroke="#5b6f86" stroke-width="4"/><path d="M0 0V-13M0 0L9 5" stroke="#e2603f" stroke-width="3" stroke-linecap="round"/><rect x="-5" y="-28" width="10" height="6" rx="2" fill="#5b6f86"/></g>` : ''}`;
+}
+function farm() {
+  return `<rect width="420" height="280" fill="#dff1f8"/><path d="M0 170h210v110H0z" fill="#6b4e32"/><path d="M210 170h210v110H210z" fill="#f1d9a0"/>
+    ${[30, 80, 130, 180].map(x => at(x, 172, .9, A.trueLeaf ? `<path d="M0 0V-26" stroke="#4f9f52" stroke-width="4"/><ellipse cx="-8" cy="-22" rx="9" ry="5" fill="#6fbf63"/><ellipse cx="8" cy="-28" rx="9" ry="5" fill="#6fbf63"/>` : '')).join('')}
+    <path d="M10 190h190M10 214h190" stroke="#8fd3ee" stroke-width="5" opacity=".7"/>${sc.farm ? '<path d="M240 200h150M240 230h150" stroke="#5b6f86" stroke-width="4" stroke-dasharray="10 8"/><g fill="#8fd3ee">' + [260, 300, 340, 380].map(x => `<circle cx="${x}" cy="200" r="4"/>`).join('') + '</g>' : ''}
+    ${label(105, 112, T('By the Nile', 'بجوار النيل'))}${label(315, 112, T('In the desert', 'في الصحراء'))}`;
+}
+function statue() {
+  let pulls = ''; const n = sc.people;
+  for (let i = 0; i < n; i++) pulls += at(266 + i * 26 + sc.sled, 236, .9, A.worker({ lean: true }));
+  return `<rect width="420" height="280" fill="#f6ead6"/><path d="M0 236h420v44H0z" fill="#e9d3ab"/><rect y="236" width="420" height="5" fill="#d8bd8c"/>
+    ${sc.wet ? `<path d="M${210 + sc.sled} 240h${200}" stroke="#8fd3ee" stroke-width="7" stroke-linecap="round" opacity=".8"/>` : ''}
+    ${at(200 + sc.sled, 236, 1.1, A.statueSled())}<path d="M${216 + sc.sled} 230L${266 + sc.sled + (n - 1) * 26 + 20} 196" stroke="#b98f5c" stroke-width="2.4"/>${pulls}
+    ${sc.wet || sc.jar ? at(228 + sc.sled, 236, .9, A.worker({ jar: true })) : ''}`;
+}
+const render = () => ({ grains, bottles, farm, statue })[sc.mode]();
+
+const g = G4Game({ ch: 'g4c8', logo: '🏺', title: ['Soil and Stone', 'التربة والحجر'], sub: ['Chapter 8 · Soil, Water, and Life in Egypt', 'الفصل ٨ · التربة والماء والحياة في مصر'],
+  bg: 'science/assets/bg_g4c8.svg', bgc: '#f3e3c8', label: ['Reesho’s soil and stone lab', 'معمل ريشو للتربة والحجر'], render });
+const kw = g.kw;
+
+/* ---------- Stage 1 · Warm Up: sand and mud (8-1) ---------- */
+const GRAINS = [
+  { id: 'sand', name: T('The light yellow soil', 'التربة الصفراء الفاتحة'), ring: ring(120, 120, 82, 82) },
+  { id: 'mud', name: T('The dark brown soil', 'التربة البنية الداكنة'), ring: ring(300, 120, 82, 82) }
+];
+async function stage1() {
+  set({ mode: 'grains' });
+  g.say(T('We look at desert sand and Nile mud with a magnifying glass. Tap the soil with the large particles.', P('بنبص على رمل الصحراء وطمي النيل بالعدسة المكبرة. اضغط على التربة اللي حبيباتها كبيرة.', 'بنبص على رمل الصحراء وطمي النيل بالعدسة المكبرة. اضغطي على التربة اللي حبيباتها كبيرة.')), 'think');
+  await g.spot(GRAINS, 'sand', {
+    hint: T('Look for big round grains with gaps between them.', 'دوّر على حبيبات كبيرة مدورة بينها فراغات.'),
+    ok: T(`Desert sand has ${kw('large particles')}. Nile mud has very fine particles.`, `رمال الصحراء ${kw('حبيباتها كبيرة')}، أما طمي النيل فحبيباته دقيقة جدًّا.`) });
+
+  set({ mode: 'grains' });
+  g.say(T('Look at the sand again. How are the spaces between its large particles?', 'بص على الرمل تاني. الفراغات بين حبيباته الكبيرة عاملة إزاي؟'), 'think');
+  await g.choice({
+    options: [T('Large: the paths for water are wide', 'كبيرة: الممرات التي يمر منها الماء واسعة'), T('Very small: the grains stick close', 'صغيرة جدًّا: الحبيبات ملتصقة'), T('There are no spaces', 'لا توجد فراغات')], correct: T('Large: the paths for water are wide', 'كبيرة: الممرات التي يمر منها الماء واسعة'),
+    hint: T('Look at the gaps between the yellow grains.', 'بص على الفراغات بين الحبيبات الصفراء.'),
+    ok: T(`Because the spaces between large particles are large, the ${kw('paths for water')} are wide.`, `لأن الفراغات بين الحبيبات الكبيرة كبيرة، تكون ${kw('الممرات')} التي يمر منها الماء واسعة.`) });
+
+  set({ mode: 'bottles' });
+  g.say(T('Same amount of soil, same amount of water, poured at the same time. Which bottle will start dropping water into its cup first?', 'نفس كمية التربة، ونفس كمية الماء، ونصبه في نفس الوقت. أنهي زجاجة هيبدأ الماء ينزل منها في الكوب الأول؟'), 'think');
+  await g.choice({
+    options: [T('The sand bottle', 'زجاجة الرمل'), T('The mud bottle', 'زجاجة الطمي'), T('Both at exactly the same time', 'الاثنتان في الوقت نفسه تمامًا')], correct: T('The sand bottle', 'زجاجة الرمل'),
+    hint: T('Wide paths let water through quickly.', 'الممرات الواسعة بتعدّي الماء بسرعة.'),
+    ok: T(`Water ${kw('soaks in fast')} through soil with large particles like desert sand. We check it with a stopwatch.`, `${kw('يتسرب الماء بسرعة')} في التربة ذات الحبيبات الكبيرة مثل رمال الصحراء، ونتأكد من ذلك بساعة الإيقاف.`),
+    reveal: () => { sc.clock = true; sc.drops = true; sc.pool = true; g.tween(1200, k => { sc.sandCup = 22 * k; sc.mudCup = 3 * k; }); } });
+
+  set({ mode: 'bottles', clock: true, drops: true, pool: true, sandCup: 22, mudCup: 3 });
+  g.say(T('In the mud bottle, water stays on top for a long time. Why?', 'في زجاجة الطمي، الماء فاضل فوق مدة طويلة. ليه؟'), 'think');
+  await g.choice({
+    options: [T('Its fine particles stick close together, so the spaces are small', 'حبيباته الدقيقة تلتصق ببعضها، فتكون الفراغات صغيرة'), T('Its particles are large', 'حبيباته كبيرة'), T('Mud does not like water', 'الطمي لا يحب الماء')],
+    correct: T('Its fine particles stick close together, so the spaces are small', 'حبيباته الدقيقة تلتصق ببعضها، فتكون الفراغات صغيرة'),
+    hint: T('Remember the tiny brown grains.', 'افتكر الحبيبات البني الصغيرة.'),
+    ok: T(`Because the particles of Nile mud are very fine, they stick close together and the spaces become small. Water is hard to pass through, and it ${kw('soaks in slowly')}.`, `لأن حبيبات طمي النيل دقيقة جدًّا، فإنها تلتصق ببعضها بإحكام، فتكون الفراغات بينها صغيرة؛ ويصعب على الماء المرور خلالها، لذلك ${kw('يتسرب ببطء')}.`) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Farming in Egypt', 'الزراعة في مصر'));
+  set({ mode: 'farm' });
+  g.say(T('Which soil is good for farming, and why?', 'أنهي تربة مناسبة للزراعة، وليه؟'), 'think');
+  await g.choice({
+    options: [T('Nile mud: it holds water and nutrients for a long time', 'طمي النيل: يحتفظ بالماء والعناصر الغذائية لفترة طويلة'), T('Desert sand: water escapes fast', 'رمال الصحراء: الماء يتسرب بسرعة'), T('Gravel: it has the biggest spaces', 'الحصى: فراغاته هي الأكبر')],
+    correct: T('Nile mud: it holds water and nutrients for a long time', 'طمي النيل: يحتفظ بالماء والعناصر الغذائية لفترة طويلة'),
+    hint: T('Plants need water to stay near their roots.', 'النبات محتاج الماء يفضل جنب جذوره.'),
+    ok: T(`The Nile River mud can hold water and ${kw('nutrients')} for a long time, so it is good for farming.`, `يستطيع طمي نهر النيل الاحتفاظ بالماء و${kw('العناصر الغذائية')} لفترة طويلة؛ لذلك فهو مناسب للزراعة.`) });
+
+  set({ mode: 'farm' });
+  g.say(T('Now we want to farm in the desert, where water soaks in too fast. What do we need?', 'دلوقتي عايزين نزرع في الصحراء، والماء بيتسرب بسرعة كبيرة. محتاجين إيه؟'), 'think');
+  await g.choice({
+    options: [T('Special ideas to keep the water from escaping', 'أساليب خاصة للمحافظة على الماء ومنع فقدانه'), T('Nothing: sand keeps water well', 'لا شيء: الرمل يحتفظ بالماء جيدًا'), T('Less water', 'ماء أقل')], correct: T('Special ideas to keep the water from escaping', 'أساليب خاصة للمحافظة على الماء ومنع فقدانه'),
+    hint: T('In sand, the water runs away fast.', 'في الرمل الماء بيهرب بسرعة.'),
+    ok: T('When farming in the desert, where water soaks in too fast, special ideas are needed to keep the water from escaping.', 'عند الزراعة في الصحراء، حيث يتسرب الماء بسرعة كبيرة، تُستخدم أساليب خاصة للمحافظة على الماء ومنع فقدانه.'),
+    reveal: () => { sc.farm = true; g.paint(); } });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Move the giant statue', 'حرِّك التمثال الضخم'));
+  set({ mode: 'statue', people: 1 });
+  g.say(T('One person pulls the rope, but the giant stone statue does not move. What can we do?', 'شخص واحد بيشد الحبل، والتمثال الحجري الضخم مش بيتحرك. نعمل إيه؟'), 'think');
+  await g.choice({
+    options: [T('Many people pull the ropes in the same direction', 'يسحب أشخاص كثيرون الحبال في الاتجاه نفسه'), T('Each person pulls in a different direction', 'كل شخص يسحب في اتجاه مختلف'), T('The one person pulls alone for longer', 'يسحب الشخص وحده مدة أطول')],
+    correct: T('Many people pull the ropes in the same direction', 'يسحب أشخاص كثيرون الحبال في الاتجاه نفسه'),
+    hint: T('Small forces can add up.', 'القوى الصغيرة ممكن تتجمع.'),
+    ok: T(`${kw('Combining forces')}: by many people pulling the ropes in the same direction, small forces add up to a large force.`, `${kw('تجميع القوى')}: من خلال سحب عدد كبير من الأشخاص للحبال في نفس الاتجاه، تتجمع القوى الصغيرة لتكوِّن قوة كبيرة.`),
+    reveal: () => { sc.people = 5; g.paint(); g.tween(900, k => { sc.sled = -10 * k; }).then(() => { sc.sled = 0; g.paint(); }); } });
+
+  set({ mode: 'statue', people: 5, jar: true });
+  g.say(T('It moves, but slowly on the dry sand. One man pours water on the sand in front of the sled. Why?', 'بيتحرك، بس ببطء على الرمل الناشف. راجل بيصب ماء على الرمل قدام الزلاجة. ليه؟'), 'think');
+  await g.choice({
+    options: [T('To make the ground slippery, so less force is needed', 'ليجعل الأرض أكثر انزلاقًا، فتقل القوة اللازمة'), T('To make the ground hard', 'ليجعل الأرض صلبة'), T('To give the workers a drink', 'ليسقي العمال')], correct: T('To make the ground slippery, so less force is needed', 'ليجعل الأرض أكثر انزلاقًا، فتقل القوة اللازمة'),
+    hint: T('Think about how the sled slides on the sand.', 'فكّر الزلاجة بتنزلق إزاي على الرمل.'),
+    ok: T(`${kw('Making it slippery')}: by sprinkling water on the ground, they reduced the force needed to move it.`, `${kw('جعل السطح أكثر انزلاقًا')}: من خلال رش الماء على الأرض، تقل القوة اللازمة لتحريك التمثال.`),
+    reveal: () => { sc.wet = true; g.paint(); } });
+
+  set({ mode: 'statue', people: 5, wet: true });
+  g.say(T('Now the sled slides easily. Which two ideas did the ancient Egyptians use?', 'دلوقتي الزلاجة بتنزلق بسهولة. إيه الفكرتين اللي استخدمهم المصريين القدماء؟'), 'think');
+  await g.choice({
+    options: [T('Combining forces and making the ground slippery', 'تجميع القوى وجعل الأرض أكثر انزلاقًا'), T('Fewer people and dry sand', 'أشخاص أقل ورمال جافة'), T('A sail and the wind', 'شراع والرياح')], correct: T('Combining forces and making the ground slippery', 'تجميع القوى وجعل الأرض أكثر انزلاقًا'),
+    hint: T('One idea is about people, one is about water.', 'فكرة عن الناس، وفكرة عن الماء.'),
+    ok: T('Ancient people had many clever ideas: they combined the forces of many people and made the sand slippery with water.', 'كان لدى المصريين القدماء الكثير من الأفكار الذكية: جمَّعوا قوى عدد كبير من الأشخاص، وجعلوا الرمال أكثر انزلاقًا بالماء.'),
+    reveal: () => g.tween(1200, k => { sc.sled = -60 * k; }) });
+}
+async function stage2() { await mission1(); await mission2(); }
+
+/* ---------- Stage 3 · Speed Round ---------- */
+const SPEED = [
+  { t: T('Large particles', 'حبيبات كبيرة'), ans: 'sand' },
+  { t: T('Wide paths for water', 'ممرات واسعة للماء'), ans: 'sand' },
+  { t: T('Water soaks in fast', 'يتسرب الماء بسرعة'), ans: 'sand' },
+  { t: T('The ground dries up quickly after rain', 'تجف الأرض بسرعة بعد المطر'), ans: 'sand' },
+  { t: T('Very fine particles', 'حبيبات دقيقة جدًّا'), ans: 'mud' },
+  { t: T('Water soaks in slowly', 'يتسرب الماء ببطء'), ans: 'mud' },
+  { t: T('Holds water and nutrients', 'يحتفظ بالماء والعناصر الغذائية'), ans: 'mud' },
+  { t: T('Good for farming', 'مناسب للزراعة'), ans: 'mud' }
+];
+async function stage3() {
+  set({ mode: 'grains' });
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Desert sand', 'رمال الصحراء'), value: 'sand', c: 1 }, { label: T('Nile mud', 'طمي النيل'), value: 'mud', c: 0 }],
+    ask: T('Desert sand or Nile mud?', 'رمال الصحراء أم طمي النيل؟'),
+    intro: T('Speed Round! Is it <b>desert sand</b> or <b>Nile mud</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هي <b>رمال الصحراء</b> ولا <b>طمي النيل</b>؟ دوس على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!', 'جولة السرعة! هي <b>رمال الصحراء</b> ولا <b>طمي النيل</b>؟ دوسي على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!')),
+    think: T('Sand or mud?', 'رمل ولا طمي؟')
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my soil and stone lab. We will race water through <b>desert sand</b> and <b>Nile mud</b>, then move a <b>giant stone statue</b> the way the ancient Egyptians did!`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت معمل التربة والحجر. هنسابق الماء في <b>رمال الصحراء</b> و<b>طمي النيل</b>، وبعدين نحرّك <b>تمثال حجري ضخم</b> زي المصريين القدماء!`, `أهلًا يا <b>${g.name()}</b>! نوّرتي معمل التربة والحجر. هنسابق الماء في <b>رمال الصحراء</b> و<b>طمي النيل</b>، وبعدين نحرّك <b>تمثال حجري ضخم</b> زي المصريين القدماء!`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Soil and stone expert!', P('بقيت خبير التربة والحجر!', 'بقيتي خبيرة التربة والحجر!')),
+    text: T('Water soaks in fast through <b>large particles</b> (desert sand) and slowly through <b>fine particles</b> (Nile mud), which holds water and nutrients for farming. To move a giant statue: <b>combine forces</b> and make the ground <b>slippery</b>.', 'يتسرب الماء بسرعة في <b>الحبيبات الكبيرة</b> (رمال الصحراء)، وببطء في <b>الحبيبات الدقيقة</b> (طمي النيل) الذي يحتفظ بالماء والعناصر الغذائية للزراعة. ولتحريك تمثال ضخم: <b>نجمِّع القوى</b> ونجعل الأرض <b>أكثر انزلاقًا</b>.') }
+}).catch(err => console.error(err));
+window.__soil = { sc, render, set };
+})();
+</script>
+</body>
+</html>
