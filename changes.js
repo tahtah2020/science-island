@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-01', title: 'Math Grade 4: Units 3 and 4',
+    items: [
+      { text: 'Unit 3 Concepts of Measurement: length, mass, capacity, time, elapsed time and story problems (7 lessons, both tracks)', links: [{ label: 'Unit 3', href: 'map.html', ch: 'mg4u3' }] },
+      { text: 'Unit 4 Area and Perimeter: perimeter, area, missing sides and complex shapes with drawn shapes (4 lessons, both tracks)', links: [{ label: 'Unit 4', href: 'map.html', ch: 'mg4u4' }] }
+    ] },
   { date: '2026-11-01', title: 'Grade 4 Science: Chapters 7 and 8',
     items: [
       { text: 'Chapter 7 The Force of Rubber: 9 ideas + 3 bonus, game Rubber Band Racer (rubber.html)' },

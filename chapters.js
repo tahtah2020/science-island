@@ -322,6 +322,21 @@ window.CHAPTERS = [
     cover: 'math/assets/map_mg4u2.svg', quizBg: 'math/assets/bg_mg4u2.svg',
     lessonsAr: ['خواص عملية الجمع', 'الجمع مع إعادة التسمية', 'الطرح مع إعادة التسمية', 'النماذج الشريطية والمتغيرات والمسائل الكلامية', 'حل مسائل كلامية متعددة الخطوات باستخدام الجمع والطرح'] },
 
+  /* Unit 3: concept 1 "Metric Measurement" (lessons 1-3), concept 2 "Measuring Time" (lessons 4-7). Both books read 1 Nov 2026 (pages 40-57). */
+  { id: 'mg4u3', subject: 'math', grade: 'g4', n: 3, title: 'Concepts of Measurement', titleAr: 'مفاهيم القياس', icon: '📏', tint: '#ffe6cc', ready: true, bookOrder: true,
+    lessons: ['Measuring length', 'Measuring Mass', 'Units of Capacity', 'Units of Measuring Time', 'Elapsed Time', 'Applications of measurement 1', 'Applications of measurement 2'],
+    questMax: 24, questions: 'math/questions_mg4u3.js', questionsAr: 'math/questions_mg4u3_ar.js',
+    map: { img: 'math/assets/map_mg4u3.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_mg4u3.svg', quizBg: 'math/assets/bg_mg4u3.svg',
+    lessonsAr: ['قياس الطول', 'قياس الكتلة', 'وحدات قياس السعة', 'وحدات قياس الوقت', 'الوقت المنقضي', 'تطبيقات القياس 1', 'تطبيقات القياس 2'] },
+  /* Unit 4: concept 1 "Explore Area and Perimeter" (lessons 1-4). Both books read 1 Nov 2026 (pages 58-69). Pictures rectFig, polyFig in math/g4_art.js. */
+  { id: 'mg4u4', subject: 'math', grade: 'g4', n: 4, title: 'Area and Perimeter', titleAr: 'المساحة والمحيط', icon: '📐', tint: '#ffe6cc', ready: true, bookOrder: true,
+    lessons: ['Finding perimeter', 'Finding area', 'Unknown Dimensions', 'Complex Shapes'],
+    art: 'math/g4_art.js', questMax: 20, questions: 'math/questions_mg4u4.js', questionsAr: 'math/questions_mg4u4_ar.js',
+    map: { img: 'math/assets/map_mg4u4.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_mg4u4.svg', quizBg: 'math/assets/bg_mg4u4.svg',
+    lessonsAr: ['إيجاد المحيط', 'إيجاد المساحة', 'أبعاد مجهولة', 'الأشكال الهندسية المركّبة'] },
+
   /* Grade 6 Math, first term 2026/2027. Source: the English school book (Primary 6, Math Term 1), Units 1 and 2 (the official October scope). Only the English file exists so far;
      the Arabic titles and lesson names below are ours until the Arabic book is added. */
   { id: 'mg6u1', subject: 'math', grade: 'g6', n: 1, title: 'Divisibility, Factors, and Multiples', titleAr: 'قابلية القسمة والعوامل والمضاعفات', icon: '🧮', tint: '#ffe6cc', ready: true,
