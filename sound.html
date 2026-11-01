@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sound Workshop · Properties of Sound</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261101a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Sound Workshop.</noscript>
+<script src="firebase-config.js?v=20261101a"></script>
+<script src="chapters.js?v=20261101a"></script>
+<script src="common.js?v=20261101a"></script>
+<script src="science/g4_art.js?v=20261101a"></script>
+<script src="game_kit.js?v=20261101a"></script>
+<script>
+(() => {
+'use strict';
+/* Sound Workshop · the game of Grade 4, Chapter 5 "Properties of Sound". Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up, lesson 5-1): hit a triangle (sound = vibration), stop it with your fingers, flick a ruler, the air carries the shaking to our ears.
+   Stage 2 (Missions): 1) a rubber band and a drum with a sticky note: big sound = big vibration (5-2);
+                       2) the string telephone: loose, tight, pinched, a wire (5-3).
+   Stage 3 (Speed Round): big sound or small sound?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 68-77).
+   The scene is set before every question (set()), so no picture is left over from the question before. */
+const A = window.G4ART, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+const f1 = n => Math.round(n * 10) / 10;
+
+const BASE = { mode: 'tri', ring: false, press: false, air: false, flick: false, amp: 0, jump: 0, loose: true, wave: 0, pinch: false, wire: false, hi: null };
+const sc = Object.assign({}, BASE);
+const set = o => { Object.assign(sc, BASE, o); g.paint(); };
+const ROOM = '#efeafc';
+const room = () => `<rect width="420" height="280" fill="${ROOM}"/><path d="M0 236h420v44H0z" fill="#d9cfb8"/><rect y="236" width="420" height="5" fill="#c9bb9a"/>`;
+const ear = () => `<path d="M0 -26C18 -26 26 -12 26 2C26 16 16 20 12 30C8 38 -4 38 -6 30" fill="#f2c9a0" stroke="#c99a6a" stroke-width="3" stroke-linecap="round"/><path d="M4 -12C12 -12 14 -2 10 4C6 10 2 8 2 14" fill="none" stroke="#c99a6a" stroke-width="3" stroke-linecap="round"/>`;
+const airDots = (x1, x2, y) => { let s = ''; for (let i = 0; i < 9; i++) { const x = x1 + (x2 - x1) * i / 8; s += `<g transform="translate(${f1(x)} ${y})"><circle cx="-4" cy="-10" r="2.6"/><circle cx="3" cy="2" r="2.6"/><circle cx="-2" cy="12" r="2.6"/></g>`; } return `<g fill="#23799f" opacity=".6">${s}</g>`; };
+
+function tri() {
+  return `${room()}<path d="M120 236V40H200" fill="none" stroke="#8a5f38" stroke-width="7" stroke-linecap="round"/>${at(170, 40, 1.5, A.triangleInst(sc.ring))}
+    ${!sc.press ? '<g transform="translate(236 156) rotate(-30)"><rect x="-3" y="-60" width="6" height="64" rx="3" fill="#9aa3ad"/></g>' : at(194, 160, .9, A.pressHand(), -90)}
+    ${sc.ring ? at(232, 120, 1, A.soundArcs(3, 14, 12)) : ''}${sc.air ? airDots(262, 340, 120) : ''}${at(368, 120, 1.2, ear())}`;
+}
+function ruler() {
+  const r = a => `<g transform="translate(206 150) rotate(${a})"><rect x="0" y="-6" width="124" height="12" rx="2" fill="#ffd24a" stroke="#d6a51e" stroke-width="2"/>${[14, 34, 54, 74, 94, 114].map(x => `<path d="M${x} -6v6" stroke="#a5781a" stroke-width="1.6"/>`).join('')}</g>`;
+  return `${room()}<path d="M0 150h240v14H0z" fill="#a57b4c"/><path d="M20 164h16v72H20zM200 164h16v72h-16z" fill="#8a5f38"/>
+    <rect x="96" y="144" width="112" height="12" rx="2" fill="#ffd24a" stroke="#d6a51e" stroke-width="2"/>${at(150, 146, 1, A.pressHand(), 0)}
+    ${sc.flick ? `<g opacity=".45">${r(-14)}${r(14)}</g>` + at(380, 140, .9, A.soundArcs(2, 10, 10)) : ''}${r(0)}`;
+}
+function band() {
+  return `${room()}<rect x="70" y="90" width="280" height="80" rx="10" fill="#c9a36a" stroke="#a57b4c" stroke-width="3"/>${at(210, 130, 1.4, A.rubberBand(90, sc.amp))}
+    ${sc.amp ? at(352, 130, 1, A.soundArcs(sc.amp > 10 ? 3 : 1, 12, 12)) : ''}
+    ${sc.amp ? `<text x="210" y="208" text-anchor="middle" font-size="16" font-weight="900" fill="#3a5c75" font-family="Nunito,Cairo,Arial,sans-serif">${sc.amp > 10 ? T('Flicked strongly', 'نقر بقوة') : T('Flicked weakly', 'نقر برفق')}</text>` : ''}`;
+}
+function drumScene() {
+  return `${room()}${at(210, 236, 2, A.drum({ jump: sc.jump }))}${sc.jump ? at(318, 150, 1.2, A.soundArcs(sc.jump > .5 ? 3 : 1, 12, 12)) : ''}
+    <g transform="translate(110 70) rotate(${sc.jump > .5 ? -40 : -20})"><rect x="-3" y="-50" width="6" height="64" rx="3" fill="#8a5f38"/><circle cy="-52" r="8" fill="#f2e3c4" stroke="#8a5f38" stroke-width="2"/></g>`;
+}
+const L = 90, R = 330, Y = 140;
+function phone() {
+  const stop = sc.pinch ? 210 : R, n = Math.round(sc.wave * 10);
+  let dots = ''; for (let i = 0; i < n; i++) { const x = L + (stop - L) * (i + .5) / 10; if (x < stop) dots += `<circle cx="${f1(x)}" cy="${Y}" r="4" fill="#e2603f"/>`; }
+  return `${room()}${A.phoneString(L, R, Y, sc.loose).replace('#7a5a3a', sc.wire ? '#8f9aa6' : '#7a5a3a').replace('stroke-width="2.4"', `stroke-width="${sc.wire ? 3.4 : 2.4}"`)}
+    ${at(L, Y, 1.2, A.paperCup(1))}${at(R, Y, 1.2, A.paperCup(-1))}${dots}${sc.pinch ? at(210, Y, 1.2, A.pinchFingers()) : ''}
+    ${sc.wave && !sc.pinch && !sc.loose ? at(R + 52, Y - 44, .8, A.soundArcs(2, 10, 9)) : ''}
+    ${sc.hi === 'string' ? `<ellipse cx="210" cy="${Y}" rx="110" ry="22" fill="rgba(46,158,107,.18)" stroke="#2e9e6b" stroke-width="5"/>` : ''}`;
+}
+const render = () => ({ tri, ruler, band, drum: drumScene, phone })[sc.mode]();
+
+const g = G4Game({ ch: 'g4c5', logo: '🔔', title: ['Sound Workshop', 'ورشة الصوت'], sub: ['Chapter 5 · Properties of Sound', 'الفصل ٥ · خصائص الصوت'],
+  bg: 'science/assets/bg_g4c5.svg', bgc: '#e6e3fb', label: ['Reesho’s sound workshop', 'ورشة ريشو للصوت'], render });
+const kw = g.kw;
+
+/* ---------- Stage 1 · Warm Up: how sound is produced (5-1) ---------- */
+async function stage1() {
+  set({ mode: 'tri' });
+  g.say(T('Let’s hit the triangle! When a thing makes a sound, what is it doing?', P('يلّا نضرب المثلث الموسيقي! عندما يُصدر جسم ما صوتًا، ماذا يفعل؟', 'يلّا نضرب المثلث الموسيقي! عندما يُصدر جسم ما صوتًا، ماذا يفعل؟')), 'think');
+  await g.choice({
+    options: [T('It shakes (vibrates)', 'يهتز'), T('It stays completely still', 'يظل ساكنًا تمامًا'), T('It gets lighter', 'يصبح أخف')], correct: T('It shakes (vibrates)', 'يهتز'),
+    hint: T('Touch it with your fingers after you hit it…', P('المسه بصوابعك بعد ما تضربه…', 'المسيه بصوابعك بعد ما تضربيه…')),
+    ok: T(`When a thing makes a sound, it is shaking. This shaking is called ${kw('vibration')}.`, `عندما يُصدر جسم ما صوتًا فإنه يهتز، وتُسمَّى هذه الحركة ${kw('اهتزازًا')}.`),
+    reveal: () => { sc.ring = true; g.paint(); } });
+
+  set({ mode: 'tri', ring: true });
+  g.say(T('It is ringing. Now we press it hard with our fingers to stop the vibration. What happens to the sound?', 'المثلث بيرن. دلوقتي نضغط عليه بقوة بصوابعنا علشان نوقف اهتزازه. ماذا يحدث للصوت؟'), 'think');
+  await g.choice({
+    options: [T('The sound stops right away', 'يتوقف الصوت فورًا'), T('The sound continues for a while', 'يستمر الصوت لفترة'), T('The sound becomes bigger', 'يصبح الصوت أعلى')], correct: T('The sound stops right away', 'يتوقف الصوت فورًا'),
+    hint: T('No shaking…', 'مفيش اهتزاز…'),
+    ok: T(`When the vibration stops, the ${kw('sound stops')}.`, `عندما يتوقف الاهتزاز ${kw('يتوقف الصوت')}.`),
+    reveal: () => { sc.ring = false; sc.press = true; g.paint(); } });
+
+  set({ mode: 'ruler' });
+  g.say(T('A ruler on the edge of a desk. We flick the part that sticks out. How does it move while it makes a sound?', 'مسطرة على حافة الطاولة. ننقر على الجزء البارز. كيف تتحرك أثناء إصدارها للصوت؟'), 'think');
+  await g.choice({
+    options: [T('It shakes up and down quickly', 'تهتز لأعلى ولأسفل بسرعة'), T('It does not move at all', 'لا تتحرك إطلاقًا'), T('It flies away', 'تطير بعيدًا')], correct: T('It shakes up and down quickly', 'تهتز لأعلى ولأسفل بسرعة'),
+    hint: T('Every thing that makes a sound…', 'كل جسم بيطلّع صوت…'),
+    ok: T('The ruler vibrates while it makes a sound. Even if the shaking is too small to see, things always vibrate when they make a sound!', 'المسطرة تهتز أثناء إصدار الصوت. والأجسام تهتز دائمًا عندما تُصدر صوتًا، حتى إذا كان الاهتزاز صغيرًا جدًّا لا يمكن رؤيته!'),
+    reveal: () => { sc.flick = true; g.paint(); } });
+
+  set({ mode: 'tri', ring: true });
+  g.say(T('The triangle is far from the ear. How does its shaking reach our ears?', 'المثلث بعيد عن الأذن. إزاي اهتزازه بيوصل لودننا؟'), 'think');
+  await g.choice({
+    options: [T('The air around it shakes too, and carries it', 'يهتز الهواء المحيط به أيضًا وينقله'), T('Light carries it', 'ينقله الضوء'), T('It does not reach us', 'لا يصل إلينا')], correct: T('The air around it shakes too, and carries it', 'يهتز الهواء المحيط به أيضًا وينقله'),
+    hint: T('What is between the triangle and the ear?', 'إيه اللي بين المثلث والأذن؟'),
+    ok: T(`When a thing shakes, the ${kw('air')} around it also shakes. When this shaking reaches our ears, we hear the sound.`, `عندما يهتز الجسم يهتز ${kw('الهواء')} المحيط به أيضًا، وينتقل الاهتزاز عبر الهواء حتى يصل إلى آذاننا فنسمع الصوت.`),
+    reveal: () => { sc.air = true; g.paint(); } });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Big sound, small sound', 'صوت عالٍ وصوت منخفض'));
+  set({ mode: 'band', amp: 4 });
+  g.say(T('We flicked the rubber band weakly: a small sound. How do we make a bigger sound?', 'نقرنا الشريط المطاطي برفق: صوت منخفض. إزاي نطلّع صوت أعلى؟'), 'think');
+  await g.choice({
+    options: [T('Flick it strongly', 'ننقره بقوة'), T('Flick it even more weakly', 'ننقره برفق أكثر'), T('Do not flick it', 'لا ننقره')], correct: T('Flick it strongly', 'ننقره بقوة'),
+    hint: T('A bigger push…', 'نقرة أقوى…'),
+    ok: T('When I flicked it strongly, the sound became bigger!', 'عندما نقرته بقوة أصبح الصوت أعلى!'),
+    reveal: () => { sc.amp = 18; g.paint(); } });
+
+  set({ mode: 'band', amp: 18 });
+  g.say(T('Look at the rubber band now. How is its vibration compared with the weak flick?', P('بص على الشريط المطاطي دلوقتي. اهتزازه عامل إزاي مقارنة بالنقرة الخفيفة؟', 'بصي على الشريط المطاطي دلوقتي. اهتزازه عامل إزاي مقارنة بالنقرة الخفيفة؟')), 'think');
+  await g.choice({
+    options: [T('Wider: it vibrates a lot', 'أكبر: يهتز اهتزازًا كبيرًا'), T('Narrower: it vibrates a little', 'أصغر: يهتز اهتزازًا صغيرًا'), T('Exactly the same', 'هو نفسه تمامًا')], correct: T('Wider: it vibrates a lot', 'أكبر: يهتز اهتزازًا كبيرًا'),
+    hint: T('Look at how wide the band moves.', 'بص الشريط بيتحرك قد إيه.'),
+    ok: T(`Big sound: things vibrate ${kw('a lot')}. Small sound: things vibrate a little.`, `الصوت العالي: تهتز الأجسام اهتزازًا ${kw('كبيرًا')}. الصوت المنخفض: تهتز الأجسام اهتزازًا صغيرًا.`) });
+
+  set({ mode: 'drum', jump: .1 });
+  g.say(T('A sticky note is on the drum. We hit it weakly and the note hardly moves. Now we hit it strongly. What will the note do?', 'ورقة لاصقة على الطبلة. ضربناها برفق فالورقة بالكاد اتحركت. دلوقتي هنضربها بقوة. الورقة هتعمل إيه؟'), 'think');
+  await g.choice({
+    options: [T('It jumps high', 'تقفز عاليًا'), T('It stays still', 'تظل ثابتة'), T('It moves less than before', 'تتحرك أقل من قبل')], correct: T('It jumps high', 'تقفز عاليًا'),
+    hint: T('A strong hit makes a big vibration.', 'الضربة القوية بتعمل اهتزاز كبير.'),
+    ok: T('When you hit strongly, the drum skin vibrates a lot, so the sticky note jumps high and the sound is bigger.', 'عند الضرب بقوة يهتز جلد الطبلة اهتزازًا كبيرًا، فتقفز الورقة عاليًا ويصبح الصوت أعلى.'),
+    reveal: () => g.tween(700, k => { sc.jump = .1 + .85 * k; }) });
+
+  set({ mode: 'drum', jump: .95 });
+  g.say(T('So what decides the volume of a sound?', 'إذن، بماذا تتحدد شدة الصوت؟'), 'think');
+  await g.choice({
+    options: [T('The amount of the vibration', 'مقدار الاهتزاز'), T('The color of the drum', 'لون الطبلة'), T('The time of the day', 'وقت النهار')], correct: T('The amount of the vibration', 'مقدار الاهتزاز'),
+    hint: T('Big vibration, big sound…', 'اهتزاز كبير، صوت عالي…'),
+    ok: T(`The bigger the amount of the vibration, the bigger the sound. The ${kw('volume')} of sound is decided by the amount of the vibration. And do not make loud sounds near your ears: it can hurt them!`, `كلما زاد مقدار الاهتزاز زادت ${kw('شدة الصوت')}. تتحدد شدة الصوت بمقدار الاهتزاز. ولا تُصدر أصواتًا عالية بالقرب من أذنيك؛ فقد تؤذي السمع!`) });
+}
+const PHONE = [
+  { id: 'cupA', name: T('The cup on the left', 'الكوب على اليسار'), ring: ring(L - 26, Y, 42, 40) },
+  { id: 'string', name: T('The line in the middle', 'الخط في المنتصف'), ring: ring(210, Y, 100, 22) },
+  { id: 'cupB', name: T('The cup on the right', 'الكوب على اليمين'), ring: ring(R + 26, Y, 42, 40) }
+];
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('The string telephone', 'الهاتف الخيطي'));
+  set({ mode: 'phone', loose: true });
+  g.say(T('Reesho talks into the cup, but the string is loose and we can hardly hear him. What should we do?', 'ريشو بيتكلم في الكوب، لكن الخيط مرتخٍ ومش سامعينه كويس. نعمل إيه؟'), 'think');
+  await g.choice({
+    options: [T('Pull the string tight', 'نشُدُّ الخيط بإحكام'), T('Leave it loose', 'نتركه مرتخيًا'), T('Cut the string', 'نقطع الخيط')], correct: T('Pull the string tight', 'نشُدُّ الخيط بإحكام'),
+    hint: T('A loose string does not carry the vibration well.', 'الخيط المرتخي مش بينقل الاهتزاز كويس.'),
+    ok: T(`When the string is pulled ${kw('tight')}, the vibration travels well, so the sound travels easily.`, `عندما يكون الخيط مشدودًا ${kw('بإحكام')} تنتقل الاهتزازات بشكل أفضل؛ لذلك ينتقل الصوت بسهولة.`),
+    reveal: () => { sc.loose = false; g.tween(1000, k => { sc.wave = k; }); } });
+
+  set({ mode: 'phone', loose: false, wave: 1 });
+  g.say(T('We hear him clearly! Tap the part that carries the vibration between the two cups.', P('سامعينه بوضوح! اضغط على الجزء اللي بينقل الاهتزاز بين الكوبين.', 'سامعينه بوضوح! اضغطي على الجزء اللي بينقل الاهتزاز بين الكوبين.')), 'think');
+  await g.spot(PHONE, 'string', {
+    hint: T('It joins the two cups.', 'هو اللي بيوصل الكوبين ببعض.'),
+    ok: T(`The vibration travels from paper cup → ${kw('string')} → paper cup and reaches the ear. Sound travels not only through the air but also through things like string.`, `ينتقل اهتزاز الصوت من الكوب الورقي ← ${kw('الخيط')} ← الكوب الورقي الآخر حتى يصل إلى الأذن. فالصوت ينتقل ليس فقط عبر الهواء، بل أيضًا عبر الأجسام مثل الخيط.`),
+    reveal: () => { sc.hi = 'string'; g.paint(); } });
+
+  set({ mode: 'phone', loose: false, wave: 1 });
+  g.say(T('Now we pinch the string tightly in the middle. What happens to Reesho’s voice?', 'دلوقتي نمسك الخيط بقوة من المنتصف. صوت ريشو هيحصل له إيه؟'), 'think');
+  await g.choice({
+    options: [T('We cannot hear it: the vibration stops there', 'لا نسمعه: تتوقف الاهتزازات عند تلك النقطة'), T('It becomes louder', 'يصبح أعلى'), T('Nothing changes', 'لا يتغير شيء')], correct: T('We cannot hear it: the vibration stops there', 'لا نسمعه: تتوقف الاهتزازات عند تلك النقطة'),
+    hint: T('The fingers hold the string still.', 'الصوابع بتمسك الخيط ثابت.'),
+    ok: T('If you pinch the string in the middle, the vibration stops there, so the sound does not travel.', 'إذا أمسكت الخيط من منتصفه تتوقف الاهتزازات عند تلك النقطة؛ ولذلك لا ينتقل الصوت.'),
+    reveal: () => { sc.pinch = true; g.paint(); } });
+
+  set({ mode: 'phone', loose: false, wire: true });
+  g.say(T('Last test: we use a wire instead of the string and pull it tight. Can we hear Reesho?', 'آخر تجربة: نستخدم سلكًا بدل الخيط ونشُدُّه. هل نسمع ريشو؟'), 'think');
+  await g.choice({
+    options: [T('Yes, if the vibration travels through it', 'نعم، إذا انتقلت الاهتزازات خلاله'), T('No, sound can only travel through string', 'لا، الصوت ينتقل عبر الخيط فقط'), T('No, a wire stops all sounds', 'لا، السلك يوقف كل الأصوات')], correct: T('Yes, if the vibration travels through it', 'نعم، إذا انتقلت الاهتزازات خلاله'),
+    hint: T('What matters is the vibration.', 'المهم الاهتزاز.'),
+    ok: T('Even with a wire, you can hear the sound if the vibration travels. Sound moves by passing vibrations like a baton in a relay race!', 'حتى إذا استخدمت سلكًا يمكنك سماع الصوت إذا انتقلت الاهتزازات. ينتقل الصوت من خلال انتقال الاهتزازات من جسم إلى آخر، مثل تمرير العصا في سباق التتابع!'),
+    reveal: () => g.tween(1000, k => { sc.wave = k; }) });
+}
+async function stage2() { await mission1(); await mission2(); }
+
+/* ---------- Stage 3 · Speed Round: big sound or small sound? ---------- */
+const SPEED = [
+  { t: T('Things vibrate a lot', 'تهتز الأجسام اهتزازًا كبيرًا'), ans: 'big' },
+  { t: T('Flick the rubber band strongly', 'نقر الشريط المطاطي بقوة'), ans: 'big' },
+  { t: T('The sticky note jumps high', 'تقفز الورقة اللاصقة عاليًا'), ans: 'big' },
+  { t: T('Hit the drum strongly', 'ضرب الطبلة بقوة'), ans: 'big' },
+  { t: T('Things vibrate a little', 'تهتز الأجسام اهتزازًا صغيرًا'), ans: 'small' },
+  { t: T('Flick the rubber band weakly', 'نقر الشريط المطاطي برفق'), ans: 'small' },
+  { t: T('The sticky note hardly moves', 'بالكاد تتحرك الورقة اللاصقة'), ans: 'small' },
+  { t: T('Hit the drum weakly', 'ضرب الطبلة برفق'), ans: 'small' }
+];
+async function stage3() {
+  set({ mode: 'drum', jump: .5 });
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Big sound', 'صوت عالٍ'), value: 'big', c: 2 }, { label: T('Small sound', 'صوت منخفض'), value: 'small', c: 0 }],
+    ask: T('Big sound or small sound?', 'صوت عالٍ أم صوت منخفض؟'),
+    intro: T('Speed Round! Is it a <b>big sound</b> or a <b>small sound</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هو <b>صوت عالٍ</b> ولا <b>صوت منخفض</b>؟ دوس على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!', 'جولة السرعة! هو <b>صوت عالٍ</b> ولا <b>صوت منخفض</b>؟ دوسي على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!')),
+    think: T('Big or small?', 'عالٍ ولا منخفض؟'),
+    show: () => { sc.jump = .5; g.paint(); }, reveal: it => { sc.jump = it.ans === 'big' ? .95 : .08; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my sound workshop. We will make things <b>vibrate</b>, change the <b>volume</b> of sounds, and talk on a <b>string telephone</b>!`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت ورشة الصوت. هنخلّي الأجسام <b>تهتز</b>، ونغيّر <b>شدة الصوت</b>، ونتكلم في <b>الهاتف الخيطي</b>!`, `أهلًا يا <b>${g.name()}</b>! نوّرتي ورشة الصوت. هنخلّي الأجسام <b>تهتز</b>، ونغيّر <b>شدة الصوت</b>، ونتكلم في <b>الهاتف الخيطي</b>!`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Sound expert!', P('بقيت خبير صوت!', 'بقيتي خبيرة صوت!')),
+    text: T('A thing that makes a sound <b>vibrates</b>; when the vibration stops, the sound stops. The bigger the vibration, the bigger the sound. Sound travels through the air and through things like a <b>tight string</b>.', 'الجسم الذي يُصدر صوتًا <b>يهتز</b>، وعندما يتوقف الاهتزاز يتوقف الصوت. كلما زاد مقدار الاهتزاز زادت شدة الصوت. وينتقل الصوت عبر الهواء وعبر الأجسام مثل <b>الخيط المشدود</b>.') }
+}).catch(err => console.error(err));
+window.__sound = { sc, render, set };
+})();
+</script>
+</body>
+</html>

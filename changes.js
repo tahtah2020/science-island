@@ -3,6 +3,13 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-01', title: 'Grade 4 Science: Chapters 4, 5 and 6',
+    items: [
+      { text: 'Chapter 4 Properties of Light: 26 ideas + 3 bonus, game Light and Shadow Lab (light.html)' },
+      { text: 'Chapter 5 Properties of Sound: 17 ideas, game Sound Workshop (sound.html)' },
+      { text: 'Chapter 6 The Force of Wind: 10 ideas, game Wind Car Race (windcar.html)' },
+      { text: '13 new tap pictures drawn in code, English and Arabic', links: [{ label: 'Light and Shadow Lab', href: 'light.html', ch: 'g4c4' }, { label: 'Sound Workshop', href: 'sound.html', ch: 'g4c5' }, { label: 'Wind Car Race', href: 'windcar.html', ch: 'g4c6' }] }
+    ] },
   { date: '2026-10-30', title: 'The Ants’ Bridge made clearer',
     items: [
       { text: 'The Ants’ Bridge: each pillar shows its number, one tap puts a plank on the glowing pillar, bigger numbered pillars on the bridge, the ants walk on the bank', links: [{ label: 'The Ants’ Bridge', href: 'math-bridge.html', ch: 'mg4u2' }] }

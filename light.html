@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Light and Shadow Lab · Properties of Light</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261101a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Light and Shadow Lab.</noscript>
+<script src="firebase-config.js?v=20261101a"></script>
+<script src="chapters.js?v=20261101a"></script>
+<script src="common.js?v=20261101a"></script>
+<script src="science/g4_art.js?v=20261101a"></script>
+<script src="game_kit.js?v=20261101a"></script>
+<script>
+(() => {
+'use strict';
+/* Light and Shadow Lab · the game of Grade 4, Chapter 4 "Properties of Light". Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up, lesson 4-1): light sources; bounce sunlight with a mirror to a target in the shade (reflection, light travels straight),
+                                  see the path with water mist, then a second mirror sends it over a wall.
+   Stage 2 (Missions): 1) gather sunlight with a magnifying glass on black paper (lesson 4-2); 2) where is the shadow and why (4-3);
+                       3) the sun from East to South to West: shadow direction and length, the sundial (4-4); 4) sun and shade: ground temperature (4-5).
+   Stage 3 (Speed Round): sunny ground or shady ground?
+   The difficulty rises a little at each step: one tap, then a choice, then a reason, then two steps (relay over the wall, sun → shadow direction).
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 50-65).
+   The scene is set before every question (set()), so no picture is left over from the question before. */
+const A = window.G4ART, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+const f1 = n => Math.round(n * 10) / 10;
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const BASE = { mode: 'sources', lampOn: true, lit: false, ray2: false, mist: false, wall: false, two: false, ray3: false,
+  spot: 1, smoke: false, bucket: false, t: .5, sunOn: true, shadow: true, letters: false, line: false, marks: [], dial: false,
+  measure: false, th: [0, 0], hi: null, drops: false };
+const sc = Object.assign({}, BASE);
+const set = o => { Object.assign(sc, BASE, o); g.paint(); };
+
+const SKY = '#cdeaf7', GY = 226;
+const sky = c => `<rect width="420" height="280" fill="${c || SKY}"/>`;
+const groundBand = (fill = '#e9d3ab', line = '#d8bd8c') => `<path d="M0 ${GY}h420v54H0z" fill="${fill}"/><rect y="${GY}" width="420" height="6" fill="${line}"/>`;
+const dots = (x1, y1, x2, y2) => { let s = ''; for (let i = 1; i < 12; i++) { const k = i / 12; s += `<circle cx="${f1(x1 + (x2 - x1) * k + (i % 2 ? 3 : -3))}" cy="${f1(y1 + (y2 - y1) * k + (i % 3 ? 2 : -3))}" r="2.2" fill="#fff"/>`; } return s; };
+
+function sources() {
+  const tile = (x, inner) => `<g transform="translate(${x} 150)"><rect x="-58" y="-74" width="116" height="134" rx="16" fill="#fff8ea" stroke="#eadbb8" stroke-width="3"/>${inner}</g>`;
+  return `${sky('#f6ead6')}<path d="M0 224h420v56H0z" fill="#e3cfa8"/>${tile(80, at(0, 44, 1.05, A.mirror()))}${tile(210, at(0, 44, 1.5, A.ball()))}${tile(340, at(0, 46, 1, A.deskLamp(sc.lampOn)))}`;
+}
+/* the relay: sun → mirror 1 → target (or → mirror 2 → target over a wall) */
+const SUN = [58, 50], M1 = [140, GY - 30], M2 = [236, 96], TG = [372, 188];
+function relay() {
+  const tgt = `<path d="M346 ${GY}V160a26 26 0 0 1 52 0V${GY}Z" fill="#3c3f47"/>${sc.ray2 || sc.ray3 ? `<circle cx="${TG[0]}" cy="${TG[1]}" r="22" fill="#fff3a6" opacity=".6"/>` : ''}<circle cx="${TG[0]}" cy="${TG[1]}" r="10" fill="#e2603f" stroke="#fff" stroke-width="3"/><circle cx="${TG[0]}" cy="${TG[1]}" r="3.5" fill="#fff"/>`;
+  return `${sky()}${at(SUN[0], SUN[1], 1, A.sun(22))}${groundBand()}<path d="M318 40H420V${GY}H318Z" fill="#d9c7a7"/><path d="M300 ${GY}H330V280H300Z" fill="#3a5c75" opacity=".12"/>${tgt}
+    ${sc.wall ? `<path d="M286 140H306V${GY}H286Z" fill="#b98f5c" stroke="#8a5f38" stroke-width="2.4"/><path d="M236 ${GY}V108" stroke="#7a5a3a" stroke-width="6"/>` : ''}
+    ${sc.lit ? A.ray(SUN[0] + 12, SUN[1] + 16, M1[0], M1[1] - 20, 6) : ''}
+    ${sc.ray2 ? A.ray(M1[0], M1[1] - 20, TG[0], TG[1], 6) : ''}
+    ${sc.ray3 ? A.ray(M1[0], M1[1] - 20, M2[0], M2[1], 6) + A.ray(M2[0], M2[1], TG[0], TG[1], 6) : ''}
+    ${sc.mist && sc.ray2 ? dots(M1[0], M1[1] - 20, TG[0], TG[1]) : ''}${sc.mist && sc.lit ? dots(SUN[0] + 12, SUN[1] + 16, M1[0], M1[1] - 20) : ''}
+    ${at(M1[0], GY, 1.1, A.mirror(sc.two ? -60 : -38))}${sc.two ? at(M2[0], M2[1] + 40, .9, A.mirror(52)) : ''}`;
+}
+function lens() {
+  const w = 6 + 58 * sc.spot, cy = 222, cx = 210, ly = 104;
+  return `${sky()}${at(54, 46, 1, A.sun(20))}<path d="M0 238h420v42H0z" fill="#c9a36a"/><rect x="70" y="232" width="280" height="10" rx="4" fill="#a57b4c"/>
+    ${at(cx, 236, 1, A.blackPaper(190))}<path d="M${cx - 34} ${ly + 8}L${f1(cx - w)} ${cy}H${f1(cx + w)}L${cx + 34} ${ly + 8}Z" fill="#fff3a6" opacity=".45"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${f1(w)}" ry="${f1(Math.max(2.5, w * .3))}" fill="#fff6c9" opacity="${f1(.55 + .45 * (1 - sc.spot))}"/>${sc.spot < .15 ? `<ellipse cx="${cx}" cy="${cy}" rx="12" ry="5" fill="#ffd24a" opacity=".7"/>` : ''}
+    ${sc.smoke ? `<g fill="#9aa3ad" opacity=".55"><circle cx="${cx}" cy="${cy - 18}" r="7"/><circle cx="${cx + 8}" cy="${cy - 34}" r="9"/><circle cx="${cx - 4}" cy="${cy - 54}" r="11"/></g>` : ''}
+    ${at(cx, ly, 1.3, A.magnifier(30))}
+    ${sc.bucket ? `<g transform="translate(350 236)"><path d="M-28 -50H28L22 0H-22Z" fill="#7fb6d6" stroke="#4f86a6" stroke-width="3"/><path d="M-26 -42H26" stroke="#d5ecf6" stroke-width="5"/></g>` : ''}`;
+}
+/* the sun's path: t = 0 East (left) … .5 South (highest) … 1 West (right). Returns the sun's place and elevation */
+const sunAt = t => ({ x: 46 + 328 * t, y: 196 - 150 * Math.sin(Math.PI * t), el: (14 + 62 * Math.sin(Math.PI * t)) * Math.PI / 180 });
+const STICK = [210, GY], SH = 70;
+const tipAt = t => { const s = sunAt(t), len = Math.min(178, SH / Math.tan(s.el)), d = s.x < STICK[0] - 6 ? 1 : s.x > STICK[0] + 6 ? -1 : 0; return STICK[0] + d * len; };
+function day() {
+  const s = sunAt(sc.t), tip = tipAt(sc.t), lab = (x, a, b) => `<text x="${x}" y="268" text-anchor="middle" font-size="15" font-weight="900" fill="#7a5a3a" font-family="Nunito,Cairo,Arial,sans-serif">${T(a, b)}</text>`;
+  const letter = (x, a, b) => `<text x="${x}" y="${GY + 26}" text-anchor="middle" font-size="18" font-weight="900" fill="#3a5c75" font-family="Nunito,Cairo,Arial,sans-serif">${T(a, b)}</text>`;
+  return `${sky(sc.t < .18 || sc.t > .82 ? '#f9dcc0' : SKY)}${sc.sunOn ? at(s.x, s.y, 1, A.sun(20)) : ''}${groundBand('#e9d3ab', '#d8bd8c')}
+    ${lab(30, 'East', 'الشرق')}${lab(210, 'South', 'الجنوب')}${lab(390, 'West', 'الغرب')}
+    ${sc.dial ? `<ellipse cx="${STICK[0]}" cy="${GY + 4}" rx="160" ry="14" fill="none" stroke="#b98f5c" stroke-width="2" stroke-dasharray="4 6"/>` : ''}
+    ${sc.marks.map(m => `<circle cx="${f1(tipAt(m))}" cy="${GY + 2}" r="5" fill="#e2603f" stroke="#fff" stroke-width="2"/>`).join('')}
+    ${sc.marks.length > 1 ? `<path d="M${sc.marks.map(m => `${f1(tipAt(m))} ${GY + 2}`).join('L')}" stroke="#e2603f" stroke-width="2.4" fill="none"/>` : ''}
+    ${sc.shadow ? (Math.abs(tip - STICK[0]) < 4 ? `<ellipse cx="${STICK[0]}" cy="${GY + 3}" rx="16" ry="5" fill="#3a5c75" opacity=".55"/>` : `<path d="M${STICK[0]} ${GY}L${f1(tip)} ${GY - 2}L${f1(tip)} ${GY + 4}Z" fill="#3a5c75" opacity=".5" stroke="#3a5c75" stroke-width="6" stroke-linejoin="round"/>`) : ''}
+    ${at(STICK[0], STICK[1], 1, A.stick(SH))}
+    ${sc.line ? `<path d="M${f1(s.x)} ${f1(s.y)}L${f1(tip)} ${GY}" stroke="#e2603f" stroke-width="2.6" stroke-dasharray="7 6"/>` : ''}
+    ${sc.letters ? letter(118, 'A', 'أ') + letter(302, 'B', 'ب') : ''}`;
+}
+function grounds() {
+  const hi = (cx, rx) => `<ellipse cx="${cx}" cy="248" rx="${rx}" ry="26" fill="rgba(46,158,107,.18)" stroke="#2e9e6b" stroke-width="5"/>`;
+  return `${sky()}${at(352, 50, 1, A.sun(22))}<path d="M0 222h420v58H0z" fill="#e3c583"/><rect y="222" width="420" height="6" fill="#d2ae6a"/>
+    <ellipse cx="110" cy="248" rx="104" ry="26" fill="#6b5a3e" opacity=".5"/>${sc.drops ? '<g fill="#7fb6d6"><circle cx="70" cy="252" r="3.4"/><circle cx="118" cy="262" r="3"/><circle cx="150" cy="246" r="2.8"/><circle cx="96" cy="240" r="2.6"/></g>' : ''}
+    ${at(84, 232, 1.15, A.shadeTree())}
+    ${sc.measure ? at(132, 250, .9, A.thermometer(sc.th[0])) + at(300, 250, .9, A.thermometer(sc.th[1])) : ''}
+    ${sc.hi === 'shady' ? hi(110, 108) : sc.hi === 'sunny' ? hi(300, 100) : ''}`;
+}
+const render = () => ({ sources, relay, lens, day, grounds })[sc.mode]();
+
+const g = G4Game({ ch: 'g4c4', logo: '🔦', title: ['Light and Shadow Lab', 'معمل الضوء والظل'], sub: ['Chapter 4 · Properties of Light', 'الفصل ٤ · خصائص الضوء'],
+  bg: 'science/assets/bg_g4c4.svg', bgc: '#fff3c4', label: ['Reesho’s light and shadow lab', 'معمل ريشو للضوء والظل'], render });
+const kw = g.kw;
+
+/* ---------- Stage 1 · Warm Up: light sources and mirrors (4-1) ---------- */
+const SOURCES = [
+  { id: 'mirror', name: T('The mirror on a stand', 'المرآة على الحامل'), ring: ring(80, 140, 62, 72) },
+  { id: 'ball', name: T('The red ball', 'الكرة الحمراء'), ring: ring(210, 140, 62, 72) },
+  { id: 'lamp', name: T('The desk lamp', 'مصباح المكتب'), ring: ring(340, 140, 62, 72) }
+];
+async function stage1() {
+  set({ mode: 'sources' });
+  g.say(T(`Objects that emit their own light, such as the Sun and lamps, are called ${kw('light sources')}. Tap the light source on the table.`, P(`الأجسام التي ينبعث منها ضوؤها الخاص، مثل الشمس والمصابيح، تُسمَّى ${kw('مصادر الضوء')}. اضغط على مصدر الضوء اللي على الترابيزة.`, `الأجسام التي ينبعث منها ضوؤها الخاص، مثل الشمس والمصابيح، تُسمَّى ${kw('مصادر الضوء')}. اضغطي على مصدر الضوء اللي على الترابيزة.`)), 'think');
+  await g.spot(SOURCES, 'lamp', {
+    hint: T('Which one makes its own light?', 'مين فيهم بيطلّع ضوء من نفسه؟'),
+    ok: T(`The lamp is a ${kw('light source')}: it emits its own light. The mirror and the ball do not.`, `المصباح ${kw('مصدر للضوء')}: ينبعث منه ضوؤه الخاص. أما المرآة والكرة فلا.`) });
+
+  set({ mode: 'relay' });
+  g.say(T('The target is in the shade, inside the dark doorway. Let’s send sunlight to it with a mirror! What happens when sunlight hits the mirror?', 'الهدف في الظل، جوه الباب المظلم. يلّا نوصّل له ضوء الشمس بمرآة! ماذا يحدث عندما يسقط ضوء الشمس على المرآة؟'), 'think');
+  await g.choice({
+    options: [T('It bounces back', 'يرتد عنها'), T('It stops inside the mirror', 'يتوقف داخل المرآة'), T('It turns into a shadow', 'يتحول إلى ظل')], correct: T('It bounces back', 'يرتد عنها'),
+    hint: T('Look at yourself in a mirror: the light comes back to you.', P('بص في المراية: الضوء بيرجع لك.', 'بصي في المراية: الضوء بيرجع لك.')),
+    ok: T(`When light hits an object like a mirror and bounces back, it is called ${kw('reflection')}.`, `ارتداد الضوء عندما يسقط على سطح جسم ما (مثل المرآة) يُسمَّى ${kw('الانعكاس')}.`),
+    reveal: () => { sc.lit = true; sc.ray2 = true; g.paint(); } });
+
+  set({ mode: 'relay', lit: true, ray2: true });
+  g.say(T('It hit the target! Look at the light after the mirror. How does it travel?', 'أصاب الهدف! بص على الضوء بعد المرآة. كيف ينتقل؟'), 'think');
+  await g.choice({
+    options: [T('In a straight line', 'في خط مستقيم'), T('In a curve', 'في مسار منحنٍ'), T('In a circle', 'في دائرة')], correct: T('In a straight line', 'في خط مستقيم'),
+    hint: T('Follow the yellow line from the mirror to the target.', 'تابع الخط الأصفر من المرآة للهدف.'),
+    ok: T(`Sunlight travels ${kw('straight')} as long as nothing blocks it. Light reflected by a mirror also travels straight.`, `ينتقل ضوء الشمس في ${kw('خط مستقيم')} ما لم يعترض مساره جسم. والضوء المنعكس عن المرآة ينتقل أيضًا في خط مستقيم.`) });
+
+  set({ mode: 'relay', lit: true, ray2: true });
+  g.say(T('In real life, the path of light is hard to see. How can we see it faintly?', 'في الحقيقة مسار الضوء صعب نشوفه. إزاي نشوفه بشكل خافت؟'), 'think');
+  await g.choice({
+    options: [T('Spray some water mist where the light passes', 'نرش رذاذًا خفيفًا من الماء في مكان مرور الضوء'), T('Close our eyes', 'نغمض أعيننا'), T('Cover the mirror', 'نغطي المرآة')], correct: T('Spray some water mist where the light passes', 'نرش رذاذًا خفيفًا من الماء في مكان مرور الضوء'),
+    hint: T('Something tiny in the air can catch the light.', 'حاجة صغيرة في الهوا ممكن تمسك الضوء.'),
+    ok: T('Sprinkle some powder or spray some water mist where the light passes: you will see the path of light faintly.', 'انثر قليلًا من المسحوق أو رُشَّ رذاذًا خفيفًا من الماء في المكان الذي يمر فيه الضوء؛ ستتمكن من رؤية مسار الضوء بشكل خافت.'),
+    reveal: () => { sc.mist = true; g.paint(); } });
+
+  set({ mode: 'relay', lit: true, wall: true });
+  g.say(T('Now a low wall stands in front of the target. Light cannot bend around it. How can we still hit the target?', 'دلوقتي فيه حيطة قصيرة قدام الهدف، والضوء مش بينحني حواليها. إزاي نوصّل للهدف برضه؟'), 'think');
+  await g.choice({
+    options: [T('Use a second mirror up high to bounce the light again', 'نستخدم مرآة ثانية في مكان عالٍ لنعكس الضوء مرة أخرى'), T('Wait for the light to curve over the wall', 'ننتظر حتى ينحني الضوء فوق الحيطة'), T('Point the mirror at the sky', 'نوجّه المرآة نحو السماء')],
+    correct: T('Use a second mirror up high to bounce the light again', 'نستخدم مرآة ثانية في مكان عالٍ لنعكس الضوء مرة أخرى'),
+    hint: T('Light only travels straight… but a mirror can change its direction.', 'الضوء بيمشي مستقيم بس… لكن المراية تقدر تغيّر اتجاهه.'),
+    ok: T('With a second (and third) mirror you can bounce the light even further and send it to a different direction. Never shine it at people’s faces or classroom windows!', 'باستخدام مرآة ثانية وثالثة يمكنك عكس الضوء إلى مسافة أبعد وتوجيهه إلى اتجاه مختلف. ولا توجِّه ضوء الشمس المنعكس نحو وجوه الأشخاص أو نوافذ الفصول!'),
+    reveal: () => { sc.two = true; sc.ray3 = true; g.paint(); } });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Gathering light', 'تجميع الضوء'));
+  set({ mode: 'lens', spot: 1 });
+  g.say(T(`A ${kw('magnifying glass')} gathers sunlight from a wide area into one point. Our spot is big and the black paper is not burning. What should we do?`, `${kw('العدسة المكبرة')} تجمع ضوء الشمس القادم من مساحة واسعة في نقطة واحدة. البقعة عندنا كبيرة والورقة السوداء مش بتتحرق. نعمل إيه؟`), 'think');
+  await g.choice({
+    options: [T('Make the point of light as small as possible', 'نجعل نقطة الضوء صغيرة قدر الإمكان'), T('Make the spot cover a wide area', 'نجعل البقعة تغطي مساحة واسعة'), T('Look at the sun through the glass', 'ننظر إلى الشمس من خلال العدسة')],
+    correct: T('Make the point of light as small as possible', 'نجعل نقطة الضوء صغيرة قدر الإمكان'),
+    hint: T('Gather the light into one tiny point.', 'جمّع الضوء في نقطة صغيرة خالص.'),
+    ok: T('Move the magnifying glass closer or further from the paper to make the point of light as small and clear as possible.', 'حرِّك العدسة المكبرة بالقرب من الورقة أو بعيدًا عنها حتى تصبح نقطة الضوء أصغر وأوضح ما يمكن.'),
+    reveal: () => g.tween(900, k => { sc.spot = 1 - .96 * k; }) });
+
+  set({ mode: 'lens', spot: .04 });
+  g.say(T('The point is tiny now. How did the point change?', 'النقطة بقت صغيرة خالص. النقطة اتغيرت إزاي؟'), 'think');
+  await g.choice({
+    options: [T('It became brighter and hotter', 'أصبحت أكثر سطوعًا وأكثر حرارة'), T('It became darker and colder', 'أصبحت أكثر إظلامًا وبرودة'), T('Nothing changed', 'لم يتغير شيء')], correct: T('It became brighter and hotter', 'أصبحت أكثر سطوعًا وأكثر حرارة'),
+    hint: T('All the light is now in one small place.', 'كل الضوء بقى في حتة صغيرة.'),
+    ok: T(`The smaller you make the gathered sunlight, the ${kw('brighter')} and ${kw('hotter')} it becomes.`, `كلما صغرت نقطة ضوء الشمس المجمَّعة، أصبحت أكثر ${kw('سطوعًا')} وأكثر ${kw('حرارة')}.`) });
+
+  set({ mode: 'lens', spot: .04 });
+  g.say(T('We keep the light still at its smallest point and wait… What will we see after a while?', P('ثبّت الضوء عند أصغر نقطة واستنى… هنشوف إيه بعد شوية؟', 'ثبّتي الضوء عند أصغر نقطة واستني… هنشوف إيه بعد شوية؟')), 'think');
+  await g.choice({
+    options: [T('Smoke comes out and the paper burns', 'يخرج دخان وتبدأ الورقة في الاحتراق'), T('The paper gets wet', 'تتبلل الورقة'), T('The paper turns white', 'تصبح الورقة بيضاء')], correct: T('Smoke comes out and the paper burns', 'يخرج دخان وتبدأ الورقة في الاحتراق'),
+    hint: T('The point is very hot.', 'النقطة سخنة جدًّا.'),
+    ok: T('After a while, smoke comes out from the spot where the light hits, and the paper burns.', 'بعد فترة يخرج دخان من المكان الذي يسقط عليه الضوء، وقد تبدأ الورقة في الاحتراق.'),
+    reveal: () => { sc.smoke = true; g.paint(); } });
+
+  set({ mode: 'lens', spot: .04, smoke: true });
+  g.say(T('The experiment is over. What do we do with the black paper?', 'التجربة خلصت. نعمل إيه في الورقة السوداء؟'), 'think');
+  await g.choice({
+    options: [T('Put it in a bucket of water', 'نضعها في دلو من الماء'), T('Put it in our pocket', 'نضعها في جيبنا'), T('Throw it on a friend', 'نرميها على صديق')], correct: T('Put it in a bucket of water', 'نضعها في دلو من الماء'),
+    hint: T('It may still be burning.', 'ممكن تكون لسه بتولّع.'),
+    ok: T('Put the black paper in a bucket of water. And remember: never look at the Sun through a magnifying glass, and never gather sunlight on people, clothes or living things.', 'ضع الورقة السوداء في دلو من الماء. وتذكَّر: لا تنظر إلى الشمس باستخدام عدسة مكبرة، ولا تركز ضوء الشمس على الناس أو ملابسهم أو الكائنات الحية.'),
+    reveal: () => { sc.smoke = false; sc.bucket = true; g.paint(); } });
+}
+const SIDES = [
+  { id: 'opposite', name: T('The ground marked A', 'الأرض التي عليها الحرف أ'), ring: ring(118, GY + 10, 80, 30) },
+  { id: 'same', name: T('The ground marked B', 'الأرض التي عليها الحرف ب'), ring: ring(302, GY + 10, 80, 30) }
+];
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Where is the shadow?', 'أين الظل؟'));
+  set({ mode: 'day', t: .9, shadow: false, letters: true });
+  g.say(T('The sun is on this side of the stick. Where will the stick’s shadow be? Tap it.', P('الشمس في الناحية دي من العصا. ظل العصا هيكون فين؟ اضغط عليه.', 'الشمس في الناحية دي من العصا. ظل العصا هيكون فين؟ اضغطي عليه.')), 'think');
+  await g.spot(SIDES, 'opposite', {
+    hint: T('A shadow never stands next to the sun.', 'الظل عمره ما يكون جنب الشمس.'),
+    ok: T(`Shadows are made on the ${kw('opposite side')} of the sun.`, `تتكوَّن الظلال في ${kw('الاتجاه المعاكس')} للشمس.`),
+    reveal: () => { sc.shadow = true; g.paint(); } });
+
+  set({ mode: 'day', t: .9 });
+  g.say(T('Why is a shadow made behind the stick?', 'لماذا يتكوَّن ظل خلف العصا؟'), 'think');
+  await g.choice({
+    options: [T('Sunlight travels straight and the stick blocks it', 'لأن ضوء الشمس ينتقل في خط مستقيم والعصا تحجبه'), T('The sun draws it on the ground', 'لأن الشمس ترسمه على الأرض'), T('Sunlight passes through the stick', 'لأن ضوء الشمس يمر عبر العصا')],
+    correct: T('Sunlight travels straight and the stick blocks it', 'لأن ضوء الشمس ينتقل في خط مستقيم والعصا تحجبه'),
+    hint: T('Remember how light travels.', 'افتكر الضوء بيمشي إزاي.'),
+    ok: T('Sunlight travels straight. When it hits an object, it is blocked, creating a place behind it where light does not reach. This is a shadow.', 'ينتقل ضوء الشمس في خط مستقيم، وعندما يصطدم بجسم يحجب الجسم الضوء، فيتكوَّن خلفه مكان لا يصل إليه الضوء، يُسمَّى الظل.') });
+
+  set({ mode: 'day', t: .9 });
+  g.say(T('Look at the sun, the top of the stick and the end of the shadow. How do they line up?', 'بص على الشمس وراس العصا وآخر الظل. بيصطفوا إزاي؟'), 'think');
+  await g.choice({
+    options: [T('In a straight line', 'على استقامة واحدة'), T('In a circle', 'في دائرة'), T('In a triangle', 'في شكل مثلث')], correct: T('In a straight line', 'على استقامة واحدة'),
+    hint: T('Light travels straight…', 'الضوء بيمشي مستقيم…'),
+    ok: T(`“Sun - Object - Shadow” always line up in a ${kw('straight line')}.`, `تكون الشمس – الجسم – الظل دائمًا على ${kw('استقامة واحدة')}.`),
+    reveal: () => { sc.line = true; g.paint(); } });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Shadows through the day', 'الظلال خلال النهار'));
+  set({ mode: 'day', t: .06, sunOn: false, shadow: false });
+  g.say(T('It is early morning. Where does the sun rise from?', 'الصبح بدري. من أين تشرق الشمس؟'), 'think');
+  await g.choice({
+    options: [T('The East', 'الشرق'), T('The West', 'الغرب'), T('The South', 'الجنوب')], correct: T('The East', 'الشرق'),
+    hint: T('Read the words on the ground.', P('اقرا الكلام اللي على الأرض.', 'اقري الكلام اللي على الأرض.')),
+    ok: T(`The sun rises from the ${kw('East')}, passes the South, and sets in the West.`, `تشرق الشمس من ${kw('الشرق')}، وتمر عبر الجنوب، ثم تغرب في الغرب.`),
+    reveal: () => { sc.sunOn = true; g.paint(); } });
+
+  set({ mode: 'day', t: .06, shadow: false });
+  g.say(T('The sun is in the East. Which way will the stick’s shadow point?', 'الشمس في الشرق. ظل العصا هيشاور على أنهي اتجاه؟'), 'think');
+  await g.choice({
+    options: [T('To the West', 'إلى الغرب'), T('To the East', 'إلى الشرق'), T('Nowhere: no shadow in the morning', 'لا يوجد ظل في الصباح')], correct: T('To the West', 'إلى الغرب'),
+    hint: T('The shadow is on the opposite side of the sun.', 'الظل في الجهة المقابلة للشمس.'),
+    ok: T(`The shadow is always on the opposite side of the sun: the sun is in the East, so the shadow points to the ${kw('West')}. And it is ${kw('long')}, because the sun is low.`, `الظل دائمًا في الجهة المقابلة للشمس: الشمس في الشرق، فيتجه الظل إلى ${kw('الغرب')}. ويكون ${kw('طويلًا')} لأن الشمس منخفضة.`),
+    reveal: () => { sc.shadow = true; sc.marks = [.06]; g.paint(); } });
+
+  set({ mode: 'day', t: .06, marks: [.06] });
+  g.say(T('We put a mark at the tip of the shadow. Now the sun climbs to the South, at noon. What happens to the shadow?', 'حطّينا علامة عند طرف الظل. دلوقتي الشمس طلعت للجنوب وقت الظهيرة. يحصل إيه للظل؟'), 'think');
+  await g.choice({
+    options: [T('It becomes short', 'يصبح قصيرًا'), T('It becomes longer', 'يصبح أطول'), T('It stays the same', 'يبقى كما هو')], correct: T('It becomes short', 'يصبح قصيرًا'),
+    hint: T('The higher the sun…', 'كل ما الشمس تعلى…'),
+    ok: T(`When the sun is high (around noon), the shadow becomes ${kw('short')}. When the sun is low (morning or evening), the shadow becomes long.`, `عندما تكون الشمس مرتفعة (وقت الظهيرة تقريبًا) يكون الظل ${kw('قصيرًا')}، وعندما تكون منخفضة (في الصباح أو المساء) يكون الظل طويلًا.`),
+    reveal: () => g.tween(1200, k => { sc.t = .06 + .44 * k; }).then(() => { sc.marks = [.06, .5]; g.paint(); }) });
+
+  set({ mode: 'day', t: .5, marks: [.06, .5] });
+  g.say(T('In the evening the sun goes down in the West. Which way does the shadow point now?', 'بالليل قرّب، والشمس بتغرب في الغرب. الظل بيشاور فين دلوقتي؟'), 'think');
+  await g.choice({
+    options: [T('To the East, and it is long', 'إلى الشرق، وهو طويل'), T('To the West, and it is short', 'إلى الغرب، وهو قصير'), T('It does not move all day', 'لا يتحرك طوال النهار')], correct: T('To the East, and it is long', 'إلى الشرق، وهو طويل'),
+    hint: T('Opposite the sun… and the sun is low again.', 'عكس الشمس… والشمس واطية تاني.'),
+    ok: T('When the sun moves, the direction of the shadow also changes. The low evening sun makes a long shadow pointing East.', 'عندما تتحرك الشمس يتغير اتجاه الظل أيضًا. والشمس المنخفضة في المساء تصنع ظلًّا طويلًا يتجه إلى الشرق.'),
+    reveal: () => g.tween(1200, k => { sc.t = .5 + .44 * k; }).then(() => { sc.marks = [.06, .5, .94]; g.paint(); }) });
+
+  set({ mode: 'day', t: .94, marks: [.06, .5, .94], dial: true });
+  g.say(T('The shadow moved in a fixed way all day. What is the tool that tells the time from the shadow’s position?', 'الظل اتحرك بطريقة منتظمة طول النهار. ما الأداة التي تُستخدم لمعرفة الوقت من موضع الظل؟'), 'think');
+  await g.choice({
+    options: [T('A sundial', 'الساعة الشمسية'), T('A compass', 'البوصلة'), T('A thermometer', 'مقياس الحرارة')], correct: T('A sundial', 'الساعة الشمسية'),
+    hint: T('It is a kind of clock that uses the sun.', 'نوع من الساعات بيستخدم الشمس.'),
+    ok: T(`A ${kw('sundial')} tells the time using the rule that shadows move in a fixed way.`, `${kw('الساعة الشمسية')} أداة لمعرفة الوقت بالاعتماد على أن الظلال تتحرك بطريقة منتظمة وثابتة.`) });
+}
+const GROUNDS = [
+  { id: 'shady', name: T('The ground under the tree', 'الأرض تحت الشجرة'), ring: ring(110, 248, 104, 28) },
+  { id: 'sunny', name: T('The open ground', 'الأرض المكشوفة'), ring: ring(300, 248, 100, 28) }
+];
+async function mission4() {
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('Sun and shade', 'الشمس والظل'));
+  set({ mode: 'grounds' });
+  g.say(T('Let’s measure the ground temperature in the sun and in the shade. How do we hold the thermometer?', 'يلّا نقيس درجة حرارة الأرض في الشمس وفي الظل. نمسك مقياس الحرارة إزاي؟'), 'think');
+  await g.choice({
+    options: [T('The bulb touches the ground, shaded from direct sunlight', 'الجزء السفلي يلامس الأرض، ونحجب عنه أشعة الشمس المباشرة'), T('Hold the bulb tightly with our fingers', 'نمسك الجزء السفلي بإحكام بأصابعنا'), T('Hold it high in the air', 'نرفعه عاليًا في الهواء')],
+    correct: T('The bulb touches the ground, shaded from direct sunlight', 'الجزء السفلي يلامس الأرض، ونحجب عنه أشعة الشمس المباشرة'),
+    hint: T('We want the ground’s temperature, not our fingers’.', 'عايزين حرارة الأرض، مش حرارة صوابعنا.'),
+    ok: T('Touch the bulb (bottom part) to the ground, and block direct sunlight from the bulb with your hand or a shadow.', 'ضع الجزء السفلي من مقياس الحرارة ملامسًا للأرض، واحجب عنه أشعة الشمس المباشرة بيدك أو بعمل ظل عليه.'),
+    reveal: () => { sc.measure = true; g.tween(1100, k => { sc.th = [.3 * k, .72 * k]; }); } });
+
+  set({ mode: 'grounds', measure: true, th: [.3, .72] });
+  g.say(T('Look at the two thermometers. Tap the ground that is warmer.', P('بص على الترمومترين. اضغط على الأرض الأدفأ.', 'بصي على الترمومترين. اضغطي على الأرض الأدفأ.')), 'think');
+  await g.spot(GROUNDS, 'sunny', {
+    hint: T('The red line is higher there.', 'الخط الأحمر أعلى هناك.'),
+    ok: T(`The ground in sunny places becomes ${kw('warmer')}, because sunlight warms it. Its temperature goes up as time passes.`, `تصبح الأرض في الأماكن المشمسة ${kw('أكثر دفئًا')}؛ لأن ضوء الشمس يسخِّنها. وترتفع درجة حرارتها مع مرور الوقت.`),
+    reveal: () => { sc.hi = 'sunny'; g.paint(); } });
+
+  set({ mode: 'grounds', measure: true, th: [.3, .72] });
+  g.say(T('Now touch the ground under the tree with your hand. How does it feel?', P('دلوقتي المس الأرض تحت الشجرة بإيدك. إحساسها إيه؟', 'دلوقتي المسي الأرض تحت الشجرة بإيدك. إحساسها إيه؟')), 'think');
+  await g.choice({
+    options: [T('Cooler and often damp', 'أبرد، وغالبًا أكثر رطوبة'), T('Hotter and dry', 'أسخن وجافة'), T('Exactly like the sunny ground', 'مثل الأرض المشمسة تمامًا')], correct: T('Cooler and often damp', 'أبرد، وغالبًا أكثر رطوبة'),
+    hint: T('The sun does not reach it.', 'الشمس مش بتوصل لها.'),
+    ok: T(`The ground in the shade is ${kw('cooler')} and often ${kw('damp')}. The warmth of the ground depends on how much sunlight it gets!`, `الأرض في الظل تكون ${kw('أبرد')}، وغالبًا ${kw('أكثر رطوبة')}. تعتمد حرارة الأرض على مقدار ضوء الشمس الذي تتلقاه!`),
+    reveal: () => { sc.hi = 'shady'; sc.drops = true; g.paint(); } });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); }
+
+/* ---------- Stage 3 · Speed Round: sunny ground or shady ground? ---------- */
+const SPEED = [
+  { t: T('Warmer', 'أكثر دفئًا'), ans: 'sunny' },
+  { t: T('Gets direct sunlight', 'تصلها أشعة الشمس المباشرة'), ans: 'sunny' },
+  { t: T('Its temperature goes up as time passes', 'ترتفع درجة حرارتها مع مرور الوقت'), ans: 'sunny' },
+  { t: T('Warmed by sunlight', 'يسخِّنها ضوء الشمس'), ans: 'sunny' },
+  { t: T('Cooler', 'أبرد'), ans: 'shady' },
+  { t: T('Often damp', 'غالبًا أكثر رطوبة'), ans: 'shady' },
+  { t: T('Under a tree or a wall', 'في ظل شجرة أو جدار'), ans: 'shady' },
+  { t: T('Sunlight does not reach it', 'لا يصل إليها ضوء الشمس'), ans: 'shady' }
+];
+async function stage3() {
+  set({ mode: 'grounds', measure: true, th: [.3, .72], drops: true });
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Sunny ground', 'أرض مشمسة'), value: 'sunny', c: 1 }, { label: T('Shady ground', 'أرض في الظل'), value: 'shady', c: 0 }],
+    ask: T('Sunny ground or shady ground?', 'أرض مشمسة أم أرض في الظل؟'),
+    intro: T('Speed Round! I will describe some ground. Is it the <b>sunny ground</b> or the <b>shady ground</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! هوصف لك أرض. هي <b>أرض مشمسة</b> ولا <b>أرض في الظل</b>؟ دوس على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!', 'جولة السرعة! هوصف لك أرض. هي <b>أرض مشمسة</b> ولا <b>أرض في الظل</b>؟ دوسي على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!')),
+    think: T('Sun or shade?', 'شمس ولا ظل؟'),
+    show: () => { sc.hi = null; g.paint(); }, reveal: it => { sc.hi = it.ans; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to my light and shadow lab. We will bounce sunlight with <b>mirrors</b>, gather it with a <b>magnifying glass</b>, follow <b>shadows</b> through the day, and feel the ground in the sun and in the shade.`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت معمل الضوء والظل. هنعكس ضوء الشمس <b>بالمرايا</b>، ونجمّعه <b>بالعدسة المكبرة</b>، ونتابع <b>الظلال</b> طول النهار، ونحس الأرض في الشمس وفي الظل.`, `أهلًا يا <b>${g.name()}</b>! نوّرتي معمل الضوء والظل. هنعكس ضوء الشمس <b>بالمرايا</b>، ونجمّعه <b>بالعدسة المكبرة</b>، ونتابع <b>الظلال</b> طول النهار، ونحس الأرض في الشمس وفي الظل.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Light expert!', P('بقيت خبير ضوء!', 'بقيتي خبيرة ضوء!')),
+    text: T('Light travels <b>straight</b> and a mirror <b>reflects</b> it. A magnifying glass gathers it: the smaller the point, the brighter and hotter. Shadows are on the <b>opposite side</b> of the sun, short at noon and long in the morning and evening. Sunny ground is warmer; shady ground is cooler and often damp.', 'ينتقل الضوء في <b>خط مستقيم</b>، والمرآة <b>تعكسه</b>. والعدسة المكبرة تجمعه: كلما صغرت النقطة زاد السطوع والحرارة. الظل في <b>الجهة المقابلة</b> للشمس، قصير وقت الظهيرة وطويل في الصباح والمساء. الأرض المشمسة أدفأ، والأرض في الظل أبرد وغالبًا أكثر رطوبة.') }
+}).catch(err => console.error(err));
+window.__light = { sc, render, set };
+})();
+</script>
+</body>
+</html>

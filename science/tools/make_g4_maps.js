@@ -143,3 +143,72 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1100, 300, .9, .7)
   b += '</svg>';
   save('bg_g4c3.svg', b);
 })();
+
+/* ---------- Chapter 4 · Properties of Light: a sunny island of mirrors, a magnifying glass, sticks and their shadows, and a shady tree ---------- */
+(function () {
+  seed = 11;
+  const shade = (x, y, len, rot) => `<g transform="translate(${x} ${y}) rotate(${rot})"><path d="M0 0L${len} -8L${len} 8Z" fill="#3a5c75" opacity=".28" stroke="#3a5c75" stroke-width="10" stroke-linejoin="round" stroke-opacity=".28"/></g>`;
+  let inside = `<ellipse cx="320" cy="1000" rx="260" ry="150" fill="#f6e3ae" opacity=".6"/><ellipse cx="900" cy="980" rx="240" ry="140" fill="#f1d9a0" opacity=".55"/><ellipse cx="960" cy="320" rx="260" ry="200" fill="#f6e3ae" opacity=".5"/>`;
+  for (let i = 0; i < 30; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040), '#a8b860');
+  let s = island([[0, '#f3e2b0'], [.5, '#f6eac2'], [1, '#fbf2d6']], ['#f6e3ae', '#ece7d8'], inside);
+  /* lesson 1: a mirror relay; lesson 2: the magnifying glass; lessons 3-4: sticks and shadows; lesson 5: the shady tree */
+  s += `<path d="M150 1020L330 900L520 960" fill="none" stroke="#ffd24a" stroke-width="10" stroke-linecap="round" opacity=".7"/>` + at(330, 930, 2, A.mirror(-30)) + at(150, 1050, 1.6, A.mirror(20));
+  s += at(980, 1080, 1.6, A.blackPaper(170)) + at(980, 960, 2, A.magnifier(30));
+  s += shade(620, 640, 230, 8) + at(620, 640, 2.2, A.stick(70)) + shade(260, 560, 90, -10) + at(260, 560, 2, A.stick(60));
+  s += `<ellipse cx="960" cy="560" rx="150" ry="40" fill="#6b5a3e" opacity=".35"/>` + at(930, 560, 2.2, A.shadeTree());
+  s += at(200, 300, 1.2, A.deskLamp(true)) + at(1000, 230, 1.3, A.ball());
+  s += sunAt(1110, 1170, 2.2) + cloud(1085, 118, 1.15, .95) + cloud(140, 110, .8, .85) + '</svg>';
+  save('map_g4c4.svg', s);
+
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe7f8"/><stop offset=".6" stop-color="#fdf3dc"/><stop offset=".61" stop-color="#f1d9a0"/><stop offset="1" stop-color="#e3c583"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/><circle cx="1330" cy="170" r="92" fill="#ffe08a"/><circle cx="1330" cy="170" r="130" fill="#ffe08a" opacity=".3"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}`;
+  for (let c = 0; c < 7; c++) b += shade(130 + c * 230, 780, 150, 178) + at(130 + c * 230, 780, 2, A.stick(70));
+  b += `<ellipse cx="300" cy="930" rx="220" ry="40" fill="#6b5a3e" opacity=".3"/>` + at(260, 930, 2.4, A.shadeTree()) + at(1350, 920, 2.4, A.shadeTree(.9));
+  b += '</svg>';
+  save('bg_g4c4.svg', b);
+})();
+
+/* ---------- Chapter 5 · Properties of Sound: a music island with drums, triangles, guitars and a long string telephone ---------- */
+(function () {
+  seed = 13;
+  let inside = `<ellipse cx="320" cy="1000" rx="260" ry="150" fill="#d9d2f4" opacity=".55"/><ellipse cx="900" cy="980" rx="240" ry="140" fill="#cfe7c0" opacity=".55"/><ellipse cx="960" cy="320" rx="260" ry="200" fill="#d9d2f4" opacity=".5"/>`;
+  for (let i = 0; i < 40; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040));
+  let s = island([[0, '#bfe59c'], [.5, '#cfeaa6'], [1, '#dcefc4']], ['#f6e3ae', '#ece7d8'], inside);
+  s += at(170, 1120, 1.8, A.drum({ jump: .6 })) + at(270, 1060, 1.4, A.soundArcs(3, 16, 14));
+  s += `<path d="M880 1060V880H980" fill="none" stroke="#8a5f38" stroke-width="10" stroke-linecap="round"/>` + at(950, 880, 2.2, A.triangleInst(true));
+  s += A.phoneString(160, 560, 600, false).replace('stroke-width="2.4"', 'stroke-width="5"') + at(160, 600, 2, A.paperCup(1)) + at(560, 600, 2, A.paperCup(-1));
+  s += at(1000, 560, 1.6, A.guitar(true)) + at(240, 330, 1.2, A.whistle()) + at(980, 240, 1.4, A.drum());
+  s += sunAt(1110, 1170, 2.2) + cloud(1085, 118, 1.15, .95) + cloud(140, 110, .8, .85) + '</svg>';
+  save('map_g4c5.svg', s);
+
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6e3fb"/><stop offset=".62" stop-color="#f4f1fd"/><stop offset=".63" stop-color="#d9cfb8"/><stop offset="1" stop-color="#c9bb9a"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>`;
+  for (let i = 0; i < 9; i++) b += at(f(80 + i * 185), f(160 + (i % 3) * 90), 2.2, A.soundArcs(3, 16, 14, '#b9b0e8', 5), i % 2 ? 180 : 0);
+  b += at(240, 880, 2.6, A.drum()) + at(1360, 880, 2.6, A.drum({ jump: .5 })) + at(800, 820, 2.2, A.guitar(true));
+  b += '</svg>';
+  save('bg_g4c5.svg', b);
+})();
+
+/* ---------- Chapter 6 · The Force of Wind: a breezy island with a race track, fans and sail cars ---------- */
+(function () {
+  seed = 17;
+  let inside = `<ellipse cx="320" cy="1000" rx="260" ry="150" fill="#cfeaa6" opacity=".55"/><ellipse cx="900" cy="980" rx="240" ry="140" fill="#dff1f8" opacity=".55"/><ellipse cx="960" cy="320" rx="260" ry="200" fill="#cfeaa6" opacity=".5"/>`;
+  for (let i = 0; i < 40; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040));
+  let s = island([[0, '#bfe59c'], [.5, '#cfeaa6'], [1, '#dcefc4']], ['#f6e3ae', '#ece7d8'], inside);
+  s += `<path d="M120 1180H560" stroke="#e9d3ab" stroke-width="44" stroke-linecap="round"/><path d="M200 1160v40" stroke="#fff" stroke-width="8"/>` + at(130, 1190, 1.6, A.fan(2)) + at(440, 1190, 1.5, A.windCar({ sail: 2 }));
+  s += at(900, 1080, 1.8, A.windCar({ sail: 1 })) + at(260, 660, 1.6, A.windCar({ sail: 2 })) + at(110, 660, 1.4, A.fan(1));
+  s += at(950, 560, 1.8, A.windCar({ sail: 2 })) + at(820, 560, 1.4, A.fan(2)) + at(260, 300, 1.3, A.windCar({ sail: 0 })) + at(1000, 250, 1.3, A.fan(1));
+  s += sunAt(1110, 1170, 2.2) + cloud(1085, 118, 1.15, .95) + cloud(930, 70, .7, .85) + cloud(140, 110, .8, .85) + '</svg>';
+  save('map_g4c6.svg', s);
+
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfeaf6"/><stop offset=".62" stop-color="#eef8fc"/><stop offset=".63" stop-color="#e9d3ab"/><stop offset="1" stop-color="#d8bd8c"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 220, 1.2, .8)}`;
+  for (let i = 0; i < 8; i++) b += `<path d="M${120 + i * 190} ${300 + (i % 3) * 60}q40 -12 80 0t80 0" fill="none" stroke="#b9dfee" stroke-width="8" stroke-linecap="round"/>`;
+  b += at(160, 900, 2.8, A.fan(2)) + at(620, 900, 2.6, A.windCar({ sail: 2 })) + at(1250, 900, 2.6, A.windCar({ sail: 1 }));
+  b += '</svg>';
+  save('bg_g4c6.svg', b);
+})();

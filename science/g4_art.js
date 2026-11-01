@@ -5,7 +5,10 @@
    window.G4ART = the drawings; window.CH_DIAGRAMS gets the tap pictures:
      Chapter 1: hidePlaces (grass | stone | rock | sand) · nileDesert (nile | desert) · fennec (ears | feet | tail) · desertDay (hole | sand | dune)
      Chapter 2: butterflyStages (egg | larva | pupa | adult) · insectBody (head | thorax | abdomen) · insectSide (antennae | wings | legs) · whoIsInsect (grasshopper | spider | pillbug)
-     Chapter 3: seedKinds (sunflower | chickpea | fava) · sowDepth (heap | right | deep) · seedlingLeaves (seedleaf | trueleaf) · flowerFruit (bud | flower | fruit) · plantBody (leaves | stem | roots) */
+     Chapter 3: seedKinds (sunflower | chickpea | fava) · sowDepth (heap | right | deep) · seedlingLeaves (seedleaf | trueleaf) · flowerFruit (bud | flower | fruit) · plantBody (leaves | stem | roots)
+     Chapter 4: lightSources (lamp | mirror | ball) · mirrorRelay (sun | mirror | target) · magnifySpots (wide | small) · shadowSide (opposite | same) · shadowTimes (morning | noon | evening) · sunShade (sunny | shady)
+     Chapter 5: vibrateThings (guitar | drum | whistle) · stickyDrum (soft | loud) · stringPhone (cupA | string | cupB) · phoneStates (loose | tight | pinched)
+     Chapter 6: windCars (weakWind | strongWind) · sailSizes (sailNone | sailSmall | sailLarge) · carParts (carBody | wheels | sail) */
 (function () {
   'use strict';
   const T = (en, ar) => (window.SI ? window.SI.T(en, ar) : en);
@@ -505,10 +508,177 @@
       ${hot('leaves', T('The wide flat green parts', 'الأجزاء الخضراء العريضة المسطحة'), ringEl(170, 46, 96, 40))}${hot('stem', T('The long part that stands up', 'الجزء الطويل القائم'), ringEl(170, 116, 24, 30))}${hot('roots', T('The parts under the ground', 'الأجزاء التي تحت الأرض'), ringEl(170, 198, 92, 42))}</svg>`;
   }
 
+
+  /* ================= Chapter 4 · light and shadows. Origin of each object: on the ground, under its middle ================= */
+  /* a desk lamp that is on (about 60 wide, 96 tall) */
+  const deskLamp = (on = true) => `${shadow(30)}<rect x="-26" y="-8" width="52" height="8" rx="4" fill="#5b6f86"/><path d="M0 -8V-60" stroke="#5b6f86" stroke-width="5" stroke-linecap="round"/>
+    ${on ? '<path d="M-14 -66L-46 -6H46L14 -66Z" fill="#fff3a6" opacity=".55"/>' : ''}<path d="M-22 -60L-10 -92H10L22 -60Z" fill="#e2603f" stroke="#b9472c" stroke-width="2.4" stroke-linejoin="round"/>
+    <circle cy="-60" r="9" fill="${on ? '#fff1a0' : '#e8e3d6'}" stroke="${on ? '#f2b134' : '#bdb6a5'}" stroke-width="2"/>${on ? '<circle cy="-60" r="16" fill="#ffe680" opacity=".35"/>' : ''}`;
+  /* a flat mirror on a small stand, tilted by rot (about 46 wide, 70 tall) */
+  const mirror = (rot = 0) => `${shadow(22)}<path d="M-12 0L0 -26L12 0" fill="none" stroke="#7a5a3a" stroke-width="4" stroke-linejoin="round"/>
+    <g transform="translate(0 -38) rotate(${rot})"><rect x="-23" y="-30" width="46" height="60" rx="6" fill="#8f6a44"/><rect x="-18" y="-25" width="36" height="50" rx="3" fill="#d5ecf6"/>
+    <path d="M-12 -18L-2 -24M-12 -6L6 -20" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g>`;
+  /* a toy ball (r = 20) */
+  const ball = (r = 20) => `${shadow(r * .9)}<circle cy="${-r}" r="${r}" fill="#e2603f" stroke="#b9472c" stroke-width="2.4"/><path d="M${-r} ${-r}C${-r * .4} ${-r * 1.5} ${r * .4} ${-r * .5} ${r} ${-r}" fill="none" stroke="#fff" stroke-width="3"/><circle cx="${-r * .35}" cy="${-r * 1.4}" r="${r * .18}" fill="#fff" opacity=".6"/>`;
+  /* a stick standing in the ground (height h) */
+  const stick = (h = 60) => `<rect x="-3.5" y="${-h}" width="7" height="${h}" rx="3" fill="#8a5f38" stroke="#6b4627" stroke-width="1.6"/><ellipse cx="0" cy="1" rx="8" ry="2.6" fill="#6b4627" opacity=".5"/>`;
+  /* a stick's shadow on the ground: len units long, to the right (dir 1) or left (dir -1) */
+  const stickShadow = (len, dir = 1, op = .45) => `<path d="M0 0L${f1(dir * len)} -3L${f1(dir * len)} 3Z" fill="#3a5c75" opacity="${op}" stroke="#3a5c75" stroke-width="5" stroke-linejoin="round"/>`;
+  /* a magnifying glass, lens centre at the origin (lens r = 26) */
+  const magnifier = (r = 26) => `<path d="M${f1(r * .7)} ${f1(r * .7)}L${f1(r * 1.9)} ${f1(r * 1.9)}" stroke="#7a5a3a" stroke-width="${f1(r * .32)}" stroke-linecap="round"/><circle r="${r}" fill="#d5ecf6" opacity=".75" stroke="#5b6f86" stroke-width="${f1(r * .2)}"/><path d="M${f1(-r * .5)} ${f1(-r * .3)}Q${f1(-r * .4)} ${f1(-r * .6)} ${f1(-r * .1)} ${f1(-r * .62)}" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
+  /* a round tree (about 110 wide, 130 tall) */
+  const shadeTree = (k = 1) => `<g transform="scale(${k})">${shadow(40)}<rect x="-8" y="-62" width="16" height="62" rx="5" fill="#8a5f38"/><g fill="#7cc86e" stroke="#4f9f52" stroke-width="3"><circle cx="-28" cy="-78" r="30"/><circle cx="28" cy="-78" r="30"/><circle cy="-108" r="36"/></g><circle cx="-12" cy="-116" r="9" fill="#a4dc8f"/></g>`;
+  /* a thermometer, bulb at the origin; level 0..1 */
+  const thermometer = (level = .5) => `<rect x="-6" y="-88" width="12" height="84" rx="6" fill="#fff" stroke="#5b6f86" stroke-width="2.4"/><rect x="-2.5" y="${f1(-8 - 74 * level)}" width="5" height="${f1(74 * level + 4)}" fill="#e2603f"/><circle r="9" fill="#e2603f" stroke="#5b6f86" stroke-width="2.4"/>
+    ${[20, 38, 56, 74].map(y => `<path d="M6 ${-y}h5" stroke="#5b6f86" stroke-width="1.6"/>`).join('')}`;
+  /* a black sheet of paper seen at a slant, width w */
+  const blackPaper = (w = 90) => `<path d="M${-w / 2} 0L${-w / 2 + 14} -22H${w / 2 + 14}L${w / 2} 0Z" fill="#2a2f36" stroke="#14171b" stroke-width="2" stroke-linejoin="round"/>`;
+  const ray = (x1, y1, x2, y2, w = 5) => `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="#ffd24a" stroke-width="${w}" stroke-linecap="round" opacity=".85"/><path d="M${x1} ${y1}L${x2} ${y2}" stroke="#fff6c9" stroke-width="${f1(w * .4)}" stroke-linecap="round"/>`;
+
+  function lightSources() {
+    const pic = { lamp: at(53, 98, .9, deskLamp(true)), mirror: at(53, 96, 1, mirror()), ball: at(53, 86, 1.3, ball()) };
+    const names = { lamp: T('A desk lamp', 'مصباح مكتب'), mirror: T('A mirror on a stand', 'مرآة على حامل'), ball: T('A red ball', 'كرة حمراء') };
+    return `${svgOpen(116, T('Three objects: a desk lamp, a mirror and a ball', 'ثلاثة أجسام: مصباح مكتب، ومرآة، وكرة'))}
+      ${['mirror', 'ball', 'lamp'].map((k, i) => tile(5 + i * 112, 6, 106, 104, '#fdf3dc', pic[k]) + hot(k, names[k], ringRect(5 + i * 112, 6, 106, 104))).join('')}</svg>`;
+  }
+  function mirrorRelay() {
+    return `${svgOpen(220, T('Sunlight goes down to a mirror on the ground and bounces to a dark doorway in the shade of a wall', 'ضوء الشمس ينزل إلى مرآة على الأرض وينعكس إلى باب مظلم في ظل جدار'))}
+      ${frame(220, '#cdeaf7')}${at(54, 44, 1, sun(20))}${ground(220, 176, '#e9d3ab', '#d8bd8c')}
+      <path d="M232 40H340V206a14 14 0 0 1-14 14H232Z" fill="#d9c7a7"/><path d="M196 176H232V220H196Z" fill="#3a5c75" opacity=".18"/>
+      <path d="M262 176V110a22 22 0 0 1 44 0V176Z" fill="#3c3f47"/><circle cx="284" cy="140" r="9" fill="#e2603f" stroke="#fff" stroke-width="3"/><circle cx="284" cy="140" r="3" fill="#fff"/>
+      ${ray(66, 58, 146, 150)}${ray(150, 148, 280, 140)}${at(150, 182, 1, mirror(-34))}
+      ${hot('sun', T('The bright ball in the sky', 'الكرة اللامعة في السماء'), ringEl(54, 44, 38, 38))}
+      ${hot('mirror', T('The shiny object on a stand', 'الجسم اللامع على الحامل'), ringEl(150, 152, 38, 40))}
+      ${hot('target', T('The dark doorway in the shade', 'الباب المظلم في الظل'), ringEl(284, 140, 34, 44))}</svg>`;
+  }
+  function magnifySpots() {
+    const pane = (spot) => `${at(53, 104, 1, blackPaper(84))}<path d="M30 38L${53 - spot} 93H${53 + spot}L76 38Z" fill="#fff3a6" opacity=".5"/>${at(53, 34, .9, magnifier(26))}
+      <ellipse cx="53" cy="93" rx="${spot}" ry="${f1(Math.max(2, spot * .35))}" fill="#fff6c9"/>${spot < 6 ? '<ellipse cx="53" cy="93" rx="9" ry="4" fill="#ffd24a" opacity=".6"/>' : ''}`;
+    return `${svgOpen(130, T('Two magnifying glasses over black paper: one makes a big spot of light, the other a tiny spot', 'عدستان مكبرتان فوق ورق أسود: إحداهما تصنع بقعة ضوء كبيرة، والأخرى نقطة صغيرة جدًّا'))}
+      ${tile(56, 6, 106, 118, '#cdeaf7', pane(22))}${tile(178, 6, 106, 118, '#cdeaf7', pane(3))}
+      ${hot('wide', T('The paper with a big spot of light', 'الورقة التي عليها بقعة ضوء كبيرة'), ringRect(56, 6, 106, 118))}${hot('small', T('The paper with a tiny spot of light', 'الورقة التي عليها نقطة ضوء صغيرة جدًّا'), ringRect(178, 6, 106, 118))}</svg>`;
+  }
+  function shadowSide() {
+    const letter = (x, s) => `<text x="${x}" y="200" text-anchor="middle" font-size="22" font-weight="900" fill="#3a5c75" font-family="Nunito,Cairo,Arial,sans-serif">${s}</text>`;
+    return `${svgOpen(210, T('A stick standing in the ground, with the sun low on the right. The ground on each side of the stick is marked A and B', 'عصا مغروسة في الأرض، والشمس منخفضة على اليمين. الأرض على جانبي العصا عليها الحرفان أ و ب'))}
+      ${frame(210, '#cdeaf7')}${at(296, 58, 1, sun(20))}${ground(210, 150, '#e9d3ab', '#d8bd8c')}
+      <path d="M58 158H150M190 158H282" stroke="#3a5c75" stroke-width="12" stroke-linecap="round" stroke-dasharray="2 14" opacity=".35"/>${at(170, 158, 1, stick(76))}
+      ${letter(104, T('A', 'أ'))}${letter(236, T('B', 'ب'))}
+      ${hot('opposite', T('The ground marked A', 'الأرض التي عليها الحرف أ'), ringEl(104, 168, 56, 30))}${hot('same', T('The ground marked B', 'الأرض التي عليها الحرف ب'), ringEl(236, 168, 56, 30))}</svg>`;
+  }
+  function shadowTimes() {
+    const pane = (sx, sy, len, dir) => `<rect width="106" height="88" rx="10" fill="#cdeaf7"/>${at(sx, sy, .5, sun(18))}<path d="M0 84h106v34H0z" fill="#e9d3ab"/>${at(53, 92, 1, stickShadow(len, dir))}${at(53, 92, 1, stick(46))}`;
+    const pic = { morning: pane(16, 62, 48, 1), noon: pane(53, 16, 9, 1), evening: pane(90, 62, 48, -1) };
+    const names = { morning: T('A stick with a long shadow to one side', 'عصا لها ظل طويل في جهة'), noon: T('A stick with a very short shadow', 'عصا لها ظل قصير جدًّا'), evening: T('A stick with a long shadow to the other side', 'عصا لها ظل طويل في الجهة الأخرى') };
+    return `${svgOpen(130, T('The same stick at three times of the day, not in order', 'العصا نفسها في ثلاثة أوقات من النهار، غير مرتبة'))}
+      ${['evening', 'noon', 'morning'].map((k, i) => tile(5 + i * 112, 6, 106, 118, '#cdeaf7', pic[k]) + hot(k, names[k], ringRect(5 + i * 112, 6, 106, 118))).join('')}</svg>`;
+  }
+  function sunShade() {
+    return `${svgOpen(210, T('A tree and its shade on the ground, next to open ground in the sun', 'شجرة وظلها على الأرض، وبجوارها أرض مكشوفة في الشمس'))}
+      ${frame(210, '#cdeaf7')}${at(300, 40, 1, sun(20))}${ground(210, 140, '#e3c583', '#d2ae6a')}
+      <ellipse cx="96" cy="170" rx="78" ry="22" fill="#6b5a3e" opacity=".5"/><g fill="#7fb6d6" opacity=".8"><circle cx="70" cy="174" r="3"/><circle cx="104" cy="182" r="2.6"/><circle cx="128" cy="168" r="2.4"/></g>
+      ${at(70, 150, 1, shadeTree(.95))}<path d="M222 164h70" stroke="#f2b134" stroke-width="3" stroke-dasharray="6 6" opacity=".7"/>
+      ${hot('shady', T('The ground under the tree', 'الأرض تحت الشجرة'), ringEl(96, 172, 82, 28))}${hot('sunny', T('The open ground', 'الأرض المكشوفة'), ringEl(258, 172, 70, 28))}</svg>`;
+  }
+
+
+  /* ================= Chapter 5 · sound ================= */
+  /* sound arcs to the right of the origin: n arcs, first radius r, opening ang degrees */
+  const soundArcs = (n = 3, r = 14, gap = 10, col = '#23799f', w = 3.4) => { let s = ''; for (let i = 0; i < n; i++) { const R = r + i * gap, a = 38 * Math.PI / 180; s += `<path d="M${f1(R * Math.cos(a))} ${f1(-R * Math.sin(a))}A${R} ${R} 0 0 1 ${f1(R * Math.cos(a))} ${f1(R * Math.sin(a))}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" opacity="${f1(1 - i * .22)}"/>`; } return s; };
+  const shakeLines = (x, y, h, n = 2) => { let s = ''; for (let i = 0; i < n; i++) s += `<path d="M${x + (i + 1) * 7} ${y - h / 2}q4 ${h / 4} 0 ${h / 2}t0 ${h / 2}" fill="none" stroke="#e2603f" stroke-width="2.4" stroke-linecap="round"/>`; return s; };
+  /* a musical triangle hanging from the origin (about 64 wide, 90 tall); ring = shaking lines */
+  const triangleInst = (ring = false) => `<path d="M0 0V16" stroke="#7a5a3a" stroke-width="2"/><path d="M0 18L32 78H-32Z" fill="none" stroke="#9aa3ad" stroke-width="6" stroke-linejoin="round"/><path d="M0 18L32 78H-32Z" fill="none" stroke="#dfe5ea" stroke-width="2" stroke-linejoin="round"/>
+    ${ring ? shakeLines(38, 50, 30, 2) + shakeLines(-60, 50, 30, 2) : ''}`;
+  /* a drum seen from the side, origin on the ground (about 96 wide, 80 tall). jump = how high the sticky note jumps (0..1) */
+  const drum = (o = {}) => { const j = o.jump || 0; return `${shadow(48)}<path d="M-46 -64V-6a46 12 0 0 0 92 0V-64Z" fill="#e2603f" stroke="#b9472c" stroke-width="2.4"/><path d="M-46 -40L-23 -10L0 -40L23 -10L46 -40" fill="none" stroke="#fff3c4" stroke-width="2.4"/>
+    <ellipse cy="-64" rx="46" ry="12" fill="#fff8ea" stroke="#b9472c" stroke-width="2.4"/>
+    <g transform="translate(6 ${f1(-70 - 46 * j)}) rotate(${f1(-8 + 30 * j)})"><rect x="-11" y="-7" width="22" height="14" rx="2" fill="#ffd24a" stroke="#d6a51e" stroke-width="1.6"/></g>
+    ${j > .05 ? `<path d="M-12 ${f1(-74 - 46 * j * .5)}v-6M24 ${f1(-74 - 46 * j * .5)}v-6" stroke="#d6a51e" stroke-width="2" stroke-linecap="round"/>` : ''}`; };
+  /* a guitar lying at a slant, origin at the body's centre (about 150 wide). ring = music notes */
+  const guitar = (ring = false) => `<g transform="rotate(-24)"><rect x="34" y="-6" width="88" height="12" rx="3" fill="#8a5f38"/><rect x="118" y="-10" width="22" height="20" rx="4" fill="#6b4627"/>
+    <path d="M-40 -30C-14 -38 0 -22 12 -22C26 -22 36 -34 40 -18C46 4 36 14 30 22C20 32 6 22 -4 30C-24 44 -52 34 -56 10C-60 -10 -54 -26 -40 -30Z" fill="#f2b134" stroke="#c98a1a" stroke-width="2.4"/>
+    <circle cx="-4" r="10" fill="#6b4627"/><path d="M-20 -4H136M-20 0H136M-20 4H136" stroke="#fff" stroke-width="${ring ? 1.6 : 1}" ${ring ? 'stroke-dasharray="3 2"' : ''}/></g>
+    ${ring ? `<g fill="#23799f"><path d="M40 -66v-18l12 -4v18" stroke="#23799f" stroke-width="2.4" fill="none"/><circle cx="37" cy="-66" r="4.6"/><circle cx="49" cy="-70" r="4.6"/><path d="M-24 -62v-16" stroke="#23799f" stroke-width="2.4"/><circle cx="-27" cy="-62" r="4.6"/></g>` : ''}`;
+  /* a whistle lying down, origin under it (about 60 wide) */
+  const whistle = () => `${shadow(30)}<path d="M-30 -22H10A16 16 0 1 1 10 2H-30Z" fill="#9aa3ad" stroke="#5b6f86" stroke-width="2.4"/><rect x="-6" y="-26" width="12" height="6" rx="2" fill="#5b6f86"/><circle cx="14" cy="-10" r="5" fill="#5b6f86"/>`;
+  /* a hand pressing down, palm at the origin */
+  const pressHand = () => `<path d="M-26 0C-28 -14 -26 -30 -18 -30H18C26 -30 28 -14 26 0Z" fill="#f2c9a0" stroke="#c99a6a" stroke-width="2.4"/><path d="M-12 -30V-58a6 6 0 0 1 12 0V-30M0 -30V-62a6 6 0 0 1 12 0V-30" fill="#f2c9a0" stroke="#c99a6a" stroke-width="2.4"/>`;
+  /* a paper cup lying on its side, mouth to the left (dir 1) or right (dir -1); origin at the centre of the cup's bottom */
+  const paperCup = (dir = 1) => `<g transform="scale(${dir} 1)"><path d="M0 -16L-46 -26V26L0 16Z" fill="#fff8ea" stroke="#c9a36a" stroke-width="2.4" stroke-linejoin="round"/><ellipse cx="-46" rx="7" ry="26" fill="#eadbb8" stroke="#c9a36a" stroke-width="2.4"/><path d="M-12 -18L-34 -23M-12 18L-34 23" stroke="#e2603f" stroke-width="3" stroke-linecap="round"/><ellipse rx="4" ry="16" fill="#f1e2bf" stroke="#c9a36a" stroke-width="2"/></g>`;
+  /* the string between x1 and x2 at height y: tight, loose (sags) */
+  const phoneString = (x1, x2, y, loose) => loose ? `<path d="M${x1} ${y}Q${(x1 + x2) / 2} ${y + 46} ${x2} ${y}" fill="none" stroke="#7a5a3a" stroke-width="2.4"/>` : `<path d="M${x1} ${y}H${x2}" stroke="#7a5a3a" stroke-width="2.4"/>`;
+  const pinchFingers = () => `<ellipse cx="0" cy="-12" rx="8" ry="12" fill="#f2c9a0" stroke="#c99a6a" stroke-width="2"/><ellipse cx="0" cy="12" rx="8" ry="12" fill="#f2c9a0" stroke="#c99a6a" stroke-width="2"/>`;
+  /* a rubber band stretched between two pins at -L and L; amp = how wide it vibrates (0 = still) */
+  const rubberBand = (L = 80, amp = 0) => `<circle cx="${-L}" r="6" fill="#5b6f86"/><circle cx="${L}" r="6" fill="#5b6f86"/>
+    ${amp ? `<path d="M${-L} -3Q0 ${f1(-3 - amp)} ${L} -3M${-L} 3Q0 ${f1(3 + amp)} ${L} 3" fill="none" stroke="#e2603f" stroke-width="3" opacity=".45"/>` : ''}<path d="M${-L} -3H${L}M${-L} 3H${L}" stroke="#e2603f" stroke-width="3"/>`;
+
+  function vibrateThings() {
+    const pic = { guitar: at(46, 66, .5, guitar(true)), drum: at(53, 100, .8, drum()) + at(53, 42, .7, pressHand()), whistle: `<rect x="6" y="74" width="94" height="10" rx="3" fill="#a57b4c"/>${at(53, 74, .9, whistle())}` };
+    const names = { guitar: T('A guitar with music notes around it', 'جيتار حوله نغمات موسيقية'), drum: T('A drum with a hand pressed on it', 'طبلة عليها يد تضغط'), whistle: T('A whistle lying on a desk', 'صفارة موضوعة على طاولة') };
+    return `${svgOpen(116, T('Three things: a guitar, a drum and a whistle', 'ثلاثة أجسام: جيتار، وطبلة، وصفارة'))}
+      ${['drum', 'whistle', 'guitar'].map((k, i) => tile(5 + i * 112, 6, 106, 104, '#e6e3fb', pic[k]) + hot(k, names[k], ringRect(5 + i * 112, 6, 106, 104))).join('')}</svg>`;
+  }
+  function stickyDrum() {
+    const pane = j => `${at(53, 128, .9, drum({ jump: j }))}${at(92, 70, 1, soundArcs(j > .5 ? 3 : 1, 8, 8))}`;
+    return `${svgOpen(146, T('Two drums with a yellow sticky note on each: on one the note hardly moves, on the other it jumps high', 'طبلتان على كل منهما ورقة لاصقة صفراء: على إحداهما بالكاد تتحرك الورقة، وعلى الأخرى تقفز عاليًا'))}
+      ${tile(56, 6, 106, 134, '#e6e3fb', pane(.08))}${tile(178, 6, 106, 134, '#e6e3fb', pane(.9))}
+      ${hot('soft', T('The drum whose note hardly moves', 'الطبلة التي بالكاد تتحرك ورقتها'), ringRect(56, 6, 106, 134))}${hot('loud', T('The drum whose note jumps high', 'الطبلة التي تقفز ورقتها عاليًا'), ringRect(178, 6, 106, 134))}</svg>`;
+  }
+  function stringPhone() {
+    return `${svgOpen(150, T('A string telephone: two paper cups joined by a string', 'هاتف خيطي: كوبان ورقيان يصل بينهما خيط'))}
+      ${frame(150, '#e6e3fb')}${phoneString(70, 270, 76, false)}${at(70, 76, 1, paperCup(1))}${at(270, 76, 1, paperCup(-1))}
+      ${hot('cupA', T('The cup on one end', 'الكوب في أحد الطرفين'), ringEl(48, 76, 40, 38))}${hot('string', T('The line in the middle', 'الخط في المنتصف'), ringEl(170, 76, 70, 20))}${hot('cupB', T('The cup on the other end', 'الكوب في الطرف الآخر'), ringEl(292, 76, 40, 38))}</svg>`;
+  }
+  function phoneStates() {
+    const pane = (kind) => `${phoneString(30, 76, 40, kind === 'loose')}${at(30, 40, .5, paperCup(1))}${at(76, 40, .5, paperCup(-1))}${kind === 'pinched' ? at(53, 40, .8, pinchFingers()) : ''}`;
+    const names = { loose: T('A string hanging down loosely', 'خيط متدلٍّ ومرتخٍ'), tight: T('A straight string', 'خيط مستقيم'), pinched: T('A straight string held by two fingers in the middle', 'خيط مستقيم تمسكه إصبعان في المنتصف') };
+    return `${svgOpen(116, T('Three string telephones', 'ثلاثة هواتف خيطية'))}
+      ${['pinched', 'loose', 'tight'].map((k, i) => tile(5 + i * 112, 6, 106, 104, '#e6e3fb', at(0, 14, 1, pane(k))) + hot(k, names[k], ringRect(5 + i * 112, 6, 106, 104))).join('')}</svg>`;
+  }
+
+
+  /* ================= Chapter 6 · the force of wind ================= */
+  /* a wind-powered car moving to the right, origin on the ground under its middle (about 96 long). sail: 0 none, 1 small, 2 large */
+  const windCar = (o = {}) => { const sl = o.sail == null ? 2 : o.sail, h = sl === 2 ? 62 : 32, w = sl === 2 ? 42 : 24;
+    return `${shadow(46)}<path d="M-44 -30H44L48 -14H-48Z" fill="#c9a36a" stroke="#a57b4c" stroke-width="2.4" stroke-linejoin="round"/><path d="M-36 -22H36" stroke="#a57b4c" stroke-width="1.6" stroke-dasharray="4 4"/>
+    ${sl ? `<path d="M-26 -30V${-30 - h}" stroke="#7a5a3a" stroke-width="3.4"/><path d="M-26 ${-30 - h}Q${f1(-26 + w)} ${f1(-30 - h * .55)} -26 -32Z" fill="#fff8ea" stroke="#5b6f86" stroke-width="2.4" stroke-linejoin="round"/>
+      <rect x="-30" y="${f1(-36 - h * .5)}" width="10" height="6" fill="#d5ecf6" opacity=".8"/>` : ''}
+    <path d="M-30 -10H30" stroke="#5b6f86" stroke-width="3"/>${[-30, 30].map(x => `<circle cx="${x}" cy="-10" r="10" fill="#e2603f" stroke="#b9472c" stroke-width="2.4"/><circle cx="${x}" cy="-10" r="3" fill="#fff"/>`).join('')}`; };
+  /* a desk fan blowing to the right, origin on the ground under it. power: 0 off, 1 weak, 2 strong */
+  const fan = (power = 0) => { let lines = ''; const n = power === 2 ? 4 : power === 1 ? 2 : 0;
+    for (let i = 0; i < n; i++) { const y = -62 + (i - (n - 1) / 2) * 16, len = power === 2 ? 70 : 34; lines += `<path d="M40 ${y}q${f1(len / 4)} -6 ${f1(len / 2)} 0t${f1(len / 2)} 0" fill="none" stroke="#8fd3ee" stroke-width="${power === 2 ? 4 : 3}" stroke-linecap="round"/>`; }
+    return `${shadow(30)}<rect x="-24" y="-6" width="48" height="8" rx="4" fill="#5b6f86"/><path d="M0 -6V-40" stroke="#5b6f86" stroke-width="7"/>
+    <circle cx="6" cy="-62" r="30" fill="#e6f3f8" stroke="#5b6f86" stroke-width="4"/><g fill="#9cc7dc">${[0, 120, 240].map(a => `<ellipse cx="6" cy="-76" rx="7" ry="14" transform="rotate(${a} 6 -62)"/>`).join('')}</g><circle cx="6" cy="-62" r="5" fill="#5b6f86"/>
+    <path d="M6 -92V-32M-24 -62H36M-15 -83L27 -41M-15 -41L27 -83" stroke="#5b6f86" stroke-width="1.2" opacity=".5"/>${lines}`; };
+
+  function windCars() {
+    const lane = (y, p, x) => `<path d="M0 ${y}H340" stroke="#d8bd8c" stroke-width="3"/>${at(26, y, .62, fan(p))}${at(x, y, .62, windCar({ sail: 2 }))}<path d="M62 ${y + 4}v8" stroke="#e2603f" stroke-width="3"/>`;
+    return `${svgOpen(180, T('Two lanes: a fan blows a little wind on one car and a lot of wind on the other car', 'مساران: مروحة تهب رياحًا قليلة على سيارة، ورياحًا كثيرة على السيارة الأخرى'))}
+      ${frame(180, '#dff1f8')}<rect y="80" width="340" height="6" fill="#fff" opacity=".6"/>${lane(70, 2, 286)}${lane(160, 1, 132)}
+      ${hot('strongWind', T('The car in the top lane', 'السيارة في المسار العلوي'), ringEl(286, 50, 46, 34))}${hot('weakWind', T('The car in the bottom lane', 'السيارة في المسار السفلي'), ringEl(132, 140, 46, 34))}</svg>`;
+  }
+  function sailSizes() {
+    const pic = { sailNone: at(53, 96, .78, windCar({ sail: 0 })), sailSmall: at(53, 96, .78, windCar({ sail: 1 })), sailLarge: at(53, 96, .78, windCar({ sail: 2 })) };
+    const names = { sailNone: T('A car with no sail', 'سيارة بدون شراع'), sailSmall: T('A car with a small sail', 'سيارة بشراع صغير'), sailLarge: T('A car with a large sail', 'سيارة بشراع كبير') };
+    return `${svgOpen(116, T('Three cars with different sails', 'ثلاث سيارات بأشرعة مختلفة'))}
+      ${['sailSmall', 'sailLarge', 'sailNone'].map((k, i) => tile(5 + i * 112, 6, 106, 104, '#dff1f8', pic[k]) + hot(k, names[k], ringRect(5 + i * 112, 6, 106, 104))).join('')}</svg>`;
+  }
+  function carParts() {
+    return `${svgOpen(200, T('A wind-powered car: its body, its wheels and its sail', 'سيارة تعمل بقوة الرياح: هيكلها، وعجلاتها، وشراعها'))}
+      ${frame(200, '#dff1f8')}${ground(200, 176, '#e9d3ab', '#d8bd8c')}${at(180, 178, 1.4, windCar({ sail: 2 }))}
+      ${hot('sail', T('The tall white part', 'الجزء الأبيض الطويل'), ringEl(158, 100, 34, 50))}${hot('carBody', T('The flat brown part', 'الجزء البني المسطح'), ringEl(206, 146, 40, 12))}${hot('wheels', T('The round red parts', 'الأجزاء الحمراء المستديرة'), ringEl(180, 168, 68, 14))}</svg>`;
+  }
+
   window.G4ART = { at, flip, blob, mix, leaf, leafPath, eye, shadow, fox, jerboa, lizard, frog, bee, waterBird, grasshopper, pillbug, spider, scarab, camel,
     acacia, colocynth, lotus, papyrus, palm, orangeTree, grassTuft, stone, rock, sun, moon,
     bigLeaf, egg, larva, pupa, butterflyTop, butterflySide, flowerHead, dragonfly, ant,
-    seed, soil, roots, trueLeaf, seedLeaf, sunHead, sunflower, fava, bud, bloom, fruit, wateringCan, ruler, insectBig };
+    seed, soil, roots, trueLeaf, seedLeaf, sunHead, sunflower, fava, bud, bloom, fruit, wateringCan, ruler, insectBig,
+    deskLamp, mirror, ball, stick, stickShadow, magnifier, shadeTree, thermometer, blackPaper, ray,
+    soundArcs, shakeLines, triangleInst, drum, guitar, whistle, pressHand, paperCup, phoneString, pinchFingers, rubberBand,
+    windCar, fan };
   window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { hidePlaces, nileDesert, fennec, desertDay, butterflyStages, insectBody, insectSide, whoIsInsect,
-    seedKinds, sowDepth, seedlingLeaves, flowerFruit, plantBody });
+    seedKinds, sowDepth, seedlingLeaves, flowerFruit, plantBody,
+    lightSources, mirrorRelay, magnifySpots, shadowSide, shadowTimes, sunShade,
+    vibrateThings, stickyDrum, stringPhone, phoneStates,
+    windCars, sailSizes, carParts });
 })();

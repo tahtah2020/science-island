@@ -110,6 +110,18 @@ Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2
 - Monthly test: `quiz.html#exam=g4m1` (Chapters 1 to 3)
 Where the two books differ, each file follows its own book: in the Arabic book the stage is «الشرنقة» and the adult comes out when «ينشق الغلاف الخارجي» (the English book says "the back splits open").
 
+### Grade 4 · Chapters 4 to 6 (English and Arabic, 1 Nov 2026)
+Built from the owner's PDFs on Google Drive (`Motafawek/g4/science/unit 4-en.pdf`, `unit 4 -ar.pdf` … `unit 6`), the first units of the daily-build plan (`Motafawek/log.txt`). No pictures from the owner: every picture is drawn in code (`g4_art.js`).
+- `questions_g4c4.js` / `_ar.js`: "Properties of Light" (pages 50-67): 26 ideas from the five lessons (I, J, K, M, N) plus 3 bonus ideas ("Let's Expand" compass M6, Column "Light and Sound" N6-N7)
+- `questions_g4c5.js` / `_ar.js`: "Properties of Sound" (pages 68-77): 17 ideas from the three lessons (Q, U, V), "Let's Make It" (string telephone) included as V6
+- `questions_g4c6.js` / `_ar.js`: "The Force of Wind" (pages 78-83): 10 ideas from the two lessons (Y, Z)
+- New tap pictures in `g4_art.js`: lightSources, mirrorRelay, magnifySpots, shadowSide, shadowTimes, sunShade · vibrateThings, stickyDrum, stringPhone, phoneStates · windCars, sailSizes, carParts (targets in `tools/check_questions.js` TAPS, Arabic labels in `admin.html` TAP)
+- `light.html` (Light and Shadow Lab): light sources; a mirror relay to a target in the shade, water mist, a second mirror over a wall; a magnifying glass on black paper; where the shadow is and why; the sun from East to South to West with shadow marks and the sundial; ground temperature in the sun and in the shade; Speed Round "sunny or shady ground?"
+- `sound.html` (Sound Workshop): hit and stop a triangle, flick a ruler, the air carries the shaking; a rubber band and a drum with a sticky note (big sound = big vibration, volume); the string telephone loose, tight, pinched and with a wire; Speed Round "big or small sound?"
+- `windcar.html` (Wind Car Race): build the car (body, wheels, sail); weak and strong wind from the same start line with a tape measure; what a force is; small and large sail in the same wind; Speed Round "long or short distance?"
+- Maps and backgrounds `assets/map_g4c4.svg` … `map_g4c6.svg`, `bg_g4c4.svg` … `bg_g4c6.svg` from `science/tools/make_g4_maps.js`. `bookOrder: true` on the three chapters.
+- Arabic-book differences: 4-1 adds smooth vs rough surfaces (in the Arabic explanation only); 4-3 says «لوح التظليل» instead of sun-viewing glasses; Chapter 6's Arabic book prints example distances in its record tables (Arabic explanations only).
+
 ## Grade 6
 Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2026/2027 (page n is the same in both books):
 - Chapter 1 "Conditions for Burning" / «شروط الاحتراق» (pages 6-17): `questions_g6c1.js` / `_ar.js`, 18 ideas from the three lessons (how things burn and air, the role of oxygen, air after burning), plus 4 bonus ideas ("Let's Expand" and the Column "Combustion and Future Energy"). The Column differs between the two books, so its bonus questions use only what both books say

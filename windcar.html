@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wind Car Race · The Force of Wind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261101a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Wind Car Race.</noscript>
+<script src="firebase-config.js?v=20261101a"></script>
+<script src="chapters.js?v=20261101a"></script>
+<script src="common.js?v=20261101a"></script>
+<script src="science/g4_art.js?v=20261101a"></script>
+<script src="game_kit.js?v=20261101a"></script>
+<script>
+(() => {
+'use strict';
+/* Wind Car Race · the game of Grade 4, Chapter 6 "The Force of Wind". Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up, lesson 6-1): build a wind-powered car (body, wheels, sail) and find the part that catches the wind.
+   Stage 2 (Missions): 1) weak wind and strong wind from the same start line, measured with a tape measure; what a force is (6-1);
+                       2) a small sail and a large sail in the same wind (6-2).
+   Stage 3 (Speed Round): long distance or short distance?
+   Every T('English', 'عربي') has both languages. The Arabic science sentences follow the Arabic school book (pages 78-83).
+   The scene is set before every question (set()), so no picture is left over from the question before. */
+const A = window.G4ART, at = A.at, T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const ring = (cx, cy, rx, ry) => `<ellipse class="ring" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+const f1 = n => Math.round(n * 10) / 10;
+
+const START = 142, GY = 232;
+const BASE = { mode: 'build', body: false, wheels: false, sail: 2, sailOn: false, power: 0, x: START, marks: [], tape: false, hi: null };
+const sc = Object.assign({}, BASE);
+const set = o => { Object.assign(sc, BASE, o); g.paint(); };
+
+function build() {
+  const car = `${sc.body ? '<path d="M-44 -30H44L48 -14H-48Z" fill="#c9a36a" stroke="#a57b4c" stroke-width="2.4" stroke-linejoin="round"/>' : ''}`;
+  const full = sc.body && sc.wheels && sc.sailOn;
+  return `<rect width="420" height="280" fill="#f3ead8"/><rect x="40" y="200" width="340" height="16" rx="4" fill="#a57b4c"/><path d="M60 216h14v64H60zM346 216h14v64h-14z" fill="#8a5f38"/>
+    ${full ? at(210, 200, 1.8, A.windCar({ sail: 2 })) : `<g transform="translate(210 200) scale(1.8)">${car}${sc.wheels ? '<path d="M-30 -10H30" stroke="#5b6f86" stroke-width="3"/>' + [-30, 30].map(x => `<circle cx="${x}" cy="-10" r="10" fill="#e2603f" stroke="#b9472c" stroke-width="2.4"/><circle cx="${x}" cy="-10" r="3" fill="#fff"/>`).join('') : ''}</g>`}
+    ${!sc.body ? `<g transform="translate(110 180)"><rect x="-34" y="-20" width="68" height="20" rx="3" fill="#c9a36a" stroke="#a57b4c" stroke-width="2"/></g><g transform="translate(300 182)"><rect x="-30" y="-18" width="60" height="18" rx="3" fill="#dfe9ef" stroke="#9aa3ad" stroke-width="2"/></g>` : ''}
+    ${sc.hi === 'sail' ? '<ellipse cx="170" cy="80" rx="46" ry="76" fill="rgba(46,158,107,.15)" stroke="#2e9e6b" stroke-width="5"/>' : ''}`;
+}
+function track() {
+  const dist = sc.x - START;
+  return `<rect width="420" height="280" fill="#dff1f8"/><path d="M0 ${GY}h420v48H0z" fill="#e9d3ab"/><rect y="${GY}" width="420" height="5" fill="#d8bd8c"/>
+    <path d="M${START} ${GY - 6}v40" stroke="#fff" stroke-width="5"/><text x="${START}" y="${GY + 46}" text-anchor="middle" font-size="12" font-weight="900" fill="#7a5a3a" font-family="Nunito,Cairo,Arial,sans-serif">${T('Start', 'البداية')}</text>
+    ${sc.marks.map(m => `<rect x="${m.x - 4}" y="${GY + 8}" width="8" height="14" rx="2" fill="${m.c}"/>`).join('')}
+    ${sc.tape && dist > 4 ? `<rect x="${START}" y="${GY + 26}" width="${f1(dist)}" height="10" rx="2" fill="#ffd24a" stroke="#d6a51e" stroke-width="1.6"/><path d="${Array.from({ length: Math.floor(dist / 12) }, (_, i) => `M${START + (i + 1) * 12} ${GY + 26}v5`).join('')}" stroke="#a5781a" stroke-width="1.4"/>` : ''}
+    ${at(46, GY, 1.1, A.fan(sc.power))}${at(sc.x, GY, 1, A.windCar({ sail: sc.sail }))}`;
+}
+const render = () => ({ build, track })[sc.mode]();
+
+const g = G4Game({ ch: 'g4c6', logo: '⛵', title: ['Wind Car Race', 'سباق سيارات الرياح'], sub: ['Chapter 6 · The Force of Wind', 'الفصل ٦ · قوة الرياح'],
+  bg: 'science/assets/bg_g4c6.svg', bgc: '#dff1f8', label: ['Reesho’s wind car race', 'سباق ريشو لسيارات الرياح'], render });
+const kw = g.kw;
+/* drive the car from START to the stop, then leave a mark */
+const run = (to, color) => g.tween(g.reduceMotion ? 300 : 1400, k => { sc.x = START + (to - START) * (1 - Math.pow(1 - k, 2)); }).then(() => { sc.marks = sc.marks.concat([{ x: to, c: color }]); g.paint(); });
+
+/* ---------- Stage 1 · Warm Up: build the car (6-1) ---------- */
+const PARTS = [
+  { id: 'sail', name: T('The tall white part', 'الجزء الأبيض الطويل'), ring: ring(170, 80, 46, 76) },
+  { id: 'carBody', name: T('The flat brown part', 'الجزء البني المسطح'), ring: ring(232, 154, 62, 18) },
+  { id: 'wheels', name: T('The round red parts', 'الأجزاء الحمراء المستديرة'), ring: ring(210, 182, 86, 20) }
+];
+async function stage1() {
+  set({ mode: 'build' });
+  g.say(T('Let’s build a wind-powered car! First the body. What can we make it from?', 'يلّا نصنع سيارة تعمل بقوة الرياح! الأول الهيكل. نصنعه من إيه؟'), 'think');
+  await g.choice({
+    options: [T('Cardboard or a food tray', 'ورق مقوى أو علبة طعام خفيفة'), T('A heavy stone', 'حجر ثقيل'), T('Water', 'ماء')], correct: T('Cardboard or a food tray', 'ورق مقوى أو علبة طعام خفيفة'),
+    hint: T('It must be light.', 'لازم يكون خفيف.'),
+    ok: T(`Make the ${kw('body')} of the car with cardboard or a food tray.`, `اصنع ${kw('هيكل السيارة')} من قطعة ورق مقوى أو علبة طعام خفيفة.`),
+    reveal: () => { sc.body = true; g.paint(); } });
+
+  set({ mode: 'build', body: true });
+  g.say(T('Now the wheels. We put an axle through the body. What can we use as tires?', 'دلوقتي العجلات. نمرر محورًا عبر الهيكل. نستخدم إيه كعجلات؟'), 'think');
+  await g.choice({
+    options: [T('Plastic bottle caps with a hole in the center', 'أغطية زجاجات بلاستيكية بعد عمل ثقب في منتصفها'), T('Paper cups', 'أكواب ورقية'), T('Leaves', 'أوراق شجر')], correct: T('Plastic bottle caps with a hole in the center', 'أغطية زجاجات بلاستيكية بعد عمل ثقب في منتصفها'),
+    hint: T('Something round that can turn.', 'حاجة مدورة تقدر تلف.'),
+    ok: T(`Put an axle through the body and attach ${kw('tires')}. You can make tires from plastic bottle caps.`, `مرِّر محورًا عبر الهيكل وثبِّت ${kw('العجلات')} عليه. ويمكنك صنعها من أغطية زجاجات بلاستيكية.`),
+    reveal: () => { sc.wheels = true; g.paint(); } });
+
+  set({ mode: 'build', body: true, wheels: true });
+  g.say(T('Last, the sail. What do we make it from, and how do we attach it?', 'آخر حاجة الشراع. نصنعه من إيه ونثبته إزاي؟'), 'think');
+  await g.choice({
+    options: [T('Thick paper, attached with tape', 'ورق سميك، ونثبته بشريط اللصق'), T('A mirror, attached with glue', 'مرآة، ونثبتها بالغراء'), T('A thermometer', 'مقياس حرارة')], correct: T('Thick paper, attached with tape', 'ورق سميك، ونثبته بشريط اللصق'),
+    hint: T('It must be light and wide.', 'لازم يكون خفيف وعريض.'),
+    ok: T(`Make a ${kw('sail')} out of thick paper and attach it to the body with tape.`, `اصنع ${kw('شراعًا')} من ورق سميك، ثم ثبِّته على هيكل السيارة باستخدام شريط اللصق.`),
+    reveal: () => { sc.sailOn = true; g.paint(); } });
+
+  set({ mode: 'build', body: true, wheels: true, sailOn: true });
+  g.say(T('Our car is ready! Tap the part that catches the wind.', P('عربيتنا جاهزة! اضغط على الجزء اللي بيلتقط الرياح.', 'عربيتنا جاهزة! اضغطي على الجزء اللي بيلتقط الرياح.')), 'think');
+  await g.spot(PARTS, 'sail', {
+    hint: T('It is wide, so the wind can push it.', 'عريض علشان الرياح تقدر تزقه.'),
+    ok: T(`The ${kw('sail')} catches the wind, and the wind pushes the car.`, `${kw('الشراع')} يلتقط الرياح، فتدفع الرياح السيارة.`),
+    reveal: () => { sc.hi = 'sail'; g.paint(); } });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+const WEAK = 228, STRONG = 360;
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Weak wind, strong wind', 'رياح ضعيفة ورياح قوية'));
+  set({ mode: 'track', power: 0 });
+  g.say(T('We set the fan to “Weak” and the car moves. How do we measure how far it went?', 'نضبط المروحة على سرعة «منخفضة» والعربية تتحرك. نقيس المسافة إزاي؟'), 'think');
+  await g.choice({
+    options: [T('From the start line to where the car stops, with a tape measure', 'من خط البداية إلى مكان توقف السيارة، بشريط قياس'), T('From the fan to the sky', 'من المروحة إلى السماء'), T('We guess it', 'نخمنها')],
+    correct: T('From the start line to where the car stops, with a tape measure', 'من خط البداية إلى مكان توقف السيارة، بشريط قياس'),
+    hint: T('There is a start line on the track.', 'فيه خط بداية على الأرض.'),
+    ok: T('Measure the distance from the start line to where the car stops using a tape measure.', 'قِس المسافة من خط البداية إلى المكان الذي تتوقف عنده السيارة باستخدام شريط قياس.'),
+    reveal: () => { sc.power = 1; run(WEAK, '#8fd3ee').then(() => { sc.tape = true; g.paint(); }); } });
+
+  set({ mode: 'track', power: 0, x: WEAK, marks: [{ x: WEAK, c: '#8fd3ee' }] });
+  g.say(T('Now we set the fan to “Strong”. Where should the car start?', 'دلوقتي نضبط المروحة على سرعة «عالية». العربية تبدأ منين؟'), 'think');
+  await g.choice({
+    options: [T('From the same place', 'من المكان نفسه'), T('From where it stopped', 'من المكان الذي توقفت عنده'), T('Closer to the fan', 'أقرب إلى المروحة')], correct: T('From the same place', 'من المكان نفسه'),
+    hint: T('To compare fairly, only the wind should change.', 'علشان المقارنة تبقى عادلة، الرياح بس اللي تتغير.'),
+    ok: T('Start from the same place, then measure the distance.', 'ابدأ من المكان نفسه، ثم قِس المسافة.'),
+    reveal: () => { sc.x = START; sc.power = 2; run(STRONG, '#23799f').then(() => { sc.tape = true; g.paint(); }); } });
+
+  set({ mode: 'track', power: 2, x: STRONG, tape: true, marks: [{ x: WEAK, c: '#8fd3ee' }, { x: STRONG, c: '#23799f' }] });
+  g.say(T('Look at the two marks. Why did the car travel farther with the strong wind?', 'بص على العلامتين. ليه العربية راحت أبعد مع الرياح القوية؟'), 'think');
+  await g.choice({
+    options: [T('The strong wind has a big power, so it pushes the car more', 'الرياح القوية قوتها كبيرة، فتدفع السيارة أكثر'), T('The car became lighter', 'السيارة أصبحت أخف'), T('The strong wind has a small power', 'الرياح القوية قوتها صغيرة')],
+    correct: T('The strong wind has a big power, so it pushes the car more', 'الرياح القوية قوتها كبيرة، فتدفع السيارة أكثر'),
+    hint: T('Same car, same start… only the wind changed.', 'نفس العربية ونفس البداية… الرياح بس اللي اتغيرت.'),
+    ok: T(`Weak wind: a small power, a ${kw('short')} distance. Strong wind: a big power, the pushing force on the car is stronger, so the distance is ${kw('long')}.`, `رياح ضعيفة: قوة صغيرة ومسافة ${kw('قصيرة')}. رياح قوية: قوة كبيرة، فتصبح قوة دفع السيارة أكبر وتقطع مسافة ${kw('أطول')}.`) });
+
+  set({ mode: 'track', power: 2, x: STRONG, marks: [{ x: WEAK, c: '#8fd3ee' }, { x: STRONG, c: '#23799f' }] });
+  g.say(T('The wind pushed the car. A push or a pull that can move, stop or turn things is called…', 'الرياح زقت العربية. المؤثر (الدفع أو الشد) الذي يحرك الأجسام أو يوقفها أو يغيِّر اتجاهها يُسمَّى…'), 'think');
+  await g.choice({
+    options: [T('A force', 'القوة'), T('A sail', 'الشراع'), T('A vibration', 'الاهتزاز')], correct: T('A force', 'القوة'),
+    hint: T('The greater it is, the greater its effect.', 'كل ما تكبر، تأثيرها يكبر.'),
+    ok: T(`A ${kw('force')} is a push or pull that can cause a stationary object to move, stop a moving object, or change the direction of its motion. The greater the force, the greater its effect.`, `${kw('القوة')} مؤثر يسبب حركة الجسم الساكن، أو إيقاف الجسم المتحرك، أو تغيير اتجاه حركته. وكلما كانت القوة أكبر كان تأثيرها أكبر.`) });
+}
+const SMALL = 240, LARGE = 360;
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Small sail, large sail', 'شراع صغير وشراع كبير'));
+  set({ mode: 'track', sail: 1 });
+  g.say(T('Now we test the sail size with the same car and the same fan. Which things must stay the same?', 'دلوقتي نجرب حجم الشراع بنفس العربية ونفس المروحة. إيه اللي لازم يفضل زي ما هو؟'), 'think');
+  await g.choice({
+    options: [T('The wind strength and the start place', 'قوة الرياح ومكان البدء'), T('The size of the sail', 'حجم الشراع'), T('Nothing', 'لا شيء')], correct: T('The wind strength and the start place', 'قوة الرياح ومكان البدء'),
+    hint: T('We change only one thing: the sail.', 'بنغيّر حاجة واحدة بس: الشراع.'),
+    ok: T('Keep the wind strength the same and start from the same place. We change only the size of the sail. A piece of tape marks where the car stops.', 'نحافظ على نفس قوة الرياح، ونبدأ من نفس المكان، ونغيِّر حجم الشراع فقط. ونضع شريطًا لاصقًا لتحديد مكان توقف السيارة.'),
+    reveal: () => { sc.power = 2; run(SMALL, '#f2b134'); } });
+
+  set({ mode: 'track', power: 0, sail: 2, marks: [{ x: SMALL, c: '#f2b134' }] });
+  g.say(T('The small sail stopped at the yellow mark. Now the large sail, same wind. Where will it stop?', 'الشراع الصغير وقف عند العلامة الصفراء. دلوقتي الشراع الكبير بنفس الرياح. هيقف فين؟'), 'think');
+  await g.choice({
+    options: [T('Farther than the yellow mark', 'أبعد من العلامة الصفراء'), T('Closer than the yellow mark', 'أقرب من العلامة الصفراء'), T('Exactly at the yellow mark', 'عند العلامة الصفراء تمامًا')], correct: T('Farther than the yellow mark', 'أبعد من العلامة الصفراء'),
+    hint: T('A bigger sail can catch more wind.', 'الشراع الأكبر يقدر يلتقط رياح أكتر.'),
+    ok: T('The car with the large sail travels a longer distance.', 'السيارة ذات الشراع الكبير تقطع مسافة أطول.'),
+    reveal: () => { sc.power = 2; run(LARGE, '#2e9e6b'); } });
+
+  set({ mode: 'track', power: 2, sail: 2, x: LARGE, marks: [{ x: SMALL, c: '#f2b134' }, { x: LARGE, c: '#2e9e6b' }] });
+  g.say(T('Why did the large sail go farther in the same wind?', 'ليه الشراع الكبير راح أبعد بنفس الرياح؟'), 'think');
+  await g.choice({
+    options: [T('The area catching the wind is big, so it gets a big power', 'المساحة التي تلتقط الرياح كبيرة، فتكون القوة الناتجة كبيرة'), T('The wind became stronger', 'الرياح أصبحت أقوى'), T('Large sails make the car lighter', 'الشراع الكبير يجعل السيارة أخف')],
+    correct: T('The area catching the wind is big, so it gets a big power', 'المساحة التي تلتقط الرياح كبيرة، فتكون القوة الناتجة كبيرة'),
+    hint: T('The wind did not change… the sail did.', 'الرياح ما اتغيرتش… الشراع هو اللي اتغير.'),
+    ok: T(`When the wind strength is the same, the bigger the ${kw('area')} that catches the wind (the sail), the bigger the ${kw('power')} it gets from the wind.`, `عندما تكون قوة الرياح نفسها، كلما زادت ${kw('مساحة')} السطح الذي يلتقط الرياح (الشراع) زادت ${kw('القوة')} التي تؤثر بها الرياح عليه.`) });
+}
+async function stage2() { await mission1(); await mission2(); }
+
+/* ---------- Stage 3 · Speed Round: long or short distance? ---------- */
+const SPEED = [
+  { t: T('A strong wind', 'رياح قوية'), ans: 'long' },
+  { t: T('A large sail', 'شراع كبير'), ans: 'long' },
+  { t: T('A big power from the wind', 'قوة كبيرة ناتجة عن الرياح'), ans: 'long' },
+  { t: T('A big area catches the wind', 'مساحة كبيرة تلتقط الرياح'), ans: 'long' },
+  { t: T('A weak wind', 'رياح ضعيفة'), ans: 'short' },
+  { t: T('A small sail', 'شراع صغير'), ans: 'short' },
+  { t: T('A small power from the wind', 'قوة صغيرة ناتجة عن الرياح'), ans: 'short' },
+  { t: T('A small area catches the wind', 'مساحة صغيرة تلتقط الرياح'), ans: 'short' }
+];
+async function stage3() {
+  set({ mode: 'track', power: 1, sail: 2 });
+  await g.speedRound({
+    items: SPEED, rounds: 8,
+    buttons: [{ label: T('Long distance', 'مسافة أطول'), value: 'long', c: 2 }, { label: T('Short distance', 'مسافة قصيرة'), value: 'short', c: 0 }],
+    ask: T('Long or short distance?', 'مسافة أطول أم قصيرة؟'),
+    intro: T('Speed Round! Will the car travel a <b>long distance</b> or a <b>short distance</b>? Press the right button before time runs out. 8 rounds!', P('جولة السرعة! العربية هتقطع <b>مسافة أطول</b> ولا <b>مسافة قصيرة</b>؟ دوس على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!', 'جولة السرعة! العربية هتقطع <b>مسافة أطول</b> ولا <b>مسافة قصيرة</b>؟ دوسي على الزرار الصح قبل الوقت ما يخلص. ٨ جولات!')),
+    think: T('Long or short?', 'أطول ولا قصيرة؟'),
+    show: () => { sc.x = START; g.paint(); }, reveal: it => { sc.x = it.ans === 'long' ? LARGE : WEAK; g.paint(); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Welcome to the wind car race. We will build a car with a <b>sail</b>, race it with a <b>weak</b> and a <b>strong</b> wind, and try a <b>small</b> and a <b>large</b> sail!`, P(`أهلًا يا <b>${g.name()}</b>! نوّرت سباق سيارات الرياح. هنصنع عربية <b>بشراع</b>، ونسابق بيها برياح <b>ضعيفة</b> ورياح <b>قوية</b>، ونجرب شراع <b>صغير</b> وشراع <b>كبير</b>!`, `أهلًا يا <b>${g.name()}</b>! نوّرتي سباق سيارات الرياح. هنصنع عربية <b>بشراع</b>، ونسابق بيها برياح <b>ضعيفة</b> ورياح <b>قوية</b>، ونجرب شراع <b>صغير</b> وشراع <b>كبير</b>!`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Wind champion!', P('بقيت بطل الرياح!', 'بقيتي بطلة الرياح!')),
+    text: T('Wind has the <b>power</b> to move things. A <b>strong wind</b> pushes the car farther than a weak wind. With the same wind, a <b>larger sail</b> catches more wind and gets more power, so the car travels farther.', 'للرياح <b>قوة</b> تحرك الأجسام. <b>الرياح القوية</b> تدفع السيارة مسافة أطول من الرياح الضعيفة. ومع نفس قوة الرياح، <b>الشراع الأكبر</b> يلتقط رياحًا أكثر ويحصل على قوة أكبر، فتقطع السيارة مسافة أطول.') }
+}).catch(err => console.error(err));
+window.__wind = { sc, render, set };
+})();
+</script>
+</body>
+</html>
