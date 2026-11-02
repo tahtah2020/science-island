@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-02', title: 'رياضيات الصف الرابع: الوحدتان الخامسة والسادسة (لغات)',
+    items: [
+      { text: 'الوحدة الخامسة «الضرب كعلاقة»: 7 دروس، 24 فكرة، 119 صيغة، مع صور وسائل المواصلات', links: [{ label: 'مراجعة', href: 'quiz.html#preview=mg4u5.1', ch: 'mg4u5' }] },
+      { text: 'الوحدة السادسة «العوامل والمضاعفات»: 6 دروس، 21 فكرة، 99 صيغة، مع خلفية محطة الحافلة', links: [{ label: 'مراجعة', href: 'quiz.html#preview=mg4u6.1', ch: 'mg4u6' }] }
+    ] },
   { date: '2026-11-01', title: 'Math Grade 4: Units 3 and 4',
     items: [
       { text: 'Unit 3 Concepts of Measurement: length, mass, capacity, time, elapsed time and story problems (7 lessons, both tracks)', links: [{ label: 'Unit 3', href: 'map.html', ch: 'mg4u3' }] },
