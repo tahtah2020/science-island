@@ -74,7 +74,7 @@ idea(5, 'Y12', 1, 'Reading a tape diagram',
    mc('normal', 'medium', 'Which statement does the tape diagram show?', ['14 is 2 times greater than 7', '14 is 7 times greater than 2', '7 is 2 times greater than 14', '14 is 7 more than 2'], **TAPE(2, '7', '7', '14')),
    mc('normal', 'medium', 'Which multiplication matches the tape diagram?', ['3 × 6 = 18', '3 + 6 = 9', '6 + 6 = 12', '18 × 3 = 54'], **TAPE(3, '6', '6', '18')),
   ])
-idea(5, 'Y13', 1, 'Challenge: comparing strips and seat belts',
+idea(5, 'Y13', 1, 'Challenge: comparing strips',
   'Compare by asking "how many times does the small one fit in the big one?" A strip of 24 cm and a strip of 8 cm: 24 ÷ 8 = 3, so the long strip is 3 times as long. Use multiplication to check: 3 × 8 = 24.',
   [num('boss', 'hard', 'Your teacher\'s strip is 24 cm long and your strip is 8 cm long. How many times could your strip fit on your teacher\'s strip?', '24/8', unit=TIMES),
    mc('boss', 'hard', '36 is ? times greater than 4. Which equation shows it?', ['9 × 4 = 36', '36 + 4 = 40', '36 − 4 = 32', '4 × 4 = 16']),

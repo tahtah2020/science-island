@@ -33,7 +33,7 @@ window.IDEAS = [
       {"type":"mc","mode":"normal","level":"medium","q":"Which statement does the tape diagram show?","options":["14 is 2 times greater than 7","14 is 7 times greater than 2","7 is 2 times greater than 14","14 is 7 more than 2"],"answer":0,"fig":"tapeFig","pic":{"n":2,"box":"7","one":"7","total":"14","top":"","bottom":""}},
       {"type":"mc","mode":"normal","level":"medium","q":"Which multiplication matches the tape diagram?","options":["3 × 6 = 18","3 + 6 = 9","6 + 6 = 12","18 × 3 = 54"],"answer":0,"fig":"tapeFig","pic":{"n":3,"box":"6","one":"6","total":"18","top":"","bottom":""}}
     ] },
-  {"id":"Y13","lesson":1,"boss":true,"concept":"Challenge: comparing strips and seat belts","explain":"Compare by asking \"how many times does the small one fit in the big one?\" A strip of 24 cm and a strip of 8 cm: 24 ÷ 8 = 3, so the long strip is 3 times as long. Use multiplication to check: 3 × 8 = 24.",
+  {"id":"Y13","lesson":1,"boss":true,"concept":"Challenge: comparing strips","explain":"Compare by asking \"how many times does the small one fit in the big one?\" A strip of 24 cm and a strip of 8 cm: 24 ÷ 8 = 3, so the long strip is 3 times as long. Use multiplication to check: 3 × 8 = 24.",
     "variants": [
       {"type":"num","mode":"boss","level":"hard","q":"Your teacher's strip is 24 cm long and your strip is 8 cm long. How many times could your strip fit on your teacher's strip?","answer":"3","calc":"24/8","unit":"times"},
       {"type":"mc","mode":"boss","level":"hard","q":"36 is ? times greater than 4. Which equation shows it?","options":["9 × 4 = 36","36 + 4 = 40","36 − 4 = 32","4 × 4 = 16"],"answer":0},
