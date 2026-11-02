@@ -8,6 +8,9 @@
                        names: walk sailboat bicycle motorbike car truck bus metro fasttrain cruise plane ferry
      tapeFig    (fig)  a tape diagram for a multiplicative comparison   q.pic = { n: 5, box: '2', one: '2', total: '10', top: 'Tape A', bottom: 'Tape B' } (empty = not written)
      arrayFig   (fig)  an array of dots, r rows and c columns            q.pic = { r: 4, c: 6 } or { cards: [2, 5] } (dot cards: rows × columns of cards with 5 dots each, like a die)
+     areaBox    (fig)  area model, multiplication or division   q.pic = { left: '8', top: ['30', '6'], cells: ['?', '48'], bottom: ['50', '10'] } (top or bottom optional)
+     colMul     (fig)  column multiplication with partial products   q.pic = { a: '239', b: '7', rows: ['1,400', '210', '63'], notes: ['(7 × 200)', '', ''], total: '' }
+     vehFig also takes the Unit 7-8 objects (obj_<name>.webp: riverbus microbus train books stickers stamps muffin berries pie toycar swimmer girlwalk) and q.pic.bg = nile | pyramids | busstop
      skipLine   (fig)  a number line 0..max with jumps of each step       q.pic = { max: 30, steps: [3, 5], upto: 12, bus: true, stop: 18 } (upto: jumps stop there; bus: the bus stop picture above the line)
    The numbers stay left to right, also for an Arabic player. Screen-reader names describe the table, never the answer. */
 (function () {
@@ -94,11 +97,17 @@
     metro: 'a metro train', fasttrain: 'a high-speed train', cruise: 'a cruise ship', plane: 'a passenger airplane', ferry: 'a ferry' };
   const VEHAR = { walk: 'طفل يمشي', sailboat: 'مركب شراعي', bicycle: 'دراجة', motorbike: 'دراجة نارية', car: 'سيارة', truck: 'شاحنة', bus: 'حافلة',
     metro: 'قطار مترو', fasttrain: 'قطار سريع', cruise: 'سفينة سياحية', plane: 'طائرة ركاب', ferry: 'عبّارة' };
-  const vimg = (name, x, y, w, h) => `<image href="math/assets/veh_${name}.webp" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet"/>`;
+  const OBJ = { riverbus: ['a Nile river bus', 'أتوبيس نهري'], microbus: ['a microbus', 'ميكروباص'], train: ['a passenger train', 'قطار ركاب'], books: ['a stack of books', 'كومة كتب'],
+    stickers: ['a sheet of stickers', 'ورقة ملصقات'], stamps: ['postage stamps', 'طوابع بريد'], muffin: ['a berry muffin', 'فطيرة توت'], berries: ['a bowl of berries', 'وعاء توت'], pie: ['a pie', 'فطيرة'],
+    toycar: ['a toy car', 'سيارة لعبة'], swimmer: ['a swimmer', 'سبّاح'], girlwalk: ['a girl walking', 'بنت تمشي'] };
+  Object.keys(OBJ).forEach(k => { VEH[k] = OBJ[k][0]; VEHAR[k] = OBJ[k][1]; });
+  const BG = { nile: 'bg_nile.jpg', pyramids: 'bg_pyramids.jpg', busstop: 'bg_busstop.jpg' };
+  const vimg = (name, x, y, w, h) => `<image href="math/assets/${OBJ[name] ? 'obj' : 'veh'}_${name}.webp" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet"/>`;
   function vehFig(q) {
     const p = (q && q.pic) || { items: [['car', ''], ['walk', '']] }, it = p.items, n = it.length, rows = n > 3 ? 2 : 1, per = Math.ceil(n / rows);
     const cw = 320 / per, ch = 92, H = 16 + rows * (ch + 26);
     let s = `<svg class="diagram" viewBox="0 0 340 ${H}" role="img" aria-label="${esc(T('Pictures of ' + it.map(a => VEH[a[0]]).join(', '), 'صور: ' + it.map(a => VEHAR[a[0]]).join('، ')))}"><rect width="340" height="${H}" rx="14" fill="${PAPER}"/>`;
+    if (p.bg && BG[p.bg]) s += `<image href="math/assets/${BG[p.bg]}" x="0" y="0" width="340" height="${H}" preserveAspectRatio="xMidYMid slice" style="clip-path:inset(0 round 14px)"/>`;
     it.forEach((a, i) => {
       const r = Math.floor(i / per), k0 = i % per, inRow = r === rows - 1 ? n - per * (rows - 1) : per, k = T('l', 'r') === 'r' ? inRow - 1 - k0 : k0, x0 = 10 + (320 - inRow * cw) / 2 + k * cw, y0 = 10 + r * (ch + 26);
       s += vimg(a[0], x0 + 6, y0, cw - 12, ch - 4);
@@ -156,6 +165,38 @@
     return s + '</svg>';
   }
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeTable, rectFig, polyFig, vehFig, tapeFig, arrayFig, skipLine });
+  /* Unit 7: area model (multiplication or division) and the partial products layout */
+  function areaBox(q) {
+    const p = (q && q.pic) || { left: '8', top: ['30', '6'], cells: ['240', '48'] }, n = p.cells.length;
+    const lens = p.cells.map((c, i) => Math.max(String(c).length, String((p.top || [])[i] || '').length, String((p.bottom || [])[i] || '').length));
+    const tot = lens.reduce((a, b) => a + Math.max(b, 3), 0), W = 270, X0 = 52, y0 = p.top ? 34 : 18, h = 62, H = y0 + h + (p.bottom ? 36 : 14);
+    let s = `<svg class="diagram" viewBox="0 0 340 ${H}" role="img" aria-label="${esc(T('An area model: a rectangle split into parts', 'نموذج مساحة المستطيل: مستطيل مقسّم إلى أجزاء'))}"><rect width="340" height="${H}" rx="14" fill="${PAPER}"/>`;
+    const t = (x, y, v, sz = 15) => v === '' || v == null ? '' : `<text x="${x.toFixed(1)}" y="${y}" text-anchor="middle" direction="ltr" unicode-bidi="embed" font-size="${sz}" font-weight="900" fill="${INK}">${esc(v)}</text>`;
+    s += t(X0 - 20, y0 + h / 2 + 6, p.left, 18);
+    let x = X0;
+    p.cells.forEach((c, i) => {
+      const w = W * Math.max(lens[i], 3) / tot;
+      s += `<rect x="${x.toFixed(1)}" y="${y0}" width="${w.toFixed(1)}" height="${h}" fill="${['#cfe4f5', '#fde3c4', '#d6efe2', '#f3d6e6', '#e6e0f5'][i % 5]}" stroke="${INK}" stroke-width="2.5"/>`;
+      s += t(x + w / 2, y0 + h / 2 + 6, c, String(c).length > 7 ? 11 : 14);
+      if (p.top) s += t(x + w / 2, y0 - 9, p.top[i], 14);
+      if (p.bottom) s += t(x + w / 2, y0 + h + 24, p.bottom[i], 14);
+      x += w;
+    });
+    return s + '</svg>';
+  }
+  function colMul(q) {
+    const p = (q && q.pic) || { a: '239', b: '7', rows: ['1,400', '210', '63'], notes: ['', '', ''], total: '1,673' }, n = p.rows.length, lh = 24, H = 22 + (n + 3) * lh + 12;
+    let s = `<svg class="diagram" viewBox="0 0 340 ${H}" role="img" aria-label="${esc(T('A multiplication written in columns with its partial products', 'عملية ضرب مكتوبة رأسيًا مع نواتجها الجزئية'))}"><rect width="340" height="${H}" rx="14" fill="${PAPER}"/><g direction="ltr" font-weight="900" fill="${INK}">`;
+    const R = 150, num = (y, v, sz = 18) => `<text x="${R}" y="${y}" text-anchor="end" font-size="${sz}">${esc(v)}</text>`;
+    let y = 30;
+    s += num(y, p.a); y += lh; s += num(y, p.b) + `<text x="${R - 92}" y="${y}" font-size="18">×</text>`;
+    s += `<line x1="${R - 96}" y1="${y + 7}" x2="${R + 4}" y2="${y + 7}" stroke="${INK}" stroke-width="2"/>`;
+    p.rows.forEach((r, i) => { y += lh; s += num(y, r, 17) + (p.notes && p.notes[i] ? `<text x="${R + 14}" y="${y}" font-size="15" fill="#23799f">${esc(p.notes[i])}</text>` : '') + (i === n - 1 ? `<text x="${R - 92}" y="${y}" font-size="17">+</text>` : ''); });
+    s += `<line x1="${R - 96}" y1="${y + 7}" x2="${R + 4}" y2="${y + 7}" stroke="${INK}" stroke-width="2"/>`;
+    y += lh; s += num(y, p.total || '', 18);
+    return s + '</g></svg>';
+  }
+
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeTable, rectFig, polyFig, vehFig, tapeFig, arrayFig, skipLine, areaBox, colMul });
   window.G4MATH = { placeCols };
 })();

@@ -352,6 +352,21 @@ window.CHAPTERS = [
     map: { img: 'math/assets/map_mg4u6.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_mg4u6.svg', quizBg: 'math/assets/bg_mg4u6.svg',
     lessonsAr: ['تحديد عوامل الأعداد الصحيحة', 'الأعداد الأولية والأعداد متعددة العوامل', 'العامل المشترك الأكبر (ع.م.أ)', 'تحديد مضاعفات الأعداد الصحيحة', 'المضاعفات المشتركة', 'العلاقات بين العوامل والمضاعفات'] },
+  /* Unit 7: concept 1 "Multiplying by 1-Digit and 2-Digit Numbers" (lessons 1-5), concept 2 "Dividing by 1-Digit Divisors" (lessons 6-11). Both books read 2 Nov 2026 (pages 99-122).
+     Pictures: the owner's Gemini pictures math/assets/obj_*.webp, bg_nile.jpg, bg_pyramids.jpg (vehFig), areaBox and colMul in math/g4_art.js. */
+  { id: 'mg4u7', subject: 'math', grade: 'g4', n: 7, title: 'Multiplication and Division', titleAr: 'عمليتا الضرب والقسمة', icon: '➗', tint: '#ffe6cc', ready: true, bookOrder: true,
+    lessons: ['The Area Model Strategy', 'The Distributive Property', 'The Partial Products Algorithm', 'Multiply by a One-Digit Number', 'Multiply a Two-Digit Number by a Multiple of 10', 'Exploring Remainders', 'Patterns in Division', 'The Area Model and Division', 'The Partial Quotients Algorithm', 'The Standard Division Algorithm', 'Division and Multiplication'],
+    art: 'math/g4_art.js', questMax: 30, questions: 'math/questions_mg4u7.js', questionsAr: 'math/questions_mg4u7_ar.js',
+    map: { img: 'math/assets/map_mg4u7.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_mg4u7.svg', quizBg: 'math/assets/bg_mg4u7.svg',
+    lessonsAr: ['إستراتيجية نموذج مساحة المستطيل', 'خاصية التوزيع', 'خوارزمية عملية الضرب بالتجزئة', 'الضرب في عدد مكون من رقم واحد', 'ضرب عدد مكون من رقمين في مضاعفات العدد 10', 'استكشاف باقي القسمة', 'الأنماط في عملية القسمة', 'القسمة باستخدام نموذج مساحة المستطيل', 'خوارزمية خارج القسمة بالتجزئة', 'خوارزمية القسمة المعيارية', 'القسمة والضرب'] },
+  /* Unit 8: concept 1 "Order of Operations" (lessons 1-2). Both books read 2 Nov 2026 (pages 123-127). */
+  { id: 'mg4u8', subject: 'math', grade: 'g4', n: 8, title: 'Order of Operations', titleAr: 'ترتيب العمليات', icon: '🧮', tint: '#ffe6cc', ready: true, bookOrder: true,
+    lessons: ['Order of Operations', 'The Order of Operations and Story Problems'],
+    art: 'math/g4_art.js', questMax: 16, questions: 'math/questions_mg4u8.js', questionsAr: 'math/questions_mg4u8_ar.js',
+    map: { img: 'math/assets/map_mg4u8.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_mg4u8.svg', quizBg: 'math/assets/bg_mg4u8.svg',
+    lessonsAr: ['ترتيب إجراء العمليات الحسابية', 'ترتيب العمليات والمسائل الكلامية'] },
 
   /* Grade 6 Math, first term 2026/2027. Source: the English school book (Primary 6, Math Term 1), Units 1 and 2 (the official October scope). Only the English file exists so far;
      the Arabic titles and lesson names below are ours until the Arabic book is added. */
