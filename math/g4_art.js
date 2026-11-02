@@ -100,7 +100,7 @@
     const cw = 320 / per, ch = 92, H = 16 + rows * (ch + 26);
     let s = `<svg class="diagram" viewBox="0 0 340 ${H}" role="img" aria-label="${esc(T('Pictures of ' + it.map(a => VEH[a[0]]).join(', '), 'صور: ' + it.map(a => VEHAR[a[0]]).join('، ')))}"><rect width="340" height="${H}" rx="14" fill="${PAPER}"/>`;
     it.forEach((a, i) => {
-      const r = Math.floor(i / per), k = i % per, inRow = r === rows - 1 ? n - per * (rows - 1) : per, x0 = 10 + (320 - inRow * cw) / 2 + k * cw, y0 = 10 + r * (ch + 26);
+      const r = Math.floor(i / per), k0 = i % per, inRow = r === rows - 1 ? n - per * (rows - 1) : per, k = T('l', 'r') === 'r' ? inRow - 1 - k0 : k0, x0 = 10 + (320 - inRow * cw) / 2 + k * cw, y0 = 10 + r * (ch + 26);
       s += vimg(a[0], x0 + 6, y0, cw - 12, ch - 4);
       if (a[1]) s += `<text x="${(x0 + cw / 2).toFixed(1)}" y="${y0 + ch + 16}" text-anchor="middle" font-size="14" font-weight="900" fill="${INK}">${esc(a[1])}</text>`;
     });

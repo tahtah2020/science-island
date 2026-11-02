@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-02', title: 'رياضيات الصف الرابع: الوحدتان الخامسة والسادسة للمسار العربي',
+    items: [
+      { text: 'الوحدة الخامسة «عملية الضرب كعلاقة» والوحدة السادسة «العوامل والمضاعفات» من الكتاب العربي: 45 فكرة و218 صيغة بنفس صور وسائل النقل' }
+    ] },
   { date: '2026-11-02', title: 'رياضيات الصف الرابع: الوحدتان الخامسة والسادسة (لغات)',
     items: [
       { text: 'الوحدة الخامسة «الضرب كعلاقة»: 7 دروس، 24 فكرة، 119 صيغة، مع صور وسائل المواصلات', links: [{ label: 'مراجعة', href: 'quiz.html#preview=mg4u5.1', ch: 'mg4u5' }] },

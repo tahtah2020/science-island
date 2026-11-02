@@ -337,21 +337,21 @@ window.CHAPTERS = [
     cover: 'math/assets/map_mg4u4.svg', quizBg: 'math/assets/bg_mg4u4.svg',
     lessonsAr: ['إيجاد المحيط', 'إيجاد المساحة', 'أبعاد مجهولة', 'الأشكال الهندسية المركّبة'] },
   /* Unit 5: concept 1 "Multiplicative Comparisons" (lessons 1-3), concept 2 "Properties and Patterns of Multiplication" (lessons 4-7). English book read 2 Nov 2026 (pages 70-84).
-     Pictures: the owner's Gemini vehicles math/assets/veh_*.webp (vehFig), tapeFig, arrayFig in math/g4_art.js. English only until the owner's review. */
-  { id: 'mg4u5', subject: 'math', grade: 'g4', n: 5, title: 'Multiplication as a Relationship', titleAr: 'الضرب كعلاقة', icon: '✖️', tint: '#ffe6cc', ready: true, bookOrder: true,
+     Pictures: the owner's Gemini vehicles math/assets/veh_*.webp (vehFig), tapeFig, arrayFig in math/g4_art.js. Arabic book read the same day (same numbers). */
+  { id: 'mg4u5', subject: 'math', grade: 'g4', n: 5, title: 'Multiplication as a Relationship', titleAr: 'عملية الضرب كعلاقة', icon: '✖️', tint: '#ffe6cc', ready: true, bookOrder: true,
     lessons: ['Multiplicative Comparison', 'Creating Multiplicative Comparison Equations', 'Solving Multiplicative Comparison Equations', 'Commutative Property of Multiplication', 'Identity Property and the Zero Property', 'Associative Property of Multiplication', 'Applying Patterns in Multiplication'],
-    art: 'math/g4_art.js', questMax: 24, questions: 'math/questions_mg4u5.js',
+    art: 'math/g4_art.js', questMax: 24, questions: 'math/questions_mg4u5.js', questionsAr: 'math/questions_mg4u5_ar.js',
     map: { img: 'math/assets/map_mg4u5.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_mg4u5.svg', quizBg: 'math/assets/bg_mg4u5.svg',
-    lessonsAr: ['المقارنة الضربية', 'تكوين معادلات المقارنة الضربية', 'حل معادلات المقارنة الضربية', 'خاصية الإبدال في الضرب', 'خاصيتا العنصر المحايد والصفر', 'خاصية التجميع في الضرب', 'تطبيق الأنماط في الضرب'] },
+    lessonsAr: ['مقارنة الأعداد باستخدام عملية الضرب', 'تكوين معادلات للمقارنة باستخدام عملية الضرب', 'حل معادلات للمقارنة باستخدام عملية الضرب', 'خاصية الإبدال في عملية الضرب', 'خاصية العنصر المحايد والضرب في صفر', 'خاصية الدمج في عملية الضرب', 'تطبيق الأنماط في عملية الضرب'] },
   /* Unit 6: concept 1 "Understanding Factors" (lessons 1-3), concept 2 "Understanding Multiples" (lessons 4-6). English book read 2 Nov 2026 (pages 85-98).
-     Pictures: vehFig, skipLine (bus stop background bg_busstop.jpg), arrayFig. English only until the owner's review. */
+     Pictures: vehFig, skipLine (bus stop background bg_busstop.jpg), arrayFig. Arabic book read the same day. */
   { id: 'mg4u6', subject: 'math', grade: 'g4', n: 6, title: 'Factors and Multiples', titleAr: 'العوامل والمضاعفات', icon: '🔢', tint: '#ffe6cc', ready: true, bookOrder: true,
     lessons: ['Identifying Factors of Whole Numbers', 'Prime and Composite Numbers', 'Greatest Common Factor G.C.F', 'Identifying Multiples of Whole Numbers', 'Common Multiples', 'Relationships between Factors and Multiples'],
-    art: 'math/g4_art.js', questMax: 24, questions: 'math/questions_mg4u6.js',
+    art: 'math/g4_art.js', questMax: 24, questions: 'math/questions_mg4u6.js', questionsAr: 'math/questions_mg4u6_ar.js',
     map: { img: 'math/assets/map_mg4u6.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_mg4u6.svg', quizBg: 'math/assets/bg_mg4u6.svg',
-    lessonsAr: ['تحديد عوامل الأعداد الكلية', 'الأعداد الأولية وغير الأولية', 'العامل المشترك الأكبر', 'تحديد مضاعفات الأعداد الكلية', 'المضاعفات المشتركة', 'العلاقة بين العوامل والمضاعفات'] },
+    lessonsAr: ['تحديد عوامل الأعداد الصحيحة', 'الأعداد الأولية والأعداد متعددة العوامل', 'العامل المشترك الأكبر (ع.م.أ)', 'تحديد مضاعفات الأعداد الصحيحة', 'المضاعفات المشتركة', 'العلاقات بين العوامل والمضاعفات'] },
 
   /* Grade 6 Math, first term 2026/2027. Source: the English school book (Primary 6, Math Term 1), Units 1 and 2 (the official October scope). Only the English file exists so far;
      the Arabic titles and lesson names below are ours until the Arabic book is added. */
