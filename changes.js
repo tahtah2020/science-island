@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-02', title: 'شرح خاص لكل سؤال في رياضيات الصف الرابع (الوحدات 5-8)',
+    items: [
+      { text: 'الشرح تحت كل سؤال صار عن السؤال نفسه: حل خطوة بخطوة للمسائل، وقاعدة قصيرة لأسئلة الاختيار' }
+    ] },
   { date: '2026-11-02', title: 'رياضيات الصف الرابع: الوحدتان السابعة والثامنة (المساران)',
     items: [
       { text: 'الوحدة السابعة «عمليتا الضرب والقسمة»: 11 درسًا، 30 فكرة، 143 صيغة' },

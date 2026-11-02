@@ -12,54 +12,54 @@ window.CHAPTER = { id: 'mg4u8', title: 'Order of Operations', grade: 'Grade 4', 
 
 window.IDEAS = [
   /* ---------- Lesson 1 · Order of Operations (pages 124-125) ---------- */
-  {"id":"Z8011","lesson":1,"concept":"The order of operations","explain":"First the parentheses, then multiplication and division from left to right, then addition and subtraction from left to right: 2 + 4 × 6 = 2 + 24 = 26, not 6 × 6 = 36.",
+  {"id":"Z8011","lesson":1,"concept":"The order of operations","explain":"Order of operations: parentheses first, then × and ÷ from left to right, then + and − from left to right.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"2 + 4 × 6 = ?","answer":"26","calc":"2+4*6","seconds":15},
-      {"type":"num","mode":"timed","level":"easy","q":"6 × 4 − 4 = ?","answer":"20","calc":"6*4-4","seconds":15},
-      {"type":"num","mode":"normal","level":"easy","q":"100 − 80 × 1 = ?","answer":"20","calc":"100-80*1"},
-      {"type":"num","mode":"normal","level":"easy","q":"48 ÷ 4 + 9 = ?","answer":"21","calc":"48/4+9"},
-      {"type":"mc","mode":"normal","level":"easy","q":"Which operation comes first in 7 + 70 ÷ 10 − 2?","options":["Division","Addition","Subtraction"],"answer":0},
-      {"type":"tf","mode":"normal","level":"medium","q":"In 2 + 4 × 6 we add 2 + 4 first.","answer":1}
+      {"type":"num","mode":"timed","level":"easy","q":"2 + 4 × 6 = ?","answer":"26","calc":"2+4*6","seconds":15,"explain":"Multiply first: 4 × 6 = 24. Then from left to right: 2 + 24 = 26."},
+      {"type":"num","mode":"timed","level":"easy","q":"6 × 4 − 4 = ?","answer":"20","calc":"6*4-4","seconds":15,"explain":"Multiply first: 6 × 4 = 24. Then from left to right: 24 − 4 = 20."},
+      {"type":"num","mode":"normal","level":"easy","q":"100 − 80 × 1 = ?","answer":"20","calc":"100-80*1","explain":"Multiply first: 80 × 1 = 80. Then from left to right: 100 − 80 = 20."},
+      {"type":"num","mode":"normal","level":"easy","q":"48 ÷ 4 + 9 = ?","answer":"21","calc":"48/4+9","explain":"Divide first: 48 ÷ 4 = 12. Then from left to right: 12 + 9 = 21."},
+      {"type":"mc","mode":"normal","level":"easy","q":"Which operation comes first in 7 + 70 ÷ 10 − 2?","options":["Division","Addition","Subtraction"],"answer":0,"explain":"Division comes before addition and subtraction: 70 ÷ 10 first."},
+      {"type":"tf","mode":"normal","level":"medium","q":"In 2 + 4 × 6 we add 2 + 4 first.","answer":1,"explain":"Multiply first: 4 × 6 = 24, then 2 + 24 = 26."}
     ] },
-  {"id":"Z8012","lesson":1,"concept":"Find the answer","explain":"Work step by step: 49 − 7 × 6 + 4 = 49 − 42 + 4 = 11. 24 − 8 ÷ 4 + 6 = 24 − 2 + 6 = 28. 99 − 10 × 9 + 7 = 99 − 90 + 7 = 16. 24 + 36 ÷ 6 + 2 = 24 + 6 + 2 = 32.",
+  {"id":"Z8012","lesson":1,"concept":"Find the answer","explain":"Do × and ÷ first, then + and − from left to right.",
     "variants": [
-      {"type":"num","mode":"normal","level":"medium","q":"7 + 70 ÷ 10 − 2 = ?","answer":"12","calc":"7+70/10-2"},
-      {"type":"num","mode":"normal","level":"medium","q":"49 − 7 × 6 + 4 = ?","answer":"11","calc":"49-7*6+4"},
-      {"type":"num","mode":"normal","level":"medium","q":"8 × 3 + 6 + 2 = ?","answer":"32","calc":"8*3+6+2"},
-      {"type":"num","mode":"normal","level":"medium","q":"24 − 8 ÷ 4 + 6 = ?","answer":"28","calc":"24-8/4+6"},
-      {"type":"num","mode":"normal","level":"medium","q":"36 ÷ 9 + 4 = ?","answer":"8","calc":"36/9+4"},
-      {"type":"num","mode":"normal","level":"medium","q":"99 − 10 × 9 + 7 = ?","answer":"16","calc":"99-10*9+7"},
-      {"type":"num","mode":"normal","level":"medium","q":"12 − 72 ÷ 12 + 2 = ?","answer":"8","calc":"12-72/12+2"},
-      {"type":"num","mode":"normal","level":"medium","q":"80 ÷ 10 + 6 − 3 = ?","answer":"11","calc":"80/10+6-3"},
-      {"type":"num","mode":"normal","level":"medium","q":"15 ÷ 5 + 4 + 1 = ?","answer":"8","calc":"15/5+4+1"},
-      {"type":"num","mode":"normal","level":"medium","q":"15 − 7 + 2 + 6 = ?","answer":"16","calc":"15-7+2+6"},
-      {"type":"num","mode":"normal","level":"medium","q":"8 × 2 + 24 − 12 = ?","answer":"28","calc":"8*2+24-12"},
-      {"type":"num","mode":"normal","level":"medium","q":"24 + 36 ÷ 6 + 2 = ?","answer":"32","calc":"24+36/6+2"},
-      {"type":"num","mode":"normal","level":"medium","q":"40 − 7 × 5 + 2 = ?","answer":"7","calc":"40-7*5+2"}
+      {"type":"num","mode":"normal","level":"medium","q":"7 + 70 ÷ 10 − 2 = ?","answer":"12","calc":"7+70/10-2","explain":"Divide first: 70 ÷ 10 = 7. Then from left to right: 7 + 7 = 14, 14 − 2 = 12."},
+      {"type":"num","mode":"normal","level":"medium","q":"49 − 7 × 6 + 4 = ?","answer":"11","calc":"49-7*6+4","explain":"Multiply first: 7 × 6 = 42. Then from left to right: 49 − 42 = 7, 7 + 4 = 11."},
+      {"type":"num","mode":"normal","level":"medium","q":"8 × 3 + 6 + 2 = ?","answer":"32","calc":"8*3+6+2","explain":"Multiply first: 8 × 3 = 24. Then from left to right: 24 + 6 = 30, 30 + 2 = 32."},
+      {"type":"num","mode":"normal","level":"medium","q":"24 − 8 ÷ 4 + 6 = ?","answer":"28","calc":"24-8/4+6","explain":"Divide first: 8 ÷ 4 = 2. Then from left to right: 24 − 2 = 22, 22 + 6 = 28."},
+      {"type":"num","mode":"normal","level":"medium","q":"36 ÷ 9 + 4 = ?","answer":"8","calc":"36/9+4","explain":"Divide first: 36 ÷ 9 = 4. Then from left to right: 4 + 4 = 8."},
+      {"type":"num","mode":"normal","level":"medium","q":"99 − 10 × 9 + 7 = ?","answer":"16","calc":"99-10*9+7","explain":"Multiply first: 10 × 9 = 90. Then from left to right: 99 − 90 = 9, 9 + 7 = 16."},
+      {"type":"num","mode":"normal","level":"medium","q":"12 − 72 ÷ 12 + 2 = ?","answer":"8","calc":"12-72/12+2","explain":"Divide first: 72 ÷ 12 = 6. Then from left to right: 12 − 6 = 6, 6 + 2 = 8."},
+      {"type":"num","mode":"normal","level":"medium","q":"80 ÷ 10 + 6 − 3 = ?","answer":"11","calc":"80/10+6-3","explain":"Divide first: 80 ÷ 10 = 8. Then from left to right: 8 + 6 = 14, 14 − 3 = 11."},
+      {"type":"num","mode":"normal","level":"medium","q":"15 ÷ 5 + 4 + 1 = ?","answer":"8","calc":"15/5+4+1","explain":"Divide first: 15 ÷ 5 = 3. Then from left to right: 3 + 4 = 7, 7 + 1 = 8."},
+      {"type":"num","mode":"normal","level":"medium","q":"15 − 7 + 2 + 6 = ?","answer":"16","calc":"15-7+2+6","explain":"From left to right: 15 − 7 = 8, 8 + 2 = 10, 10 + 6 = 16."},
+      {"type":"num","mode":"normal","level":"medium","q":"8 × 2 + 24 − 12 = ?","answer":"28","calc":"8*2+24-12","explain":"Multiply first: 8 × 2 = 16. Then from left to right: 16 + 24 = 40, 40 − 12 = 28."},
+      {"type":"num","mode":"normal","level":"medium","q":"24 + 36 ÷ 6 + 2 = ?","answer":"32","calc":"24+36/6+2","explain":"Divide first: 36 ÷ 6 = 6. Then from left to right: 24 + 6 = 30, 30 + 2 = 32."},
+      {"type":"num","mode":"normal","level":"medium","q":"40 − 7 × 5 + 2 = ?","answer":"7","calc":"40-7*5+2","explain":"Multiply first: 7 × 5 = 35. Then from left to right: 40 − 35 = 5, 5 + 2 = 7."}
     ] },
-  {"id":"Z8013","lesson":1,"boss":true,"concept":"Challenge: who is correct?","explain":"74 − 61 + 8 × 5: multiply first: 8 × 5 = 40, then from left to right: 74 − 61 = 13, 13 + 40 = 53. Sarah is correct; Saleem added and multiplied from left to right: (74 − 61 + 8) × 5 = 105.",
+  {"id":"Z8013","lesson":1,"boss":true,"concept":"Challenge: who is correct?","explain":"In 74 − 61 + 8 × 5, multiply first: 8 × 5 = 40, then 74 − 61 = 13 and 13 + 40 = 53.",
     "variants": [
       {"type":"mc","mode":"boss","level":"hard","q":"Saleem and Sarah solved 74 − 61 + 8 × 5. Saleem says 105 and Sarah says 53. Who is correct?","options":["Sarah: 53","Saleem: 105","Both","Neither"],"answer":0},
       {"type":"mc","mode":"boss","level":"hard","q":"What was Saleem's mistake in 74 − 61 + 8 × 5 = 105?","options":["He did not multiply first","He subtracted wrongly","He multiplied first","There is no mistake"],"answer":0},
-      {"type":"mc","mode":"boss","level":"hard","q":"Which problem does not belong? 6 × 4 − 4, 100 − 80 × 1, 60 + 20 − 50, 2,356 − 2,336","options":["60 + 20 − 50 = 30","6 × 4 − 4 = 20","100 − 80 × 1 = 20","2,356 − 2,336 = 20"],"answer":0}
+      {"type":"mc","mode":"boss","level":"hard","q":"Which problem does not belong? 6 × 4 − 4, 100 − 80 × 1, 60 + 20 − 50, 2,356 − 2,336","options":["60 + 20 − 50 = 30","6 × 4 − 4 = 20","100 − 80 × 1 = 20","2,356 − 2,336 = 20"],"answer":0,"explain":"6 × 4 − 4 = 20, 100 − 80 × 1 = 20 and 2,356 − 2,336 = 20, but 60 + 20 − 50 = 30."}
     ] },
   /* ---------- Lesson 2 · The Order of Operations and Story Problems (pages 126-127) ---------- */
-  {"id":"Z8021","lesson":2,"concept":"Writing a story as one expression","explain":"Write the whole story with numbers and symbols, using parentheses for what happens first: 67 + 67 + 67 + 67 + 67 − 15 = 5 × 67 − 15 = 320. Maha walked 14 km a day for 2 weeks and then 56 km: 14 × 14 + 56 = 252 km.",
+  {"id":"Z8021","lesson":2,"concept":"Writing a story as one expression","explain":"Adding the same number again and again is multiplication. Put in parentheses what must be done first.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"67 + 67 + 67 + 67 + 67 − 15 = ?","answer":"320","calc":"5*67-15"},
-      {"type":"mc","mode":"normal","level":"easy","q":"Which is a shorter way to write 67 + 67 + 67 + 67 + 67 − 15?","options":["5 × 67 − 15","67 × 15","5 + 67 − 15","(67 − 15) × 5"],"answer":0},
-      {"type":"num","mode":"normal","level":"medium","q":"Maha walked 14 kilometers every day for 2 weeks. The next week she walked 56 kilometers. How many kilometers did she walk over those 3 weeks?","answer":"252","calc":"14*14+56","fig":"vehFig","pic":{"items":[["girlwalk",""]]},"unit":"km"},
-      {"type":"mc","mode":"normal","level":"medium","q":"Which expression shows Maha's walk (14 km a day for 2 weeks, then 56 km)?","options":["14 × 14 + 56","14 × 2 + 56","14 + 14 + 56","(14 + 56) × 2"],"answer":0,"fig":"vehFig","pic":{"items":[["girlwalk",""]]}},
-      {"type":"num","mode":"normal","level":"medium","q":"Ashraf rides the bus 27 minutes and then walks 12 minutes to work. How many minutes does he spend going to work during a 5-day week?","answer":"195","calc":"(27+12)*5","fig":"vehFig","pic":{"items":[["bus",""],["walk",""]]},"unit":"minutes"},
-      {"type":"mc","mode":"normal","level":"medium","q":"Which expression shows Ashraf's week (27 minutes by bus + 12 minutes walking, 5 days)?","options":["(27 + 12) × 5","27 + 12 × 5","27 × 5 + 12","(27 − 12) × 5"],"answer":0,"fig":"vehFig","pic":{"items":[["bus",""],["walk",""]]}}
+      {"type":"num","mode":"normal","level":"easy","q":"67 + 67 + 67 + 67 + 67 − 15 = ?","answer":"320","calc":"5*67-15","explain":"67 is added 5 times: 5 × 67 − 15 = 335 − 15 = 320."},
+      {"type":"mc","mode":"normal","level":"easy","q":"Which is a shorter way to write 67 + 67 + 67 + 67 + 67 − 15?","options":["5 × 67 − 15","67 × 15","5 + 67 − 15","(67 − 15) × 5"],"answer":0,"explain":"67 added 5 times is 5 × 67, then take away 15: 5 × 67 − 15."},
+      {"type":"num","mode":"normal","level":"medium","q":"Maha walked 14 kilometers every day for 2 weeks. The next week she walked 56 kilometers. How many kilometers did she walk over those 3 weeks?","answer":"252","calc":"14*14+56","fig":"vehFig","pic":{"items":[["girlwalk",""]]},"unit":"km","explain":"14 × 14 + 56 = 252."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Which expression shows Maha's walk (14 km a day for 2 weeks, then 56 km)?","options":["14 × 14 + 56","14 × 2 + 56","14 + 14 + 56","(14 + 56) × 2"],"answer":0,"fig":"vehFig","pic":{"items":[["girlwalk",""]]},"explain":"2 weeks = 14 days: 14 × 14 km, then add the 56 km of the next week: 14 × 14 + 56."},
+      {"type":"num","mode":"normal","level":"medium","q":"Ashraf rides the bus 27 minutes and then walks 12 minutes to work. How many minutes does he spend going to work during a 5-day week?","answer":"195","calc":"(27+12)*5","fig":"vehFig","pic":{"items":[["bus",""],["walk",""]]},"unit":"minutes","explain":"(27 + 12) × 5 = 195."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Which expression shows Ashraf's week (27 minutes by bus + 12 minutes walking, 5 days)?","options":["(27 + 12) × 5","27 + 12 × 5","27 × 5 + 12","(27 − 12) × 5"],"answer":0,"fig":"vehFig","pic":{"items":[["bus",""],["walk",""]]},"explain":"Each day takes 27 + 12 minutes; for 5 days multiply the whole day by 5: (27 + 12) × 5."}
     ] },
-  {"id":"Z8022","lesson":2,"boss":true,"concept":"Challenge: stamps, microbuses and muffins","explain":"Abdullah had 246 stamps, kept 25 and shared the rest among 6 friends: (246 − 25) ÷ 6 = 221 ÷ 6 = 36 R5. 172 tourists and 8 guides in microbuses of 9: (172 + 8) ÷ 9 = 20. Sita had 198 berries, ate 17, 6 in each muffin: (198 − 17) ÷ 6 = 181 ÷ 6 = 30 R1, so 30 muffins.",
+  {"id":"Z8022","lesson":2,"boss":true,"concept":"Challenge: stamps, microbuses and muffins","explain":"Write the story as one expression, using parentheses for what happens first (for example: take some away, then share).",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"Abdullah received 246 stamps. He kept 25 and gave the rest to 6 friends equally. How many stamps did each friend get?","answer":"36","calc":"(246-25-5)/6","fig":"vehFig","pic":{"items":[["stamps",""]]},"unit":"stamps"},
-      {"type":"mc","mode":"boss","level":"hard","q":"Which expression shows Abdullah's stamps for each friend?","options":["(246 − 25) ÷ 6","246 − 25 ÷ 6","246 ÷ 6 − 25","(246 + 25) ÷ 6"],"answer":0,"fig":"vehFig","pic":{"items":[["stamps",""]]}},
-      {"type":"num","mode":"boss","level":"hard","q":"There are 172 tourists and 8 tour guides. Each microbus fits 9 people. How many microbuses do they need?","answer":"20","calc":"(172+8)/9","fig":"vehFig","pic":{"items":[["microbus",""],["microbus",""]],"bg":"pyramids"},"unit":"microbuses"},
-      {"type":"num","mode":"boss","level":"hard","q":"Sita buys 198 berries and eats 17 on the way home. Each muffin has 6 berries. How many muffins can she make?","answer":"30","calc":"(198-17-1)/6","fig":"vehFig","pic":{"items":[["berries",""],["muffin",""]]},"unit":"muffins"},
-      {"type":"mc","mode":"boss","level":"hard","q":"Which story fits (50 − 36) ÷ 4?","options":["50 pens, 36 are lost, the rest shared by 4 friends","50 pens shared by 4, then 36 more","36 pens and 50 more, shared by 4","4 boxes of 50 pens, 36 lost"],"answer":0}
+      {"type":"num","mode":"boss","level":"hard","q":"Abdullah received 246 stamps. He kept 25 and gave the rest to 6 friends equally. How many stamps did each friend get?","answer":"36","calc":"(246-25-5)/6","fig":"vehFig","pic":{"items":[["stamps",""]]},"unit":"stamps","explain":"(246 − 25) ÷ 6 = 221 ÷ 6 = 36 R5: each friend gets 36 stamps."},
+      {"type":"mc","mode":"boss","level":"hard","q":"Which expression shows Abdullah's stamps for each friend?","options":["(246 − 25) ÷ 6","246 − 25 ÷ 6","246 ÷ 6 − 25","(246 + 25) ÷ 6"],"answer":0,"fig":"vehFig","pic":{"items":[["stamps",""]]},"explain":"First take away the 25 he kept, then share the rest by 6: (246 − 25) ÷ 6."},
+      {"type":"num","mode":"boss","level":"hard","q":"There are 172 tourists and 8 tour guides. Each microbus fits 9 people. How many microbuses do they need?","answer":"20","calc":"(172+8)/9","fig":"vehFig","pic":{"items":[["microbus",""],["microbus",""]],"bg":"pyramids"},"unit":"microbuses","explain":"(172 + 8) ÷ 9 = 180 ÷ 9 = 20 microbuses."},
+      {"type":"num","mode":"boss","level":"hard","q":"Sita buys 198 berries and eats 17 on the way home. Each muffin has 6 berries. How many muffins can she make?","answer":"30","calc":"(198-17-1)/6","fig":"vehFig","pic":{"items":[["berries",""],["muffin",""]]},"unit":"muffins","explain":"(198 − 17) ÷ 6 = 181 ÷ 6 = 30 R1: 30 muffins."},
+      {"type":"mc","mode":"boss","level":"hard","q":"Which story fits (50 − 36) ÷ 4?","options":["50 pens, 36 are lost, the rest shared by 4 friends","50 pens shared by 4, then 36 more","36 pens and 50 more, shared by 4","4 boxes of 50 pens, 36 lost"],"answer":0,"explain":"(50 − 36) ÷ 4: start with 50, take away 36, then share what is left by 4."}
     ] }
 ];
 })();

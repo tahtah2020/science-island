@@ -17,39 +17,39 @@ window.CHAPTER = { id: 'mg4u5', title: 'Multiplication as a Relationship', grade
 
 window.IDEAS = [
   /* ---------- Lesson 1 · Multiplicative Comparison (pages 71-72) ---------- */
-  {"id":"Y11","lesson":1,"concept":"Comparing with \"times greater than\"","explain":"A multiplicative comparison says how many times one number is another. Divide the big number by the small one: 10 is 5 times greater than 2, because 5 × 2 = 10 (10 ÷ 2 = 5).",
+  {"id":"Y11","lesson":1,"concept":"Comparing with \"times greater than\"","explain":"To find how many times greater a number is, divide the big number by the small one.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"10 is ? times greater than 2.","answer":"5","calc":"10/2","seconds":12,"unit":"times"},
-      {"type":"num","mode":"timed","level":"easy","q":"12 is ? times greater than 3.","answer":"4","calc":"12/3","seconds":12,"unit":"times"},
-      {"type":"num","mode":"timed","level":"easy","q":"18 is ? times greater than 6.","answer":"3","calc":"18/6","seconds":12,"unit":"times"},
-      {"type":"num","mode":"normal","level":"easy","q":"15 is ? times greater than 3.","answer":"5","calc":"15/3","unit":"times"},
-      {"type":"num","mode":"normal","level":"easy","q":"28 is ? times greater than 7.","answer":"4","calc":"28/7","unit":"times"},
-      {"type":"num","mode":"normal","level":"easy","q":"27 is ? times greater than 9.","answer":"3","calc":"27/9","unit":"times"}
+      {"type":"num","mode":"timed","level":"easy","q":"10 is ? times greater than 2.","answer":"5","calc":"10/2","seconds":12,"unit":"times","explain":"10 ÷ 2 = 5."},
+      {"type":"num","mode":"timed","level":"easy","q":"12 is ? times greater than 3.","answer":"4","calc":"12/3","seconds":12,"unit":"times","explain":"12 ÷ 3 = 4."},
+      {"type":"num","mode":"timed","level":"easy","q":"18 is ? times greater than 6.","answer":"3","calc":"18/6","seconds":12,"unit":"times","explain":"18 ÷ 6 = 3."},
+      {"type":"num","mode":"normal","level":"easy","q":"15 is ? times greater than 3.","answer":"5","calc":"15/3","unit":"times","explain":"15 ÷ 3 = 5."},
+      {"type":"num","mode":"normal","level":"easy","q":"28 is ? times greater than 7.","answer":"4","calc":"28/7","unit":"times","explain":"28 ÷ 7 = 4."},
+      {"type":"num","mode":"normal","level":"easy","q":"27 is ? times greater than 9.","answer":"3","calc":"27/9","unit":"times","explain":"27 ÷ 9 = 3."}
     ] },
-  {"id":"Y12","lesson":1,"concept":"Reading a tape diagram","explain":"In a tape diagram the long tape is made of equal parts, each the size of the short tape. Count the parts: if the long tape has 4 parts of 3, the long tape is 4 × 3 = 12, so 12 is 4 times greater than 3.",
+  {"id":"Y12","lesson":1,"concept":"Reading a tape diagram","explain":"In a tape diagram the long tape is made of equal parts, each as long as the short tape. Count the parts to find how many times.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"The long tape is made of parts like the short tape. How many times longer is the long tape?","answer":"5","calc":"5","fig":"tapeFig","pic":{"n":5,"box":"","one":"","total":"","top":"A","bottom":"B"},"unit":"times"},
-      {"type":"num","mode":"normal","level":"medium","q":"Each part is 3. What number does the long tape show?","answer":"12","calc":"4*3","fig":"tapeFig","pic":{"n":4,"box":"3","one":"3","total":"","top":"","bottom":""}},
+      {"type":"num","mode":"normal","level":"easy","q":"The long tape is made of parts like the short tape. How many times longer is the long tape?","answer":"5","calc":"5","fig":"tapeFig","pic":{"n":5,"box":"","one":"","total":"","top":"A","bottom":"B"},"unit":"times","explain":"The long tape has 5 parts, each as long as the short tape: 5 times."},
+      {"type":"num","mode":"normal","level":"medium","q":"Each part is 3. What number does the long tape show?","answer":"12","calc":"4*3","fig":"tapeFig","pic":{"n":4,"box":"3","one":"3","total":"","top":"","bottom":""},"explain":"4 × 3 = 12."},
       {"type":"mc","mode":"normal","level":"medium","q":"Which statement does the tape diagram show?","options":["14 is 2 times greater than 7","14 is 7 times greater than 2","7 is 2 times greater than 14","14 is 7 more than 2"],"answer":0,"fig":"tapeFig","pic":{"n":2,"box":"7","one":"7","total":"14","top":"","bottom":""}},
       {"type":"mc","mode":"normal","level":"medium","q":"Which multiplication matches the tape diagram?","options":["3 × 6 = 18","3 + 6 = 9","6 + 6 = 12","18 × 3 = 54"],"answer":0,"fig":"tapeFig","pic":{"n":3,"box":"6","one":"6","total":"18","top":"","bottom":""}}
     ] },
-  {"id":"Y13","lesson":1,"boss":true,"concept":"Challenge: comparing strips","explain":"Compare by asking \"how many times does the small one fit in the big one?\" A strip of 24 cm and a strip of 8 cm: 24 ÷ 8 = 3, so the long strip is 3 times as long. Check with multiplication: 3 × 8 = 24.",
+  {"id":"Y13","lesson":1,"boss":true,"concept":"Challenge: comparing strips","explain":"Ask how many times the small one fits in the big one, then check with multiplication.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"Your teacher's strip is 24 cm long and your strip is 8 cm long. How many times could your strip fit on your teacher's strip?","answer":"3","calc":"24/8","unit":"times"},
+      {"type":"num","mode":"boss","level":"hard","q":"Your teacher's strip is 24 cm long and your strip is 8 cm long. How many times could your strip fit on your teacher's strip?","answer":"3","calc":"24/8","unit":"times","explain":"24 ÷ 8 = 3."},
       {"type":"mc","mode":"boss","level":"hard","q":"36 is ? times greater than 4. Which equation shows it?","options":["9 × 4 = 36","36 + 4 = 40","36 − 4 = 32","4 × 4 = 16"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"45 is ? times greater than 5.","answer":"9","calc":"45/5","unit":"times"}
+      {"type":"num","mode":"boss","level":"hard","q":"45 is ? times greater than 5.","answer":"9","calc":"45/5","unit":"times","explain":"45 ÷ 5 = 9."}
     ] },
   /* ---------- Lesson 2 · Creating Multiplicative Comparison Equations (pages 73-74) ---------- */
-  {"id":"Y21","lesson":2,"concept":"How fast? The transportation infographic","explain":"The infographic compares speeds: a sailboat is about 2 times faster than a person walking, a car about 20 times faster than a person walking, a cruise ship about 8 times the speed of walking, high-speed trains 8 times faster than a cruise ship and passenger airplanes nearly 200 times faster than walking.",
+  {"id":"Y21","lesson":2,"concept":"How fast? The transportation infographic","explain":"\"Times faster\" compares two speeds by multiplication. Read the number in the infographic sentence about these two.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"A sailboat travels about ? times faster than a person walking.","answer":"2","calc":"2","seconds":14,"fig":"vehFig","pic":{"items":[["sailboat",""],["walk",""]]},"unit":"times"},
-      {"type":"num","mode":"timed","level":"easy","q":"A car travels about ? times faster than a person walking.","answer":"20","calc":"20","seconds":14,"fig":"vehFig","pic":{"items":[["car",""],["walk",""]]},"unit":"times"},
-      {"type":"num","mode":"normal","level":"easy","q":"A cruise ship travels about ? times the speed of a person walking.","answer":"8","calc":"8","fig":"vehFig","pic":{"items":[["cruise",""],["walk",""]]},"unit":"times"},
-      {"type":"num","mode":"normal","level":"medium","q":"High-speed trains move ? times faster than a cruise ship.","answer":"8","calc":"8","fig":"vehFig","pic":{"items":[["fasttrain",""],["cruise",""]]},"unit":"times"},
-      {"type":"mc","mode":"normal","level":"medium","q":"Passenger airplanes travel nearly how many times faster than a person walking?","options":["200 times","20 times","8 times","2 times"],"answer":0,"fig":"vehFig","pic":{"items":[["plane",""],["walk",""]]}},
+      {"type":"num","mode":"timed","level":"easy","q":"A sailboat travels about ? times faster than a person walking.","answer":"2","calc":"2","seconds":14,"fig":"vehFig","pic":{"items":[["sailboat",""],["walk",""]]},"unit":"times","explain":"The infographic says: a sailboat travels about 2 times faster than a person walking."},
+      {"type":"num","mode":"timed","level":"easy","q":"A car travels about ? times faster than a person walking.","answer":"20","calc":"20","seconds":14,"fig":"vehFig","pic":{"items":[["car",""],["walk",""]]},"unit":"times","explain":"The infographic says: a car travels about 20 times faster than a person walking."},
+      {"type":"num","mode":"normal","level":"easy","q":"A cruise ship travels about ? times the speed of a person walking.","answer":"8","calc":"8","fig":"vehFig","pic":{"items":[["cruise",""],["walk",""]]},"unit":"times","explain":"The infographic says: a cruise ship travels about 8 times the speed of a person walking."},
+      {"type":"num","mode":"normal","level":"medium","q":"High-speed trains move ? times faster than a cruise ship.","answer":"8","calc":"8","fig":"vehFig","pic":{"items":[["fasttrain",""],["cruise",""]]},"unit":"times","explain":"The infographic says: high-speed trains move 8 times faster than a cruise ship."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Passenger airplanes travel nearly how many times faster than a person walking?","options":["200 times","20 times","8 times","2 times"],"answer":0,"fig":"vehFig","pic":{"items":[["plane",""],["walk",""]]},"explain":"The infographic says: passenger airplanes travel nearly 200 times faster than a person walking."},
       {"type":"multi","mode":"normal","level":"medium","q":"Choose ALL the phrases that show a multiplicative comparison.","options":["2 times faster","about 8 times the speed","3 more seats","the same speed"],"answer":[0,1]}
     ] },
-  {"id":"Y22","lesson":2,"concept":"Writing an equation with a letter","explain":"Turn the words into an equation and use a letter for the unknown number: \"4 times greater than 3 is n\" → 4 × 3 = n. \"18 is 6 times as many as n\" → 18 = 6 × n. \"times as many\" means multiply.",
+  {"id":"Y22","lesson":2,"concept":"Writing an equation with a letter","explain":"\"times as many\" means multiply. Use a letter for the unknown number and keep the numbers in the same places as the sentence.",
     "variants": [
       {"type":"mc","mode":"timed","level":"easy","q":"4 times greater than 3 is n. Which equation?","options":["4 × 3 = n","4 + 3 = n","4 × n = 3","n × 3 = 4"],"answer":0,"seconds":15},
       {"type":"mc","mode":"normal","level":"easy","q":"18 is 6 times as many as n. Which equation?","options":["18 = 6 × n","18 = 6 + n","n = 18 × 6","6 = 18 × n"],"answer":0},
@@ -58,161 +58,161 @@ window.IDEAS = [
       {"type":"mc","mode":"normal","level":"medium","q":"25 is 5 times as many as n. Which equation?","options":["25 = 5 × n","25 = 5 + n","n = 25 × 5","5 = n × 25"],"answer":0},
       {"type":"tf","mode":"normal","level":"medium","q":"\"18 is 6 times as many as n\" can be written 18 = 6 + n.","answer":1}
     ] },
-  {"id":"Y23","lesson":2,"concept":"Story problems as equations","explain":"Read the story, find the comparison, then write it with a letter. Nadia had 5 marbles and later 4 times as many: 5 × 4 = n. Hamed had 12 cookies, 3 times as many as Ahmed: 12 = 3 × n.",
+  {"id":"Y23","lesson":2,"concept":"Story problems as equations","explain":"Find the comparison in the story, then write it as a multiplication with a letter for the unknown.",
     "variants": [
       {"type":"mc","mode":"normal","level":"medium","q":"Nadia collected 5 marbles in March. By May she had 4 times as many marbles. Which equation shows the marbles in May?","options":["5 × 4 = n","5 + 4 = n","5 = 4 × n","n × 5 = 4"],"answer":0},
       {"type":"mc","mode":"normal","level":"medium","q":"Hamed had 12 cookies, which was 3 times as many cookies as his brother Ahmed. Which equation shows Ahmed's cookies?","options":["12 = 3 × n","12 × 3 = n","12 + 3 = n","n = 12 − 3"],"answer":0},
       {"type":"mc","mode":"normal","level":"medium","q":"Aida walked to school in 21 minutes and rode her bike in 7 minutes. Which equation shows how many times faster riding was?","options":["21 = n × 7","21 + 7 = n","21 × 7 = n","7 = n × 21"],"answer":0},
-      {"type":"num","mode":"normal","level":"medium","q":"Nadia collected 5 marbles in March. By May she had 4 times as many. How many marbles did she have in May?","answer":"20","calc":"5*4"}
+      {"type":"num","mode":"normal","level":"medium","q":"Nadia collected 5 marbles in March. By May she had 4 times as many. How many marbles did she have in May?","answer":"20","calc":"5*4","explain":"5 × 4 = 20."}
     ] },
-  {"id":"Y24","lesson":2,"boss":true,"concept":"Challenge: the car and the bicycle","explain":"A car is 3 times faster than a bicycle, so the car needs 3 times LESS time. Salma takes 24 minutes by bicycle: 3 × n = 24, and n = 24 ÷ 3 = 8 minutes by car.",
+  {"id":"Y24","lesson":2,"boss":true,"concept":"Challenge: the car and the bicycle","explain":"If one way is 3 times faster, it needs 3 times less time: divide the time by 3.",
     "variants": [
       {"type":"mc","mode":"boss","level":"hard","q":"A car is 3 times faster than a bicycle. It takes Salma 24 minutes to get to school by bicycle. Which equation shows the time by car?","options":["3 × n = 24","24 × 3 = n","24 + 3 = n","n = 24 − 3"],"answer":0,"fig":"vehFig","pic":{"items":[["car",""],["bicycle",""]]}},
-      {"type":"num","mode":"boss","level":"hard","q":"A car is 3 times faster than a bicycle. Salma takes 24 minutes by bicycle. How many minutes would she take by car?","answer":"8","calc":"24/3","fig":"vehFig","pic":{"items":[["car",""],["bicycle",""]]},"unit":"minutes"},
+      {"type":"num","mode":"boss","level":"hard","q":"A car is 3 times faster than a bicycle. Salma takes 24 minutes by bicycle. How many minutes would she take by car?","answer":"8","calc":"24/3","fig":"vehFig","pic":{"items":[["car",""],["bicycle",""]]},"unit":"minutes","explain":"24 ÷ 3 = 8."},
       {"type":"tf","mode":"boss","level":"hard","q":"If a car is 3 times faster than a bicycle, the car trip takes 3 times MORE minutes.","answer":1},
-      {"type":"num","mode":"boss","level":"hard","q":"Aida walked to school in 21 minutes and rode her bike in 7 minutes. How many times faster was riding her bike?","answer":"3","calc":"21/7","fig":"vehFig","pic":{"items":[["bicycle",""],["walk",""]]},"unit":"times"}
+      {"type":"num","mode":"boss","level":"hard","q":"Aida walked to school in 21 minutes and rode her bike in 7 minutes. How many times faster was riding her bike?","answer":"3","calc":"21/7","fig":"vehFig","pic":{"items":[["bicycle",""],["walk",""]]},"unit":"times","explain":"21 ÷ 7 = 3."}
     ] },
   /* ---------- Lesson 3 · Solving Multiplicative Comparison Equations (pages 75-76) ---------- */
-  {"id":"Y31","lesson":3,"concept":"Solving with the related division","explain":"To solve a multiplication equation with a missing factor, divide: 6 × a = 18, so a = 18 ÷ 6 = 3. Moustafa is right, because multiplication and division are related.",
+  {"id":"Y31","lesson":3,"concept":"Solving with the related division","explain":"To find a missing factor, divide the product by the factor you know. Multiplication and division are related.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"6 × a = 18. a = ?","answer":"3","calc":"18/6","seconds":12},
-      {"type":"num","mode":"timed","level":"easy","q":"4 × n = 28. n = ?","answer":"7","calc":"28/4","seconds":12},
-      {"type":"num","mode":"normal","level":"easy","q":"n × 5 = 35. n = ?","answer":"7","calc":"35/5"},
+      {"type":"num","mode":"timed","level":"easy","q":"6 × a = 18. a = ?","answer":"3","calc":"18/6","seconds":12,"explain":"18 ÷ 6 = 3."},
+      {"type":"num","mode":"timed","level":"easy","q":"4 × n = 28. n = ?","answer":"7","calc":"28/4","seconds":12,"explain":"28 ÷ 4 = 7."},
+      {"type":"num","mode":"normal","level":"easy","q":"n × 5 = 35. n = ?","answer":"7","calc":"35/5","explain":"35 ÷ 5 = 7."},
       {"type":"mc","mode":"normal","level":"medium","q":"Moustafa solves 6 × a = 18 by doing 18 ÷ 6 = a. Is he right?","options":["Yes: division undoes multiplication, a = 3","No: he must add 18 + 6","No: he must multiply 18 × 6","No: a = 12"],"answer":0},
       {"type":"tf","mode":"normal","level":"medium","q":"To solve 9 × m = 54 we can divide 54 ÷ 9.","answer":0}
     ] },
-  {"id":"Y32","lesson":3,"concept":"How many seats? The table","explain":"The table gives the seats: bicycle 1, motorbike 2, car 4, truck 6, bus 36, metro train 48. A truck has 6 seats and a motorbike 2: 6 = n × 2, so n = 3 times as many.",
+  {"id":"Y32","lesson":3,"concept":"How many seats? The table","explain":"Read the seats of both vehicles in the table, then divide the bigger number by the smaller.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"How many times as many seats are in a truck than on a motorbike?","answer":"3","calc":"6/2","fig":"vehFig","pic":{"items":[["truck","6 seats"],["motorbike","2 seats"]]},"unit":"times"},
-      {"type":"num","mode":"normal","level":"medium","q":"How many times as many seats are on a bus than in a truck?","answer":"6","calc":"36/6","fig":"vehFig","pic":{"items":[["bus","36 seats"],["truck","6 seats"]]},"unit":"times"},
-      {"type":"num","mode":"normal","level":"medium","q":"How many times as many seats are on the metro train than in a car?","answer":"12","calc":"48/4","fig":"vehFig","pic":{"items":[["metro","48 seats"],["car","4 seats"]]},"unit":"times"},
-      {"type":"num","mode":"normal","level":"medium","q":"A metro train can fit how many times more people than a truck?","answer":"8","calc":"48/6","fig":"vehFig","pic":{"items":[["metro","48 seats"],["truck","6 seats"]]},"unit":"times"},
-      {"type":"num","mode":"normal","level":"medium","q":"A bus has how many times more seats than a car?","answer":"9","calc":"36/4","fig":"vehFig","pic":{"items":[["bus","36 seats"],["car","4 seats"]]},"unit":"times"},
+      {"type":"num","mode":"normal","level":"easy","q":"How many times as many seats are in a truck than on a motorbike?","answer":"3","calc":"6/2","fig":"vehFig","pic":{"items":[["truck","6 seats"],["motorbike","2 seats"]]},"unit":"times","explain":"6 ÷ 2 = 3."},
+      {"type":"num","mode":"normal","level":"medium","q":"How many times as many seats are on a bus than in a truck?","answer":"6","calc":"36/6","fig":"vehFig","pic":{"items":[["bus","36 seats"],["truck","6 seats"]]},"unit":"times","explain":"36 ÷ 6 = 6."},
+      {"type":"num","mode":"normal","level":"medium","q":"How many times as many seats are on the metro train than in a car?","answer":"12","calc":"48/4","fig":"vehFig","pic":{"items":[["metro","48 seats"],["car","4 seats"]]},"unit":"times","explain":"48 ÷ 4 = 12."},
+      {"type":"num","mode":"normal","level":"medium","q":"A metro train can fit how many times more people than a truck?","answer":"8","calc":"48/6","fig":"vehFig","pic":{"items":[["metro","48 seats"],["truck","6 seats"]]},"unit":"times","explain":"48 ÷ 6 = 8."},
+      {"type":"num","mode":"normal","level":"medium","q":"A bus has how many times more seats than a car?","answer":"9","calc":"36/4","fig":"vehFig","pic":{"items":[["bus","36 seats"],["car","4 seats"]]},"unit":"times","explain":"36 ÷ 4 = 9."},
       {"type":"mc","mode":"normal","level":"medium","q":"Which equation finds how many times as many seats a bus (36) has than a truck (6)?","options":["36 = n × 6","36 + 6 = n","36 × 6 = n","6 = n × 36"],"answer":0}
     ] },
-  {"id":"Y33","lesson":3,"boss":true,"concept":"Challenge: comparing more seats","explain":"Use the table: a bus has 36 seats, a motorbike 2, so 36 = n × 2 and n = 18. A metro train has 48 seats and a motorbike 2: 48 ÷ 2 = 24 times as many.",
+  {"id":"Y33","lesson":3,"boss":true,"concept":"Challenge: comparing more seats","explain":"Read both numbers of seats, then divide the bigger number by the smaller.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"How many times as many seats are on a bus than on a motorbike?","answer":"18","calc":"36/2","fig":"vehFig","pic":{"items":[["bus","36 seats"],["motorbike","2 seats"]]},"unit":"times"},
-      {"type":"num","mode":"boss","level":"hard","q":"How many times as many seats are on a metro train than on a motorbike?","answer":"24","calc":"48/2","fig":"vehFig","pic":{"items":[["metro","48 seats"],["motorbike","2 seats"]]},"unit":"times"},
-      {"type":"num","mode":"boss","level":"hard","q":"A metro train has 48 seats. That is ? times the seats of a bicycle.","answer":"48","calc":"48/1","fig":"vehFig","pic":{"items":[["metro","48 seats"],["bicycle","1 seat"]]},"unit":"times"},
-      {"type":"num","mode":"boss","level":"hard","q":"A boat has 12 seats. How many times as many seats as a car with 4 seats?","answer":"3","calc":"12/4","fig":"vehFig","pic":{"items":[["ferry","12 seats"],["car","4 seats"]]},"unit":"times"}
+      {"type":"num","mode":"boss","level":"hard","q":"How many times as many seats are on a bus than on a motorbike?","answer":"18","calc":"36/2","fig":"vehFig","pic":{"items":[["bus","36 seats"],["motorbike","2 seats"]]},"unit":"times","explain":"36 ÷ 2 = 18."},
+      {"type":"num","mode":"boss","level":"hard","q":"How many times as many seats are on a metro train than on a motorbike?","answer":"24","calc":"48/2","fig":"vehFig","pic":{"items":[["metro","48 seats"],["motorbike","2 seats"]]},"unit":"times","explain":"48 ÷ 2 = 24."},
+      {"type":"num","mode":"boss","level":"hard","q":"A metro train has 48 seats. That is ? times the seats of a bicycle.","answer":"48","calc":"48/1","fig":"vehFig","pic":{"items":[["metro","48 seats"],["bicycle","1 seat"]]},"unit":"times","explain":"48 ÷ 1 = 48."},
+      {"type":"num","mode":"boss","level":"hard","q":"A boat has 12 seats. How many times as many seats as a car with 4 seats?","answer":"3","calc":"12/4","fig":"vehFig","pic":{"items":[["ferry","12 seats"],["car","4 seats"]]},"unit":"times","explain":"12 ÷ 4 = 3."}
     ] },
   /* ---------- Lesson 4 · Commutative Property of Multiplication (pages 77-78) ---------- */
-  {"id":"Y41","lesson":4,"concept":"Turning an array: the Commutative Property","explain":"The Commutative Property of Multiplication: changing the order of the factors does not change the product. An array of 4 rows of 6 turned on its side is 6 rows of 4: 4 × 6 = 6 × 4 = 24.",
+  {"id":"Y41","lesson":4,"concept":"Turning an array: the Commutative Property","explain":"Commutative Property of Multiplication: changing the order of the factors does not change the product.",
     "variants": [
       {"type":"mc","mode":"timed","level":"easy","q":"4 × 6 = 6 × ?","options":["4","6","24","10"],"answer":0,"seconds":12,"fig":"arrayFig","pic":{"r":4,"c":6}},
-      {"type":"num","mode":"timed","level":"easy","q":"7 × 3 = 3 × ?","answer":"7","calc":"7","seconds":12},
+      {"type":"num","mode":"timed","level":"easy","q":"7 × 3 = 3 × ?","answer":"7","calc":"7","seconds":12,"explain":"Changing the order does not change the product: 7 × 3 = 3 × 7 = 21."},
       {"type":"tf","mode":"normal","level":"easy","q":"5 × 8 = 8 × 5","answer":0},
       {"type":"mc","mode":"normal","level":"easy","q":"Which property says 9 × 2 = 2 × 9?","options":["The Commutative Property","The Zero Property","The Identity Property","The Associative Property"],"answer":0},
-      {"type":"num","mode":"normal","level":"easy","q":"The array has 3 rows of 8 dots. Turned on its side it has 8 rows of how many dots?","answer":"3","calc":"3","fig":"arrayFig","pic":{"r":3,"c":8}}
+      {"type":"num","mode":"normal","level":"easy","q":"The array has 3 rows of 8 dots. Turned on its side it has 8 rows of how many dots?","answer":"3","calc":"3","fig":"arrayFig","pic":{"r":3,"c":8},"explain":"3 rows of 8 turned on its side are 8 rows of 3: 3 × 8 = 8 × 3 = 24."}
     ] },
-  {"id":"Y42","lesson":4,"concept":"Arranging in equal rows","explain":"Ahmed has 48 toy cars to put in equal rows and columns. Any factor pair of 48 works: 6 rows of 8 or 8 rows of 6 (commutative), 4 rows of 12, 12 rows of 4, 2 rows of 24, 3 rows of 16 …",
+  {"id":"Y42","lesson":4,"concept":"Arranging in equal rows","explain":"Equal rows need a factor pair: rows × things in each row = the total.",
     "variants": [
       {"type":"mc","mode":"normal","level":"medium","q":"Ahmed has 48 toy cars and wants equal rows and equal columns. Which arrangement works?","options":["6 rows of 8","5 rows of 9","7 rows of 7","9 rows of 6"],"answer":0},
-      {"type":"num","mode":"normal","level":"medium","q":"Ahmed puts his 48 toy cars in 8 equal rows. How many cars are in each row?","answer":"6","calc":"48/8"},
+      {"type":"num","mode":"normal","level":"medium","q":"Ahmed puts his 48 toy cars in 8 equal rows. How many cars are in each row?","answer":"6","calc":"48/8","explain":"48 ÷ 8 = 6."},
       {"type":"multi","mode":"normal","level":"medium","q":"Choose ALL the ways to arrange 48 toy cars in equal rows.","options":["4 rows of 12","12 rows of 4","5 rows of 10","7 rows of 8"],"answer":[0,1]},
-      {"type":"num","mode":"normal","level":"medium","q":"An array shows 6 × 7. The same array turned shows 7 × ?","answer":"6","calc":"6","fig":"arrayFig","pic":{"r":6,"c":7}}
+      {"type":"num","mode":"normal","level":"medium","q":"An array shows 6 × 7. The same array turned shows 7 × ?","answer":"6","calc":"6","fig":"arrayFig","pic":{"r":6,"c":7},"explain":"Turning the array swaps rows and columns: 6 × 7 = 7 × 6 = 42."}
     ] },
-  {"id":"Y43","lesson":4,"boss":true,"concept":"Challenge: Badr, Salma and the football teams","explain":"42 people want to play football. Badr makes 6 teams of 7 people (6 × 7 = 42) and Salma makes 7 teams of 6 people (7 × 6 = 42). Both are correct: the Commutative Property says 6 × 7 = 7 × 6.",
+  {"id":"Y43","lesson":4,"boss":true,"concept":"Challenge: Badr, Salma and the football teams","explain":"6 teams of 7 and 7 teams of 6 are the same: 6 × 7 = 7 × 6 = 42 (Commutative Property).",
     "variants": [
       {"type":"mc","mode":"boss","level":"hard","q":"42 people want to play football. Badr says you can make 6 teams of 7 people. Salma says 7 teams of 6 people. Who is correct?","options":["Both are correct","Only Badr","Only Salma","Neither"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"Badr makes 6 teams with 7 people on each team. How many people play?","answer":"42","calc":"6*7"},
+      {"type":"num","mode":"boss","level":"hard","q":"Badr makes 6 teams with 7 people on each team. How many people play?","answer":"42","calc":"6*7","explain":"6 × 7 = 42."},
       {"type":"tf","mode":"boss","level":"hard","q":"6 teams of 7 people and 7 teams of 6 people have the same number of people.","answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"How many people are in 7 teams of 6 people?","answer":"42","calc":"7*6"}
+      {"type":"num","mode":"boss","level":"hard","q":"How many people are in 7 teams of 6 people?","answer":"42","calc":"7*6","explain":"7 × 6 = 42."}
     ] },
   /* ---------- Lesson 5 · Identity Property and the Zero Property (pages 79-80) ---------- */
-  {"id":"Y51","lesson":5,"concept":"Multiplying by 1 and by 0","explain":"The Identity Property: any number times 1 is the same number (672 × 1 = 672). The Zero Property: any number times 0 is 0 (758 × 0 = 0).",
+  {"id":"Y51","lesson":5,"concept":"Multiplying by 1 and by 0","explain":"Identity Property: a number × 1 = the same number. Zero Property: a number × 0 = 0.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"5 × 1 = ?","answer":"5","calc":"5*1","seconds":8},
-      {"type":"num","mode":"timed","level":"easy","q":"672 × 1 = ?","answer":"672","calc":"672*1","seconds":10},
-      {"type":"num","mode":"timed","level":"easy","q":"8 × 0 = ?","answer":"0","calc":"8*0","seconds":8},
-      {"type":"num","mode":"timed","level":"easy","q":"758 × 0 = ?","answer":"0","calc":"758*0","seconds":10},
-      {"type":"num","mode":"normal","level":"easy","q":"12 × 1 = ?","answer":"12","calc":"12*1"},
-      {"type":"num","mode":"normal","level":"easy","q":"16 × 0 = ?","answer":"0","calc":"16*0"}
+      {"type":"num","mode":"timed","level":"easy","q":"5 × 1 = ?","answer":"5","calc":"5*1","seconds":8,"explain":"Any number times 1 is the same number: 5 × 1 = 5."},
+      {"type":"num","mode":"timed","level":"easy","q":"672 × 1 = ?","answer":"672","calc":"672*1","seconds":10,"explain":"Any number times 1 is the same number: 672 × 1 = 672."},
+      {"type":"num","mode":"timed","level":"easy","q":"8 × 0 = ?","answer":"0","calc":"8*0","seconds":8,"explain":"Any number times 0 is 0: 8 × 0 = 0."},
+      {"type":"num","mode":"timed","level":"easy","q":"758 × 0 = ?","answer":"0","calc":"758*0","seconds":10,"explain":"Any number times 0 is 0: 758 × 0 = 0."},
+      {"type":"num","mode":"normal","level":"easy","q":"12 × 1 = ?","answer":"12","calc":"12*1","explain":"Any number times 1 is the same number: 12 × 1 = 12."},
+      {"type":"num","mode":"normal","level":"easy","q":"16 × 0 = ?","answer":"0","calc":"16*0","explain":"Any number times 0 is 0: 16 × 0 = 0."}
     ] },
-  {"id":"Y52","lesson":5,"concept":"Naming the two properties","explain":"Identity Property of Multiplication: a number × 1 = the number. Zero Property of Multiplication: a number × 0 = 0.",
+  {"id":"Y52","lesson":5,"concept":"Naming the two properties","explain":"× 1 keeps the number (Identity Property); × 0 gives 0 (Zero Property); changing the order keeps the product (Commutative Property).",
     "variants": [
       {"type":"mc","mode":"normal","level":"easy","q":"Which property says 37 × 1 = 37?","options":["The Identity Property","The Zero Property","The Commutative Property","The Associative Property"],"answer":0},
       {"type":"mc","mode":"normal","level":"easy","q":"Which property says 37 × 0 = 0?","options":["The Zero Property","The Identity Property","The Commutative Property","The Associative Property"],"answer":0},
       {"type":"match","mode":"normal","level":"medium","q":"Match each equation with its property.","left":["9 × 1 = 9","9 × 0 = 0","9 × 4 = 4 × 9"],"right":["Zero Property","Commutative Property","Identity Property"],"answer":[2,0,1]},
       {"type":"tf","mode":"normal","level":"medium","q":"Any number multiplied by 0 equals the same number.","answer":1}
     ] },
-  {"id":"Y53","lesson":5,"concept":"Patterns with 10, 100 and 1,000","explain":"1 × 4 = 4, 10 × 4 = 40, 100 × 4 = 400, 1,000 × 4 = 4,000. Multiplying by 10 moves each digit one place to the left (one zero), by 100 two places, by 1,000 three places.",
+  {"id":"Y53","lesson":5,"concept":"Patterns with 10, 100 and 1,000","explain":"× 10 moves each digit one place to the left, × 100 two places, × 1,000 three places.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"10 × 4 = ?","answer":"40","calc":"10*4","seconds":10},
-      {"type":"num","mode":"timed","level":"easy","q":"100 × 4 = ?","answer":"400","calc":"100*4","seconds":10},
-      {"type":"num","mode":"normal","level":"easy","q":"1,000 × 4 = ?","answer":"4000","calc":"1000*4"},
-      {"type":"num","mode":"normal","level":"medium","q":"1,000 × 7 = ?","answer":"7000","calc":"1000*7"},
+      {"type":"num","mode":"timed","level":"easy","q":"10 × 4 = ?","answer":"40","calc":"10*4","seconds":10,"explain":"10 × 4 = 40."},
+      {"type":"num","mode":"timed","level":"easy","q":"100 × 4 = ?","answer":"400","calc":"100*4","seconds":10,"explain":"100 × 4 = 400."},
+      {"type":"num","mode":"normal","level":"easy","q":"1,000 × 4 = ?","answer":"4000","calc":"1000*4","explain":"1,000 × 4 = 4,000."},
+      {"type":"num","mode":"normal","level":"medium","q":"1,000 × 7 = ?","answer":"7000","calc":"1000*7","explain":"1,000 × 7 = 7,000."},
       {"type":"mc","mode":"normal","level":"medium","q":"In 100 × 4 the digit 4 moves how many places to the left?","options":["2 places","1 place","3 places","4 places"],"answer":0}
     ] },
-  {"id":"Y54","lesson":5,"boss":true,"concept":"Challenge: help Tarek","explain":"Tarek says 9 × 1,000 = 900. That is wrong: 1,000 has three zeros, so 9 × 1,000 = 9,000 (9 thousands). 900 is 9 × 100.",
+  {"id":"Y54","lesson":5,"boss":true,"concept":"Challenge: help Tarek","explain":"1,000 has three zeros: 9 × 1,000 = 9,000. 900 is 9 × 100.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"Tarek says that 9 × 1,000 equals 900. What is the right answer?","answer":"9000","calc":"9*1000"},
+      {"type":"num","mode":"boss","level":"hard","q":"Tarek says that 9 × 1,000 equals 900. What is the right answer?","answer":"9000","calc":"9*1000","explain":"9 × 1,000 = 9,000."},
       {"type":"mc","mode":"boss","level":"hard","q":"Tarek says 9 × 1,000 = 900. What would you tell him?","options":["900 is 9 × 100; 9 × 1,000 = 9,000","He is right","9 × 1,000 = 90","9 × 1,000 = 90,000"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"1,000 × 0 = ?","answer":"0","calc":"1000*0"},
-      {"type":"num","mode":"boss","level":"hard","q":"1 × 1,000 = ?","answer":"1000","calc":"1*1000"}
+      {"type":"num","mode":"boss","level":"hard","q":"1,000 × 0 = ?","answer":"0","calc":"1000*0","explain":"Any number times 0 is 0: 1,000 × 0 = 0."},
+      {"type":"num","mode":"boss","level":"hard","q":"1 × 1,000 = ?","answer":"1000","calc":"1*1000","explain":"Any number times 1 is the same number: 1 × 1,000 = 1,000."}
     ] },
   /* ---------- Lesson 6 · Associative Property of Multiplication (pages 81-82) ---------- */
-  {"id":"Y61","lesson":6,"concept":"Dot cards","explain":"There are 10 dot cards with 5 dots on each card: 10 × 5 = 50 dots. You can also count 2 rows of 5 cards: (2 × 5) × 5 = 50.",
+  {"id":"Y61","lesson":6,"concept":"Dot cards","explain":"Count the dots on one card, then multiply by the number of cards.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"There are 10 cards with 5 dots on each card. How many dots are there?","answer":"50","calc":"10*5","fig":"arrayFig","pic":{"cards":[2,5]}},
+      {"type":"num","mode":"normal","level":"easy","q":"There are 10 cards with 5 dots on each card. How many dots are there?","answer":"50","calc":"10*5","fig":"arrayFig","pic":{"cards":[2,5]},"explain":"10 × 5 = 50."},
       {"type":"mc","mode":"normal","level":"medium","q":"Which way finds the number of dots on 2 rows of 5 cards with 5 dots each?","options":["2 × 5 × 5","2 + 5 + 5","2 × 5","5 + 5"],"answer":0},
-      {"type":"num","mode":"normal","level":"medium","q":"Each row has 5 cards and each card has 5 dots. How many dots are in one row?","answer":"25","calc":"5*5"}
+      {"type":"num","mode":"normal","level":"medium","q":"Each row has 5 cards and each card has 5 dots. How many dots are in one row?","answer":"25","calc":"5*5","explain":"5 × 5 = 25."}
     ] },
-  {"id":"Y62","lesson":6,"concept":"Grouping factors: the Associative Property","explain":"The Associative Property of Multiplication: changing how the factors are grouped does not change the product. (3 × 2) × 4 = 6 × 4 = 24 and 3 × (2 × 4) = 3 × 8 = 24.",
+  {"id":"Y62","lesson":6,"concept":"Grouping factors: the Associative Property","explain":"Associative Property of Multiplication: changing how the factors are grouped does not change the product.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"3 × 2 × 4 = ?","answer":"24","calc":"3*2*4","seconds":15},
-      {"type":"num","mode":"timed","level":"easy","q":"4 × 2 × 3 = ?","answer":"24","calc":"4*2*3","seconds":15},
-      {"type":"num","mode":"normal","level":"easy","q":"3 × 2 × 5 = ?","answer":"30","calc":"3*2*5"},
-      {"type":"num","mode":"normal","level":"easy","q":"4 × 6 × 2 = ?","answer":"48","calc":"4*6*2"},
-      {"type":"num","mode":"normal","level":"medium","q":"2 × 9 × 3 = ?","answer":"54","calc":"2*9*3"},
-      {"type":"num","mode":"normal","level":"medium","q":"4 × 3 × 7 = ?","answer":"84","calc":"4*3*7"},
-      {"type":"num","mode":"normal","level":"medium","q":"4 × 5 × 6 = ?","answer":"120","calc":"4*5*6"},
-      {"type":"num","mode":"normal","level":"medium","q":"2 × 5 × 8 = ?","answer":"80","calc":"2*5*8"},
-      {"type":"num","mode":"normal","level":"medium","q":"3 × 3 × 7 = ?","answer":"63","calc":"3*3*7"},
-      {"type":"num","mode":"normal","level":"medium","q":"2 × 2 × 9 = ?","answer":"36","calc":"2*2*9"},
+      {"type":"num","mode":"timed","level":"easy","q":"3 × 2 × 4 = ?","answer":"24","calc":"3*2*4","seconds":15,"explain":"Group two factors first: (3 × 2) × 4 = 6 × 4 = 24."},
+      {"type":"num","mode":"timed","level":"easy","q":"4 × 2 × 3 = ?","answer":"24","calc":"4*2*3","seconds":15,"explain":"Group two factors first: (4 × 2) × 3 = 8 × 3 = 24."},
+      {"type":"num","mode":"normal","level":"easy","q":"3 × 2 × 5 = ?","answer":"30","calc":"3*2*5","explain":"Group two factors first: (3 × 2) × 5 = 6 × 5 = 30."},
+      {"type":"num","mode":"normal","level":"easy","q":"4 × 6 × 2 = ?","answer":"48","calc":"4*6*2","explain":"Group two factors first: (4 × 6) × 2 = 24 × 2 = 48."},
+      {"type":"num","mode":"normal","level":"medium","q":"2 × 9 × 3 = ?","answer":"54","calc":"2*9*3","explain":"Group two factors first: (2 × 9) × 3 = 18 × 3 = 54."},
+      {"type":"num","mode":"normal","level":"medium","q":"4 × 3 × 7 = ?","answer":"84","calc":"4*3*7","explain":"Group two factors first: (4 × 3) × 7 = 12 × 7 = 84."},
+      {"type":"num","mode":"normal","level":"medium","q":"4 × 5 × 6 = ?","answer":"120","calc":"4*5*6","explain":"Group two factors first: (4 × 5) × 6 = 20 × 6 = 120."},
+      {"type":"num","mode":"normal","level":"medium","q":"2 × 5 × 8 = ?","answer":"80","calc":"2*5*8","explain":"Group two factors first: (2 × 5) × 8 = 10 × 8 = 80."},
+      {"type":"num","mode":"normal","level":"medium","q":"3 × 3 × 7 = ?","answer":"63","calc":"3*3*7","explain":"Group two factors first: (3 × 3) × 7 = 9 × 7 = 63."},
+      {"type":"num","mode":"normal","level":"medium","q":"2 × 2 × 9 = ?","answer":"36","calc":"2*2*9","explain":"Group two factors first: (2 × 2) × 9 = 4 × 9 = 36."},
       {"type":"mc","mode":"normal","level":"medium","q":"Which property says (3 × 4) × 5 = 3 × (4 × 5)?","options":["The Associative Property","The Commutative Property","The Identity Property","The Zero Property"],"answer":0}
     ] },
-  {"id":"Y63","lesson":6,"boss":true,"concept":"Challenge: Farouk's problem","explain":"Farouk solves 2 × 7 × 4 by doing (2 × 7) × 4 = 14 × 4. Easier: group the 2 and the 4 first: (2 × 4) × 7 = 8 × 7 = 56, or 2 × (7 × 4) = 2 × 28 = 56.",
+  {"id":"Y63","lesson":6,"boss":true,"concept":"Challenge: Farouk's problem","explain":"Group the factors that are easy to multiply first: 2 × 4 = 8, then 8 × 7 = 56.",
     "variants": [
       {"type":"mc","mode":"boss","level":"hard","q":"Farouk starts 2 × 7 × 4 by solving 2 × 7. Where do the parentheses go?","options":["(2 × 7) × 4","2 × (7 × 4)","(2 × 4) × 7","2 × 7 × (4)"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"Farouk is solving 2 × 7 × 4. What is the answer?","answer":"56","calc":"2*7*4"},
+      {"type":"num","mode":"boss","level":"hard","q":"Farouk is solving 2 × 7 × 4. What is the answer?","answer":"56","calc":"2*7*4","explain":"2 × 7 × 4 = 56."},
       {"type":"mc","mode":"boss","level":"hard","q":"Which grouping makes 2 × 7 × 4 easy to solve in your head?","options":["(2 × 4) × 7 = 8 × 7","(2 + 4) × 7","2 × 7 + 4","(2 × 7) + 4"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"3 × 4 × 5 = ?","answer":"60","calc":"3*4*5"}
+      {"type":"num","mode":"boss","level":"hard","q":"3 × 4 × 5 = ?","answer":"60","calc":"3*4*5","explain":"Group two factors first: (3 × 4) × 5 = 12 × 5 = 60."}
     ] },
   /* ---------- Lesson 7 · Applying Patterns in Multiplication (pages 83-84) ---------- */
-  {"id":"Y71","lesson":7,"concept":"Multiplying by 10 in your head","explain":"Multiplying by 10 adds a zero: 4 × 10 = 40, 8 × 10 = 80, 7 × 10 = 70. If you know 5 × 7 = 35, then 35 × 10 = 350.",
+  {"id":"Y71","lesson":7,"concept":"Multiplying by 10 in your head","explain":"Multiplying by 10 writes one zero at the end of the number.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"4 × 10 = ?","answer":"40","calc":"4*10","seconds":8},
-      {"type":"num","mode":"timed","level":"easy","q":"8 × 10 = ?","answer":"80","calc":"8*10","seconds":8},
-      {"type":"num","mode":"timed","level":"easy","q":"35 × 10 = ?","answer":"350","calc":"35*10","seconds":10},
-      {"type":"num","mode":"normal","level":"easy","q":"10 × 18 = ?","answer":"180","calc":"10*18"},
-      {"type":"num","mode":"normal","level":"easy","q":"3 × 10 = ?","answer":"30","calc":"3*10"}
+      {"type":"num","mode":"timed","level":"easy","q":"4 × 10 = ?","answer":"40","calc":"4*10","seconds":8,"explain":"4 × 10 = 40."},
+      {"type":"num","mode":"timed","level":"easy","q":"8 × 10 = ?","answer":"80","calc":"8*10","seconds":8,"explain":"8 × 10 = 80."},
+      {"type":"num","mode":"timed","level":"easy","q":"35 × 10 = ?","answer":"350","calc":"35*10","seconds":10,"explain":"35 × 10 = 350."},
+      {"type":"num","mode":"normal","level":"easy","q":"10 × 18 = ?","answer":"180","calc":"10*18","explain":"10 × 18 = 180."},
+      {"type":"num","mode":"normal","level":"easy","q":"3 × 10 = ?","answer":"30","calc":"3*10","explain":"3 × 10 = 30."}
     ] },
-  {"id":"Y72","lesson":7,"concept":"Decomposing multiples of 10","explain":"A multiple of 10 can be decomposed into a factor pair with 10: 40 = 10 × 4, 70 = 10 × 7, 110 = 10 × 11. It is also the number of tens: 160 = 16 tens.",
+  {"id":"Y72","lesson":7,"concept":"Decomposing multiples of 10","explain":"A multiple of 10 = 10 × its number of tens.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"40 = 10 × ?","answer":"4","calc":"40/10","seconds":10},
-      {"type":"num","mode":"timed","level":"easy","q":"70 = 10 × ?","answer":"7","calc":"70/10","seconds":10},
-      {"type":"num","mode":"normal","level":"easy","q":"90 = 10 × ?","answer":"9","calc":"90/10"},
-      {"type":"num","mode":"normal","level":"medium","q":"110 = 10 × ?","answer":"11","calc":"110/10"},
-      {"type":"num","mode":"normal","level":"easy","q":"80 = ? tens","answer":"8","calc":"80/10"},
-      {"type":"num","mode":"normal","level":"medium","q":"160 = ? tens","answer":"16","calc":"160/10"},
-      {"type":"num","mode":"normal","level":"medium","q":"140 = ? tens","answer":"14","calc":"140/10"}
+      {"type":"num","mode":"timed","level":"easy","q":"40 = 10 × ?","answer":"4","calc":"40/10","seconds":10,"explain":"40 ÷ 10 = 4."},
+      {"type":"num","mode":"timed","level":"easy","q":"70 = 10 × ?","answer":"7","calc":"70/10","seconds":10,"explain":"70 ÷ 10 = 7."},
+      {"type":"num","mode":"normal","level":"easy","q":"90 = 10 × ?","answer":"9","calc":"90/10","explain":"90 ÷ 10 = 9."},
+      {"type":"num","mode":"normal","level":"medium","q":"110 = 10 × ?","answer":"11","calc":"110/10","explain":"110 ÷ 10 = 11."},
+      {"type":"num","mode":"normal","level":"easy","q":"80 = ? tens","answer":"8","calc":"80/10","explain":"80 ÷ 10 = 8."},
+      {"type":"num","mode":"normal","level":"medium","q":"160 = ? tens","answer":"16","calc":"160/10","explain":"160 ÷ 10 = 16."},
+      {"type":"num","mode":"normal","level":"medium","q":"140 = ? tens","answer":"14","calc":"140/10","explain":"140 ÷ 10 = 14."}
     ] },
-  {"id":"Y73","lesson":7,"concept":"Multiplying by multiples of 10, 100 and 1,000","explain":"Decompose, then use the Associative Property: 7 × 20 = 7 × (2 × 10) = (7 × 2) × 10 = 14 × 10 = 140. 4 × 700 = (4 × 7) × 100 = 2,800. 3 × 4,000 = (3 × 4) × 1,000 = 12,000.",
+  {"id":"Y73","lesson":7,"concept":"Multiplying by multiples of 10, 100 and 1,000","explain":"Decompose the multiple of 10, 100 or 1,000, multiply the digits, then write the zeros.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"7 × 20 = ?","answer":"140","calc":"7*20"},
-      {"type":"num","mode":"normal","level":"medium","q":"5 × 50 = ?","answer":"250","calc":"5*50"},
-      {"type":"num","mode":"normal","level":"medium","q":"4 × 700 = ?","answer":"2800","calc":"4*700"},
-      {"type":"num","mode":"normal","level":"medium","q":"3 × 4,000 = ?","answer":"12000","calc":"3*4000"},
+      {"type":"num","mode":"normal","level":"easy","q":"7 × 20 = ?","answer":"140","calc":"7*20","explain":"7 × 20 = 140."},
+      {"type":"num","mode":"normal","level":"medium","q":"5 × 50 = ?","answer":"250","calc":"5*50","explain":"5 × 50 = 250."},
+      {"type":"num","mode":"normal","level":"medium","q":"4 × 700 = ?","answer":"2800","calc":"4*700","explain":"4 × 700 = 2,800."},
+      {"type":"num","mode":"normal","level":"medium","q":"3 × 4,000 = ?","answer":"12000","calc":"3*4000","explain":"3 × 4,000 = 12,000."},
       {"type":"mc","mode":"normal","level":"medium","q":"Which shows 4 × 700 decomposed?","options":["(4 × 7) × 100","(4 + 7) × 100","4 × 7 + 100","(4 × 7) × 10"],"answer":0}
     ] },
-  {"id":"Y74","lesson":7,"boss":true,"concept":"Challenge: Heba and Ashraf","explain":"Heba did (4 × 8) × 10 = 32 × 10 = 320. Ashraf did 4 × (8 × 10) = 4 × 80 = 320. The same answer: they grouped the factors differently (Associative Property).",
+  {"id":"Y74","lesson":7,"boss":true,"concept":"Challenge: Heba and Ashraf","explain":"Heba and Ashraf grouped the factors differently and both got 320 (Associative Property).",
     "variants": [
       {"type":"mc","mode":"boss","level":"hard","q":"Heba did (4 × 8) × 10 and Ashraf did 4 × (8 × 10). How are their answers?","options":["The same: 320","Heba 320, Ashraf 32","Heba 32, Ashraf 320","Different: 320 and 3,200"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"Ashraf did 4 × (8 × 10). What is 8 × 10?","answer":"80","calc":"8*10"},
-      {"type":"num","mode":"boss","level":"hard","q":"Heba did (4 × 8) × 10. What is the answer?","answer":"320","calc":"4*8*10"},
-      {"type":"num","mode":"boss","level":"hard","q":"6 × 300 = ?","answer":"1800","calc":"6*300"}
+      {"type":"num","mode":"boss","level":"hard","q":"Ashraf did 4 × (8 × 10). What is 8 × 10?","answer":"80","calc":"8*10","explain":"8 × 10 = 80."},
+      {"type":"num","mode":"boss","level":"hard","q":"Heba did (4 × 8) × 10. What is the answer?","answer":"320","calc":"4*8*10","explain":"4 × 8 × 10 = 320."},
+      {"type":"num","mode":"boss","level":"hard","q":"6 × 300 = ?","answer":"1800","calc":"6*300","explain":"6 × 300 = 1,800."}
     ] }
 ];
 })();

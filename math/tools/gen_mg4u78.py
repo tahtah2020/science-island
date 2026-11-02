@@ -3,7 +3,9 @@
 #   math/questions_mg4u8.js + math/questions_mg4u8_ar.js   «Order of Operations / ترتيب العمليات»
 # Run from the site folder: python3 math/tools/gen_mg4u78.py .   (edit here, never the four files by hand)
 # Each text is ('English', 'Arabic'); a plain string is the same in both (numbers, equations).
-import json, re, sys
+import json, re, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import g4_explain
 OUT = sys.argv[1]
 
 def wrap(s):
@@ -52,7 +54,7 @@ def LINE(max_, steps, bus=False, stop=None, upto=None):
 def tr(v, ar):
     out = {}
     for key, val in v.items():
-        if key == 'q': out[key] = L(val, ar)
+        if key in ('q', 'explain'): out[key] = L(val, ar)
         elif key in ('options', 'left', 'right'): out[key] = [L(o, ar) for o in val]
         elif key == 'unit': out[key] = val[1] if ar else val[0]
         elif key == 'pic' and 'items' in val: out[key] = dict(val, items=[[a[0], (a[1][1] if ar else a[1][0]) if isinstance(a[1], tuple) else a[1]] for a in val['items']])
@@ -75,8 +77,11 @@ def VEHB(bg, *items):
 def R(q, r): return ('%s R%s' % (q, r), '%s والباقي %s' % (q, r))
 LE = ('LE', 'جنيهًا'); DAYS = ('days', 'يومًا'); BUSES = ('buses', 'أتوبيسات'); MB = ('microbuses', 'ميكروباص'); TEAMS = ('teams', 'فرق'); MUF = ('muffins', 'فطيرة'); STAMPS = ('stamps', 'طابعًا')
 
+
 UNITS_IDEAS = {7: [], 8: []}
-def idea(u, i, lesson, concept, explain, variants): UNITS_IDEAS[u].append(dict(id=i, lesson=lesson, concept=concept, explain=explain, variants=variants))
+def idea(u, i, lesson, concept, explain, variants):
+    explain = g4_explain.prepare(i, explain, variants)   # short rule for the idea, own explanation for each question
+    UNITS_IDEAS[u].append(dict(id=i, lesson=lesson, concept=concept, explain=explain, variants=variants))
 MUL, DIV = ('×', '×'), ('÷', '÷')
 
 # =====================================================================================================
@@ -384,9 +389,9 @@ idea(8, 'Z8011', 1, ('The order of operations', 'ترتيب العمليات'),
    mc('normal', 'easy', ('Which operation comes first in 7 + 70 ÷ 10 − 2?', 'أي عملية نبدأ بها في 7 + 70 ÷ 10 − 2؟'), [('Division', 'القسمة'), ('Addition', 'الجمع'), ('Subtraction', 'الطرح')]),
    tf('normal', 'medium', ('In 2 + 4 × 6 we add 2 + 4 first.', 'في 2 + 4 × 6 نجمع 2 + 4 أولًا.'), False),
   ])
-idea(7 + 1, 'Z8012', 1, ('Find the answer', 'أوجد الناتج'),
-  ('Work step by step: 49 − 7 × 6 + 4 = 49 − 42 + 4 = 11. 24 − 8 ÷ 4 + 6 = 24 − 2 + 6 = 28. 99 − 10 × 9 + 7 = 99 − 90 + 7 = 16. 24 + 36 ÷ 6 + 2 = 24 + 6 + 2 = 32.',
-   'نحل خطوة بخطوة: 49 − 7 × 6 + 4 = 49 − 42 + 4 = 11. و24 − 8 ÷ 4 + 6 = 24 − 2 + 6 = 28. و99 − 10 × 9 + 7 = 99 − 90 + 7 = 16. و24 + 36 ÷ 6 + 2 = 24 + 6 + 2 = 32.'),
+idea(8, 'Z8012', 1, ('Find the answer', 'أوجد الناتج'),
+  ('Do the multiplication and division first, then add and subtract from left to right.',
+   'نبدأ بالضرب والقسمة أولًا، ثم نجمع ونطرح من اليسار إلى اليمين.'),
   [num('normal', 'medium', '7 + 70 ÷ 10 − 2 = ?', '7+70/10-2'),
    num('normal', 'medium', '49 − 7 × 6 + 4 = ?', '49-7*6+4'),
    num('normal', 'medium', '8 × 3 + 6 + 2 = ?', '8*3+6+2'),

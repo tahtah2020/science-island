@@ -16,248 +16,248 @@ window.CHAPTER = { id: 'mg4u7', title: 'Multiplication and Division', grade: 'Gr
 
 window.IDEAS = [
   /* ---------- Lesson 1 · The Area Model Strategy (pages 100-101) ---------- */
-  {"id":"Y7011","lesson":1,"concept":"Multiplying with an area model","explain":"Split the two-digit number into tens and ones and draw one part of the rectangle for each: 17 × 4 = (10 × 4) + (7 × 4) = 40 + 28 = 68. The parts of the rectangle are added at the end.",
+  {"id":"Y7011","lesson":1,"concept":"Multiplying with an area model","explain":"Split the two-digit number into tens and ones, multiply each part, then add.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"17 × 4 = ?","answer":"68","calc":"17*4","fig":"areaBox","pic":{"left":"4","cells":["40","?"],"top":["10","7"]}},
-      {"type":"num","mode":"normal","level":"easy","q":"21 × 3 = ?","answer":"63","calc":"21*3","fig":"areaBox","pic":{"left":"3","cells":["60","?"],"top":["20","1"]}},
-      {"type":"num","mode":"normal","level":"easy","q":"14 × 5 = ?","answer":"70","calc":"14*5"},
-      {"type":"num","mode":"normal","level":"medium","q":"35 × 7 = ?","answer":"245","calc":"35*7","fig":"areaBox","pic":{"left":"7","cells":["?","?"],"top":["30","5"]}},
-      {"type":"num","mode":"normal","level":"medium","q":"91 × 4 = ?","answer":"364","calc":"91*4"},
-      {"type":"num","mode":"normal","level":"medium","q":"88 × 6 = ?","answer":"528","calc":"88*6"}
+      {"type":"num","mode":"normal","level":"easy","q":"17 × 4 = ?","answer":"68","calc":"17*4","fig":"areaBox","pic":{"left":"4","cells":["40","?"],"top":["10","7"]},"explain":"Split 17 by place value: 17 × 4 = (10 × 4) + (7 × 4) = 40 + 28 = 68."},
+      {"type":"num","mode":"normal","level":"easy","q":"21 × 3 = ?","answer":"63","calc":"21*3","fig":"areaBox","pic":{"left":"3","cells":["60","?"],"top":["20","1"]},"explain":"Split 21 by place value: 21 × 3 = (20 × 3) + (1 × 3) = 60 + 3 = 63."},
+      {"type":"num","mode":"normal","level":"easy","q":"14 × 5 = ?","answer":"70","calc":"14*5","explain":"Split 14 by place value: 14 × 5 = (10 × 5) + (4 × 5) = 50 + 20 = 70."},
+      {"type":"num","mode":"normal","level":"medium","q":"35 × 7 = ?","answer":"245","calc":"35*7","fig":"areaBox","pic":{"left":"7","cells":["?","?"],"top":["30","5"]},"explain":"Split 35 by place value: 35 × 7 = (30 × 7) + (5 × 7) = 210 + 35 = 245."},
+      {"type":"num","mode":"normal","level":"medium","q":"91 × 4 = ?","answer":"364","calc":"91*4","explain":"Split 91 by place value: 91 × 4 = (90 × 4) + (1 × 4) = 360 + 4 = 364."},
+      {"type":"num","mode":"normal","level":"medium","q":"88 × 6 = ?","answer":"528","calc":"88*6","explain":"Split 88 by place value: 88 × 6 = (80 × 6) + (8 × 6) = 480 + 48 = 528."}
     ] },
-  {"id":"Y7012","lesson":1,"concept":"The Nile river bus","explain":"22 passengers fit on the river bus each trip: 5 trips carry at most 22 × 5 = 110 passengers. Its route is 58 km: 9 times a day is 58 × 9 = (50 × 9) + (8 × 9) = 450 + 72 = 522 km.",
+  {"id":"Y7012","lesson":1,"concept":"The Nile river bus","explain":"Split the number into tens and ones, multiply each part, then add.",
     "variants": [
-      {"type":"num","mode":"normal","level":"medium","q":"Twenty-two passengers can fit on each river bus at a time. What is the maximum number of passengers the river bus can carry if it makes 5 trips?","answer":"110","calc":"22*5","fig":"vehFig","pic":{"items":[["riverbus",""]],"bg":"nile"}},
-      {"type":"num","mode":"normal","level":"medium","q":"The route that the river bus travels is 58 kilometers long. How many kilometers does it travel if it follows this route 9 times a day?","answer":"522","calc":"58*9","fig":"vehFig","pic":{"items":[["riverbus",""]],"bg":"nile"},"unit":"km"},
-      {"type":"mc","mode":"normal","level":"medium","q":"Which shows 58 × 9 split with an area model?","options":["(50 × 9) + (8 × 9)","(5 × 9) + (8 × 9)","(50 × 9) + 8","58 + 9"],"answer":0}
+      {"type":"num","mode":"normal","level":"medium","q":"Twenty-two passengers can fit on each river bus at a time. What is the maximum number of passengers the river bus can carry if it makes 5 trips?","answer":"110","calc":"22*5","fig":"vehFig","pic":{"items":[["riverbus",""]],"bg":"nile"},"explain":"22 × 5 = 110."},
+      {"type":"num","mode":"normal","level":"medium","q":"The route that the river bus travels is 58 kilometers long. How many kilometers does it travel if it follows this route 9 times a day?","answer":"522","calc":"58*9","fig":"vehFig","pic":{"items":[["riverbus",""]],"bg":"nile"},"unit":"km","explain":"58 × 9 = 522."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Which shows 58 × 9 split with an area model?","options":["(50 × 9) + (8 × 9)","(5 × 9) + (8 × 9)","(50 × 9) + 8","58 + 9"],"answer":0,"explain":"58 = 50 + 8, so 58 × 9 = (50 × 9) + (8 × 9)."}
     ] },
-  {"id":"Y7013","lesson":1,"boss":true,"concept":"Challenge: what went wrong in 36 × 8?","explain":"A student split 36 into 3 and 6 and got 24 + 48 = 72. The 3 is in the tens place: it is 30, so the first part is 8 × 30 = 240, and 36 × 8 = 240 + 48 = 288.",
+  {"id":"Y7013","lesson":1,"boss":true,"concept":"Challenge: what went wrong in 36 × 8?","explain":"The 3 in 36 is in the tens place, so it is worth 30: 8 × 30 = 240, and 36 × 8 = 240 + 48 = 288.",
     "variants": [
       {"type":"mc","mode":"boss","level":"hard","q":"A student solved 36 × 8 by splitting 36 into 3 and 6 and got 72. What is the mistake?","options":["3 should be 30 (tens place)","He should add, not multiply","6 should be 60","There is no mistake"],"answer":0,"fig":"areaBox","pic":{"left":"8","cells":["8 × 3 = 24","8 × 6 = 48"],"top":["3","6"]}},
-      {"type":"num","mode":"boss","level":"hard","q":"What is the right answer to 36 × 8?","answer":"288","calc":"36*8"},
-      {"type":"num","mode":"boss","level":"hard","q":"In 36 × 8, what is the part 8 × 30?","answer":"240","calc":"8*30","fig":"areaBox","pic":{"left":"8","cells":["?","48"],"top":["30","6"]}}
+      {"type":"num","mode":"boss","level":"hard","q":"What is the right answer to 36 × 8?","answer":"288","calc":"36*8","explain":"36 × 8 = 288."},
+      {"type":"num","mode":"boss","level":"hard","q":"In 36 × 8, what is the part 8 × 30?","answer":"240","calc":"8*30","fig":"areaBox","pic":{"left":"8","cells":["?","48"],"top":["30","6"]},"explain":"8 × 30 = 240."}
     ] },
   /* ---------- Lesson 2 · The Distributive Property (pages 102-103) ---------- */
-  {"id":"Y7021","lesson":2,"concept":"Decomposing numbers","explain":"Write a number as the sum of the values of its digits: 536 = 500 + 30 + 6, 264 = 200 + 60 + 4, 7,625 = 7,000 + 600 + 20 + 5.",
+  {"id":"Y7021","lesson":2,"concept":"Decomposing numbers","explain":"A number is the sum of the values of its digits (thousands + hundreds + tens + ones).",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"536 = 500 + ? + 6","answer":"30","calc":"30","seconds":12},
-      {"type":"num","mode":"timed","level":"easy","q":"1,275 = ? + 200 + 70 + 5","answer":"1000","calc":"1000","seconds":12},
-      {"type":"num","mode":"normal","level":"easy","q":"264 = 60 + 4 + ?","answer":"200","calc":"200"},
-      {"type":"num","mode":"normal","level":"easy","q":"7,625 = 5 + 7,000 + 20 + ?","answer":"600","calc":"600"},
-      {"type":"num","mode":"normal","level":"easy","q":"357 = 50 + ? + 7","answer":"300","calc":"300"}
+      {"type":"num","mode":"timed","level":"easy","q":"536 = 500 + ? + 6","answer":"30","calc":"30","seconds":12,"explain":"536 = 500 + 30 + 6."},
+      {"type":"num","mode":"timed","level":"easy","q":"1,275 = ? + 200 + 70 + 5","answer":"1000","calc":"1000","seconds":12,"explain":"1,275 = 1,000 + 200 + 70 + 5."},
+      {"type":"num","mode":"normal","level":"easy","q":"264 = 60 + 4 + ?","answer":"200","calc":"200","explain":"264 = 200 + 60 + 4."},
+      {"type":"num","mode":"normal","level":"easy","q":"7,625 = 5 + 7,000 + 20 + ?","answer":"600","calc":"600","explain":"7,625 = 7,000 + 600 + 20 + 5."},
+      {"type":"num","mode":"normal","level":"easy","q":"357 = 50 + ? + 7","answer":"300","calc":"300","explain":"357 = 300 + 50 + 7."}
     ] },
-  {"id":"Y7022","lesson":2,"concept":"The Distributive Property","explain":"The Distributive Property of Multiplication: multiply each part of a decomposed number, then add: 249 × 5 = (200 × 5) + (40 × 5) + (9 × 5) = 1,000 + 200 + 45 = 1,245.",
+  {"id":"Y7022","lesson":2,"concept":"The Distributive Property","explain":"Distributive Property: multiply each part of the decomposed number, then add the products.",
     "variants": [
-      {"type":"num","mode":"normal","level":"medium","q":"249 × 5 = ?","answer":"1245","calc":"249*5","fig":"areaBox","pic":{"left":"5","cells":["1,000","200","?"],"top":["200","40","9"]}},
-      {"type":"num","mode":"normal","level":"medium","q":"530 × 7 = ?","answer":"3710","calc":"530*7"},
-      {"type":"num","mode":"normal","level":"medium","q":"32 × 7 = ?","answer":"224","calc":"32*7"},
-      {"type":"num","mode":"normal","level":"medium","q":"5 × 483 = ?","answer":"2415","calc":"5*483"},
-      {"type":"num","mode":"normal","level":"hard","q":"7 × 723 = ?","answer":"5061","calc":"7*723"},
-      {"type":"mc","mode":"normal","level":"medium","q":"Which shows 249 × 5 with the Distributive Property?","options":["(200 × 5) + (40 × 5) + (9 × 5)","(2 × 5) + (4 × 5) + (9 × 5)","(200 + 40 + 9) + 5","200 × 40 × 9 × 5"],"answer":0}
+      {"type":"num","mode":"normal","level":"medium","q":"249 × 5 = ?","answer":"1245","calc":"249*5","fig":"areaBox","pic":{"left":"5","cells":["1,000","200","?"],"top":["200","40","9"]},"explain":"Split 249 by place value: 249 × 5 = (200 × 5) + (40 × 5) + (9 × 5) = 1,000 + 200 + 45 = 1,245."},
+      {"type":"num","mode":"normal","level":"medium","q":"530 × 7 = ?","answer":"3710","calc":"530*7","explain":"Split 530 by place value: 530 × 7 = (500 × 7) + (30 × 7) = 3,500 + 210 = 3,710."},
+      {"type":"num","mode":"normal","level":"medium","q":"32 × 7 = ?","answer":"224","calc":"32*7","explain":"Split 32 by place value: 32 × 7 = (30 × 7) + (2 × 7) = 210 + 14 = 224."},
+      {"type":"num","mode":"normal","level":"medium","q":"5 × 483 = ?","answer":"2415","calc":"5*483","explain":"Split 483 by place value: 483 × 5 = (400 × 5) + (80 × 5) + (3 × 5) = 2,000 + 400 + 15 = 2,415."},
+      {"type":"num","mode":"normal","level":"hard","q":"7 × 723 = ?","answer":"5061","calc":"7*723","explain":"Split 723 by place value: 723 × 7 = (700 × 7) + (20 × 7) + (3 × 7) = 4,900 + 140 + 21 = 5,061."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Which shows 249 × 5 with the Distributive Property?","options":["(200 × 5) + (40 × 5) + (9 × 5)","(2 × 5) + (4 × 5) + (9 × 5)","(200 + 40 + 9) + 5","200 × 40 × 9 × 5"],"answer":0,"explain":"249 = 200 + 40 + 9, so 249 × 5 = (200 × 5) + (40 × 5) + (9 × 5)."}
     ] },
-  {"id":"Y7023","lesson":2,"boss":true,"concept":"Challenge: four-digit numbers","explain":"Split the four-digit number into thousands, hundreds, tens and ones: 4,734 × 5 = 20,000 + 3,500 + 150 + 20 = 23,670. A city bus is 1,280 cm long: 3 buses are 1,280 × 3 = 3,840 cm.",
+  {"id":"Y7023","lesson":2,"boss":true,"concept":"Challenge: four-digit numbers","explain":"Split the number into thousands, hundreds, tens and ones, multiply each part, then add.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"4,734 × 5 = ?","answer":"23670","calc":"4734*5","fig":"areaBox","pic":{"left":"5","cells":["20,000","3,500","150","20"],"top":["4,000","700","30","4"]}},
-      {"type":"num","mode":"boss","level":"hard","q":"2,391 × 8 = ?","answer":"19128","calc":"2391*8"},
-      {"type":"num","mode":"boss","level":"hard","q":"1,673 × 8 = ?","answer":"13384","calc":"1673*8"},
-      {"type":"num","mode":"boss","level":"hard","q":"A city bus is 1,280 centimeters long. What is the length of 3 city buses?","answer":"3840","calc":"1280*3","fig":"vehFig","pic":{"items":[["bus",""],["bus",""],["bus",""]]},"unit":"cm"}
+      {"type":"num","mode":"boss","level":"hard","q":"4,734 × 5 = ?","answer":"23670","calc":"4734*5","fig":"areaBox","pic":{"left":"5","cells":["20,000","3,500","150","20"],"top":["4,000","700","30","4"]},"explain":"Split 4,734 by place value: 4,734 × 5 = (4,000 × 5) + (700 × 5) + (30 × 5) + (4 × 5) = 20,000 + 3,500 + 150 + 20 = 23,670."},
+      {"type":"num","mode":"boss","level":"hard","q":"2,391 × 8 = ?","answer":"19128","calc":"2391*8","explain":"Split 2,391 by place value: 2,391 × 8 = (2,000 × 8) + (300 × 8) + (90 × 8) + (1 × 8) = 16,000 + 2,400 + 720 + 8 = 19,128."},
+      {"type":"num","mode":"boss","level":"hard","q":"1,673 × 8 = ?","answer":"13384","calc":"1673*8","explain":"Split 1,673 by place value: 1,673 × 8 = (1,000 × 8) + (600 × 8) + (70 × 8) + (3 × 8) = 8,000 + 4,800 + 560 + 24 = 13,384."},
+      {"type":"num","mode":"boss","level":"hard","q":"A city bus is 1,280 centimeters long. What is the length of 3 city buses?","answer":"3840","calc":"1280*3","fig":"vehFig","pic":{"items":[["bus",""],["bus",""],["bus",""]]},"unit":"cm","explain":"1,280 × 3 = 3,840."}
     ] },
   /* ---------- Lesson 3 · The Partial Products Algorithm (pages 104-106) ---------- */
-  {"id":"Y7031","lesson":3,"concept":"Partial products","explain":"Multiply the one-digit number by the value of each digit, write each partial product on its own line, then add: 239 × 7 = 1,400 (7 × 200) + 210 (7 × 30) + 63 (7 × 9) = 1,673.",
+  {"id":"Y7031","lesson":3,"concept":"Partial products","explain":"Each partial product is the one-digit number times the VALUE of one digit (for example 7 × 200, not 7 × 2).",
     "variants": [
-      {"type":"mc","mode":"normal","level":"easy","q":"In 239 × 7, the partial product 1,400 comes from …","options":["7 × 200","7 × 20","7 × 2","7 × 239"],"answer":0,"fig":"colMul","pic":{"a":"239","b":"7","rows":["1,400","210","63"],"notes":["(? × ?)","",""],"total":"1,673"}},
-      {"type":"mc","mode":"normal","level":"easy","q":"In 239 × 7, the partial product 210 comes from …","options":["7 × 30","7 × 3","7 × 300","7 × 210"],"answer":0,"fig":"colMul","pic":{"a":"239","b":"7","rows":["1,400","210","63"],"notes":["(7 × 200)","(? × ?)",""],"total":"1,673"}},
-      {"type":"num","mode":"normal","level":"medium","q":"In 6,421 × 6, what is the partial product 6 × 400?","answer":"2400","calc":"6*400","fig":"colMul","pic":{"a":"6,421","b":"6","rows":["36,000","?","120","6"],"notes":["(6 × 6,000)","(6 × 400)","(6 × 20)","(6 × 1)"],"total":""}},
-      {"type":"num","mode":"normal","level":"medium","q":"6,421 × 6 = ?","answer":"38526","calc":"6421*6"},
-      {"type":"num","mode":"normal","level":"medium","q":"In 2,523 × 5, what is the partial product 5 × 3?","answer":"15","calc":"5*3","fig":"colMul","pic":{"a":"2,523","b":"5","rows":["10,000","2,500","100","?"],"notes":["(5 × 2,000)","(5 × 500)","(5 × 20)","(5 × 3)"],"total":""}},
-      {"type":"num","mode":"normal","level":"medium","q":"2,523 × 5 = ?","answer":"12615","calc":"2523*5"}
+      {"type":"mc","mode":"normal","level":"easy","q":"In 239 × 7, the partial product 1,400 comes from …","options":["7 × 200","7 × 20","7 × 2","7 × 239"],"answer":0,"fig":"colMul","pic":{"a":"239","b":"7","rows":["1,400","210","63"],"notes":["(? × ?)","",""],"total":"1,673"},"explain":"The 2 in 239 is worth 200: 7 × 200 = 1,400."},
+      {"type":"mc","mode":"normal","level":"easy","q":"In 239 × 7, the partial product 210 comes from …","options":["7 × 30","7 × 3","7 × 300","7 × 210"],"answer":0,"fig":"colMul","pic":{"a":"239","b":"7","rows":["1,400","210","63"],"notes":["(7 × 200)","(? × ?)",""],"total":"1,673"},"explain":"The 3 in 239 is worth 30: 7 × 30 = 210."},
+      {"type":"num","mode":"normal","level":"medium","q":"In 6,421 × 6, what is the partial product 6 × 400?","answer":"2400","calc":"6*400","fig":"colMul","pic":{"a":"6,421","b":"6","rows":["36,000","?","120","6"],"notes":["(6 × 6,000)","(6 × 400)","(6 × 20)","(6 × 1)"],"total":""},"explain":"6 × 400 = 2,400."},
+      {"type":"num","mode":"normal","level":"medium","q":"6,421 × 6 = ?","answer":"38526","calc":"6421*6","explain":"Split 6,421 by place value: 6,421 × 6 = (6,000 × 6) + (400 × 6) + (20 × 6) + (1 × 6) = 36,000 + 2,400 + 120 + 6 = 38,526."},
+      {"type":"num","mode":"normal","level":"medium","q":"In 2,523 × 5, what is the partial product 5 × 3?","answer":"15","calc":"5*3","fig":"colMul","pic":{"a":"2,523","b":"5","rows":["10,000","2,500","100","?"],"notes":["(5 × 2,000)","(5 × 500)","(5 × 20)","(5 × 3)"],"total":""},"explain":"5 × 3 = 15."},
+      {"type":"num","mode":"normal","level":"medium","q":"2,523 × 5 = ?","answer":"12615","calc":"2523*5","explain":"Split 2,523 by place value: 2,523 × 5 = (2,000 × 5) + (500 × 5) + (20 × 5) + (3 × 5) = 10,000 + 2,500 + 100 + 15 = 12,615."}
     ] },
-  {"id":"Y7032","lesson":3,"concept":"Using the partial products algorithm","explain":"731 × 4 = 2,800 + 120 + 4 = 2,924. 7 × 59 = 350 + 63 = 413. 624 × 4 = 2,400 + 80 + 16 = 2,496. 6 × 3,293 = 18,000 + 1,200 + 540 + 18 = 19,758.",
+  {"id":"Y7032","lesson":3,"concept":"Using the partial products algorithm","explain":"Write the partial product of each place on its own line, then add them.",
     "variants": [
-      {"type":"num","mode":"normal","level":"medium","q":"731 × 4 = ?","answer":"2924","calc":"731*4"},
-      {"type":"num","mode":"normal","level":"easy","q":"7 × 59 = ?","answer":"413","calc":"7*59"},
-      {"type":"num","mode":"normal","level":"medium","q":"624 × 4 = ?","answer":"2496","calc":"624*4"},
-      {"type":"num","mode":"normal","level":"hard","q":"6 × 3,293 = ?","answer":"19758","calc":"6*3293"}
+      {"type":"num","mode":"normal","level":"medium","q":"731 × 4 = ?","answer":"2924","calc":"731*4","explain":"Split 731 by place value: 731 × 4 = (700 × 4) + (30 × 4) + (1 × 4) = 2,800 + 120 + 4 = 2,924."},
+      {"type":"num","mode":"normal","level":"easy","q":"7 × 59 = ?","answer":"413","calc":"7*59","explain":"Split 59 by place value: 59 × 7 = (50 × 7) + (9 × 7) = 350 + 63 = 413."},
+      {"type":"num","mode":"normal","level":"medium","q":"624 × 4 = ?","answer":"2496","calc":"624*4","explain":"Split 624 by place value: 624 × 4 = (600 × 4) + (20 × 4) + (4 × 4) = 2,400 + 80 + 16 = 2,496."},
+      {"type":"num","mode":"normal","level":"hard","q":"6 × 3,293 = ?","answer":"19758","calc":"6*3293","explain":"Split 3,293 by place value: 3,293 × 6 = (3,000 × 6) + (200 × 6) + (90 × 6) + (3 × 6) = 18,000 + 1,200 + 540 + 18 = 19,758."}
     ] },
-  {"id":"Y7033","lesson":3,"boss":true,"concept":"Challenge: the student who forgot place value","explain":"A student solved 328 × 4 as 32 (8 × 4) + 8 (2 × 4) + 12 (3 × 4) = 52. The 2 is 20 and the 3 is 300: 32 + 80 + 1,200 = 1,312.",
+  {"id":"Y7033","lesson":3,"boss":true,"concept":"Challenge: the student who forgot place value","explain":"In 328 the 2 is worth 20 and the 3 is worth 300: 32 + 80 + 1,200 = 1,312.",
     "variants": [
       {"type":"mc","mode":"boss","level":"hard","q":"A student solved 328 × 4 and got 52. Do you agree?","options":["No: he used 2 and 3 instead of 20 and 300","Yes: 32 + 8 + 12 = 52","No: he should add 328 + 4","No: 8 × 4 is not 32"],"answer":0,"fig":"colMul","pic":{"a":"328","b":"4","rows":["32","8","12"],"notes":["(8 × 4)","(2 × 4)","(3 × 4)"],"total":"52"}},
-      {"type":"num","mode":"boss","level":"hard","q":"What is the right answer to 328 × 4?","answer":"1312","calc":"328*4"},
-      {"type":"num","mode":"boss","level":"hard","q":"In 328 × 4, what is the partial product of the 3 hundreds (300 × 4)?","answer":"1200","calc":"300*4"}
+      {"type":"num","mode":"boss","level":"hard","q":"What is the right answer to 328 × 4?","answer":"1312","calc":"328*4","explain":"328 × 4 = 1,312."},
+      {"type":"num","mode":"boss","level":"hard","q":"In 328 × 4, what is the partial product of the 3 hundreds (300 × 4)?","answer":"1200","calc":"300*4","explain":"300 × 4 = 1,200."}
     ] },
   /* ---------- Lesson 4 · Multiply by a One-Digit Number (pages 107-108) ---------- */
-  {"id":"Y7041","lesson":4,"concept":"Estimate first","explain":"Round the big number, then multiply in your head: 64 × 7 is about 60 × 7 = 420; 758 × 3 is about 800 × 3 = 2,400. The exact answer should be close to the estimate (448 and 2,274).",
+  {"id":"Y7041","lesson":4,"concept":"Estimate first","explain":"Round the big number to its biggest place, then multiply in your head. The exact answer should be close.",
     "variants": [
-      {"type":"mc","mode":"timed","level":"easy","q":"Estimate 64 × 7.","options":["About 420","About 42","About 4,200","About 71"],"answer":0,"seconds":15},
-      {"type":"mc","mode":"normal","level":"easy","q":"Estimate 758 × 3.","options":["About 2,400","About 240","About 24,000","About 760"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"Estimate 2,327 × 4.","options":["About 8,000","About 800","About 80,000","About 2,300"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"Which exact answer fits the estimate 130 × 8 = 1,040 for 132 × 8?","options":["1,056","1,560","105","10,560"],"answer":0}
+      {"type":"mc","mode":"timed","level":"easy","q":"Estimate 64 × 7.","options":["About 420","About 42","About 4,200","About 71"],"answer":0,"seconds":15,"explain":"64 is about 60: 60 × 7 = 420."},
+      {"type":"mc","mode":"normal","level":"easy","q":"Estimate 758 × 3.","options":["About 2,400","About 240","About 24,000","About 760"],"answer":0,"explain":"758 is about 800: 800 × 3 = 2,400."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Estimate 2,327 × 4.","options":["About 8,000","About 800","About 80,000","About 2,300"],"answer":0,"explain":"2,327 is about 2,000: 2,000 × 4 = 8,000."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Which exact answer fits the estimate 130 × 8 = 1,040 for 132 × 8?","options":["1,056","1,560","105","10,560"],"answer":0,"explain":"The exact answer must be close to 1,040: 132 × 8 = 1,056."}
     ] },
-  {"id":"Y7042","lesson":4,"concept":"The standard algorithm","explain":"Multiply the ones first, then the tens, hundreds and thousands, and carry (regroup) when a product is 10 or more: 758 × 3: 8 × 3 = 24 (write 4, carry 2), 5 × 3 + 2 = 17 (write 7, carry 1), 7 × 3 + 1 = 22 → 2,274.",
+  {"id":"Y7042","lesson":4,"concept":"The standard algorithm","explain":"Multiply the ones first, then the tens, hundreds…, and carry when a product is 10 or more.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"32 × 3 = ?","answer":"96","calc":"32*3"},
-      {"type":"num","mode":"normal","level":"easy","q":"17 × 6 = ?","answer":"102","calc":"17*6"},
-      {"type":"num","mode":"normal","level":"easy","q":"134 × 2 = ?","answer":"268","calc":"134*2"},
-      {"type":"num","mode":"normal","level":"medium","q":"758 × 3 = ?","answer":"2274","calc":"758*3"},
-      {"type":"num","mode":"normal","level":"medium","q":"1,349 × 2 = ?","answer":"2698","calc":"1349*2"},
-      {"type":"num","mode":"normal","level":"medium","q":"2,327 × 4 = ?","answer":"9308","calc":"2327*4"},
-      {"type":"num","mode":"normal","level":"medium","q":"64 × 7 = ?","answer":"448","calc":"64*7"},
-      {"type":"num","mode":"normal","level":"medium","q":"132 × 8 = ?","answer":"1056","calc":"132*8"}
+      {"type":"num","mode":"normal","level":"easy","q":"32 × 3 = ?","answer":"96","calc":"32*3","explain":"Split 32 by place value: 32 × 3 = (30 × 3) + (2 × 3) = 90 + 6 = 96."},
+      {"type":"num","mode":"normal","level":"easy","q":"17 × 6 = ?","answer":"102","calc":"17*6","explain":"Split 17 by place value: 17 × 6 = (10 × 6) + (7 × 6) = 60 + 42 = 102."},
+      {"type":"num","mode":"normal","level":"easy","q":"134 × 2 = ?","answer":"268","calc":"134*2","explain":"Split 134 by place value: 134 × 2 = (100 × 2) + (30 × 2) + (4 × 2) = 200 + 60 + 8 = 268."},
+      {"type":"num","mode":"normal","level":"medium","q":"758 × 3 = ?","answer":"2274","calc":"758*3","explain":"Split 758 by place value: 758 × 3 = (700 × 3) + (50 × 3) + (8 × 3) = 2,100 + 150 + 24 = 2,274."},
+      {"type":"num","mode":"normal","level":"medium","q":"1,349 × 2 = ?","answer":"2698","calc":"1349*2","explain":"Split 1,349 by place value: 1,349 × 2 = (1,000 × 2) + (300 × 2) + (40 × 2) + (9 × 2) = 2,000 + 600 + 80 + 18 = 2,698."},
+      {"type":"num","mode":"normal","level":"medium","q":"2,327 × 4 = ?","answer":"9308","calc":"2327*4","explain":"Split 2,327 by place value: 2,327 × 4 = (2,000 × 4) + (300 × 4) + (20 × 4) + (7 × 4) = 8,000 + 1,200 + 80 + 28 = 9,308."},
+      {"type":"num","mode":"normal","level":"medium","q":"64 × 7 = ?","answer":"448","calc":"64*7","explain":"Split 64 by place value: 64 × 7 = (60 × 7) + (4 × 7) = 420 + 28 = 448."},
+      {"type":"num","mode":"normal","level":"medium","q":"132 × 8 = ?","answer":"1056","calc":"132*8","explain":"Split 132 by place value: 132 × 8 = (100 × 8) + (30 × 8) + (2 × 8) = 800 + 240 + 16 = 1,056."}
     ] },
-  {"id":"Y7043","lesson":4,"boss":true,"concept":"Challenge: three students solve 328 × 2","explain":"328 × 2: 8 × 2 = 16 (write 6, carry 1), 2 × 2 + 1 = 5, 3 × 2 = 6 → 656. Student 1 forgot the carried 1 (646). Student 3 carried the 1 to the hundreds (746).",
+  {"id":"Y7043","lesson":4,"boss":true,"concept":"Challenge: three students solve 328 × 2","explain":"328 × 2: 8 × 2 = 16 (write 6, carry 1), 2 × 2 + 1 = 5, 3 × 2 = 6, so 656.",
     "variants": [
-      {"type":"mc","mode":"boss","level":"hard","q":"Three students solved 328 × 2. Student 1: 646, Student 2: 656, Student 3: 746. Who is correct?","options":["Student 2","Student 1","Student 3","No one"],"answer":0},
-      {"type":"mc","mode":"boss","level":"hard","q":"Student 1 got 328 × 2 = 646. What was the mistake?","options":["He forgot to add the carried 1","He added instead of multiplying","He carried the 1 to the hundreds","There is no mistake"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"328 × 2 = ?","answer":"656","calc":"328*2"}
+      {"type":"mc","mode":"boss","level":"hard","q":"Three students solved 328 × 2. Student 1: 646, Student 2: 656, Student 3: 746. Who is correct?","options":["Student 2","Student 1","Student 3","No one"],"answer":0,"explain":"8 × 2 = 16 (write 6, carry 1), 2 × 2 + 1 = 5, 3 × 2 = 6: 656. Student 2 is correct."},
+      {"type":"mc","mode":"boss","level":"hard","q":"Student 1 got 328 × 2 = 646. What was the mistake?","options":["He forgot to add the carried 1","He added instead of multiplying","He carried the 1 to the hundreds","There is no mistake"],"answer":0,"explain":"8 × 2 = 16: the carried 1 makes the tens 2 × 2 + 1 = 5, not 4."},
+      {"type":"num","mode":"boss","level":"hard","q":"328 × 2 = ?","answer":"656","calc":"328*2","explain":"Split 328 by place value: 328 × 2 = (300 × 2) + (20 × 2) + (8 × 2) = 600 + 40 + 16 = 656."}
     ] },
   /* ---------- Lesson 5 · Multiply a Two-Digit Number by a Multiple of 10 (pages 109-110) ---------- */
-  {"id":"Y7051","lesson":5,"concept":"Ten times: multiples of 10","explain":"When you multiply two multiples of 10, multiply the digits and write the two zeros: 30 × 5 = 150, so 30 × 50 = 1,500; 70 × 7 = 490, so 70 × 70 = 4,900.",
+  {"id":"Y7051","lesson":5,"concept":"Ten times: multiples of 10","explain":"Multiply the digits, then write all the zeros of both numbers.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"30 × 5 = 150, so 30 × 50 = ?","answer":"1500","calc":"30*50","seconds":12},
-      {"type":"num","mode":"timed","level":"easy","q":"2 × 80 = 160, so 20 × 80 = ?","answer":"1600","calc":"20*80","seconds":12},
-      {"type":"num","mode":"timed","level":"easy","q":"70 × 70 = ?","answer":"4900","calc":"70*70","seconds":12},
-      {"type":"num","mode":"normal","level":"easy","q":"50 × 60 = ?","answer":"3000","calc":"50*60"},
-      {"type":"num","mode":"normal","level":"easy","q":"90 × 70 = ?","answer":"6300","calc":"90*70"},
-      {"type":"num","mode":"normal","level":"easy","q":"40 × 40 = ?","answer":"1600","calc":"40*40"},
-      {"type":"num","mode":"normal","level":"easy","q":"60 × 30 = ?","answer":"1800","calc":"60*30"}
+      {"type":"num","mode":"timed","level":"easy","q":"30 × 5 = 150, so 30 × 50 = ?","answer":"1500","calc":"30*50","seconds":12,"explain":"50 = 5 × 10, so 30 × 50 = 30 × 5 × 10 = 150 × 10 = 1,500."},
+      {"type":"num","mode":"timed","level":"easy","q":"2 × 80 = 160, so 20 × 80 = ?","answer":"1600","calc":"20*80","seconds":12,"explain":"20 = 2 × 10, so 20 × 80 = 2 × 80 × 10 = 160 × 10 = 1,600."},
+      {"type":"num","mode":"timed","level":"easy","q":"70 × 70 = ?","answer":"4900","calc":"70*70","seconds":12,"explain":"70 × 70 = 4,900."},
+      {"type":"num","mode":"normal","level":"easy","q":"50 × 60 = ?","answer":"3000","calc":"50*60","explain":"50 × 60 = 3,000."},
+      {"type":"num","mode":"normal","level":"easy","q":"90 × 70 = ?","answer":"6300","calc":"90*70","explain":"90 × 70 = 6,300."},
+      {"type":"num","mode":"normal","level":"easy","q":"40 × 40 = ?","answer":"1600","calc":"40*40","explain":"40 × 40 = 1,600."},
+      {"type":"num","mode":"normal","level":"easy","q":"60 × 30 = ?","answer":"1800","calc":"60*30","explain":"60 × 30 = 1,800."}
     ] },
-  {"id":"Y7052","lesson":5,"concept":"A two-digit number times a multiple of 10","explain":"Multiply by the tens digit, then by 10: 40 × 62 = 4 × 62 × 10 = 248 × 10 = 2,480. A group of 38 people pays 30 LE each: 38 × 30 = 1,140 LE.",
+  {"id":"Y7052","lesson":5,"concept":"A two-digit number times a multiple of 10","explain":"Multiply by the tens digit, then by 10.",
     "variants": [
-      {"type":"num","mode":"normal","level":"medium","q":"A group of 38 people want to travel by bus. Each bus ticket costs 30 LE. How much do they need to pay in all?","answer":"1140","calc":"38*30","fig":"vehFig","pic":{"items":[["bus",""],["bus",""]],"bg":"pyramids"},"unit":"LE"},
-      {"type":"num","mode":"normal","level":"medium","q":"40 × 62 = ?","answer":"2480","calc":"40*62"},
-      {"type":"num","mode":"normal","level":"medium","q":"70 × 55 = ?","answer":"3850","calc":"70*55"},
-      {"type":"num","mode":"normal","level":"medium","q":"54 × 30 = ?","answer":"1620","calc":"54*30"},
-      {"type":"num","mode":"normal","level":"medium","q":"44 × 20 = ?","answer":"880","calc":"44*20"},
-      {"type":"num","mode":"normal","level":"easy","q":"15 × 30 = ?","answer":"450","calc":"15*30"},
-      {"type":"num","mode":"normal","level":"medium","q":"72 × 40 = ?","answer":"2880","calc":"72*40"}
+      {"type":"num","mode":"normal","level":"medium","q":"A group of 38 people want to travel by bus. Each bus ticket costs 30 LE. How much do they need to pay in all?","answer":"1140","calc":"38*30","fig":"vehFig","pic":{"items":[["bus",""],["bus",""]],"bg":"pyramids"},"unit":"LE","explain":"38 × 30 = 1,140."},
+      {"type":"num","mode":"normal","level":"medium","q":"40 × 62 = ?","answer":"2480","calc":"40*62","explain":"40 × 62 = 2,480."},
+      {"type":"num","mode":"normal","level":"medium","q":"70 × 55 = ?","answer":"3850","calc":"70*55","explain":"70 × 55 = 3,850."},
+      {"type":"num","mode":"normal","level":"medium","q":"54 × 30 = ?","answer":"1620","calc":"54*30","explain":"54 × 30 = 1,620."},
+      {"type":"num","mode":"normal","level":"medium","q":"44 × 20 = ?","answer":"880","calc":"44*20","explain":"44 × 20 = 880."},
+      {"type":"num","mode":"normal","level":"easy","q":"15 × 30 = ?","answer":"450","calc":"15*30","explain":"15 × 30 = 450."},
+      {"type":"num","mode":"normal","level":"medium","q":"72 × 40 = ?","answer":"2880","calc":"72*40","explain":"72 × 40 = 2,880."}
     ] },
-  {"id":"Y7053","lesson":5,"boss":true,"concept":"Challenge: is the answer reasonable?","explain":"Use mental math to check: 56 × 4 is about 50 × 4 = 200, closer to 200 than 2,000. A student wrote 22 × 50 = (20 × 50) + (2 × 50) = 100 + 100 = 200, but 20 × 50 = 1,000, so 22 × 50 = 1,100.",
+  {"id":"Y7053","lesson":5,"boss":true,"concept":"Challenge: is the answer reasonable?","explain":"Round to check: if the answer is far from the estimate, look for a mistake.",
     "variants": [
-      {"type":"mc","mode":"boss","level":"hard","q":"Is 56 × 4 closer to 200 or closer to 2,000?","options":["200","2,000"],"answer":0},
-      {"type":"mc","mode":"boss","level":"hard","q":"Is 156 × 4 closer to 500 or closer to 5,000?","options":["500","5,000"],"answer":0},
-      {"type":"mc","mode":"boss","level":"hard","q":"A student wrote 22 × 50 = 100 + 100 = 200. Which step is wrong?","options":["20 × 50 is 1,000, not 100","2 × 50 is 10","22 = 20 + 2 is wrong","There is no mistake"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"22 × 50 = ?","answer":"1100","calc":"22*50"}
+      {"type":"mc","mode":"boss","level":"hard","q":"Is 56 × 4 closer to 200 or closer to 2,000?","options":["200","2,000"],"answer":0,"explain":"56 is about 60: 60 × 4 = 240, closer to 200."},
+      {"type":"mc","mode":"boss","level":"hard","q":"Is 156 × 4 closer to 500 or closer to 5,000?","options":["500","5,000"],"answer":0,"explain":"156 is about 200: 200 × 4 = 800, closer to 500."},
+      {"type":"mc","mode":"boss","level":"hard","q":"A student wrote 22 × 50 = 100 + 100 = 200. Which step is wrong?","options":["20 × 50 is 1,000, not 100","2 × 50 is 10","22 = 20 + 2 is wrong","There is no mistake"],"answer":0,"explain":"20 × 50 = 1,000, not 100: 22 × 50 = 1,000 + 100 = 1,100."},
+      {"type":"num","mode":"boss","level":"hard","q":"22 × 50 = ?","answer":"1100","calc":"22*50","explain":"22 × 50 = 1,100."}
     ] },
   /* ---------- Lesson 6 · Exploring Remainders (pages 111-112) ---------- */
-  {"id":"Y7061","lesson":6,"concept":"Dividend, divisor, quotient and remainder","explain":"In 72 ÷ 9 = 8, 72 is the dividend (the number divided), 9 is the divisor (we divide by it) and 8 is the quotient (the answer). What is left over when we cannot make another full group is the remainder: 15 ÷ 4 = 3 R3.",
+  {"id":"Y7061","lesson":6,"concept":"Dividend, divisor, quotient and remainder","explain":"dividend ÷ divisor = quotient. What is left over is the remainder, and it is always smaller than the divisor.",
     "variants": [
       {"type":"match","mode":"normal","level":"easy","q":"In 72 ÷ 9 = 8, match each number with its name.","left":["72","9","8"],"right":["quotient","dividend","divisor"],"answer":[1,2,0]},
       {"type":"fill","mode":"normal","level":"easy","q":"In 600 ÷ 3 = 200, the number 3 is called the ___.","options":["divisor","dividend","quotient"],"answer":0},
       {"type":"fill","mode":"normal","level":"easy","q":"The amount left over in a division is called the ___.","options":["remainder","quotient","divisor"],"answer":0},
-      {"type":"num","mode":"timed","level":"easy","q":"There are 8 teams playing soccer with 9 students on each team. How many students are there in all?","answer":"72","calc":"8*9","seconds":15},
-      {"type":"num","mode":"normal","level":"easy","q":"There are 72 students on the field. They make teams with 9 students on each team. How many teams can they make?","answer":"8","calc":"72/9","unit":"teams"},
-      {"type":"num","mode":"normal","level":"easy","q":"There are 72 students on the field. They split into 8 teams. How many students will be on each team?","answer":"9","calc":"72/8"}
+      {"type":"num","mode":"timed","level":"easy","q":"There are 8 teams playing soccer with 9 students on each team. How many students are there in all?","answer":"72","calc":"8*9","seconds":15,"explain":"8 × 9 = 72."},
+      {"type":"num","mode":"normal","level":"easy","q":"There are 72 students on the field. They make teams with 9 students on each team. How many teams can they make?","answer":"8","calc":"72/9","unit":"teams","explain":"72 ÷ 9 = 8."},
+      {"type":"num","mode":"normal","level":"easy","q":"There are 72 students on the field. They split into 8 teams. How many students will be on each team?","answer":"9","calc":"72/8","explain":"72 ÷ 8 = 9."}
     ] },
-  {"id":"Y7062","lesson":6,"concept":"What is left? Saleem's pies","explain":"Saleem brought 15 pies for 4 friends: 4 × 3 = 12, so each friend gets 3 pies and 3 pies are left (15 ÷ 4 = 3 R3). The remainder is always smaller than the divisor.",
+  {"id":"Y7062","lesson":6,"concept":"What is left? Saleem's pies","explain":"15 ÷ 4 = 3 R3: 4 × 3 = 12 pies are shared and 3 are left.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"Saleem brought 15 pies to give to 4 of his friends equally. How many pies does each friend get?","answer":"3","calc":"(15-3)/4","fig":"vehFig","pic":{"items":[["pie",""]]}},
-      {"type":"num","mode":"normal","level":"easy","q":"Saleem shares 15 pies equally among 4 friends. How many pies are left?","answer":"3","calc":"15-4*3","fig":"vehFig","pic":{"items":[["pie",""]]}},
-      {"type":"mc","mode":"normal","level":"medium","q":"15 ÷ 4 = ?","options":["3 R3","4 R0","3 R4","2 R7"],"answer":0},
-      {"type":"tf","mode":"normal","level":"medium","q":"In a division, the remainder can be bigger than the divisor.","answer":1}
+      {"type":"num","mode":"normal","level":"easy","q":"Saleem brought 15 pies to give to 4 of his friends equally. How many pies does each friend get?","answer":"3","calc":"(15-3)/4","fig":"vehFig","pic":{"items":[["pie",""]]},"explain":"15 ÷ 4 = 3 R3, because 3 × 4 = 12 and 15 − 12 = 3. Each friend gets 3 pies."},
+      {"type":"num","mode":"normal","level":"easy","q":"Saleem shares 15 pies equally among 4 friends. How many pies are left?","answer":"3","calc":"15-4*3","fig":"vehFig","pic":{"items":[["pie",""]]},"explain":"15 ÷ 4 = 3 R3, because 3 × 4 = 12 and 15 − 12 = 3. 3 pies are left."},
+      {"type":"mc","mode":"normal","level":"medium","q":"15 ÷ 4 = ?","options":["3 R3","4 R0","3 R4","2 R7"],"answer":0,"explain":"15 ÷ 4 = 3 R3, because 3 × 4 = 12 and 15 − 12 = 3."},
+      {"type":"tf","mode":"normal","level":"medium","q":"In a division, the remainder can be bigger than the divisor.","answer":1,"explain":"False: the remainder is always smaller than the divisor, or one more full group could be made."}
     ] },
-  {"id":"Y7063","lesson":6,"boss":true,"concept":"Challenge: getting to Zamalek","explain":"32 people go to an event in Zamalek. A microbus fits 9: 32 ÷ 9 = 3 R5, so 4 microbuses are needed (5 people would be left out). A motorbike fits 2: 16. A car fits 4: 8. A van fits 7: 32 ÷ 7 = 4 R4, so 5 vans. A bus seats 40 and 60 students go to a swim meet: 60 ÷ 40 = 1 R20, so 2 buses.",
+  {"id":"Y7063","lesson":6,"boss":true,"concept":"Challenge: getting to Zamalek","explain":"If people would be left over, one more vehicle is needed.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"32 people travel to Zamalek. Each microbus fits 9 people. How many microbuses do they need so no one is left out?","answer":"4","calc":"4","fig":"vehFig","pic":{"items":[["microbus",""]]},"unit":"microbuses"},
-      {"type":"mc","mode":"boss","level":"hard","q":"32 people, a microbus fits 9. Write the division.","options":["32 ÷ 9 = 3 R5","32 ÷ 9 = 4","32 ÷ 9 = 3 R2","32 ÷ 9 = 5 R3"],"answer":0,"fig":"vehFig","pic":{"items":[["microbus",""]]}},
-      {"type":"num","mode":"boss","level":"hard","q":"32 people go by car. Each car fits 4 people. How many cars do they need?","answer":"8","calc":"32/4","fig":"vehFig","pic":{"items":[["car",""]]}},
-      {"type":"num","mode":"boss","level":"hard","q":"Each bus seats 40 students. Sixty students will attend the swim meet. How many buses are needed?","answer":"2","calc":"2","fig":"vehFig","pic":{"items":[["bus",""],["swimmer",""]]},"unit":"buses"}
+      {"type":"num","mode":"boss","level":"hard","q":"32 people travel to Zamalek. Each microbus fits 9 people. How many microbuses do they need so no one is left out?","answer":"4","calc":"4","fig":"vehFig","pic":{"items":[["microbus",""]]},"unit":"microbuses","explain":"32 ÷ 9 = 3 R5, because 3 × 9 = 27 and 32 − 27 = 5. 3 microbuses leave 5 people, so 4 are needed."},
+      {"type":"mc","mode":"boss","level":"hard","q":"32 people, a microbus fits 9. Write the division.","options":["32 ÷ 9 = 3 R5","32 ÷ 9 = 4","32 ÷ 9 = 3 R2","32 ÷ 9 = 5 R3"],"answer":0,"fig":"vehFig","pic":{"items":[["microbus",""]]},"explain":"32 ÷ 9 = 3 R5, because 3 × 9 = 27 and 32 − 27 = 5."},
+      {"type":"num","mode":"boss","level":"hard","q":"32 people go by car. Each car fits 4 people. How many cars do they need?","answer":"8","calc":"32/4","fig":"vehFig","pic":{"items":[["car",""]]},"explain":"32 ÷ 4 = 8."},
+      {"type":"num","mode":"boss","level":"hard","q":"Each bus seats 40 students. Sixty students will attend the swim meet. How many buses are needed?","answer":"2","calc":"2","fig":"vehFig","pic":{"items":[["bus",""],["swimmer",""]]},"unit":"buses","explain":"60 ÷ 40 = 1 R20: one bus leaves 20 students, so 2 buses are needed."}
     ] },
   /* ---------- Lesson 7 · Patterns in Division (pages 113-115) ---------- */
-  {"id":"Y7071","lesson":7,"concept":"Dividing multiples of 10, 100 and 1,000","explain":"Use a related fact and the zeros: 600 ÷ 3 → 6 ÷ 3 = 2, so 600 ÷ 3 = 200. 6,400 ÷ 8 → 64 ÷ 8 = 8, so 800. 270 ÷ 3 → 27 ÷ 3 = 9, so 90.",
+  {"id":"Y7071","lesson":7,"concept":"Dividing multiples of 10, 100 and 1,000","explain":"Use a related fact, then write the zeros: 6 ÷ 3 = 2, so 600 ÷ 3 = 200.",
     "variants": [
-      {"type":"num","mode":"timed","level":"easy","q":"150 ÷ 5 = ?","answer":"30","calc":"150/5","seconds":12},
-      {"type":"num","mode":"timed","level":"easy","q":"1,200 ÷ 6 = ?","answer":"200","calc":"1200/6","seconds":12},
-      {"type":"num","mode":"timed","level":"easy","q":"200 ÷ 4 = ?","answer":"50","calc":"200/4","seconds":12},
-      {"type":"num","mode":"normal","level":"easy","q":"700 ÷ 7 = ?","answer":"100","calc":"700/7"},
-      {"type":"num","mode":"normal","level":"medium","q":"6,400 ÷ 8 = ?","answer":"800","calc":"6400/8"},
-      {"type":"num","mode":"normal","level":"medium","q":"4,500 ÷ 9 = ?","answer":"500","calc":"4500/9"},
-      {"type":"num","mode":"normal","level":"easy","q":"270 ÷ 3 = ?","answer":"90","calc":"270/3"},
-      {"type":"mc","mode":"normal","level":"medium","q":"Which related fact helps solve 6,400 ÷ 8?","options":["64 ÷ 8 = 8","6 ÷ 8","640 ÷ 4 = 160","8 × 8 = 6,400"],"answer":0}
+      {"type":"num","mode":"timed","level":"easy","q":"150 ÷ 5 = ?","answer":"30","calc":"150/5","seconds":12,"explain":"150 ÷ 5 = 30, because 30 × 5 = 150."},
+      {"type":"num","mode":"timed","level":"easy","q":"1,200 ÷ 6 = ?","answer":"200","calc":"1200/6","seconds":12,"explain":"1,200 ÷ 6 = 200, because 200 × 6 = 1,200."},
+      {"type":"num","mode":"timed","level":"easy","q":"200 ÷ 4 = ?","answer":"50","calc":"200/4","seconds":12,"explain":"200 ÷ 4 = 50, because 50 × 4 = 200."},
+      {"type":"num","mode":"normal","level":"easy","q":"700 ÷ 7 = ?","answer":"100","calc":"700/7","explain":"700 ÷ 7 = 100, because 100 × 7 = 700."},
+      {"type":"num","mode":"normal","level":"medium","q":"6,400 ÷ 8 = ?","answer":"800","calc":"6400/8","explain":"6,400 ÷ 8 = 800, because 800 × 8 = 6,400."},
+      {"type":"num","mode":"normal","level":"medium","q":"4,500 ÷ 9 = ?","answer":"500","calc":"4500/9","explain":"4,500 ÷ 9 = 500, because 500 × 9 = 4,500."},
+      {"type":"num","mode":"normal","level":"easy","q":"270 ÷ 3 = ?","answer":"90","calc":"270/3","explain":"270 ÷ 3 = 90, because 90 × 3 = 270."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Which related fact helps solve 6,400 ÷ 8?","options":["64 ÷ 8 = 8","6 ÷ 8","640 ÷ 4 = 160","8 × 8 = 6,400"],"answer":0,"explain":"64 ÷ 8 = 8, so 6,400 ÷ 8 = 800."}
     ] },
-  {"id":"Y7072","lesson":7,"concept":"The division array game","explain":"Fill rows with the number of squares on the cube until you reach the dividend: 23 squares with 4 per row make 5 full rows (the quotient) and 3 leftover squares (the remainder). The score is the number of rows (double it if nothing is left over).",
+  {"id":"Y7072","lesson":7,"concept":"The division array game","explain":"Full rows = the quotient; squares left over = the remainder.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"23 squares, 4 squares in each row. How many full rows?","answer":"5","calc":"(23-3)/4"},
-      {"type":"num","mode":"normal","level":"easy","q":"23 squares, 4 squares in each row. How many squares are left over?","answer":"3","calc":"23-4*5"},
-      {"type":"num","mode":"normal","level":"medium","q":"20 squares, 5 squares in each row, nothing left over. Player A's score is double the number of rows. What is the score?","answer":"8","calc":"20/5*2"}
+      {"type":"num","mode":"normal","level":"easy","q":"23 squares, 4 squares in each row. How many full rows?","answer":"5","calc":"(23-3)/4","explain":"23 ÷ 4 = 5 R3, because 5 × 4 = 20 and 23 − 20 = 3. 5 full rows."},
+      {"type":"num","mode":"normal","level":"easy","q":"23 squares, 4 squares in each row. How many squares are left over?","answer":"3","calc":"23-4*5","explain":"23 ÷ 4 = 5 R3, because 5 × 4 = 20 and 23 − 20 = 3. 3 squares are left over."},
+      {"type":"num","mode":"normal","level":"medium","q":"20 squares, 5 squares in each row, nothing left over. Player A's score is double the number of rows. What is the score?","answer":"8","calc":"20/5*2","explain":"20 ÷ 5 = 4 rows with nothing left over, so the score is double: 4 × 2 = 8."}
     ] },
-  {"id":"Y7073","lesson":7,"boss":true,"concept":"Challenge: riding the metro","explain":"A metro has 9 cars and 90 people fit in each car: 9 × 90 = 810 people per metro. 8,100 people need to go to work at 7:00: 8,100 ÷ 810 = 10, so they need 10 metros; they cannot all take the same metro.",
+  {"id":"Y7073","lesson":7,"boss":true,"concept":"Challenge: riding the metro","explain":"People in one metro = cars × people in each car. Then divide all the people by that number.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"A metro has 9 cars and 90 people fit in each car. How many people fit in one metro?","answer":"810","calc":"9*90","fig":"vehFig","pic":{"items":[["metro",""]]}},
-      {"type":"mc","mode":"boss","level":"hard","q":"8,100 people want to take the metro at 7:00. One metro fits 810 people. Can they all take the same metro?","options":["No: they need 10 metros","Yes: 810 is enough","No: they need 9 metros","Yes: they need 1 metro"],"answer":0,"fig":"vehFig","pic":{"items":[["metro",""]]}},
-      {"type":"num","mode":"boss","level":"hard","q":"8,100 ÷ 9 = ?","answer":"900","calc":"8100/9"}
+      {"type":"num","mode":"boss","level":"hard","q":"A metro has 9 cars and 90 people fit in each car. How many people fit in one metro?","answer":"810","calc":"9*90","fig":"vehFig","pic":{"items":[["metro",""]]},"explain":"9 × 90 = 810."},
+      {"type":"mc","mode":"boss","level":"hard","q":"8,100 people want to take the metro at 7:00. One metro fits 810 people. Can they all take the same metro?","options":["No: they need 10 metros","Yes: 810 is enough","No: they need 9 metros","Yes: they need 1 metro"],"answer":0,"fig":"vehFig","pic":{"items":[["metro",""]]},"explain":"One metro fits 9 × 90 = 810 people; 8,100 ÷ 810 = 10, so they need 10 metros."},
+      {"type":"num","mode":"boss","level":"hard","q":"8,100 ÷ 9 = ?","answer":"900","calc":"8100/9","explain":"8,100 ÷ 9 = 900, because 900 × 9 = 8,100."}
     ] },
   /* ---------- Lesson 8 · The Area Model and Division (page 116) ---------- */
-  {"id":"Y7081","lesson":8,"concept":"Dividing with an area model","explain":"Break the dividend into parts that are easy to divide: 92 ÷ 4 → 80 ÷ 4 = 20 and 12 ÷ 4 = 3, so 92 ÷ 4 = 23. The quotients of the parts are added.",
+  {"id":"Y7081","lesson":8,"concept":"Dividing with an area model","explain":"Split the dividend into parts that are easy to divide, divide each part, then add the quotients.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"Amir has 92 stickers to give to 4 friends equally. How many stickers does each friend get?","answer":"23","calc":"92/4","fig":"vehFig","pic":{"items":[["stickers",""]]}},
-      {"type":"num","mode":"normal","level":"medium","q":"92 ÷ 4 = ?","answer":"23","calc":"92/4","fig":"areaBox","pic":{"left":"4","cells":["80","12"],"bottom":["20","?"]}},
-      {"type":"num","mode":"normal","level":"medium","q":"Rashida saved 545 LE by saving 5 LE every day. How many days did she work?","answer":"109","calc":"545/5","fig":"vehFig","pic":{"items":[["toycar",""]]},"unit":"days"},
-      {"type":"num","mode":"normal","level":"medium","q":"545 ÷ 5 = ?","answer":"109","calc":"545/5","fig":"areaBox","pic":{"left":"5","cells":["500","45"],"bottom":["?","9"]}}
+      {"type":"num","mode":"normal","level":"easy","q":"Amir has 92 stickers to give to 4 friends equally. How many stickers does each friend get?","answer":"23","calc":"92/4","fig":"vehFig","pic":{"items":[["stickers",""]]},"explain":"92 ÷ 4 = 23."},
+      {"type":"num","mode":"normal","level":"medium","q":"92 ÷ 4 = ?","answer":"23","calc":"92/4","fig":"areaBox","pic":{"left":"4","cells":["80","12"],"bottom":["20","?"]},"explain":"92 ÷ 4 = 23, because 23 × 4 = 92."},
+      {"type":"num","mode":"normal","level":"medium","q":"Rashida saved 545 LE by saving 5 LE every day. How many days did she work?","answer":"109","calc":"545/5","fig":"vehFig","pic":{"items":[["toycar",""]]},"unit":"days","explain":"545 ÷ 5 = 109."},
+      {"type":"num","mode":"normal","level":"medium","q":"545 ÷ 5 = ?","answer":"109","calc":"545/5","fig":"areaBox","pic":{"left":"5","cells":["500","45"],"bottom":["?","9"]},"explain":"545 ÷ 5 = 109, because 109 × 5 = 545."}
     ] },
-  {"id":"Y7082","lesson":8,"boss":true,"concept":"Challenge: books and parking lots","explain":"89 books for 6 classrooms: 60 ÷ 6 = 10 and 24 ÷ 6 = 4, so 14 books each and 5 left (89 ÷ 6 = 14 R5). 492 cars in 4 parking lots: 400 ÷ 4 + 92 ÷ 4 = 100 + 23 = 123 cars in each lot.",
+  {"id":"Y7082","lesson":8,"boss":true,"concept":"Challenge: books and parking lots","explain":"Split the dividend into easy parts, divide each part, add the quotients, and keep the remainder.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"An organization donated 89 books to be shared among 6 classrooms. How many books will each classroom get?","answer":"14","calc":"(89-5)/6","fig":"vehFig","pic":{"items":[["books",""]]}},
-      {"type":"num","mode":"boss","level":"hard","q":"89 books are shared among 6 classrooms. How many books are left over?","answer":"5","calc":"89-6*14","fig":"vehFig","pic":{"items":[["books",""]]}},
-      {"type":"num","mode":"boss","level":"hard","q":"492 cars park in 4 parking lots with the same number in each. How many cars are in each lot?","answer":"123","calc":"492/4","fig":"areaBox","pic":{"left":"4","cells":["400","92"],"bottom":["100","?"]}}
+      {"type":"num","mode":"boss","level":"hard","q":"An organization donated 89 books to be shared among 6 classrooms. How many books will each classroom get?","answer":"14","calc":"(89-5)/6","fig":"vehFig","pic":{"items":[["books",""]]},"explain":"89 ÷ 6 = 14 R5, because 14 × 6 = 84 and 89 − 84 = 5. Each classroom gets 14 books."},
+      {"type":"num","mode":"boss","level":"hard","q":"89 books are shared among 6 classrooms. How many books are left over?","answer":"5","calc":"89-6*14","fig":"vehFig","pic":{"items":[["books",""]]},"explain":"89 ÷ 6 = 14 R5, because 14 × 6 = 84 and 89 − 84 = 5. 5 books are left over."},
+      {"type":"num","mode":"boss","level":"hard","q":"492 cars park in 4 parking lots with the same number in each. How many cars are in each lot?","answer":"123","calc":"492/4","fig":"areaBox","pic":{"left":"4","cells":["400","92"],"bottom":["100","?"]},"explain":"492 ÷ 4 = 123."}
     ] },
   /* ---------- Lesson 9 · The Partial Quotients Algorithm (pages 117-118) ---------- */
-  {"id":"Y7091","lesson":9,"concept":"Reading an area model of division","explain":"The divisor is on the left, the parts of the dividend are in the boxes and the partial quotients are under them. 6 with 300, 60, 18 and 50, 10, 3: 378 ÷ 6 = 63. 4 with 4,000, 1,200, 400, 28 and R3: 5,631 ÷ 4 = 1,407 R3.",
+  {"id":"Y7091","lesson":9,"concept":"Reading an area model of division","explain":"Divisor on the left, parts of the dividend in the boxes, partial quotients under them. Add the parts to get the dividend, add the partial quotients to get the quotient.",
     "variants": [
-      {"type":"mc","mode":"normal","level":"medium","q":"Which division matches this area model?","options":["378 ÷ 6 = 63","378 ÷ 6 = 50","300 ÷ 6 = 50","63 ÷ 6 = 378"],"answer":0,"fig":"areaBox","pic":{"left":"6","cells":["300","60","18"],"bottom":["50","10","3"]}},
-      {"type":"num","mode":"normal","level":"medium","q":"What is the dividend in this area model?","answer":"378","calc":"300+60+18","fig":"areaBox","pic":{"left":"6","cells":["300","60","18"],"bottom":["50","10","3"]}},
-      {"type":"num","mode":"normal","level":"hard","q":"The area model shows 4 × 1,000, 4 × 300, 4 × 100, 4 × 7 and a remainder of 3. What is the quotient?","answer":"1407","calc":"1000+300+100+7","fig":"areaBox","pic":{"left":"4","cells":["4,000","1,200","400","28","3"],"bottom":["1,000","300","100","7","R3"]}}
+      {"type":"mc","mode":"normal","level":"medium","q":"Which division matches this area model?","options":["378 ÷ 6 = 63","378 ÷ 6 = 50","300 ÷ 6 = 50","63 ÷ 6 = 378"],"answer":0,"fig":"areaBox","pic":{"left":"6","cells":["300","60","18"],"bottom":["50","10","3"]},"explain":"300 + 60 + 18 = 378 is the dividend and 50 + 10 + 3 = 63 is the quotient: 378 ÷ 6 = 63."},
+      {"type":"num","mode":"normal","level":"medium","q":"What is the dividend in this area model?","answer":"378","calc":"300+60+18","fig":"areaBox","pic":{"left":"6","cells":["300","60","18"],"bottom":["50","10","3"]},"explain":"300 + 60 + 18 = 378."},
+      {"type":"num","mode":"normal","level":"hard","q":"The area model shows 4 × 1,000, 4 × 300, 4 × 100, 4 × 7 and a remainder of 3. What is the quotient?","answer":"1407","calc":"1000+300+100+7","fig":"areaBox","pic":{"left":"4","cells":["4,000","1,200","400","28","3"],"bottom":["1,000","300","100","7","R3"]},"explain":"1,000 + 300 + 100 + 7 = 1,407."}
     ] },
-  {"id":"Y7092","lesson":9,"concept":"Partial quotients","explain":"Take away easy multiples of the divisor and write each partial quotient: 812 ÷ 4 → 800 (4 × 200), then 12 (4 × 3): 200 + 3 = 203. 892 ÷ 4 = 223, 590 ÷ 5 = 118, 1,216 ÷ 3 = 405 R1, 925 ÷ 6 = 154 R1.",
+  {"id":"Y7092","lesson":9,"concept":"Partial quotients","explain":"Take away easy multiples of the divisor, write each partial quotient, then add them.",
     "variants": [
-      {"type":"num","mode":"normal","level":"medium","q":"812 ÷ 4 = ?","answer":"203","calc":"812/4","fig":"areaBox","pic":{"left":"4","cells":["800","12"],"top":["4 × ?","4 × ?"]}},
-      {"type":"num","mode":"normal","level":"medium","q":"892 ÷ 4 = ?","answer":"223","calc":"892/4"},
-      {"type":"num","mode":"normal","level":"medium","q":"590 ÷ 5 = ?","answer":"118","calc":"590/5"},
-      {"type":"mc","mode":"normal","level":"hard","q":"1,216 ÷ 3 = ?","options":["405 R1","405 R0","45 R1","404 R4"],"answer":0},
-      {"type":"mc","mode":"normal","level":"hard","q":"925 ÷ 6 = ?","options":["154 R1","150 R25","155 R0","154 R5"],"answer":0},
-      {"type":"mc","mode":"normal","level":"hard","q":"897 ÷ 4 = ?","options":["224 R1","224 R0","223 R5","22 R4"],"answer":0}
+      {"type":"num","mode":"normal","level":"medium","q":"812 ÷ 4 = ?","answer":"203","calc":"812/4","fig":"areaBox","pic":{"left":"4","cells":["800","12"],"top":["4 × ?","4 × ?"]},"explain":"812 ÷ 4 = 203, because 203 × 4 = 812."},
+      {"type":"num","mode":"normal","level":"medium","q":"892 ÷ 4 = ?","answer":"223","calc":"892/4","explain":"892 ÷ 4 = 223, because 223 × 4 = 892."},
+      {"type":"num","mode":"normal","level":"medium","q":"590 ÷ 5 = ?","answer":"118","calc":"590/5","explain":"590 ÷ 5 = 118, because 118 × 5 = 590."},
+      {"type":"mc","mode":"normal","level":"hard","q":"1,216 ÷ 3 = ?","options":["405 R1","405 R0","45 R1","404 R4"],"answer":0,"explain":"1216 ÷ 3 = 405 R1, because 405 × 3 = 1215 and 1216 − 1215 = 1."},
+      {"type":"mc","mode":"normal","level":"hard","q":"925 ÷ 6 = ?","options":["154 R1","150 R25","155 R0","154 R5"],"answer":0,"explain":"925 ÷ 6 = 154 R1, because 154 × 6 = 924 and 925 − 924 = 1."},
+      {"type":"mc","mode":"normal","level":"hard","q":"897 ÷ 4 = ?","options":["224 R1","224 R0","223 R5","22 R4"],"answer":0,"explain":"897 ÷ 4 = 224 R1, because 224 × 4 = 896 and 897 − 896 = 1."}
     ] },
   /* ---------- Lesson 10 · The Standard Division Algorithm (pages 119-120) ---------- */
-  {"id":"Y7101","lesson":10,"concept":"Estimating quotients","explain":"Use place value and facts you know: 1,836 ÷ 3 is about 1,800 ÷ 3 = 600 (not 60). 736 ÷ 4 is about 800 ÷ 4 = 200. 68 ÷ 4 is between 10 and 20 because 4 × 10 = 40 and 4 × 20 = 80.",
+  {"id":"Y7101","lesson":10,"concept":"Estimating quotients","explain":"Round the dividend to a number that is easy to divide, then divide in your head.",
     "variants": [
-      {"type":"mc","mode":"timed","level":"easy","q":"Will 1,836 ÷ 3 be closer to 60 or 600?","options":["600","60"],"answer":0,"seconds":15},
-      {"type":"mc","mode":"normal","level":"easy","q":"Will 7,158 ÷ 3 be closer to 2,000 or 3,000?","options":["2,000","3,000"],"answer":0},
-      {"type":"mc","mode":"normal","level":"easy","q":"Will 736 ÷ 4 be closer to 100 or 200?","options":["200","100"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"Will 491 ÷ 4 be closer to 120 or 150?","options":["120","150"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"The quotient of 68 ÷ 4 will be between …","options":["10 and 20","1 and 10","20 and 30","100 and 200"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"The quotient of 457 ÷ 3 will be between …","options":["100 and 200","10 and 20","200 and 300","1,000 and 2,000"],"answer":0}
+      {"type":"mc","mode":"timed","level":"easy","q":"Will 1,836 ÷ 3 be closer to 60 or 600?","options":["600","60"],"answer":0,"seconds":15,"explain":"1,836 ÷ 3 is about 612, so it is closer to 600."},
+      {"type":"mc","mode":"normal","level":"easy","q":"Will 7,158 ÷ 3 be closer to 2,000 or 3,000?","options":["2,000","3,000"],"answer":0,"explain":"7,158 ÷ 3 is about 2,386, so it is closer to 2,000."},
+      {"type":"mc","mode":"normal","level":"easy","q":"Will 736 ÷ 4 be closer to 100 or 200?","options":["200","100"],"answer":0,"explain":"736 ÷ 4 is about 184, so it is closer to 200."},
+      {"type":"mc","mode":"normal","level":"medium","q":"Will 491 ÷ 4 be closer to 120 or 150?","options":["120","150"],"answer":0,"explain":"491 ÷ 4 is about 122, so it is closer to 120."},
+      {"type":"mc","mode":"normal","level":"medium","q":"The quotient of 68 ÷ 4 will be between …","options":["10 and 20","1 and 10","20 and 30","100 and 200"],"answer":0,"explain":"4 × 10 = 40 and 4 × 20 = 80, so 68 ÷ 4 is between 10 and 20 (it is 17)."},
+      {"type":"mc","mode":"normal","level":"medium","q":"The quotient of 457 ÷ 3 will be between …","options":["100 and 200","10 and 20","200 and 300","1,000 and 2,000"],"answer":0,"explain":"3 × 100 = 300 and 3 × 200 = 600, so 457 ÷ 3 is between 100 and 200 (it is 152)."}
     ] },
-  {"id":"Y7102","lesson":10,"concept":"The standard algorithm","explain":"Divide, multiply, subtract, bring down, starting from the biggest place: 778 ÷ 2: 7 ÷ 2 = 3 R1, 17 ÷ 2 = 8 R1, 18 ÷ 2 = 9 → 389. 454 ÷ 3 = 151 R1, 368 ÷ 3 = 122 R2, 4,858 ÷ 4 = 1,214 R2.",
+  {"id":"Y7102","lesson":10,"concept":"The standard algorithm","explain":"Divide, multiply, subtract, bring down the next digit, starting from the biggest place.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"68 ÷ 4 = ?","answer":"17","calc":"68/4"},
-      {"type":"num","mode":"normal","level":"medium","q":"778 ÷ 2 = ?","answer":"389","calc":"778/2"},
-      {"type":"mc","mode":"normal","level":"medium","q":"454 ÷ 3 = ?","options":["151 R1","151 R0","150 R4","15 R1"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"457 ÷ 3 = ?","options":["152 R1","152 R0","151 R4","15 R7"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"368 ÷ 3 = ?","options":["122 R2","122 R0","123 R1","12 R2"],"answer":0},
-      {"type":"mc","mode":"normal","level":"hard","q":"4,858 ÷ 4 = ?","options":["1214 R2","1214 R0","1213 R6","121 R2"],"answer":0}
+      {"type":"num","mode":"normal","level":"easy","q":"68 ÷ 4 = ?","answer":"17","calc":"68/4","explain":"68 ÷ 4 = 17, because 17 × 4 = 68."},
+      {"type":"num","mode":"normal","level":"medium","q":"778 ÷ 2 = ?","answer":"389","calc":"778/2","explain":"778 ÷ 2 = 389, because 389 × 2 = 778."},
+      {"type":"mc","mode":"normal","level":"medium","q":"454 ÷ 3 = ?","options":["151 R1","151 R0","150 R4","15 R1"],"answer":0,"explain":"454 ÷ 3 = 151 R1, because 151 × 3 = 453 and 454 − 453 = 1."},
+      {"type":"mc","mode":"normal","level":"medium","q":"457 ÷ 3 = ?","options":["152 R1","152 R0","151 R4","15 R7"],"answer":0,"explain":"457 ÷ 3 = 152 R1, because 152 × 3 = 456 and 457 − 456 = 1."},
+      {"type":"mc","mode":"normal","level":"medium","q":"368 ÷ 3 = ?","options":["122 R2","122 R0","123 R1","12 R2"],"answer":0,"explain":"368 ÷ 3 = 122 R2, because 122 × 3 = 366 and 368 − 366 = 2."},
+      {"type":"mc","mode":"normal","level":"hard","q":"4,858 ÷ 4 = ?","options":["1214 R2","1214 R0","1213 R6","121 R2"],"answer":0,"explain":"4858 ÷ 4 = 1214 R2, because 1214 × 4 = 4856 and 4858 − 4856 = 2."}
     ] },
-  {"id":"Y7103","lesson":10,"boss":true,"concept":"Challenge: the train seats","explain":"A train has 784 seats in 7 cars with the same number in each: 784 ÷ 7 = 112 (700 ÷ 7 = 100, 84 ÷ 7 = 12). Check: 112 × 7 = 784.",
+  {"id":"Y7103","lesson":10,"boss":true,"concept":"Challenge: the train seats","explain":"Split 784 into 700 + 84: 700 ÷ 7 = 100 and 84 ÷ 7 = 12, so 112. Check: 112 × 7 = 784.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"A train has 784 seats for passengers. There are 7 cars and each car has the same number of seats. How many passengers can sit in each car?","answer":"112","calc":"784/7","fig":"vehFig","pic":{"items":[["train",""]]}},
-      {"type":"mc","mode":"boss","level":"hard","q":"Which strategy splits 784 ÷ 7 into easy parts?","options":["(700 ÷ 7) + (84 ÷ 7)","(784 ÷ 7) + 7","(700 ÷ 7) × (84 ÷ 7)","784 − 7"],"answer":0,"fig":"vehFig","pic":{"items":[["train",""]]}},
-      {"type":"num","mode":"boss","level":"hard","q":"Check: 112 × 7 = ?","answer":"784","calc":"112*7"}
+      {"type":"num","mode":"boss","level":"hard","q":"A train has 784 seats for passengers. There are 7 cars and each car has the same number of seats. How many passengers can sit in each car?","answer":"112","calc":"784/7","fig":"vehFig","pic":{"items":[["train",""]]},"explain":"784 ÷ 7 = 112."},
+      {"type":"mc","mode":"boss","level":"hard","q":"Which strategy splits 784 ÷ 7 into easy parts?","options":["(700 ÷ 7) + (84 ÷ 7)","(784 ÷ 7) + 7","(700 ÷ 7) × (84 ÷ 7)","784 − 7"],"answer":0,"fig":"vehFig","pic":{"items":[["train",""]]},"explain":"784 = 700 + 84, and 700 ÷ 7 = 100, 84 ÷ 7 = 12."},
+      {"type":"num","mode":"boss","level":"hard","q":"Check: 112 × 7 = ?","answer":"784","calc":"112*7","explain":"112 × 7 = 784."}
     ] },
   /* ---------- Lesson 11 · Division and Multiplication (pages 121-122) ---------- */
-  {"id":"Y7111","lesson":11,"concept":"Where does the first digit go?","explain":"If the first digit of the dividend is smaller than the divisor, start with the first two digits and the quotient has fewer digits: 346 ÷ 5: 3 < 5, so 34 ÷ 5 = 6 → 69 R1 (2 digits). 834 ÷ 3: 8 ≥ 3 → 278 (3 digits).",
+  {"id":"Y7111","lesson":11,"concept":"Where does the first digit go?","explain":"If the first digit of the dividend is smaller than the divisor, start with the first two digits: the quotient has one digit fewer.",
     "variants": [
-      {"type":"mc","mode":"normal","level":"medium","q":"Which division will have a quotient with fewer digits than the dividend?","options":["346 ÷ 5","834 ÷ 3","939 ÷ 3","4,590 ÷ 3"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"346 ÷ 5 = ?","options":["69 R1","69 R0","70 R4","609 R1"],"answer":0},
-      {"type":"num","mode":"normal","level":"medium","q":"1,266 ÷ 6 = ?","answer":"211","calc":"1266/6"},
-      {"type":"num","mode":"normal","level":"medium","q":"834 ÷ 3 = ?","answer":"278","calc":"834/3"},
-      {"type":"mc","mode":"normal","level":"hard","q":"1,429 ÷ 7 = ?","options":["204 R1","24 R1","204 R0","203 R8"],"answer":0},
-      {"type":"num","mode":"normal","level":"medium","q":"4,590 ÷ 3 = ?","answer":"1530","calc":"4590/3"},
-      {"type":"mc","mode":"normal","level":"hard","q":"562 ÷ 8 = ?","options":["70 R2","7 R2","70 R0","71 R6"],"answer":0}
+      {"type":"mc","mode":"normal","level":"medium","q":"Which division will have a quotient with fewer digits than the dividend?","options":["346 ÷ 5","834 ÷ 3","939 ÷ 3","4,590 ÷ 3"],"answer":0,"explain":"In 346 ÷ 5 the first digit 3 is smaller than 5, so we start with 34: the quotient has 2 digits."},
+      {"type":"mc","mode":"normal","level":"medium","q":"346 ÷ 5 = ?","options":["69 R1","69 R0","70 R4","609 R1"],"answer":0,"explain":"346 ÷ 5 = 69 R1, because 69 × 5 = 345 and 346 − 345 = 1."},
+      {"type":"num","mode":"normal","level":"medium","q":"1,266 ÷ 6 = ?","answer":"211","calc":"1266/6","explain":"1,266 ÷ 6 = 211, because 211 × 6 = 1,266."},
+      {"type":"num","mode":"normal","level":"medium","q":"834 ÷ 3 = ?","answer":"278","calc":"834/3","explain":"834 ÷ 3 = 278, because 278 × 3 = 834."},
+      {"type":"mc","mode":"normal","level":"hard","q":"1,429 ÷ 7 = ?","options":["204 R1","24 R1","204 R0","203 R8"],"answer":0,"explain":"1429 ÷ 7 = 204 R1, because 204 × 7 = 1428 and 1429 − 1428 = 1."},
+      {"type":"num","mode":"normal","level":"medium","q":"4,590 ÷ 3 = ?","answer":"1530","calc":"4590/3","explain":"4,590 ÷ 3 = 1,530, because 1,530 × 3 = 4,590."},
+      {"type":"mc","mode":"normal","level":"hard","q":"562 ÷ 8 = ?","options":["70 R2","7 R2","70 R0","71 R6"],"answer":0,"explain":"562 ÷ 8 = 70 R2, because 70 × 8 = 560 and 562 − 560 = 2."}
     ] },
-  {"id":"Y7112","lesson":11,"boss":true,"concept":"Challenge: check with multiplication","explain":"Multiply the quotient by the divisor and add the remainder: you must get the dividend. 277 ÷ 3 = 92 R1, because 92 × 3 + 1 = 277. 562 ÷ 8 = 70 R2, because 70 × 8 + 2 = 562.",
+  {"id":"Y7112","lesson":11,"boss":true,"concept":"Challenge: check with multiplication","explain":"Check a division: quotient × divisor + remainder = dividend.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"Check 277 ÷ 3 = 92 R1: 92 × 3 + 1 = ?","answer":"277","calc":"92*3+1"},
-      {"type":"num","mode":"boss","level":"hard","q":"Check 562 ÷ 8 = 70 R2: 70 × 8 + 2 = ?","answer":"562","calc":"70*8+2"},
-      {"type":"mc","mode":"boss","level":"hard","q":"How do you check 939 ÷ 3 = 313?","options":["313 × 3 = 939","313 + 3 = 316","939 × 3","939 − 313"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"939 ÷ 3 = ?","answer":"313","calc":"939/3"}
+      {"type":"num","mode":"boss","level":"hard","q":"Check 277 ÷ 3 = 92 R1: 92 × 3 + 1 = ?","answer":"277","calc":"92*3+1","explain":"92 × 3 + 1 = 277."},
+      {"type":"num","mode":"boss","level":"hard","q":"Check 562 ÷ 8 = 70 R2: 70 × 8 + 2 = ?","answer":"562","calc":"70*8+2","explain":"70 × 8 + 2 = 562."},
+      {"type":"mc","mode":"boss","level":"hard","q":"How do you check 939 ÷ 3 = 313?","options":["313 × 3 = 939","313 + 3 = 316","939 × 3","939 − 313"],"answer":0,"explain":"Multiply the quotient by the divisor: 313 × 3 = 939."},
+      {"type":"num","mode":"boss","level":"hard","q":"939 ÷ 3 = ?","answer":"313","calc":"939/3","explain":"939 ÷ 3 = 313, because 313 × 3 = 939."}
     ] }
 ];
 })();

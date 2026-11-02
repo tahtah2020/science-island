@@ -3,7 +3,9 @@
 #   math/questions_mg4u6.js + math/questions_mg4u6_ar.js   «Factors and Multiples / العوامل والمضاعفات»
 # Run from the site folder: python3 math/tools/gen_mg4u56.py .   (edit here, never the four files by hand)
 # Each text is ('English', 'Arabic'); a plain string is the same in both (numbers, equations).
-import json, re, sys
+import json, re, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import g4_explain
 OUT = sys.argv[1]
 
 def wrap(s):
@@ -52,7 +54,7 @@ def LINE(max_, steps, bus=False, stop=None, upto=None):
 def tr(v, ar):
     out = {}
     for key, val in v.items():
-        if key == 'q': out[key] = L(val, ar)
+        if key in ('q', 'explain'): out[key] = L(val, ar)
         elif key in ('options', 'left', 'right'): out[key] = [L(o, ar) for o in val]
         elif key == 'unit': out[key] = val[1] if ar else val[0]
         elif key == 'pic' and 'items' in val: out[key] = {'items': [[a[0], (a[1][1] if ar else a[1][0]) if isinstance(a[1], tuple) else a[1]] for a in val['items']]}
@@ -65,7 +67,9 @@ YES, NO = ('Yes', 'نعم'), ('No', 'لا')
 COMM, ZERO, IDEN, ASSO = ('The Commutative Property', 'خاصية الإبدال'), ('The Zero Property', 'خاصية الضرب في صفر'), ('The Identity Property', 'خاصية العنصر المحايد'), ('The Associative Property', 'خاصية الدمج')
 
 UNITS_IDEAS = {5: [], 6: []}
-def idea(u, i, lesson, concept, explain, variants): UNITS_IDEAS[u].append(dict(id=i, lesson=lesson, concept=concept, explain=explain, variants=variants))
+def idea(u, i, lesson, concept, explain, variants):
+    explain = g4_explain.prepare(i, explain, variants)   # short rule for the idea, own explanation for each question
+    UNITS_IDEAS[u].append(dict(id=i, lesson=lesson, concept=concept, explain=explain, variants=variants))
 
 # =====================================================================================================
 # UNIT 5 · Multiplication as a Relationship · ideas Y + lesson + number (Y11 … Y74)
