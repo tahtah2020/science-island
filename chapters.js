@@ -419,8 +419,14 @@ window.CHAPTERS = [
     cover: 'studies/assets/map_sg4u2.svg', quizBg: 'studies/assets/bg_sg4u2.svg',
     lessonsAr: ['كيف تبدو مدينتنا؟', 'تطور مدينتنا', 'الأماكن الخدمية في مدينتنا', 'مدينتنا في المستقبل', 'أين تقع محافظتي؟'] },
 
-  { id: 'sg4u3', subject: 'studies', grade: 'g4', n: 3, title: 'Egypt, Our Homeland', titleAr: 'مصر وطننا', icon: '🇪🇬', tint: '#e2f4dc', ready: false,
+  { id: 'sg4u3', subject: 'studies', grade: 'g4', n: 3, title: 'Egypt, Our Homeland', titleAr: 'مصر وطننا', icon: '🇪🇬', tint: '#e2f4dc', ready: true, bookOrder: true,
     lessons: ['The Flag of Our Homeland Egypt', 'Egypt on the World Map', 'The Landforms of Our Beautiful Land', 'Egypt’s Natural and Human Resources', 'Historical Landmarks in Egypt'],
+    questionsAr: 'studies/questions_sg4u3_ar.js', art: 'studies/g4_art.js',
+    game: { href: 'studies-egyptland.html', name: 'Journey Across Egypt', nameAr: 'رحلة في ربوع مصر', icon: '🇪🇬',
+      hint: 'Tap the colours of the flag, find Egypt’s borders, its mountains, lakes and plains, sort its treasures and visit its great landmarks.',
+      hintAr: 'اضغط على ألوان العلم، وحدّد حدود مصر وجبالها وبحيراتها وسهولها، وصنّف ثرواتها، وزُر معالمها التاريخية.' },
+    map: { img: 'studies/assets/map_sg4u3.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'studies/assets/map_sg4u3.svg', quizBg: 'studies/assets/bg_sg4u3.svg',
     lessonsAr: ['عَلَم وطننا مصر', 'مصر على خريطة العالم', 'تضاريس أرضنا الجميلة', 'ثروات مصر الطبيعية والبشرية', 'المَعالِم التاريخية في مصر'] },
 
   /* Social Studies · Grade 5 · Term 1 (the school book «مصر حكاية وطن وحضارة» 2026/2027). Units, one Arabic book for both tracks (lang { lang: 'ar', ar: 'ar' }).

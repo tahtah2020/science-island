@@ -15,6 +15,13 @@
      servicePlan  (tap) ids school · hospital · police · fire · market · post
      thenNow      (tap) ids old · new     q.pic = { set: 'train' | 'lamp' | 'phone', flip: true puts the new one on the left }
      regions      (tap) ids delta · valley · border     Egypt in three colours: Delta, the Nile valley, the desert borders
+   Unit 3 «مصر وطننا»:
+     egFlag       (tap) ids fRed · fWhite · fBlack · fEagle                                     the flag, drawn big; the base of the eagle has no word
+     egBorders    (tap) ids brMed · brRed · brPal · brSud · brLib · brNile                       Egypt and what borders it, no names
+     egRelief     (tap) ids rfSinai · rfCath · rfShad · rfRedMts · rfGilf · rfQatt · rfNasser · rfBard   landforms on the map, no names
+     egLand · egRes · egMarks (tap) six round photos each (the owner's pictures, studies/assets/eg_*.jpg + civ_steppyr / civ_theater), ids in EGPH
+     egPhoto      (fig) one big photo, q.pic.id (assembly · stadium · class or any id of EGPH)
+     The Unit 3 pictures' .rings() give the ring markup of each id (the game shifts it with the picture).
    Texts are Arabic (the book is Arabic for both tracks). Screen-reader names describe the picture, never the answer.
    window.S4ART = the pieces the game and the map script reuse. */
 (function () {
@@ -352,6 +359,131 @@
   /* ---------- a compass for the map and the game ---------- */
   const compass = (r = 40) => `<circle r="${r}" fill="#fff6dc" stroke="#a8864c" stroke-width="${f1(r / 9)}"/><circle r="${f1(r * .82)}" fill="none" stroke="#a8864c" stroke-width="1.4" stroke-dasharray="2 4"/><path d="M0 ${-r * .75}L${r * .16} 0L0 ${r * .75}L${-r * .16} 0Z" fill="#cfd8e0" stroke="#8aa5b8" stroke-width="1.4"/><path d="M0 ${-r * .75}L${r * .16} 0L${-r * .16} 0Z" fill="#e2273a"/><circle r="${f1(r * .07)}" fill="#3a5c75"/>`;
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { compassTown, sunFacing, schoolPlan, mapParts, mapCities, pathPlans, skyViews, mapKinds, sourceCards, landUse, servicePlan, thenNow, regions });
-  window.S4ART = { zone, SERV, servPos, OLD, NEW, I, icon: I, badge, at, txt, hot, ringRect, ringEl, compass, townPos, TOWN, TC, mx, my, EGYPT, CITIES, KEY, PANELS, SP, arrow, INK, PAPER, f1, esc };
+
+  /* ================= Unit 3 «مصر وطننا» ================= */
+  /* 1 · egFlag: the flag of Egypt, big (340 x 230). ids fRed · fWhite · fBlack · fEagle; no word on it (the base of the eagle carries a plain band, no text) */
+  const EAGLE = `<g fill="#e0a526" stroke="#9a6a10" stroke-width="1.6" stroke-linejoin="round">`
+    + `<path d="M0 -24C-6 -24 -9 -19 -8 -14L-14 -12L-8 -10L-8 -4C-20 -10 -32 -20 -40 -30C-38 -14 -30 0 -18 8L-12 10L-12 22L12 22L12 10L18 8C30 0 38 -14 40 -30C32 -20 20 -10 8 -4L8 -14C9 -19 6 -24 0 -24Z"/>`
+    + `<path d="M-10 4H10V20H-10Z" fill="#fff3cc"/><path d="M-6 6V18M0 6V18M6 6V18" stroke="#e0a526" stroke-width="2"/>`
+    + `<path d="M-22 26H22L18 33H-18Z"/><path d="M-12 22L-16 26M12 22L16 26"/></g><circle cx="-2" cy="-18" r="1.6" fill="#5a3a08"/>`;
+  function egFlag(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="230" rx="14" fill="${PAPER}"/>`;
+    s += `<rect x="18" y="20" width="304" height="192" rx="6" fill="#fff" stroke="#c9b48a" stroke-width="2"/>`
+      + `<rect x="22" y="24" width="296" height="61" fill="#ce1126"/><rect x="22" y="85" width="296" height="62" fill="#fff"/><rect x="22" y="147" width="296" height="61" fill="#151515"/>`
+      + at(170, 117, .82, EAGLE);
+    if (!plain) s += hot('fRed', 'الشريط العلوي من العلم', ringRect(22, 24, 296, 61, 6)) + hot('fWhite', 'الشريط الأوسط من العلم', ringRect(22, 85, 296, 62, 6)) + hot('fBlack', 'الشريط السفلي من العلم', ringRect(22, 147, 296, 61, 6)) + hot('fEagle', 'الرسم الذهبي في وسط العلم', ringEl(170, 115, 42, 30));
+    return wrap(340, 230, 'علم مستطيل أفقي من ثلاثة أشرطة، وفي وسطه رسم ذهبي', s, plain);
+  }
+  egFlag.rings = () => ({ fRed: ringRect(22, 24, 296, 61, 6), fWhite: ringRect(22, 85, 296, 62, 6), fBlack: ringRect(22, 147, 296, 61, 6), fEagle: ringEl(170, 115, 42, 30) });
+
+  /* the two Unit 3 maps share one projection (340 x 290, latitude 32.8 to 21.3) */
+  const LB0 = 24.2, LT0 = 32.8, KB = 23.5;
+  const bx = lon => 8 + (lon - LB0) * KB, by = lat => 12 + (LT0 - lat) * KB;
+  const bpoly = pts => pts.map(([lo, la], i) => (i ? 'L' : 'M') + f1(bx(lo)) + ' ' + f1(by(la))).join('') + 'Z';
+  const bline = pts => pts.map(([lo, la], i) => (i ? 'L' : 'M') + f1(bx(lo)) + ' ' + f1(by(la))).join('');
+  const LIBYA = [[24.0, 33], [24.0, 31.75], [25.15, 31.57], [25.0, 22.0], [24.0, 22.0]];
+  const SUDAN = [[24.0, 22.0], [36.9, 22.0], [37.3, 21.3], [24.0, 21.3]];
+  const PALESTINE = [[34.27, 31.23], [34.9, 29.5], [35.1, 29.55], [35.5, 31.5], [35.6, 32.8], [34.9, 32.8]];
+  const ARABIA = [[35.1, 29.55], [35.45, 28.1], [36.6, 25.9], [37.4, 24.3], [38.2, 23.0], [38.2, 32.8], [35.6, 32.8], [35.5, 31.5]];
+  function baseMap(id, inner) {
+    let s = `<rect x="4" y="4" width="332" height="282" rx="10" fill="#cfeaf8" stroke="#3a5c75" stroke-width="2"/><clipPath id="${id}"><rect x="4" y="4" width="332" height="282" rx="10"/></clipPath><g clip-path="url(#${id})">`;
+    s += `<path d="${bpoly(LIBYA)}" fill="#efd9b4" stroke="#b49a6c" stroke-width="1.2"/><path d="${bpoly(SUDAN)}" fill="#e6d3ec" stroke="#a88fb4" stroke-width="1.2"/>`
+      + `<path d="${bpoly(PALESTINE)}" fill="#d9ecc4" stroke="#94b07a" stroke-width="1.2"/><path d="${bpoly(ARABIA)}" fill="#ece8df" stroke="#bfb6a3" stroke-width="1"/>`;
+    s += inner + `</g>`;
+    s += `<g transform="translate(312 40)"><path d="M0 -16L5 -2L0 -5L-5 -2Z" fill="${INK}"/><path d="M0 -16V10" stroke="${INK}" stroke-width="1.6"/>${txt(0, 22, 'ش', { fs: 11 })}</g>`;
+    return s;
+  }
+  const NILE3 = [[32.9, 24.05], [32.65, 25.7], [32.7, 26.15], [31.7, 26.55], [31.2, 27.2], [30.8, 28.1], [31.1, 29.07], [31.25, 30.05]];
+  const nileRiver = w => `<path d="${bline(NILE3)}" fill="none" stroke="#2f8fd0" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`
+    + `<path d="${bline([[31.25, 30.05], [30.9, 30.6], [30.4, 31.45]])}M${f1(bx(31.25))} ${f1(by(30.05))}L${f1(bx(31.5))} ${f1(by(30.7))}L${f1(bx(31.8))} ${f1(by(31.5))}" fill="none" stroke="#2f8fd0" stroke-width="${w * .75}" stroke-linecap="round"/>`
+    + `<path d="${bpoly([[32.88, 23.97], [32.55, 23.4], [32.7, 22.7], [31.9, 22.1], [31.4, 22.05], [31.7, 22.7], [32.2, 23.3]])}" fill="#8fd3ee" stroke="#2f8fd0" stroke-width="1.2"/>`;
+
+  /* 2 · egBorders: Egypt and what borders it, no names (340 x 290). ids brMed · brRed · brPal · brSud · brLib · brNile */
+  function egBorders(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="290" rx="14" fill="${PAPER}"/>`;
+    s += baseMap('brClip', `<path d="${bpoly(EGYPT)}" fill="#f6ecae" stroke="#8a6a3a" stroke-width="1.8" stroke-linejoin="round"/>${nileRiver(2.6)}<path d="${bpoly(EGYPT)}" fill="none" stroke="#c0392b" stroke-width="1.4" stroke-dasharray="6 3 1.5 3"/>`);
+    if (!plain) s += hot('brMed', 'البحر في شمال الخريطة', ringRect(bx(26.4), by(32.65), bx(32.6) - bx(26.4), 22, 10)) + hot('brRed', 'البحر الطويل في شرق الخريطة', ringEl(bx(35.7), by(25.3), 16, 36))
+      + hot('brPal', 'الأرض الخضراء في الشمال الشرقي', ringEl(bx(35.05), by(31.6), 13, 22)) + hot('brSud', 'الأرض البنفسجية في الجنوب', ringRect(bx(26), by(21.95), bx(34) - bx(26), 15, 8))
+      + hot('brLib', 'الأرض في الغرب', ringRect(8, by(29), 20, 90, 8)) + hot('brNile', 'الخط الأزرق الذي يجري في وسط الأرض', ringEl(bx(31.3), by(27.4), 14, 30));
+    return wrap(340, 290, 'خريطة مصر وما حولها بلا أسماء: بحر في الشمال، وبحر طويل في الشرق، وأرض خضراء في الشمال الشرقي، وأرض في الغرب، وأرض في الجنوب، وخط أزرق يجري في وسط مصر', s, plain);
+  }
+  egBorders.rings = () => ({ brMed: ringRect(bx(26.4), by(32.65), bx(32.6) - bx(26.4), 22, 10), brRed: ringEl(bx(35.7), by(25.3), 16, 36), brPal: ringEl(bx(35.05), by(31.6), 13, 22), brSud: ringRect(bx(26), by(21.95), bx(34) - bx(26), 15, 8), brLib: ringRect(8, by(29), 20, 90, 8), brNile: ringEl(bx(31.3), by(27.4), 14, 30) });
+
+  /* 3 · egRelief: some landforms of Egypt on the map, no names (340 x 290).
+     ids rfCath (the highest peak, south Sinai) · rfRedMts (mountains by the Red Sea) · rfGilf (a plateau, south-west) · rfQatt (a low area, north-west)
+         rfSinai (land with water on three sides) · rfShad (an island in the Red Sea) · rfNasser (a lake in the south) · rfBard (a lake on the north coast) */
+  function egRelief(q) {
+    const plain = !!(q && q.pic && q.pic.plain);
+    let s = plain ? '' : `<rect width="340" height="290" rx="14" fill="${PAPER}"/>`;
+    const tri = (lo, la, k) => { const x = bx(lo), y = by(la); return `<path d="M${f1(x - 7 * k)} ${f1(y + 5 * k)}L${f1(x)} ${f1(y - 7 * k)}L${f1(x + 7 * k)} ${f1(y + 5 * k)}Z" fill="#9a5b34" stroke="#6b3a1c" stroke-width="1" stroke-linejoin="round"/>`; };
+    let inner = `<clipPath id="rfEg"><path d="${bpoly(EGYPT)}"/></clipPath><path d="${bpoly(EGYPT)}" fill="#f6ecae" stroke="#8a6a3a" stroke-width="1.8" stroke-linejoin="round"/>`;
+    inner += `<g clip-path="url(#rfEg)"><path d="${bpoly([[25.0, 22.0], [27.0, 22.0], [27.1, 23.6], [26.0, 24.2], [25.0, 24.0]])}" fill="#d9a86a"/>`
+      + `<path d="${bpoly([[32.6, 27.9], [33.8, 27.3], [34.4, 26.0], [34.9, 25.1], [35.4, 24.0], [36.2, 22.6], [36.9, 22.0], [35.2, 22.0], [34.3, 23.2], [33.5, 24.6], [32.8, 26.2], [32.4, 27.4]])}" fill="#c58d52"/>`
+      + `<path d="${bpoly([[34.9, 29.5], [34.55, 28.5], [34.25, 27.75], [33.9, 28.2], [33.6, 28.8], [33.0, 29.6], [33.6, 29.85], [34.3, 29.9]])}" fill="#c58d52"/>`
+      + `<ellipse cx="${f1(bx(27.6))}" cy="${f1(by(29.8))}" rx="${f1(KB * 1.3)}" ry="${f1(KB * .38)}" fill="#5fb36b"/>`
+      + `<path d="${bline(NILE3.concat([[31.25, 30.05]]))}" fill="none" stroke="#b8dc8f" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>`
+      + `<path d="${bpoly([[30.2, 31.5], [31.9, 31.55], [31.4, 30.4], [30.9, 30.1]])}" fill="#b8dc8f"/></g>`;
+    inner += nileRiver(2.2);
+    inner += [[33.3, 26.9], [33.9, 25.6], [34.6, 24.4], [35.3, 23.2]].map(([lo, la]) => tri(lo, la, 1)).join('') + tri(33.95, 28.55, 1.3);
+    inner += `<ellipse cx="${f1(bx(33.15))}" cy="${f1(by(31.12))}" rx="11" ry="3.2" fill="#8fd3ee" stroke="#2f8fd0" stroke-width="1"/>`
+      + `<ellipse cx="${f1(bx(34.02))}" cy="${f1(by(27.5))}" rx="4.6" ry="2.4" fill="#f6ecae" stroke="#8a6a3a" stroke-width="1" transform="rotate(-40 ${f1(bx(34.02))} ${f1(by(27.5))})"/>`;
+    inner += `<path d="${bpoly(EGYPT)}" fill="none" stroke="#c0392b" stroke-width="1.3" stroke-dasharray="6 3 1.5 3"/>`;
+    s += baseMap('rfClip', inner);
+    if (!plain) s += hot('rfSinai', 'أرض مثلثة في الشمال الشرقي بين خليجين', ringEl(bx(33.75), by(30.2), 20, 13)) + hot('rfCath', 'المثلث البني الكبير في جنوب الأرض المثلثة', ringEl(bx(33.95), by(28.55), 12, 12))
+      + hot('rfShad', 'جزيرة صغيرة في البحر الشرقي', ringEl(bx(34.12), by(27.45), 9, 9)) + hot('rfRedMts', 'مثلثات بنية بجوار البحر الشرقي', ringEl(bx(34.2), by(24.9), 18, 30))
+      + hot('rfGilf', 'منطقة بنية في الركن الجنوبي الغربي', ringEl(bx(25.9), by(23.0), 24, 22)) + hot('rfQatt', 'منطقة خضراء داكنة في الشمال الغربي', ringEl(bx(27.6), by(29.8), 34, 13))
+      + hot('rfNasser', 'بحيرة زرقاء في الجنوب', ringEl(bx(32.3), by(23.0), 15, 22)) + hot('rfBard', 'بحيرة صغيرة على الساحل الشمالي', ringEl(bx(33.15), by(31.12), 15, 8));
+    return wrap(340, 290, 'خريطة مصر بألوان الارتفاع بلا أسماء: مثلثات بنية لجبال، ومنطقة بنية في الجنوب الغربي، ومنطقة خضراء داكنة في الشمال الغربي، وأرض مثلثة في الشمال الشرقي، وجزيرة صغيرة، وبحيرتان', s, plain);
+  }
+  egRelief.rings = () => ({ rfSinai: ringEl(bx(33.75), by(30.2), 20, 13), rfCath: ringEl(bx(33.95), by(28.55), 12, 12), rfShad: ringEl(bx(34.12), by(27.45), 9, 9), rfRedMts: ringEl(bx(34.2), by(24.9), 18, 30), rfGilf: ringEl(bx(25.9), by(23.0), 24, 22), rfQatt: ringEl(bx(27.6), by(29.8), 34, 13), rfNasser: ringEl(bx(32.3), by(23.0), 15, 22), rfBard: ringEl(bx(33.15), by(31.12), 15, 8) });
+
+  /* 4 · the owner's pictures (5 Nov 2026, studies/assets/eg_*.jpg: the generator's border cut off, square, 560 px, no captions;
+         civ_steppyr / civ_theater are the owner's Grade 5 pictures). Round photos in a card: 4 in 2 rows (340 x 250) or 6 in 2 rows. */
+  const EGPH = {
+    egLand: ['lpMount', 'lpValley', 'lpLake', 'lpMed', 'lpRed', 'lpSimbel'],
+    egRes: ['rsNile', 'rsFarm', 'rsSolar', 'rsMine', 'rsOil', 'rsPeople'],
+    egMarks: ['mkZoser', 'mkGiza', 'mkKarnak', 'mkTheater', 'mkAzhar', 'mkSimbel']
+  };
+  const EGFILE = { lpMount: 'eg_mountain', lpValley: 'eg_valley', lpLake: 'eg_lake', lpMed: 'eg_medsea', lpRed: 'eg_redsea', lpSimbel: 'eg_abusimbel',
+    rsNile: 'eg_valley', rsFarm: 'eg_farm', rsSolar: 'eg_solar', rsMine: 'eg_mine', rsOil: 'eg_oilrig', rsPeople: 'eg_workers',
+    mkZoser: 'civ_steppyr', mkGiza: 'eg_pyramids', mkKarnak: 'eg_karnak', mkTheater: 'civ_theater', mkAzhar: 'eg_azhar', mkSimbel: 'eg_abusimbel',
+    assembly: 'eg_assembly', stadium: 'eg_stadium', class: 'eg_class' };
+  const EGNAME = { lpMount: 'جبال صخرية عالية', lpValley: 'نهر بين شريطين أخضرين والصحراء حولهما', lpLake: 'مسطح ماء هادئ عليه قوارب صيد', lpMed: 'شاطئ رمله أبيض واسع وأمواج هادئة', lpRed: 'شاطئ وشعاب مرجانية وجبال قريبة', lpSimbel: 'معبد منحوت في الجبل أمامه أربعة تماثيل جالسة',
+    rsNile: 'نهر بين شريطين أخضرين', rsFarm: 'فلاح يعمل في حقل أخضر', rsSolar: 'ألواح زرقاء وأبراج بريشات في الصحراء', rsMine: 'أكوام صخور ملونة وآلات حفر', rsOil: 'برج حفر حديدي في الصحراء', rsPeople: 'خمسة أشخاص بملابس عمل مختلفة',
+    mkZoser: 'هرم من درجات فوق بعضها', mkGiza: 'ثلاثة أهرامات وتمثال أسد برأس إنسان', mkKarnak: 'أعمدة حجرية ضخمة منقوشة', mkTheater: 'مدرجات حجرية على شكل نصف دائرة', mkAzhar: 'مسجد له صحن واسع ومآذن', mkSimbel: 'معبد منحوت في الجبل أمامه أربعة تماثيل جالسة' };
+  const EGTINT = ['#f3e7d8', '#dff1f7', '#fdf3c8', '#fbe3e8', '#e1f3ec', '#e8e6fb'];
+  const egSrc = id => `studies/assets/${EGFILE[id]}.jpg`;
+  function photoSet(key, label) {
+    const ids = EGPH[key];
+    function pic(q) {
+      const plain = !!(q && q.pic && q.pic.plain);
+      let s = plain ? '' : `<rect width="340" height="250" rx="14" fill="#fbf6e6"/>`;
+      ids.forEach((id, i) => {
+        const [x, y] = CSLOT6[i];
+        s += `<g transform="translate(${x} ${y})"><clipPath id="egc-${id}"><circle r="${CR6}"/></clipPath><circle r="${CR6}" fill="${EGTINT[i]}"/>`
+          + `<image href="${egSrc(id)}" x="${-CR6}" y="${-CR6}" width="${CR6 * 2}" height="${CR6 * 2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#egc-${id})"/>`
+          + `<circle r="${CR6}" fill="none" stroke="#fff" stroke-width="3"/><circle r="${CR6}" fill="none" stroke="#d8c9a6" stroke-width="1.4"/></g>`;
+      });
+      if (!plain) ids.forEach((id, i) => { const [x, y] = CSLOT6[i]; s += hot(id, EGNAME[id], ringEl(x, y, CR6, CR6)); });
+      return wrap(340, 250, label, s, plain);
+    }
+    pic.rings = () => { const o = {}; ids.forEach((id, i) => { o[id] = ringEl(CSLOT6[i][0], CSLOT6[i][1], CR6, CR6); }); return o; };
+    return pic;
+  }
+  const CSLOT6 = [[62, 66], [170, 66], [278, 66], [62, 184], [170, 184], [278, 184]], CR6 = 46;
+  const egLand = photoSet('egLand', 'ست صور مستديرة: جبال، ونهر بين حقول، وبحيرة، وشاطئ واسع، وشاطئ ضيق أمام الجبال، ومعبد منحوت في الجبل');
+  const egRes = photoSet('egRes', 'ست صور مستديرة: نهر بين حقول، وفلاح في حقل، وألواح وأبراج رياح، ومنجم، وبرج حفر، وأشخاص يعملون');
+  const egMarks = photoSet('egMarks', 'ست صور مستديرة لمبانٍ قديمة: هرم مدرج، وأهرامات وتمثال، وأعمدة منقوشة، ومدرجات نصف دائرية، ومسجد، ومعبد في الجبل');
+  /* 5 · egPhoto (fig): one of the owner's pictures, big (340 x 270); q.pic.id = a picture name above (assembly, stadium, class, lpMed, rsPeople…) */
+  function egPhoto(q) {
+    const plain = !!(q && q.pic && q.pic.plain), id = (q && q.pic && q.pic.id) || 'assembly';
+    let s = plain ? '' : `<rect width="340" height="270" rx="14" fill="#fbf6e6"/>`;
+    s += `<clipPath id="egp-${id}"><rect x="45" y="10" width="250" height="250" rx="18"/></clipPath><image href="${egSrc(id)}" x="45" y="10" width="250" height="250" clip-path="url(#egp-${id})"/><rect x="45" y="10" width="250" height="250" rx="18" fill="none" stroke="#d8c9a6" stroke-width="2"/>`;
+    return wrap(340, 270, EGNAME[id] || 'صورة مرسومة', s, plain);
+  }
+
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { compassTown, sunFacing, schoolPlan, mapParts, mapCities, pathPlans, skyViews, mapKinds, sourceCards, landUse, servicePlan, thenNow, regions, egFlag, egBorders, egRelief, egLand, egRes, egMarks, egPhoto });
+  window.S4ART = { EGPH, EGFILE, EGNAME, egSrc, egFlag, egBorders, egRelief, bx, by, zone, SERV, servPos, OLD, NEW, I, icon: I, badge, at, txt, hot, ringRect, ringEl, compass, townPos, TOWN, TC, mx, my, EGYPT, CITIES, KEY, PANELS, SP, arrow, INK, PAPER, f1, esc };
 })();

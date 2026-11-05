@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-05', title: 'دراسات الصف الرابع: الوحدة الثالثة «مصر وطننا»',
+    items: [
+      { text: 'أسئلة الدروس الخمسة بترتيب الكتاب (197 صيغة)' },
+      { text: 'لعبة «رحلة في ربوع مصر» بمهمة لكل درس وجولة سرعة' },
+      { text: 'صور العلم والخريطتين مرسومة، وصور المعالم والثروات من صورك', links: [{ label: 'رحلة في ربوع مصر', href: 'studies-egyptland.html', ch: 'sg4u3' }] }
+    ] },
   { date: '2026-11-02', title: 'شرح خاص لكل سؤال في رياضيات الصف الرابع (الوحدات 5-8)',
     items: [
       { text: 'الشرح تحت كل سؤال صار عن السؤال نفسه: حل خطوة بخطوة للمسائل، وقاعدة قصيرة لأسئلة الاختيار' }

@@ -83,3 +83,7 @@ build('sg5u2', rose(990, 1010, 1.5) + bld(190, 1000, 1.7, 'museum') + bld(1000, 
   `${bld(300, 760, 2.4, 'museum')}${bld(1180, 770, 2.2, 'house')}${bld(760, 770, 2, 'market')}`);
 build('sg5u3', rose(990, 1010, 1.5) + bld(190, 1000, 1.7, 'factory') + bld(1000, 280, 1.6, 'house') + bld(250, 330, 1.6, 'market') + bld(660, 1140, 1.5, 'factory') + bld(1060, 480, 1.4, 'school'),
   `${bld(300, 760, 2.4, 'factory')}${bld(1180, 770, 2.2, 'house')}${bld(760, 770, 2, 'market')}`);
+/* Unit 3 «مصر وطننا»: flags of Egypt on poles (three plain bands; the eagle is only in the game picture) */
+const flagPole = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cy="60" rx="30" ry="8" fill="#000" opacity=".08"/><rect x="-3" y="-70" width="6" height="130" rx="3" fill="#9aa6ae"/><circle cy="-72" r="5" fill="#f2b134"/><path d="M3 -66h56v14h-56z" fill="#ce1126"/><path d="M3 -52h56v14h-56z" fill="#fff" stroke="#ddd" stroke-width=".8"/><path d="M3 -38h56v14h-56z" fill="#151515"/><circle cx="31" cy="-45" r="4" fill="#e0a526"/></g>`;
+build('sg4u3', rose(990, 1010, 1.5) + flagPole(190, 980, 2) + bld(1000, 280, 1.6, 'museum') + bld(250, 330, 1.6, 'mosque') + bld(660, 1140, 1.5, 'house') + flagPole(1060, 470, 1.5),
+  `${flagPole(300, 720, 2.6)}${bld(1180, 770, 2.2, 'museum')}${bld(760, 770, 2, 'mosque')}`);

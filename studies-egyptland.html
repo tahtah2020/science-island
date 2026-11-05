@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>رحلة في ربوع مصر · الوحدة 3 · مصر وطننا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261105a">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<noscript>من فضلك شغّل JavaScript لتلعب رحلة في ربوع مصر.</noscript>
+<script src="firebase-config.js?v=20261105a"></script>
+<script src="chapters.js?v=20261105a"></script>
+<script src="common.js?v=20261105a"></script>
+<script src="studies/g4_art.js?v=20261105a"></script>
+<script src="game_kit.js?v=20261105a"></script>
+<script>
+(() => {
+'use strict';
+/* Journey Across Egypt · the game of Unit 3, Egypt, Our Homeland (Social Studies, Grade 4, book pages 70-107). Built on the shared game kit (game_kit.js).
+   Pictures: the flag and the two maps drawn in code (egFlag, egBorders, egRelief of studies/g4_art.js) and the owner's pictures (studies/assets/eg_*.jpg,
+   civ_steppyr, civ_theater) in the six-photo cards egLand / egRes / egMarks, or one photo at a time.
+   Stage 1 (Warm Up): the colours of the flag (lesson 1, page 75), easy taps first.
+   Stage 2 (Missions): 1 the flag, then and now (lesson 1, pages 72-77) · 2 Egypt on the world map (lesson 2, pages 78-83) · 3 the landforms (lesson 3, pages 84-89)
+                       4 natural and human resources (lesson 4, pages 90-97) · 5 the historical landmarks (lesson 5, pages 98-105). Each mission goes from a tap to a choice to a sort.
+   Stage 3 (Speed Round): where is this landmark? (lesson 5, page 99). The book is Arabic for both tracks; every T('English', 'عربي') has both languages.
+   Rule (owner, 25 Oct 2026): the scene is set right before every question, and it never shows the answer. */
+const T = SI.T, G = SI.G, A = S4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, FONT = 'Cairo, Nunito, sans-serif', INK = '#1f3d57';
+const SIZE = { egFlag: 230, egBorders: 290, egRelief: 290, egLand: 250, egRes: 250, egMarks: 250 };
+const sc = { mode: 'set', key: 'egFlag', lines: [], word: '', sub: '' };
+const BASE = `<rect width="${VW}" height="${VH}" rx="14" fill="#eaf3e6"/>`;
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="rtl" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${esc(s)}</text>`;
+const dyOf = key => (VH - SIZE[key]) / 2;
+function render() {
+  const m = sc.mode;
+  if (m === 'set') return BASE + `<g transform="translate(0 ${dyOf(sc.key)})">${D[sc.key]({ pic: { plain: true } })}</g>`;
+  if (m === 'card') {
+    let s = BASE + `<rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#bcd9c9" stroke-width="3"/>`;
+    const n = sc.lines.length, step = n > 3 ? 36 : 44, y0 = 158 - (n - 1) * step / 2;
+    sc.lines.forEach((line, i) => { s += txt(170, y0 + i * step, line, { fs: Math.min(24, Math.floor(290 / (String(line).length * .52))) }); });
+    return s;
+  }
+  if (m === 'photo') {
+    const k = sc.word ? 196 : 236, x = (VW - k) / 2, y = sc.word ? 30 : 32;
+    return BASE + `<rect x="${x - 8}" y="${y - 8}" width="${k + 16}" height="${k + 16}" rx="24" fill="#fff" stroke="#bcd9c9" stroke-width="3"/><clipPath id="phc"><rect x="${x}" y="${y}" width="${k}" height="${k}" rx="18"/></clipPath>`
+      + `<image href="${A.egSrc(sc.sub)}" x="${x}" y="${y}" width="${k}" height="${k}" clip-path="url(#phc)"/>` + (sc.word ? txt(170, 280, sc.word, { fs: Math.min(22, Math.floor(320 / (sc.word.length * .5))) }) : '');
+  }
+  return BASE;
+}
+const g = G4Game({ ch: 'sg4u3', logo: '🇪🇬', title: ['Journey Across Egypt', 'رحلة في ربوع مصر'], sub: ['Unit 3 · Egypt, Our Homeland', 'الوحدة 3 · مصر وطننا'],
+  bg: 'studies/assets/bg_sg4u3.svg', bgc: '#e2f4dc', label: ['A picture, a map or a card for each question', 'صورة أو خريطة أو بطاقة لكل سؤال'], render, view: [VW, VH] });
+const set = (mode, o) => { Object.assign(sc, { mode, key: sc.key, lines: [], word: '', sub: '' }, o || {}); g.paint(); };
+const NAMES = Object.assign({ fRed: 'الشريط العلوي', fWhite: 'الشريط الأوسط', fBlack: 'الشريط السفلي', fEagle: 'الرسم الذهبي في الوسط',
+  brMed: 'البحر في الشمال', brRed: 'البحر في الشرق', brPal: 'الأرض الخضراء في الشمال الشرقي', brSud: 'الأرض في الجنوب', brLib: 'الأرض في الغرب', brNile: 'الخط الأزرق في الوسط',
+  rfSinai: 'الأرض المثلثة في الشمال الشرقي', rfCath: 'المثلث البني الكبير', rfShad: 'الجزيرة الصغيرة', rfRedMts: 'المثلثات البنية بجوار البحر', rfGilf: 'المنطقة البنية في الجنوب الغربي', rfQatt: 'المنطقة الخضراء الداكنة', rfNasser: 'البحيرة في الجنوب', rfBard: 'البحيرة على الساحل الشمالي' }, A.EGNAME);
+const rings = key => { const r = D[key].rings(), dy = dyOf(key); return Object.keys(r).map(id => ({ id, name: NAMES[id], ring: `<g transform="translate(0 ${dy})">${r[id]}</g>` })); };
+async function spotSet(key, id, sayEn, sayAr, hintEn, hintAr, okEn, okAr) {
+  set('set', { key });
+  g.say(T(sayEn, sayAr), 'think');
+  await g.spot(rings(key), id, { hint: T(hintEn, hintAr), ok: T(okEn, okAr) });
+}
+async function ask(sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr) });
+}
+/* a quick sort: one card at a time ([lines, value, why, '@photo'?]) */
+async function sortCards(buttons, cards, prompt) {
+  for (const [lines, side, why, pic] of g.shuffle(cards)) {
+    if (pic && pic[0] === '@') set('photo', { sub: pic.slice(1), word: Array.isArray(lines) ? lines.join(' ') : lines });
+    else set('card', { lines: Array.isArray(lines) ? lines : [lines] });
+    g.say(prompt, 'think');
+    await g.pick({ buttons, correct: side, ok: T(`Yes! ${why[0]}`, `صح! ${why[1]}`), no: T(`Not quite. ${why[0]}`, `${G('قرّبت!', 'قرّبتي!')} ${why[1]}`) });
+  }
+  g.setTray(null);
+}
+const op = (ar, en) => T(en, ar);   // an option: the Arabic book's words, English for the English interface
+
+/* ---------- Stage 1 · Warm Up: the colours of the flag (lesson 1, page 75) ---------- */
+async function stage1() {
+  set('photo', { sub: 'assembly' });
+  g.say(T('Welcome, explorer! Every morning pupils stand in the morning line to salute Egypt’s flag and sing «Biladi, Biladi». Let’s start with the flag!', P('أهلًا يا مستكشف! كل يوم الصبح التلاميذ بيقفوا في طابور الصباح يحيّوا علم مصر ويرددوا «بلادي بلادي». يلا نبدأ بالعلم!', 'أهلًا يا مستكشفة! كل يوم الصبح التلاميذ بيقفوا في طابور الصباح يحيّوا علم مصر ويرددوا «بلادي بلادي». يلا نبدأ بالعلم!')), 'point');
+  await g.next();
+  await spotSet('egFlag', 'fRed', 'The red stands for the blood of the martyrs who gave their lives for the homeland. Tap it.', 'الأحمر بيرمز لدم الشهداء اللي ضحّوا علشان الوطن. اضغط عليه.', 'The top band.', 'الشريط اللي فوق.', 'Red: the blood of the martyrs.', `${kw('الأحمر')}: دم الشهداء.`);
+  await spotSet('egFlag', 'fWhite', 'The white stands for purity, prosperity and peace. Tap it.', 'الأبيض بيرمز للنقاء والرخاء والسلام. اضغط عليه.', 'The middle band.', 'الشريط اللي في النص.', 'White: purity, prosperity and peace.', `${kw('الأبيض')}: النقاء والرخاء والسلام.`);
+  await spotSet('egFlag', 'fBlack', 'The black stands for the times of colonialism Egypt went through. Tap it.', 'الأسود بيرمز لفترات الاستعمار اللي مرّت بيها مصر. اضغط عليه.', 'The bottom band.', 'الشريط اللي تحت.', 'Black: the times of colonialism.', `${kw('الأسود')}: فترات الاستعمار.`);
+  await spotSet('egFlag', 'fEagle', 'In the middle there is a golden eagle, the sign of strength, taken from the eagle of Salah El-Din. Tap it.', 'في النص فيه نسر ذهبي، رمز القوة، ومستوحى من نسر صلاح الدين الأيوبي. اضغط عليه.', 'The golden drawing.', 'الرسم الدهبي.', 'The eagle: the sign of strength.', `${kw('النسر')}: رمز القوة.`);
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 1: the flag then and now (pages 72-77)
+  set('card', { lines: ['الرايات', 'عند المصريين القدماء'] });
+  g.say(T('Mission 1: the Ancient Egyptians were among the first peoples to use flags, to tell their regions and cities apart.', 'المهمة ١: المصريين القدماء كانوا من أوائل الشعوب اللي استخدمت الرايات، علشان يميّزوا أقاليمهم ومدنهم.'), 'point');
+  await g.next();
+  set('card', { lines: ['مملكة الشمال', 'وشعارها…'] });
+  await ask('Ancient Egypt had two kingdoms. What was the sign of the Northern Kingdom?', 'مصر القديمة كانت مملكتين. شعار مملكة الشمال كان إيه؟', [op('نبات البردي', 'The papyrus plant'), op('زهرة اللوتس', 'The lotus flower'), op('النسر', 'The eagle')], op('نبات البردي', 'The papyrus plant'),
+    'A plant, not a flower.', 'نبات، مش زهرة.', 'Papyrus for the north; the lotus for the south.', `${kw('نبات البردي')} للشمال، و${kw('زهرة اللوتس')} للجنوب.`);
+  set('card', { lines: ['الملوك والرايات', 'في المعارك'] });
+  await ask('Why did the kings use flags in battles?', 'الملوك استخدموا الرايات في المعارك ليه؟', [op('لتمييز جيوشهم وتشجيع الجنود', 'To tell their armies apart and cheer the soldiers'), op('لتزيين المعابد', 'To decorate temples'), op('لكتابة أسماء المدن', 'To write the names of cities')], op('لتمييز جيوشهم وتشجيع الجنود', 'To tell their armies apart and cheer the soldiers'),
+    'Think of soldiers in a battle.', 'فكّر في الجنود في المعركة.', 'To tell their armies apart and cheer the soldiers on.', `${kw('لتمييز جيوشهم')} وتشجيع الجنود على القتال.`);
+  set('card', { lines: ['علم مصر الحالي', 'منذ عام…'] });
+  await ask('Egypt’s flag changed more than once in modern times. Since which year do we see today’s flag?', 'علم مصر اتغيّر أكتر من مرة في العصر الحديث. علم مصر الحالي من سنة كام؟', [op('1984م', '1984'), op('1952م', '1952'), op('1958م', '1958')], op('1984م', '1984'),
+    'The latest date on the timeline.', 'آخر تاريخ على الخط الزمني.', 'Since 1984. Before it: 1952, 1958 and 1971.', `من ${kw('1984م')} لحد النهارده.`);
+  set('card', { lines: ['الجمهورية العربية المتحدة'] });
+  await ask('The flag of the United Arab Republic joined which two countries?', 'علم الجمهورية العربية المتحدة جمع أنهي دولتين؟', [op('مصر وسوريا', 'Egypt and Syria'), op('مصر وليبيا', 'Egypt and Libya'), op('مصر والسودان', 'Egypt and Sudan')], op('مصر وسوريا', 'Egypt and Syria'),
+    'Libya came later, in the Federation.', 'ليبيا جت بعدين في الاتحاد.', 'Egypt and Syria (1958-1971).', `${kw('مصر وسوريا')} (1958–1971).`);
+  set('photo', { sub: 'stadium' });
+  const buttons = [{ label: T('We should', 'يجب علينا'), value: 'y', c: 2 }, { label: T('We avoid', 'نتجنبه'), value: 'n', c: 1 }];
+  await sortCards(buttons, [
+    ['نقف باحترام أثناء التحية', 'y', ['We stand with respect.', 'نقف باحترام.']], ['نحافظ على علم بلدنا', 'y', ['We look after our flag.', 'نحافظ على العلم.']],
+    ['نرفع العلم عاليًا بفخر', 'y', ['We raise it high with pride.', 'نرفعه بفخر واعتزاز.']], ['الرسم على العلم', 'n', ['We never draw on the flag.', 'عمرنا ما نرسم على العلم.']],
+    ['رفع العلم وهو ممزق', 'n', ['We never raise a torn flag.', 'مانرفعش علم ممزق.']], ['إلقاء العلم على الأرض', 'n', ['We never throw it on the ground.', 'مانرميش العلم على الأرض.']]],
+    T('Should we, or do we avoid it?', 'يجب علينا ولا نتجنبه؟'));
+}
+async function mission2() {                 // lesson 2: Egypt on the world map (pages 78-83)
+  set('card', { lines: ['الماء ' + '71٪', 'اليابس ' + '29٪'] });
+  g.say(T('Mission 2: water covers about 71% of the Earth and land about 29%. That is why Earth is called the water planet.', 'المهمة ٢: المية حوالي 71٪ من مساحة الكرة الأرضية، واليابس حوالي 29٪. علشان كده الأرض اسمها الكوكب المائي.'), 'point');
+  await g.next();
+  set('card', { lines: ['أكبر القارات مساحة'] });
+  await ask('There are seven continents. Which is the largest?', 'العالم فيه سبع قارات. أكبرهم مين؟', [op('آسيا', 'Asia'), op('إفريقيا', 'Africa'), op('أستراليا', 'Australia')], op('آسيا', 'Asia'),
+    'Australia is the smallest.', 'أستراليا هي الأصغر.', 'Asia is the largest, Australia the smallest.', `${kw('آسيا')} الأكبر، وأستراليا الأصغر.`);
+  set('card', { lines: ['أكبر المحيطات مساحة'] });
+  await ask('There are five oceans. Which is the largest?', 'العالم فيه خمس محيطات. أكبرهم مين؟', [op('المحيط الهادي', 'The Pacific'), op('المحيط الأطلنطي', 'The Atlantic'), op('المحيط المتجمد الشمالي', 'The Arctic')], op('المحيط الهادي', 'The Pacific'),
+    'The Arctic is the smallest.', 'المتجمد الشمالي هو الأصغر.', 'The Pacific is the largest, the Arctic the smallest.', `${kw('الهادي')} الأكبر، والمتجمد الشمالي الأصغر.`);
+  const buttons = [{ label: T('Old World', 'العالم القديم'), value: 'o', c: 1 }, { label: T('New World', 'العالم الجديد'), value: 'n', c: 3 }];
+  await sortCards(buttons, [
+    ['إفريقيا', 'o', ['Known since ancient times.', 'معروفة من القدم.']], ['آسيا', 'o', ['Known since ancient times.', 'معروفة من القدم.']], ['أوروبا', 'o', ['Known since ancient times.', 'معروفة من القدم.']],
+    ['أمريكا الشمالية', 'n', ['Explorers reached it in modern times.', 'وصلها المستكشفون في العصور الحديثة.']], ['أستراليا', 'n', ['Explorers reached it in modern times.', 'وصلها المستكشفون في العصور الحديثة.']],
+    ['القارة القطبية الجنوبية', 'n', ['Explorers reached it in modern times.', 'وصلها المستكشفون في العصور الحديثة.']]],
+    T('Old World or New World?', 'العالم القديم ولا الجديد؟'));
+  set('card', { lines: ['موقع مصر الجغرافي'] });
+  await ask('Where does Egypt lie?', 'مصر بتقع فين؟', [op('في الركن الشمالي الشرقي من إفريقيا', 'In the north-east corner of Africa'), op('في جنوب آسيا', 'In the south of Asia'), op('في قلب أوروبا', 'In the heart of Europe')], op('في الركن الشمالي الشرقي من إفريقيا', 'In the north-east corner of Africa'),
+    'In the heart of the Old World, in Africa.', 'في قلب العالم القديم، في إفريقيا.', 'In the north-east corner of Africa.', `في ${kw('الركن الشمالي الشرقي من إفريقيا')}.`);
+  await spotSet('egBorders', 'brMed', 'Now the borders. Tap the sea to the north of Egypt.', 'دلوقتي الحدود. اضغط على البحر اللي في شمال مصر.', 'At the top of the map.', 'فوق في الخريطة.', 'The Mediterranean Sea.', `${kw('البحر المتوسط')}.`);
+  await spotSet('egBorders', 'brSud', 'Tap the country to the south of Egypt.', 'اضغط على الدولة اللي جنوب مصر.', 'At the bottom of the map.', 'تحت في الخريطة.', 'Sudan.', `${kw('السودان')}.`);
+  await spotSet('egBorders', 'brLib', 'Tap the country to the west of Egypt.', 'اضغط على الدولة اللي غرب مصر.', 'On the left side.', 'على الشمال في الخريطة.', 'Libya.', `${kw('ليبيا')}.`);
+  await spotSet('egBorders', 'brRed', 'Tap the sea to the east of Egypt.', 'اضغط على البحر اللي شرق مصر.', 'The long sea on the right.', 'البحر الطويل على اليمين.', 'The Red Sea and the Gulf of Aqaba.', `${kw('البحر الأحمر')} وخليج العقبة.`);
+  await spotSet('egBorders', 'brPal', 'Tap the country to the north-east of Egypt.', 'اضغط على الدولة اللي في شمال شرق مصر.', 'The small green land at the top right.', 'الأرض الخضرا الصغيرة فوق على اليمين.', 'Palestine.', `${kw('فلسطين')}.`);
+  set('card', { lines: ['حماية حدود مصر'] });
+  await ask('Who protects Egypt’s borders?', 'مين بيحمي حدود مصر؟', [op('الجيش المصري', 'The Egyptian Army'), op('السائحون', 'Tourists'), op('التلاميذ', 'Pupils')], op('الجيش المصري', 'The Egyptian Army'),
+    'Brave, well-trained soldiers.', 'جنود شجعان ومدربين.', 'The Egyptian Army stops smuggling and sneaking across.', `${kw('الجيش المصري')}.`);
+}
+async function mission3() {                 // lesson 3: the landforms (pages 84-89)
+  set('set', { key: 'egLand' });
+  g.say(T('Mission 3: landforms are the different shapes of the Earth’s surface, high and low. Let’s look at Egypt’s!', 'المهمة ٣: التضاريس هي أشكال سطح الأرض المختلفة ما بين مرتفعات ومنخفضات. يلا نشوف تضاريس مصر!'), 'point');
+  await g.next();
+  await spotSet('egLand', 'lpMount', 'A mountain is very high land with a peak over 1000 metres and very steep sides. Tap the mountains.', 'الجبل أرض شديدة الارتفاع، قمته أكتر من 1000 متر وجوانبه شديدة الانحدار. اضغط على الجبال.', 'High rocky peaks.', 'قمم صخرية عالية.', 'Mountains.', `${kw('الجبال')}.`);
+  await spotSet('egLand', 'lpLake', 'A lake is a small area of water with land all around it. Tap the lake.', 'البحيرة مساحة صغيرة من المية واليابس حواليها من كل الجهات. اضغط على البحيرة.', 'Calm water with fishing boats.', 'مية هادية عليها مراكب صيد.', 'A lake.', `${kw('البحيرة')}.`);
+  await spotSet('egLand', 'lpValley', 'A floodplain is flat, low land made of river mud. In Egypt it lies on both banks of the Nile. Tap it.', 'السهل الفيضي أرض مستوية قليلة الارتفاع من رواسب الأنهار، وفي مصر بيمتد على جانبي النيل. اضغط عليه.', 'Green fields on both sides of the river.', 'حقول خضرا على جانبي النهر.', 'The floodplain: fertile soil for farming.', `${kw('السهل الفيضي')}: تربة خصبة للزراعة.`);
+  await spotSet('egLand', 'lpRed', 'On the Red Sea the coastal plain is narrow because the mountains are close to it. Tap that coast.', 'على البحر الأحمر السهل الساحلي ضيق لأن الجبال قريبة منه. اضغط على الساحل ده.', 'A beach with mountains right behind it.', 'شاطئ والجبال وراه على طول.', 'The Red Sea coast: narrow, the mountains are close.', `ساحل ${kw('البحر الأحمر')}: ضيق لقرب الجبال.`);
+  set('card', { lines: ['أرض مرتفعة', 'قمتها أقل من 1000 متر'] });
+  await ask('High land whose peak is lower than 1000 metres is a…', 'أرض مرتفعة قمتها أقل من 1000 متر اسمها…', [op('تل', 'Hill'), op('جبل', 'Mountain'), op('هضبة', 'Plateau')], op('تل', 'Hill'),
+    'A mountain is higher than 1000 metres.', 'الجبل أعلى من 1000 متر.', 'A hill.', `${kw('تل')}.`);
+  set('card', { lines: ['مساحة من اليابس', 'تحيط بها المياه', 'من ثلاث جهات'] });
+  await ask('Land with water on three sides is a…', 'أرض المية حواليها من تلات جهات اسمها…', [op('شبه جزيرة', 'Peninsula'), op('جزيرة', 'Island'), op('بحيرة', 'Lake')], op('شبه جزيرة', 'Peninsula'),
+    'An island has water on every side.', 'الجزيرة المية حواليها من كل الجهات.', 'A peninsula, like Sinai.', `${kw('شبه جزيرة')} زي سيناء.`);
+  await spotSet('egRelief', 'rfSinai', 'On the map of Egypt: tap the land that has water on three sides.', 'على خريطة مصر: اضغط على الأرض اللي المية حواليها من تلات جهات.', 'In the north-east, between two gulfs.', 'في الشمال الشرقي بين خليجين.', 'The Sinai Peninsula.', `${kw('شبه جزيرة سيناء')}.`);
+  await spotSet('egRelief', 'rfCath', 'Tap the highest mountain peak in Egypt, in south Sinai.', 'اضغط على أعلى قمة جبلية في مصر، في جنوب سيناء.', 'The big brown triangle in Sinai.', 'المثلث البني الكبير في سيناء.', 'Mount Saint Catherine.', `${kw('جبل سانت كاترين')}.`);
+  await spotSet('egRelief', 'rfGilf', 'Tap the plateau in the south-west of Egypt.', 'اضغط على الهضبة اللي في جنوب غرب مصر.', 'The brown corner at the bottom left.', 'الركن البني تحت على الشمال.', 'The Gilf Kebir Plateau.', `${kw('هضبة الجلف الكبير')}.`);
+  await spotSet('egRelief', 'rfNasser', 'Tap the fresh-water lake behind the High Dam, in the south.', 'اضغط على البحيرة العذبة اللي ورا السد العالي في الجنوب.', 'Blue water at the bottom of the Nile.', 'مية زرقا في آخر النيل من تحت.', 'Lake Nasser, fresh water.', `${kw('بحيرة ناصر')} العذبة.`);
+  await spotSet('egRelief', 'rfShad', 'Tap the island in the Red Sea.', 'اضغط على الجزيرة اللي في البحر الأحمر.', 'A tiny piece of land in the sea.', 'حتة أرض صغيرة في البحر.', 'Shadwan Island.', `${kw('جزيرة شدوان')}.`);
+  set('photo', { sub: 'lpSimbel' });
+  await ask('The Ancient Egyptians carved this temple out of the mountain. What did they also take from the mountains?', 'المصريين القدماء نحتوا المعبد ده في الجبل. وخدوا من الجبال كمان إيه؟', [op('المعادن لصناعة أدواتهم', 'Metals to make their tools'), op('المياه العذبة', 'Fresh water'), op('القمح', 'Wheat')], op('المعادن لصناعة أدواتهم', 'Metals to make their tools'),
+    'What are tools made of?', 'الأدوات بتتعمل من إيه؟', 'Metals for their tools, and stone for temples, pyramids and statues: like Abu Simbel in Aswan.', `${kw('المعادن')} لأدواتهم، والصخور للمعابد زي أبو سمبل.`);
+}
+async function mission4() {                 // lesson 4: natural and human resources (pages 90-97)
+  set('set', { key: 'egRes' });
+  g.say(T('Mission 4: natural resources are everything God gave us in nature, without people making them: water, air, soil and minerals.', 'المهمة ٤: الموارد الطبيعية هي كل اللي ربنا وهبه لنا في الطبيعة من غير تدخل من الإنسان: المية والهوا والتربة والمعادن.'), 'point');
+  await g.next();
+  await spotSet('egRes', 'rsSolar', 'From the wind and the sun we make clean energy. Tap them.', 'من الرياح والشمس بننتج الطاقة النظيفة. اضغط عليهم.', 'Blue panels and turning blades.', 'ألواح زرقا وريش بتلف.', 'Sun and wind: clean energy.', `${kw('الشمس والرياح')}: طاقة نظيفة.`);
+  await spotSet('egRes', 'rsMine', 'Industry stands on this resource. Tap it.', 'الصناعة بتقوم على المورد ده. اضغط عليه.', 'Piles of coloured rocks and diggers.', 'أكوام صخور ملونة وحفارات.', 'Minerals: industry stands on them.', `${kw('المعادن')}: عليها بتقوم الصناعة.`);
+  await spotSet('egRes', 'rsFarm', 'Fertile soil is for farming. Tap it.', 'التربة الخصبة للزراعة. اضغط عليها.', 'A farmer in a green field.', 'فلاح في غيط أخضر.', 'Fertile soil for farming.', `${kw('التربة الخصبة')} للزراعة.`);
+  const buttons = [{ label: T('Renewable', 'متجددة'), value: 'r', c: 2 }, { label: T('Non-renewable', 'غير متجددة'), value: 'n', c: 1 }];
+  await sortCards(buttons, [
+    ['طاقة الشمس', 'r', ['It renews all the time.', 'بتتجدد باستمرار.'], '@rsSolar'], ['المياه', 'r', ['Water renews all the time.', 'المياه بتتجدد باستمرار.'], '@rsNile'],
+    ['البترول', 'n', ['Petroleum runs out.', 'البترول بينفد.'], '@rsOil'], ['المعادن', 'n', ['Minerals run out.', 'المعادن بتنفد.'], '@rsMine'],
+    ['الفحم', 'n', ['Coal runs out.', 'الفحم بينفد.']], ['الغاز الطبيعي', 'n', ['Natural gas runs out.', 'الغاز الطبيعي بينفد.']]],
+    T('Renewable or non-renewable?', 'متجددة ولا غير متجددة؟'));
+  set('card', { lines: ['الحياة المستدامة'] });
+  await ask('What is a sustainable life?', 'يعني إيه الحياة المستدامة؟', [op('نستخدم الموارد بحكمة لتبقى للأجيال القادمة', 'Using resources wisely so they last for the next generations'), op('نستهلك كل الموارد الآن', 'Using up all resources now'), op('نترك الموارد بلا استخدام أبدًا', 'Never using any resource')], op('نستخدم الموارد بحكمة لتبقى للأجيال القادمة', 'Using resources wisely so they last for the next generations'),
+    'Enough for everyone, now and later.', 'تكفي الكل دلوقتي وبعدين.', 'Using all resources wisely so they are enough for everyone and last for the next generations.', `نستخدم الموارد ${kw('بحكمة')} علشان تكفي الجميع وتفضل للأجيال الجاية.`);
+  const keep = [{ label: T('Saves resources', 'يحافظ'), value: 's', c: 2 }, { label: T('Wastes them', 'يُهدر'), value: 'w', c: 1 }];
+  await sortCards(keep, [
+    ['زراعة الأشجار', 's', ['Trees clean the air.', 'الأشجار بتنقّي الهوا.']], ['إطفاء المصابيح', 's', ['Switch off when you leave the room.', 'نطفي النور لما نسيب الأوضة.']],
+    ['وسائل ري حديثة', 's', ['Less water is lost.', 'بتقلل فقد المياه.']], ['ترك الصنبور مفتوحًا', 'w', ['It wastes water.', 'بيهدر المية.']],
+    ['نفايات المصانع في الأنهار', 'w', ['It pollutes the water.', 'بيلوّث المية.']], ['تشغيل الأجهزة دون استخدام', 'w', ['It wastes energy.', 'بيهدر الطاقة.']]],
+    T('Does it save resources or waste them?', 'بيحافظ على الموارد ولا بيهدرها؟'));
+  await spotSet('egRes', 'rsPeople', 'What is Egypt’s most precious resource? Its people, when they work sincerely and keep learning. Tap them.', 'إيه أثمن موارد مصر؟ أبناؤها، لما يشتغلوا بإخلاص ويتعلموا مهارات جديدة. اضغط عليهم.', 'People in work clothes.', 'ناس بلبس الشغل.', 'Egyptians are the true treasure.', `${kw('المصريون')} هم الكنز الحقيقي.`);
+  set('card', { lines: ['عميد الأدب العربي'] });
+  await ask('Who was called «the Dean of Arabic Literature»?', 'مين اللي اتلقّب بـ«عميد الأدب العربي»؟', [op('طه حسين', 'Taha Hussein'), op('جمال حمدان', 'Gamal Hamdan'), op('أحمد زويل', 'Ahmed Zewail')], op('طه حسين', 'Taha Hussein'),
+    'He lost his sight as a child but never gave up.', 'فقد بصره وهو صغير ومااستسلمش.', 'Taha Hussein, author of «Al-Ayyam».', `${kw('الدكتور طه حسين')}، صاحب كتاب «الأيام».`);
+  set('card', { lines: ['جائزة نوبل في الكيمياء'] });
+  await ask('Who won the Nobel Prize in Chemistry for the femtosecond?', 'مين أخد جائزة نوبل في الكيمياء لاختراع الفيمتو ثانية؟', [op('أحمد زويل', 'Ahmed Zewail'), op('مصطفى السيد', 'Mostafa El-Sayed'), op('سميرة موسى', 'Samira Moussa')], op('أحمد زويل', 'Ahmed Zewail'),
+    'Born in Beheira.', 'من محافظة البحيرة.', 'Ahmed Zewail.', `${kw('الدكتور أحمد زويل')}.`);
+  set('card', { lines: ['الطاقة النووية', 'للأغراض السلمية'] });
+  await ask('The first Egyptian woman scientist with a doctorate in nuclear energy is…', 'أول عالمة مصرية تاخد الدكتوراه في الطاقة النووية هي…', [op('سميرة موسى', 'Samira Moussa'), op('طه حسين', 'Taha Hussein'), op('جمال حمدان', 'Gamal Hamdan')], op('سميرة موسى', 'Samira Moussa'),
+    'She helped found the Atomic Energy Authority.', 'ساعدت في تأسيس هيئة الطاقة الذرية.', 'Dr Samira Moussa.', `${kw('الدكتورة سميرة موسى')}.`);
+}
+async function mission5() {                 // lesson 5: the historical landmarks (pages 98-105)
+  set('set', { key: 'egMarks' });
+  g.say(T('Mission 5: a historical landmark is an old place or building with historical and cultural value that still stands today. Egypt is rich in them!', 'المهمة ٥: المعلم التاريخي مكان أو مبنى قديم له قيمة تاريخية وثقافية ولسه موجود لحد النهارده. ومصر غنية بالمعالم!'), 'point');
+  await g.next();
+  await spotSet('egMarks', 'mkZoser', 'The Step Pyramid of Zoser in Saqqara is the first huge stone building in history, made of steps. Tap it.', 'هرم زوسر المدرج في سقارة أول بناء حجري ضخم في التاريخ، ومعمول من مصاطب متدرجة. اضغط عليه.', 'A pyramid made of steps.', 'هرم معمول من درجات.', 'The Step Pyramid of Zoser.', `${kw('هرم زوسر المدرج')}.`);
+  await spotSet('egMarks', 'mkKarnak', 'The Karnak temples in Thebes (today Luxor) are among the greatest landmarks of ancient Egypt. Tap them.', 'معابد الكرنك في طيبة (الأقصر حاليًا) من أعظم معالم الحضارة المصرية القديمة. اضغط عليها.', 'Huge carved columns.', 'أعمدة ضخمة منقوشة.', 'The Karnak temples.', `${kw('معابد الكرنك')}.`);
+  await spotSet('egMarks', 'mkTheater', 'The Roman Theatre shows how rich cultural and artistic life was in old Alexandria. Tap it.', 'المسرح الروماني بيعكس ازدهار الحياة الثقافية والفنية في الإسكندرية زمان. اضغط عليه.', 'Half-round stone steps.', 'مدرجات حجر على شكل نص دايرة.', 'The Roman Theatre.', `${kw('المسرح الروماني')}.`);
+  await spotSet('egMarks', 'mkAzhar', 'Al-Azhar Mosque in Cairo, named after Lady Fatima Al-Zahraa. Tap it.', 'الجامع الأزهر في القاهرة، اتسمّى نسبة للسيدة فاطمة الزهراء. اضغط عليه.', 'A wide courtyard and minarets.', 'صحن واسع ومآذن.', 'Al-Azhar Mosque.', `${kw('الجامع الأزهر')}.`);
+  set('card', { lines: ['برج القاهرة'] });
+  await ask('The Cairo Tower is shaped like which ancient Egyptian flower?', 'برج القاهرة على شكل أنهي زهرة مصرية قديمة؟', [op('زهرة اللوتس', 'The lotus flower'), op('زهرة الياسمين', 'The jasmine'), op('زهرة القطن', 'The cotton flower')], op('زهرة اللوتس', 'The lotus flower'),
+    'The sign of the Southern Kingdom.', 'شعار مملكة الجنوب.', 'The lotus; it was built when Gamal Abdel Nasser was president.', `${kw('زهرة اللوتس')}.`);
+  set('card', { lines: ['دير سانت كاترين'] });
+  await ask('Saint Catherine’s Monastery, one of the oldest in the world, is in…', 'دير سانت كاترين، من أقدم الأديرة في العالم، موجود في…', [op('جنوب سيناء', 'South Sinai'), op('شمال سيناء', 'North Sinai'), op('الأقصر', 'Luxor')], op('جنوب سيناء', 'South Sinai'),
+    'Near the highest mountain in Egypt.', 'جنب أعلى جبل في مصر.', 'South Sinai.', `${kw('جنوب سيناء')}.`);
+  set('photo', { sub: 'mkGiza' });
+  await ask('Historical landmarks give Egyptians jobs. How?', 'المعالم التاريخية بتوفّر شغل للمصريين. إزاي؟', [op('من خلال السياحة', 'Through tourism'), op('من خلال التعدين', 'Through mining'), op('من خلال صيد الأسماك', 'Through fishing')], op('من خلال السياحة', 'Through tourism'),
+    'Visitors come from all over the world.', 'الزوار بييجوا من العالم كله.', 'Tourism, which supports the Egyptian economy.', `${kw('السياحة')}، ودي بتدعم الاقتصاد المصري.`);
+  const buttons = [{ label: T('Agree', 'موافق'), value: 'y', c: 2 }, { label: T('Disagree', 'غير موافق'), value: 'n', c: 1 }];
+  await sortCards(buttons, [
+    ['نعامل السائحين باحترام', 'y', ['Be polite and smile.', 'بأدب وابتسامة.']], ['حماية الآثار مسئولية الجميع', 'y', ['Everyone protects them.', 'كلنا بنحميها.']],
+    ['نحافظ على نظافة المعالم', 'y', ['Keep them clean.', 'نحافظ على نضافتها.']], ['نكتب أسماءنا على الآثار', 'n', ['Writing on them damages them.', 'الكتابة عليها بتتلفها.']],
+    ['نأخذ قطعًا من الآثار', 'n', ['They belong to all of Egypt.', 'الآثار ملك مصر كلها.']]],
+    T('Agree or disagree?', 'موافق ولا غير موافق؟'));
+}
+async function stage2() {
+  const from = Math.max(1, +new URLSearchParams(location.search).get('m') || 1);   // ?m=N opens the missions at mission N (owner's checks)
+  const all = [mission1, mission2, mission3, mission4, mission5];
+  for (const m of all.slice(from - 1)) await m();
+}
+
+/* ---------- Stage 3 · Speed Round: where is this landmark? (lesson 5, page 99) ---------- */
+async function stage3() {
+  set('card', { lines: ['أين يقع المعلم؟'] });
+  const items = [
+    { t: 'الجامع الأزهر', ans: 'c', why: T('In Cairo.', 'في القاهرة.') }, { t: 'برج القاهرة', ans: 'c', why: T('In Cairo.', 'في القاهرة.') },
+    { t: 'هرم زوسر المدرج', ans: 'c', why: T('In Saqqara, Giza.', 'في سقارة بالجيزة.') }, { t: 'معابد الكرنك', ans: 'l', why: T('In Luxor (Thebes).', 'في الأقصر (طيبة).') },
+    { t: 'المسرح الروماني', ans: 'a', why: T('In Alexandria.', 'في الإسكندرية.') }, { t: 'دير سانت كاترين', ans: 's', why: T('In South Sinai.', 'في جنوب سيناء.') },
+    { t: 'جبل سانت كاترين', ans: 's', why: T('In South Sinai.', 'في جنوب سيناء.') }, { t: 'أهرامات الجيزة', ans: 'c', why: T('In Giza.', 'في الجيزة.') }];
+  await g.speedRound({ items, rounds: 8, ms: 12000,
+    buttons: [{ label: T('Cairo & Giza', 'القاهرة والجيزة'), value: 'c', c: 2 }, { label: T('Luxor', 'الأقصر'), value: 'l', c: 1 }, { label: T('Alexandria', 'الإسكندرية'), value: 'a', c: 3 }, { label: T('South Sinai', 'جنوب سيناء'), value: 's', c: 0 }],
+    ask: T('Where is it?', 'فين مكانه؟'), intro: T('Speed Round! A landmark comes in. Press where it is. Be quick!', 'جولة السرعة! هيظهر معلم، اضغط على مكانه. بسرعة!'),
+    think: T('Where is it?', 'فين مكانه؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Let’s travel across Egypt: its flag, its place on the world map, its landforms, its treasures and its great landmarks. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! يلا نلف في ربوع مصر: علمها، ومكانها على خريطة العالم، وتضاريسها، وثرواتها، ومعالمها العظيمة. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know Egypt’s flag, its place and borders, its landforms, its natural and human resources, and its historical landmarks. Next, try the questions of this unit.', 'بقيت تعرف علم مصر، وموقعها وحدودها، وتضاريسها، وثرواتها الطبيعية والبشرية، ومعالمها التاريخية. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
