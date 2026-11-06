@@ -19,7 +19,7 @@
      g3Measure (fig)  a piece of measuring tape, 1 cm a tick, labelled every 10 cm and at each metre, with an arrow: q.pic = { from: 290, to: 330, at: 315 }  (all in cm)
      g3Map     (fig)  the book's little map: the road (two parts, via a corner) and the straight line between two places: q.pic = { a: 'بيت دينا', b: 'المدرسة', l1: 700, l2: 550, d: 1100, ia: 'house', ib: 'school' }
    Unit 6 (data) — icons are the owner's pictures (Gemini, 6 Nov 2026), cut to math/assets/g3/ic_<name>.webp:
-     g3Tally (fig)  the book's tally table, a row per kind: q.pic = { rows: [['التفاح', 'apple', 13], …] }   n = tally marks drawn (groups of five)
+     g3Tally (fig)  the book's tally table, a row per kind: q.pic = { rows: [['التفاح', 'apple', 13], …] }   n = tally marks drawn (groups of five); other: [3, 4] tints those rows gold and adds a gold «أخرى» row with «؟» (the rows to be put together into «أخرى»)
      g3Bars  (fig)  the book's bar graph: q.pic = { title, unit: 'تلاميذ', max: 10, step: 1, bars: [['أحمر', null, 9, '#e85a6b'], ['التفاح', 'apple', 3]] }   labels at 0, max/2 and max; value null = no bar yet
      g3Table (fig)  a table that reads from the right: q.pic = { title, unit, head: ['', 'الفصل ١', …], rows: [['كرة القدم', 11, 9, 10, '؟'], …] }
      g3Photo (fig)  one of the owner's scenes: q.pic = { src: 'math/assets/g3/bridge.jpg' }
@@ -362,14 +362,21 @@
     return s;
   }
   function g3Tally(q) {
-    const p = (q && q.pic) || { rows: [['التفاح', 'apple', 13]] }, rh = 40, H = p.rows.length * rh + 20, nameW = 124, x0 = 14, tw = 312;
+    const p = (q && q.pic) || { rows: [['التفاح', 'apple', 13]] }, rh = 40, nameW = 124, x0 = 14, tw = 312;
+    /* other: indexes of rows that go into «أخرى» — tinted gold, and a gold «أخرى» row with «؟» is added at the bottom */
+    const oth = p.other || [], GOLD = '#d99a12', rows = p.rows.length + (oth.length ? 1 : 0), H = rows * rh + 20 + (oth.length ? 8 : 0);
     let s = '';
     p.rows.forEach(([name, icon, n], r) => {
-      const y = 10 + r * rh;
-      s += `<rect x="${x0 + tw - nameW}" y="${y}" width="${nameW}" height="${rh}" fill="#fde3cf" stroke="${INK}" stroke-width="1.6"/><rect x="${x0}" y="${y}" width="${tw - nameW}" height="${rh}" fill="#fff" stroke="${INK}" stroke-width="1.6"/>`;
+      const y = 10 + r * rh, o = oth.includes(r);
+      s += `<rect x="${x0 + tw - nameW}" y="${y}" width="${nameW}" height="${rh}" fill="${o ? '#ffe7a3' : '#fde3cf'}" stroke="${INK}" stroke-width="1.6"/><rect x="${x0}" y="${y}" width="${tw - nameW}" height="${rh}" fill="${o ? '#fff4d6' : '#fff'}" stroke="${INK}" stroke-width="1.6"/>`;
       s += img(icon, x0 + tw - 20, y + rh / 2, 28) + txt(x0 + tw - nameW / 2 - 16, y + 26, name, { fs: name.length > 10 ? 11.5 : 14 });
       s += tallyMarks(n, x0 + 14, y + 9, 22);
     });
+    if (oth.length) {
+      const y = 18 + p.rows.length * rh;
+      s += `<rect x="${x0 + tw - nameW}" y="${y}" width="${nameW}" height="${rh}" fill="${GOLD}" stroke="${INK}" stroke-width="1.6"/><rect x="${x0}" y="${y}" width="${tw - nameW}" height="${rh}" fill="#fff" stroke="${GOLD}" stroke-width="2.4" stroke-dasharray="6 4"/>`;
+      s += txt(x0 + tw - nameW / 2, y + 27, 'أخرى', { fs: 17, fill: '#fff' }) + txt(x0 + (tw - nameW) / 2, y + 28, '؟', { fs: 22, fill: GOLD });
+    }
     return svg(H, T('A tally table', 'جدول علامات العدّ'), s);
   }
   function g3Bars(q) {

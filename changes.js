@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'زر «محتاج مساعدة؟» تحت ريشو، وسؤال «أخرى» أوضح',
+    items: [
+      { text: 'زر التلميح أصبح «محتاج مساعدة؟» تحت ريشو، ويختفي بعد الإجابة' },
+      { text: 'رياضيات الصف الثالث، تنظيم البيانات: الصفوف التي تُجمع في «أخرى» ملوّنة بالأصفر، ومعها صف «أخرى» في الجدول' }
+    ] },
   { date: '2026-11-06', title: 'رياضيات الصف الثالث: صور للمسائل الكلامية',
     items: [
       { text: 'كل مسألة كلامية في الوحدات ١–٤ أصبحت مصوّرة: الأشياء وعددها والأشخاص الذين توزَّع عليهم' },

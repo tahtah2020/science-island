@@ -100,7 +100,9 @@ body{
 .explain.no{background:var(--bad-bg)}
 .why-btn{margin-top:10px;width:100%;font-weight:800;font-size:16px;padding:10px 14px;border-radius:14px;background:#fff6df;border:2px solid var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
 .why-btn:disabled{opacity:.7;cursor:default}
-.hint-btn{display:block;margin:12px auto 0;font-weight:800;font-size:15px;padding:8px 16px;border-radius:999px;background:#fffbea;border:2px dashed var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
+#hintSlot:empty{display:none}
+#hintSlot{text-align:center}
+.hint-btn{display:block;margin:10px auto 0;font-weight:800;font-size:15px;padding:8px 16px;border-radius:999px;background:#fffbea;border:2px dashed var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
 .hint-btn:disabled{opacity:.55;cursor:default}
 .why-play{display:block;margin-top:10px;font-weight:800;font-size:15px;padding:8px 14px;border-radius:12px;background:#fff;border:2px solid var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
 .why-play:disabled{opacity:.7;cursor:default}
@@ -389,13 +391,14 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
         <img id="robot" src="assets/parrot_wave.png" alt="Reesho the parrot" data-ar-label="البغبغان ريشو">
         <div class="bubble" id="bubble"></div>
       </div>
+      <div id="hintSlot"></div>
     </aside>
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261106h"></script>
-<script src="chapters.js?v=20261106h"></script>
-<script src="common.js?v=20261106h"></script>
+<script src="firebase-config.js?v=20261106i"></script>
+<script src="chapters.js?v=20261106i"></script>
+<script src="common.js?v=20261106i"></script>
 <script>
 (() => {
 'use strict';
@@ -665,10 +668,11 @@ function ask(q) {
     const tryAgain = () => say(q.hint ? T('Not quite. ', G('قرّبت! ', 'قرّبتي! ')) + hintHTML() : T('Not quite. Try again!', G('قرّبت! جرّب تاني.', 'قرّبتي! جرّبي تاني.')), 'think');
     const finish = (correct, firstTry, timeout = false) => {
       if (finished) return; finished = true;
+      $('#hintSlot').innerHTML = '';
       const left = stopTimer ? stopTimer() : 0;
       resolve({ correct, firstTry, timeout, left });
     };
-    if (timed) stopTimer = startTimer(q.seconds, () => { if (!finished) { reveal(); finished = true; resolve({ correct: false, firstTry: false, timeout: true, left: 0 }); } });
+    if (timed) stopTimer = startTimer(q.seconds, () => { if (!finished) { reveal(); finished = true; $('#hintSlot').innerHTML = ''; resolve({ correct: false, firstTry: false, timeout: true, left: 0 }); } });
     else hideTimer();
 
     let reveal = () => {};
@@ -1071,10 +1075,12 @@ function ask(q) {
       reveal = () => { done(false); showModel(); };
       tools.append(clear, check); area.append(lineEl, pool, tools); paint();
     }
+    /* the help button sits under Reesho (owner, 6 Nov 2026), and goes away once the question is answered */
+    $('#hintSlot').innerHTML = '';
     if (q.hint) {
-      const hb = mk('button', 'btn hint-btn', T('💡 Need a hint?', G('💡 محتاج تلميح؟', '💡 محتاجة تلميح؟'))); hb.type = 'button';
+      const hb = mk('button', 'btn hint-btn', T('💡 Need help?', G('💡 محتاج مساعدة؟', '💡 محتاجة مساعدة؟'))); hb.type = 'button';
       hb.onclick = () => { if (finished) return; hb.disabled = true; sfx.tick(); say(hintHTML(), 'think'); };
-      area.appendChild(hb);
+      $('#hintSlot').appendChild(hb);
     }
   });
 }
