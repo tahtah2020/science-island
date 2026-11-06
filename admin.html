@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261106n">
+<link rel="stylesheet" href="common.css?v=20261106o">
 <style>
 /* Owner's page: what changed, and every question in English and Arabic side by side.
    "New" and "changed" are worked out on this device: each phrasing's content is remembered once you have seen it. */
@@ -90,6 +90,12 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
       </div>
     </section>
     <div class="wrap" id="panel" hidden>
+    <section class="card" id="starsAdmin">
+      <h2>⭐ نجوم متفوّق</h2>
+      <p>يضيف كل الطلاب الذين لهم رمز استعادة إلى القائمة بمجموع نقاطهم القديمة. لا يحذف أحدًا، ولا ينقص نقاط أحد.</p>
+      <button class="btn primary" type="button" id="starsFill">أضف نقاط كل الطلاب إلى القائمة</button>
+      <p class="msg" id="starsMsg" role="status"></p>
+    </section>
     <section class="card">
       <h2>آخر التعديلات</h2>
       <ul class="log" id="log"></ul>
@@ -108,10 +114,10 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
     </div>
   </main>
 </div>
-<script src="firebase-config.js?v=20261106n"></script>
-<script src="chapters.js?v=20261106n"></script>
-<script src="changes.js?v=20261106n"></script>
-<script src="common.js?v=20261106n"></script>
+<script src="firebase-config.js?v=20261106o"></script>
+<script src="chapters.js?v=20261106o"></script>
+<script src="changes.js?v=20261106o"></script>
+<script src="common.js?v=20261106o"></script>
 <script>
 (async () => {
   'use strict';
@@ -159,6 +165,29 @@ h2{margin:0 0 10px;font-size:21px;font-weight:900}
   });
 
   function start() {
+  /* ---------- «نجوم متفوّق»: put every child's saved points on the board (needs `allow list: if isOwner()` on progress) ---------- */
+  $('#starsFill').onclick = async () => {
+    const b = $('#starsFill'), msg = t => { $('#starsMsg').textContent = t; };
+    b.disabled = true; msg('جاري القراءة…');
+    try {
+      const ss = await fs.getDocs(fs.collection(db, 'progress'));
+      let added = 0, kept = 0, skipped = 0;
+      for (const d of ss.docs) {
+        const v = d.data(); let prof = {}; try { prof = JSON.parse(v.data || '{}'); } catch (e) {}
+        const name = String(v.name || '').replace(/\s+/g, ' ').trim().slice(0, 14), score = Math.min(SI.LB.CAP, Math.round(prof.xp || 0));
+        if (name.length < 2 || name.toLowerCase() === 'admin' || !score) { skipped++; continue; }
+        const ref = fs.doc(db, 'boards', SI.LB.board(), 'scores', d.id), cur = await fs.getDoc(ref);
+        if (cur.exists() && cur.data().score >= score) { kept++; continue; }
+        await fs.setDoc(ref, { name, score, at: fs.serverTimestamp() }); added++;
+      }
+      msg(`تم: أُضيف أو حُدّث ${added} طالب، و${kept} كانوا موجودين بنفس النقاط، وتُرك ${skipped} (بلا نقاط أو اسم غير صالح).`);
+    } catch (e) {
+      console.warn(e);
+      msg(e && e.code === 'permission-denied' ? 'قواعد قاعدة البيانات لا تسمح بعد بقراءة تقدّم الطلاب. انشر القواعد الجديدة ثم أعد المحاولة.' : 'تعذّر الإكمال. أعد المحاولة.');
+    }
+    b.disabled = false;
+  };
+
   const KEY = 'si.admin.seen';
   const loadSeen = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
   const saveSeen = o => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} };

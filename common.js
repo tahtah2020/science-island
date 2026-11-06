@@ -511,16 +511,20 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       const b = (store.load().board || {})[this.board()] || {};
       return Object.entries(b).map(([id, v]) => Object.assign({ id }, v)).sort((a, c) => c.score - a.score);
     },
+    /* one entry per child: the recovery-code document id when the child has a code (same on every device, and what the
+       owner's backfill in admin.html writes), else the local player id */
+    async myId() { const p = player() || {}; try { if (p.code && window.crypto && crypto.subtle) return await sync.docId(p.code); } catch (e) {} return p.id; },
     async submitWeek() {
       if (!this.counts()) return { saved: false };
       const p = player(), score = Math.min(this.CAP, this.weekPoints()); if (!score) return { saved: false };
+      const id = await this.myId();
       store.update(s => {
         s.board = s.board || {}; const k = this.board(); Object.keys(s.board).filter(x => x !== k).forEach(x => delete s.board[x]);
         const b = s.board[k] = s.board[k] || {};
-        if (!b[p.id] || b[p.id].score < score) b[p.id] = { name: p.name, score };
+        if (!b[id] || b[id].score < score) b[id] = { name: p.name, score };
       });
       const db = await this.ready(); if (!db) return { saved: true, online: false };
-      const fs = this._fs, ref = fs.doc(db, 'boards', this.board(), 'scores', p.id);
+      const fs = this._fs, ref = fs.doc(db, 'boards', this.board(), 'scores', id);
       try {
         const snap = await fs.getDoc(ref);
         if (!snap.exists() || snap.data().score < score) await fs.setDoc(ref, { name: p.name, score, at: fs.serverTimestamp() });
@@ -539,20 +543,20 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       }
       return { online: false, rows: this.localRows().slice(0, n) };
     },
-    async show(n = 10) { await this.submitWeek().catch(() => {}); return Object.assign(await this.top(n), { last: false }); },   // post my total first, so I see myself
+    async show(n = 10) { await this.submitWeek().catch(() => {}); return Object.assign(await this.top(n), { last: false, myId: await this.myId() }); },   // post my total first, so I see myself
     async me() {
       const p = player(); if (!p || !this.counts()) return null;
       const db = await this.ready();
       if (db) {
         try {
           const fs = this._fs, col = fs.collection(db, 'boards', this.board(), 'scores');
-          const snap = await fs.getDoc(fs.doc(col, p.id)); if (!snap.exists()) return null;
+          const snap = await fs.getDoc(fs.doc(col, await this.myId())); if (!snap.exists()) return null;
           const score = snap.data().score;
           const c = await fs.getCountFromServer(fs.query(col, fs.where('score', '>', score)));
           return { score, rank: c.data().count + 1, online: true };
         } catch (e) { console.warn(e); }
       }
-      const rows = this.localRows(), i = rows.findIndex(r => r.id === p.id);
+      const myId = await this.myId(), rows = this.localRows(), i = rows.findIndex(r => r.id === myId);
       return i < 0 ? null : { score: rows[i].score, rank: i + 1, online: false };
     }
   };

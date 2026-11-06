@@ -1,6 +1,7 @@
     match /progress/{id} {
       allow get: if id.matches('^[0-9a-f]{32}$');
-      allow list, delete: if false;
+      allow list: if isOwner();
+      allow delete: if false;
       allow create, update: if id.matches('^[0-9a-f]{32}$')
         && request.resource.data.keys().hasOnly(['v', 'name', 'grade', 'track', 'g', 'data', 'at'])
         && request.resource.data.keys().hasAll(['v', 'name', 'grade', 'track', 'data', 'at'])
