@@ -506,7 +506,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     },
     board() { return 'all-time'; },
     weekPoints() { return Math.round(prof().xp || 0); },
-    counts() { const p = player(); return !!(p && p.name && p.name.toLowerCase() !== 'admin' && !isOwner()); },
+    counts() { const p = player(); return !!(p && p.name && p.name.toLowerCase() !== 'admin'); },   // the owner's own student players count too (owner, 6 Nov 2026)
     localRows() {
       const b = (store.load().board || {})[this.board()] || {};
       return Object.entries(b).map(([id, v]) => Object.assign({ id }, v)).sort((a, c) => c.score - a.score);
@@ -539,7 +539,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       }
       return { online: false, rows: this.localRows().slice(0, n) };
     },
-    async show(n = 10) { return Object.assign(await this.top(n), { last: false }); },
+    async show(n = 10) { await this.submitWeek().catch(() => {}); return Object.assign(await this.top(n), { last: false }); },   // post my total first, so I see myself
     async me() {
       const p = player(); if (!p || !this.counts()) return null;
       const db = await this.ready();
