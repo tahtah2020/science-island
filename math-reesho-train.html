@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Reesho’s Train · Time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 3 adventure «قطار ريشو / Reesho’s Train» (6 Nov 2026).
+     Concepts: Unit 2 Time and Duration (lesson 1: the time after / before some minutes, also across the o'clock; lesson 2: 1 hour = 60 minutes,
+     elapsed time, longer than an hour), Unit 7 Mental arithmetic (adding and subtracting minutes in the head).
+     The maths is the move: the child turns the clock hands (drag the minute hand or ±5) or sets the minutes of a trip; then the station plays it out
+     with a running clock: the train leaves without Reesho, waits too long, stops before the station or passes it. 6 trips × 4 tasks, one small step a day.
+     Pictures: Reesho the traveller, train, bus, clock face, house, ticket, station and street backgrounds made by the owner with Gemini (prompts by Claude),
+     cut out to math/assets/train3/ (the little watch on worried Reesho was blanked so it shows no time). Clock hands, numbers and times are drawn in code.
+     Progress: SI.chProf('mg3u2').rtrain = { lvl, best, stars[] }. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--teal:#3aa79a;--cream:#fffaf0;--ok:#2e9e6b;--gold:#f2b134;--coral:#e2603f;--sky:#d9f0f7}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;color:var(--navy);min-height:100svh;background:linear-gradient(#cfeef7,#e8f6ee 55%,#f6ecd6)}
+.wrap{max-width:760px;margin:0 auto;padding:8px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0;color:#1d6f66;text-shadow:0 2px 0 #fff}
+.pills{display:flex;gap:6px;align-items:center}
+.pill{background:#fff;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px;box-shadow:0 2px 0 #b9dcd4}
+.ib{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#fff;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer;box-shadow:0 2px 0 #b9dcd4}
+.stage{position:relative;margin-top:6px;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px #1f3d5733;background:#e9dcc0}
+#scene{width:100%;height:auto;display:block}
+.say{display:flex;gap:8px;align-items:center;margin:8px 0}
+.say img{width:46px;height:46px;object-fit:contain;flex:none}
+.bubble{background:#fff;border-radius:16px;padding:9px 13px;font-size:15.5px;font-weight:700;flex:1;min-height:46px;box-shadow:0 3px 10px #1f3d5722;line-height:1.6}
+.panel{background:var(--cream);border-radius:22px;padding:12px;box-shadow:0 6px 20px #1f3d5726;border:3px solid #fff}
+.ticket{display:flex;align-items:center;gap:10px;background:#fff;border:2px dashed #9fd3c9;border-radius:16px;padding:8px 12px;margin-bottom:10px}
+.ticket img{width:58px;flex:none}
+.ticket .q{font-weight:800;font-size:16px;line-height:1.6}
+.ticket .tag{display:inline-block;background:var(--teal);color:#fff;border-radius:10px;padding:1px 9px;font-weight:900;font-size:13px;margin-inline-end:6px}
+.work{display:flex;flex-direction:column;align-items:center;gap:8px}
+#clock{width:min(240px,64vw);height:auto;touch-action:none;cursor:grab;user-select:none}
+#clock.drag{cursor:grabbing}
+.read{font:900 30px Nunito,Cairo;background:#1f3d57;color:#fff;border-radius:12px;padding:2px 16px;min-width:110px;text-align:center}
+.steps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.steps button{border:0;border-radius:12px;background:#e3f2ef;font:900 17px Nunito,Cairo;color:var(--navy);padding:9px 14px;cursor:pointer;box-shadow:0 3px 0 #b9dcd4}
+.steps button:active{transform:translateY(2px);box-shadow:0 1px 0 #b9dcd4}
+.dur{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;font-weight:900;font-size:20px}
+.dur .box{display:flex;flex-direction:column;align-items:center;gap:4px}
+.dur .num{min-width:84px;text-align:center;font:900 32px Nunito,Cairo;background:#fff;border:3px solid #cfe3de;border-radius:12px;padding:2px 10px}
+.dur .lbl{font-size:15px;color:var(--ink)}
+#line{width:100%;height:auto}
+.row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.teal{background:var(--teal);color:#fff;box-shadow:0 4px 0 #2a7d73}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #cfe3de}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.check{margin-top:10px;background:#eefaf4;border-radius:14px;padding:8px 12px;font-weight:800;line-height:1.8;border:2px solid #bfe8d6;text-align:center}
+.check[hidden]{display:none}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:30}
+.veil[hidden]{display:none}
+.card{background:#fff;border-radius:24px;padding:18px 20px;max-width:400px;width:100%;text-align:center;box-shadow:0 10px 40px #0004;border:4px solid #bfe8d6}
+.card h2{margin:4px 0 8px;color:#1d6f66}
+.card ol{text-align:start;padding-inline-start:22px;line-height:1.85;margin:6px 0 12px;font-weight:700}
+.card .hero{height:130px;object-fit:contain}
+.stars{font-size:34px;letter-spacing:4px;color:var(--gold)}
+.new{display:inline-block;background:#fff4d6;border:2px solid var(--gold);border-radius:12px;padding:6px 10px;font-weight:800;margin:6px 0}
+.new[hidden]{display:none}
+@keyframes bob{50%{transform:translateY(-3px)}}
+#scene .bob{animation:bob .5s ease-in-out infinite;transform-box:fill-box}
+@media (prefers-reduced-motion:reduce){#scene .bob{animation:none}}
+@media (max-width:440px){.top h1{font-size:18px}.read{font-size:26px}.ticket .q{font-size:15px}.ticket img{width:46px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🚆 قطار ريشو">🚆 Reesho’s Train</h1>
+    <div class="pills"><span class="pill"><span data-ar="الرحلة">Trip</span> <b id="day">1</b>/<b id="days">6</b></span><span class="pill">⭐ <b id="score">0</b></span>
+      <button class="ib" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="ib home" href="adventures.html" aria-label="Back" data-ar-label="رجوع">🗺️</a></div></div>
+  <div class="stage"><svg id="scene" viewBox="0 0 480 268" role="img" aria-label="Reesho and the train" data-ar-label="ريشو والقطار"></svg></div>
+  <div class="say"><img id="sayPic" src="math/assets/train3/reesho_walk.webp" alt=""><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="ticket" id="ticket"></div>
+    <div class="work" id="work"></div>
+    <div class="check" id="check" hidden></div>
+    <div class="row"><button class="btn teal" id="go" type="button"></button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="card">
+  <img class="hero" src="math/assets/train3/reesho_run.webp" alt="">
+  <h2 id="introT"></h2><ol id="rules"></ol>
+  <button class="btn teal" id="start" type="button"></button></div></div>
+<div class="veil" id="dayCard" hidden><div class="card">
+  <img class="hero" id="dayPic" src="math/assets/train3/reesho_cheer.webp" alt="">
+  <h2 id="dayT"></h2><div class="stars" id="dayStars"></div><p id="dayText"></p><div class="new" id="dayNew"></div><br>
+  <button class="btn teal" id="dayBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261106{"></script>
+<script src="chapters.js?v=20261106{"></script>
+<script src="common.js?v=20261106{"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg3u2'); if (!CH) return;
+const T = SI.T, AR = SI.isAr(), GAME = 'math-reesho-train.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rnd = k => Math.floor(Math.random() * k);
+const rint = (a, b) => a + rnd(b - a + 1);
+const r5 = (a, b) => 5 * rint(Math.ceil(a / 5), Math.floor(b / 5));
+const pick = a => a[rnd(a.length)];
+const D = x => AR ? String(x).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]) : String(x);
+document.documentElement.lang = AR ? 'ar' : 'en'; document.documentElement.dir = AR ? 'rtl' : 'ltr';
+document.querySelectorAll('[data-ar]').forEach(e => { if (AR) e.textContent = e.dataset.ar; });
+document.querySelectorAll('[data-ar-label]').forEach(e => { if (AR) e.setAttribute('aria-label', e.dataset.arLabel); });
+document.title = T('Reesho’s Train · Time', 'قطار ريشو · الوقت');
+
+/* time: minutes since 12:00 on a 12-hour clock (0 … 719) */
+const wrap = t => ((t % 720) + 720) % 720;
+const fmt = t => { t = wrap(t); const h = Math.floor(t / 60) || 12, m = t % 60; return D(h) + ':' + D(String(m).padStart(2, '0')); };
+const at = (h, m) => wrap(h * 60 + m);
+const mins = n => AR ? (n === 1 ? 'دقيقة' : n === 2 ? 'دقيقتين' : n <= 10 ? `${D(n)} دقائق` : `${D(n)} دقيقة`) : `${D(n)} minute${n === 1 ? '' : 's'}`;
+const hm = (h, m) => AR ? [h ? (h === 1 ? 'ساعة واحدة' : `${D(h)} ساعات`) : '', m ? mins(m) : ''].filter(Boolean).join(' و ') : [h ? `${D(h)} hour${h > 1 ? 's' : ''}` : '', m ? mins(m) : ''].filter(Boolean).join(' ');
+
+/* ---------- pictures ---------- */
+const IMG = 'math/assets/train3/';
+const src = k => IMG + k + '.webp';
+['reesho_walk', 'reesho_run', 'reesho_worry', 'reesho_cheer', 'loco', 'carriage', 'carriage2', 'bus', 'clockface', 'house', 'ticket'].forEach(k => { const i = new Image(); i.src = src(k); });
+
+/* ---------- the six trips: one small new step each ---------- */
+const DAYS = [
+  { kinds: ['after'], newEn: 'Move the minute hand forward.', newAr: 'حرّك عقرب الدقائق للأمام.' },
+  { kinds: ['before'], newEn: 'Going back: when must Reesho leave home?', newAr: 'نرجع للخلف: إمتى ريشو يخرج من البيت؟' },
+  { kinds: ['after'], cross: true, newEn: 'The hour changes! Stop at the o’clock first.', newAr: 'الساعة بتتغيّر! وقّف عند الساعة الكاملة الأول.' },
+  { kinds: ['before'], cross: true, newEn: 'Going back across the o’clock.', newAr: 'نرجع للخلف ونعدّي الساعة الكاملة.' },
+  { kinds: ['elapsed'], cross: true, newEn: 'How many minutes is the trip?', newAr: 'الرحلة بتاخد كام دقيقة؟' },
+  { kinds: ['two', 'after', 'elapsed', 'before'], cross: true, newEn: 'Bus and train: more than one hour!', newAr: 'أتوبيس وقطار: أكتر من ساعة!' }
+];
+const TASKS = 4, LIVES = 4;
+const S = { day: Math.min(DAYS.length - 1, ((SI.chProf(CH.id).rtrain || {}).lvl) || 0), score: 0, lives: LIVES, misses: 0, n: 0, o: null, busy: false, t0: Date.now(), set: 0, dur: 0, h: 0, used: new Set(), pose: 'walk', train: 'in', rx: 30, clockT: null };
+
+function makeTask(kind, day) {
+  const cross = DAYS[day].cross;
+  for (let k = 0; k < 80; k++) {
+    const h = rint(1, 10); let o;
+    if (kind === 'after') { const m = cross ? r5(35, 55) : r5(0, 30), w = cross ? r5(Math.max(15, 65 - m), Math.min(45, 90 - m)) : r5(10, Math.min(30, 55 - m)); o = { start: at(h, m), walk: w, ans: at(h, m) + w }; }
+    if (kind === 'before') { const m = cross ? r5(5, 25) : r5(30, 55), w = cross ? r5(Math.max(15, m + 5), Math.min(45, m + 40)) : r5(10, Math.min(30, m - 5)); o = { train: at(h, m), walk: w, ans: at(h, m) - w }; }
+    if (kind === 'elapsed') { const a = r5(35, 55), b = r5(5, 30); o = { from: at(h, a), to: at(h + 1, b), ans: 60 - a + b }; }
+    if (kind === 'two') { const bus = r5(30, 50), tr = r5(Math.max(25, 65 - bus), Math.min(50, 95 - bus)); o = { bus, tr, ans: bus + tr }; }
+    o.kind = kind; o.key = kind + JSON.stringify(o);
+    if (!S.used.has(o.key)) { S.used.add(o.key); return o; }
+  }
+}
+function taskText(o) {
+  switch (o.kind) {
+    case 'after': return T(`Reesho leaves home at <b>${fmt(o.start)}</b> and walks <b>${mins(o.walk)}</b> to the station. Set the station clock to the time he gets there, so the train leaves with him.`, `ريشو خرج من البيت الساعة <b>${fmt(o.start)}</b> ومشي <b>${mins(o.walk)}</b> للمحطة. اضبط ساعة المحطة على الوقت اللي هيوصل فيه، عشان القطار يتحرك وهو راكب.`);
+    case 'before': return T(`The train leaves at <b>${fmt(o.train)}</b>. The walk to the station takes <b>${mins(o.walk)}</b>. Set the alarm clock: when must Reesho leave home to arrive exactly on time?`, `القطار بيتحرك الساعة <b>${fmt(o.train)}</b>. المشي للمحطة بياخد <b>${mins(o.walk)}</b>. اضبط المنبّه: ريشو يخرج من البيت الساعة كام عشان يوصل في الميعاد بالظبط؟`);
+    case 'elapsed': return T(`The train leaves at <b>${fmt(o.from)}</b> and reaches Grandma’s town at <b>${fmt(o.to)}</b>. How many minutes is the trip? Set the train’s minutes.`, `القطار بيتحرك الساعة <b>${fmt(o.from)}</b> وبيوصل بلد تيتة الساعة <b>${fmt(o.to)}</b>. الرحلة كام دقيقة؟ اضبط دقائق القطار.`);
+    case 'two': return T(`Reesho rides the bus for <b>${mins(o.bus)}</b>, then the train for <b>${mins(o.tr)}</b>. How long is the whole trip? Write it in hours and minutes.`, `ريشو ركب الأتوبيس <b>${mins(o.bus)}</b>، وبعدين القطار <b>${mins(o.tr)}</b>. الرحلة كلها قد إيه؟ اكتبها بالساعات والدقائق.`);
+  }
+}
+function hintText(o) {
+  const lead = T('Each number on the clock = 5 minutes. ', 'كل رقم على الساعة = ٥ دقائق. ');
+  switch (o.kind) {
+    case 'after': return DAYS[S.day].cross ? T(`How many minutes from ${fmt(o.start)} to the next o’clock? Then go on with the rest of the minutes.`, `كام دقيقة من ${fmt(o.start)} لحد الساعة الكاملة اللي بعدها؟ وبعدين كمّل باقي الدقائق.`) : lead + T(`Start at ${fmt(o.start)} and move the minute hand forward.`, `ابدأ من ${fmt(o.start)} وحرّك عقرب الدقائق للأمام.`);
+    case 'before': return DAYS[S.day].cross ? T(`Go back from ${fmt(o.train)} to the o’clock first. How many minutes is that? Then go back the rest.`, `ارجع من ${fmt(o.train)} لحد الساعة الكاملة الأول. دول كام دقيقة؟ وبعدين ارجع الباقي.`) : lead + T('“Before” means the minute hand goes backward.', '«قبل» يعني عقرب الدقائق يرجع للخلف.');
+    case 'elapsed': return T(`Split the trip: from ${fmt(o.from)} up to the o’clock, then from the o’clock to ${fmt(o.to)}. Add the two.`, `قسّم الرحلة: من ${fmt(o.from)} لحد الساعة الكاملة، ومن الساعة الكاملة لحد ${fmt(o.to)}. واجمعهم.`);
+    case 'two': return T('Add the minutes first. Then take 60 minutes out: 60 minutes = 1 hour.', 'اجمع الدقائق الأول. وبعدين خُد منهم ٦٠ دقيقة: ٦٠ دقيقة = ساعة واحدة.');
+  }
+}
+function checkHTML(o) {
+  switch (o.kind) {
+    case 'after': return `${fmt(o.start)} + ${mins(o.walk)} = ${fmt(o.ans)} ✔`;
+    case 'before': return `${fmt(o.train)} − ${mins(o.walk)} = ${fmt(o.ans)} ✔`;
+    case 'elapsed': { const a = 60 - (o.from % 60), b = o.to % 60; return `${T('Up to', 'لحد')} ${fmt(o.to - b)}: ${mins(a)}<br>${T('After it:', 'بعدها:')} ${mins(b)}<br>${D(a)} + ${D(b)} = ${mins(o.ans)} ✔`; }
+    case 'two': return `${D(o.bus)} + ${D(o.tr)} = ${mins(o.ans)}<br>${mins(o.ans)} = ${hm(Math.floor(o.ans / 60), o.ans % 60)} ✔`;
+  }
+}
+
+/* ---------- clock drawing (the owner's clock face, hands and numbers in code) ---------- */
+function clockSVG(t, { size = 220, ghost = null, live = false } = {}) {
+  const c = size / 2, r = size * .36, m = wrap(t) % 60, h = (wrap(t) / 60) % 12;
+  const hand = (deg, len, w, col) => { const a = (deg - 90) * Math.PI / 180; return `<line x1="${c}" y1="${c}" x2="${(c + Math.cos(a) * len).toFixed(1)}" y2="${(c + Math.sin(a) * len).toFixed(1)}" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`; };
+  let s = `<image href="${src('clockface')}" x="0" y="0" width="${size}" height="${size}"/>`;
+  for (let i = 1; i <= 12; i++) { const a = (i * 30 - 90) * Math.PI / 180; s += `<text x="${(c + Math.cos(a) * r * .66).toFixed(1)}" y="${(c + Math.sin(a) * r * .66 + size * .032).toFixed(1)}" font-size="${size * .088}" font-weight="900" text-anchor="middle" fill="#1f3d57" font-family="Nunito,Cairo">${D(i)}</text>`; }
+  if (ghost !== null) { const gm = wrap(ghost) % 60; s += hand(gm * 6, r * .98, size * .02, '#9fb6c4'); }
+  s += hand(h * 30, r * .55, size * .05, '#e2603f') + hand(m * 6, r * .95, size * .032, '#23799f') + `<circle cx="${c}" cy="${c}" r="${size * .03}" fill="#1f3d57"/>`;
+  return s;
+}
+
+/* ---------- scene ---------- */
+function trainSVG(x, y = 196, sc = .33) {
+  // carriage2, carriage, then the locomotive mirrored to face right (Gemini drew it facing left)
+  const w2 = 448 * sc, w1 = 439 * sc, wl = 453 * sc, h = 205 * sc;
+  return `<g transform="translate(${x.toFixed(1)},${y})">
+    <image href="${src('carriage2')}" x="0" y="0" width="${w2}" height="${h}"/>
+    <image href="${src('carriage')}" x="${w2 - 4}" y="0" width="${w1}" height="${h}"/>
+    <image href="${src('loco')}" x="${-(w2 + w1 + wl - 8)}" y="0" width="${wl}" height="${h}" transform="scale(-1,1)"/></g>`;
+}
+const TRAIN_W = (448 + 439 + 453) * .33 - 8;
+function drawScene({ bg = 'station', train = S.train, rx = S.rx, pose = S.pose, clock = S.clockT, house = false, over = '' } = {}) {
+  let h = `<image href="${IMG}bg_${bg}.jpg" x="0" y="0" width="480" height="268" preserveAspectRatio="xMidYMid slice"/>`;
+  if (bg === 'street') h += `<image href="${src('house')}" x="2" y="148" width="92" height="82"/>`;
+  if (bg === 'station' && train !== null && train !== false) h += trainSVG(typeof train === 'number' ? train : 480 - TRAIN_W - 6);
+  if (pose) { const sz = { walk: [62, 96], run: [92, 96], worry: [62, 96], cheer: [80, 96] }[pose], fy = bg === 'street' ? 238 : 204; h += `<image href="${src('reesho_' + pose)}" x="${rx - sz[0] / 2}" y="${fy - sz[1]}" width="${sz[0]}" height="${sz[1]}" ${pose === 'walk' || pose === 'run' ? 'class="bob"' : ''}/>`; }
+  if (clock !== null) h += `<g transform="translate(${AR ? 8 : 384},8)"><circle cx="44" cy="44" r="46" fill="#fff" opacity=".85"/><g transform="scale(.4)">${clockSVG(clock, { size: 220 })}</g></g>`;
+  // tickets (lives)
+  h += `<g transform="translate(${AR ? 352 : 8},8)"><rect width="120" height="30" rx="15" fill="#fff" opacity=".92"/>${Array.from({ length: LIVES }, (_, i) => `<image href="${src('ticket')}" x="${8 + i * 27}" y="6" width="24" height="18" opacity="${i < S.lives ? 1 : .18}"/>`).join('')}</g>`;
+  $('#scene').innerHTML = h + over;
+}
+function sayMood(html, pose) { $('#say').innerHTML = html; if (pose) $('#sayPic').src = src('reesho_' + pose); }
+
+/* ---------- the work area ---------- */
+function clockWork(start, label) {
+  S.set = wrap(start);
+  $('#work').innerHTML = `<div class="lbl" style="font-weight:800;color:var(--ink)">${label}</div>
+    <svg id="clock" viewBox="0 0 220 220" role="slider" tabindex="0" aria-label="${T('Clock: drag the long blue hand', 'الساعة: اسحب العقرب الأزرق الطويل')}"></svg>
+    <div class="read" id="read" aria-live="polite"></div>
+    <div class="steps"><button type="button" data-d="-5">${T('◀ 5 min back', '٥ دقائق للخلف')}</button><button type="button" data-d="5">${T('5 min forward ▶', '٥ دقائق للأمام')}</button></div>`;
+  $('#work').querySelectorAll('.steps button').forEach(b => b.onclick = () => { if (!S.busy) { S.set = wrap(S.set + +b.dataset.d); SFX.tick(); drawClock(); } });
+  const svg = $('#clock');
+  let dragging = false;
+  const minuteAt = e => { const r = svg.getBoundingClientRect(), x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2; let a = Math.atan2(y, x) * 180 / Math.PI + 90; if (a < 0) a += 360; return (Math.round(a / 30) * 5) % 60; };
+  const move = e => { if (!dragging || S.busy) return; const nm = minuteAt(e), om = S.set % 60; if (nm === om) return; let d = nm - om; if (d > 30) d -= 60; if (d < -30) d += 60; S.set = wrap(S.set + d); SFX.tick(); drawClock(); };
+  svg.addEventListener('pointerdown', e => { if (S.busy) return; dragging = true; svg.classList.add('drag'); svg.setPointerCapture(e.pointerId); move(e); });
+  svg.addEventListener('pointermove', move);
+  svg.addEventListener('pointerup', () => { dragging = false; svg.classList.remove('drag'); });
+  svg.addEventListener('keydown', e => { if (S.busy) return; if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { S.set = wrap(S.set + 5); drawClock(); e.preventDefault(); } if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { S.set = wrap(S.set - 5); drawClock(); e.preventDefault(); } });
+  drawClock();
+}
+function drawClock() { $('#clock').innerHTML = clockSVG(S.set, { size: 220 }); $('#read').textContent = fmt(S.set); $('#clock').setAttribute('aria-valuetext', fmt(S.set)); }
+function durWork(withHours) {
+  S.dur = 0; S.h = 0;
+  const box = (id, lbl) => `<div class="box"><div class="steps"><button type="button" data-k="${id}" data-d="-${id === 'h' ? 1 : 5}">−</button><button type="button" data-k="${id}" data-d="${id === 'h' ? 1 : 5}">+</button></div><div class="num" id="v_${id}">${D(0)}</div><div class="lbl">${lbl}</div></div>`;
+  $('#work').innerHTML = `${S.o.kind === 'elapsed' ? `<svg id="line" viewBox="0 0 360 112"></svg>` : ''}<div class="dur">${withHours ? box('h', T('hours', 'ساعات')) : ''}${box('m', T('minutes', 'دقائق'))}</div>`;
+  $('#work').querySelectorAll('.steps button').forEach(b => b.onclick = () => { if (S.busy) return; const d = +b.dataset.d; if (b.dataset.k === 'h') S.h = Math.max(0, Math.min(3, S.h + d)); else S.dur = Math.max(0, Math.min(withHours ? 55 : 115, S.dur + d)); SFX.tick(); $('#v_m').textContent = D(S.dur); if ($('#v_h')) $('#v_h').textContent = D(S.h); });
+  if (S.o.kind === 'elapsed') drawLine(null);
+}
+/* the book's time line for a trip: from, the o'clock, to; ticks every 5 minutes; the train runs along it */
+function drawLine(minutesRun, stop = null) {
+  const o = S.o, total = o.ans + 15, x0 = 34, x1 = 330, X = mm => x0 + (x1 - x0) * mm / total;
+  const toHour = 60 - (o.from % 60);
+  let s = `<line x1="${x0}" y1="64" x2="${x1}" y2="64" stroke="#1f3d57" stroke-width="3.5"/>`;
+  for (let mm = 0; mm <= total; mm += 5) s += `<line x1="${X(mm)}" y1="${mm % 15 ? 58 : 53}" x2="${X(mm)}" y2="${mm % 15 ? 70 : 75}" stroke="#1f3d57" stroke-width="${mm === toHour ? 3 : 1.5}"/>`;
+  const lab = (mm, txt, col) => `<rect x="${X(mm) - 31}" y="80" width="62" height="28" rx="8" fill="${col}"/><text x="${X(mm)}" y="100" font-size="19" font-weight="900" text-anchor="middle" fill="#fff" font-family="Nunito,Cairo">${txt}</text>`;
+  s += lab(0, fmt(o.from), '#23799f') + lab(toHour, fmt(o.from + toHour), '#9fb6c4') + lab(o.ans, fmt(o.to), '#2e9e6b');
+  s += `<text x="${X(o.ans)}" y="20" font-size="16" font-weight="900" text-anchor="middle" fill="#2e9e6b" font-family="Nunito,Cairo">${T('Grandma', 'تيتة')} 🏠</text>`;
+  if (minutesRun !== null) { const tx = X(Math.min(minutesRun, total)); s += `<image href="${src('loco')}" x="${-(tx + 32)}" y="27" width="64" height="29" transform="scale(-1,1)"/>`; }
+  else s += `<image href="${src('loco')}" x="${-(X(0) + 32)}" y="27" width="64" height="29" transform="scale(-1,1)"/>`;
+  if (stop !== null) s += `<text x="${X(Math.min(stop, total))}" y="24" font-size="20" text-anchor="middle">${stop === S.o.ans ? '🎉' : '❌'}</text>`;
+  $('#line').innerHTML = s;
+}
+
+/* ---------- flow ---------- */
+function nextTask() {
+  const d = DAYS[S.day];
+  S.o = makeTask(d.kinds[S.n % d.kinds.length], S.day); S.busy = false; S.orderMiss = 0;
+  const o = S.o;
+  $('#check').hidden = true; $('#go').disabled = false; $('#go').onclick = deliver;
+  $('#ticket').innerHTML = `<img src="${src(o.kind === 'two' ? 'bus' : o.kind === 'before' ? 'house' : 'loco')}" alt=""><div class="q"><span class="tag">${D(S.n + 1)}/${D(TASKS)}</span>${taskText(o)}</div>`;
+  S.clockT = null;
+  if (o.kind === 'after') { S.train = 'in'; S.pose = 'walk'; S.rx = 40; drawScene(); clockWork(o.start, T('Station clock: when does Reesho arrive?', 'ساعة المحطة: ريشو يوصل الساعة كام؟')); $('#go').textContent = T('🚶 Start walking!', '🚶 يلا نمشي!'); }
+  if (o.kind === 'before') { S.pose = 'walk'; S.rx = 70; drawScene({ bg: 'street' }); clockWork(o.train, T('Alarm clock: when does Reesho leave home?', 'المنبّه: ريشو يخرج من البيت الساعة كام؟')); $('#go').textContent = T('⏰ Ring the alarm!', '⏰ شغّل المنبّه!'); }
+  if (o.kind === 'elapsed') { S.train = 'in'; S.pose = null; drawScene(); durWork(false); $('#go').textContent = T('🚆 Go, train!', '🚆 يلا يا قطر!'); }
+  if (o.kind === 'two') { S.train = 'in'; S.pose = null; drawScene(); durWork(true); $('#go').textContent = T('🎫 Check the ticket', '🎫 راجع التذكرة'); }
+  sayMood('🦜 ' + taskText(o), 'walk');
+  SFX.whistle(.5);
+}
+/* the world plays out what the child set */
+async function deliver() {
+  if (S.busy) return; S.busy = true; $('#go').disabled = true;
+  const o = S.o; let ok = false, err = '';
+  if (o.kind === 'after') {
+    const arrive = o.ans, leaveT = S.set, start = o.start, diffSet = wrap(leaveT - start) > 360 ? 0 : wrap(leaveT - start);
+    const end = Math.min(o.walk + 60, Math.max(o.walk, diffSet)), dur = 2600;
+    S.train = 'in';
+    let gone = false;
+    await anim(dur, k => {
+      const now = start + Math.round(end * k / 5) * 5; S.clockT = now;
+      const walked = Math.min(1, (now - start) / o.walk);
+      const leftAt = diffSet <= end && now - start >= diffSet;
+      if (leftAt && !gone) { gone = true; SFX.whistle(); }
+      const trainX = gone ? 480 - TRAIN_W - 6 + Math.min(480, (now - start - diffSet) * 30) : null;
+      drawScene({ train: gone ? trainX : 'in', rx: 40 + walked * 230, pose: walked >= 1 ? (gone && now - start > diffSet ? 'worry' : 'walk') : 'walk', clock: now });
+    });
+    if (wrap(leaveT) === wrap(arrive)) ok = true;
+    else if (wrap(leaveT - start) > 360) err = T(`The train left at ${fmt(leaveT)}, before Reesho even left home at ${fmt(start)}! The minute hand must go forward.`, `القطار اتحرك الساعة ${fmt(leaveT)}، قبل ما ريشو يخرج من البيت الساعة ${fmt(start)}! عقرب الدقائق لازم يمشي للأمام.`);
+    else if (diffSet < o.walk) err = T(`The train left at ${fmt(leaveT)}, but Reesho was still walking! Did he walk all ${mins(o.walk)}?`, `القطار اتحرك الساعة ${fmt(leaveT)}، وريشو لسه ماشي في الطريق! هو مشي الـ ${mins(o.walk)} كلهم؟`);
+    else err = T('Reesho got there long before the train left: everybody waited for nothing and the train was late.', 'ريشو وصل قبل ما القطار يتحرك بكتير: الناس كلها استنت على الفاضي والقطار اتأخر.');
+  }
+  if (o.kind === 'before') {
+    const leaveT = S.set, arrive = leaveT + o.walk, early = wrap(o.train - arrive), late = wrap(arrive - o.train);
+    const isLate = late > 0 && late < 360, isEarly = early > 0 && early < 360;
+    await anim(1800, k => { const now = leaveT + Math.round(o.walk * k / 5) * 5; drawScene({ bg: 'street', rx: 70 + 400 * k, pose: 'walk', clock: now }); });
+    S.clockT = arrive;
+    if (isLate) {   // the train has gone already
+      drawScene({ train: false, rx: 60, pose: 'worry', clock: arrive }); SFX.whistle(.6);
+      err = T(`Reesho reached the station at ${fmt(arrive)}, but the train had already left at ${fmt(o.train)}! He left home too late.`, `ريشو وصل المحطة الساعة ${fmt(arrive)}، والقطار كان اتحرك الساعة ${fmt(o.train)}! خرج من البيت متأخر.`);
+    } else {
+      await anim(1300, k => drawScene({ train: k < .5 ? 480 - (480 - (480 - TRAIN_W - 6)) * k * 2 : 'in', rx: 60, pose: 'walk', clock: arrive + Math.round(early * k / 5) * 5 }));
+      if (isEarly) err = T(`Reesho waited on the platform for a long time. He wanted to sleep as long as he could and arrive exactly at ${fmt(o.train)}!`, `ريشو استنى على الرصيف كتير. كان عايز ينام أطول وقت ويوصل بالظبط الساعة ${fmt(o.train)}!`);
+      else ok = true;
+    }
+  }
+  if (o.kind === 'elapsed') {
+    const run = S.dur;
+    await anim(Math.max(900, run * 40), k => drawLine(Math.round(run * k)));
+    drawLine(run, run);
+    if (run === o.ans) ok = true;
+    else err = run < o.ans ? T(`The train stopped before Grandma’s town! ${mins(run)} is not enough.`, `القطار وقف قبل بلد تيتة! ${mins(run)} مش كفاية.`) : T(`The train went past Grandma’s town! ${mins(run)} is too much.`, `القطار عدّى بلد تيتة! ${mins(run)} كتير.`);
+  }
+  if (o.kind === 'two') {
+    const total = S.h * 60 + S.dur;
+    if (total === o.ans && S.dur < 60) ok = true;
+    else err = total < o.ans ? T(`${hm(S.h, S.dur)} is too short for the bus and the train together.`, `${hm(S.h, S.dur) || D(0)} أقل من مدة الأتوبيس والقطار مع بعض.`) : T(`${hm(S.h, S.dur)} is too long for the bus and the train together.`, `${hm(S.h, S.dur)} أكتر من مدة الأتوبيس والقطار مع بعض.`);
+  }
+  if (ok) return win();
+  await miss(err);
+}
+function anim(ms, step) { return new Promise(res => { const t0 = performance.now(); (function f(t) { const k = Math.min(1, (t - t0) / ms); step(k); if (S.lives > 0 && $('#dayCard').hidden && k < 1) requestAnimationFrame(f); else res(); })(t0); }); }
+async function miss(text) {
+  S.lives--; S.misses++; S.orderMiss++; SFX.wrong();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.day + 1, step: S.n + 1 });
+  sayMood('🦜 ' + text + (S.lives ? ' ' + T(`🎫 ${D(S.lives)} tickets left. Try again!`, `🎫 فاضل ${D(S.lives)} تذاكر. جرّب تاني!`) : ''), 'worry');
+  if (S.o.kind === 'after' || S.o.kind === 'before') drawScene({ bg: S.o.kind === 'before' ? 'street' : 'station', train: S.o.kind === 'after' ? 'in' : undefined, rx: S.o.kind === 'before' ? 70 : 40, pose: 'worry', clock: S.clockT });
+  if (!S.lives) { await sleep(1200); return endDay(false); }
+  S.busy = false; $('#go').disabled = false;
+}
+async function win() {
+  const o = S.o, pts = S.orderMiss ? 10 : 15;
+  S.score += pts; $('#score').textContent = D(S.score);
+  SFX.whistle(); SFX.win(.6);
+  if (o.kind === 'after' || o.kind === 'before') await anim(1400, k => drawScene({ train: 480 - TRAIN_W - 6 + 520 * k * k, rx: 300, pose: k < .15 ? 'cheer' : null, clock: o.kind === 'after' ? o.ans : o.train }));
+  drawScene({ train: false, pose: 'cheer', rx: 240, clock: null, over: confetti() });
+  $('#check').hidden = false; $('#check').innerHTML = checkHTML(o);
+  sayMood(`🦜 ${pick([T('All aboard! Right on time!', 'كله يركب! في الميعاد بالظبط!'), T('Perfect timing!', 'توقيت مظبوط!'), T('Choo choo! Well done!', 'توت توت! برافو!')])} +${D(pts)}`, 'cheer');
+  S.n++; S.busy = false; $('#go').disabled = false;
+  $('#go').textContent = S.n >= TASKS ? T('🏁 End of the trip', '🏁 آخر الرحلة') : T('➜ Next task', 'المهمة اللي بعدها ⬅');
+  $('#go').onclick = () => { S.n >= TASKS ? endDay(true) : nextTask(); };
+}
+function confetti() { let s = ''; for (let i = 0; i < 26; i++) s += `<rect x="${20 + rnd(440)}" y="${20 + rnd(150)}" width="7" height="11" rx="2" fill="${pick(['#f2b134', '#e2603f', '#3aa79a', '#23799f', '#fff'])}" transform="rotate(${rnd(90)} ${20 + rnd(440)} ${40 + rnd(120)})"/>`; return s; }
+function startDay() {
+  S.n = 0; S.lives = LIVES; S.misses = 0; S.used = new Set(); S.t0 = Date.now();
+  $('#day').textContent = D(S.day + 1); music('play'); nextTask();
+}
+function endDay(won) {
+  music('off');
+  const last = S.day === DAYS.length - 1, stars = won ? (S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1) : 0;
+  if (won) { saveWin(stars); SFX.win(1); } else SFX.lose();
+  $('#dayPic').src = src(won ? 'reesho_cheer' : 'reesho_worry');
+  $('#dayT').textContent = won ? (last ? T('Master of time! 🏆', 'بطل المواعيد! 🏆') : T(`Trip ${D(S.day + 1)} done!`, `خلصت الرحلة ${D(S.day + 1)}!`)) : T('Out of tickets!', 'التذاكر خلصت!');
+  $('#dayStars').textContent = won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
+  $('#dayText').innerHTML = won ? (last ? T(`You finished all six trips. Score: ${D(S.score)}.`, `خلّصت الست رحلات. نقطك: ${D(S.score)}.`) : T('The next trip is a little harder:', 'الرحلة الجاية أصعب شوية:')) : T('Count the minutes on the clock five by five, and stop at the o’clock when the hour changes.', 'عُدّ الدقائق على الساعة خمسة خمسة، ووقّف عند الساعة الكاملة لما الساعة تتغيّر.');
+  const nxt = won && !last ? DAYS[S.day + 1] : DAYS[S.day];
+  $('#dayNew').hidden = won && last; $('#dayNew').textContent = '✨ ' + T(nxt.newEn, nxt.newAr);
+  $('#dayBtn').textContent = won ? (last ? T('Play again', 'العب من الأول') : T('Next trip ➜', 'الرحلة اللي بعدها ⬅')) : T('Try the trip again', 'جرّب الرحلة تاني');
+  $('#dayBtn').onclick = () => { $('#dayCard').hidden = true; if (won) S.day = last ? 0 : S.day + 1; if (won && last) { S.score = 0; $('#score').textContent = D(0); } startDay(); };
+  if (!won) SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.day + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+  $('#dayCard').hidden = false;
+}
+function saveWin(stars) {
+  const done = S.day + 1;
+  SI.updateChProf(c => { const o = c.rtrain = c.rtrain || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.day] = Math.max(o.stars[S.day] || 0, stars); o.lvl = done >= DAYS.length ? 0 : done; }, CH.id);
+  SI.addXP(20 + stars * 10);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: S.score, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+$('#hint').onclick = () => { if (S.o) { SFX.tick(); sayMood('🦜 ' + hintText(S.o)); } };
+
+/* ---------- music and sounds (Web Audio, no files): a chugging train rhythm ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0 };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .5 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 3000, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol = .2, cut = 1800) {
+  const c = A.ctx, b = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.value = cut; g.gain.value = vol;
+  s.connect(f); f.connect(g); g.connect(A.master); s.start(t);
+}
+const MEL = [67, 72, 76, 72, 74, 71, 67, 71, 69, 72, 76, 79, 77, 74, 72, 67];
+function musicTick() {
+  const c = A.ctx; if (!c) return; const spb = 60 / 120 / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    noise(t, .05, i % 4 === 0 ? .09 : .04, i % 2 ? 5000 : 2200);   // chug
+    if (i % 2 === 0) tone(MEL[(A.beat / 2 | 0) % 16], t, spb * 1.5, { type: 'triangle', vol: .06, cut: 2400 });
+    if (i % 8 === 0) tone([43, 48, 45, 43][(A.beat / 8 | 0) % 4], t, spb * 3.5, { type: 'sine', vol: .11, cut: 600 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; clearInterval(A.timer); A.timer = null; if (mode === 'play') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  tick() { if (!ac()) return; tone(98, A.ctx.currentTime, .025, { type: 'square', vol: .035, cut: 6000 }); },
+  whistle(v = 1) { if (!ac()) return; const t = A.ctx.currentTime; [76, 80].forEach(m => tone(m, t, .7, { type: 'sawtooth', vol: .05 * v, cut: 2600 })); [76, 80].forEach(m => tone(m, t + .8, .45, { type: 'sawtooth', vol: .045 * v, cut: 2600 })); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(55, t, .32, { type: 'sawtooth', vol: .1, cut: 900, glide: -4 }); },
+  win(v = 1) { if (!ac()) return; const t = A.ctx.currentTime + .3; [72, 76, 79, 84].forEach((m, i) => tone(m, t + i * .1, .4, { type: 'triangle', vol: .13 * v })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [67, 65, 64, 60].forEach((m, i) => tone(m, t + i * .26, .45, { type: 'triangle', vol: .13, cut: 1400 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .5 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+/* ---------- intro ---------- */
+$('#introT').textContent = T('Reesho is going to Grandma’s!', 'ريشو رايح لتيتة!');
+$('#rules').innerHTML = [
+  T('Reesho has to catch the train on time.', 'ريشو لازم يلحق القطار في الميعاد.'),
+  T('Turn the clock: drag the long blue hand, or press the 5-minute buttons.', 'لفّ الساعة: اسحب العقرب الأزرق الطويل، أو اضغط زرار الخمس دقائق.'),
+  T('Then watch: the station plays out the time you set.', 'وبعدين اتفرّج: المحطة بتمشي على الوقت اللي ضبطته.'),
+  T(`A wrong time costs a ticket 🎫. You have <b>${D(LIVES)} tickets</b> for each trip.`, `الوقت الغلط بيضيّع تذكرة 🎫. معاك <b>${D(LIVES)} تذاكر</b> في كل رحلة.`)
+].map(x => `<li>${x}</li>`).join('');
+$('#days').textContent = D(DAYS.length);
+$('#start').textContent = T('All aboard! 🚆', 'يلا نركب! 🚆');
+$('#start').onclick = () => { $('#intro').hidden = true; ac(); SI.ga('game_start', { game: GAME, chapter: CH.id }); startDay(); };
+$('#score').textContent = D(0);
+S.clockT = null; drawScene();
+window.__rt = S; window.__rtApi = { makeTask, nextTask, startDay, deliver, setDay: d => { S.day = d; }, fmt };
+})();
+</script>
+</body>
+</html>
