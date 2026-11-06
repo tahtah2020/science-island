@@ -218,7 +218,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return { n: i + 1, title: nm(i), xp, from: LEVELS[i][0], to: nxt ? nxt[0] : null, pct: nxt ? (xp - LEVELS[i][0]) / (nxt[0] - LEVELS[i][0]) : 1, next: nxt ? nm(i + 1) : null };
   }
   const xp = () => prof().xp || 0;
-  function addXP(n) { let b = 0, a = 0; const wk = weekKey(); updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; const w = p.week || {}; w[wk] = (w[wk] || 0) + (a - b); Object.keys(w).sort().slice(0, -2).forEach(k => delete w[k]); p.week = w; }); sync.dirty(); LB.submitWeek().catch(() => {}); return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
+  function addXP(n) { let b = 0, a = 0; updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; }); sync.dirty(); LB.submitWeek().catch(() => {}); return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
 
   /* ---------- gems «جواهر» and Reesho's wardrobe ----------
      One gem for every GEM_XP points of XP. XP only grows, so the balance is floor(xp / GEM_XP) - spent: nothing extra is stored
@@ -261,7 +261,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return st;
   }
 
-  /* ---------- week of the «نجوم الأسبوع» board (resets every Saturday) ---------- */
+  /* ---------- week key (older boards; «نجوم متفوّق» is never reset) ---------- */
   function weekKey(date = new Date()) {
     const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     d.setDate(d.getDate() - ((d.getDay() + 1) % 7));          // back to Saturday
@@ -338,7 +338,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     ok1: 'رائع!', ok2: 'ممتاز!', ok3: 'أحسنت!', ok4: 'عظيم!', ok5: 'برافو عليك!', ok6: 'يا سلام عليك!', ok7: 'شاطر!', ok8: 'كده تمام!',
     bad1: 'حاول مرة تانية', bad2: 'قربت! جرّب تاني', bad3: 'ولا يهمك، جرّب تاني', bad4: 'فكّر تاني براحتك',
     streak: 'ما شاء الله! إنت نار!', boss: 'استعد للتحدي الكبير!', box: 'مفاجأة!',
-    finish: 'أحسنت يا بطل! خلّصت المهمة', hello: 'أهلًا يا بطل!', level: 'مبروك! طلعت مستوى جديد', champion: 'إنت من نجوم الأسبوع!',
+    finish: 'أحسنت يا بطل! خلّصت المهمة', hello: 'أهلًا يا بطل!', level: 'مبروك! طلعت مستوى جديد', champion: 'إنت من نجوم متفوّق!',
     rate: 'استنى يا بطل! قولّي رأيك في اللعبة', better: 'ولا يهمك! قولّي نضيف إيه علشان تبقى أحلى؟', thanks: 'شكرًا يا بطل! رأيك مهم عندي',
     intro: 'أهلًا يا بطل! أنا ريشو، صاحبك في متفوّق. هنلعب ونتعلم سوا. مستعد للمغامرة؟',
     back: 'أهلًا بيك تاني يا بطل! يلا نكمل', miss: 'وحشتني يا بطل! يلا نكمّل اللي بدأناه',
@@ -487,11 +487,11 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     };
   }
 
-  /* ---------- «نجوم الأسبوع» board: Firebase when configured, this device otherwise ---------- */
+  /* ---------- «نجوم متفوّق» board: Firebase when configured, this device otherwise ---------- */
   const FB = 'https://www.gstatic.com/firebasejs/10.12.2/';
-  /* «نجوم الأسبوع» (Stars of the Week, owner 6 Nov 2026): ONE board for every student of every grade, subject and track,
-     ranked by the points (XP) earned this week from any activity. Board id `all-<week>`; resets every Saturday.
-     The score sent is capped at 100000, as in the Firestore rules (raised from 1500 on 6 Nov 2026). */
+  /* «نجوم متفوّق» (owner, 6 Nov 2026): ONE permanent board for every student of every grade, subject and track, ranked by
+     total points (XP). It is NEVER reset (owner: the list must always have students in it). Board id `all-time`.
+     Every page posts the player's total once per visit, so anyone who has played shows up. Score capped at 100000 (rules). */
   const LB = {
     _db: undefined, _fs: null, base: FB, CAP: 100000,
     async ready() {
@@ -504,19 +504,18 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       } catch (e) { console.warn('Stars board is offline:', e); this._db = null; }
       return this._db;
     },
-    week(back = 0) { const d = new Date(); d.setDate(d.getDate() - 7 * back); return weekKey(d); },
-    board(back = 0) { return `all-${this.week(back)}`; },
-    weekPoints(back = 0) { return Math.round(((prof().week || {})[this.week(back)]) || 0); },
+    board() { return 'all-time'; },
+    weekPoints() { return Math.round(prof().xp || 0); },
     counts() { const p = player(); return !!(p && p.name && p.name.toLowerCase() !== 'admin' && !isOwner()); },
-    localRows(back = 0) {
-      const b = (store.load().board || {})[this.board(back)] || {};
+    localRows() {
+      const b = (store.load().board || {})[this.board()] || {};
       return Object.entries(b).map(([id, v]) => Object.assign({ id }, v)).sort((a, c) => c.score - a.score);
     },
     async submitWeek() {
       if (!this.counts()) return { saved: false };
       const p = player(), score = Math.min(this.CAP, this.weekPoints()); if (!score) return { saved: false };
       store.update(s => {
-        s.board = s.board || {}; const k = this.board(); Object.keys(s.board).filter(x => !x.startsWith('all-') || x < this.board(1)).forEach(x => delete s.board[x]);
+        s.board = s.board || {}; const k = this.board(); Object.keys(s.board).filter(x => x !== k).forEach(x => delete s.board[x]);
         const b = s.board[k] = s.board[k] || {};
         if (!b[p.id] || b[p.id].score < score) b[p.id] = { name: p.name, score };
       });
@@ -529,24 +528,18 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       } catch (e) { console.warn(e); return { saved: true, online: false }; }
     },
     submit() { return this.submitWeek(); },   // older callers
-    async top(n = 10, back = 0) {
+    async top(n = 10) {
       const db = await this.ready();
       if (db) {
         try {
-          const fs = this._fs, q = fs.query(fs.collection(db, 'boards', this.board(back), 'scores'), fs.orderBy('score', 'desc'), fs.limit(n));
+          const fs = this._fs, q = fs.query(fs.collection(db, 'boards', this.board(), 'scores'), fs.orderBy('score', 'desc'), fs.limit(n));
           const ss = await fs.getDocs(q);
           return { online: true, rows: ss.docs.map(d => Object.assign({ id: d.id }, d.data())) };
         } catch (e) { console.warn(e); }
       }
-      return { online: false, rows: this.localRows(back).slice(0, n) };
+      return { online: false, rows: this.localRows().slice(0, n) };
     },
-    /* this week's board, or last week's when nobody has played yet this week */
-    async show(n = 10) {
-      const now = await this.top(n, 0);
-      if (now.rows.length) return Object.assign(now, { last: false });
-      const prev = await this.top(n, 1);
-      return Object.assign(prev, { last: !!prev.rows.length });
-    },
+    async show(n = 10) { return Object.assign(await this.top(n), { last: false }); },
     async me() {
       const p = player(); if (!p || !this.counts()) return null;
       const db = await this.ready();
@@ -563,6 +556,9 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       return i < 0 ? null : { score: rows[i].score, rank: i + 1, online: false };
     }
   };
+  /* every visit posts the player's total points once, so every student who has played is on the board */
+  setTimeout(() => { try { if (sessionStorage.getItem('si.lbsent')) return; sessionStorage.setItem('si.lbsent', '1'); } catch (e) {} LB.submitWeek().catch(() => {}); }, 2500);
+
 
   /* ---------- progress saved online + recovery code «رمز الاستعادة» ----------
      The device save (localStorage si.v2) stays the main copy; each player is also mirrored to Firestore

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261106l">
+<link rel="stylesheet" href="common.css?v=20261106m">
 <style>
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}
 .mapWrap{position:relative;width:100%;max-width:min(680px, calc((100vh - 120px) * 1224 / 1285));margin:0 auto;aspect-ratio:1224/1285;border-radius:26px;
@@ -120,9 +120,9 @@
     </aside>
   </main>
 </div>
-<script src="firebase-config.js?v=20261106l"></script>
-<script src="chapters.js?v=20261106l"></script>
-<script src="common.js?v=20261106l"></script>
+<script src="firebase-config.js?v=20261106m"></script>
+<script src="chapters.js?v=20261106m"></script>
+<script src="common.js?v=20261106m"></script>
 <script>
 (async () => {
   'use strict';
@@ -181,8 +181,8 @@
       hint: T('5 quick questions every day. Keep your fire streak going!', SI.G('٥ أسئلة سريعة كل يوم. حافظ على سلسلة أيامك!', '٥ أسئلة سريعة كل يوم. حافظي على سلسلة أيامك!')) },
     { key: 'review', icon: '🔁', name: T('Review', 'المراجعة'), href: 'quiz.html#review', badge: due, done: false, sub: due ? T(`${due} waiting`, `${due} مستني`) : T('all clear', 'مفيش حاجة'),
       hint: due ? T(`${due} tricky question${due > 1 ? 's are' : ' is'} waiting for you.`, SI.G(`فيه ${due} سؤال صعب مستنيك.`, `فيه ${due} سؤال صعب مستنيكي.`)) : T('Reesho saves your tricky questions here.', 'ريشو بيحفظ لك الأسئلة الصعبة هنا.') },
-    { key: 'board', icon: '⭐', name: T('Stars of the Week', 'نجوم الأسبوع'), href: 'champions.html', done: false, sub: '&nbsp;',
-      hint: T('Every point you earn this week counts. See the top 10!', SI.G('كل نقطة تكسبها الأسبوع ده بتتحسب. شوف أعلى ١٠!', 'كل نقطة تكسبيها الأسبوع ده بتتحسب. شوفي أعلى ١٠!')) }
+    { key: 'board', icon: '⭐', name: T('Motafawek Stars', 'نجوم متفوّق'), href: 'champions.html', done: false, sub: '&nbsp;',
+      hint: T('Every point you earn counts. See the top 10!', SI.G('كل نقطة تكسبها بتتحسب. شوف أعلى ١٠!', 'كل نقطة تكسبيها بتتحسب. شوفي أعلى ١٠!')) }
   ];
   /* positions come from the chapter (game, quest, daily, review, champions); a chapter without a game skips the first one */
   const POS = (CH.map && CH.map.stops) || [[59.6, 82.9, 'left'], [54.6, 67.1, 'right'], [41.3, 51.4, 'right'], [39.6, 38.1, 'left'], [68.2, 12.5, 'below']];
@@ -205,7 +205,7 @@
     : `${st.got ? `Great work, <b>${SI.esc(me.name)}</b>! ` : `Welcome, <b>${SI.esc(me.name)}</b>! `}Next stop: <b>${s.name}</b>. ${s.hint}`;
   $('#go').href = s.href;
 
-  // «نجوم الأسبوع» label: my rank this week
+  // «نجوم متفوّق» label: my rank
   try { const m = await SI.LB.me(); if (m) $('#sub-board').textContent = T(`you are #${m.rank}`, `ترتيبك #${m.rank}`); } catch (e) {}
 })();
 </script>

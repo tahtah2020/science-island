@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: '«نجوم متفوّق»: قائمة دائمة لا تُصفَّر',
+    items: [
+      { text: 'قائمة واحدة لكل الطلاب بمجموع نقاطهم، ولا تُصفَّر أبدًا' },
+      { text: 'كل طالب لعب من قبل يدخل القائمة بمجرد فتح الموقع' }
+    ] },
   { date: '2026-11-06', title: 'نجوم الأسبوع بلا حد ١٥٠٠',
     items: [
       { text: 'الحد الأقصى لنقاط الأسبوع أصبح ١٠٠٠٠٠' }
