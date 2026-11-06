@@ -34,6 +34,7 @@
   'use strict';
   const AR = () => (window.SI ? window.SI.isAr() : true);
   const T = (en, ar) => (window.SI ? window.SI.T(en, ar) : ar);
+  const QM = () => (AR() ? '؟' : '?');
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const dg = t => AR() ? String(t).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]) : String(t);
   const INK = '#1f3d57', PAPER = '#fffaf0', W = 340;
@@ -93,7 +94,7 @@
       const ask = k.t === '?', empty = k.t === '' || k.t === undefined, w = wOf(k) - 6;
       if (k.box || ask || empty) {
         return `<rect x="${f1(cx - w / 2)}" y="${f1(y - 17)}" width="${f1(w)}" height="34" rx="8" fill="${ask ? ASKBG : '#fff'}" stroke="${ask ? ASK : '#8fa6b8'}" stroke-width="2.2"${ask ? ' stroke-dasharray="5 4"' : ''}/>`
-          + (empty ? '' : txt(cx, y + 8, ask ? '؟' : dg(k.t), { fs: 20, fill: ask ? ASK : k.c || INK }));
+          + (empty ? '' : txt(cx, y + 8, ask ? QM() : dg(k.t), { fs: 20, fill: ask ? ASK : k.c || INK }));
       }
       return (k.hl ? `<rect x="${f1(cx - w / 2)}" y="${f1(y - 16)}" width="${f1(w)}" height="32" rx="16" fill="${SPLBG}" stroke="${SPL}" stroke-width="2"/>` : '')
         + txt(cx, y + 8, dg(k.t), { fs: 22, fill: k.c || INK });
@@ -115,7 +116,7 @@
     let s = top.s;
     /* «نفكّكه» under the number that is broken up */
     const exW = ex.map(wOf), splitX = p.split === 0 ? 332 - exW[0] / 2 : 332 - exW[0] - exW[1] - exW[2] / 2;
-    s += txt(splitX, ey + 36, 'نفكّكه', { fs: 12, fill: SPL });
+    s += txt(splitX, ey + 36, T('break up', 'نفكّكه'), { fs: 12, fill: SPL });
     /* the bracket */
     const bx = top.left - 4, rx = bx - 30, y1 = 36, y2 = 120;
     s += `<path d="M${f1(rx)} ${y1}L${f1(bx)} ${ey}L${f1(rx)} ${y2}" fill="none" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round"/>`;
@@ -197,8 +198,8 @@
     rows.forEach(([name, cells, last], r) => {
       const y = 12 + r * rh, bg = r === 0 ? '#fde3cf' : '#fff';
       s += `<rect x="${f1(headX)}" y="${y}" width="${head}" height="${rh}" fill="#fde3cf" stroke="${INK}" stroke-width="1.6"/>` + txt(headX + head / 2, y + 22, name, { fs: 13 });
-      cells.forEach((c, k) => { s += `<rect x="${f1(colX(k))}" y="${y}" width="${f1(cw)}" height="${rh}" fill="${bg}" stroke="${INK}" stroke-width="1.6"/>` + (c === '?' || c === '؟' ? txt(colX(k) + cw / 2, y + 23, '؟', { fs: 17, fill: '#e2603f' }) : txt(colX(k) + cw / 2, y + 22, c, { fs: 15 })); });
-      s += `<rect x="${f1(colX(n))}" y="${y}" width="${lw}" height="${rh}" fill="${r === 0 ? '#fde3cf' : '#f6f1e4'}" stroke="${INK}" stroke-width="1.6"/>` + txt(colX(n) + lw / 2, y + 22, last === '?' ? '؟' : last, { fs: r === 0 ? 12 : 15, fill: last === '?' ? '#e2603f' : INK });
+      cells.forEach((c, k) => { s += `<rect x="${f1(colX(k))}" y="${y}" width="${f1(cw)}" height="${rh}" fill="${bg}" stroke="${INK}" stroke-width="1.6"/>` + (c === '?' || c === QM() ? txt(colX(k) + cw / 2, y + 23, QM(), { fs: 17, fill: '#e2603f' }) : txt(colX(k) + cw / 2, y + 22, c, { fs: 15 })); });
+      s += `<rect x="${f1(colX(n))}" y="${y}" width="${lw}" height="${rh}" fill="${r === 0 ? '#fde3cf' : '#f6f1e4'}" stroke="${INK}" stroke-width="1.6"/>` + txt(colX(n) + lw / 2, y + 22, last === '?' ? QM() : last, { fs: r === 0 ? 12 : 15, fill: last === '?' ? '#e2603f' : INK });
     });
     return svg(H, T('A score table: points, throws and total points', 'جدول النقاط: النقاط وعدد الرميات وإجمالي عدد النقاط'), s);
   }
@@ -236,7 +237,7 @@
     for (let t = a; t <= b; t += 5) { const hr = t % 60 === 0; s += `<path d="M${f1(X(t))} ${ly - (hr ? 14 : 8)}V${ly + (hr ? 14 : 8)}" stroke="${INK}" stroke-width="${hr ? 3 : 1.6}"/>`; if (hr) s += `<rect x="${f1(X(t) - 26)}" y="${ly + 18}" width="52" height="24" rx="5" fill="#fde3cf"/>` + txt(X(t), ly + 36, clockTxt(t), { fs: 14 }); }
     (p.marks || []).forEach((m, i) => {
       const unknown = m.startsWith('?'), t = unknown ? mins(m.slice(1)) : mins(m), y = 22 + (i % 2) * 0;
-      s += `<rect x="${f1(X(t) - 30)}" y="${y}" width="60" height="28" rx="5" fill="#fff" stroke="${unknown ? '#e2603f' : INK}" stroke-width="2"${unknown ? ' stroke-dasharray="5 3"' : ''}/>` + txt(X(t), y + 20, unknown ? '؟' : clockTxt(t), { fs: 15, fill: unknown ? '#e2603f' : INK });
+      s += `<rect x="${f1(X(t) - 30)}" y="${y}" width="60" height="28" rx="5" fill="#fff" stroke="${unknown ? '#e2603f' : INK}" stroke-width="2"${unknown ? ' stroke-dasharray="5 3"' : ''}/>` + txt(X(t), y + 20, unknown ? QM() : clockTxt(t), { fs: 15, fill: unknown ? '#e2603f' : INK });
       s += `<path d="M${f1(X(t))} ${y + 28}V${ly - 4}" stroke="${unknown ? '#e2603f' : INK}" stroke-width="2"/><path d="M${f1(X(t) - 5)} ${ly - 11}L${f1(X(t))} ${ly - 3}L${f1(X(t) + 5)} ${ly - 11}" fill="none" stroke="${unknown ? '#e2603f' : INK}" stroke-width="2"/>`;
     });
     (p.jumps || []).forEach(([u, v, lab], i) => {
@@ -376,7 +377,7 @@
     if (oth.length) {
       const y = 18 + p.rows.length * rh;
       s += `<rect x="${x0 + tw - nameW}" y="${y}" width="${nameW}" height="${rh}" fill="${GOLD}" stroke="${INK}" stroke-width="1.6"/><rect x="${x0}" y="${y}" width="${tw - nameW}" height="${rh}" fill="#fff" stroke="${GOLD}" stroke-width="2.4" stroke-dasharray="6 4"/>`;
-      s += txt(x0 + tw - nameW / 2, y + 27, 'أخرى', { fs: 17, fill: '#fff' }) + txt(x0 + (tw - nameW) / 2, y + 28, '؟', { fs: 22, fill: GOLD });
+      s += txt(x0 + tw - nameW / 2, y + 27, T('other', 'أخرى'), { fs: 17, fill: '#fff' }) + txt(x0 + (tw - nameW) / 2, y + 28, QM(), { fs: 22, fill: GOLD });
     }
     return svg(H, T('A tally table', 'جدول علامات العدّ'), s);
   }
@@ -393,18 +394,18 @@
     if (typeof p.ask === 'number') {
       const y = Y(p.ask);
       s += `<path d="M${ax + 16} ${f1(y)}H${ax + 46}" stroke="${GOLD}" stroke-width="2.4"/><path d="M${ax + 16} ${f1(y)}l9 -5v10z" fill="${GOLD}"/>`
-        + `<rect x="${ax + 48}" y="${f1(y - 14)}" width="40" height="28" rx="7" fill="#fff4d6" stroke="${GOLD}" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(ax + 68, y + 7, '؟', { fs: 18, fill: GOLD });
+        + `<rect x="${ax + 48}" y="${f1(y - 14)}" width="40" height="28" rx="7" fill="#fff4d6" stroke="${GOLD}" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(ax + 68, y + 7, QM(), { fs: 18, fill: GOLD });
     } else if (p.ask === 'step') {
       const ya = Y(0), yb = Y(1), xm = ax + 22;
       s += `<path d="M${ax + 14} ${f1(ya)}h8V${f1(yb)}h-8" fill="none" stroke="${GOLD}" stroke-width="2.4"/><path d="M${xm} ${f1((ya + yb) / 2)}H${xm + 22}" stroke="${GOLD}" stroke-width="2.4"/>`
-        + `<rect x="${xm + 24}" y="${f1((ya + yb) / 2 - 14)}" width="40" height="28" rx="7" fill="#fff4d6" stroke="${GOLD}" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(xm + 44, (ya + yb) / 2 + 7, '؟', { fs: 18, fill: GOLD });
+        + `<rect x="${xm + 24}" y="${f1((ya + yb) / 2 - 14)}" width="40" height="28" rx="7" fill="#fff4d6" stroke="${GOLD}" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(xm + 44, (ya + yb) / 2 + 7, QM(), { fs: 18, fill: GOLD });
     }
     return svg(H, T(`A scale from 0 to ${p.max} with ${n} marks`, `مقياس من ${dg(0)} إلى ${dg(p.max)} فيه ${dg(n)} علامات`), s);
   }
   function g3Bars(q) {
     const p = (q && q.pic) || { max: 10, step: 1, bars: [] }, nb = p.bars.length, gx = 54, gw = 250, gy = 50, gh = 186, Y = v => gy + gh - v / p.max * gh;
     /* title or unit '?' = the asked spot: a gold dashed box with «؟» (the book's [ ] and ( ) to fill in) */
-    const askBox = (cx, cy, w) => `<rect x="${f1(cx - w / 2)}" y="${f1(cy - 13)}" width="${w}" height="26" rx="7" fill="#fff4d6" stroke="#d99a12" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(cx, cy + 7, '؟', { fs: 18, fill: '#d99a12' });
+    const askBox = (cx, cy, w) => `<rect x="${f1(cx - w / 2)}" y="${f1(cy - 13)}" width="${w}" height="26" rx="7" fill="#fff4d6" stroke="#d99a12" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(cx, cy + 7, QM(), { fs: 18, fill: '#d99a12' });
     let s = p.title === '?' ? askBox(178, 16, 150) : txt(178, 20, p.title || '', { fs: 14 });
     s += p.unit === '?' ? askBox(30, 26, 32) + `<path d="M11 13q-7 13 0 26M49 13q7 13 0 26" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>` : p.unit ? txt(30, 38, `(${p.unit})`, { fs: 11, w: 700 }) : '';
     s += `<rect x="${gx}" y="${gy}" width="${gw}" height="${gh}" fill="#fff" stroke="${INK}" stroke-width="2"/>`;
@@ -424,9 +425,9 @@
     const ar = AR(), colX = c => ar ? (c === 0 ? x0 + tw - first : x0 + tw - first - c * cw) : (c === 0 ? x0 : x0 + first + (c - 1) * cw), colW = c => c === 0 ? first : cw;
     let s = p.title ? txt(170, 22, p.title + (p.unit ? `   (${p.unit})` : ''), { fs: 13 }) : '';
     [p.head].concat(p.rows).forEach((row, r) => row.forEach((v, c) => {
-      const y = top + r * rh, hd = r === 0 || c === 0, unk = v === '؟' || v === '?';
+      const y = top + r * rh, hd = r === 0 || c === 0, unk = v === QM() || v === '?';
       s += `<rect x="${f1(colX(c))}" y="${y}" width="${f1(colW(c))}" height="${rh}" fill="${hd ? '#fde3cf' : '#fff'}" stroke="${INK}" stroke-width="1.4"/>`;
-      s += txt(colX(c) + colW(c) / 2, y + 20, unk ? '؟' : typeof v === 'number' ? dg(v) : v, { fs: unk ? 16 : 13, fill: unk ? '#e2603f' : INK, w: hd ? 800 : 700 });
+      s += txt(colX(c) + colW(c) / 2, y + 20, unk ? QM() : typeof v === 'number' ? dg(v) : v, { fs: unk ? 16 : 13, fill: unk ? '#e2603f' : INK, w: hd ? 800 : 700 });
     }));
     return svg(top + (p.rows.length + 1) * rh + 12, T('A table', 'جدول'), s);
   }
@@ -440,6 +441,8 @@
   const OWNER = new Set(['apple', 'strawberry', 'banana', 'orange', 'car', 'bus', 'motorbike', 'truck', 'taxi', 'police', 'dog', 'cat', 'cat2', 'rabbit', 'dolphin', 'horse', 'cake', 'cake2', 'pie', 'biscuit', 'picturebook', 'picturebook2', 'refbook', 'sciencebook', 'clipboard', 'math', 'english', 'pe', 'music', 'drawing', 'other',
     /* third set (unit 10) */
     'chocolate', 'juice', 'medal', 'bouquet', 'cakebox', 'snackbox', 'pencils', 'sandwich', 'paperbox', 'banknote', 'coin2', 'paperbundle', 'notebook2', 'lake', 'runner', 'basket',
+    /* fourth set (English units 1-3) */
+    'pudding', 'jelly', 'water', 'block', 'train2', 'aquarium', 'flowershop', 'schoolbus',
     /* second Gemini set (6 Nov 2026, units 7-9) */
     'cookie', 'candy2', 'paper2', 'seed', 'plate', 'boxopen', 'box', 'bench', 'wheel', 'can', 'wagon', 'ribbon', 'pencil2', 'marble', 'books', 'backpack', 'boy', 'girl', 'boy2', 'girl2', 'teacher', 'father', 'grandma', 'kids']);
   const CHILD = ['boy', 'girl', 'boy2', 'girl2'];   /* 'child' in a story = the owner's four children in turn */
@@ -508,7 +511,7 @@
     pts.forEach((v, k) => {
       const known = k < (p.know || 1), x = xs[k];
       s += `<path d="M${f1(x)} ${y - 8}V${y + 8}" stroke="${INK}" stroke-width="3"/>`;
-      s += known ? txt(x, y + 32, dg(v), { fs: 19 }) : `<rect x="${f1(x - 22)}" y="${y + 13}" width="44" height="28" rx="7" fill="#fff4d6" stroke="#d99a12" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(x, y + 34, '؟', { fs: 18, fill: '#d99a12' });
+      s += known ? txt(x, y + 32, dg(v), { fs: 19 }) : `<rect x="${f1(x - 22)}" y="${y + 13}" width="44" height="28" rx="7" fill="#fff4d6" stroke="#d99a12" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(x, y + 34, QM(), { fs: 18, fill: '#d99a12' });
     });
     return svg(150, T('Jumps on a number line', 'قفزات على خط الأعداد'), s);
   }
@@ -540,7 +543,7 @@
   /* the book's place-value table: ones on the right, «الألوف» under the left three; pic: { n, fill: digits shown, ask: place 0-5 with «؟» } */
   function g3Place(q) {
     const p = (q && q.pic) || { n: 865000, fill: true }, cw = 52, x0 = (W - 6 * cw) / 2 - 3, y0 = 14, hh = 34, dh = 44;
-    const NAMES = ['الآحاد', 'العشرات', 'المئات', 'الألوف', 'عشرات الألوف', 'مئات الألوف'], ds = String(p.n || '').split('').reverse();
+    const NAMES = AR() ? ['الآحاد', 'العشرات', 'المئات', 'الألوف', 'عشرات الألوف', 'مئات الألوف'] : ['Ones', 'Tens', 'Hundreds', 'Thousands', 'Ten Thousands', 'Hundred Thousands'], ds = String(p.n || '').split('').reverse();
     const X = k => x0 + (5 - k) * cw + (k >= 3 ? 0 : 6);
     let s = '';
     for (let k = 0; k < 6; k++) {
@@ -549,10 +552,10 @@
       const nm = NAMES[k].split(' ');
       s += nm.length > 1 ? txt(x + cw / 2, y0 + 14, nm[0], { fs: 10, w: 700 }) + txt(x + cw / 2, y0 + 28, nm[1], { fs: 10, w: 700 }) : txt(x + cw / 2, y0 + 22, nm[0], { fs: 11, w: 700 });
       s += `<rect x="${f1(x)}" y="${y0 + hh}" width="${cw}" height="${dh}" fill="${a ? '#fff4d6' : '#fff'}" stroke="${a ? '#d99a12' : INK}" stroke-width="${a ? 2.4 : 1.4}"/>`;
-      if (a) s += txt(x + cw / 2, y0 + hh + 30, '؟', { fs: 22, fill: '#d99a12' });
+      if (a) s += txt(x + cw / 2, y0 + hh + 30, QM(), { fs: 22, fill: '#d99a12' });
       else if (p.fill && ds[k] != null) s += txt(x + cw / 2, y0 + hh + 31, dg(ds[k]), { fs: 24, fill: k >= 3 ? '#23799f' : '#e2603f' });
     }
-    s += `<rect x="${f1(X(5))}" y="${y0 + hh + dh}" width="${3 * cw}" height="24" fill="#e3f2fb" stroke="${INK}" stroke-width="1.4"/>` + txt(X(4) + cw / 2, y0 + hh + dh + 17, 'الألوف', { fs: 12 });
+    s += `<rect x="${f1(X(5))}" y="${y0 + hh + dh}" width="${3 * cw}" height="24" fill="#e3f2fb" stroke="${INK}" stroke-width="1.4"/>` + txt(X(4) + cw / 2, y0 + hh + dh + 17, T('Thousands', 'الألوف'), { fs: 12 });
     return svg(y0 + hh + dh + 34, T('A place-value table', 'جدول القيمة المكانية'), s);
   }
   /* cards of 100 000 / 10 000 / 1000 …: pic: { parts: [[value, count], …] } — the biggest card first on the left, like the digits */

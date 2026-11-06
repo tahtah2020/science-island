@@ -3,6 +3,13 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'رياضيات الصف الثالث بالإنجليزي: الوحدات ١-٣',
+    items: [
+      { text: 'الوحدة ١ قواعد الضرب بالإنجليزي (مسار اللغات)، بنفس أسئلة العربي وصورها', links: [{ label: 'معاينة', href: 'quiz.html#preview=A1.1&lang=en', ch: 'mg3u1' }] },
+      { text: 'الوحدة ٢ الوقت والمدة الزمنية بالإنجليزي، وصور الأتوبيس والقطار الجديدة', links: [{ label: 'معاينة', href: 'quiz.html#preview=G6.1&lang=en', ch: 'mg3u2' }] },
+      { text: 'الوحدة ٣ القسمة بالإنجليزي، وصور المكعبات والبودنج والجيلي', links: [{ label: 'معاينة', href: 'quiz.html#preview=L3.5&lang=en', ch: 'mg3u3' }] },
+      { text: 'علامة السؤال والكلمات داخل الرسومات تظهر بالإنجليزي في المسار الإنجليزي' }
+    ] },
   { date: '2026-11-06', title: 'رابط تليجرام أعلى الصفحة الرئيسية',
     items: [
       { text: 'شريط أزرق «قناة متفوّق على تليجرام» تحت صورة ريشو مباشرة بدل أسفل الصفحة' }
