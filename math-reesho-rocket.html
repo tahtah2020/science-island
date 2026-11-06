@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Number Line Rocket · Big Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 3 adventure «صاروخ خط الأعداد / Number Line Rocket» (6 Nov 2026).
+     Concepts: Unit 9 Numbers greater than 10 000 (lesson 1: writing big numbers in words and expanded form, lesson 2: big numbers on the number line,
+     lesson 3: comparing, lesson 4: ×10 and ÷10), Unit 4 / Unit 7 adding and subtracting thousands (a jump on the line).
+     The maths is the move: the child taps the number line (snaps to the ticks, the value of the tick is NOT shown) and launches; Reesho's rocket flies
+     there and drops the parcel by parachute. The village appears only when the parcel lands on the right number; a wrong drop lands in the sand
+     and the bubble says where it landed and whether the village is bigger or smaller. 6 missions × 4 parcels, one small step each; 4 fuel cans (lives).
+     Number lines always run left to right. Pictures: Reesho in the rocket (drawn facing left, mirrored), Reesho with the parcel, worried, cheering,
+     the parcel, parachute, flag, splash, dust, village, launch pad, star, rocket and the valley background made by the owner with Gemini
+     (prompts by Claude), cut out to math/assets/rocket/. Progress: SI.chProf('mg3u9').rocket = { lvl, best, stars[] }. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--sky:#cfeaf7;--cream:#fffaf0;--ok:#2e9e6b;--gold:#f2b134;--coral:#e2603f;--red:#e05252}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;color:var(--navy);min-height:100svh;background:linear-gradient(#bfe3f5,#e3f3fb 50%,#f3ead2)}
+.wrap{max-width:780px;margin:0 auto;padding:8px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0;color:#b8402f;text-shadow:0 2px 0 #fff}
+.pills{display:flex;gap:6px;align-items:center}
+.pill{background:#fff;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px;box-shadow:0 2px 0 #b6d4e3}
+.ib{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#fff;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer;box-shadow:0 2px 0 #b6d4e3}
+.stage{position:relative;margin-top:6px;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px #1f3d5733;background:#e9dcc0}
+#scene{width:100%;height:auto;display:block;touch-action:none;cursor:crosshair}
+.say{display:flex;gap:8px;align-items:center;margin:8px 0}
+.say img{width:46px;height:46px;object-fit:contain;flex:none}
+.bubble{background:#fff;border-radius:16px;padding:9px 13px;font-size:15.5px;font-weight:700;flex:1;min-height:46px;box-shadow:0 3px 10px #1f3d5722;line-height:1.6}
+.panel{background:var(--cream);border-radius:22px;padding:12px;box-shadow:0 6px 20px #1f3d5726;border:3px solid #fff}
+.order{display:flex;align-items:center;gap:12px;background:#fff;border:2px dashed #f0b9ad;border-radius:16px;padding:8px 12px}
+.parcel{position:relative;width:84px;flex:none}
+.parcel img{width:84px;display:block}
+.parcel b{position:absolute;left:14%;right:22%;top:34%;height:30%;display:flex;align-items:center;justify-content:center;font:900 13.5px Nunito,Cairo;color:var(--navy);white-space:nowrap;direction:ltr}
+.order .q{font-weight:800;font-size:16px;line-height:1.65}
+.order .tag{display:inline-block;background:var(--red);color:#fff;border-radius:10px;padding:1px 9px;font-weight:900;font-size:13px;margin-inline-end:6px}
+.big{font-weight:900;color:#b8402f;font-size:1.12em;white-space:nowrap}
+.aim{display:flex;justify-content:center;gap:10px;margin-top:10px;direction:ltr}
+.aim button{border:0;border-radius:12px;background:#e6f2f8;font:900 18px Nunito,Cairo;color:var(--navy);padding:9px 16px;cursor:pointer;box-shadow:0 3px 0 #b6d4e3}
+.aim button:active{transform:translateY(2px);box-shadow:0 1px 0 #b6d4e3}
+.tip{text-align:center;color:var(--ink);font-weight:800;font-size:14px;margin-top:8px}
+.row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.red{background:var(--red);color:#fff;box-shadow:0 4px 0 #a63a3a}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #cfe0e8}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.check{margin-top:10px;background:#eefaf4;border-radius:14px;padding:8px 12px;font-weight:800;line-height:1.8;border:2px solid #bfe8d6;text-align:center}
+.check[hidden]{display:none}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:30}
+.veil[hidden]{display:none}
+.card{background:#fff;border-radius:24px;padding:18px 20px;max-width:400px;width:100%;text-align:center;box-shadow:0 10px 40px #0004;border:4px solid #f0b9ad}
+.card h2{margin:4px 0 8px;color:#b8402f}
+.card ol{text-align:start;padding-inline-start:22px;line-height:1.85;margin:6px 0 12px;font-weight:700}
+.card .hero{height:120px;object-fit:contain}
+.stars{font-size:34px;letter-spacing:4px;color:var(--gold)}
+.new{display:inline-block;background:#fff4d6;border:2px solid var(--gold);border-radius:12px;padding:6px 10px;font-weight:800;margin:6px 0}
+.new[hidden]{display:none}
+@keyframes bob{50%{transform:translateY(-4px)}}
+#scene .bob{animation:bob 1.4s ease-in-out infinite;transform-box:fill-box}
+@keyframes pulse{50%{opacity:.35}}
+#scene .pulse{animation:pulse 1s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){#scene .bob,#scene .pulse{animation:none}}
+@media (max-width:440px){.top h1{font-size:18px}.order .q{font-size:15px}.parcel,.parcel img{width:70px}.parcel b{font-size:11.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🚀 صاروخ خط الأعداد">🚀 Number Line Rocket</h1>
+    <div class="pills"><span class="pill"><span data-ar="المهمة">Mission</span> <b id="day">1</b>/<b id="days">6</b></span><span class="pill">⭐ <b id="score">0</b></span>
+      <button class="ib" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="ib home" href="adventures.html" aria-label="Back" data-ar-label="رجوع">🗺️</a></div></div>
+  <div class="stage"><svg id="scene" viewBox="0 0 480 268" role="img" aria-label="A valley with a number line; tap the line to aim the rocket" data-ar-label="وادي فيه خط أعداد؛ اضغط على الخط عشان توجّه الصاروخ"></svg></div>
+  <div class="say"><img id="sayPic" src="math/assets/rocket/reesho_parcel.webp" alt=""><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="order" id="order"></div>
+    <div class="aim"><button type="button" id="left" aria-label="Move the flag left" data-ar-label="حرّك العلم شمال">◀</button><button type="button" id="right" aria-label="Move the flag right" data-ar-label="حرّك العلم يمين">▶</button></div>
+    <div class="tip" id="tip"></div>
+    <div class="check" id="check" hidden></div>
+    <div class="row"><button class="btn red" id="go" type="button"></button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="card">
+  <img class="hero" src="math/assets/rocket/reesho_rocket.webp" alt="" style="transform:scaleX(-1)">
+  <h2 id="introT"></h2><ol id="rules"></ol>
+  <button class="btn red" id="start" type="button"></button></div></div>
+<div class="veil" id="dayCard" hidden><div class="card">
+  <img class="hero" id="dayPic" src="math/assets/rocket/reesho_cheer.webp" alt="">
+  <h2 id="dayT"></h2><div class="stars" id="dayStars"></div><p id="dayText"></p><div class="new" id="dayNew"></div><br>
+  <button class="btn red" id="dayBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261106{"></script>
+<script src="chapters.js?v=20261106{"></script>
+<script src="common.js?v=20261106{"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg3u9'); if (!CH) return;
+const T = SI.T, AR = SI.isAr(), GAME = 'math-reesho-rocket.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rnd = k => Math.floor(Math.random() * k);
+const rint = (a, b) => a + rnd(b - a + 1);
+const pick = a => a[rnd(a.length)];
+const dig = x => AR ? String(x).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]) : String(x);
+/* big numbers like the book: Arabic 36 000 with a narrow no-break space (one piece in Arabic text), English 36,000 */
+const N = x => dig(String(x).replace(/\B(?=(\d{3})+(?!\d))/g, AR ? ' ' : ','));
+document.documentElement.lang = AR ? 'ar' : 'en'; document.documentElement.dir = AR ? 'rtl' : 'ltr';
+document.querySelectorAll('[data-ar]').forEach(e => { if (AR) e.textContent = e.dataset.ar; });
+document.querySelectorAll('[data-ar-label]').forEach(e => { if (AR) e.setAttribute('aria-label', e.dataset.arLabel); });
+document.title = T('Number Line Rocket · Big Numbers', 'صاروخ خط الأعداد · الأعداد الكبيرة');
+
+const IMG = 'math/assets/rocket/';
+const src = k => IMG + k + '.webp';
+['reesho_rocket', 'reesho_parcel', 'reesho_worry', 'reesho_cheer', 'parcel', 'parachute', 'flag', 'splash', 'dust', 'village', 'pad', 'star', 'rocket'].forEach(k => { const i = new Image(); i.src = src(k); });
+
+/* thousands in words, like the book: «٣٦ ألفًا», «٥ آلاف», «thirty-six thousand» */
+const EN1 = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const EN10 = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+const enN = n => n < 20 ? EN1[n] : EN10[Math.floor(n / 10)] + (n % 10 ? '-' + EN1[n % 10] : '');
+const thousandsWords = k => AR ? (k <= 10 ? `${dig(k)} آلاف` : `${dig(k)} ألفًا`) : `${enN(k)} thousand`;
+const words = v => { const k = Math.floor(v / 1000), h = (v % 1000) / 100; return AR ? thousandsWords(k) + (h ? ` و${h === 1 ? 'مائة' : h === 2 ? 'مائتان' : dig(h) + '٠٠'}` : '') : thousandsWords(k) + (h ? ` ${enN(h)} hundred` : ''); };
+const expanded = v => { const parts = []; let p = 10000; while (p >= 1) { const d = Math.floor(v / p) % 10; if (d) parts.push(N(d * p)); p /= 10; } return parts.join(' + '); };
+
+/* ---------- missions: one small step each ---------- */
+const DAYS = [
+  { kinds: ['plain'], line: 'k', mid: true, newEn: 'Count the thousands on the line.', newAr: 'عُدّ الألوف على الخط.' },
+  { kinds: ['words', 'expanded'], line: 'k', mid: false, newEn: 'The number is written in words or in expanded form.', newAr: 'العدد مكتوب بالحروف أو بالصيغة الممتدة.' },
+  { kinds: ['plain'], line: 'h', mid: true, newEn: 'Zoom in: every tick is 100.', newAr: 'قرّبنا: كل علامة = ١٠٠.' },
+  { kinds: ['jump'], line: 'k', mid: false, newEn: 'Jump from Reesho’s place: + or − thousands.', newAr: 'نط من مكان ريشو: زوّد أو انقص ألوف.' },
+  { kinds: ['times', 'divide'], newEn: '× 10 and ÷ 10.', newAr: 'الضرب في ١٠ والقسمة على ١٠.' },
+  { kinds: ['between', 'jump', 'times', 'words'], newEn: 'Bigger than … and smaller than …', newAr: 'أكبر من … وأصغر من …' }
+];
+const TASKS = 4, LIVES = 4;
+const S = { day: Math.min(DAYS.length - 1, ((SI.chProf(CH.id).rocket || {}).lvl) || 0), score: 0, lives: LIVES, misses: 0, n: 0, o: null, busy: false, t0: Date.now(), aim: 5, used: new Set() };
+
+/* a line: from `from`, 10 steps of `step` */
+function makeTask(kind, day) {
+  for (let t = 0; t < 80; t++) {
+    let o;
+    const kLine = () => { const from = 10000 * rint(1, 8); return { from, step: 1000 }; };
+    const hLine = () => { const from = 1000 * rint(11, 98); return { from, step: 100 }; };
+    if (kind === 'plain') { const L = DAYS[day].line === 'h' ? hLine() : kLine(); o = { ...L, ans: L.from + L.step * pick([1, 2, 3, 4, 6, 7, 8, 9]) }; }
+    if (kind === 'words' || kind === 'expanded') { const L = kLine(); o = { ...L, ans: L.from + L.step * rint(1, 9) }; }
+    if (kind === 'jump') { const L = kLine(), s = rint(1, 8), j = pick([-3, -2, 2, 3, 4, -4]); if (s + j < 1 || s + j > 9) continue; o = { ...L, start: L.from + s * 1000, jump: j * 1000, ans: L.from + (s + j) * 1000 }; }
+    if (kind === 'times') { const L = kLine(), v = L.from + 1000 * rint(1, 9); o = { ...L, base: v / 10, ans: v }; }
+    if (kind === 'divide') { const L = { from: 1000 * rint(2, 8), step: 100 }, v = L.from + 100 * rint(1, 9); o = { ...L, base: v * 10, ans: v }; }
+    if (kind === 'between') { const L = hLine(), a = rint(1, 6); o = { ...L, lo: L.from + a * 100, hi: L.from + (a + 3) * 100 }; o.ok = [o.lo + 100, o.lo + 200]; o.ans = o.ok[0]; }
+    o.kind = kind; o.mid = DAYS[day].mid ?? false; o.key = kind + o.ans + '/' + (o.start || o.base || o.lo || '');
+    if (!S.used.has(o.key)) { S.used.add(o.key); return o; }
+  }
+}
+const label = o => o.kind === 'words' ? words(o.ans) : o.kind === 'expanded' ? expanded(o.ans) : o.kind === 'times' ? `${N(o.base)} × ${dig(10)}` : o.kind === 'divide' ? `${N(o.base)} ÷ ${dig(10)}` : o.kind === 'jump' ? `${o.jump > 0 ? '+' : '−'} ${N(Math.abs(o.jump))}` : o.kind === 'between' ? '?' : N(o.ans);
+function orderText(o) {
+  switch (o.kind) {
+    case 'plain': return T(`Drop the parcel on the village <span class="big">${N(o.ans)}</span>.`, `نزّل الطرد على قرية <span class="big">${N(o.ans)}</span>.`);
+    case 'words': return T(`The village is called <span class="big">${words(o.ans)}</span>. Find it on the line.`, `اسم القرية <span class="big">${words(o.ans)}</span>. لاقيها على الخط.`);
+    case 'expanded': return T(`The village is <span class="big">${expanded(o.ans)}</span>. Find it on the line.`, `القرية هي <span class="big">${expanded(o.ans)}</span>. لاقيها على الخط.`);
+    case 'jump': return T(`Reesho is above <span class="big">${N(o.start)}</span>. Fly <span class="big">${o.jump > 0 ? '+' : '−'} ${N(Math.abs(o.jump))}</span> and drop the parcel there.`, `ريشو فوق <span class="big">${N(o.start)}</span>. طير <span class="big">${o.jump > 0 ? '+' : '−'} ${N(Math.abs(o.jump))}</span> ونزّل الطرد هناك.`);
+    case 'times': return T(`The village number is <span class="big">${N(o.base)} × ${dig(10)}</span>.`, `رقم القرية هو <span class="big">${N(o.base)} × ${dig(10)}</span>.`);
+    case 'divide': return T(`The village number is <span class="big">${N(o.base)} ÷ ${dig(10)}</span>.`, `رقم القرية هو <span class="big">${N(o.base)} ÷ ${dig(10)}</span>.`);
+    case 'between': return T(`Drop the parcel on a village <span class="big">bigger than ${N(o.lo)}</span> and <span class="big">smaller than ${N(o.hi)}</span>.`, `نزّل الطرد على قرية <span class="big">أكبر من ${N(o.lo)}</span> و<span class="big">أصغر من ${N(o.hi)}</span>.`);
+  }
+}
+function hintText(o) {
+  const step = T(`Each small step on this line is ${N(o.step)}.`, `كل خطوة صغيرة على الخط ده = ${N(o.step)}.`);
+  switch (o.kind) {
+    case 'plain': return step + ' ' + T(`Start from ${N(o.from)} and count the steps.`, `ابدأ من ${N(o.from)} وعُدّ الخطوات.`);
+    case 'words': return T(`Write “${words(o.ans)}” as a number first (thousands end with three zeros). Then count the thousands from ${N(o.from)}.`, `«${words(o.ans)}» بتتكتب بثلاث أصفار في الآخر. وبعدين عُدّ الألوف من ${N(o.from)}.`);
+    case 'expanded': return T('Add the parts to make one number, then find it on the line.', 'اجمع الأجزاء عشان تكوّن عدد واحد، وبعدين دوّر عليه على الخط.');
+    case 'jump': return step + ' ' + (o.jump > 0 ? T('“+” means go right, to the bigger numbers.', '«+» يعني روح يمين، ناحية الأعداد الأكبر.') : T('“−” means go left, to the smaller numbers.', '«−» يعني روح شمال، ناحية الأعداد الأصغر.'));
+    case 'times': return T('× 10 moves every digit one place to the left: put one zero at the end.', 'الضرب في ١٠ بيحرّك كل رقم خانة لليسار: حط صفر واحد في الآخر.');
+    case 'divide': return T('÷ 10 moves every digit one place to the right: take one zero away from the end.', 'القسمة على ١٠ بتحرّك كل رقم خانة لليمين: شيل صفر واحد من الآخر.');
+    case 'between': return step + ' ' + T('Find both numbers on the line. The village is in between them, not on them.', 'لاقي العددين على الخط. القرية بينهم، مش عليهم.');
+  }
+}
+const okAt = (o, v) => o.kind === 'between' ? o.ok.includes(v) : v === o.ans;
+function checkHTML(o, v) {
+  switch (o.kind) {
+    case 'words': return `${words(o.ans)} = ${N(o.ans)} ✔`;
+    case 'expanded': return `${expanded(o.ans)} = ${N(o.ans)} ✔`;
+    case 'jump': return `${N(o.start)} ${o.jump > 0 ? '+' : '−'} ${N(Math.abs(o.jump))} = ${N(o.ans)} ✔`;
+    case 'times': return `${N(o.base)} × ${dig(10)} = ${N(o.ans)} ✔`;
+    case 'divide': return `${N(o.base)} ÷ ${dig(10)} = ${N(o.ans)} ✔`;
+    case 'between': return T(`${N(v)} is bigger than ${N(o.lo)} and smaller than ${N(o.hi)} ✔`, `${N(v)} أكبر من ${N(o.lo)} وأصغر من ${N(o.hi)} ✔`);
+    default: return `${N(o.ans)} ✔`;
+  }
+}
+
+/* ---------- scene: the valley, the number line (always left to right), the rocket ---------- */
+const X0 = 40, X1 = 440, LY = 200;
+const xOf = i => X0 + (X1 - X0) * i / 10;
+const valOf = (o, i) => o.from + o.step * i;
+function lineSVG(o, { village = null, flag = S.aim, start = null } = {}) {
+  let s = `<rect x="${X0 - 26}" y="${LY - 6}" width="${X1 - X0 + 52}" height="46" rx="10" fill="#fff" opacity=".6"/>`;
+  s += `<line x1="${X0 - 12}" y1="${LY}" x2="${X1 + 12}" y2="${LY}" stroke="#1f3d57" stroke-width="3.5" stroke-linecap="round"/>`;
+  for (let i = 0; i <= 10; i++) { const big = i === 0 || i === 10 || (o.mid && i === 5); s += `<line x1="${xOf(i)}" y1="${LY - (big ? 10 : 7)}" x2="${xOf(i)}" y2="${LY + (big ? 10 : 7)}" stroke="#1f3d57" stroke-width="${big ? 3 : 2}"/>`; }
+  const lab = (i, col = '#1f3d57') => `<text x="${xOf(i)}" y="${LY + 32}" font-size="19" font-weight="900" text-anchor="middle" fill="${col}" font-family="Nunito,Cairo" direction="ltr">${N(valOf(o, i))}</text>`;
+  s += lab(0) + lab(10) + (o.mid ? lab(5) : '');
+  if (start !== null) s += `<circle cx="${xOf(start)}" cy="${LY}" r="6" fill="#23799f"/>` + (start !== 0 && start !== 10 && !(o.mid && start === 5) ? lab(start, '#23799f') : '');
+  if (village !== null) s += `<image href="${src('village')}" x="${xOf(village) - 30}" y="${LY - 42}" width="60" height="42"/>`;
+  if (flag !== null) s += `<g class="${S.busy ? '' : 'pulse'}"><line x1="${xOf(flag)}" y1="${LY - 60}" x2="${xOf(flag)}" y2="${LY - 12}" stroke="#e05252" stroke-width="2" stroke-dasharray="4 4"/></g><image href="${src('flag')}" x="${xOf(flag) - 4}" y="${LY - 38}" width="26" height="34"/>`;
+  return s;
+}
+function scene({ rocketX = null, rocketY = 34, extra = '', village = null, flag = S.aim, start = null } = {}) {
+  const o = S.o;
+  let h = `<image href="${IMG}bg_valley.jpg" x="0" y="0" width="480" height="268" preserveAspectRatio="xMidYMid slice"/>`;
+  if (o) h += lineSVG(o, { village, flag, start: start ?? (o.kind === 'jump' ? (o.start - o.from) / o.step : null) });
+  if (rocketX !== null) h += `<g class="bob"><image href="${src('reesho_rocket')}" x="${-(rocketX + 46)}" y="${rocketY}" width="92" height="78" transform="scale(-1,1)"/></g>`;
+  // fuel cans = lives
+  h += `<g transform="translate(${AR ? 8 : 352},8)"><rect width="120" height="30" rx="15" fill="#fff" opacity=".92"/>${Array.from({ length: LIVES }, (_, i) => `<image href="${src('rocket')}" x="${8 + i * 27}" y="7" width="26" height="15" opacity="${i < S.lives ? 1 : .18}"/>`).join('')}</g>`;
+  $('#scene').innerHTML = h + extra;
+}
+function sayMood(html, pose) { $('#say').innerHTML = html; if (pose) $('#sayPic').src = src('reesho_' + pose); }
+
+/* aiming: tap the line (snaps to the nearest tick) or use ◀ ▶ */
+function aimAt(i) { if (S.busy || !S.o) return; S.aim = Math.max(0, Math.min(10, i)); SFX.tick(); scene({ rocketX: restX() }); }
+const restX = () => S.o && S.o.kind === 'jump' ? xOf((S.o.start - S.o.from) / S.o.step) : 70;
+$('#scene').addEventListener('pointerdown', e => {
+  if (S.busy || !S.o) return;
+  const r = $('#scene').getBoundingClientRect(), x = (e.clientX - r.left) * 480 / r.width;
+  aimAt(Math.round((x - X0) / (X1 - X0) * 10));
+});
+$('#left').onclick = () => aimAt(S.aim - 1);
+$('#right').onclick = () => aimAt(S.aim + 1);
+
+/* ---------- flow ---------- */
+function nextTask() {
+  const d = DAYS[S.day];
+  S.o = makeTask(d.kinds[S.n % d.kinds.length], S.day); S.busy = false; S.orderMiss = 0;
+  const o = S.o; S.aim = 5;
+  $('#check').hidden = true; $('#go').disabled = false; $('#go').onclick = launch; $('#go').textContent = T('🚀 Launch!', '🚀 انطلق!');
+  $('#order').innerHTML = `<div class="parcel"><img src="${src('parcel')}" alt=""><b>${o.kind === 'plain' || o.kind === 'jump' ? label(o) : AR ? '؟' : '?'}</b></div><div class="q"><span class="tag">${dig(S.n + 1)}/${dig(TASKS)}</span>${orderText(o)}</div>`;
+  $('#tip').textContent = T('Tap the line where the parcel must land, then launch.', 'اضغط على الخط في المكان اللي الطرد لازم ينزل فيه، وبعدين انطلق.');
+  scene({ rocketX: restX() });
+  sayMood('🦜 ' + orderText(o), 'parcel');
+}
+async function launch() {
+  if (S.busy) return; S.busy = true; $('#go').disabled = true;
+  const o = S.o, i = S.aim, v = valOf(o, i), from = restX(), to = xOf(i);
+  SFX.launch();
+  await anim(900, k => scene({ rocketX: from + (to - from) * (1 - (1 - k) * (1 - k)), rocketY: 34 - Math.sin(k * Math.PI) * 14, flag: i }));
+  // the parcel falls under its parachute
+  SFX.whoosh();
+  await anim(1000, k => scene({ rocketX: to, flag: i, extra: `<image href="${src('parachute')}" x="${to - 18}" y="${(90 + (LY - 52 - 90) * k).toFixed(1)}" width="36" height="50"/>` }));
+  if (okAt(o, v)) return win(i, v);
+  SFX.thud();
+  scene({ rocketX: to, flag: null, extra: `<image href="${src('dust')}" x="${to - 26}" y="${LY - 40}" width="52" height="44"/><image href="${src('parcel')}" x="${to - 12}" y="${LY - 24}" width="24" height="21"/>` });
+  let msg;
+  if (o.kind === 'between') msg = v <= o.lo ? T(`The parcel landed on ${N(v)}. That is not bigger than ${N(o.lo)}.`, `الطرد نزل على ${N(v)}. ده مش أكبر من ${N(o.lo)}.`) : T(`The parcel landed on ${N(v)}. That is not smaller than ${N(o.hi)}.`, `الطرد نزل على ${N(v)}. ده مش أصغر من ${N(o.hi)}.`);
+  else msg = T(`The parcel landed in the sand on ${N(v)}. The village is ${o.ans > v ? 'further right: a bigger number' : 'further left: a smaller number'}.`, `الطرد نزل في الرملة عند ${N(v)}. القرية ${o.ans > v ? 'أبعد ناحية اليمين: عدد أكبر' : 'أبعد ناحية الشمال: عدد أصغر'}.`);
+  await miss(msg);
+}
+function anim(ms, step) { return new Promise(res => { const t0 = performance.now(); (function f(t) { const k = Math.min(1, (t - t0) / ms); step(k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); }); }
+async function miss(text) {
+  S.lives--; S.misses++; S.orderMiss++; SFX.wrong();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.day + 1, step: S.n + 1 });
+  sayMood('🦜 ' + text + (S.lives ? ' ' + T(`🚀 ${dig(S.lives)} fuel cans left.`, `🚀 فاضل ${dig(S.lives)} خزانات وقود.`) : ''), 'worry');
+  await sleep(1300);
+  if (!S.lives) return endDay(false);
+  S.busy = false; $('#go').disabled = false; scene({ rocketX: restX() });
+}
+async function win(i, v) {
+  const o = S.o, pts = S.orderMiss ? 10 : 15;
+  S.score += pts; $('#score').textContent = dig(S.score);
+  SFX.win(.7);
+  scene({ rocketX: xOf(i), flag: null, village: i, extra: `<image href="${src('star')}" x="${xOf(i) - 26}" y="${LY - 92}" width="52" height="50"/>` + confetti() });
+  $('#check').hidden = false; $('#check').innerHTML = checkHTML(o, v);
+  sayMood(`🦜 ${pick([T('Right on the village!', 'على القرية بالظبط!'), T('Perfect drop!', 'إنزال مظبوط!'), T('The villagers are cheering!', 'أهل القرية فرحانين!')])} +${dig(pts)}`, 'cheer');
+  S.n++; S.busy = false; $('#go').disabled = false;
+  $('#go').textContent = S.n >= TASKS ? T('🏁 Mission complete', '🏁 خلصت المهمة') : T('📦 Next parcel', '📦 الطرد اللي بعده');
+  $('#go').onclick = () => { S.n >= TASKS ? endDay(true) : nextTask(); };
+}
+function confetti() { let s = ''; for (let i = 0; i < 24; i++) s += `<rect x="${20 + rnd(440)}" y="${20 + rnd(140)}" width="7" height="11" rx="2" fill="${pick(['#f2b134', '#e05252', '#3aa79a', '#23799f', '#fff'])}"/>`; return s; }
+function startDay() { S.n = 0; S.lives = LIVES; S.misses = 0; S.used = new Set(); S.t0 = Date.now(); $('#day').textContent = dig(S.day + 1); music('play'); nextTask(); }
+function endDay(won) {
+  music('off');
+  const last = S.day === DAYS.length - 1, stars = won ? (S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1) : 0;
+  if (won) { saveWin(stars); SFX.win(1); } else { SFX.lose(); SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.day + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 }); }
+  $('#dayPic').src = src(won ? 'reesho_cheer' : 'reesho_worry');
+  $('#dayT').textContent = won ? (last ? T('Space delivery hero! 🏆', 'بطل التوصيل الفضائي! 🏆') : T(`Mission ${dig(S.day + 1)} done!`, `خلصت المهمة ${dig(S.day + 1)}!`)) : T('Out of fuel!', 'الوقود خلص!');
+  $('#dayStars').textContent = won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
+  $('#dayText').innerHTML = won ? (last ? T(`All six missions done. Score: ${dig(S.score)}.`, `خلّصت الست مهمات. نقطك: ${dig(S.score)}.`) : T('The next mission is a little harder:', 'المهمة الجاية أصعب شوية:')) : T('First find how much one small step is worth, then count the steps from the start of the line.', 'اعرف الأول الخطوة الصغيرة بكام، وبعدين عُدّ الخطوات من أول الخط.');
+  const nxt = won && !last ? DAYS[S.day + 1] : DAYS[S.day];
+  $('#dayNew').hidden = won && last; $('#dayNew').textContent = '✨ ' + T(nxt.newEn, nxt.newAr);
+  $('#dayBtn').textContent = won ? (last ? T('Play again', 'العب من الأول') : T('Next mission ➜', 'المهمة اللي بعدها ⬅')) : T('Try the mission again', 'جرّب المهمة تاني');
+  $('#dayBtn').onclick = () => { $('#dayCard').hidden = true; if (won) S.day = last ? 0 : S.day + 1; if (won && last) { S.score = 0; $('#score').textContent = dig(0); } startDay(); };
+  $('#dayCard').hidden = false;
+}
+function saveWin(stars) {
+  const done = S.day + 1;
+  SI.updateChProf(c => { const o = c.rocket = c.rocket || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.day] = Math.max(o.stars[S.day] || 0, stars); o.lvl = done >= DAYS.length ? 0 : done; }, CH.id);
+  SI.addXP(20 + stars * 10);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: S.score, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+$('#hint').onclick = () => { if (S.o) { SFX.tick(); sayMood('🦜 ' + hintText(S.o)); } };
+
+/* ---------- music and sounds (Web Audio, no files): a light space tune ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0 };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .5 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 3000, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol = .2, cut = 1800) {
+  const c = A.ctx, b = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.value = cut; g.gain.value = vol;
+  s.connect(f); f.connect(g); g.connect(A.master); s.start(t);
+}
+const MEL = [76, 79, 83, 79, 81, 76, 74, 76, 72, 76, 79, 84, 83, 79, 76, 74];
+function musicTick() {
+  const c = A.ctx; if (!c) return; const spb = 60 / 104 / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    if (i % 2 === 0) tone(MEL[(A.beat / 2 | 0) % 16], t, spb * 1.8, { type: 'sine', vol: .06, cut: 3000 });
+    if (i % 8 === 0) tone([45, 48, 43, 47][(A.beat / 8 | 0) % 4], t, spb * 7, { type: 'triangle', vol: .08, cut: 700 });
+    if (i % 4 === 2) tone(95, t, .05, { type: 'sine', vol: .025 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; clearInterval(A.timer); A.timer = null; if (mode === 'play') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  tick() { if (!ac()) return; tone(96, A.ctx.currentTime, .03, { type: 'square', vol: .035, cut: 6000 }); },
+  launch() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .8, .14, 900); tone(48, t, .8, { type: 'sawtooth', vol: .05, cut: 800, glide: 12 }); },
+  whoosh() { if (!ac()) return; noise(A.ctx.currentTime, .9, .06, 2600); },
+  thud() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .35, .2, 400); tone(40, t, .3, { type: 'sine', vol: .2, glide: -6 }); },
+  wrong() { if (!ac()) return; tone(55, A.ctx.currentTime + .2, .32, { type: 'sawtooth', vol: .09, cut: 900, glide: -4 }); },
+  win(v = 1) { if (!ac()) return; const t = A.ctx.currentTime; [72, 76, 79, 84, 88].forEach((m, i) => tone(m, t + i * .09, .4, { type: 'triangle', vol: .13 * v })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [67, 65, 64, 60].forEach((m, i) => tone(m, t + i * .26, .45, { type: 'triangle', vol: .13, cut: 1400 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .5 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+$('#introT').textContent = T('Reesho’s parcel rocket!', 'صاروخ طرود ريشو!');
+$('#rules').innerHTML = [
+  T('Each parcel has the number of a village on it.', 'على كل طرد رقم قرية.'),
+  T('Tap the number line where that village is (or use ◀ ▶), then press <b>Launch</b>.', 'اضغط على خط الأعداد في مكان القرية (أو استخدم ◀ ▶)، وبعدين اضغط <b>انطلق</b>.'),
+  T('The village appears only if the parcel lands on the right number.', 'القرية بتظهر بس لو الطرد نزل على العدد الصح.'),
+  T(`A wrong drop costs a fuel can 🚀. You have <b>${dig(LIVES)}</b> in each mission.`, `الإنزال الغلط بيضيّع خزان وقود 🚀. معاك <b>${dig(LIVES)}</b> في كل مهمة.`)
+].map(x => `<li>${x}</li>`).join('');
+$('#days').textContent = dig(DAYS.length);
+$('#start').textContent = T('3… 2… 1… Go! 🚀', '٣… ٢… ١… انطلق! 🚀');
+$('#start').onclick = () => { $('#intro').hidden = true; ac(); SI.ga('game_start', { game: GAME, chapter: CH.id }); startDay(); };
+$('#score').textContent = dig(0);
+scene();
+window.__rk = S; window.__rkApi = { makeTask, nextTask, startDay, launch, setDay: d => { S.day = d; }, valOf, aimAt };
+})();
+</script>
+</body>
+</html>

@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'لعبة جديدة للصف الثالث: صاروخ خط الأعداد',
+    items: [
+      { text: 'مغامرة «صاروخ خط الأعداد»: يضغط الطالب على خط الأعداد وينطلق صاروخ ريشو وينزّل الطرد على القرية؛ الأعداد الكبيرة على الخط وبالحروف والصيغة الممتدة، والمقارنة، والضرب في ١٠ والقسمة على ١٠ (الوحدة ٩)، والقفز بزيادة أو نقص ألوف؛ ٦ مهمات كل مهمة خطوة صغيرة جديدة', links: [{ label: 'اللعبة', href: 'math-reesho-rocket.html', ch: 'mg3u9' }] },
+      { text: 'صور جديدة من جيميناي: ريشو في الصاروخ، والطرد والمظلة، والقرية، وخلفية الوادي' }
+    ] },
   { date: '2026-11-06', title: 'قطار ريشو: ريشو يركب القطار',
     items: [
       { text: 'عند الإجابة الصحيحة يمشي ريشو لباب العربة ويركب، ويظهر في الشباك والقطار ماشي، والرصيف يفضى بعده', links: [{ label: 'اللعبة', href: 'math-reesho-train.html', ch: 'mg3u2' }] }
