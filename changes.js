@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'رياضيات الصف الثالث (عربي): الوحدة الثالثة «القسمة»',
+    items: [
+      { text: 'الوحدة الثالثة: 4 دروس من السهل إلى الصعب، مع تلميح لكل سؤال' },
+      { text: 'صور جديدة مرسومة: أطفال وأطباق للتوزيع بالتساوي، والشريطان للمقارنة (كم ضِعفًا)', links: [{ label: 'افتح الوحدة', href: 'map.html', ch: 'mg3u3' }] }
+    ] },
   { date: '2026-11-06', title: 'رياضيات الصف الثالث (عربي): الوحدة الثانية «الوقت والمدة الزمنية»',
     items: [
       { text: 'الوحدة الثانية: 18 فكرة و83 صياغة من السهل إلى الصعب، مع تلميح لكل سؤال' },

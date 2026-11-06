@@ -9,6 +9,9 @@
      g3Clock     (fig)  a clock with the hands at h:m, and optionally the move as an arc: q.pic = { h: 3, m: 10, move: 20 }  (move > 0 forward, < 0 back; the end time is never drawn)
      g3TimeLine  (fig)  the book's time number line, 5 minutes a tick, hours named: q.pic = { from: '8:30', to: '9:30', marks: ['8:45', '?'], jumps: [['8:45', '9:00', '15 د']] }
      g3Stopwatch (fig)  a stopwatch: q.pic = { kind: 'analog' | 'digital', s: 15 }
+   Unit 3 (division):
+     g3Share  (fig)  things shared equally: a child over each plate: q.pic = { total: 12, groups: 3, kind: 'cookie' | 'candy' | 'apple' | 'pencil' }   (groups = number of plates)
+     g3Tape   (fig)  the book's comparison bars: a long bar and a short bar under it: q.pic = { big: 15, small: 3, unit: 'سم', segs: true }   segs: dashed cuts along the long bar
    Screen-reader names describe the drawing, never the answer. */
 (function () {
   'use strict';
@@ -19,7 +22,9 @@
   const INK = '#1f3d57', PAPER = '#fffaf0', W = 340;
   const COL = ['#e2603f', '#23799f', '#2e9e6b', '#f2b134', '#9b6bd3', '#e58bb0', '#4ea5d9', '#c98b4a', '#79c69a', '#f08a4b'];
   const f1 = n => Math.round(n * 10) / 10;
-  const txt = (x, y, s, o = {}) => `<text x="${f1(x)}" y="${f1(y)}" text-anchor="middle" font-family="Cairo, Nunito, sans-serif" font-weight="${o.w || 800}" font-size="${o.fs || 16}" fill="${o.fill || INK}">${esc(s)}</text>`;
+  /* a label with Arabic words (e.g. «٢٠ دقيقة») is set right-to-left, so the number stays on the right of its word */
+  const rtlAttr = s => /[\u0621-\u064A]/.test(String(s)) ? ' direction="rtl" unicode-bidi="embed"' : '';
+  const txt = (x, y, s, o = {}) => `<text x="${f1(x)}" y="${f1(y)}"${rtlAttr(s)} text-anchor="middle" font-family="Cairo, Nunito, sans-serif" font-weight="${o.w || 800}" font-size="${o.fs || 16}" fill="${o.fill || INK}">${rtlAttr(s) ? '\u200F' : ''}${esc(s)}</text>`;
   const svg = (h, name, inner) => `<svg class="diagram" viewBox="0 0 ${W} ${h}" role="img" aria-label="${esc(name)}"><rect width="${W}" height="${h}" rx="14" fill="${PAPER}"/>${inner}</svg>`;
 
   /* a wrapped candy */
@@ -182,6 +187,34 @@
     return svg(204, T('A stopwatch with one hand', 'ساعة إيقاف لها عقرب واحد'), s);
   }
 
+
+  /* ---------- Unit 3 · division ---------- */
+  const cookie = (x, y, k) => `<g transform="translate(${f1(x)} ${f1(y)}) scale(${k})"><circle r="7" fill="#c98b4a" stroke="#8a5a28" stroke-width="1.4"/><circle cx="-2.5" cy="-2" r="1.3" fill="#5a3a14"/><circle cx="2.5" cy="1" r="1.3" fill="#5a3a14"/><circle cx="-1" cy="3" r="1.1" fill="#5a3a14"/></g>`;
+  const kid = (x, y, i) => { const skin = ['#f2c9a0', '#c98b5a', '#e8b48a', '#8a5a3a'][i % 4], hair = ['#5a3a14', '#1f1f1f', '#e2a33a', '#3a2a1a'][i % 4];
+    return `<g transform="translate(${f1(x)} ${f1(y)})"><circle r="15" fill="${skin}"/><path d="M-15 -2q2 -16 15 -16t15 16q-6 -8 -15 -8t-15 8Z" fill="${hair}"/><circle cx="-5" cy="1" r="1.8" fill="${INK}"/><circle cx="5" cy="1" r="1.8" fill="${INK}"/><path d="M-5 7q5 4 10 0" stroke="${INK}" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`; };
+  function g3Share(q) {
+    const p = (q && q.pic) || { total: 12, groups: 3, kind: 'cookie' }, g = p.groups, per = Math.round(p.total / g);
+    const pw = Math.min(96, 320 / g - 8), x0 = (W - g * (pw + 8) + 8) / 2, H = 170;
+    const draw = (x, y, k, i) => p.kind === 'cookie' || !ITEM[p.kind] ? cookie(x, y, k) : ITEM[p.kind](x, y, k, i);
+    let s = '';
+    for (let i = 0; i < g; i++) {
+      const x = x0 + i * (pw + 8);
+      s += kid(x + pw / 2, 34, i) + `<rect x="${f1(x)}" y="62" width="${f1(pw)}" height="92" rx="14" fill="#fff" stroke="#e58bb0" stroke-width="3"/>`;
+      const cols = per > 4 ? 3 : 2, rows = Math.ceil(per / cols), cw = (pw - 12) / cols, rh = Math.min(26, 80 / rows), k = Math.min(cw, rh) / 17;
+      for (let j = 0; j < per; j++) s += draw(x + 6 + (j % cols + .5) * cw, 70 + (Math.floor(j / cols) + .5) * rh, k, j);
+    }
+    return svg(H, T(`Things shared equally on ${g} plates`, `أشياء موزّعة بالتساوي على ${dg(g)} أطباق`), s);
+  }
+  function g3Tape(q) {
+    const p = (q && q.pic) || { big: 15, small: 3, unit: 'سم' }, L = 280, x0 = 30, sw = L * p.small / p.big, u = p.unit || '';
+    const lab = n => dg(n) + (u ? ' ' + u : '');
+    let s = `<rect x="${x0}" y="44" width="${L}" height="30" rx="4" fill="#c9d3dc" stroke="${INK}" stroke-width="2"/>`;
+    if (p.segs) for (let k = 1; k < Math.round(p.big / p.small); k++) s += `<path d="M${f1(x0 + k * sw)} 44V74" stroke="${INK}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+    s += `<path d="M${x0} 36q${L / 2} -14 ${L} 0" fill="none" stroke="${INK}" stroke-width="1.6" stroke-dasharray="3 3"/>` + txt(x0 + L / 2, 24, lab(p.big), { fs: 15 });
+    s += `<rect x="${x0}" y="92" width="${f1(sw)}" height="30" rx="4" fill="#f6b5cf" stroke="${INK}" stroke-width="2"/>` + txt(x0 + sw / 2, 144, lab(p.small), { fs: 15, fill: '#c0306d' });
+    return svg(158, T('A long bar and a short bar', 'شريط طويل وشريط قصير'), s);
+  }
+
   window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape });
 })();

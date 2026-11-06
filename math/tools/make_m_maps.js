@@ -267,3 +267,28 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_mg3u2.svg', b);
 })();
+
+/* ---------- Grade 3 · Unit 3 · Division: a picnic island where things are shared on plates, ribbons to compare ---------- */
+(function () {
+  seed = 67;
+  const D = ctx.window.CH_DIAGRAMS;
+  const strip = s => s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  const plate = (x, y, k, c) => `<g transform="translate(${x} ${y}) scale(${k})"><ellipse rx="50" ry="20" fill="#fff" stroke="#e58bb0" stroke-width="5"/>${[-22, 0, 22].map((a, i) => `<circle cx="${a}" cy="-6" r="11" fill="${c}" stroke="#8a5a28" stroke-width="2"/>`).join('')}</g>`;
+  const ribbon = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-120" y="-16" width="240" height="22" rx="4" fill="#c9d3dc" stroke="#1f3d57" stroke-width="3"/><rect x="-120" y="16" width="60" height="22" rx="4" fill="#f6b5cf" stroke="#1f3d57" stroke-width="3"/></g>`;
+  const blanket = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-110 -50L110 -50L140 50L-140 50Z" fill="#f08a4b"/>${[-80, -20, 40].map(a => `<path d="M${a} -50L${a + 40} 50" stroke="#fff" stroke-width="10" opacity=".55"/>`).join('')}</g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#fde8d0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#e4f1d0" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#fdeedd" opacity=".6"/>`;
+  for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#e6f3d6'], [.5, '#f3ecd0'], [1, '#e8f0d0']], ['#f3e6b8', '#f6efd2'], inside);
+  s += blanket(260, 520, 1) + plate(200, 500, .9, '#c98b4a') + plate(320, 540, .9, '#c98b4a') + ribbon(940, 470, 1) + plate(900, 760, 1, '#e2603f') + plate(230, 900, 1, '#f2b134');
+  s += board(600, 640, 300, 190, '<g transform="translate(-150 -80) scale(.88)">' + strip(D.g3Share({ pic: { total: 12, groups: 3, kind: 'cookie' } })) + '</g>');
+  s += crate(400, 1150, 1, '÷') + crate(458, 1162, .9, '٣') + crate(512, 1154, .8, '٤');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_mg3u3.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fdf0e6"/><stop offset="1" stop-color="#e7efd2"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#cfe3b0"/>${blanket(300, 880, 1.8)}${plate(260, 860, 1.4, '#c98b4a')}${ribbon(1250, 870, 1.6)}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_mg3u3.svg', b);
+})();

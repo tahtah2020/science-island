@@ -28,7 +28,7 @@ const TAPS = { stretchLengths: ['str5', 'str10', 'str15'], bandCounts: ['band1',
   particleStates: ['solid', 'liquid', 'gas'], syringes: ['air', 'water', 'sand'], stateCycle: ['melt', 'freeze', 'evap', 'cond', 'subl', 'depo'],
   heatingCurve: ['solid', 'melting', 'liquid', 'boiling', 'gas'], systems3: ['open', 'closed', 'isolated'], spoons: ['metal', 'wood', 'plastic'], heatPot: ['rad', 'cond', 'conv'], mixGraphs: ['mixA', 'mixB', 'mixC', 'mixD'],
   /* Math Grade 3 (math/g3_art.js) */
-  g3Groups: [], g3Split: [], g3Boxes: [], g3Target: [], g3Score: [], g3Clock: [], g3TimeLine: [], g3Stopwatch: [],
+  g3Groups: [], g3Split: [], g3Boxes: [], g3Target: [], g3Score: [], g3Clock: [], g3TimeLine: [], g3Stopwatch: [], g3Share: [], g3Tape: [],
   /* Math (math/m5_art.js) */
   gridShade: ['gA', 'gB', 'gC'], multVenn: ['mvL', 'mvM', 'mvR'], barModel: [], skipLine: [], areaBox: [], colMul: [], placeTable: ['b1', 'm100', 'm10', 'm1', 't100', 't10', 't1', 'u100', 'u10', 'u1'], placeChart: ['hundreds', 'tens', 'ones', 'tenths', 'hundredths', 'thousandths'], numLine: ['n0', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'n10'],
   /* English (english/g4_art.js) */
