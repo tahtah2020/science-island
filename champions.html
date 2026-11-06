@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,follow">
-<title>Motafawek · Champions</title>
+<title>Motafawek · Stars of the Week</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261106j">
+<link rel="stylesheet" href="common.css?v=20261106k">
 <style>
 .wrap{max-width:720px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .head{display:flex;align-items:flex-end;gap:12px}
@@ -40,19 +40,19 @@
 <body>
 <div class="app">
   <header class="top">
-    <a class="brand" href="map.html" title="Back to the map" data-ar-label="رجوع للخريطة">
-      <div class="logo" aria-hidden="true">🏆</div>
-      <div><h1 data-ar="الأبطال">Champions</h1><p id="chSub">This chapter</p></div>
+    <a class="brand" href="chapters.html" title="Back" data-ar-label="رجوع">
+      <div class="logo" aria-hidden="true">⭐</div>
+      <div><h1 data-ar="نجوم الأسبوع">Stars of the Week</h1><p id="chSub" data-ar="كل الطلاب · كل المواد">All students · all subjects</p></div>
     </a>
     <div class="hud">
-      <a class="pill" href="map.html" data-ar="‹ الخريطة">‹ Map</a>
+      <a class="pill" href="chapters.html" data-ar="‹ رجوع">‹ Back</a>
     </div>
   </header>
   <div class="wrap">
     <div class="head">
       <img src="assets/parrot_celebrate.png" alt="Reesho the parrot" data-ar-label="البغبغان ريشو">
       <div class="card">
-        <h2 data-ar="أفضل ١٠ أبطال هذا الأسبوع">This week’s top 10 <span class="ar">أبطال الأسبوع</span></h2>
+        <h2 id="boardTitle" data-ar="أعلى ١٠ نجوم هذا الأسبوع">This week’s top 10 stars</h2>
         <p id="reset"></p>
       </div>
     </div>
@@ -61,46 +61,41 @@
       <ol class="board" id="board" aria-live="polite"><li class="empty" style="display:block;border:0" data-ar="جاري التحميل…">Loading…</li></ol>
     </div>
     <p class="note" id="note"></p>
-    <div class="row"><a class="btn primary big" id="playQuest" href="quiz.html#quest" data-ar="العب تحدي الفصل ◂">Play Chapter Quest ▸</a></div>
+    <div class="row"><a class="btn primary big" id="playQuest" href="chapters.html" data-ar="العب واجمع نقاط ◂">Play and earn points ▸</a></div>
   </div>
 </div>
-<script src="firebase-config.js?v=20261106j"></script>
-<script src="chapters.js?v=20261106j"></script>
-<script src="common.js?v=20261106j"></script>
+<script src="firebase-config.js?v=20261106k"></script>
+<script src="chapters.js?v=20261106k"></script>
+<script src="common.js?v=20261106k"></script>
 <script>
 (async () => {
   'use strict';
   const me = SI.requirePlayer(); if (!me) return;
-  const CH = SI.requireChapter(); if (!CH) return;
   SI.applyTheme();
   const $ = s => document.querySelector(s), T = SI.T;
-  if (SI.isAr()) document.title = 'الأبطال · متفوّق';
-  $('#chSub').textContent = T(`${SI.chWord(CH)} ${CH.n} · ${CH.title}`, `${SI.chWord(CH)} ${CH.n} · ${SI.chTitle(CH)}`);
-  $('#playQuest').textContent = T(`Play ${SI.questName(CH)} ▸`, `العب ${SI.questName(CH)} ◂`);
+  if (SI.isAr()) document.title = 'نجوم الأسبوع · متفوّق';
   const ms = SI.weekEndsIn(), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5);
-  $('#reset').textContent = T(`New week starts in ${d ? d + ' day' + (d > 1 ? 's ' : ' ') : ''}${h} hour${h === 1 ? '' : 's'}. Everyone starts again!`,
-    `الأسبوع الجديد يبدأ بعد ${d ? d + ' يوم و' : ''}${h} ساعة. والكل يبدأ من جديد!`);
-  const { online, rows } = await SI.LB.top(10);
+  $('#reset').textContent = T(`Every point you earn this week counts: quests, games, Daily 5 and Review. New week in ${d ? d + ' day' + (d > 1 ? 's ' : ' ') : ''}${h} hour${h === 1 ? '' : 's'}.`,
+    `كل نقطة تكسبها الأسبوع ده بتتحسب: التحديات والألعاب والأسئلة اليومية والمراجعة. الأسبوع الجديد يبدأ بعد ${d ? d + ' يوم و' : ''}${h} ساعة.`);
+  const { online, rows, last } = await SI.LB.show(10);
+  if (last) $('#boardTitle').textContent = T('Last week’s stars (this week has just started)', 'نجوم الأسبوع الماضي (الأسبوع الجديد لسه بادئ)');
   const board = $('#board'); board.innerHTML = '';
-  if (!rows.length) {
-    board.innerHTML = `<li class="empty" style="display:block;border:0">${T(`No champions yet this week. Play the ${SI.questName(CH)} and be the first!`, `لسه مفيش أبطال الأسبوع ده. العب ${SI.questName(CH)} وكن الأول!`)}</li>`;
-  }
+  if (!rows.length) board.innerHTML = `<li class="empty" style="display:block;border:0">${T('No stars yet this week. Play any game and be the first!', SI.G('لسه مفيش نجوم الأسبوع ده. العب أي لعبة وكن الأول!', 'لسه مفيش نجوم الأسبوع ده. العبي أي لعبة وكوني الأولى!'))}</li>`;
   rows.forEach((r, i) => {
-    const li = document.createElement('li');
-    li.className = (i < 3 ? `top${i + 1}` : '') + (r.id === me.id ? ' me' : '');
-    li.innerHTML = `<span class="r">${['🥇', '🥈', '🥉'][i] || i + 1}</span><span class="nm">${SI.esc(r.name)}${r.id === me.id ? `<span class="you">${T('YOU', 'أنت')}</span>` : ''}</span><span class="sc">${r.score}</span>`;
+    const li = document.createElement('li'), mine = !last && r.id === me.id;
+    li.className = (i < 3 ? `top${i + 1}` : '') + (mine ? ' me' : '');
+    li.innerHTML = `<span class="r">${['🥇', '🥈', '🥉'][i] || i + 1}</span><span class="nm">${SI.esc(r.name)}${mine ? `<span class="you">${T('YOU', 'أنت')}</span>` : ''}</span><span class="sc">${r.score}</span>`;
     board.appendChild(li);
   });
-  const m = await SI.LB.me();
-  const mine = $('#mine');
+  const m = await SI.LB.me(), mine = $('#mine');
   if (m) {
-    const above = rows[m.rank - 2];
-    mine.innerHTML = T(`<div>Your best this week: <b>${m.score}</b><br>Rank <b>#${m.rank}</b></div>`, SI.G(`<div>أعلى نتيجة ليك الأسبوع ده: <b>${m.score}</b><br>ترتيبك <b>#${m.rank}</b></div>`, `<div>أعلى نتيجة ليكي الأسبوع ده: <b>${m.score}</b><br>ترتيبك <b>#${m.rank}</b></div>`)) +
-      (m.rank === 1 ? T('<div>👑 You are number 1!</div>', SI.G('<div>👑 إنت رقم ١!</div>', '<div>👑 إنتي رقم ١!</div>')) : above ? T(`<div>${above.score - m.score + 1} more points to pass <b>${SI.esc(above.name)}</b>!</div>`, `<div>محتاج ${above.score - m.score + 1} نقطة كمان علشان تعدّي <b>${SI.esc(above.name)}</b>!</div>`) : '');
+    const above = !last && rows[m.rank - 2];
+    mine.innerHTML = T(`<div>Your points this week: <b>${m.score}</b><br>Rank <b>#${m.rank}</b></div>`, SI.G(`<div>نقاطك الأسبوع ده: <b>${m.score}</b><br>ترتيبك <b>#${m.rank}</b></div>`, `<div>نقاطك الأسبوع ده: <b>${m.score}</b><br>ترتيبك <b>#${m.rank}</b></div>`))
+      + (m.rank === 1 ? T('<div>👑 You are number 1!</div>', SI.G('<div>👑 إنت رقم ١!</div>', '<div>👑 إنتي رقم ١!</div>')) : above ? T(`<div>${above.score - m.score + 1} more points to pass <b>${SI.esc(above.name)}</b>!</div>`, `<div>محتاج ${above.score - m.score + 1} نقطة علشان تعدّي <b>${SI.esc(above.name)}</b>!</div>`) : '');
     mine.hidden = false;
     if (m.rank <= 3) SI.voice('champion');
   }
-  $('#note').textContent = online ? T('Showing players from every device.', 'اللاعبين من كل الأجهزة.') : T('Showing players on this device only.', 'اللاعبين على الجهاز ده بس.');
+  $('#note').textContent = online ? T('Students from every device and every grade.', 'الطلاب من كل الأجهزة وكل الصفوف.') : T('Showing players on this device only.', 'اللاعبين على الجهاز ده بس.');
 })();
 </script>
 </body>

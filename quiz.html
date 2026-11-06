@@ -396,9 +396,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261106j"></script>
-<script src="chapters.js?v=20261106j"></script>
-<script src="common.js?v=20261106j"></script>
+<script src="firebase-config.js?v=20261106k"></script>
+<script src="chapters.js?v=20261106k"></script>
+<script src="common.js?v=20261106k"></script>
 <script>
 (() => {
 'use strict';
@@ -1314,11 +1314,11 @@ async function results(kind, res, total, extraXP = 0) {
     ${kind === 'quest' ? `<div class="stars" aria-label="${T(`${stars} of 3 stars`, `${stars} من ٣ نجوم`)}">${'★'.repeat(stars)}<span class="off">${'★'.repeat(3 - stars)}</span></div>` : ''}
     <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Right first time', 'صح من أول مرة')}: ${res.firstRight} / ${total}</span>${kind === 'quest' ? `<span>${T('Best', 'أعلى نتيجة')}: ${bestScore}</span>` : ''}${extraXP ? `<span>🔥 ${T('Daily bonus', 'مكافأة اليوم')} +${extraXP}</span>` : ''}</div>
     ${levelBlock(gain)}
-    ${kind === 'quest' ? `<p class="rank" id="rank">${T('Saving your score…', 'بنحفظ نتيجتك…')}</p>` : ''}
+    <p class="rank" id="rank">${T('Saving your points…', 'بنحفظ نقاطك…')}</p>
     <p>${res.missed.length ? T(`Reesho saved <b>${res.missed.length}</b> tricky question${res.missed.length > 1 ? 's' : ''} for your review.`, `ريشو حفظ لك <b>${res.missed.length}</b> سؤال صعب علشان تراجعه.`) : T('Perfect! Come back tomorrow for your Daily 5.', G('ممتاز! ارجع بكرة لخماسية اليوم.', 'ممتاز! ارجعي بكرة لخماسية اليوم.'))}</p>
     <div class="row acts">
       ${res.missed.length ? `<a class="btn primary" href="quiz.html#review">${T('Review now', 'راجع دلوقتي')}</a>` : ''}
-      ${kind === 'quest' ? `<a class="btn" href="champions.html">🏆 ${T('Champions', 'الأبطال')}</a>` : ''}
+      <a class="btn" href="champions.html">⭐ ${T('Stars of the Week', 'نجوم الأسبوع')}</a>
       <a class="btn" href="map.html">${T('Map', 'الخريطة')}</a>
       <button class="btn" type="button" id="again">${T('Play again', 'العب تاني')}</button>
     </div></div>`);
@@ -1326,11 +1326,11 @@ async function results(kind, res, total, extraXP = 0) {
   SI.rate.guard(o, 'a[href="map.html"], a[href="champions.html"]', 'results');   // Reesho asks for a rating before the player leaves (once per chapter)
   $('#again', o).onclick = () => location.reload();
   if (levelUp) { setTimeout(() => { sfx.level(); SI.voice('level'); banner(T('Level up!', 'مستوى جديد!'), `${T('Level', 'المستوى')} ${gain.after.n} · ${gain.after.title}`); }, 900); }
-  if (kind === 'quest') {
+  {
     try {
-      await SI.LB.submit(score);
+      await SI.LB.submitWeek();
       const m = await SI.LB.me();
-      $('#rank', o).innerHTML = m ? T(`🏆 You are <b>#${m.rank}</b> this week${m.online ? '' : ' on this device'}!`, `🏆 ترتيبك <b>#${m.rank}</b> الأسبوع ده${m.online ? '' : ' على الجهاز ده'}!`) : '';
+      $('#rank', o).innerHTML = m ? T(`⭐ Stars of the Week: you are <b>#${m.rank}</b>${m.online ? '' : ' on this device'}!`, `⭐ ترتيبك في نجوم الأسبوع <b>#${m.rank}</b>${m.online ? '' : ' على الجهاز ده'}!`) : '';
     } catch (e) { $('#rank', o).textContent = ''; }
   }
 }
@@ -1387,7 +1387,7 @@ async function preview(set) {
 /* ---------- Reesho's Exam Hall (quiz.html#exam=oct) ----------
    A monthly test on several chapters at once (chapters.js: window.EXAMS), shaped like the school's monthly test:
    4 questions x 5 marks = 20. Each question is (A) one short item for 1 mark and (B) two longer items for 2 marks each.
-   A new paper is built every time. Nothing here goes on the Champions board; missed ideas go to their own chapter's Review. */
+   A new paper is built every time. Its points count for «نجوم الأسبوع» like any activity; missed ideas go to their own chapter's Review. */
 const answerText = q => {
   if (q.type === 'tf') return q.answer === 0 ? T('True ✓', 'صح ✓') : T('False ✗', 'خطأ ✗');
   if (q.type === 'mc' || q.type === 'fill') return q.options[q.answer];
@@ -1560,8 +1560,8 @@ async function main() {
     const list = buildQuest(), N = list.filter(q => q.src !== 'bonus').length; rememberVariants(list);
     set(SI.questName(CH), T(`${CH.title} · ${N} questions`, `${TITLE} · ${N} سؤال`));
     await intro(T(`Ready, ${esc(me.name)}?`, G(`جاهز يا ${esc(me.name)}؟`, `جاهزة يا ${esc(me.name)}؟`)), T(`${SI.chWord(CH)} ${CH.n} Quest · ${N} questions`, `تحدي ${SI.chWord(CH)} ${CH.n} · ${N} سؤال`),
-      T('Some questions have a timer ⏱. The last ones are Boss questions ★. Get 5 right in a row for a mystery box 🎁. Your best score goes on the Champions board 🏆!',
-        G('بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوب ٥ صح ورا بعض وخد صندوق المفاجآت 🎁. وأعلى نتيجة ليك بتدخل لوحة الأبطال 🏆!', 'بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوبي ٥ صح ورا بعض وخدي صندوق المفاجآت 🎁. وأعلى نتيجة ليكي بتدخل لوحة الأبطال 🏆!')));
+      T('Some questions have a timer ⏱. The last ones are Boss questions ★. Get 5 right in a row for a mystery box 🎁. Every point counts for the Stars of the Week ⭐!',
+        G('بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوب ٥ صح ورا بعض وخد صندوق المفاجآت 🎁. وكل نقطة بتتحسب في نجوم الأسبوع ⭐!', 'بعض الأسئلة ليها وقت ⏱. وآخر الأسئلة هي التحدي الكبير ★. جاوبي ٥ صح ورا بعض وخدي صندوق المفاجآت 🎁. وكل نقطة بتتحسب في نجوم الأسبوع ⭐!')));
     track('quiz_start', { mode: 'quest', chapter: CH.id || '' });
     const res = await playList(list, 'quest');
     clearRun();

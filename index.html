@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261106j">
+<link rel="stylesheet" href="common.css?v=20261106k">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -79,6 +79,17 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 .who:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .who .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e3f1f7;font-size:16px}
 /* "Players say": answers the owner chose on reviews.html (hidden until there is at least one) */
+.stars{background:var(--card);border-radius:24px;padding:14px 16px;box-shadow:0 8px 28px rgba(31,61,87,.16);border:3px solid #f2b134}
+.stars h2{margin:0 0 4px;font-size:20px;font-weight:900;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.stars h2 .ar{font-size:18px;color:var(--ink)}
+.stars .sub{margin:0 0 8px;font-size:13.5px;font-weight:700;color:var(--ink)}
+.stars ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.stars li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:6px 10px;font-weight:800;font-size:16px}
+.stars li.top1{background:#fff4d6}.stars li.top2{background:#eef3f7}.stars li.top3{background:#fbe9dc}
+.stars li.me{outline:3px solid #2e9e6b}
+.stars li .r{text-align:center;font-size:18px}.stars li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stars li .sc{color:#23799f}
+.stars li.empty{display:block;text-align:center;background:none}
+.stars .more{display:block;text-align:center;margin-top:8px;font-weight:800;color:#23799f}
 .says{background:var(--card);border-radius:24px;padding:14px 16px;box-shadow:0 8px 28px rgba(31,61,87,.16)}
 .says h2{margin:0 0 8px;font-size:18px;font-weight:900;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
 .says h2 .ar{font-size:16.5px;color:var(--ink)}
@@ -123,8 +134,8 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261106j">
-      <img src="assets/banner.jpg?v=20261106j" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261106k">
+      <img src="assets/banner.jpg?v=20261106k" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
@@ -195,7 +206,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <!-- step 3: name -->
   <section class="step" id="stepName" hidden>
     <h2>Boy or girl, and your name <span class="ar">بطل ولا بطلة؟ وما اسمك؟</span></h2>
-    <p class="hint">Your first name or a nickname. It shows on the Champions board. <span class="ar">الاسم الأول أو اسم مستعار فقط</span></p>
+    <p class="hint">Your first name or a nickname. It shows on the Stars of the Week board. <span class="ar">الاسم الأول أو اسم مستعار فقط</span></p>
     <div class="gpick" role="group" aria-label="Boy or girl · بطل ولا بطلة">
       <button type="button" data-pick="m" aria-pressed="false">👦 <b>Boy</b> <span class="ar">بطل</span></button>
       <button type="button" data-pick="f" aria-pressed="false">👧 <b>Girl</b> <span class="ar">بطلة</span></button>
@@ -208,6 +219,13 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
       <p class="err" id="nameErr" role="alert"></p>
     </form>
     <button class="back" type="button" data-back="stepTrack">‹ Back</button>
+  </section>
+
+  <!-- «نجوم الأسبوع»: one board for every student, by this week's points (owner, 6 Nov 2026) -->
+  <section class="stars" id="stars" aria-live="polite">
+    <h2>⭐ Stars of the Week <span class="ar">نجوم الأسبوع</span></h2>
+    <p class="sub" id="starsSub">كل نقطة تكسبها هذا الأسبوع في أي لعبة أو تحدٍّ تُحسب. اللوحة تبدأ من جديد كل سبت.</p>
+    <ol id="starsList"><li class="empty">…</li></ol>
   </section>
 
   <section class="says" id="says" hidden>
@@ -246,9 +264,9 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <p class="foot"><a href="contact.html">For parents and teachers <span class="ar">لأولياء الأمور والمعلمين</span></a>
     <a class="tg" href="https://t.me/motafawek" target="_blank" rel="noopener" data-tg="home"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.6c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.5-.6-.2L6.2 13.3l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>What is new, on Telegram <span class="ar">الجديد على تليجرام</span></a></p>
 </main>
-<script src="firebase-config.js?v=20261106j"></script>
-<script src="common.js?v=20261106j"></script>
-<script src="chapters.js?v=20261106j"></script>
+<script src="firebase-config.js?v=20261106k"></script>
+<script src="common.js?v=20261106k"></script>
+<script src="chapters.js?v=20261106k"></script>
 <script>
 (() => {
   'use strict';
@@ -359,6 +377,23 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
       $('#says').hidden = false;
     } catch (e) { console.warn(e); }
   }, 800));
+})();
+</script>
+<script>
+/* «نجوم الأسبوع» on the home page: this week's top 10 of every grade (last week's while this week is still empty) */
+(async () => {
+  const list = document.getElementById('starsList'), sub = document.getElementById('starsSub');
+  try {
+    const { rows, last } = await SI.LB.show(10), me = SI.player();
+    if (last) sub.textContent = 'الأسبوع الجديد لسه بادئ. دول نجوم الأسبوع الماضي: العب واكسب نقاط وادخل القائمة!';
+    list.innerHTML = rows.length ? '' : '<li class="empty">لسه مفيش نجوم الأسبوع ده. العب أي لعبة وكن الأول!</li>';
+    rows.forEach((r, i) => {
+      const li = document.createElement('li'), mine = !last && me && r.id === me.id;
+      li.className = (i < 3 ? 'top' + (i + 1) : '') + (mine ? ' me' : '');
+      li.innerHTML = `<span class="r">${['🥇', '🥈', '🥉'][i] || (i + 1).toLocaleString('ar-EG')}</span><span class="nm">${SI.esc(r.name)}</span><span class="sc">${Number(r.score).toLocaleString('ar-EG')} نقطة</span>`;
+      list.appendChild(li);
+    });
+  } catch (e) { list.innerHTML = '<li class="empty">اللوحة غير متاحة الآن.</li>'; }
 })();
 </script>
 </body>
