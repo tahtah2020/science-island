@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'رابط تليجرام أعلى الصفحة الرئيسية',
+    items: [
+      { text: 'شريط أزرق «قناة متفوّق على تليجرام» تحت صورة ريشو مباشرة بدل أسفل الصفحة' }
+    ] },
   { date: '2026-11-06', title: 'رابط قناة تليجرام في كل الصفحات',
     items: [
       { text: 'زر «قناة متفوّق على تليجرام» في قائمة التنقّل بكل الصفحات (يظهر فقط لما الطفل يفتح القائمة)' },

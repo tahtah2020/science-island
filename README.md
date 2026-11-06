@@ -430,3 +430,4 @@ From the English school book, pages 80-91 (three lessons with Try and Exercise, 
 
 ## Telegram link everywhere (6 Nov 2026)
 - `common.js` `navMenu()`: a Telegram row (`data-tg="menu"`) in the «القائمة» sheet on every inside page; a quiet footer chip `.si-tgfoot` (`data-tg="footer"`) at the end of chapters, map, adventures, champions, wardrobe only. Never on quiz/game pages, no new pop-ups (the existing rating/«قريبًا» pop-ups are unchanged).
+- Home page: the Telegram link is the blue `.tgBar` right under the banner (above the adventures button), moved from the footer at the owner's request.
