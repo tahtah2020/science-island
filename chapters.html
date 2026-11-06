@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261106o">
+<link rel="stylesheet" href="common.css?v=20261106p">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -89,6 +89,19 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   .ch b{font-size:17px}
 }
 @media (max-height:520px) and (orientation:landscape){ .intro img{height:64px} }
+.starsBox{background:var(--card);border-radius:24px;padding:14px 16px;box-shadow:0 8px 28px rgba(31,61,87,.16);border:3px solid #f2b134}
+.starsBox h2{margin:0 0 4px;font-size:20px;font-weight:900;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.starsBox h2 .ar{font-size:18px;color:var(--ink)}
+.starsBox .sub{margin:0 0 8px;font-size:13.5px;font-weight:700;color:var(--ink)}
+.starsBox ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.starsBox li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:6px 10px;font-weight:800;font-size:16px}
+.starsBox li.top1{background:#fff4d6}.starsBox li.top2{background:#eef3f7}.starsBox li.top3{background:#fbe9dc}
+.starsBox li.me{outline:3px solid #2e9e6b}
+.starsBox li .r{text-align:center;font-size:18px}.starsBox li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.starsBox li .sc{color:#23799f}
+.starsBox li.empty{display:block;text-align:center;background:none}
+.starsBox .more{display:block;text-align:center;margin-top:8px;font-weight:800;color:#23799f}
+.starsBox[hidden]{display:none}
+.starsBox{margin-top:14px}
 </style>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -128,11 +141,19 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
     <div class="exams" id="exams"></div>
     <h2 class="sect" id="sect" data-ar="اختر الفصل">Choose a chapter <span class="ar">اختر الفصل</span></h2>
     <ol class="list" id="list"></ol>
+    <!-- «نجوم متفوّق»: shown inside the site only, to a player who has earned points, and only when the list has names (owner, 6 Nov 2026) -->
+    <section class="starsBox" id="starsBox" hidden aria-live="polite">
+      <h2>⭐ Motafawek Stars <span class="ar">نجوم متفوّق</span></h2>
+      <p class="sub">كل نقطة تكسبها في أي لعبة أو تحدٍّ تُحسب، والقائمة تحتفظ بنقاطك دائمًا.</p>
+      <ol id="starsList"></ol>
+      <a class="more" href="champions.html">كل القائمة وترتيبك ◂</a>
+    </section>
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="chapters.js?v=20261106o"></script>
-<script src="common.js?v=20261106o"></script>
+<script src="firebase-config.js?v=20261106p"></script>
+<script src="chapters.js?v=20261106p"></script>
+<script src="common.js?v=20261106p"></script>
 <script>
 (() => {
   'use strict';
@@ -238,6 +259,23 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
     ? T(`Welcome back, <b>${esc(me.name)}</b>! Keep going with <b>${esc(curCh.title)}</b>, or pick another ${U ? 'unit' : 'chapter'}.`, SI.G(`أهلًا بعودتك يا <b>${esc(me.name)}</b>! كمّل في <b>${esc(SI.chTitle(curCh))}</b>، أو اختر ${U ? 'وحدة أخرى' : 'فصلًا آخر'}.`, `أهلًا بعودتك يا <b>${esc(me.name)}</b>! كمّلي في <b>${esc(SI.chTitle(curCh))}</b>، أو اختاري ${U ? 'وحدة أخرى' : 'فصلًا آخر'}.`))
     : T(`Hi, <b>${esc(me.name)}</b>! I’m Reesho. Pick a ${U ? 'unit' : 'chapter'} and let’s play!`, SI.G(`أهلًا يا <b>${esc(me.name)}</b>! أنا ريشو. اختر ${U ? 'وحدة' : 'فصلًا'} ويلّا نلعب!`, `أهلًا يا <b>${esc(me.name)}</b>! أنا ريشو. اختاري ${U ? 'وحدة' : 'فصلًا'} ويلّا نلعب!`));
   if (started) $('#parrot').src = 'assets/parrot_thumbs.png';
+})();
+</script>
+<script>
+(async () => {
+  const box = document.getElementById('starsBox'), list = document.getElementById('starsList');
+  try {
+    if (!(SI.prof().xp > 0)) return;
+    const { rows, myId } = await SI.LB.show(10);
+    if (!rows.length) return;
+    rows.forEach((r, i) => {
+      const li = document.createElement('li'), mine = r.id === myId;
+      li.className = (i < 3 ? 'top' + (i + 1) : '') + (mine ? ' me' : '');
+      li.innerHTML = `<span class="r">${['🥇', '🥈', '🥉'][i] || (i + 1).toLocaleString('ar-EG')}</span><span class="nm">${SI.esc(r.name)}</span><span class="sc">${Number(r.score).toLocaleString('ar-EG')} نقطة</span>`;
+      list.appendChild(li);
+    });
+    box.hidden = false;
+  } catch (e) {}
 })();
 </script>
 </body>

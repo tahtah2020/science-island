@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'نجوم متفوّق داخل الموقع',
+    items: [
+      { text: 'القائمة في صفحة الوحدات للطالب الذي له نقاط، وليست في الصفحة الرئيسية' }
+    ] },
   { date: '2026-11-06', title: 'نجوم متفوّق: النقاط القديمة',
     items: [
       { text: 'زر في لوحة الأدمن يضيف كل الطلاب بنقاطهم القديمة إلى القائمة' },
