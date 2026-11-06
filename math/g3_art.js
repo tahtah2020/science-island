@@ -294,7 +294,7 @@
   /* ---------- Unit 4 · column addition and subtraction ---------- */
   function g3Column(q) {
     const p = (q && q.pic) || { a: 375, b: 283, op: '+' }, A = String(p.a), B = String(p.b);
-    const cols = Math.max(A.length, B.length, String(p.op === '-' ? p.a - p.b : p.a + p.b).length), cw = 46, x0 = (W - cols * cw) / 2 - 18, y0 = 42, rh = 40;
+    const cols = Math.max(A.length, B.length, String(p.op === '-' ? p.a - p.b : p.op === 'x' ? p.a * p.b : p.a + p.b).length), cw = 46, x0 = (W - cols * cw) / 2 - 18, y0 = 42, rh = 40;
     const PLACE = [T('ones', 'آحاد'), T('tens', 'عشرات'), T('hund.', 'مئات'), T('thou.', 'آلاف')];
     const colX = k => x0 + (cols - 1 - k) * cw;   /* k = place (0 ones) from the right: numbers stay left to right */
     let s = '';
@@ -305,7 +305,7 @@
     }
     const row = (str, y) => { for (let i = 0; i < str.length; i++) { const k = str.length - 1 - i; s += txt(colX(k) + cw / 2, y, dg(str[i]), { fs: 26 }); } };
     row(A, y0 + 28); row(B, y0 + 28 + rh);
-    s += txt(x0 + cols * cw + 24, y0 + 28 + rh, p.op === '-' ? '−' : '+', { fs: 28, fill: '#e2603f' });
+    s += txt(x0 + cols * cw + 24, y0 + 28 + rh, p.op === '-' ? '−' : p.op === 'x' ? '×' : '+', { fs: 28, fill: '#e2603f' });
     s += `<path d="M${f1(x0)} ${y0 + 2 * rh + 6}H${f1(x0 + cols * cw + 40)}" stroke="${INK}" stroke-width="3"/>`;
     for (let k = 0; k < cols; k++) s += `<rect x="${f1(colX(k) + 8)}" y="${y0 + 2 * rh + 14}" width="${cw - 16}" height="${rh - 8}" rx="6" fill="#fff" stroke="#9aa9b5" stroke-width="1.6" stroke-dasharray="4 3"/>`;
     return svg(y0 + 3 * rh + 26, T('A column sum with an empty answer row', 'عملية رأسية والناتج فارغ'), s);
@@ -438,6 +438,8 @@
 
   /* ---------- Word problems as pictures ---------- */
   const OWNER = new Set(['apple', 'strawberry', 'banana', 'orange', 'car', 'bus', 'motorbike', 'truck', 'taxi', 'police', 'dog', 'cat', 'cat2', 'rabbit', 'dolphin', 'horse', 'cake', 'cake2', 'pie', 'biscuit', 'picturebook', 'picturebook2', 'refbook', 'sciencebook', 'clipboard', 'math', 'english', 'pe', 'music', 'drawing', 'other',
+    /* third set (unit 10) */
+    'chocolate', 'juice', 'medal', 'bouquet', 'cakebox', 'snackbox', 'pencils', 'sandwich', 'paperbox', 'banknote', 'coin2', 'paperbundle', 'notebook2', 'lake', 'runner', 'basket',
     /* second Gemini set (6 Nov 2026, units 7-9) */
     'cookie', 'candy2', 'paper2', 'seed', 'plate', 'boxopen', 'box', 'bench', 'wheel', 'can', 'wagon', 'ribbon', 'pencil2', 'marble', 'books', 'backpack', 'boy', 'girl', 'boy2', 'girl2', 'teacher', 'father', 'grandma', 'kids']);
   const CHILD = ['boy', 'girl', 'boy2', 'girl2'];   /* 'child' in a story = the owner's four children in turn */
@@ -479,7 +481,7 @@
         if (n != null && n > 0) s += txt(x + pw / 2, y + ph - 14, `× ${dg(n)}`, { fs: 18, fill: '#c0306d' });
       }
       const lab = pt.label != null ? pt.label : n != null ? dg(n) + (pt.unit ? ' ' + pt.unit : '') : '';
-      if (lab) s += txt(x + pw / 2, y + ph + 26, lab, { fs: 15 });
+      if (lab) s += txt(x + pw / 2, y + ph + 26, lab, { fs: Math.max(10, Math.min(15, pw / (String(lab).length * .52))) });   /* long labels shrink to the panel width */
     });
     return svg(H, T('A picture of the problem', 'صورة المسألة'), s);
   }

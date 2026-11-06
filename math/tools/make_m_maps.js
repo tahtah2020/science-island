@@ -367,10 +367,11 @@ ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_mg3u6.svg', b);
 })();
 
-/* ---------- Grade 3 · Units 7-9: mental maths (jumps), division with remainders (plates), big numbers (number line) ---------- */
+/* ---------- Grade 3 · Units 7-10: mental maths (jumps), division with remainders (plates), big numbers (number line) ---------- */
 [['mg3u7', 83, 'g3Jumps', { a: 33, jumps: [40, 6], sign: '+', know: 1 }, ['#e6f3d6', '#fdf0d8', '#e8f0d0'], '#fdeedd', ['+', '−', '١٠']],
  ['mg3u8', 89, 'g3Rem', { total: 17, per: 3, icon: 'candy' }, ['#f3e6f6', '#fdeedd', '#e8f0d0'], '#f6e3ef', ['÷', '٣', 'ب']],
- ['mg3u9', 97, 'g3NumLine', { from: 80000, to: 120000, major: 10000, marks: [[84000, 'أ']] }, ['#e3eef8', '#eef3e0', '#e8f0d0'], '#e3eef8', ['١٠٠٠', '٠٠٠', '>']]
+ ['mg3u9', 97, 'g3NumLine', { from: 80000, to: 120000, major: 10000, marks: [[84000, 'أ']] }, ['#e3eef8', '#eef3e0', '#e8f0d0'], '#e3eef8', ['١٠٠٠', '٠٠٠', '>']],
+ ['mg3u10', 101, 'g3Column', { a: 26, b: 3, op: 'x' }, ['#fdeee0', '#eef6e6', '#e8f0d0'], '#fde3cf', ['×', '١٠', '٣']]
 ].forEach(([id, sd, fig, pic, pal, blob, crates]) => {
   seed = sd;
   const D = ctx.window.CH_DIAGRAMS;
