@@ -491,9 +491,9 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const FB = 'https://www.gstatic.com/firebasejs/10.12.2/';
   /* «نجوم الأسبوع» (Stars of the Week, owner 6 Nov 2026): ONE board for every student of every grade, subject and track,
      ranked by the points (XP) earned this week from any activity. Board id `all-<week>`; resets every Saturday.
-     The score sent is capped at 1500 to fit the published Firestore rules (scores capped integer ≤ 1500). */
+     The score sent is capped at 100000, as in the Firestore rules (raised from 1500 on 6 Nov 2026). */
   const LB = {
-    _db: undefined, _fs: null, base: FB, CAP: 1500,
+    _db: undefined, _fs: null, base: FB, CAP: 100000,
     async ready() {
       if (this._db !== undefined) return this._db;
       const cfg = window.FIREBASE_CONFIG;
