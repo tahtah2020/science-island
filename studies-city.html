@@ -41,6 +41,50 @@ const rr = (f, x, y, w, h, r = 10) => A.ringRect(f.dx + x * f.k, f.dy + y * f.k,
 const re = (f, cx, cy, rx, ry) => A.ringEl(f.dx + cx * f.k, f.dy + cy * f.k, rx * f.k, ry * f.k);
 const PL = o => ({ pic: Object.assign({ plain: true }, o || {}) });
 
+
+/* scenes for the questions that had no picture (owner, 6 Nov 2026). None of them shows the answer. */
+const house = (x, y, w, h, wall, roof) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${wall}" stroke="${A.INK}" stroke-width="2"/><path d="M${x - 6} ${y}L${x + w / 2} ${y - h * .45}L${x + w + 6} ${y}Z" fill="${roof}" stroke="${A.INK}" stroke-width="2"/>`
+  + `<rect x="${x + w * .2}" y="${y + h * .25}" width="${w * .22}" height="${h * .22}" fill="#cfe9f7" stroke="${A.INK}" stroke-width="1.5"/><rect x="${x + w * .58}" y="${y + h * .45}" width="${w * .24}" height="${h * .55}" fill="#a86b3c" stroke="${A.INK}" stroke-width="1.5"/>`;
+const kid = (x, y, shirt, skin = '#f2c9a0') => `<circle cx="${x}" cy="${y}" r="11" fill="${skin}" stroke="${A.INK}" stroke-width="1.6"/><path d="M${x - 12} ${y + 44}q0 -30 12 -30t12 30Z" fill="${shirt}" stroke="${A.INK}" stroke-width="1.6"/>`
+  + `<path d="M${x - 6} ${y + 44}v18M${x + 6} ${y + 44}v18" stroke="${A.INK}" stroke-width="3" stroke-linecap="round"/>`;
+const ask = (x, y, w = 70, h = 34) => `<rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="9" fill="#fff4d6" stroke="#d99a12" stroke-width="2.6" stroke-dasharray="6 4"/>` + A.txt(x, y + 9, '؟', { fs: 26, fill: '#d99a12' });
+function scene(m) {
+  const sky = `<rect width="340" height="340" rx="14" fill="#e6f4fc"/><rect y="250" width="340" height="90" fill="#cfe8c4"/>`;
+  if (m === 'solar') {             // the sun shines on a house; a «؟» on the roof; a wire to a lit lamp inside
+    return sky + `<circle cx="60" cy="62" r="30" fill="#f7c948" stroke="#e0a91c" stroke-width="3"/>` + [0, 1, 2, 3, 4, 5, 6, 7].map(i => { const a = i * Math.PI / 4; return `<path d="M${A.f1(60 + Math.cos(a) * 38)} ${A.f1(62 + Math.sin(a) * 38)}L${A.f1(60 + Math.cos(a) * 52)} ${A.f1(62 + Math.sin(a) * 52)}" stroke="#e0a91c" stroke-width="4" stroke-linecap="round"/>`; }).join('')
+      + `<path d="M92 84L176 140M86 100L160 156" stroke="#f2b134" stroke-width="3" stroke-dasharray="7 6"/>`
+      + house(150, 170, 140, 90, '#fde3cf', '#e2603f') + ask(220, 140, 76, 36)
+      + `<path d="M258 140h24v70h-26" fill="none" stroke="${A.INK}" stroke-width="2.6"/><circle cx="246" cy="214" r="10" fill="#ffe680" stroke="${A.INK}" stroke-width="2"/>`
+      + `<path d="M246 196v-6M232 204l-5 -4M260 204l5 -4" stroke="#e0a91c" stroke-width="3" stroke-linecap="round"/>`
+      + A.txt(170, 310, 'ضوء الشمس ← ؟ ← كهرباء', { fs: 18 });
+  }
+  if (m === 'team') {              // three children carry a heavy box together to the school
+    return sky + house(220, 160, 100, 90, '#dbe9f6', '#23799f') + A.txt(270, 150, 'مدرسة', { fs: 13 })
+      + `<rect x="34" y="120" width="164" height="30" rx="6" fill="#c98b4a" stroke="${A.INK}" stroke-width="2"/><path d="M34 135h164" stroke="#a86b3c" stroke-width="2"/>`
+      + kid(55, 190, '#e85a6b') + kid(115, 188, '#4ea5d9', '#c99572') + kid(175, 190, '#79c69a')
+      + `<path d="M43 206L37 150M67 206L73 150M103 204L97 150M127 204L133 150M163 206L157 150M187 206L193 150" stroke="${A.INK}" stroke-width="3" stroke-linecap="round"/>`
+      + `<path d="M196 300h40" stroke="${A.INK}" stroke-width="3"/><path d="M236 300l-9 -6v12z" fill="${A.INK}"/>`;
+  }
+  if (m === 'newcity') {           // a crowded old city on one side, empty desert land with new buildings on the other
+    let left = `<rect x="10" y="60" width="155" height="240" rx="12" fill="#eef1f4" stroke="${A.INK}" stroke-width="2"/>`;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) left += `<rect x="${20 + c * 36}" y="${80 + r * 40}" width="30" height="32" fill="${['#f4b183', '#cfd8e3', '#f7d794', '#b8d9c4'][(r + c) % 4]}" stroke="${A.INK}" stroke-width="1.4"/>`;
+    for (let i = 0; i < 6; i++) left += `<rect x="${18 + i * 24}" y="248" width="18" height="10" rx="3" fill="${['#e2603f', '#23799f', '#f2b134'][i % 3]}" stroke="${A.INK}" stroke-width="1.2"/>`;
+    let right = `<rect x="175" y="60" width="155" height="240" rx="12" fill="#f6e3b4" stroke="${A.INK}" stroke-width="2"/><path d="M175 250q40 -20 80 0t75 -6" fill="none" stroke="#d8b46a" stroke-width="3"/>`
+      + `<rect x="200" y="150" width="34" height="80" fill="#dbe9f6" stroke="${A.INK}" stroke-width="1.6"/><rect x="248" y="120" width="34" height="110" fill="#e3f6ea" stroke="${A.INK}" stroke-width="1.6"/><rect x="292" y="170" width="26" height="60" fill="#fde3cf" stroke="${A.INK}" stroke-width="1.6"/>`
+      + `<circle cx="215" cy="236" r="6" fill="#79c69a"/><circle cx="300" cy="236" r="6" fill="#79c69a"/>`;
+    return `<rect width="340" height="340" rx="14" fill="#fffaf0"/>` + left + right + A.txt(88, 46, 'مدينة قديمة', { fs: 15 }) + A.txt(252, 46, 'الصحراء', { fs: 15 })
+      + `<path d="M150 318h40" stroke="${A.INK}" stroke-width="3"/><path d="M190 318l-9 -6v12z" fill="${A.INK}"/>`;
+  }
+  if (m === 'capital') {           // Cairo on a small map with a compass; four empty «؟» spots around it, none marked
+    const cx = 170, cy = 180;
+    return `<rect width="340" height="340" rx="14" fill="#fffaf0"/><rect x="20" y="40" width="300" height="280" rx="16" fill="#f6e9c9" stroke="${A.INK}" stroke-width="2"/>`
+      + `<path d="M150 40q14 70 6 140t10 140" fill="none" stroke="#4ea5d9" stroke-width="10" stroke-linecap="round"/>`
+      + `<circle cx="${cx}" cy="${cy}" r="14" fill="#e2603f" stroke="#fff" stroke-width="3"/>` + A.txt(cx + 2, cy + 38, 'القاهرة', { fs: 16, halo: true })
+      + ask(cx, cy - 92, 46, 30) + ask(cx + 108, cy, 46, 30) + ask(cx, cy + 92, 46, 30) + ask(cx - 108, cy, 46, 30)
+      + `<g transform="translate(282 92)"><circle r="22" fill="#fff" stroke="${A.INK}" stroke-width="2"/><path d="M0 -18L5 0L0 18L-5 0Z" fill="#e2603f"/>` + A.txt(0, -27, 'شمال', { fs: 13 }) + `</g>`;
+  }
+  return '';
+}
 function render() {
   let s = `<rect width="${VW}" height="${VH}" rx="14" fill="#fffaf0"/>`;
   const m = sc.mode;
@@ -48,6 +92,7 @@ function render() {
   else if (m === 'serv') s += place(FS.serv, `<rect width="340" height="300" fill="#fbf6e6"/>` + D.servicePlan(PL()));
   else if (m === 'tn') s += place(FS.tn, `<rect width="340" height="250" fill="#fbf6e6"/>` + D.thenNow(PL(sc.pic)));
   else if (m === 'reg') s += place(FS.reg, `<rect width="340" height="440" fill="${A.PAPER}"/>` + D.regions(PL()));
+  else s += scene(m);
   return s;
 }
 const set = (mode, pic) => { sc.mode = mode; sc.pic = pic || null; g.paint(); };
@@ -90,7 +135,7 @@ async function mission1() {                 // lesson 2: old and new
   g.say(T('Tap the <b>modern</b> train. Modern transport is fast, safe and kind to the environment.', 'اضغط على القطار <b>الحديث</b>. المواصلات الحديثة سريعة وآمنة ومش بتضر البيئة.'), 'think');
   await g.spot(tnRings(true), 'new', { hint: T('Which train looks faster?', 'أي قطر شكله أسرع؟'),
     ok: T('The modern train joins speed, efficiency and safety. The metro, electric train and BRT are modern too.', 'القطار الحديث بيجمع السرعة والكفاءة والأمان. ومترو الأنفاق والقطار الكهربائي والأتوبيس الترددي كمان حديثين.') });
-  set('blank');
+  set('newcity');
   g.say(T('Why does the state build new cities in the desert?', 'ليه الدولة بتبني مدن جديدة في الصحرا؟'), 'think');
   await g.choice({ options: ['لتقليل الازدحام', 'لزيادة التلوث', 'لنشر المناطق العشوائية', 'لزيادة التكدس السكاني'], correct: 'لتقليل الازدحام', hint: T('Old cities are crowded.', 'المدن القديمة زحمة.'),
     ok: T(`To ${kw('reduce crowding')} in the old cities.`, `عشان ${kw('تقلل الزحمة')} في المدن القديمة.`) });
@@ -111,10 +156,11 @@ async function mission2() {                 // lesson 3: service places
     ok: T('Markets give trade services. Buy only what you need, and the state watches prices.', 'الأسواق بتقدم خدمات تجارية. اشتري اللي تحتاجه بس، والدولة بتراقب الأسعار.') });
 }
 async function mission3() {                 // lesson 4: the future city
-  set('blank');
+  set('solar');
   g.say(T('Mission 3: the city of the future. Which tool turns sunlight into electricity?', 'المهمة ٣: مدينة المستقبل. أي أداة بتحوّل ضوء الشمس لكهرباء؟'), 'point');
   await g.choice({ options: ['الألواح الشمسية', 'البطاريات', 'المصابيح الكهربية', 'المولدات'], correct: 'الألواح الشمسية', hint: T('The name has the word sun in it.', 'اسمها فيه كلمة شمس.'),
     ok: T(`${kw('Solar panels')} make electricity for lights, devices and electric cars.`, `${kw('الألواح الشمسية')} بتعمل كهرباء للإضاءة والأجهزة والسيارات الكهربائية.`) });
+  set('team');
   g.say(T('Cooperating to finish work fast, as one team. Which value is that?', 'نتعاون وننجز الشغل بسرعة كفريق واحد. دي أي قيمة؟'), 'think');
   await g.choice({ options: ['التعاون', 'التسامح', 'الكرم', 'الانتماء الوطني'], correct: 'التعاون', hint: T('Working together.', 'شغل مع بعض.'),
     ok: T(`${kw('Cooperation')}. We keep the values of our long history: cooperation, tolerance, respect and belonging.`, `${kw('التعاون')}. بنتمسك بقيم تاريخنا العريق: التعاون والتسامح والاحترام والانتماء.`) });
@@ -130,8 +176,8 @@ async function mission4() {                 // lesson 5: governorates
   g.say(T('Matrouh and the Red Sea are <b>border</b> governorates. Tap the big desert area.', 'مطروح والبحر الأحمر محافظات <b>حدود</b> صحراوية. اضغط على مساحة الصحرا الكبيرة.'), 'think');
   await g.spot(regRings(), 'border', { hint: T('Look for the wide desert west of the Nile.', 'دوّر على الصحرا الواسعة غرب النيل.'),
     ok: T('Border governorates cover wide desert lands: North and South Sinai, Red Sea, New Valley and Matrouh.', 'محافظات الحدود الصحراوية فيها مساحات واسعة: شمال وجنوب سيناء والبحر الأحمر والوادي الجديد ومطروح.') });
-  set('blank');
-  g.say(T('Where was the New Administrative Capital built?', 'فين اتبنت العاصمة الإدارية الجديدة؟'), 'think');
+  set('capital');
+  g.say(T('Where was the New Administrative Capital built? Look at the map: Cairo is the red dot.', 'فين اتبنت العاصمة الإدارية الجديدة؟ بص على الخريطة: القاهرة هي النقطة الحمرا.'), 'think');
   await g.choice({ options: ['شرق محافظة القاهرة', 'غرب محافظة القاهرة', 'جنوب أسوان', 'شمال الإسكندرية'], correct: 'شرق محافظة القاهرة', hint: T('Think about the direction.', 'فكّر في الاتجاه.'),
     ok: T(`${kw('East')} of Cairo. It uses modern technology and clean energy.`, `${kw('شرق')} القاهرة. بتعتمد على التكنولوجيا الحديثة والطاقة النظيفة.`) });
 }

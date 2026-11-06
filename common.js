@@ -218,8 +218,20 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return { n: i + 1, title: nm(i), xp, from: LEVELS[i][0], to: nxt ? nxt[0] : null, pct: nxt ? (xp - LEVELS[i][0]) / (nxt[0] - LEVELS[i][0]) : 1, next: nxt ? nm(i + 1) : null };
   }
   const xp = () => prof().xp || 0;
-  function addXP(n) { let b = 0, a = 0; updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; }); sync.dirty(); LB.submitWeek().catch(() => {}); return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
+  function addXP(n) { let b = 0, a = 0; updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; }); sync.dirty(); LB.submitWeek().catch(() => {}).then(() => setTimeout(rankToast, 1200)); return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
 
+
+  /* after any game that gives points: a small note with the child's place in «نجوم متفوّق», unless the page shows it itself (quiz, kit games) */
+  async function rankToast() {
+    try {
+      if (document.getElementById('rank') || document.getElementById('kitRank') || document.getElementById('si-rank')) return;
+      const m = await LB.me(); if (!m) return;
+      const t = document.createElement('a'); t.id = 'si-rank'; t.href = 'champions.html';
+      t.style.cssText = 'position:fixed;z-index:400;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:#1f3d57;color:#fff;border:3px solid #f2b134;border-radius:999px;padding:9px 18px;font:900 16px Cairo,Nunito,sans-serif;text-decoration:none;box-shadow:0 6px 18px rgba(31,61,87,.35);white-space:nowrap';
+      t.innerHTML = T(`⭐ Motafawek Stars: you are #${m.rank}`, `⭐ ترتيبك في نجوم متفوّق: #${m.rank}`);
+      document.body.appendChild(t); setTimeout(() => t.remove(), 7000);
+    } catch (e) {}
+  }
   /* ---------- gems «جواهر» and Reesho's wardrobe ----------
      One gem for every GEM_XP points of XP. XP only grows, so the balance is floor(xp / GEM_XP) - spent: nothing extra is stored
      while earning, every activity that calls addXP pays gems, and players who already have XP start with their gems.

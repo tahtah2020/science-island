@@ -287,13 +287,18 @@
         <div class="stars" aria-label="${T(`${stars} of 3 stars`, `${stars} من ٣ نجوم`)}">${'★'.repeat(stars)}<span class="off">${'★'.repeat(3 - stars)}</span></div>
         <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Best', 'أعلى نتيجة')}: ${best}</span><span>+${gain.gained} XP · ${T('Level', 'المستوى')} ${gain.after.n}</span>${gain.gems > 0 ? `<span>💎 +${gain.gems} ${T('gems', 'جوهرة')}</span>` : ''}</div>
         <p>${done.text}</p>
+        <p class="rank" id="kitRank" style="font-weight:900;margin:4px 0">⭐ ${T('Saving your points…', 'بنحفظ نقاطك…')}</p>
         <div class="acts">
           <a class="btn primary" href="quiz.html#quest">${T(`${SI.questName(SI.chapterById(cfg.ch))} ▸`, `${SI.questName(SI.chapterById(cfg.ch))} ◂`)}</a>
           <a class="btn" href="map.html">${T('Map', 'الخريطة')}</a>
+          <a class="btn" href="champions.html">⭐ ${T('Motafawek Stars', 'نجوم متفوّق')}</a>
           <button class="btn" id="again" type="button">${T('Play again', G('العب تاني', 'العبي تاني'))}</button>
         </div>
       </div>`;
       document.body.appendChild(o);
+      SI.LB.submitWeek().catch(() => {}).then(() => SI.LB.me()).then(m => {   // «نجوم متفوّق»: the child's place right on the results
+        $('#kitRank', o).innerHTML = m ? T(`⭐ Motafawek Stars: you are <b>#${m.rank}</b> with ${m.score} points`, `⭐ ترتيبك في نجوم متفوّق: <b>#${m.rank}</b> بـ ${m.score} نقطة`) : '';
+      }).catch(() => { $('#kitRank', o).textContent = ''; });
       SI.rate.guard(o, 'a[href="map.html"]', 'results');   // Reesho asks for a rating before the player leaves (once per chapter)
       $('#again', o).onclick = () => location.reload();
     }

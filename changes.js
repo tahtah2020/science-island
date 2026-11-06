@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'صور للأسئلة بلا صور، وترتيب النجوم بعد كل لعبة',
+    items: [
+      { text: 'مخطط المدينة: صور لأسئلة المدن الجديدة والألواح الشمسية والتعاون والعاصمة الإدارية' },
+      { text: 'البوصلة: صورة لسؤال الإسطرلاب' },
+      { text: 'بعد كل لعبة يظهر ترتيب الطالب في نجوم متفوّق وزر للقائمة' }
   { date: '2026-11-06', title: 'Math Grade 3: unit 10 — all first-term units ready',
     items: [
       { text: 'الوحدة ١٠ «الضرب الرأسي»: الضرب في العشرات والمئات، الضرب الرأسي بصورة الكتاب خطوة بخطوة، الضرب بطرق ذكية، ومسائل الشراء' },

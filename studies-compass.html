@@ -54,6 +54,14 @@ function render() {
   else if (m === 'sky') s += place(FS.sky, 340, 250, D.skyViews(PL));
   else if (m === 'kinds') s += place(FS.kinds, 340, 250, D.mapKinds(PL));
   else if (m === 'src') s += place(FS.src, 340, 150, D.sourceCards({ pic: { plain: true, set: sc.set } }));
+  else if (m === 'stars') {      // a scholar under the night sky looks at the stars through an old tool hidden by «؟» (owner, 6 Nov 2026: no question without a picture)
+    let st = ''; [[40, 50], [90, 30], [150, 60], [210, 28], [270, 55], [310, 90], [60, 110], [250, 120], [120, 100], [190, 95]].forEach(([x, y], i) => { st += `<circle cx="${x}" cy="${y}" r="${i % 3 ? 2.6 : 4}" fill="#fff6c9"/>`; });
+    s += `<rect width="${VW}" height="${VH}" rx="14" fill="#1d3a52"/>` + st + `<circle cx="285" cy="40" r="20" fill="#f7e9a8"/><circle cx="294" cy="34" r="18" fill="#1d3a52"/>`
+      + `<rect y="270" width="${VW}" height="70" fill="#c9a66b"/>`
+      + `<circle cx="120" cy="190" r="16" fill="#e7b98f" stroke="#1f3d57" stroke-width="2"/><path d="M104 186q16 -30 32 0q-4 -10 -16 -10t-16 10Z" fill="#3a5c75"/><path d="M100 272q0 -64 20 -64t20 64Z" fill="#7e57c2" stroke="#1f3d57" stroke-width="2"/>`
+      + `<path d="M132 222L178 180" stroke="#1f3d57" stroke-width="4" stroke-linecap="round"/><path d="M140 188L210 120" stroke="#f2b134" stroke-width="2" stroke-dasharray="6 5"/>`
+      + `<rect x="160" y="150" width="56" height="40" rx="9" fill="#fff4d6" stroke="#d99a12" stroke-width="2.6" stroke-dasharray="6 4"/><text x="188" y="179" text-anchor="middle" font-family="Cairo, sans-serif" font-size="26" font-weight="900" fill="#d99a12">؟</text>`;
+  }
   else if (m === 'sign') s += `<text x="170" y="120" text-anchor="middle" direction="ltr" font-family="Cairo, sans-serif" font-size="30" font-weight="900" fill="#1f3d57">${sc.note}</text>`;
   return s;
 }
@@ -132,7 +140,7 @@ async function mission3() {                 // lesson 3: plane or satellite
   g.say(T('Maps changed over time. Tap the <b>digital</b> map.', 'الخرائط اتغيّرت مع الزمن. اضغط على الخريطة <b>الرقمية</b>.'), 'think');
   await g.spot([{ id: 'hand', name: 'اليدوية', ring: rr(FS.kinds, 8, 8, 160, 236, 12) }, { id: 'digital', name: 'الرقمية', ring: rr(FS.kinds, 190, 4, 120, 242, 18) }], 'digital', { hint: T('Which map is on a phone screen?', 'أي خريطة على شاشة موبايل؟'),
     ok: T('The map on the phone is digital. GPS apps show accurate digital maps.', 'الخريطة على الموبايل رقمية. تطبيق GPS بيعرض خرائط رقمية دقيقة.') });
-  set('blank');
+  set('stars');
   g.say(T('Long ago, Maryam al-Astrulabi developed an old tool that finds directions from the stars. What is it?', 'من زمان، مريم الإسطرلابي طوّرت أداة قديمة بتحدد الاتجاهات من النجوم. إيه هي؟'), 'think');
   await g.choice({ options: ['الإسطرلاب', 'البوصلة الرقمية', 'القمر الصناعي', 'مقياس الرسم'], correct: 'الإسطرلاب', hint: T('It is an old astronomy tool.', 'أداة فلكية قديمة.'),
     ok: T(`The ${kw('astrolabe')}. It was used to find directions, the Qibla and prayer times.`, `${kw('الإسطرلاب')}. استُخدم في تحديد الاتجاهات والقِبْلة وأوقات الصلاة.`) });
