@@ -75,7 +75,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      quest and game (best, stars, plays), cards (review schedule), lastVar (last phrasing), dailyLast */
   /* grades: a player belongs to one grade (chosen on the home page) and sees that grade's chapters and tests only.
      A chapter or test without `grade` in chapters.js belongs to Grade 5, the first grade the site had. */
-  const GRADES = { g4: ['Grade 4', 'الصف الرابع'], g5: ['Grade 5', 'الصف الخامس'], g6: ['Grade 6', 'الصف السادس'], p1: ['Prep 1', 'الصف الأول الإعدادي'], p2: ['Prep 2', 'الصف الثاني الإعدادي'] };
+  const GRADES = { g3: ['Grade 3', 'الصف الثالث'], g4: ['Grade 4', 'الصف الرابع'], g5: ['Grade 5', 'الصف الخامس'], g6: ['Grade 6', 'الصف السادس'], p1: ['Prep 1', 'الصف الأول الإعدادي'], p2: ['Prep 2', 'الصف الثاني الإعدادي'] };
   const grade = () => ((player() || {}).grade || 'g5');
   const chGrade = c => (c && c.grade) || 'g5';
   const gradeName = g => { const n = GRADES[g || grade()] || GRADES.g5; return T(n[0], n[1]); };
@@ -92,7 +92,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const subjects = () => (window.SUBJECTS || [{ id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬' }]).filter(s => !s.hidden);
   const subjectById = id => subjects().find(s => s.id === id) || (window.SUBJECTS || []).find(s => s.id === id) || null;
   const chSubject = c => (c && c.subject) || 'science';
-  const subjectId = () => prof().subj || chSubject(chapterById(prof().cur)) || 'science';
+  const FIRST_SUBJECT = { g3: 'math' };   // a grade whose first subject on the site is not Science opens on that subject
+  const subjectId = () => prof().subj || (prof().cur ? chSubject(chapterById(prof().cur)) : FIRST_SUBJECT[grade()] || 'science');
   const subject = () => subjectById(subjectId()) || subjects()[0];
   function setSubject(id) { if (subjectById(id)) updateProf(p => { p.subj = id; p.curAt = Date.now(); }); return subject(); }
   const subjectName = s => { s = s || subject(); return s ? T(s.title, s.titleAr) : ''; };

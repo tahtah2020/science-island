@@ -215,3 +215,30 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_m5c5.svg', b);
 })();
+
+/* ---------- Grade 3 · Unit 1 · Multiplication Rules: a fair island with candy rows, a throwing target, pencil boxes and a ten-seat bus ---------- */
+(function () {
+  seed = 57;
+  vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'math/g3_art.js'), 'utf8'), ctx);
+  const D = ctx.window.CH_DIAGRAMS;
+  const strip = s => s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  const target = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-30 50L0 -10L30 50" stroke="#8a5a28" stroke-width="7" fill="none" stroke-linecap="round"/>${['#fffaf0', '#bfe8d6', '#4ea5d9', '#f2b134', '#e2603f'].map((c, i) => `<circle r="${60 - i * 12}" fill="${c}" stroke="#1f3d57" stroke-width="3"/>`).join('')}<circle cx="16" cy="-10" r="5" fill="#1f3d57"/><circle cx="-22" cy="20" r="5" fill="#1f3d57"/><circle cx="4" cy="30" r="5" fill="#1f3d57"/></g>`;
+  const jar = (x, y, k, c) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-30" y="-56" width="60" height="70" rx="16" fill="#e6f6fb" stroke="#7fb0dc" stroke-width="4"/><rect x="-22" y="-66" width="44" height="14" rx="5" fill="${c}"/>${[[-12, -30], [10, -34], [-4, -12], [14, -6], [-16, -2]].map(([a, b], i) => `<circle cx="${a}" cy="${b}" r="9" fill="${['#e2603f', '#f2b134', '#2e9e6b', '#9b6bd3', '#e58bb0'][i]}" stroke="#fff" stroke-width="2"/>`).join('')}</g>`;
+  const bus = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-80" y="-50" width="160" height="70" rx="16" fill="#f2b134" stroke="#b07d14" stroke-width="5"/>${[0, 1, 2, 3].map(i => `<rect x="${-68 + i * 36}" y="-40" width="28" height="26" rx="5" fill="#d9eef8" stroke="#b07d14" stroke-width="3"/>`).join('')}<circle cx="-46" cy="22" r="14" fill="#1f3d57"/><circle cx="46" cy="22" r="14" fill="#1f3d57"/><text x="0" y="12" text-anchor="middle" font-family="Cairo, sans-serif" font-weight="800" font-size="22" fill="#5a3a14">١٠</text></g>`;
+  const pbox = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-44" y="-20" width="88" height="40" rx="8" fill="#fff" stroke="#c98b4a" stroke-width="4"/>${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => `<rect x="${-38 + i * 8}" y="-14" width="5" height="26" fill="${['#e2603f', '#23799f', '#2e9e6b', '#f2b134'][i % 4]}"/>`).join('')}</g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#fde8d0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#e4f1d0" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#fdeedd" opacity=".6"/>`;
+  for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#e6f3d6'], [.5, '#f3ecd0'], [1, '#e8f0d0']], ['#f3e6b8', '#f6efd2'], inside);
+  s += jar(250, 470, 1.4, '#e2603f') + target(960, 430, 1.2) + bus(980, 1090, .9) + pbox(220, 900, 1.1) + pbox(880, 690, 1);
+  s += board(600, 640, 300, 200, '<g transform="translate(-150 -86) scale(.88)">' + strip(D.g3Groups({ pic: { per: 6, n: 3, add: 1 } })) + '</g>');
+  s += crate(400, 1150, 1, '×') + crate(458, 1162, .9, '١٠') + crate(512, 1154, .8, '٠');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_mg3u1.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fdf0dc"/><stop offset="1" stop-color="#f5dcc0"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#e8d3a0"/>${jar(240, 840, 2, '#e2603f')}${target(1360, 760, 1.6)}${bus(800, 900, 1.3)}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_mg3u1.svg', b);
+})();

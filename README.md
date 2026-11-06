@@ -71,7 +71,7 @@ Progress is saved per player on each device, separately for each chapter (XP and
 - Not merged automatically: a child who cleared the browser, made a NEW player, then typed the old code ends up with two players on the device (the new one keeps its own code).
 
 ## Grades
-A player belongs to one grade (`players[id].grade`: `g4`, `g5`, `g6`, `p1`, `p2`), chosen on the home page, and sees that grade's chapters and monthly test only.
+A player belongs to one grade (`players[id].grade`: `g3`, `g4`, `g5`, `g6`, `p1`, `p2`), chosen on the home page, and sees that grade's chapters and monthly test only.
 In `chapters.js` a chapter or test carries `grade`; without it, it belongs to Grade 5 (the first grade the site had). Chapter ids are unique across grades
 (`ch1`… for Grade 5, `g4c1`… for Grade 4, `g6c1`… for Grade 6, `p1u1`… for Prep 1, `p2u1`… for Prep 2), so progress and the Champions boards stay separate. Idea ids (`M5`, `L2`…) are unique inside one grade and language only.
 `SI.grade()`, `SI.gradeName()`, `SI.chapters()` (this grade), `SI.allChapters()`, `SI.exams()` (this grade). The owner's preview opens every grade.
@@ -95,6 +95,16 @@ From the school books, pages 72-79 (three lessons, Try and Exercise). Both track
 - Game `nursery.html` (Animal Nursery): Warm Up born or hatched; Mission 1 cats (inside the body, mother's milk, look like parents, reproduction); Mission 2 fish (eggs in water, hatching, why so many eggs); Mission 3 comparing (chicken lays eggs on land, dog like the cat), nature reserves, Ras Mohammed and White Desert, preserving the species; Speed Round "gives birth or lays eggs?" with the photos.
 - Map and background `science/assets/map_ch7.svg`, `bg_ch7.svg` (drawn in code by `science/tools/make_ch456_maps.js`: an SVG map cannot load photos).
 - Review notes: the fish "lives in water" (empty cell in the table, page 77) comes from page 75; Try 5 (camel, snake, cat, frog) has no printed answer except the cat: camel = birth, snake and frog = eggs is asked as the expected answer; the game's Speed Round also uses the gazelle, fox and eagle pictures (shown on page 76, not grouped in the book). Not asked: the open Warm Up questions, "do baby fish look like their parents?", the empty "similar animal" cell for the fish and the pupil's own 4th row.
+
+## Grade 3 · Math (Arabic track, 6 Nov 2026)
+Grade 3 was added (`GRADES` in `common.js`, grade button and `GRADE_TAG`/`GRADE_HINT` in `index.html`, `GR` in `admin.html`). `FIRST_SUBJECT = { g3: 'math' }` in `common.js` opens a new Grade 3 player on Math (Grade 3 has no Science book on the site).
+- `chapters.js`: the 10 units of the first-term book «الرياضيات - الصف الثالث الابتدائي» (the book calls them «الفصل»), ids `mg3u1`…`mg3u10`; units 2-10 are listed from the contents page (`ready: false`, `lessons: []`).
+- Unit 1 «قواعد الضرب» (book pages 8-19), Arabic file only: `math/questions_mg3u1_ar.js`, 25 ideas / 108 phrasings, letters A-E (one per lesson), Boss A5 B5 C5 D5 E5, `bookOrder: true`, `questMax: 15`. Owner's request: easy first, difficulty rising slowly, few hard questions (only the Boss ideas are hard), and a hint on every question.
+- New in `quiz.html`: `hint` on a phrasing → a «💡 محتاج تلميح؟» button under the answers; the hint also shows by itself after a wrong try (choices and number pad). A hint never gives the answer.
+- New in `quiz.html`: `window.CHAPTER.arDigits = true` (set by the questions file) shows the number pad and the answer box in Arabic-Indic digits (٠١٢…) like the book; the value typed stays 0-9; the decimal key is hidden because ٠ looks like a dot. Question texts write numbers in Arabic-Indic digits without LTR marks, so «٧ × ٣ = ٢١» reads from the right like the book.
+- `.qtext` keeps line breaks (`white-space: pre-line`): a question can put «\n» between its lines.
+- Drawings `math/g3_art.js` (no owner photos for this unit): `g3Groups` (rows of dots, one row added or crossed out), `g3Split` (a dot array cut in two), `g3Boxes` (boxes of pencils, balls, apples, bus seats; empty boxes), `g3Target` (throwing target with the throws), `g3Score` (the book's score table). Map/background `math/assets/map_mg3u1.svg`, `bg_mg3u1.svg` from `math/tools/make_m_maps.js`.
+- No game yet for this unit (next step: an adventure, see the Adventures rules).
 
 ## Grade 4
 Chapters 1 to 3 of the first term, in English and Arabic, from the school book 2026/2027 (both books have the same pages):

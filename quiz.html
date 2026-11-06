@@ -53,7 +53,7 @@ body{
 .progress i.ok{background:var(--ok)}
 .progress i.no{background:var(--coral)}
 .progress i.now{background:var(--primary);box-shadow:0 0 0 3px #bfe3f2}
-.qtext{font-size:23px;font-weight:800;line-height:1.35;margin:6px 0 14px}
+.qtext{font-size:23px;font-weight:800;line-height:1.35;margin:6px 0 14px;white-space:pre-line}
 .qtext .gap{display:inline-block;min-width:86px;border-bottom:4px solid var(--primary);text-align:center;color:var(--ok);padding:0 6px}
 .story{background:#fff;border-left:6px solid #9fdcc4;border-radius:14px;padding:10px 14px}
 .timer{height:14px;border-radius:99px;background:#dbe9f0;margin:0 0 12px;overflow:hidden;position:relative}
@@ -100,6 +100,8 @@ body{
 .explain.no{background:var(--bad-bg)}
 .why-btn{margin-top:10px;width:100%;font-weight:800;font-size:16px;padding:10px 14px;border-radius:14px;background:#fff6df;border:2px solid var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
 .why-btn:disabled{opacity:.7;cursor:default}
+.hint-btn{display:block;margin:12px auto 0;font-weight:800;font-size:15px;padding:8px 16px;border-radius:999px;background:#fffbea;border:2px dashed var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
+.hint-btn:disabled{opacity:.55;cursor:default}
 .why-play{display:block;margin-top:10px;font-weight:800;font-size:15px;padding:8px 14px;border-radius:12px;background:#fff;border:2px solid var(--gold,#f2b134);color:#1f3d57;cursor:pointer}
 .why-play:disabled{opacity:.7;cursor:default}
 .why-box{margin-top:10px;border-radius:16px;padding:12px 14px;background:#fff6df;border:2px solid var(--gold,#f2b134);font-size:16.5px;line-height:1.55}
@@ -391,9 +393,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261105a"></script>
-<script src="chapters.js?v=20261105a"></script>
-<script src="common.js?v=20261105a"></script>
+<script src="firebase-config.js?v=20261106a"></script>
+<script src="chapters.js?v=20261106a"></script>
+<script src="common.js?v=20261106a"></script>
 <script>
 (() => {
 'use strict';
@@ -658,7 +660,9 @@ function ask(q) {
     const timed = q.mode === 'timed';
     let finished = false, tries = 0, stopTimer = null;
     const retry = !timed && !q.oneTry;   // practice: a wrong answer means "try again" until it is right (not the timed ones, not the exam)
-    const tryAgain = () => say(T('Not quite. Try again!', G('قرّبت! جرّب تاني.', 'قرّبتي! جرّبي تاني.')), 'think');
+    /* q.hint (optional): a clue that never gives the answer. A «💡 Hint» button shows it, and it is shown by itself after a wrong try */
+    const hintHTML = () => `💡 <b>${T('Hint', 'تلميح')}:</b> ${esc(q.hint)}`;
+    const tryAgain = () => say(q.hint ? T('Not quite. ', G('قرّبت! ', 'قرّبتي! ')) + hintHTML() : T('Not quite. Try again!', G('قرّبت! جرّب تاني.', 'قرّبتي! جرّبي تاني.')), 'think');
     const finish = (correct, firstTry, timeout = false) => {
       if (finished) return; finished = true;
       const left = stopTimer ? stopTimer() : 0;
@@ -931,11 +935,13 @@ function ask(q) {
        q.answer is the number as text ('12.42'); 0.50 equals 0.5 unless q.exact is true (a question about writing zeros) */
     else if (q.type === 'num') {
       const ans = String(q.answer), maxTries = 2;
+      /* Grade 3 Arabic books write numbers in Arabic-Indic digits (٠١٢…): window.CHAPTER.arDigits shows the pad and the box in them (the value stays 0-9) */
+      const AD = AR && (window.CHAPTER || {}).arDigits, dg = t => AD ? String(t).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]).replace('.', '٫') : t;
       const same = s => (q.exact ? s === ans : s !== '' && s !== '.' && Math.abs(Number(s) - Number(ans)) < 1e-9);
       let val = '';
       const box = mk('div', 'numbox'), pad = mk('div', 'numpad'), tools = mk('div', 'tools');
       const check = mk('button', 'btn primary', T('Check ✓', 'تحقق ✓')); check.type = 'button'; check.disabled = true;
-      const paintBox = () => { box.innerHTML = (val ? esc(val) : '<span class="ph">?</span>') + (q.unit ? `<span class="u">${esc(q.unit)}</span>` : ''); check.disabled = !val || val === '.' || val.endsWith('.'); };
+      const paintBox = () => { box.innerHTML = (val ? esc(dg(val)) : '<span class="ph">؟</span>'.replace('؟', AR ? '؟' : '?')) + (q.unit ? `<span class="u">${esc(q.unit)}</span>` : ''); check.disabled = !val || val === '.' || val.endsWith('.'); };
       const keys = [];
       const key = ch => {
         if (finished) return;
@@ -945,7 +951,8 @@ function ask(q) {
         box.classList.remove('bad'); sfx.tick(); paintBox();
       };
       ['7', '8', '9', '4', '5', '6', '1', '2', '3', '.', '0', '⌫'].forEach(ch => {
-        const b = mk('button', ch === '⌫' ? 'fn' : '', ch === '.' ? '·' : ch); b.type = 'button';
+        if (ch === '.' && AD) { pad.appendChild(mk('span', 'gap')); return; }   // Arabic-Indic ٠ looks like a dot: no decimal key next to it (Grade 3 has no decimals)
+        const b = mk('button', ch === '⌫' ? 'fn' : '', ch === '.' ? '·' : dg(ch)); b.type = 'button';
         b.setAttribute('aria-label', ch === '⌫' ? T('Delete', 'امسح') : ch === '.' ? T('Decimal point', 'العلامة العشرية') : ch);
         if (ch === '.') b.className = 'fn';
         b.onclick = () => key(ch); pad.appendChild(b); keys.push(b);
@@ -956,14 +963,14 @@ function ask(q) {
         if (same(val)) { box.classList.add('lock'); lockAll(); finish(true, tries === 1); return; }
         if (tries >= maxTries) { box.classList.add('bad'); lockAll(); val = ans; paintBox(); box.classList.add('lock'); box.classList.remove('bad'); finish(false, false); return; }
         sfx.bad(); box.classList.add('bad'); val = ''; paintBox(); box.classList.add('bad');
-        say(T('Not quite. Check your number and try again!', G('قرّبت! راجع الرقم وجرّب تاني.', 'قرّبتي! راجعي الرقم وجرّبي تاني.')), 'think');
+        say(q.hint ? T('Not quite. ', G('قرّبت! ', 'قرّبتي! ')) + hintHTML() : T('Not quite. Check your number and try again!', G('قرّبت! راجع الرقم وجرّب تاني.', 'قرّبتي! راجعي الرقم وجرّبي تاني.')), 'think');
       };
       reveal = () => { lockAll(); val = ans; paintBox(); box.classList.add('lock'); };
       keyHandler = e => {
         if (finished || e.ctrlKey || e.metaKey || e.altKey) return;
         if (e.key === 'Backspace') { e.preventDefault(); key('⌫'); return; }
         if (e.key === 'Enter') { if (!(document.activeElement && document.activeElement.tagName === 'BUTTON') && !check.disabled) { e.preventDefault(); check.click(); } return; }
-        if (/^[0-9]$/.test(e.key)) { e.preventDefault(); key(e.key); } else if (e.key === '.' || e.key === ',') { e.preventDefault(); key('.'); }
+        if (/^[0-9]$/.test(e.key)) { e.preventDefault(); key(e.key); } else if (/^[٠-٩]$/.test(e.key)) { e.preventDefault(); key(String('٠١٢٣٤٥٦٧٨٩'.indexOf(e.key))); } else if (e.key === '.' || e.key === ',') { e.preventDefault(); key('.'); }
       };
       paintBox();
       area.appendChild(mk('div', 'helpline', T('Type the number with the pad', 'اكتب الرقم بلوحة الأرقام')));
@@ -1063,6 +1070,11 @@ function ask(q) {
       };
       reveal = () => { done(false); showModel(); };
       tools.append(clear, check); area.append(lineEl, pool, tools); paint();
+    }
+    if (q.hint) {
+      const hb = mk('button', 'btn hint-btn', T('💡 Need a hint?', G('💡 محتاج تلميح؟', '💡 محتاجة تلميح؟'))); hb.type = 'button';
+      hb.onclick = () => { if (finished) return; hb.disabled = true; sfx.tick(); say(hintHTML(), 'think'); };
+      area.appendChild(hb);
     }
   });
 }
@@ -1378,7 +1390,7 @@ const answerText = q => {
   if (q.type === 'match') return q.left.map((l, i) => `${l}: ${q.right[q.answer[i]]}`).join(' · ');
   if (q.type === 'table') return q.cols.map((c, ci) => `${c}: ${q.items.filter((_, i) => q.answer[i] === ci).join(', ')}`).join(' · ');
   if (q.type === 'term' || q.type === 'fix') return String(q.answer);
-  if (q.type === 'num') return String(q.answer) + (q.unit ? ' ' + q.unit : '');
+  if (q.type === 'num') return (AR && (window.CHAPTER || {}).arDigits ? String(q.answer).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]) : String(q.answer)) + (q.unit ? ' ' + q.unit : '');
   if (q.type === 'build') return q.parts.join(' ');
   return q.explain || '';
 };

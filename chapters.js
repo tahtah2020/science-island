@@ -368,6 +368,25 @@ window.CHAPTERS = [
     cover: 'math/assets/map_mg4u8.svg', quizBg: 'math/assets/bg_mg4u8.svg',
     lessonsAr: ['ترتيب إجراء العمليات الحسابية', 'ترتيب العمليات والمسائل الكلامية'] },
 
+  /* Grade 3 Math, first term 2026/2027 (Arabic track). Source: the Arabic school book «الرياضيات - الصف الثالث الابتدائي» (10 chapters, called units on the site).
+     Unit 1 is open in Arabic only (book pages 8-19); the other units are listed from the contents page. */
+  { id: 'mg3u1', subject: 'math', grade: 'g3', n: 1, title: 'Multiplication Rules', titleAr: 'قواعد الضرب', icon: '✖️', tint: '#ffe6cc', ready: true, bookOrder: true, questMax: 15,
+    art: 'math/g3_art.js',
+    map: { img: 'math/assets/map_mg3u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_mg3u1.svg', quizBg: 'math/assets/bg_mg3u1.svg',
+    lessons: ['Properties of Multiplication (Part 1)', 'Properties of Multiplication (Part 2)', 'Multiplying by 10 and by 0 (Part 1)', 'Multiplying by 10 and by 0 (Part 2)', 'Finding the Unknown Number'],
+    questionsAr: 'math/questions_mg3u1_ar.js',
+    lessonsAr: ['خواص الضرب (الجزء الأول)', 'خواص الضرب (الجزء الثاني)', 'الضرب في ١٠ وفي ٠ (الجزء الأول)', 'الضرب في ١٠ وفي ٠ (الجزء الثاني)', 'إيجاد العدد المجهول'] },
+  { id: 'mg3u2', subject: 'math', grade: 'g3', n: 2, title: 'Time and Duration', titleAr: 'الوقت والمدة الزمنية', icon: '⏰', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'mg3u3', subject: 'math', grade: 'g3', n: 3, title: 'Division', titleAr: 'القسمة', icon: '➗', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'mg3u4', subject: 'math', grade: 'g3', n: 4, title: 'Addition and Subtraction', titleAr: 'الجمع والطرح', icon: '➕', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'mg3u5', subject: 'math', grade: 'g3', n: 5, title: 'Length', titleAr: 'الطول', icon: '📏', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'mg3u6', subject: 'math', grade: 'g3', n: 6, title: 'Organizing Data', titleAr: 'تنظيم البيانات', icon: '📊', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'mg3u7', subject: 'math', grade: 'g3', n: 7, title: 'Mental Math', titleAr: 'الحساب الذهني', icon: '🧠', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'mg3u8', subject: 'math', grade: 'g3', n: 8, title: 'Division with Remainders', titleAr: 'القسمة مع الباقي', icon: '🍬', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'mg3u9', subject: 'math', grade: 'g3', n: 9, title: 'Numbers Greater than 10,000', titleAr: 'أعداد أكبر من ١٠٠٠٠', icon: '🔢', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'mg3u10', subject: 'math', grade: 'g3', n: 10, title: 'Column Multiplication (Part 1)', titleAr: 'الضرب الرأسي (الجزء الأول)', icon: '🧮', tint: '#ffe6cc', ready: false, lessons: [], lessonsAr: [] },
+
   /* Grade 6 Math, first term 2026/2027. Source: the English school book (Primary 6, Math Term 1), Units 1 and 2 (the official October scope). Only the English file exists so far;
      the Arabic titles and lesson names below are ours until the Arabic book is added. */
   { id: 'mg6u1', subject: 'math', grade: 'g6', n: 1, title: 'Divisibility, Factors, and Multiples', titleAr: 'قابلية القسمة والعوامل والمضاعفات', icon: '🧮', tint: '#ffe6cc', ready: true,

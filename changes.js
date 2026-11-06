@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'رياضيات الصف الثالث (عربي): الوحدة الأولى «قواعد الضرب»',
+    items: [
+      { text: 'إضافة الصف الثالث للموقع، وعناوين الوحدات العشر لكتاب الرياضيات' },
+      { text: 'الوحدة الأولى: 25 فكرة و108 صياغات من السهل إلى الصعب، مع تلميح لكل سؤال' },
+      { text: 'زر «محتاج تلميح؟» في الأسئلة، ولوحة أرقام بالأرقام العربية للصف الثالث', links: [{ label: 'افتح الوحدة', href: 'map.html', ch: 'mg3u1' }] }
+    ] },
   { date: '2026-11-05', title: 'دراسات الصف الرابع: الوحدة الثالثة «مصر وطننا»',
     items: [
       { text: 'أسئلة الدروس الخمسة بترتيب الكتاب (197 صيغة)' },
