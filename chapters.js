@@ -654,7 +654,7 @@ window.ADVENTURES = [
     lessons: '1', concept: 'Properties of addition: identity, commutative and associative; they do not work for subtraction', conceptAr: 'خواص الجمع: العنصر المحايد والإبدال والدمج، وإنها ما بتنفعش في الطرح',
     title: 'The Ants’ Bridge', titleAr: 'جسر النمل المتوازن', hint: 'Pair the planks into whole tens before the crocodile bites', hintAr: 'جمّع الألواح عشرات كاملة قبل ما التمساح يعض' },
   { id: 'bakery', href: 'math-reesho-bakery.html', ch: 'mg3u3', subject: 'math', grade: 'g3', img: 'math/assets/bakery/reesho_knead.webp', of: 6, stat: 'Days won', statAr: 'الأيام اللي كسبتها',
-    lessons: '1-4', concept: 'Division: sharing equally and groups (Unit 3), division with a remainder and checking with multiplication (Unit 8), boxes × goods in each box', conceptAr: 'القسمة: التوزيع بالتساوي وعدد المجموعات (الوحدة ٣)، والقسمة مع الباقي والتحقق بالضرب (الوحدة ٨)، وعدد العلب × ما في كل علبة',
+    lessons: '1-2', concept: 'Division: sharing equally and groups (Unit 3), division with a remainder and checking with multiplication (Unit 8), boxes × goods in each box', conceptAr: 'القسمة: التوزيع بالتساوي وعدد المجموعات (الوحدة ٣)، والقسمة مع الباقي والتحقق بالضرب (الوحدة ٨)، وعدد العلب × ما في كل علبة',
     title: 'Reesho’s Bakery', titleAr: 'مخبز ريشو', hint: 'Pack every order right before the oven burns the batch', hintAr: 'عبّي كل طلب صح قبل ما الفرن يحرق الصينية' },
   { id: 'cage', href: 'math-cage.html', ch: 'm5c1', subject: 'math', grade: 'g5', img: 'math/assets/reesho_sad.webp', of: 6,
     lessons: '1-4', concept: 'Place value of decimals: the digit, its value, expanded form, ×10 and ÷10', conceptAr: 'القيمة المكانية للكسور العشرية: الرقم وقيمته، والصيغة الممتدة، والضرب والقسمة على 10',
