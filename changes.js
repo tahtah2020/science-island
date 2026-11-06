@@ -3,6 +3,13 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'Math Grade 3: units 7, 8 and 9',
+    items: [
+      { text: 'الوحدة ٧ «الحساب الذهني»: الجمع والطرح ذهنيًا بخطوتي الكتاب، مع صورة القفزات على خط الأعداد' },
+      { text: 'الوحدة ٨ «القسمة مع الباقي»: كل مسألة مصوّرة (الأشياء وعددها والأشخاص أو الأكياس أو الصناديق)، والأطباق مع الباقي مثل الكتاب' },
+      { text: 'الوحدة ٩ «أعداد أكبر من ١٠٠٠٠»: جدول القيمة المكانية، بطاقات المجموعات، خط الأعداد، المقارنة، الضرب في ١٠ و١٠٠' },
+      { text: 'صور جديدة من المالك: ٢٤ أيقونة (أشياء وأطفال) وصورتا السوق والملعب' }
+    ] },
   { date: '2026-11-06', title: 'نجوم متفوّق داخل الموقع',
     items: [
       { text: 'القائمة في صفحة الوحدات للطالب الذي له نقاط، وليست في الصفحة الرئيسية' }

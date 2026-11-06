@@ -366,3 +366,29 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_mg3u6.svg', b);
 })();
+
+/* ---------- Grade 3 · Units 7-9: mental maths (jumps), division with remainders (plates), big numbers (number line) ---------- */
+[['mg3u7', 83, 'g3Jumps', { a: 33, jumps: [40, 6], sign: '+', know: 1 }, ['#e6f3d6', '#fdf0d8', '#e8f0d0'], '#fdeedd', ['+', '−', '١٠']],
+ ['mg3u8', 89, 'g3Rem', { total: 17, per: 3, icon: 'candy' }, ['#f3e6f6', '#fdeedd', '#e8f0d0'], '#f6e3ef', ['÷', '٣', 'ب']],
+ ['mg3u9', 97, 'g3NumLine', { from: 80000, to: 120000, major: 10000, marks: [[84000, 'أ']] }, ['#e3eef8', '#eef3e0', '#e8f0d0'], '#e3eef8', ['١٠٠٠', '٠٠٠', '>']]
+].forEach(([id, sd, fig, pic, pal, blob, crates]) => {
+  seed = sd;
+  const D = ctx.window.CH_DIAGRAMS;
+  const strip = s => s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  const coin = (x, y, k, t) => `<g transform="translate(${x} ${y}) scale(${k})"><circle r="40" fill="#f2c230" stroke="#b08a14" stroke-width="6"/><circle r="30" fill="none" stroke="#b08a14" stroke-width="3"/><text y="12" text-anchor="middle" font-family="Cairo, sans-serif" font-weight="800" font-size="34" fill="#7a5a10">${t}</text></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="${blob}" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#e4f1d0" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#fdeedd" opacity=".6"/>`;
+  for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, pal[0]], [.5, pal[1]], [1, pal[2]]], ['#f3e6b8', '#f6efd2'], inside);
+  s += coin(250, 500, 1.2, crates[0]) + coin(960, 470, 1.1, crates[1]) + coin(230, 900, 1, crates[2]);
+  s += board(600, 640, 300, 210, '<g transform="translate(-150 -92) scale(.86)">' + strip(D[fig]({ pic })) + '</g>');
+  s += crate(400, 1150, 1, crates[0]) + crate(458, 1162, .9, crates[1]) + crate(512, 1154, .8, crates[2]);
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save(`map_${id}.svg`, s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="${pal[1]}"/><stop offset="1" stop-color="#e7efd2"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#cfe3b0"/>${coin(260, 880, 1.6, crates[0])}${coin(1330, 880, 1.4, crates[1])}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save(`bg_${id}.svg`, b);
+});

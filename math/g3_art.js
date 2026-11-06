@@ -437,7 +437,10 @@
 
 
   /* ---------- Word problems as pictures ---------- */
-  const OWNER = new Set(['apple', 'strawberry', 'banana', 'orange', 'car', 'bus', 'motorbike', 'truck', 'taxi', 'police', 'dog', 'cat', 'cat2', 'rabbit', 'dolphin', 'horse', 'cake', 'cake2', 'pie', 'biscuit', 'picturebook', 'picturebook2', 'refbook', 'sciencebook', 'clipboard', 'math', 'english', 'pe', 'music', 'drawing', 'other']);
+  const OWNER = new Set(['apple', 'strawberry', 'banana', 'orange', 'car', 'bus', 'motorbike', 'truck', 'taxi', 'police', 'dog', 'cat', 'cat2', 'rabbit', 'dolphin', 'horse', 'cake', 'cake2', 'pie', 'biscuit', 'picturebook', 'picturebook2', 'refbook', 'sciencebook', 'clipboard', 'math', 'english', 'pe', 'music', 'drawing', 'other',
+    /* second Gemini set (6 Nov 2026, units 7-9) */
+    'cookie', 'candy2', 'paper2', 'seed', 'plate', 'boxopen', 'box', 'bench', 'wheel', 'can', 'wagon', 'ribbon', 'pencil2', 'marble', 'books', 'backpack', 'boy', 'girl', 'boy2', 'girl2', 'teacher', 'father', 'grandma', 'kids']);
+  const CHILD = ['boy', 'girl', 'boy2', 'girl2'];   /* 'child' in a story = the owner's four children in turn */
   const PAPER_C = ['#f6b5cf', '#bfe3f5', '#c7ecd2', '#fde7a8', '#e3d4f6'];
   const DRAWN = {   /* each drawn in a box of side 1 around (0,0); scaled by the caller */
     rose: i => `<path d="M0 .45V-.05" stroke="#2e9e6b" stroke-width=".07"/><path d="M0 .2q.18-.12 .26 0q-.14 .1-.26 0" fill="#2e9e6b"/><circle cy="-.2" r=".24" fill="#e2603f"/><circle cx="-.1" cy="-.26" r=".13" fill="#f08080"/><circle cx=".1" cy="-.15" r=".11" fill="#c94f54"/>`,
@@ -457,6 +460,7 @@
     adult: i => `<g transform="scale(1.35)"><circle cy="-.22" r=".13" fill="${['#f2c9a0', '#c98b5a', '#e8b48a'][i % 3]}"/><path d="M-.11 -.3q.11 -.12 .22 0q-.11 -.04 -.22 0Z" fill="#3a2a1a"/><path d="M-.22 .34V.04Q-.22 -.07 0 -.07T.22 .04V.34Z" fill="${['#23799f', '#9b6bd3', '#2e9e6b'][i % 3]}"/></g>`
   };
   function drawThing(key, x, y, sz, i) {
+    if (key === 'child') return img(CHILD[i % 4], x, y, sz);
     if (key === 'kid') return `<g transform="translate(${f1(x)} ${f1(y)}) scale(${f1(sz / 34)})">${kid(0, 0, i)}</g>`;
     if (OWNER.has(key)) return img(key, x, y, sz);
     return DRAWN[key] ? `<g transform="translate(${f1(x)} ${f1(y)}) scale(${f1(sz)})">${DRAWN[key](i)}</g>` : '';
@@ -480,6 +484,105 @@
     return svg(H, T('A picture of the problem', 'صورة المسألة'), s);
   }
 
-  window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map, g3Tally, g3Scale, g3Bars, g3Table, g3Photo, g3Story });
+
+  /* ---------- Unit 7 · mental maths: the book's two steps as jumps on an open number line ---------- */
+  /* pic: { a, jumps: [40, 6], sign: '+'|'-', know: how many points are written (1 = only the start) } */
+  function g3Jumps(q) {
+    const p = (q && q.pic) || { a: 33, jumps: [40, 6], sign: '+', know: 1 }, sg = p.sign === '-' ? -1 : 1, pts = [p.a];
+    p.jumps.forEach(j => pts.push(pts[pts.length - 1] + sg * j));
+    /* widths: every jump at least 70 px, the rest shared by size */
+    const tot = p.jumps.reduce((a, b) => a + b, 0), free = 280 - 70 * p.jumps.length, ws = p.jumps.map(j => 70 + free * j / tot);
+    const xs = [sg > 0 ? 30 : 310]; ws.forEach(w => xs.push(xs[xs.length - 1] + sg * w));
+    const y = 100, CJ = ['#e2603f', '#23799f'];
+    let s = `<path d="M14 ${y}H326" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>`;
+    p.jumps.forEach((j, k) => {
+      const x1 = xs[k], x2 = xs[k + 1], mx = (x1 + x2) / 2, h = 34 + Math.min(26, Math.abs(x2 - x1) / 6);
+      s += `<path d="M${f1(x1)} ${y - 4}Q${f1(mx)} ${f1(y - 2 * h)} ${f1(x2)} ${y - 4}" fill="none" stroke="${CJ[k % 2]}" stroke-width="3"/>`
+        + (() => { const dx = x2 - mx, dy = 2 * h, l = Math.hypot(dx, dy), ux = dx / l, uy = dy / l, tx = x2, ty = y - 4;
+          return `<path d="M${f1(tx - ux * 12 - uy * 7)} ${f1(ty - uy * 12 + ux * 7)}L${f1(tx)} ${f1(ty)}L${f1(tx - ux * 12 + uy * 7)} ${f1(ty - uy * 12 - ux * 7)}Z" fill="${CJ[k % 2]}"/>`; })();
+      const lx = mx, ly = y - h - 8;
+      s += `<rect x="${f1(lx - 28)}" y="${f1(ly - 16)}" width="56" height="26" rx="13" fill="#fff" stroke="${CJ[k % 2]}" stroke-width="2"/>` + `<text x="${f1(lx)}" y="${f1(ly + 3)}" text-anchor="middle" direction="ltr" font-family="Cairo, Nunito, sans-serif" font-weight="800" font-size="16" fill="${CJ[k % 2]}">⁦${sg > 0 ? '+' : '−'} ${dg(j)}⁩</text>`;
+    });
+    pts.forEach((v, k) => {
+      const known = k < (p.know || 1), x = xs[k];
+      s += `<path d="M${f1(x)} ${y - 8}V${y + 8}" stroke="${INK}" stroke-width="3"/>`;
+      s += known ? txt(x, y + 32, dg(v), { fs: 19 }) : `<rect x="${f1(x - 22)}" y="${y + 13}" width="44" height="28" rx="7" fill="#fff4d6" stroke="#d99a12" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(x, y + 34, '؟', { fs: 18, fill: '#d99a12' });
+    });
+    return svg(150, T('Jumps on a number line', 'قفزات على خط الأعداد'), s);
+  }
+
+
+  /* ---------- Unit 8 · division with a remainder ---------- */
+  /* pic: { total, per, icon, box: 'plate'|'box', need: true = an extra dashed container for the leftovers (lesson 4) } */
+  function g3Rem(q) {
+    const p = (q && q.pic) || { total: 17, per: 3, icon: 'cookie' }, g = Math.floor(p.total / p.per), r = p.total % p.per;
+    const lw = r && !p.need ? 64 : 0, slots = g + (r && p.need ? 1 : 0), cw = Math.min(76, (318 - lw - (lw ? 10 : 0)) / slots), cols = p.per > 4 ? 3 : 2, rows = Math.ceil(p.per / cols);
+    const ch = Math.max(56, rows * Math.min(26, (cw - 10) / cols) + 14), x0 = (W - slots * cw - lw - (lw ? 10 : 0)) / 2, y0 = 18, H = y0 + ch + 40;
+    const box = (x, w, dashed) => p.box === 'box'
+      ? `<rect x="${f1(x + 3)}" y="${y0}" width="${f1(w - 6)}" height="${f1(ch)}" rx="5" fill="${dashed ? '#fff' : '#f3dcb8'}" stroke="${dashed ? '#d99a12' : '#a8763f'}" stroke-width="2.4"${dashed ? ' stroke-dasharray="6 4"' : ''}/>`
+      : `<rect x="${f1(x + 3)}" y="${y0}" width="${f1(w - 6)}" height="${f1(ch)}" rx="${f1(Math.min(24, ch / 2))}" fill="#fff" stroke="${dashed ? '#d99a12' : '#e58bb0'}" stroke-width="2.6"${dashed ? ' stroke-dasharray="6 4"' : ''}/>`;
+    const fill = (x, w, n) => { let t = ''; const c = n > 4 ? 3 : Math.min(cols, n || 1), rr = Math.ceil(n / c), iw = (w - 14) / c, ih = (ch - 10) / Math.max(rows, rr), sz = Math.min(iw, ih) * .92;
+      for (let j = 0; j < n; j++) t += drawThing(p.icon, x + 7 + (j % c + .5) * iw, y0 + 5 + (Math.floor(j / c) + .5) * ih, sz, j); return t; };
+    let s = '';
+    for (let k = 0; k < g; k++) { const x = x0 + k * cw; s += box(x, cw, false) + fill(x, cw, p.per); }
+    if (r) {
+      if (p.need) { const x = x0 + g * cw; s += box(x, cw, true) + fill(x, cw, r); }
+      else { const x = x0 + g * cw + 10; s += `<rect x="${f1(x)}" y="${y0}" width="${lw}" height="${f1(ch)}" rx="14" fill="#fff4d6" stroke="#d99a12" stroke-width="2.4" stroke-dasharray="6 4"/>` + fill(x, lw, r) + txt(x + lw / 2, y0 + ch + 26, T('left', 'الباقي'), { fs: 14, fill: '#b07d14' }); }
+    }
+    return svg(H, T(`${p.total} things in groups of ${p.per}`, `${dg(p.total)} في مجموعات من ${dg(p.per)}`), s);
+  }
+
+
+  /* ---------- Unit 9 · numbers greater than 10 000 ---------- */
+  const big = v => dg(String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ' '));   /* 865 000: narrow no-break space keeps the number in one piece in Arabic text */
+  /* the book's place-value table: ones on the right, «الألوف» under the left three; pic: { n, fill: digits shown, ask: place 0-5 with «؟» } */
+  function g3Place(q) {
+    const p = (q && q.pic) || { n: 865000, fill: true }, cw = 52, x0 = (W - 6 * cw) / 2 - 3, y0 = 14, hh = 34, dh = 44;
+    const NAMES = ['الآحاد', 'العشرات', 'المئات', 'الألوف', 'عشرات الألوف', 'مئات الألوف'], ds = String(p.n || '').split('').reverse();
+    const X = k => x0 + (5 - k) * cw + (k >= 3 ? 0 : 6);
+    let s = '';
+    for (let k = 0; k < 6; k++) {
+      const x = X(k), a = p.ask === k;
+      s += `<rect x="${f1(x)}" y="${y0}" width="${cw}" height="${hh}" fill="${a ? '#ffe7a3' : k >= 3 ? '#e3f2fb' : '#fde8d6'}" stroke="${INK}" stroke-width="1.4"/>`;
+      const nm = NAMES[k].split(' ');
+      s += nm.length > 1 ? txt(x + cw / 2, y0 + 14, nm[0], { fs: 10, w: 700 }) + txt(x + cw / 2, y0 + 28, nm[1], { fs: 10, w: 700 }) : txt(x + cw / 2, y0 + 22, nm[0], { fs: 11, w: 700 });
+      s += `<rect x="${f1(x)}" y="${y0 + hh}" width="${cw}" height="${dh}" fill="${a ? '#fff4d6' : '#fff'}" stroke="${a ? '#d99a12' : INK}" stroke-width="${a ? 2.4 : 1.4}"/>`;
+      if (a) s += txt(x + cw / 2, y0 + hh + 30, '؟', { fs: 22, fill: '#d99a12' });
+      else if (p.fill && ds[k] != null) s += txt(x + cw / 2, y0 + hh + 31, dg(ds[k]), { fs: 24, fill: k >= 3 ? '#23799f' : '#e2603f' });
+    }
+    s += `<rect x="${f1(X(5))}" y="${y0 + hh + dh}" width="${3 * cw}" height="24" fill="#e3f2fb" stroke="${INK}" stroke-width="1.4"/>` + txt(X(4) + cw / 2, y0 + hh + dh + 17, 'الألوف', { fs: 12 });
+    return svg(y0 + hh + dh + 34, T('A place-value table', 'جدول القيمة المكانية'), s);
+  }
+  /* cards of 100 000 / 10 000 / 1000 …: pic: { parts: [[value, count], …] } — the biggest card first on the left, like the digits */
+  function g3Bundles(q) {
+    const p = (q && q.pic) || { parts: [[100000, 4], [10000, 7], [1000, 2]] }, np = p.parts.length, sw = 300 / np, x0 = 20;
+    const CC = { 100000: ['#9b6bd3', '#efe6fb'], 10000: ['#23799f', '#e3f2fb'], 1000: ['#2e9e6b', '#e6f4e6'], 100: ['#e2603f', '#fde8d6'], 10: ['#d99a12', '#fff4d6'], 1: ['#5c6f82', '#eef1f4'] };
+    let s = '';
+    p.parts.forEach(([v, c], k) => {
+      const cx = x0 + sw * (k + .5), [st, bg] = CC[v] || CC[1], w = Math.min(84, sw - 14), h = 34;
+      for (let i = 0; i < c; i++) { const x = cx - w / 2 - 12 + i * (24 / Math.max(1, c - 1)), y = 22 + i * (60 / Math.max(1, c - 1));
+        s += `<rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${h}" rx="6" fill="${bg}" stroke="${st}" stroke-width="2.2"/>` + txt(x + w / 2, y + 23, big(v), { fs: v >= 100000 ? 13 : 14, fill: st }); }
+      s += `<rect x="${f1(cx - 30)}" y="132" width="60" height="28" rx="14" fill="${st}"/>` + txt(cx, 152, `× ${dg(c)}`, { fs: 17, fill: '#fff' });
+    });
+    return svg(172, T('Number cards', 'بطاقات أعداد'), s);
+  }
+  /* number line, smaller numbers on the left; pic: { from, to, major, minor: ticks between labels (10), marks: [[v, 'أ'], …], hide: [values without a label] } */
+  function g3NumLine(q) {
+    const p = (q && q.pic) || { from: 80000, to: 120000, major: 10000, marks: [[84000, 'أ'], [115000, 'ب']] }, minor = p.minor || 10, x0 = 26, L = 288, X = v => x0 + (v - p.from) / (p.to - p.from) * L, y = 84, step = p.major / minor;
+    let s = `<path d="M${x0 - 10} ${y}H${x0 + L + 10}" stroke="${INK}" stroke-width="2.6"/>`;
+    for (let v = p.from, i = 0; v <= p.to + 1e-6; v += step, i++) {
+      const M = i % minor === 0, half = minor % 2 === 0 && i % minor === minor / 2;
+      s += `<path d="M${f1(X(v))} ${y}V${y + (M ? 16 : half ? 11 : 7)}" stroke="${INK}" stroke-width="${M ? 2.4 : 1.4}"/>`;
+      if (M && !(p.hide || []).includes(v)) s += txt(X(v), y - 14, big(v), { fs: 12.5 });
+    }
+    (p.marks || []).forEach(([v, lab]) => {
+      const x = X(v);
+      s += `<path d="M${f1(x)} ${y + 50}V${y + 20}" stroke="#e2603f" stroke-width="2.6"/><path d="M${f1(x - 6)} ${y + 28}L${f1(x)} ${y + 18}L${f1(x + 6)} ${y + 28}" fill="#e2603f"/>`
+        + `<circle cx="${f1(x)}" cy="${y + 64}" r="13" fill="#fff" stroke="#e2603f" stroke-width="2.2"/>` + txt(x, y + 70, lab, { fs: 15, fill: '#e2603f' });
+    });
+    return svg(170, T('A number line', 'خط الأعداد'), s);
+  }
+
+  window.G3ART = { dg, big };
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map, g3Tally, g3Scale, g3Bars, g3Table, g3Photo, g3Story, g3Jumps, g3Rem, g3Place, g3Bundles, g3NumLine });
 })();
