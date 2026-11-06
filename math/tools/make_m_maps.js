@@ -242,3 +242,28 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_mg3u1.svg', b);
 })();
+
+/* ---------- Grade 3 · Unit 2 · Time and Duration: a station island with a clock tower, a train, a bus and stopwatches ---------- */
+(function () {
+  seed = 61;
+  const D = ctx.window.CH_DIAGRAMS;
+  const strip = s => s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  const tower = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-34" y="-150" width="68" height="150" fill="#e0b070" stroke="#8a5a28" stroke-width="5"/><path d="M-44 -150L0 -200L44 -150Z" fill="#c94f54" stroke="#8a3a2a" stroke-width="5" stroke-linejoin="round"/><circle cy="-112" r="26" fill="#fff" stroke="#1f3d57" stroke-width="4"/><path d="M0 -112V-130M0 -112L12 -106" stroke="#1f3d57" stroke-width="4" stroke-linecap="round"/><rect x="-14" y="-40" width="28" height="40" rx="12" fill="#8a5a28"/></g>`;
+  const train = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})">${[0, 1, 2].map(i => `<rect x="${-120 + i * 82}" y="-46" width="76" height="52" rx="10" fill="${['#4ea5d9', '#79c69a', '#f2b134'][i]}" stroke="#1f3d57" stroke-width="4"/><rect x="${-110 + i * 82}" y="-36" width="24" height="18" rx="3" fill="#e6f6fb"/><rect x="${-80 + i * 82}" y="-36" width="24" height="18" rx="3" fill="#e6f6fb"/><circle cx="${-102 + i * 82}" cy="10" r="10" fill="#1f3d57"/><circle cx="${-64 + i * 82}" cy="10" r="10" fill="#1f3d57"/>`).join('')}<path d="M-140 22H130" stroke="#8a5a28" stroke-width="5"/></g>`;
+  const watch = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-8" y="-52" width="16" height="12" rx="3" fill="#9aa9b5" stroke="#1f3d57" stroke-width="3"/><circle r="40" fill="#fff" stroke="#8d99a6" stroke-width="8"/><path d="M0 0L22 -20" stroke="#f08a4b" stroke-width="5" stroke-linecap="round"/><circle r="4" fill="#f08a4b"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#e4f1d0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#dcecf6" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#fdeedd" opacity=".6"/>`;
+  for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#e6f3d6'], [.5, '#e9efd8'], [1, '#e8f0d0']], ['#f3e6b8', '#f6efd2'], inside);
+  s += tower(250, 560, 1.2) + train(940, 470, .9) + watch(220, 900, 1.1) + watch(900, 700, .9);
+  s += board(600, 640, 260, 220, '<g transform="translate(-118 -92) scale(.7)">' + strip(D.g3Clock({ pic: { h: 3, m: 10, move: 20 } })) + '</g>');
+  s += crate(400, 1150, 1, '٦٠') + crate(458, 1162, .9, 'د') + crate(512, 1154, .8, 'ث');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_mg3u2.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#eef4f8"/><stop offset="1" stop-color="#dfe9d4"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#e8d3a0"/>${tower(220, 840, 2)}${train(1200, 860, 1.6)}${watch(700, 900, 1.3)}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_mg3u2.svg', b);
+})();

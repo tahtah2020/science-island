@@ -5,6 +5,10 @@
      g3Boxes   (fig)  containers holding the same number of things: q.pic = { n: 4, per: 10, kind: 'pencil' | 'candy' | 'apple' | 'seat' | 'ball', empty: 2 }   empty = extra empty boxes
      g3Target  (fig)  a throwing target with rings of points and the throws on it: q.pic = { zones: [3, 2, 1, 0], hits: [0, 1, 3, 6] }
      g3Score   (fig)  the book's score table: q.pic = { pts: [3, 2, 1, 0], hits: [0, 1, 3, 6], tot: ['', '', '', ''], sum: '' }  (rows: النقاط، عدد الرميات، إجمالي عدد النقاط)
+   Unit 2 (time):
+     g3Clock     (fig)  a clock with the hands at h:m, and optionally the move as an arc: q.pic = { h: 3, m: 10, move: 20 }  (move > 0 forward, < 0 back; the end time is never drawn)
+     g3TimeLine  (fig)  the book's time number line, 5 minutes a tick, hours named: q.pic = { from: '8:30', to: '9:30', marks: ['8:45', '?'], jumps: [['8:45', '9:00', '15 د']] }
+     g3Stopwatch (fig)  a stopwatch: q.pic = { kind: 'analog' | 'digital', s: 15 }
    Screen-reader names describe the drawing, never the answer. */
 (function () {
   'use strict';
@@ -119,6 +123,65 @@
     return svg(H, T('A score table: points, throws and total points', 'جدول النقاط: النقاط وعدد الرميات وإجمالي عدد النقاط'), s);
   }
 
+
+  /* ---------- Unit 2 · time ---------- */
+  const mins = t => { const [h, m] = String(t).split(':').map(Number); return h * 60 + m; };
+  const clockTxt = t => { const h = Math.floor(t / 60), m = t % 60; return dg(`${(h + 11) % 12 + 1}:${String(m).padStart(2, '0')}`); };
+  function face(cx, cy, R, o = {}) {
+    let s = `<circle cx="${cx}" cy="${cy}" r="${R + 6}" fill="${o.rim || '#c94f54'}"/><circle cx="${cx}" cy="${cy}" r="${R}" fill="#fff" stroke="${INK}" stroke-width="2"/>`;
+    for (let i = 0; i < 60; i++) { const a = i * Math.PI / 30, l = i % 5 ? 4 : 8; s += `<path d="M${f1(cx + Math.sin(a) * R)} ${f1(cy - Math.cos(a) * R)}L${f1(cx + Math.sin(a) * (R - l))} ${f1(cy - Math.cos(a) * (R - l))}" stroke="${INK}" stroke-width="${i % 5 ? 1 : 2}"/>`; }
+    for (let i = 1; i <= 12; i++) { const a = i * Math.PI / 6, v = o.sec ? i * 5 : i; s += txt(cx + Math.sin(a) * (R - (o.sec ? 18 : 17)), cy - Math.cos(a) * (R - (o.sec ? 18 : 17)) + 5, dg(v), { fs: o.sec ? 12 : 14 }); }
+    return s;
+  }
+  function g3Clock(q) {
+    const p = (q && q.pic) || { h: 3, m: 10 }, cx = 170, cy = 104, R = 84, mv = p.move || 0;
+    let s = face(cx, cy, R);
+    if (mv) {   /* the move: an arc along the rim from the minute hand, with its length written */
+      const a0 = p.m * Math.PI / 30, a1 = (p.m + mv) * Math.PI / 30, r = R + 16, big = Math.abs(mv) > 30 ? 1 : 0, sw = mv > 0 ? 1 : 0;
+      const P = a => `${f1(cx + Math.sin(a) * r)} ${f1(cy - Math.cos(a) * r)}`;
+      s += `<path d="M${P(a0)}A${r} ${r} 0 ${big} ${sw} ${P(a1)}" fill="none" stroke="#d6337f" stroke-width="4" stroke-linecap="round"/>`;
+      const tip = [cx + Math.sin(a1) * r, cy - Math.cos(a1) * r], dir = mv > 0 ? 1 : -1, dx = Math.cos(a1) * dir, dy = Math.sin(a1) * dir;
+      const bk = [tip[0] - dx * 11, tip[1] - dy * 11];
+      s += `<path d="M${f1(bk[0] - dy * 7)} ${f1(bk[1] + dx * 7)}L${f1(tip[0])} ${f1(tip[1])}L${f1(bk[0] + dy * 7)} ${f1(bk[1] - dx * 7)}" fill="none" stroke="#d6337f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+      s += txt(40, 30, T(`${Math.abs(mv)} min`, `${dg(Math.abs(mv))} دقيقة`), { fs: 15, fill: '#d6337f' }) + txt(40, 50, mv > 0 ? T('later', 'بعد') : T('earlier', 'قبل'), { fs: 13, fill: '#d6337f' });
+    }
+    const ha = ((p.h % 12) + p.m / 60) * Math.PI / 6, ma = p.m * Math.PI / 30;
+    s += `<path d="M${cx} ${cy}L${f1(cx + Math.sin(ha) * R * .5)} ${f1(cy - Math.cos(ha) * R * .5)}" stroke="#e2603f" stroke-width="7" stroke-linecap="round"/>`;
+    s += `<path d="M${cx} ${cy}L${f1(cx + Math.sin(ma) * R * .78)} ${f1(cy - Math.cos(ma) * R * .78)}" stroke="#23799f" stroke-width="5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="6" fill="${INK}"/>`;
+    return svg(212, T('A clock', 'ساعة حائط'), s);
+  }
+  function g3TimeLine(q) {
+    const p = (q && q.pic) || { from: '8:30', to: '9:30', marks: ['8:45'] }, a = mins(p.from), b = mins(p.to), X = t => 34 + (t - a) / (b - a) * 272, ly = 112;
+    let s = `<path d="M14 ${ly}H326" stroke="${INK}" stroke-width="2.4"/>`;
+    for (let t = a; t <= b; t += 5) { const hr = t % 60 === 0; s += `<path d="M${f1(X(t))} ${ly - (hr ? 14 : 8)}V${ly + (hr ? 14 : 8)}" stroke="${INK}" stroke-width="${hr ? 3 : 1.6}"/>`; if (hr) s += `<rect x="${f1(X(t) - 26)}" y="${ly + 18}" width="52" height="24" rx="5" fill="#fde3cf"/>` + txt(X(t), ly + 36, clockTxt(t), { fs: 14 }); }
+    (p.marks || []).forEach((m, i) => {
+      const unknown = m.startsWith('?'), t = unknown ? mins(m.slice(1)) : mins(m), y = 22 + (i % 2) * 0;
+      s += `<rect x="${f1(X(t) - 30)}" y="${y}" width="60" height="28" rx="5" fill="#fff" stroke="${unknown ? '#e2603f' : INK}" stroke-width="2"${unknown ? ' stroke-dasharray="5 3"' : ''}/>` + txt(X(t), y + 20, unknown ? '؟' : clockTxt(t), { fs: 15, fill: unknown ? '#e2603f' : INK });
+      s += `<path d="M${f1(X(t))} ${y + 28}V${ly - 4}" stroke="${unknown ? '#e2603f' : INK}" stroke-width="2"/><path d="M${f1(X(t) - 5)} ${ly - 11}L${f1(X(t))} ${ly - 3}L${f1(X(t) + 5)} ${ly - 11}" fill="none" stroke="${unknown ? '#e2603f' : INK}" stroke-width="2"/>`;
+    });
+    (p.jumps || []).forEach(([u, v, lab], i) => {
+      const x1 = X(mins(u)), x2 = X(mins(v)), y = ly + 56 + i * 0;
+      s += `<path d="M${f1(x1)} ${ly + 4}V${y}H${f1(x2)}V${ly + 4}" fill="none" stroke="#d6337f" stroke-width="2.2"/>` + txt((x1 + x2) / 2, y + 18, lab.replace(/\d+/g, n => dg(n)), { fs: 14, fill: '#d6337f' });
+    });
+    return svg((p.jumps || []).length ? 200 : 168, T('A time number line, every mark is 5 minutes', 'خط أعداد للوقت، كل علامة ٥ دقائق'.replace('٥', dg(5))), s);
+  }
+  function g3Stopwatch(q) {
+    const p = (q && q.pic) || { kind: 'analog', s: 15 };
+    if (p.kind === 'digital') {
+      let s = `<rect x="70" y="16" width="200" height="180" rx="80" fill="#f2c230" stroke="#b08a14" stroke-width="4"/><rect x="118" y="6" width="40" height="18" rx="5" fill="#f2c230" stroke="#b08a14" stroke-width="3"/><rect x="182" y="6" width="40" height="18" rx="5" fill="#f2c230" stroke="#b08a14" stroke-width="3"/>`;
+      s += `<rect x="96" y="68" width="148" height="70" rx="12" fill="#e9f0e4" stroke="#5c6f82" stroke-width="3"/>`;
+      s += `<text x="170" y="118" text-anchor="middle" direction="ltr" font-family="Cairo, monospace" font-weight="800" font-size="34" fill="${INK}">${esc(dg('0:' + String(p.s).padStart(2, '0')))}</text>`;
+      s += txt(170, 166, T('stopwatch', 'ساعة إيقاف'), { fs: 13, fill: '#7a5a10' });
+      return svg(206, T('A digital stopwatch', 'ساعة إيقاف رقمية'), s);
+    }
+    const cx = 170, cy = 112, R = 78;
+    let s = `<rect x="160" y="10" width="20" height="16" rx="3" fill="#9aa9b5" stroke="${INK}" stroke-width="2"/><circle cx="170" cy="10" r="7" fill="none" stroke="${INK}" stroke-width="3"/>` + face(cx, cy, R, { sec: true, rim: '#8d99a6' });
+    s += `<circle cx="${cx}" cy="${cy - 30}" r="15" fill="none" stroke="#9aa9b5" stroke-width="1.6"/>`;
+    const a = p.s * Math.PI / 30;
+    s += `<path d="M${f1(cx - Math.sin(a) * 14)} ${f1(cy + Math.cos(a) * 14)}L${f1(cx + Math.sin(a) * R * .82)} ${f1(cy - Math.cos(a) * R * .82)}" stroke="#f08a4b" stroke-width="4" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="5" fill="#f08a4b"/>`;
+    return svg(204, T('A stopwatch with one hand', 'ساعة إيقاف لها عقرب واحد'), s);
+  }
+
   window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch });
 })();
