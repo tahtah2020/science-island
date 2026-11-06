@@ -364,9 +364,9 @@ html[dir=rtl] .bubble::before{left:auto;right:-12px;border-left:0;border-bottom:
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261106x"></script>
-<script src="chapters.js?v=20261106x"></script>
-<script src="common.js?v=20261106x"></script>
+<script src="firebase-config.js?v=20261106y"></script>
+<script src="chapters.js?v=20261106y"></script>
+<script src="common.js?v=20261106y"></script>
 <script>
 (() => {
 'use strict';
@@ -657,7 +657,9 @@ function btn(text, cls = '') { const b = mk('button', 'btn ' + cls, text); b.typ
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
 let score = 0, mistakes = 0;
+let banked = 0;   // points already added to the child's total as they were won (SI.bankXP)
 function addScore(n) {
+  banked += SI.bankXP(n);
   score += n; $('#score').textContent = score;
   const p = $('#scorePill'); p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop');
   const f = mk('span', 'float', '+' + n); p.appendChild(f); setTimeout(() => f.remove(), 1000);
@@ -876,7 +878,7 @@ function results() {
   const prev = store.load();
   const best = Math.max(prev.best || 0, score);
   store.save({ ...prev, best, stars: Math.max(prev.stars || 0, stars), plays: (prev.plays || 0) + 1 });
-  const gain = SI.addXP(score);
+  const gain = SI.addXP(score, banked); banked = 0;
   sfx.win(); SI.voice('finish'); confetti(60);
   const o = mk('div', 'overlay');
   o.innerHTML = `<div class="panel">

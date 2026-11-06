@@ -432,3 +432,8 @@ From the English school book, pages 80-91 (three lessons with Try and Exercise, 
 ## Telegram link everywhere (6 Nov 2026)
 - `common.js` `navMenu()`: a Telegram row (`data-tg="menu"`) in the «القائمة» sheet on every inside page; a quiet footer chip `.si-tgfoot` (`data-tg="footer"`) at the end of chapters, map, adventures, champions, wardrobe only. Never on quiz/game pages, no new pop-ups (the existing rating/«قريبًا» pop-ups are unchanged).
 - Home page: the Telegram link is the blue `.tgBar` right under the banner (above the adventures button), moved from the footer at the owner's request.
+
+## Points banked as they are won (6 Nov 2026)
+- Owner found «نجوم متفوّق» did not update during play and a child who left mid-way lost his points: XP was added only at the end (`addXP(score)` in results).
+- Now `SI.bankXP(n)` (common.js) adds points to `prof.xp` at once (save marked dirty, synced on next page / tab hidden); the board gets the total 4 s after the last point and immediately on `visibilitychange`→hidden / `pagehide`. At the end pages call `SI.addXP(total, banked)`: only total − banked is added, the returned gain/level/gems cover the whole activity.
+- Used in quiz.html (`banked`, `bankRate` 15 for exams; Quest run saves `bk`), game_kit.js (`gameRun.bk`), arm/seasons/seedlab. Adventures already gave XP per lock. Test hook `__quiz.addScore(n)`, `__quiz.banked`.

@@ -218,7 +218,26 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return { n: i + 1, title: nm(i), xp, from: LEVELS[i][0], to: nxt ? nxt[0] : null, pct: nxt ? (xp - LEVELS[i][0]) / (nxt[0] - LEVELS[i][0]) : 1, next: nxt ? nm(i + 1) : null };
   }
   const xp = () => prof().xp || 0;
-  function addXP(n) { let b = 0, a = 0; updateProf(p => { b = p.xp || 0; p.xp = b + Math.max(0, Math.round(n)); a = p.xp; }); sync.dirty(); LB.submitWeek().catch(() => {}).then(() => setTimeout(rankToast, 1200)); return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
+  /* points reach the profile and «نجوم متفوّق» AS THEY ARE WON (owner, 6 Nov 2026: points came only at the end, so a child who
+     left in the middle saw nothing on the board). bankXP(n) adds n now; the board gets the new total a few seconds later
+     (one write for a burst of answers) and at once when the page is hidden or closed. At the end the page calls
+     addXP(total, banked): only total − banked is added, but the result (level up, gems, gained) covers the whole activity. */
+  let lbTimer = null;
+  const lbFlush = () => { if (!lbTimer) return; clearTimeout(lbTimer); lbTimer = null; LB.submitWeek().catch(() => {}); };
+  function bankXP(n) {
+    n = Math.max(0, Math.round(n || 0)); if (!n) return 0;
+    updateProf(p => { p.xp = (p.xp || 0) + n; });
+    clearTimeout(lbTimer); lbTimer = setTimeout(() => { lbTimer = null; LB.submitWeek().catch(() => {}); }, 4000);
+    return n;
+  }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') lbFlush(); });
+  window.addEventListener('pagehide', lbFlush);
+  function addXP(n, banked = 0) {
+    banked = Math.max(0, Math.round(banked || 0)); n = Math.max(0, Math.round(n || 0));
+    let b = 0, a = 0; updateProf(p => { a = p.xp || 0; p.xp = a + Math.max(0, n - banked); a = p.xp; b = Math.max(0, a - n); });
+    clearTimeout(lbTimer); lbTimer = null;
+    sync.dirty(); LB.submitWeek().catch(() => {}).then(() => setTimeout(rankToast, 1200));
+    return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
 
 
   /* after any game that gives points: a small note with the child's place in «نجوم متفوّق», unless the page shows it itself (quiz, kit games) */
@@ -1290,7 +1309,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
-    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
+    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, bankXP, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT, navMenu };
   applyLang();

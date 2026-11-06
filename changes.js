@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'النقاط تُضاف فورًا لنجوم متفوّق',
+    items: [
+      { text: 'كل إجابة صحيحة تُضاف نقاطها لرصيد الطالب في نفس اللحظة، بدل ما كانت تُضاف في آخر التحدي فقط' },
+      { text: 'لوحة نجوم متفوّق تتحدّث أثناء اللعب (كل بضع ثوانٍ) وفورًا لما الطالب يقفل الصفحة أو يخرج' },
+      { text: 'الطالب اللي يخرج في نص التحدي أو اللعبة بيحتفظ بكل النقاط اللي كسبها، وبدون احتساب مزدوج لما يكمّل' }
+    ] },
   { date: '2026-11-06', title: 'رياضيات الصف الثالث بالإنجليزي: الوحدات ١-٣',
     items: [
       { text: 'الوحدة ١ قواعد الضرب بالإنجليزي (مسار اللغات)، بنفس أسئلة العربي وصورها', links: [{ label: 'معاينة', href: 'quiz.html#preview=A1.1&lang=en', ch: 'mg3u1' }] },

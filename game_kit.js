@@ -78,9 +78,10 @@
     function say(html, p) { bubble.innerHTML = html; if (p) pose(p); }
 
     /* ---------- score ---------- */
-    let score = 0, mistakes = 0;
+    let score = 0, mistakes = 0, banked = 0;   // banked: points already added to the child's total (SI.bankXP), so leaving keeps them
     function addScore(n) {
       if (!n) return;
+      banked += SI.bankXP(n);
       score += n; $('#score').textContent = score;
       const p = $('#scorePill'); p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop');
       const f = mk('span', 'float', '+' + n); p.appendChild(f); setTimeout(() => f.remove(), 1000);
@@ -248,7 +249,7 @@
     let stageNo = 0, stepNo = 0, skipping = 0;       // stage index, steps done in this stage, steps still to fast-forward
     const runStore = {
       load() { const r = SI.chProf(cfg.ch).gameRun; return r && r.at && Date.now() - r.at < RUN_DAYS * 864e5 && (r.stage > 0 || r.step > 0) ? r : null; },
-      save() { SI.updateChProf(c => { c.gameRun = { stage: stageNo, step: stepNo, score, mistakes, at: Date.now() }; }, cfg.ch); },
+      save() { SI.updateChProf(c => { c.gameRun = { stage: stageNo, step: stepNo, score, bk: banked, mistakes, at: Date.now() }; }, cfg.ch); },
       clear() { SI.updateChProf(c => { c.gameRun = null; }, cfg.ch); }
     };
     /* a step is one question the child answers (choice, spot, pick) or the whole Speed Round; while fast-forwarding to the saved place a step resolves at once */
@@ -278,7 +279,7 @@
       runStore.clear();
       const stars = mistakes <= 1 ? 3 : mistakes <= 4 ? 2 : 1, prev = store.load(), best = Math.max(prev.best || 0, score);
       store.save(Object.assign({}, prev, { best, stars: Math.max(prev.stars || 0, stars), plays: (prev.plays || 0) + 1 }));
-      const gain = SI.addXP(score);
+      const gain = SI.addXP(score, banked); banked = 0;
       sfx.win(); SI.voice('finish'); confetti(60);
       const o = mk('div', 'overlay');
       o.innerHTML = `<div class="panel" id="resultsPanel">
@@ -313,7 +314,7 @@
       let from = 0;
       const gaT0 = Date.now();
       SI.ga(saved && goOn ? 'game_resume' : 'game_start', { game: (location.pathname.split('/').pop() || ''), chapter: cfg.ch });
-      if (saved && goOn) { from = saved.stage; skipping = saved.step; score = saved.score || 0; mistakes = saved.mistakes || 0; $('#score').textContent = score; }
+      if (saved && goOn) { from = saved.stage; skipping = saved.step; score = saved.score || 0; banked = saved.bk || 0; mistakes = saved.mistakes || 0; $('#score').textContent = score; }
       else if (saved) runStore.clear();
       for (let i = 0; i < stages.length; i++) {
         if (i + 1 < jump || i < from) continue;

@@ -396,9 +396,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261106x"></script>
-<script src="chapters.js?v=20261106x"></script>
-<script src="common.js?v=20261106x"></script>
+<script src="firebase-config.js?v=20261106y"></script>
+<script src="chapters.js?v=20261106y"></script>
+<script src="common.js?v=20261106y"></script>
 <script>
 (() => {
 'use strict';
@@ -457,8 +457,12 @@ async function banner(a, b, cls = '') {
   document.body.appendChild(e); await sleep(reduceMotion ? 900 : 1500); e.classList.add('out'); await sleep(320); e.remove();
 }
 let score = 0;
+/* points go to the child's total as they are won (SI.bankXP), so leaving in the middle keeps them and «نجوم متفوّق» updates
+   during play; banked = what this activity has already added; bankRate: exam marks are worth 15 XP each */
+let banked = 0, bankRate = 1;
 function addScore(n) {
   if (!n) return;
+  banked += SI.bankXP(n * bankRate);
   score += n; $('#score').textContent = score;
   const p = $('#scorePill'); p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop');
   const f = mk('span', 'float', '+' + n); p.appendChild(f); setTimeout(() => f.remove(), 1000);
@@ -1171,14 +1175,14 @@ function addWhyBtn(q, ex, hint = false) {   // hint: the question is still open,
 /* an unfinished Quest is kept in the chapter profile (p.run) so the child continues from the last question instead of starting again */
 const RUN_DAYS = 3;
 function saveRun(list, next, results, missed, firstRight) {
-  SI.updateChProf(p => { p.run = next >= list.length ? null : { ids: list.map(q => q.id + ':' + q.vi), i: next, results: Array.from(results, r => r === true ? 1 : r === false ? 0 : -1), missed: missed.map(q => q.id), firstRight, score, streak, best, at: Date.now() }; });
+  SI.updateChProf(p => { p.run = next >= list.length ? null : { ids: list.map(q => q.id + ':' + q.vi), i: next, results: Array.from(results, r => r === true ? 1 : r === false ? 0 : -1), missed: missed.map(q => q.id), firstRight, score, bk: banked, streak, best, at: Date.now() }; });
 }
 function loadRun() {
   const r = SI.chProf().run;
   if (!r || !r.ids || r.i <= 0 || r.i >= r.ids.length || Date.now() - r.at > RUN_DAYS * 864e5) return null;
   const list = r.ids.map(k => { const [id, vi] = k.split(':'), I = ideaById(id); if (!I) return null; const q = variantOf(I, +vi); if (I.boss) q.mode = 'boss'; else if (I.bonus) q.mode = 'normal'; return q; });
   if (list.some(q => !q)) return null;
-  return { list, run: { i: r.i, results: r.results.map(x => x === 1 ? true : x === 0 ? false : undefined), missed: r.missed, firstRight: r.firstRight, score: r.score, streak: r.streak, best: r.best } };
+  return { list, run: { i: r.i, results: r.results.map(x => x === 1 ? true : x === 0 ? false : undefined), missed: r.missed, firstRight: r.firstRight, score: r.score, bk: r.bk || 0, streak: r.streak, best: r.best } };
 }
 const clearRun = () => SI.updateChProf(p => { p.run = null; });
 async function playList(list, label, resume) {
@@ -1302,7 +1306,7 @@ async function results(kind, res, total, extraXP = 0) {
   if (kind === 'quest') {
     SI.updateChProf(p => { const Q = p.quest = p.quest || {}; Q.best = Math.max(Q.best || 0, score); Q.stars = Math.max(Q.stars || 0, stars); Q.plays = (Q.plays || 0) + 1; bestScore = Q.best; });
   }
-  const gain = SI.addXP(score + extraXP);
+  const gain = SI.addXP(score + extraXP, banked); banked = 0;
   const levelUp = gain.after.n > gain.before.n;
   sfx.win(); confetti(60); SI.voice('finish');
   const me = SI.player();
@@ -1464,7 +1468,7 @@ function examResults(EX, res, total) {
     E.best = best = Math.max(E.best || 0, res.marks); E.last = res.marks; E.of = total; E.plays = (E.plays || 0) + 1;
     E.lastVar = E.lastVar || {}; res.flat.forEach(q => { E.lastVar[q.id] = q.vi; });
   });
-  const gain = SI.addXP(res.marks * 15);
+  const gain = SI.addXP(res.marks * 15, banked); banked = 0;
   sfx.win(); SI.voice('finish'); if (pct >= .5) confetti(60);
   const me = SI.player();
   say(pct >= .9 ? T(`Wonderful, ${esc(me.name)}! You are ready for the test!`, G(`هايل يا ${esc(me.name)}! إنت جاهز للامتحان!`, `هايل يا ${esc(me.name)}! إنتي جاهزة للامتحان!`))
@@ -1493,6 +1497,7 @@ function examResults(EX, res, total) {
   return best;
 }
 async function examMain() {
+  bankRate = 15;
   const me = SI.player();
   const EX = SI.examById((/^#exam=([\w-]+)/.exec(location.hash) || [])[1]);
   if (!EX) { location.href = SI.CHAPTERS_PAGE; return; }
@@ -1545,7 +1550,7 @@ async function main() {
     }
     if (saved) {
       const list = saved.list, R = saved.run;
-      score = R.score || 0; $('#score').textContent = score; streak = R.streak || 0; best = R.best || 0;
+      score = R.score || 0; banked = R.bk || 0; $('#score').textContent = score; streak = R.streak || 0; best = R.best || 0;
       track('quiz_resume', { mode: 'quest', chapter: CH.id || '', at: R.i });
       say(T(`Let’s continue from question ${R.i + 1}!`, `يلّا نكمّل من السؤال ${R.i + 1}!`), 'point');
       const res = await playList(list, 'quest', R);
@@ -1622,7 +1627,7 @@ else if (SI.requirePlayer() && ((/^#preview/.test(location.hash) && SI.isOwner()
     notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل الأسئلة. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${SI.chWords()}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
   });
 }
-window.__quiz = { ask: q => ask(q), termOpts, DIAGRAMS, variantOf, mysteryBox, notice, buildPaper, answerText, examResults, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
+window.__quiz = { addScore: n => addScore(n), get banked() { return banked; }, ask: q => ask(q), termOpts, DIAGRAMS, variantOf, mysteryBox, notice, buildPaper, answerText, examResults, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
 })();
 </script>
 </body>
