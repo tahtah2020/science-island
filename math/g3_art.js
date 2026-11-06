@@ -12,6 +12,8 @@
    Unit 3 (division):
      g3Share  (fig)  things shared equally: a child over each plate: q.pic = { total: 12, groups: 3, kind: 'cookie' | 'candy' | 'apple' | 'pencil' }   (groups = number of plates)
      g3Tape   (fig)  the book's comparison bars: a long bar and a short bar under it: q.pic = { big: 15, small: 3, unit: 'سم', segs: true }   segs: dashed cuts along the long bar
+   Unit 4 (column addition and subtraction):
+     g3Column (fig)  the book's column sum: digits under their place names, the sign on the right, an empty answer row: q.pic = { a: 375, b: 283, op: '+' | '-' }
    Screen-reader names describe the drawing, never the answer. */
 (function () {
   'use strict';
@@ -215,6 +217,27 @@
     return svg(158, T('A long bar and a short bar', 'شريط طويل وشريط قصير'), s);
   }
 
+
+  /* ---------- Unit 4 · column addition and subtraction ---------- */
+  function g3Column(q) {
+    const p = (q && q.pic) || { a: 375, b: 283, op: '+' }, A = String(p.a), B = String(p.b);
+    const cols = Math.max(A.length, B.length, String(p.op === '-' ? p.a - p.b : p.a + p.b).length), cw = 46, x0 = (W - cols * cw) / 2 - 18, y0 = 42, rh = 40;
+    const PLACE = [T('ones', 'آحاد'), T('tens', 'عشرات'), T('hund.', 'مئات'), T('thou.', 'آلاف')];
+    const colX = k => x0 + (cols - 1 - k) * cw;   /* k = place (0 ones) from the right: numbers stay left to right */
+    let s = '';
+    for (let k = 0; k < cols; k++) {
+      const x = colX(k);
+      s += `<rect x="${f1(x + 2)}" y="${y0 - 6}" width="${cw - 4}" height="${rh * 3 + 16}" rx="8" fill="${['#e3f2fb', '#fde8d6', '#e6f4e6', '#f1e6f8'][k] || '#f4f4f4'}"/>`;
+      s += txt(x + cw / 2, y0 - 14, PLACE[k] || '', { fs: 11, w: 700, fill: '#5c6f82' });
+    }
+    const row = (str, y) => { for (let i = 0; i < str.length; i++) { const k = str.length - 1 - i; s += txt(colX(k) + cw / 2, y, dg(str[i]), { fs: 26 }); } };
+    row(A, y0 + 28); row(B, y0 + 28 + rh);
+    s += txt(x0 + cols * cw + 24, y0 + 28 + rh, p.op === '-' ? '−' : '+', { fs: 28, fill: '#e2603f' });
+    s += `<path d="M${f1(x0)} ${y0 + 2 * rh + 6}H${f1(x0 + cols * cw + 40)}" stroke="${INK}" stroke-width="3"/>`;
+    for (let k = 0; k < cols; k++) s += `<rect x="${f1(colX(k) + 8)}" y="${y0 + 2 * rh + 14}" width="${cw - 16}" height="${rh - 8}" rx="6" fill="#fff" stroke="#9aa9b5" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+    return svg(y0 + 3 * rh + 26, T('A column sum with an empty answer row', 'عملية رأسية والناتج فارغ'), s);
+  }
+
   window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column });
 })();

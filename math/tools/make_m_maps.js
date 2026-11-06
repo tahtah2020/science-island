@@ -292,3 +292,28 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_mg3u3.svg', b);
 })();
+
+/* ---------- Grade 3 · Unit 4 · Addition and Subtraction: a market island with price tags, a book stall and a flower cart ---------- */
+(function () {
+  seed = 71;
+  const D = ctx.window.CH_DIAGRAMS;
+  const strip = s => s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  const stall = (x, y, k, c) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-80" y="-30" width="160" height="80" rx="6" fill="#f6efd2" stroke="#8a5a28" stroke-width="5"/><path d="M-96 -30L-80 -80H80L96 -30Z" fill="${c}" stroke="#8a3a2a" stroke-width="4" stroke-linejoin="round"/>${[-60, -20, 20, 60].map(a => `<path d="M${a} -80V-30" stroke="#fff" stroke-width="8" opacity=".5"/>`).join('')}</g>`;
+  const tag = (x, y, k, t) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-40 -20H30L48 0L30 20H-40Z" fill="#f2b134" stroke="#b07d14" stroke-width="3"/><circle cx="34" cy="0" r="4" fill="#fff"/><text x="-6" y="8" text-anchor="middle" font-family="Cairo, sans-serif" font-weight="800" font-size="20" fill="#5a3a14">${t}</text></g>`;
+  const books = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})">${['#e2603f', '#23799f', '#2e9e6b', '#9b6bd3', '#f2b134'].map((c, i) => `<rect x="${-50 + i * 20}" y="${-50 + (i % 2) * 6}" width="17" height="${50 - (i % 2) * 6}" rx="2" fill="${c}" stroke="#1f3d57" stroke-width="2"/>`).join('')}</g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#fde8d0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#e4f1d0" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#fdeedd" opacity=".6"/>`;
+  for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#e6f3d6'], [.5, '#f3ecd0'], [1, '#e8f0d0']], ['#f3e6b8', '#f6efd2'], inside);
+  s += stall(260, 520, 1.1, '#e2603f') + books(260, 540, 1) + stall(940, 470, 1, '#23799f') + tag(930, 480, 1.1, '٢٤٦') + tag(230, 900, 1.2, '٤٨٥') + tag(900, 760, 1, '١٠٠٠');
+  s += board(600, 640, 300, 210, '<g transform="translate(-140 -90) scale(.82)">' + strip(D.g3Column({ pic: { a: 375, b: 283, op: '+' } })) + '</g>');
+  s += crate(400, 1150, 1, '+') + crate(458, 1162, .9, '−') + crate(512, 1154, .8, '١');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_mg3u4.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fdf0dc"/><stop offset="1" stop-color="#f1e2c6"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#e8d3a0"/>${stall(260, 820, 1.8, '#e2603f')}${stall(1320, 830, 1.6, '#23799f')}${tag(800, 900, 1.6, '٢٠٠')}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_mg3u4.svg', b);
+})();
