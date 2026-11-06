@@ -34,7 +34,7 @@
           <div class="pill" id="stagePill"></div>
           <div class="pill" id="scorePill">${T('Score', 'النقاط')} <b id="score">0</b></div>
           <button class="icon" id="mute" type="button" aria-pressed="false" title="${T('Sound on/off', 'الصوت')}">♪</button>
-          <a class="icon" href="map.html" aria-label="${T('Back to the map', 'رجوع للخريطة')}" title="${T('Back to the map', 'رجوع للخريطة')}">⌂</a>
+          <a class="icon" href="map.html" aria-label="${T('Back to the map', 'رجوع للخريطة')}" title="${T('Back to the map', 'رجوع للخريطة')}">🗺️</a>
         </div>
       </header>
       <main class="grid">

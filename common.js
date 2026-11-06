@@ -1205,11 +1205,55 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const tg = { URL: TG_URL, ICON: TG_ICON, due: tgDue, ask: tgAsk, soon: tgSoon, joined: tgJoined };
   const rate = { due: rateDue, ask: rateAsk, guard: rateGuard, flush: rateFlush, CHOICES: RATE_CHOICES, WANTS: RATE_WANTS };
 
+
+  /* ---------- «تنقّل» menu (owner, 6 Nov 2026: going back must be easy and clear) ----------
+     A labeled button fixed at the bottom corner of every inside page opens one sheet with big, named buttons:
+     home page, all units, this unit's map, adventures, Motafawek Stars. Not on the home page or the owner's pages. */
+  function navMenu() {
+    const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (/^(index|admin|reviews|progress|contact)\.html$/.test(page) || page === '' || !player() || document.getElementById('si-nav')) return;
+    const css = document.createElement('style');
+    css.textContent = `#si-nav{position:fixed;z-index:60;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:12px;display:flex;align-items:center;gap:6px;
+      background:#1f3d57;color:#fff;border:3px solid #f2b134;border-radius:999px;padding:8px 16px;font:800 16px Cairo,Nunito,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(31,61,87,.35)}
+      #si-nav:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+      body{padding-bottom:72px}
+      .si-navO{position:fixed;inset:0;z-index:200;background:rgba(20,40,60,.55);display:flex;align-items:flex-end;justify-content:center}
+      .si-navO[hidden]{display:none}
+      .si-navP{background:#fffaf0;width:min(520px,100%);border-radius:24px 24px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:10px;font-family:Cairo,Nunito,sans-serif}
+      .si-navP h2{margin:0 0 4px;font-size:20px;font-weight:900;color:#1f3d57;text-align:center}
+      .si-navP a,.si-navP button{display:flex;align-items:center;gap:12px;text-decoration:none;color:#1f3d57;background:#fff;border:3px solid #cfe3ee;border-radius:16px;padding:12px 14px;font:800 18px Cairo,Nunito,sans-serif;text-align:start;cursor:pointer}
+      .si-navP a .i{font-size:26px;flex:none}.si-navP a small{display:block;font-size:13px;font-weight:700;color:#3a5c75}
+      .si-navP a.here{border-color:#2e9e6b;background:#e3f6ea}
+      .si-navP button.x{justify-content:center;background:#eef3f7;border-color:#eef3f7}
+      @media (max-height:520px) and (orientation:landscape){#si-nav{padding:5px 12px;font-size:14px}.si-navP{gap:6px;padding:10px}.si-navP a{padding:7px 12px;font-size:16px}}`;
+    document.head.appendChild(css);
+    const ch = chapter(), items = [
+      ['index.html', '🏠', T('Home page', 'الصفحة الرئيسية'), T('Change player', 'تغيير اللاعب')],
+      ['chapters.html', '📚', T('All units and subjects', 'كل الوحدات والمواد'), ''],
+      ch ? ['map.html', '🗺️', T('This unit’s map', 'خريطة الوحدة'), `${chWord(ch)} ${ch.n || ''} · ${chTitle(ch)}`] : null,
+      ['adventures.html', '🎮', T('Reesho’s adventures', 'مغامرات ريشو'), ''],
+      ['champions.html', '⭐', T('Motafawek Stars', 'نجوم متفوّق'), '']
+    ].filter(Boolean);
+    const btn = document.createElement('button');
+    btn.id = 'si-nav'; btn.type = 'button'; btn.innerHTML = `☰ <span>${T('Menu', 'القائمة')}</span>`;
+    btn.setAttribute('aria-haspopup', 'dialog');
+    const o = document.createElement('div');
+    o.className = 'si-navO'; o.hidden = true; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', T('Go to', 'روح على'));
+    o.innerHTML = `<div class="si-navP"><h2>${T('Where to?', G('تحب تروح فين؟', 'تحبي تروحي فين؟'))}</h2>${items.map(([h, i, t, sub]) =>
+      `<a href="${h}"${h === page ? ' class="here" aria-current="page"' : ''}><span class="i" aria-hidden="true">${i}</span><span>${esc(t)}${sub ? `<small>${esc(sub)}</small>` : ''}</span></a>`).join('')}
+      <button type="button" class="x">${T('Close', 'إغلاق')} ✕</button></div>`;
+    const close = () => { o.hidden = true; btn.focus(); };
+    btn.onclick = () => { o.hidden = false; const f = o.querySelector('a'); if (f) f.focus(); };
+    o.addEventListener('click', e => { if (e.target === o || e.target.closest('.x')) close(); });
+    o.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    document.body.append(btn, o);
+  }
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
-    gender, G, setGender, visit, greet, bye, VOICE_TEXT };
+    gender, G, setGender, visit, greet, bye, VOICE_TEXT, navMenu };
   applyLang();
   sync.auto();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', navMenu); else navMenu();
 })();
