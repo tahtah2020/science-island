@@ -342,3 +342,27 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_mg3u5.svg', b);
 })();
+
+/* ---------- Grade 3 · Unit 6 · Organizing Data: a survey island with a bar-graph board, a tally board and clipboards ---------- */
+(function () {
+  seed = 79;
+  const D = ctx.window.CH_DIAGRAMS;
+  const strip = s => s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  const clip = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-34" y="-44" width="68" height="88" rx="6" fill="#c98b4a" stroke="#8a5a28" stroke-width="4"/><rect x="-26" y="-34" width="52" height="70" fill="#fff"/><rect x="-14" y="-52" width="28" height="14" rx="4" fill="#9aa9b5" stroke="#1f3d57" stroke-width="3"/>${[0, 1, 2].map(i => `<path d="M-18 ${-20 + i * 18}h8" stroke="#2e9e6b" stroke-width="4"/><path d="M-4 ${-20 + i * 18}h22" stroke="#9aa9b5" stroke-width="4"/>`).join('')}</g>`;
+  const tallyBoard = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-70" y="-40" width="140" height="80" rx="8" fill="#2f5d50" stroke="#8a5a28" stroke-width="6"/>${[0, 1].map(g => [0, 1, 2, 3].map(i => `<path d="M${-50 + g * 50 + i * 9} -20V20" stroke="#fff" stroke-width="4" stroke-linecap="round"/>`).join('') + `<path d="M${-56 + g * 50} 12L${-18 + g * 50} -12" stroke="#fff" stroke-width="4" stroke-linecap="round"/>`).join('')}</g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#fde8d0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#e4f1d0" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#fdeedd" opacity=".6"/>`;
+  for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#e6f3d6'], [.5, '#f3ecd0'], [1, '#e8f0d0']], ['#f3e6b8', '#f6efd2'], inside);
+  s += tallyBoard(260, 500, 1.2) + clip(950, 470, 1.1) + clip(230, 900, 1) + tallyBoard(900, 780, .9);
+  s += board(600, 640, 300, 230, '<g transform="translate(-145 -100) scale(.82)">' + strip(D.g3Bars({ title: '', max: 10, step: 1, bars: [['', null, 9], ['', null, 7], ['', null, 3], ['', null, 6]] })) + '</g>');
+  s += crate(400, 1150, 1, '٥') + crate(458, 1162, .9, '١٠') + crate(512, 1154, .8, '٢٠');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_mg3u6.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#fdf0e6"/><stop offset="1" stop-color="#e7efd2"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#cfe3b0"/>${tallyBoard(260, 860, 1.6)}${clip(1320, 870, 1.4)}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_mg3u6.svg', b);
+})();

@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'رياضيات الصف الثالث (عربي): الوحدة السادسة «تنظيم البيانات»',
+    items: [
+      { text: 'الوحدة السادسة: 4 دروس من السهل إلى الصعب، مع تلميح لكل سؤال' },
+      { text: 'صور المالك: أيقونات الفاكهة والمركبات والحيوانات والكتب والمواد، ومشهدا الجسر والفصل' },
+      { text: 'علامات العدّ والجداول والأعمدة البيانية مرسومة بدقة', links: [{ label: 'افتح الوحدة', href: 'map.html', ch: 'mg3u6' }] }
+    ] },
   { date: '2026-11-06', title: 'رياضيات الصف الثالث: التفكيك برسم الكتاب',
     items: [
       { text: 'أسئلة التفكيك في الدرس الثاني تُعرض بالرسم نفسه في الكتاب: العدد المفكّك ملوّن، وسطران منفصلان، ثم المجموع' },

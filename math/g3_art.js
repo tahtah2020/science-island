@@ -18,6 +18,11 @@
    Unit 5 (length):
      g3Measure (fig)  a piece of measuring tape, 1 cm a tick, labelled every 10 cm and at each metre, with an arrow: q.pic = { from: 290, to: 330, at: 315 }  (all in cm)
      g3Map     (fig)  the book's little map: the road (two parts, via a corner) and the straight line between two places: q.pic = { a: 'بيت دينا', b: 'المدرسة', l1: 700, l2: 550, d: 1100, ia: 'house', ib: 'school' }
+   Unit 6 (data) — icons are the owner's pictures (Gemini, 6 Nov 2026), cut to math/assets/g3/ic_<name>.webp:
+     g3Tally (fig)  the book's tally table, a row per kind: q.pic = { rows: [['التفاح', 'apple', 13], …] }   n = tally marks drawn (groups of five)
+     g3Bars  (fig)  the book's bar graph: q.pic = { title, unit: 'تلاميذ', max: 10, step: 1, bars: [['أحمر', null, 9, '#e85a6b'], ['التفاح', 'apple', 3]] }   labels at 0, max/2 and max; value null = no bar yet
+     g3Table (fig)  a table that reads from the right: q.pic = { title, unit, head: ['', 'الفصل ١', …], rows: [['كرة القدم', 11, 9, 10, '؟'], …] }
+     g3Photo (fig)  one of the owner's scenes: q.pic = { src: 'math/assets/g3/bridge.jpg' }
    Screen-reader names describe the drawing, never the answer. */
 (function () {
   'use strict';
@@ -337,6 +342,62 @@
     return svg(216, T('A small map with a road and a straight line', 'خريطة صغيرة فيها طريق وخط مستقيم'), s);
   }
 
+
+  /* ---------- Unit 6 · data ---------- */
+  const ICON = k => k ? `math/assets/g3/ic_${k}.webp` : '';
+  const img = (k, x, y, sz) => k ? `<image href="${ICON(k)}" x="${f1(x - sz / 2)}" y="${f1(y - sz / 2)}" width="${sz}" height="${sz}" preserveAspectRatio="xMidYMid meet"/>` : '';
+  function tallyMarks(n, x, y, h) {   /* groups of five: four upright strokes and a fifth across them, left to right */
+    let s = '', gx = x;
+    for (let g = 0; g < Math.ceil(n / 5); g++) {
+      const k = Math.min(5, n - g * 5);
+      for (let i = 0; i < Math.min(k, 4); i++) s += `<path d="M${f1(gx + i * 6)} ${y}V${y + h}" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>`;
+      if (k === 5) s += `<path d="M${f1(gx - 4)} ${f1(y + h * .72)}L${f1(gx + 22)} ${f1(y + h * .28)}" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>`;
+      gx += 34;
+    }
+    return s;
+  }
+  function g3Tally(q) {
+    const p = (q && q.pic) || { rows: [['التفاح', 'apple', 13]] }, rh = 40, H = p.rows.length * rh + 20, nameW = 124, x0 = 14, tw = 312;
+    let s = '';
+    p.rows.forEach(([name, icon, n], r) => {
+      const y = 10 + r * rh;
+      s += `<rect x="${x0 + tw - nameW}" y="${y}" width="${nameW}" height="${rh}" fill="#fde3cf" stroke="${INK}" stroke-width="1.6"/><rect x="${x0}" y="${y}" width="${tw - nameW}" height="${rh}" fill="#fff" stroke="${INK}" stroke-width="1.6"/>`;
+      s += img(icon, x0 + tw - 20, y + rh / 2, 28) + txt(x0 + tw - nameW / 2 - 16, y + 26, name, { fs: name.length > 10 ? 11.5 : 14 });
+      s += tallyMarks(n, x0 + 14, y + 9, 22);
+    });
+    return svg(H, T('A tally table', 'جدول علامات العدّ'), s);
+  }
+  function g3Bars(q) {
+    const p = (q && q.pic) || { max: 10, step: 1, bars: [] }, nb = p.bars.length, gx = 54, gw = 250, gy = 50, gh = 186, Y = v => gy + gh - v / p.max * gh;
+    let s = txt(178, 20, p.title || '', { fs: 14 }) + (p.unit ? txt(30, 38, `(${p.unit})`, { fs: 11, w: 700 }) : '');
+    s += `<rect x="${gx}" y="${gy}" width="${gw}" height="${gh}" fill="#fff" stroke="${INK}" stroke-width="2"/>`;
+    for (let v = p.step; v < p.max; v += p.step) s += `<path d="M${gx} ${f1(Y(v))}H${gx + gw}" stroke="${v === p.max / 2 ? INK : '#9aa9b5'}" stroke-width="${v === p.max / 2 ? 1.6 : 1}"${v === p.max / 2 ? '' : ' stroke-dasharray="3 3"'}/>`;
+    [0, p.max / 2, p.max].forEach(v => { s += txt(gx - 16, Y(v) + 5, dg(v), { fs: 13 }); });
+    const bw = gw / nb;
+    p.bars.forEach(([name, icon, v, col], i) => {
+      const cx = gx + bw * (i + .5);
+      s += `<path d="M${f1(gx + bw * (i + 1))} ${gy}V${gy + gh}" stroke="#d4dbe2" stroke-width="1"/>`;
+      if (v != null) s += `<rect x="${f1(cx - bw * .28)}" y="${f1(Y(v))}" width="${f1(bw * .56)}" height="${f1(gy + gh - Y(v))}" fill="${col || ['#e85a6b', '#6cc4ef', '#79c69a', '#b9bec4'][i % 4]}" stroke="${INK}" stroke-width="1.6"/>`;
+      s += img(icon, cx, gy + gh + 18, 24) + txt(cx, gy + gh + (icon ? 46 : 22), name, { fs: name.length > 6 ? 10 : 12 });
+    });
+    return svg(gy + gh + 56, T('A bar graph', 'أعمدة بيانية'), s);
+  }
+  function g3Table(q) {
+    const p = (q && q.pic) || { head: [], rows: [] }, cols = p.head.length, first = 92, cw = Math.min(62, (316 - first) / (cols - 1)), tw = first + cw * (cols - 1), x0 = (W - tw) / 2, rh = 30, top = p.title ? 32 : 10;
+    const ar = AR(), colX = c => ar ? (c === 0 ? x0 + tw - first : x0 + tw - first - c * cw) : (c === 0 ? x0 : x0 + first + (c - 1) * cw), colW = c => c === 0 ? first : cw;
+    let s = p.title ? txt(170, 22, p.title + (p.unit ? `   (${p.unit})` : ''), { fs: 13 }) : '';
+    [p.head].concat(p.rows).forEach((row, r) => row.forEach((v, c) => {
+      const y = top + r * rh, hd = r === 0 || c === 0, unk = v === '؟' || v === '?';
+      s += `<rect x="${f1(colX(c))}" y="${y}" width="${f1(colW(c))}" height="${rh}" fill="${hd ? '#fde3cf' : '#fff'}" stroke="${INK}" stroke-width="1.4"/>`;
+      s += txt(colX(c) + colW(c) / 2, y + 20, unk ? '؟' : typeof v === 'number' ? dg(v) : v, { fs: unk ? 16 : 13, fill: unk ? '#e2603f' : INK, w: hd ? 800 : 700 });
+    }));
+    return svg(top + (p.rows.length + 1) * rh + 12, T('A table', 'جدول'), s);
+  }
+  function g3Photo(q) {
+    const p = (q && q.pic) || {}, h = 190;
+    return svg(h, T('A picture', 'صورة'), `<clipPath id="g3ph"><rect x="8" y="8" width="324" height="${h - 16}" rx="12"/></clipPath><image href="${p.src}" x="8" y="8" width="324" height="${h - 16}" preserveAspectRatio="xMidYMid slice" clip-path="url(#g3ph)"/>`);
+  }
+
   window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map, g3Tally, g3Bars, g3Table, g3Photo });
 })();
