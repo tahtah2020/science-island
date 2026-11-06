@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'زر «القائمة» في أعلى الصفحة',
+    items: [
+      { text: 'الزر أصبح ذهبيًا وأكبر، في أعلى كل صفحة بجانب النقاط' }
+    ] },
   { date: '2026-11-06', title: 'زر «القائمة» للتنقّل في كل الصفحات',
     items: [
       { text: 'زر واضح أسفل كل صفحة يفتح قائمة: الصفحة الرئيسية، كل الوحدات، خريطة الوحدة، المغامرات، نجوم متفوّق' },

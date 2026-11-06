@@ -1213,10 +1213,12 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
     if (/^(index|admin|reviews|progress|contact)\.html$/.test(page) || page === '' || !player() || document.getElementById('si-nav')) return;
     const css = document.createElement('style');
-    css.textContent = `#si-nav{position:fixed;z-index:60;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:12px;display:flex;align-items:center;gap:6px;
-      background:#1f3d57;color:#fff;border:3px solid #f2b134;border-radius:999px;padding:8px 16px;font:800 16px Cairo,Nunito,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(31,61,87,.35)}
-      #si-nav:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
-      body{padding-bottom:72px}
+    css.textContent = `#si-nav{display:inline-flex;align-items:center;gap:6px;flex:none;background:#f2b134;color:#1f3d57;border:3px solid #fff;border-radius:999px;padding:7px 16px;
+      font:900 17px Cairo,Nunito,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(31,61,87,.35);white-space:nowrap;animation:siNavHi 1.2s ease 2}
+      #si-nav.fixed{position:fixed;z-index:60;top:calc(10px + env(safe-area-inset-top,0px));left:10px}
+      #si-nav:hover{filter:brightness(1.05)}#si-nav:focus-visible{outline:3px solid #1f3d57;outline-offset:2px}
+      @keyframes siNavHi{50%{transform:scale(1.12)}}
+      @media (prefers-reduced-motion:reduce){#si-nav{animation:none}}
       .si-navO{position:fixed;inset:0;z-index:200;background:rgba(20,40,60,.55);display:flex;align-items:flex-end;justify-content:center}
       .si-navO[hidden]{display:none}
       .si-navP{background:#fffaf0;width:min(520px,100%);border-radius:24px 24px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:10px;font-family:Cairo,Nunito,sans-serif}
@@ -1225,6 +1227,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       .si-navP a .i{font-size:26px;flex:none}.si-navP a small{display:block;font-size:13px;font-weight:700;color:#3a5c75}
       .si-navP a.here{border-color:#2e9e6b;background:#e3f6ea}
       .si-navP button.x{justify-content:center;background:#eef3f7;border-color:#eef3f7}
+      @media (max-width:420px){#si-nav{padding:6px 12px;font-size:15px}}
       @media (max-height:520px) and (orientation:landscape){#si-nav{padding:5px 12px;font-size:14px}.si-navP{gap:6px;padding:10px}.si-navP a{padding:7px 12px;font-size:16px}}`;
     document.head.appendChild(css);
     const ch = chapter(), items = [
@@ -1246,7 +1249,21 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     btn.onclick = () => { o.hidden = false; const f = o.querySelector('a'); if (f) f.focus(); };
     o.addEventListener('click', e => { if (e.target === o || e.target.closest('.x')) close(); });
     o.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-    document.body.append(btn, o);
+    document.body.append(o);
+    /* the button goes at the top, in the page's header (first thing in its .hud, or beside its back link);
+       game pages build their header a moment later, so wait for it, and stay pinned at the top corner until then */
+    const place = () => {
+      const hud = document.querySelector('header .hud'), back = document.querySelector('header a.home, header #back, a.home');
+      if (hud) { btn.classList.remove('fixed'); hud.prepend(btn); return true; }
+      if (back) { btn.classList.remove('fixed'); back.after(btn); return true; }
+      return false;
+    };
+    if (!place()) {
+      btn.classList.add('fixed'); document.body.append(btn);
+      const mo = new MutationObserver(() => { if (place()) mo.disconnect(); });
+      mo.observe(document.body, { childList: true, subtree: true });
+      setTimeout(() => mo.disconnect(), 5000);
+    }
   }
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
