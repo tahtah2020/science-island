@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'الأول في نجوم متفوّق',
+    items: [
+      { text: 'الطالب في المركز الأول: اسمه أكبر وبجانبه كأس 🏆، في صفحة نجوم متفوّق وفي لوحة النجوم بصفحة الوحدات', links: [{ label: 'نجوم متفوّق', href: 'champions.html', ch: 'mg3u3' }] }
+    ] },
   { date: '2026-11-06', title: 'زر الصف الثالث في صفحة المغامرات',
     items: [
       { text: 'صفحة مغامرات ريشو فيها الآن زر «الصف الثالث»، فتظهر لعبة «مخبز ريشو» لكل من يختار الصف', links: [{ label: 'المغامرات', href: 'adventures.html?grade=g3&subject=math', ch: 'mg3u3' }] },

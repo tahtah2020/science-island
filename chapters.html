@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261106{">
+<link rel="stylesheet" href="common.css?v=20261106b{">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -95,7 +95,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
 .starsBox .sub{margin:0 0 8px;font-size:13.5px;font-weight:700;color:var(--ink)}
 .starsBox ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 .starsBox li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:6px 10px;font-weight:800;font-size:16px}
-.starsBox li.top1{background:#fff4d6}.starsBox li.top2{background:#eef3f7}.starsBox li.top3{background:#fbe9dc}
+.starsBox li.top1{background:#fff4d6}.starsBox li.top1 .nm{font-size:1.3em;color:#8a5a00}.starsBox li .cup{margin-inline-start:5px;font-size:1.15em}.starsBox li.top2{background:#eef3f7}.starsBox li.top3{background:#fbe9dc}
 .starsBox li.me{outline:3px solid #2e9e6b}
 .starsBox li .r{text-align:center;font-size:18px}.starsBox li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.starsBox li .sc{color:#23799f}
 .starsBox li.empty{display:block;text-align:center;background:none}
@@ -151,9 +151,9 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="firebase-config.js?v=20261106{"></script>
-<script src="chapters.js?v=20261106{"></script>
-<script src="common.js?v=20261106{"></script>
+<script src="firebase-config.js?v=20261106b{"></script>
+<script src="chapters.js?v=20261106b{"></script>
+<script src="common.js?v=20261106b{"></script>
 <script>
 (() => {
   'use strict';
@@ -271,7 +271,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
     rows.forEach((r, i) => {
       const li = document.createElement('li'), mine = r.id === myId;
       li.className = (i < 3 ? 'top' + (i + 1) : '') + (mine ? ' me' : '');
-      li.innerHTML = `<span class="r">${['🥇', '🥈', '🥉'][i] || (i + 1).toLocaleString('ar-EG')}</span><span class="nm">${SI.esc(r.name)}</span><span class="sc">${Number(r.score).toLocaleString('ar-EG')} نقطة</span>`;
+      li.innerHTML = `<span class="r">${['🥇', '🥈', '🥉'][i] || (i + 1).toLocaleString('ar-EG')}</span><span class="nm">${SI.esc(r.name)}${i === 0 ? '<span class="cup" aria-hidden="true">🏆</span>' : ''}</span><span class="sc">${Number(r.score).toLocaleString('ar-EG')} نقطة</span>`;
       list.appendChild(li);
     });
     box.hidden = false;
