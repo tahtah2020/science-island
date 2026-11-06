@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'قطار ريشو: ريشو يركب القطار',
+    items: [
+      { text: 'عند الإجابة الصحيحة يمشي ريشو لباب العربة ويركب، ويظهر في الشباك والقطار ماشي، والرصيف يفضى بعده', links: [{ label: 'اللعبة', href: 'math-reesho-train.html', ch: 'mg3u2' }] }
+    ] },
   { date: '2026-11-06', title: 'لعبة جديدة للصف الثالث: قطار ريشو',
     items: [
       { text: 'مغامرة «قطار ريشو»: يلفّ الطالب عقارب الساعة ليلحق ريشو القطار؛ الوقت قبل وبعد ومع تغيّر الساعة، والمدة المنقضية، و٦٠ دقيقة = ساعة (الوحدة ٢)، وجمع الدقائق وطرحها ذهنيًا (الوحدة ٧)؛ ٦ رحلات كل رحلة خطوة صغيرة جديدة', links: [{ label: 'اللعبة', href: 'math-reesho-train.html', ch: 'mg3u2' }] },

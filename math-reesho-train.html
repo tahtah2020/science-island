@@ -98,9 +98,9 @@ body{margin:0;font-family:Nunito,Cairo,sans-serif;color:var(--navy);min-height:1
   <h2 id="dayT"></h2><div class="stars" id="dayStars"></div><p id="dayText"></p><div class="new" id="dayNew"></div><br>
   <button class="btn teal" id="dayBtn" type="button"></button></div></div>
 
-<script src="firebase-config.js?v=20261106{"></script>
-<script src="chapters.js?v=20261106{"></script>
-<script src="common.js?v=20261106{"></script>
+<script src="firebase-config.js?v=20261106b{"></script>
+<script src="chapters.js?v=20261106b{"></script>
+<script src="common.js?v=20261106b{"></script>
 <script>
 (() => {
 'use strict';
@@ -334,8 +334,14 @@ async function win() {
   const o = S.o, pts = S.orderMiss ? 10 : 15;
   S.score += pts; $('#score').textContent = D(S.score);
   SFX.whistle(); SFX.win(.6);
-  if (o.kind === 'after' || o.kind === 'before') await anim(1400, k => drawScene({ train: 480 - TRAIN_W - 6 + 520 * k * k, rx: 300, pose: k < .15 ? 'cheer' : null, clock: o.kind === 'after' ? o.ans : o.train }));
-  drawScene({ train: false, pose: 'cheer', rx: 240, clock: null, over: confetti() });
+  if (o.kind === 'after' || o.kind === 'before') {
+    const x0 = 480 - TRAIN_W - 6, door = x0 + 448 * .33 * .86, from = o.kind === 'after' ? 40 + 230 : 60, clk = o.kind === 'after' ? o.ans : o.train;
+    // Reesho walks to the carriage door and gets in (he shrinks into the door)
+    await anim(800, k => drawScene({ train: x0, pose: null, clock: clk, over: `<image href="${src(k < .8 ? 'reesho_walk' : 'reesho_cheer')}" x="${(from + (door - from) * Math.min(1, k * 1.25) - 31 * (1 - .5 * Math.max(0, k - .8) * 5)).toFixed(1)}" y="${(204 - 96 * (1 - .5 * Math.max(0, k - .8) * 5)).toFixed(1)}" width="${(62 * (1 - .5 * Math.max(0, k - .8) * 5)).toFixed(1)}" height="${(96 * (1 - .5 * Math.max(0, k - .8) * 5)).toFixed(1)}" opacity="${(1 - Math.max(0, k - .8) * 5).toFixed(2)}" class="bob"/>` }));
+    // the train leaves with Reesho waving from the window
+    await anim(1600, k => { const tx = x0 + 540 * k * k; drawScene({ train: tx, pose: null, clock: clk, over: `<image href="${src('reesho_cheer')}" x="${(tx + 52).toFixed(1)}" y="188" width="34" height="40"/>` }); });
+  }
+  drawScene({ train: false, pose: null, clock: null, over: confetti() });
   $('#check').hidden = false; $('#check').innerHTML = checkHTML(o);
   sayMood(`🦜 ${pick([T('All aboard! Right on time!', 'كله يركب! في الميعاد بالظبط!'), T('Perfect timing!', 'توقيت مظبوط!'), T('Choo choo! Well done!', 'توت توت! برافو!')])} +${D(pts)}`, 'cheer');
   S.n++; S.busy = false; $('#go').disabled = false;
