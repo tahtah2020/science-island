@@ -169,4 +169,17 @@ window.IDEAS = [
       bossNum('دقيقة واحدة و ٢٥ ثانية = ؟ ثانية', 85, '60+25', '١ دقيقة = ٦٠ ثانية، ثم أضف ٢٥.', { unit: 'ثانية', explain: '٦٠ + ٢٥ = ٨٥ ثانية.' })
     ] }
 ];
+
+/* Word problems as pictures (owner, 6 Nov 2026): the things, how many, and who they go to. Key = idea.phrasing (1-based). A phrasing that already has a picture keeps it. */
+const S = (icon, n, label, more) => Object.assign({ icon, n, label }, more || {});
+const STORY = {
+  'F5.1': { fig: 'g3Clock', pic: { h: 9, m: 20, move: -30 } },
+  'F5.2': { fig: 'g3Clock', pic: { h: 5, m: 20, move: -40 } },
+  'G4.5': { fig: 'g3TimeLine', pic: { from: '7:15', to: '8:30', marks: ['7:30', '8:15'] } },
+  'G6.1': [S('bus', null, 'الحافلة ٥٠ دقيقة'), S('train', null, 'القطار ٣٠ دقيقة')],
+  'G6.2': [S('bus', null, 'الحافلة ٥٠ دقيقة'), S('train', null, 'القطار ٣٥ دقيقة')],
+  'G6.3': [S('bus', null, 'الأتوبيس ٤٠ دقيقة'), S('train', null, 'القطار ٥٠ دقيقة')],
+  'G6.4': [S('picturebook', null, 'الصباح ٤٥ دقيقة'), S('picturebook2', null, 'بعد الظهر ٢٠ دقيقة')]
+};
+window.IDEAS.forEach(I => I.variants.forEach((v, i) => { const st = STORY[I.id + '.' + (i + 1)]; if (st && !v.fig) Object.assign(v, Array.isArray(st) ? { fig: 'g3Story', pic: { parts: st } } : st); }));
 })();

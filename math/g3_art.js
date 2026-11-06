@@ -12,7 +12,7 @@
      g3Stopwatch (fig)  a stopwatch: q.pic = { kind: 'analog' | 'digital', s: 15 }
    Unit 3 (division):
      g3Share  (fig)  things shared equally: a child over each plate: q.pic = { total: 12, groups: 3, kind: 'cookie' | 'candy' | 'apple' | 'pencil' }   (groups = number of plates)
-     g3Tape   (fig)  the book's comparison bars: a long bar and a short bar under it: q.pic = { big: 15, small: 3, unit: 'سم', segs: true }   segs: dashed cuts along the long bar
+     g3Tape   (fig)  the book's comparison bars: a long bar and a short bar under it: q.pic = { big: 15, small: 3, unit: 'سم', segs: true, noSmall }   segs: dashed cuts along the long bar; noSmall: only the long bar (a ribbon cut into equal pieces)
    Unit 4 (column addition and subtraction):
      g3Column (fig)  the book's column sum: digits under their place names, the sign on the right, an empty answer row: q.pic = { a: 375, b: 283, op: '+' | '-' }
    Unit 5 (length):
@@ -23,6 +23,11 @@
      g3Bars  (fig)  the book's bar graph: q.pic = { title, unit: 'تلاميذ', max: 10, step: 1, bars: [['أحمر', null, 9, '#e85a6b'], ['التفاح', 'apple', 3]] }   labels at 0, max/2 and max; value null = no bar yet
      g3Table (fig)  a table that reads from the right: q.pic = { title, unit, head: ['', 'الفصل ١', …], rows: [['كرة القدم', 11, 9, 10, '؟'], …] }
      g3Photo (fig)  one of the owner's scenes: q.pic = { src: 'math/assets/g3/bridge.jpg' }
+   Word problems (owner, 6 Nov 2026: every word problem is shown as a picture — the things, how many, and the people they go to):
+     g3Story (fig)  panels side by side (the first on the right): q.pic = { parts: [{ icon: 'orange', n: 15 }, { icon: 'kid', n: 5 }] }
+                    icon = an owner icon (ic_<name>.webp) or a drawn one: kid, adult, rose, notebook, paper, cube, bottle, coin, shoe, bag, cow, train, pencil, candy, ball, page
+                    n ≤ 30 → n copies drawn; bigger n (or big: true) → one large icon and «× n»; label replaces the number under the panel.
+                    No sign between the panels: the operation is the child's job.
    Screen-reader names describe the drawing, never the answer. */
 (function () {
   'use strict';
@@ -280,7 +285,7 @@
     let s = `<rect x="${x0}" y="44" width="${L}" height="30" rx="4" fill="#c9d3dc" stroke="${INK}" stroke-width="2"/>`;
     if (p.segs) for (let k = 1; k < Math.round(p.big / p.small); k++) s += `<path d="M${f1(x0 + k * sw)} 44V74" stroke="${INK}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
     s += `<path d="M${x0} 36q${L / 2} -14 ${L} 0" fill="none" stroke="${INK}" stroke-width="1.6" stroke-dasharray="3 3"/>` + txt(x0 + L / 2, 24, lab(p.big), { fs: 15 });
-    s += `<rect x="${x0}" y="92" width="${f1(sw)}" height="30" rx="4" fill="#f6b5cf" stroke="${INK}" stroke-width="2"/>` + txt(x0 + sw / 2, 144, lab(p.small), { fs: 15, fill: '#c0306d' });
+    if (!p.noSmall) s += `<rect x="${x0}" y="92" width="${f1(sw)}" height="30" rx="4" fill="#f6b5cf" stroke="${INK}" stroke-width="2"/>` + txt(x0 + sw / 2, 144, lab(p.small), { fs: 15, fill: '#c0306d' });
     return svg(158, T('A long bar and a short bar', 'شريط طويل وشريط قصير'), s);
   }
 
@@ -398,6 +403,51 @@
     return svg(h, T('A picture', 'صورة'), `<clipPath id="g3ph"><rect x="8" y="8" width="324" height="${h - 16}" rx="12"/></clipPath><image href="${p.src}" x="8" y="8" width="324" height="${h - 16}" preserveAspectRatio="xMidYMid slice" clip-path="url(#g3ph)"/>`);
   }
 
+
+  /* ---------- Word problems as pictures ---------- */
+  const OWNER = new Set(['apple', 'strawberry', 'banana', 'orange', 'car', 'bus', 'motorbike', 'truck', 'taxi', 'police', 'dog', 'cat', 'cat2', 'rabbit', 'dolphin', 'horse', 'cake', 'cake2', 'pie', 'biscuit', 'picturebook', 'picturebook2', 'refbook', 'sciencebook', 'clipboard', 'math', 'english', 'pe', 'music', 'drawing', 'other']);
+  const PAPER_C = ['#f6b5cf', '#bfe3f5', '#c7ecd2', '#fde7a8', '#e3d4f6'];
+  const DRAWN = {   /* each drawn in a box of side 1 around (0,0); scaled by the caller */
+    rose: i => `<path d="M0 .45V-.05" stroke="#2e9e6b" stroke-width=".07"/><path d="M0 .2q.18-.12 .26 0q-.14 .1-.26 0" fill="#2e9e6b"/><circle cy="-.2" r=".24" fill="#e2603f"/><circle cx="-.1" cy="-.26" r=".13" fill="#f08080"/><circle cx=".1" cy="-.15" r=".11" fill="#c94f54"/>`,
+    notebook: i => `<rect x="-.32" y="-.42" width=".64" height=".84" rx=".05" fill="${['#4ea5d9', '#e2603f', '#2e9e6b', '#9b6bd3'][i % 4]}" stroke="${INK}" stroke-width=".04"/><rect x="-.2" y="-.28" width=".4" height=".14" fill="#fff"/>${[-.3, -.1, .1, .3].map(y => `<circle cx="-.32" cy="${y}" r=".04" fill="#fff" stroke="${INK}" stroke-width=".02"/>`).join('')}`,
+    paper: i => `<path d="M-.36 -.36H.2L.36 -.2V.36H-.36Z" fill="${PAPER_C[i % 5]}" stroke="${INK}" stroke-width=".035"/><path d="M.2 -.36V-.2H.36" fill="none" stroke="${INK}" stroke-width=".035"/>`,
+    page: i => `<path d="M-.32 -.42H.2L.32 -.3V.42H-.32Z" fill="#fff" stroke="${INK}" stroke-width=".035"/>${[-.2, -.06, .08, .22].map(y => `<path d="M-.2 ${y}H.2" stroke="#9aa9b5" stroke-width=".035"/>`).join('')}`,
+    cube: i => `<path d="M0 -.38L.34 -.2V.2L0 .38L-.34 .2V-.2Z" fill="${['#f2b134', '#6cc4ef', '#79c69a', '#f6b5cf'][i % 4]}" stroke="${INK}" stroke-width=".04"/><path d="M-.34 -.2L0 -.02L.34 -.2M0 -.02V.38" fill="none" stroke="${INK}" stroke-width=".035"/>`,
+    bottle: i => `<rect x="-.08" y="-.46" width=".16" height=".1" rx=".02" fill="#4ea5d9"/><path d="M-.12 -.36H.12L.18 -.24V.42H-.18V-.24Z" fill="#d9eef8" stroke="#4ea5d9" stroke-width=".04"/><rect x="-.18" y="-.02" width=".36" height=".18" fill="#4ea5d9" opacity=".6"/>`,
+    coin: i => `<circle r=".4" fill="#f2c230" stroke="#b08a14" stroke-width=".06"/><circle r=".3" fill="none" stroke="#b08a14" stroke-width=".03"/><text y=".12" text-anchor="middle" font-family="Cairo, sans-serif" font-weight="800" font-size=".34" fill="#7a5a10">ج</text>`,
+    shoe: i => `<path d="M-.44 .12Q-.44 -.12 -.3 -.16L-.12 -.3Q.0 -.3 .04 -.16Q.2 -.08 .36 -.04Q.46 0 .46 .12Z" fill="#e2603f" stroke="${INK}" stroke-width=".035" stroke-linejoin="round"/><path d="M-.46 .12H.48V.22H-.46Z" fill="#fff" stroke="${INK}" stroke-width=".035"/><path d="M-.1 -.2L.0 -.1M-.04 -.24L.06 -.13M.02 -.18L.12 -.08" stroke="#fff" stroke-width=".035"/>`,
+    bag: i => `<path d="M-.16 -.3Q0 -.48 .16 -.3" fill="none" stroke="${INK}" stroke-width=".05"/><rect x="-.32" y="-.3" width=".64" height=".72" rx=".12" fill="#9b6bd3" stroke="${INK}" stroke-width=".04"/><rect x="-.2" y=".02" width=".4" height=".24" rx=".05" fill="#c9b2ec" stroke="${INK}" stroke-width=".03"/>`,
+    cow: i => `<ellipse cy=".08" rx=".38" ry=".22" fill="#fff" stroke="${INK}" stroke-width=".04"/><circle cx="-.12" cy=".05" r=".08" fill="${INK}"/><circle cx=".14" cy=".14" r=".06" fill="${INK}"/><circle cx=".38" cy="-.1" r=".14" fill="#fff" stroke="${INK}" stroke-width=".04"/><ellipse cx=".46" cy="-.06" rx=".07" ry=".05" fill="#f6b5cf"/>${[-.26, -.1, .12, .26].map(x => `<path d="M${x} .26V.42" stroke="${INK}" stroke-width=".05"/>`).join('')}`,
+    train: i => `<rect x="-.46" y="-.26" width=".92" height=".42" rx=".08" fill="#79c69a" stroke="${INK}" stroke-width=".04"/>${[-.32, -.08, .16].map(x => `<rect x="${x}" y="-.18" width=".16" height=".14" fill="#e6f6fb"/>`).join('')}<circle cx="-.26" cy=".2" r=".09" fill="${INK}"/><circle cx=".26" cy=".2" r=".09" fill="${INK}"/>`,
+    pencil: i => `<rect x="-.07" y="-.4" width=".14" height=".64" fill="${COL[i % 4]}"/><path d="M-.07 .24L0 .42L.07 .24Z" fill="#f2d3a0"/><rect x="-.07" y="-.46" width=".14" height=".08" fill="#e58bb0"/>`,
+    candy: i => `<path d="M-.42 -.14L-.18 0L-.42 .14Z M.42 -.14L.18 0L.42 .14Z" fill="${COL[i % 6]}" opacity=".75"/><circle r=".2" fill="${COL[i % 6]}" stroke="#fff" stroke-width=".04"/>`,
+    ball: i => `<circle r=".36" fill="${COL[(i + 2) % 6]}"/><path d="M-.34 -.05q.34 .22 .68 0" stroke="#fff" stroke-width=".06" fill="none"/>`,
+    adult: i => `<g transform="scale(1.35)"><circle cy="-.22" r=".13" fill="${['#f2c9a0', '#c98b5a', '#e8b48a'][i % 3]}"/><path d="M-.11 -.3q.11 -.12 .22 0q-.11 -.04 -.22 0Z" fill="#3a2a1a"/><path d="M-.22 .34V.04Q-.22 -.07 0 -.07T.22 .04V.34Z" fill="${['#23799f', '#9b6bd3', '#2e9e6b'][i % 3]}"/></g>`
+  };
+  function drawThing(key, x, y, sz, i) {
+    if (key === 'kid') return `<g transform="translate(${f1(x)} ${f1(y)}) scale(${f1(sz / 34)})">${kid(0, 0, i)}</g>`;
+    if (OWNER.has(key)) return img(key, x, y, sz);
+    return DRAWN[key] ? `<g transform="translate(${f1(x)} ${f1(y)}) scale(${f1(sz)})">${DRAWN[key](i)}</g>` : '';
+  }
+  function g3Story(q) {
+    const p = (q && q.pic) || { parts: [] }, parts = p.parts, np = parts.length, gap = 10, pw = (W - 20 - gap * (np - 1)) / np, H = 196, ar = AR();
+    let s = '';
+    parts.forEach((pt, k) => {
+      const x = ar ? W - 10 - (k + 1) * pw - k * gap : 10 + k * (pw + gap), y = 10, ph = 150, n = pt.n;
+      s += `<rect x="${f1(x)}" y="${y}" width="${f1(pw)}" height="${ph}" rx="14" fill="#fff" stroke="#e8d9bd" stroke-width="2"/>`;
+      if (n != null && n <= 30 && !pt.big && n > 0) {
+        const cols = Math.ceil(Math.sqrt(n * pw / ph)), rows = Math.ceil(n / cols), cw = (pw - 12) / cols, rh = (ph - 12) / rows, sz = Math.min(cw, rh) * .9;
+        for (let i = 0; i < n; i++) s += drawThing(pt.icon, x + 6 + (i % cols + .5) * cw, y + 6 + (Math.floor(i / cols) + .5) * rh, sz, i);
+      } else {
+        s += drawThing(pt.icon, x + pw / 2, y + ph / 2 - (n != null ? 14 : 0), Math.min(pw * .6, 78), 0);
+        if (n != null && n > 0) s += txt(x + pw / 2, y + ph - 14, `× ${dg(n)}`, { fs: 18, fill: '#c0306d' });
+      }
+      const lab = pt.label != null ? pt.label : n != null ? dg(n) + (pt.unit ? ' ' + pt.unit : '') : '';
+      if (lab) s += txt(x + pw / 2, y + ph + 26, lab, { fs: 15 });
+    });
+    return svg(H, T('A picture of the problem', 'صورة المسألة'), s);
+  }
+
   window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map, g3Tally, g3Bars, g3Table, g3Photo });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map, g3Tally, g3Bars, g3Table, g3Photo, g3Story });
 })();

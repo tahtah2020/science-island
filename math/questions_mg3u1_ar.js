@@ -220,4 +220,14 @@ window.IDEAS = [
       boss('٣ × ؟ = ٢٧', 9, '27/3', 'فكّر في جدول ضرب العدد ٣ حتى تصل إلى ٢٧.', { explain: '٣ × ٩ = ٢٧.' })
     ] }
 ];
+
+/* Word problems as pictures (owner, 6 Nov 2026): the things, how many, and who they go to. Key = idea.phrasing (1-based). A phrasing that already has a picture keeps it. */
+const S = (icon, n, label, more) => Object.assign({ icon, n, label }, more || {});
+const STORY = {
+  'C3.3': [S('kid', 8, '٨ أشخاص'), S('candy', 10, '١٠ لكل شخص')],
+  'C3.4': [S('kid', 10, '١٠ أطفال'), S('apple', 8, '٨ لكل طفل')],
+  'C4.2': { fig: 'g3Boxes', pic: { n: 4, per: 10, kind: 'pencil' } },
+  'C4.3': [S('kid', 8, '٨ أشخاص'), S('candy', 10, '١٠ لكل شخص')]
+};
+window.IDEAS.forEach(I => I.variants.forEach((v, i) => { const st = STORY[I.id + '.' + (i + 1)]; if (st && !v.fig) Object.assign(v, Array.isArray(st) ? { fig: 'g3Story', pic: { parts: st } } : st); }));
 })();

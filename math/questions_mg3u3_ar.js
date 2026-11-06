@@ -174,4 +174,48 @@ window.IDEAS = [
       boss('يوجد شريط أحمر طوله ٦ م وشريط أبيض طوله ٤٢ م. كم ضِعفًا لطول الشريط الأحمر يساوي طول الشريط الأبيض؟', 7, '42/6', 'اقسم ٤٢ على ٦. فكّر في جدول ضرب العدد ٦.', { unit: 'أضعاف', explain: '٤٢ ÷ ٦ = ٧ أضعاف.' })
     ] }
 ];
+
+/* Word problems as pictures (owner, 6 Nov 2026): the things, how many, and who they go to. Key = idea.phrasing (1-based). A phrasing that already has a picture keeps it. */
+const S = (icon, n, label, more) => Object.assign({ icon, n, label }, more || {});
+const STORY = {
+  'J2.1': [S('strawberry', 12, '١٢ قطعة فراولة'), S('kid', 3, '٣ أشخاص')],
+  'J2.2': [S('orange', 15, '١٥ برتقالة'), S('kid', 5, '٥ أشخاص')],
+  'J2.3': [S('pencil', 16, '١٦ قلمًا'), S('kid', 4, '٤ أشخاص')],
+  'J2.4': [S('biscuit', 24, '٢٤ قطعة بسكويت'), S('kid', 3, '٣ أشخاص')],
+  'J2.5': [S('strawberry', 18, '١٨ قطعة فراولة'), S('kid', 6, '٦ أشخاص')],
+  'J2.6': [S('pencil', 21, '٢١ قلمًا'), S('kid', 3, '٣ أشخاص')],
+  'J3.1': [S('pencil', 14, '١٤ قلمًا'), S('pencil', 2, '٢ لكل شخص')],
+  'J3.2': [S('candy', 24, '٢٤ قطعة حلوى'), S('candy', 4, '٤ لكل شخص')],
+  'J3.3': [S('ball', 24, '٢٤ كرة'), S('ball', 6, '٦ في كل كيس')],
+  'J3.4': [S('candy', 32, '٣٢ قطعة حلوى'), S('candy', 8, '٨ لكل شخص')],
+  'J4.1': { fig: 'g3Tape', pic: { big: 45, small: 9, unit: 'سم', segs: true, noSmall: true } },
+  'J4.2': { fig: 'g3Tape', pic: { big: 63, small: 9, unit: 'سم', segs: true, noSmall: true } },
+  'J4.3': { fig: 'g3Tape', pic: { big: 64, small: 8, unit: 'سم', segs: true, noSmall: true } },
+  'J4.4': { fig: 'g3Tape', pic: { big: 56, small: 8, unit: 'سم', segs: true, noSmall: true } },
+  'J5.1': [S('biscuit', 24, '٢٤ قطعة بسكويت'), S('kid', 3, '٣ أشخاص')],
+  'J5.4': [S('rose', 72, '٧٢ وردة'), S('rose', 9, '٩ في كل باقة')],
+  'J6.1': [S('rose', 72, '٧٢ وردة'), S('rose', 9, '٩ في كل باقة')],
+  'J6.2': [S('ball', 48, '٤٨ كرة'), S('ball', 8, '٨ في كل كيس')],
+  'K2.1': [S('apple', 6, '٦ تفاحات'), S('kid', 3, '٣ أشخاص')],
+  'K2.2': [S('adult', 6, '٦ في الحافلة'), S('adult', 3, 'نزل ٣')],
+  'K2.3': [S('orange', 6, 'معك ٦'), S('orange', 3, 'حصلتَ على ٣')],
+  'K2.4': [S('pencil', 6, '٦ أقلام'), S('pencil', 3, '٣ لكل شخص')],
+  'K2.5': [S('paper', 6, '٦ لكل واحد'), S('kid', 3, '٣ أشخاص')],
+  'K4.1': [S('paper', 18, '١٨ ورقة'), S('paper', 6, '٦ لكل طفل')],
+  'K4.2': [S('notebook', 27, '٢٧ كراسة'), S('kid', 9, '٩ أطفال')],
+  'K4.3': [S('pencil', 15, '١٥ قلمًا'), S('pencil', 5, '٥ لكل طفل')],
+  'K4.4': [S('notebook', 28, '٢٨ كراسة'), S('kid', 7, '٧ أطفال')],
+  'L3.1': [S('cube', 24, 'ريم ٢٤'), S('cube', 6, 'سامي ٦')],
+  'L3.2': [S('paper', 30, 'سارة ٣٠'), S('paper', 5, 'أخوها ٥')],
+  'L3.3': [S('cube', 9, 'حسن ٩'), S('cube', 27, 'مريم ٢٧')],
+  'L3.5': [S('candy', 32, 'حلوى ٣٢'), S('cube', 8, 'جيلي ٨')],
+  'L3.6': [S('cube', 7, 'حسن ٧'), S('cube', 35, 'مريم ٣٥')],
+  'L4.1': [S('cube', 24, 'ريم ٢٤'), S('cube', 6, 'سامي ٦')],
+  'L4.2': [S('kid', null, 'جمال ٨ سنوات'), S('adult', null, 'الجدة ٦٤ سنة')],
+  'L5.1': [S('kid', null, 'جمال ٨ سنوات'), S('adult', null, 'الجدة ٦٤ سنة')],
+  'L5.2': [S('paper', 63, 'أحمد ٦٣'), S('paper', 7, 'أخته ٧')],
+  'L5.3': [S('pencil', 36, 'المعلم ٣٦'), S('pencil', 4, 'هاني ٤')],
+  'L5.4': { fig: 'g3Tape', pic: { big: 42, small: 6, unit: 'م' } }
+};
+window.IDEAS.forEach(I => I.variants.forEach((v, i) => { const st = STORY[I.id + '.' + (i + 1)]; if (st && !v.fig) Object.assign(v, Array.isArray(st) ? { fig: 'g3Story', pic: { parts: st } } : st); }));
 })();
