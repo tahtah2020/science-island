@@ -2,6 +2,7 @@
    like the Arabic school book; an English reader sees 0-9.
      g3Groups  (fig)  equal groups in rows (a × b = b rows of a): q.pic = { per: 7, n: 2, add: 1 }   add: 1 = one more row (green, dashed), -1 = the last row taken away (faded, crossed)
      g3Split   (fig)  a dot array cut into two parts (distributive rule): q.pic = { per: 3, n: 9, cut: 4, labels: true }   rows = n, dots per row = per, line after `cut` rows
+     g3Branch  (fig)  the book's «تفكيك» bracket: a × b → two rows (part × kept = box) → المجموع: q.pic = { a: 6, b: 7, split: 1, parts: [5, 2], res: ['', ''], sum: '?' }  split = 0 breaks a, 1 breaks b (coral); value '?' = asked (gold «؟»), '' = empty box
      g3Boxes   (fig)  containers holding the same number of things: q.pic = { n: 4, per: 10, kind: 'pencil' | 'candy' | 'apple' | 'seat' | 'ball', empty: 2 }   empty = extra empty boxes
      g3Target  (fig)  a throwing target with rings of points and the throws on it: q.pic = { zones: [3, 2, 1, 0], hits: [0, 1, 3, 6] }
      g3Score   (fig)  the book's score table: q.pic = { pts: [3, 2, 1, 0], hits: [0, 1, 3, 6], tot: ['', '', '', ''], sum: '' }  (rows: النقاط، عدد الرميات، إجمالي عدد النقاط)
@@ -65,6 +66,64 @@
       s += txt(lx, y0 + p.cut * d + gap + (p.n - p.cut) * d / 2 + 6, `${dg(p.n - p.cut)} × ${dg(p.per)}`, { fs: 15, fill: '#d0662c' }).replace('<text', '<text direction="rtl"');
     }
     return svg(H, T(`${p.n} rows of ${p.per} dots, cut into two parts`, `${dg(p.n)} صفوف في كل صف ${dg(p.per)} نقاط، مقسومة إلى جزأين`), s);
+  }
+
+  /* the book's «تفكيك» bracket: the product on the right, a bracket opening to two rows, a line, then «المجموع».
+     The number being broken up is coral (with «نفكّكه» under it) and so are its two parts; the number that stays is navy.
+     Values: a number is shown, '?' is the asked spot (gold dashed «؟»), '' is an empty box. */
+  function g3Branch(q) {
+    const p = (q && q.pic) || { a: 6, b: 7, split: 1, parts: [5, 2], res: ['', ''], sum: '' };
+    const SPL = '#e2603f', SPLBG = '#fde3da', ASK = '#d99a12', ASKBG = '#fff4d6', ar = AR();
+    const res = p.res || ['', ''], H = 198;
+    const wOf = k => k.op ? 22 : k.box ? 54 : 16 * String(k.t).length + 14;
+    /* one token: a number (optionally coral pill), a sign, or a result box */
+    const tok = (k, cx, y) => {
+      if (k.op) return txt(cx, y + 7, k.t, { fs: 20, fill: '#5b7489' });
+      const ask = k.t === '?', empty = k.t === '' || k.t === undefined, w = wOf(k) - 6;
+      if (k.box || ask || empty) {
+        return `<rect x="${f1(cx - w / 2)}" y="${f1(y - 17)}" width="${f1(w)}" height="34" rx="8" fill="${ask ? ASKBG : '#fff'}" stroke="${ask ? ASK : '#8fa6b8'}" stroke-width="2.2"${ask ? ' stroke-dasharray="5 4"' : ''}/>`
+          + (empty ? '' : txt(cx, y + 8, ask ? '؟' : dg(k.t), { fs: 20, fill: ask ? ASK : k.c || INK }));
+      }
+      return (k.hl ? `<rect x="${f1(cx - w / 2)}" y="${f1(y - 16)}" width="${f1(w)}" height="32" rx="16" fill="${SPLBG}" stroke="${SPL}" stroke-width="2"/>` : '')
+        + txt(cx, y + 8, dg(k.t), { fs: 22, fill: k.c || INK });
+    };
+    /* lay tokens out from xr leftwards in Arabic (first token on the right), rightwards from xl in English */
+    const row = (ks, x0, y) => {
+      let s = '', x = x0;
+      const list = ar ? ks : ks.slice().reverse();
+      const pos = [];
+      list.forEach(k => { const w = wOf(k); pos.push(x - w / 2); x -= w; });
+      list.forEach((k, i) => { s += tok(k, pos[i], y); });
+      return { s, left: x };
+    };
+    const kept = p.split === 0 ? p.b : p.a, big = p.split === 0 ? p.a : p.b;
+    const num = (t, isSplit) => ({ t, c: isSplit ? SPL : INK, hl: isSplit && t !== '?' && t !== '' });
+    /* the product a × b on the right */
+    const ex = [num(p.a, p.split === 0), { op: 1, t: '×' }, num(p.b, p.split === 1)];
+    const ey = 78, top = row(ex, 332, ey);
+    let s = top.s;
+    /* «نفكّكه» under the number that is broken up */
+    const exW = ex.map(wOf), splitX = p.split === 0 ? 332 - exW[0] / 2 : 332 - exW[0] - exW[1] - exW[2] / 2;
+    s += txt(splitX, ey + 36, 'نفكّكه', { fs: 12, fill: SPL });
+    /* the bracket */
+    const bx = top.left - 4, rx = bx - 30, y1 = 36, y2 = 120;
+    s += `<path d="M${f1(rx)} ${y1}L${f1(bx)} ${ey}L${f1(rx)} ${y2}" fill="none" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round"/>`;
+    /* the two rows: the kept number stays in its place, the part takes the broken number's place */
+    const rowToks = i => {
+      const part = num(p.parts[i], true), stay = num(kept, false);
+      const pair = p.split === 0 ? [part, { op: 1, t: '×' }, stay] : [stay, { op: 1, t: '×' }, part];
+      return pair.concat([{ op: 1, t: '=' }, { t: res[i], box: 1, c: INK }]);
+    };
+    const r1 = row(rowToks(0), rx - 8, y1), r2 = row(rowToks(1), rx - 8, y2);
+    s += r1.s + r2.s;
+    /* the line and the sum */
+    const left = Math.min(r1.left, r2.left), ly = y2 + 26;
+    s += `<path d="M${f1(left - 4)} ${ly}H${f1(rx - 4)}" stroke="${INK}" stroke-width="2"/>`;
+    const boxX = ar ? left + 27 : rx - 8 - 27;
+    s += tok({ t: p.sum, box: 1 }, boxX, ly + 24);
+    s += txt(ar ? boxX + 70 : boxX - 70, ly + 30, T('Total', 'المجموع'), { fs: 16 });
+    const name = T(`Breaking up ${big} to work out ${p.a} × ${p.b}`, `تفكيك العدد ${dg(big)} لحساب ${dg(p.a)} × ${dg(p.b)}`);
+    return svg(H, name, s);
   }
 
   /* things that go in the boxes */
@@ -279,5 +338,5 @@
   }
 
   window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map });
 })();
