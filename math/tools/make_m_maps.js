@@ -317,3 +317,28 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
 ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_mg3u4.svg', b);
 })();
+
+/* ---------- Grade 3 · Unit 5 · Length: a town island with roads, a straight path, a measuring tape and a km sign ---------- */
+(function () {
+  seed = 73;
+  const D = ctx.window.CH_DIAGRAMS;
+  const strip = s => s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  const tapeRoll = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><circle r="44" fill="#f2b134" stroke="#b07d14" stroke-width="5"/><circle r="14" fill="#fff" stroke="#b07d14" stroke-width="4"/><rect x="40" y="18" width="160" height="22" fill="#fdf3c4" stroke="#b08a14" stroke-width="3"/>${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<path d="M${52 + i * 20} 18V${i % 2 ? 26 : 32}" stroke="#1f3d57" stroke-width="2"/>`).join('')}</g>`;
+  const sign = (x, y, k, t) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0V-90" stroke="#8a5a28" stroke-width="7"/><path d="M-50 -110H40L60 -92L40 -74H-50Z" fill="#2e9e6b" stroke="#1f6e46" stroke-width="4"/><text x="0" y="-84" text-anchor="middle" font-family="Cairo, sans-serif" font-weight="800" font-size="26" fill="#fff">${t}</text></g>`;
+  const house = (x, y, k, c) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-34" y="-20" width="68" height="50" fill="#fde3cf" stroke="#1f3d57" stroke-width="4"/><path d="M-42 -20L0 -54L42 -20Z" fill="${c}" stroke="#1f3d57" stroke-width="4"/><rect x="-9" y="6" width="18" height="24" fill="#8a5a28"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#e4f1d0" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#dcecf6" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#fdeedd" opacity=".6"/>`;
+  for (let i = 0; i < 26; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); inside += tuft(x, y); }
+  let s = island([[0, '#e6f3d6'], [.5, '#e9efd8'], [1, '#e8f0d0']], ['#f3e6b8', '#f6efd2'], inside);
+  s += house(230, 520, 1.2, '#e2603f') + house(960, 480, 1.1, '#9b6bd3') + sign(900, 820, 1, '١ كم') + tapeRoll(200, 900, 1);
+  s += board(600, 640, 300, 210, '<g transform="translate(-150 -92) scale(.86)">' + strip(D.g3Map({ pic: { a: 'بيت دينا', b: 'المدرسة', l1: 700, l2: 550, d: 1100, ia: 'house', ib: 'school' } })) + '</g>');
+  s += crate(400, 1150, 1, 'م') + crate(458, 1162, .9, 'كم') + crate(512, 1154, .8, 'سم');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_mg3u5.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#eef4f8"/><stop offset="1" stop-color="#dfe9d4"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#cfe3b0"/>${house(220, 860, 1.8, '#e2603f')}${sign(1350, 900, 1.5, '١ كم')}${tapeRoll(760, 900, 1.3)}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_mg3u5.svg', b);
+})();

@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'رياضيات الصف الثالث (عربي): الوحدة الخامسة «الطول»',
+    items: [
+      { text: 'الوحدة الخامسة: درسان من السهل إلى الصعب، مع تلميح لكل سؤال' },
+      { text: 'صور جديدة: شريط القياس وعليه سهم، وخريطة فيها الطريق وأقصر مسافة', links: [{ label: 'افتح الوحدة', href: 'map.html', ch: 'mg3u5' }] }
+    ] },
   { date: '2026-11-06', title: 'رياضيات الصف الثالث (عربي): الوحدة الرابعة «الجمع والطرح»',
     items: [
       { text: 'الوحدة الرابعة: 4 دروس من السهل إلى الصعب، مع تلميح لكل سؤال' },

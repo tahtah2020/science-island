@@ -14,6 +14,9 @@
      g3Tape   (fig)  the book's comparison bars: a long bar and a short bar under it: q.pic = { big: 15, small: 3, unit: 'سم', segs: true }   segs: dashed cuts along the long bar
    Unit 4 (column addition and subtraction):
      g3Column (fig)  the book's column sum: digits under their place names, the sign on the right, an empty answer row: q.pic = { a: 375, b: 283, op: '+' | '-' }
+   Unit 5 (length):
+     g3Measure (fig)  a piece of measuring tape, 1 cm a tick, labelled every 10 cm and at each metre, with an arrow: q.pic = { from: 290, to: 330, at: 315 }  (all in cm)
+     g3Map     (fig)  the book's little map: the road (two parts, via a corner) and the straight line between two places: q.pic = { a: 'بيت دينا', b: 'المدرسة', l1: 700, l2: 550, d: 1100, ia: 'house', ib: 'school' }
    Screen-reader names describe the drawing, never the answer. */
 (function () {
   'use strict';
@@ -238,6 +241,43 @@
     return svg(y0 + 3 * rh + 26, T('A column sum with an empty answer row', 'عملية رأسية والناتج فارغ'), s);
   }
 
+
+  /* ---------- Unit 5 · length ---------- */
+  function g3Measure(q) {
+    const p = (q && q.pic) || { from: 290, to: 330, at: 315 }, x0 = 20, L = 300, X = v => x0 + (v - p.from) / (p.to - p.from) * L, top = 62;
+    let s = `<rect x="${x0 - 8}" y="${top}" width="${L + 16}" height="58" rx="6" fill="#fdf3c4" stroke="#b08a14" stroke-width="2.4"/>`;
+    for (let v = p.from; v <= p.to; v++) {
+      const big = v % 10 === 0, mid = v % 5 === 0, h = big ? 22 : mid ? 15 : 9;
+      s += `<path d="M${f1(X(v))} ${top}V${top + h}" stroke="${INK}" stroke-width="${big ? 2 : 1.2}"/>`;
+      if (big) s += v % 100 === 0 ? txt(X(v), top + 44, `${dg(v / 100)} ${T('m', 'م')}`, { fs: 14, fill: '#c0306d' }) : txt(X(v), top + 44, dg(v % 100), { fs: 13 });
+      if (mid && !big) s += `<path d="M${f1(X(v) - 3)} ${top + 18}L${f1(X(v))} ${top + 23}L${f1(X(v) + 3)} ${top + 18}" fill="none" stroke="${INK}" stroke-width="1.2"/>`;
+    }
+    const ax = X(p.at);
+    s += `<path d="M${f1(ax)} 18V${top - 4}" stroke="#e2603f" stroke-width="7"/><path d="M${f1(ax - 11)} ${top - 16}L${f1(ax)} ${top - 2}L${f1(ax + 11)} ${top - 16}Z" fill="#e2603f"/>`;
+    return svg(136, T('A piece of measuring tape with an arrow', 'جزء من شريط القياس وعليه سهم'), s);
+  }
+  const placeIcon = (kind, x, y) => kind === 'park'
+    ? `<g transform="translate(${x} ${y})"><rect x="-14" y="6" width="28" height="6" rx="2" fill="#8a5a28"/><circle cy="-6" r="13" fill="#2e9e6b"/><circle cx="-9" cy="0" r="9" fill="#3fae6f"/><circle cx="9" cy="0" r="9" fill="#3fae6f"/></g>`
+    : kind === 'school' ? `<g transform="translate(${x} ${y})"><rect x="-16" y="-10" width="32" height="24" fill="#fff" stroke="${INK}" stroke-width="2"/><path d="M-18 -10L0 -22L18 -10Z" fill="#9aa9b5" stroke="${INK}" stroke-width="2"/><rect x="-4" y="4" width="8" height="10" fill="${INK}"/><circle cy="-13" r="3" fill="#4ea5d9"/></g>`
+    : kind === 'mall' ? `<g transform="translate(${x} ${y})"><rect x="-15" y="-18" width="30" height="32" fill="#e9eef3" stroke="${INK}" stroke-width="2"/>${[0, 1, 2].map(r => [0, 1, 2].map(c => `<rect x="${-11 + c * 8}" y="${-14 + r * 9}" width="5" height="6" fill="#4ea5d9"/>`).join('')).join('')}</g>`
+    : `<g transform="translate(${x} ${y})"><rect x="-15" y="-8" width="30" height="22" fill="${kind === 'house2' ? '#d9c8ef' : '#fde3cf'}" stroke="${INK}" stroke-width="2"/><path d="M-19 -8L0 -22L19 -8Z" fill="${kind === 'house2' ? '#9b6bd3' : '#e2603f'}" stroke="${INK}" stroke-width="2"/><rect x="-4" y="3" width="8" height="11" fill="#8a5a28"/></g>`;
+  function g3Map(q) {
+    const p = (q && q.pic) || { a: 'بيت دينا', b: 'المدرسة', l1: 700, l2: 550, d: 1100 }, A = [70, 150], C = [190, 44], B = [292, 132];
+    const m = v => `${dg(v)} ${T('m', 'م')}`;
+    let s = `<rect x="10" y="10" width="320" height="196" rx="10" fill="#d6ecbf"/>`;
+    s += `<path d="M${A[0]} ${A[1]}L${C[0]} ${C[1]}L${B[0]} ${B[1]}" fill="none" stroke="#fff" stroke-width="22" stroke-linejoin="round"/><path d="M${A[0]} 10V206" stroke="#fff" stroke-width="20" opacity=".8"/>`;
+    const arrow = (P, Q, lab, off) => {
+      const mx = (P[0] + Q[0]) / 2, my = (P[1] + Q[1]) / 2, dx = Q[0] - P[0], dy = Q[1] - P[1], l = Math.hypot(dx, dy), nx = -dy / l, ny = dx / l;
+      const head = (X, Y, ux, uy) => `<path d="M${f1(X - ux * 9 + uy * 5)} ${f1(Y - uy * 9 - ux * 5)}L${f1(X)} ${f1(Y)}L${f1(X - ux * 9 - uy * 5)} ${f1(Y - uy * 9 + ux * 5)}" fill="none" stroke="#e2603f" stroke-width="2.2"/>`;
+      return `<path d="M${f1(P[0] + dx / l * 8)} ${f1(P[1] + dy / l * 8)}L${f1(Q[0] - dx / l * 8)} ${f1(Q[1] - dy / l * 8)}" stroke="#e2603f" stroke-width="2.2"/>` + head(Q[0] - dx / l * 8, Q[1] - dy / l * 8, dx / l, dy / l) + head(P[0] + dx / l * 8, P[1] + dy / l * 8, -dx / l, -dy / l)
+        + `<rect x="${f1(mx + nx * off - 30)}" y="${f1(my + ny * off - 12)}" width="60" height="22" rx="6" fill="#fffaf0" opacity=".92"/>` + txt(mx + nx * off, my + ny * off + 5, lab, { fs: 13 });
+    };
+    s += arrow(A, C, m(p.l1), -16) + arrow(C, B, m(p.l2), -16) + arrow(A, B, m(p.d), 18);
+    [A, B, C].forEach(P => { s += `<circle cx="${P[0]}" cy="${P[1]}" r="5" fill="${INK}"/>`; });
+    s += placeIcon(p.ia || 'house', 40, 112) + txt(42, 196, p.a, { fs: 13 }) + placeIcon(p.ib || 'park', 300, 92) + txt(296, 170, p.b, { fs: 13 });
+    return svg(216, T('A small map with a road and a straight line', 'خريطة صغيرة فيها طريق وخط مستقيم'), s);
+  }
+
   window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map });
 })();
