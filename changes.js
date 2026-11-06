@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'رياضيات الصف الثالث: صور المقياس والأعمدة',
+    items: [
+      { text: 'كل أسئلة المقياس وارتفاع الأعمدة في الدرس الثالث أصبح معها رسم' },
+      { text: 'سؤالا العنوان والوحدة يظهر معهما الرسم ومكان الإجابة' }
+    ] },
   { date: '2026-11-06', title: 'زر «محتاج مساعدة؟» تحت ريشو، وسؤال «أخرى» أوضح',
     items: [
       { text: 'زر التلميح أصبح «محتاج مساعدة؟» تحت ريشو، ويختفي بعد الإجابة' },

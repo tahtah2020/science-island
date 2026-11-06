@@ -19,6 +19,7 @@
      g3Measure (fig)  a piece of measuring tape, 1 cm a tick, labelled every 10 cm and at each metre, with an arrow: q.pic = { from: 290, to: 330, at: 315 }  (all in cm)
      g3Map     (fig)  the book's little map: the road (two parts, via a corner) and the straight line between two places: q.pic = { a: 'بيت دينا', b: 'المدرسة', l1: 700, l2: 550, d: 1100, ia: 'house', ib: 'school' }
    Unit 6 (data) — icons are the owner's pictures (Gemini, 6 Nov 2026), cut to math/assets/g3/ic_<name>.webp:
+     g3Scale (fig)  the scale alone: q.pic = { max: 20, ticks: 10, labels: [0, 20], ask: 5 | 'step' }  ask n = gold «؟» at mark n; 'step' = gold «؟» over one mark
      g3Tally (fig)  the book's tally table, a row per kind: q.pic = { rows: [['التفاح', 'apple', 13], …] }   n = tally marks drawn (groups of five); other: [3, 4] tints those rows gold and adds a gold «أخرى» row with «؟» (the rows to be put together into «أخرى»)
      g3Bars  (fig)  the book's bar graph: q.pic = { title, unit: 'تلاميذ', max: 10, step: 1, bars: [['أحمر', null, 9, '#e85a6b'], ['التفاح', 'apple', 3]] }   labels at 0, max/2 and max; value null = no bar yet
      g3Table (fig)  a table that reads from the right: q.pic = { title, unit, head: ['', 'الفصل ١', …], rows: [['كرة القدم', 11, 9, 10, '؟'], …] }
@@ -379,9 +380,33 @@
     }
     return svg(H, T('A tally table', 'جدول علامات العدّ'), s);
   }
+  /* the book's scale (المقياس) on its own: 0 at the bottom, `ticks` marks up to `max`, numbers only where `labels` says;
+     ask: a tick number → gold «؟» at that mark; ask: 'step' → gold «؟» bracket over one mark (how much one mark is worth) */
+  function g3Scale(q) {
+    const p = (q && q.pic) || { max: 10, ticks: 10, labels: [0, 10], ask: 5 }, n = p.ticks, sp = Math.min(22, 250 / n), H = n * sp + 56, ax = 176, y0 = H - 26, Y = i => y0 - i * sp, GOLD = '#d99a12';
+    let s = `<path d="M${ax} ${f1(Y(n) - 10)}V${y0}" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>`;
+    for (let i = 0; i <= n; i++) {
+      const big = i === 0 || i === n || (p.labels || []).includes(i * p.max / n);
+      s += `<path d="M${ax - (big ? 14 : 9)} ${f1(Y(i))}H${ax + (big ? 14 : 9)}" stroke="${INK}" stroke-width="${big ? 2.6 : 1.8}"/>`;
+      if ((p.labels || []).includes(i * p.max / n)) s += txt(ax - 34, Y(i) + 6, dg(i * p.max / n), { fs: 16 });
+    }
+    if (typeof p.ask === 'number') {
+      const y = Y(p.ask);
+      s += `<path d="M${ax + 16} ${f1(y)}H${ax + 46}" stroke="${GOLD}" stroke-width="2.4"/><path d="M${ax + 16} ${f1(y)}l9 -5v10z" fill="${GOLD}"/>`
+        + `<rect x="${ax + 48}" y="${f1(y - 14)}" width="40" height="28" rx="7" fill="#fff4d6" stroke="${GOLD}" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(ax + 68, y + 7, '؟', { fs: 18, fill: GOLD });
+    } else if (p.ask === 'step') {
+      const ya = Y(0), yb = Y(1), xm = ax + 22;
+      s += `<path d="M${ax + 14} ${f1(ya)}h8V${f1(yb)}h-8" fill="none" stroke="${GOLD}" stroke-width="2.4"/><path d="M${xm} ${f1((ya + yb) / 2)}H${xm + 22}" stroke="${GOLD}" stroke-width="2.4"/>`
+        + `<rect x="${xm + 24}" y="${f1((ya + yb) / 2 - 14)}" width="40" height="28" rx="7" fill="#fff4d6" stroke="${GOLD}" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(xm + 44, (ya + yb) / 2 + 7, '؟', { fs: 18, fill: GOLD });
+    }
+    return svg(H, T(`A scale from 0 to ${p.max} with ${n} marks`, `مقياس من ${dg(0)} إلى ${dg(p.max)} فيه ${dg(n)} علامات`), s);
+  }
   function g3Bars(q) {
     const p = (q && q.pic) || { max: 10, step: 1, bars: [] }, nb = p.bars.length, gx = 54, gw = 250, gy = 50, gh = 186, Y = v => gy + gh - v / p.max * gh;
-    let s = txt(178, 20, p.title || '', { fs: 14 }) + (p.unit ? txt(30, 38, `(${p.unit})`, { fs: 11, w: 700 }) : '');
+    /* title or unit '?' = the asked spot: a gold dashed box with «؟» (the book's [ ] and ( ) to fill in) */
+    const askBox = (cx, cy, w) => `<rect x="${f1(cx - w / 2)}" y="${f1(cy - 13)}" width="${w}" height="26" rx="7" fill="#fff4d6" stroke="#d99a12" stroke-width="2.2" stroke-dasharray="5 4"/>` + txt(cx, cy + 7, '؟', { fs: 18, fill: '#d99a12' });
+    let s = p.title === '?' ? askBox(178, 16, 150) : txt(178, 20, p.title || '', { fs: 14 });
+    s += p.unit === '?' ? askBox(30, 26, 32) + `<path d="M11 13q-7 13 0 26M49 13q7 13 0 26" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>` : p.unit ? txt(30, 38, `(${p.unit})`, { fs: 11, w: 700 }) : '';
     s += `<rect x="${gx}" y="${gy}" width="${gw}" height="${gh}" fill="#fff" stroke="${INK}" stroke-width="2"/>`;
     for (let v = p.step; v < p.max; v += p.step) s += `<path d="M${gx} ${f1(Y(v))}H${gx + gw}" stroke="${v === p.max / 2 ? INK : '#9aa9b5'}" stroke-width="${v === p.max / 2 ? 1.6 : 1}"${v === p.max / 2 ? '' : ' stroke-dasharray="3 3"'}/>`;
     [0, p.max / 2, p.max].forEach(v => { s += txt(gx - 16, Y(v) + 5, dg(v), { fs: 13 }); });
@@ -456,5 +481,5 @@
   }
 
   window.G3ART = { dg };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map, g3Tally, g3Bars, g3Table, g3Photo, g3Story });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { g3Groups, g3Split, g3Branch, g3Boxes, g3Target, g3Score, g3Clock, g3TimeLine, g3Stopwatch, g3Share, g3Tape, g3Column, g3Measure, g3Map, g3Tally, g3Scale, g3Bars, g3Table, g3Photo, g3Story });
 })();
