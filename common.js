@@ -1239,6 +1239,10 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       .si-navP a .i{font-size:26px;flex:none}.si-navP a small{display:block;font-size:13px;font-weight:700;color:#3a5c75}
       .si-navP a.here{border-color:#2e9e6b;background:#e3f6ea}
       .si-navP button.x{justify-content:center;background:#eef3f7;border-color:#eef3f7}
+      .si-navP a.tgrow{border-color:#bfe3f5;background:#f2faff}.si-navP a.tgrow .i{color:#229ed9;display:flex}.si-navP a.tgrow .i svg{width:26px;height:26px}
+      .si-tgfoot{display:flex;justify-content:center;margin:22px auto 14px;padding:0 16px}
+      .si-tgfoot a{display:inline-flex;align-items:center;gap:7px;color:#3a5c75;background:rgba(255,250,240,.85);border:2px solid #d6e9f3;border-radius:999px;padding:6px 14px;font:800 14px Cairo,Nunito,sans-serif;text-decoration:none}
+      .si-tgfoot a svg{color:#229ed9;width:18px;height:18px;flex:none}.si-tgfoot a:hover{border-color:#229ed9}
       @media (max-width:420px){#si-nav{padding:6px 12px;font-size:15px}}
       @media (max-height:520px) and (orientation:landscape){#si-nav{padding:5px 12px;font-size:14px}.si-navP{gap:6px;padding:10px}.si-navP a{padding:7px 12px;font-size:16px}}`;
     document.head.appendChild(css);
@@ -1256,12 +1260,19 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     o.className = 'si-navO'; o.hidden = true; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', T('Go to', 'روح على'));
     o.innerHTML = `<div class="si-navP"><h2>${T('Where to?', G('تحب تروح فين؟', 'تحبي تروحي فين؟'))}</h2>${items.map(([h, i, t, sub]) =>
       `<a href="${h}"${h === page ? ' class="here" aria-current="page"' : ''}><span class="i" aria-hidden="true">${i}</span><span>${esc(t)}${sub ? `<small>${esc(sub)}</small>` : ''}</span></a>`).join('')}
+      <a class="tgrow" href="${TG_URL}" target="_blank" rel="noopener" data-tg="menu"><span class="i" aria-hidden="true">${TG_ICON}</span><span>${T('Motafawek channel on Telegram', 'قناة متفوّق على تليجرام')}<small>${T('For parents: news of new units and games', 'لأولياء الأمور: أخبار الوحدات والألعاب الجديدة')}</small></span></a>
       <button type="button" class="x">${T('Close', 'إغلاق')} ✕</button></div>`;
     const close = () => { o.hidden = true; btn.focus(); };
     btn.onclick = () => { o.hidden = false; const f = o.querySelector('a'); if (f) f.focus(); };
     o.addEventListener('click', e => { if (e.target === o || e.target.closest('.x')) close(); });
     o.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     document.body.append(o);
+    /* a quiet Telegram line at the very end of the browse pages (never on quiz or game pages, never a pop-up) */
+    if (/^(chapters|map|adventures|champions|wardrobe)\.html$/.test(page) && !document.querySelector('.si-tgfoot')) {
+      const f = document.createElement('div'); f.className = 'si-tgfoot';
+      f.innerHTML = `<a href="${TG_URL}" target="_blank" rel="noopener" data-tg="footer">${TG_ICON}<span>${T('New units are announced on our Telegram channel', 'الوحدات الجديدة بنعلن عنها في قناة تليجرام')}</span></a>`;
+      (document.querySelector('main') || document.body).append(f);
+    }
     /* the button goes at the top, in the page's header (first thing in its .hud, or beside its back link);
        game pages build their header a moment later, so wait for it, and stay pinned at the top corner until then */
     const place = () => {
