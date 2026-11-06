@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-06', title: 'لعبة جديدة للصف الثالث: مخبز ريشو',
+    items: [
+      { text: 'مغامرة «مخبز ريشو»: القسمة بالتوزيع والمجموعات (الوحدة ٣)، والقسمة مع الباقي والتحقق بالضرب (الوحدة ٨)، والضرب في الفرن؛ ٦ أيام كل يوم خطوة صغيرة جديدة', links: [{ label: 'اللعبة', href: 'math-reesho-bakery.html', ch: 'mg3u3' }] },
+      { text: 'صور جديدة من جيميناي: ريشو الخباز، والزبائن، والحلويات، والعلب، والفرن، وخلفية المخبز' }
+    ] },
   { date: '2026-11-06', title: 'النقاط تُضاف فورًا لنجوم متفوّق',
     items: [
       { text: 'كل إجابة صحيحة تُضاف نقاطها لرصيد الطالب في نفس اللحظة، بدل ما كانت تُضاف في آخر التحدي فقط' },

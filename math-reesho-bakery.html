@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Reesho’s Bakery · Division</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 3 adventure «مخبز ريشو / Reesho’s Bakery» (6 Nov 2026).
+     Concepts: Unit 3 Division (lessons 1-2: the meaning of division, number for each person and number of groups), Unit 8 Division with a remainder
+     (lessons 1-4: remainder smaller than the divisor, checking with multiplication, "boxes needed for all" and "full boxes"), Unit 1/10 multiplication
+     (boxes × goods in each box). The maths is the move: the child packs the sweets (days 1-2 by hand, then by writing the numbers on the order slip);
+     the bakery answers a wrong slip (goods left on the tray, a box half full, an empty box) and the oven heats up; 4 mistakes and the batch burns.
+     6 days × 4 customers, one small new step each day. Pictures: Reesho the baker, the customers, the sweets, boxes, oven and the bakery background
+     made by the owner with Gemini (prompts by Claude), cut out to math/assets/bakery/. Music and sounds: Web Audio in the page (no files).
+     Progress: SI.chProf('mg3u3').bakery = { lvl, best, stars[] }. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--choc:#6b3f24;--cream:#fff8ec;--pink:#f7c6cf;--rose:#e46f8a;--ok:#2e9e6b;--gold:#f2b134;--coral:#e2603f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;color:var(--navy);min-height:100svh;
+  background:radial-gradient(circle at 20% 0,#ffe6ea 0,transparent 45%),radial-gradient(circle at 90% 30%,#fff1d6 0,transparent 40%),linear-gradient(#fbe3e6,#f6d9b8)}
+.wrap{max-width:760px;margin:0 auto;padding:8px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0;color:var(--choc);text-shadow:0 2px 0 #fff}
+.pills{display:flex;gap:6px;align-items:center}
+.pill{background:#fff;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px;box-shadow:0 2px 0 #e7c9a8}
+.ib{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#fff;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer;box-shadow:0 2px 0 #e7c9a8}
+.stage{position:relative;margin-top:6px;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px #6b3f2433;background:#f3e3cc}
+#scene{width:100%;height:auto;display:block}
+.say{display:flex;gap:8px;align-items:center;margin:8px 0}
+.say img{width:46px;height:46px;object-fit:contain;flex:none}
+.bubble{position:relative;background:#fff;border-radius:16px;padding:9px 13px;font-size:15.5px;font-weight:700;flex:1;min-height:46px;box-shadow:0 3px 10px #6b3f2422;line-height:1.55}
+.panel{background:var(--cream);border-radius:22px;padding:12px;box-shadow:0 6px 20px #6b3f2426;border:3px solid #fff}
+.ticket{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:2px dashed #e9b8c2;border-radius:16px;padding:8px 12px;margin-bottom:10px}
+.ticket .tag{background:var(--rose);color:#fff;border-radius:10px;padding:2px 10px;font-weight:900;font-size:13px}
+.ticket .it{display:flex;align-items:center;gap:6px;font-weight:900;font-size:19px}
+.ticket .it img{width:34px;height:34px;object-fit:contain}
+.ticket .q{flex-basis:100%;font-weight:800;font-size:15px;color:var(--ink)}
+.tray{min-height:74px;border-radius:16px;padding:8px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;justify-content:center;
+  background:repeating-linear-gradient(90deg,#d9a46d 0 18px,#cf9862 18px 36px);box-shadow:inset 0 -6px 0 #b9824f,inset 0 3px 0 #ecc08c}
+.tray .g{width:var(--gs,30px);height:var(--gs,30px);object-fit:contain;cursor:pointer;transition:transform .15s;filter:drop-shadow(0 2px 0 #0002)}
+.tray .g:hover{transform:scale(1.12)}
+.tray.lock .g{cursor:default}
+.tray .empty{color:#fff;font-weight:800;font-size:14px;align-self:center;opacity:.9}
+.boxes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0 4px;min-height:96px}
+.bx{position:relative;width:92px;height:92px;border:0;background:none;padding:0;cursor:default;font:inherit;color:inherit}
+.bx.tap{cursor:pointer}
+.bx.tap:active{transform:scale(.96)}
+.bx .shell{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.bx .in{position:absolute;left:14px;right:14px;top:18px;height:44px;display:flex;flex-wrap:wrap;gap:1px;justify-content:center;align-content:center;pointer-events:none}
+.bx .in img{width:15px;height:15px;object-fit:contain}
+.bx .cnt{position:absolute;top:-6px;inset-inline-end:-4px;background:var(--navy);color:#fff;border-radius:99px;min-width:26px;height:26px;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;padding:0 6px;box-shadow:0 2px 0 #0003}
+.bx .who{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:30px;height:30px;border-radius:50%;background:#fff;object-fit:cover;object-position:top;border:2px solid #fff;box-shadow:0 1px 4px #0003}
+.bx.closed .in{display:none}
+.bx.pop{animation:pop .35s}
+.bx.bad{animation:sh .45s}
+.bx.empty .shell{opacity:.55}
+@keyframes pop{40%{transform:scale(1.15)}}
+@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.slip{margin-top:12px;background:#fff;border-radius:16px;padding:10px;border:2px solid #f0dcc4}
+.slip .line{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-weight:900;font-size:22px}
+.fld{min-width:64px;height:48px;border-radius:12px;border:3px solid #d8c3a8;background:#fffdf8;display:inline-flex;align-items:center;justify-content:center;font:900 26px Nunito,Cairo;color:var(--navy);cursor:pointer;padding:0 8px}
+.fld.on{border-color:var(--gold);box-shadow:0 0 0 4px #f2b13444}
+.fld.ok{border-color:var(--ok);background:#eefaf4}
+.fld.no{border-color:var(--coral);animation:sh .4s}
+.lbl{font-size:16px;font-weight:800;color:var(--ink)}
+.pad{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px;direction:ltr}
+.pad button{height:44px;border:0;border-radius:12px;background:#f3e7d6;font:900 21px Nunito,Cairo;color:var(--navy);cursor:pointer;box-shadow:0 3px 0 #dcc6a8}
+.pad button:active{transform:translateY(2px);box-shadow:0 1px 0 #dcc6a8}
+.row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.pink{background:var(--rose);color:#fff;box-shadow:0 4px 0 #b84d66}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #dcc6a8}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.check{margin-top:10px;background:#eefaf4;border-radius:14px;padding:8px 12px;font-weight:800;line-height:1.8;border:2px solid #bfe8d6}
+.check[hidden]{display:none}
+.fly{position:fixed;z-index:20;pointer-events:none;transition:transform .38s cubic-bezier(.3,.7,.4,1.2),opacity .38s}
+.veil{position:fixed;inset:0;background:#4a2a18bb;display:flex;align-items:center;justify-content:center;padding:16px;z-index:30}
+.veil[hidden]{display:none}
+.card{background:#fff;border-radius:24px;padding:18px 20px;max-width:400px;width:100%;text-align:center;box-shadow:0 10px 40px #0004;border:4px solid var(--pink)}
+.card h2{margin:4px 0 8px;color:var(--choc)}
+.card ol{text-align:start;padding-inline-start:22px;line-height:1.85;margin:6px 0 12px;font-weight:700}
+.card .hero{height:130px;object-fit:contain}
+.stars{font-size:34px;letter-spacing:4px;color:var(--gold)}
+.new{display:inline-block;background:#fff4d6;border:2px solid var(--gold);border-radius:12px;padding:6px 10px;font-weight:800;margin:6px 0}
+@keyframes bob{50%{transform:translateY(-4px)}}
+#scene .bob{animation:bob 1.6s ease-in-out infinite;transform-box:fill-box}
+@keyframes rise{0%{transform:translateY(0) scale(.6);opacity:0}20%{opacity:.9}100%{transform:translateY(-38px) scale(1.2);opacity:0}}
+#scene .smk{animation:rise 1.8s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes heart{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(-40px);opacity:0}}
+#scene .hrt{animation:heart 1.3s ease-out forwards;transform-box:fill-box}
+@media (prefers-reduced-motion:reduce){#scene .bob,#scene .smk{animation:none}}
+@media (max-width:440px){.bx{width:78px;height:78px}.bx .in{top:14px;height:38px;left:11px;right:11px}.bx .in img{width:13px;height:13px}.slip .line{font-size:19px}.fld{min-width:56px;height:44px;font-size:23px}.top h1{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🧁 مخبز ريشو">🧁 Reesho’s Bakery</h1>
+    <div class="pills"><span class="pill"><span data-ar="اليوم">Day</span> <b id="day">1</b>/<b id="days">6</b></span><span class="pill">⭐ <b id="score">0</b></span>
+      <button class="ib" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="ib home" href="adventures.html" aria-label="Back" data-ar-label="رجوع">🗺️</a></div></div>
+  <div class="stage"><svg id="scene" viewBox="0 0 480 268" role="img" aria-label="Reesho’s bakery: Reesho, the oven and a customer at the counter" data-ar-label="مخبز ريشو: ريشو والفرن وزبون عند البنك"></svg></div>
+  <div class="say"><img id="sayPic" src="math/assets/bakery/reesho_knead.webp" alt=""><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="ticket" id="ticket"></div>
+    <div class="tray" id="tray"></div>
+    <div class="boxes" id="boxes"></div>
+    <div class="slip" id="slip"></div>
+    <div class="check" id="check" hidden></div>
+    <div class="row"><button class="btn pink" id="go" type="button"></button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="card">
+  <img class="hero" src="math/assets/bakery/reesho_knead.webp" alt="">
+  <h2 id="introT"></h2><ol id="rules"></ol>
+  <button class="btn pink" id="start" type="button"></button></div></div>
+<div class="veil" id="dayCard" hidden><div class="card">
+  <img class="hero" id="dayPic" src="math/assets/bakery/reesho_cheer.webp" alt="">
+  <h2 id="dayT"></h2><div class="stars" id="dayStars"></div><p id="dayText"></p><div class="new" id="dayNew"></div><br>
+  <button class="btn pink" id="dayBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261106y"></script>
+<script src="chapters.js?v=20261106y"></script>
+<script src="common.js?v=20261106y"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg3u3'); if (!CH) return;
+const T = SI.T, G = SI.G, AR = SI.isAr(), GAME = 'math-reesho-bakery.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rnd = k => Math.floor(Math.random() * k);
+const rint = (a, b) => a + rnd(b - a + 1);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+/* digits: Arabic-Indic on the Arabic track, like the Grade 3 book */
+const D = x => AR ? String(x).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]) : String(x);
+document.documentElement.lang = AR ? 'ar' : 'en'; document.documentElement.dir = AR ? 'rtl' : 'ltr';
+document.querySelectorAll('[data-ar]').forEach(e => { if (AR) e.textContent = e.dataset.ar; });
+document.querySelectorAll('[data-ar-label]').forEach(e => { if (AR) e.setAttribute('aria-label', e.dataset.arLabel); });
+document.title = T('Reesho’s Bakery · Division', 'مخبز ريشو · القسمة');
+
+/* ---------- pictures ---------- */
+const IMG = 'math/assets/bakery/';
+const src = k => IMG + k + '.webp';
+['reesho_knead', 'reesho_cheer', 'reesho_worry', 'reesho_fire', 'kid1_happy', 'kid1_grumpy', 'kid2_happy', 'kid2_grumpy', 'kid3_happy', 'kid3_grumpy', 'box_open', 'box_closed', 'oven', 'smoke', 'bell']
+  .forEach(k => { const i = new Image(); i.src = src(k); });
+const GOODS = [
+  { k: 'cookie', en: 'cookies', ar: 'كعكة' }, { k: 'donut', en: 'donuts', ar: 'دونات' }, { k: 'cupcake', en: 'cupcakes', ar: 'كب كيك' },
+  { k: 'croissant', en: 'croissants', ar: 'كرواسون' }, { k: 'heart', en: 'jam hearts', ar: 'بسكوتة قلب' }, { k: 'kaak', en: 'ka’ak', ar: 'كحكة' }];
+/* customers: 1 boy, 2 and 3 girls (the pictures) */
+const KIDS = [{ id: 1, en: 'Omar', ar: 'عمر', f: false }, { id: 2, en: 'Salma', ar: 'سلمى', f: true }, { id: 3, en: 'Mariam', ar: 'مريم', f: true }];
+
+/* ---------- the six days: one small new step each day ---------- */
+const DAYS = [
+  { kinds: ['group'], hands: true, newEn: 'Pack by hand: tap the sweets.', newAr: 'عبّئ بإيدك: اضغط على الحلويات.' },
+  { kinds: ['share'], hands: true, newEn: 'Share equally between the boxes.', newAr: 'وزّع بالتساوي على العلب.' },
+  { kinds: ['group', 'share'], hands: false, newEn: 'No more tapping: write the number on the order slip.', newAr: 'من غير ما تعبّي بإيدك: اكتب العدد في ورقة الطلب.' },
+  { kinds: ['rem'], hands: false, newEn: 'Some sweets are left over!', newAr: 'فيه حلويات بتفضل برّه العلب!' },
+  { kinds: ['ceil', 'floor', 'rem'], hands: false, newEn: 'Read the order: a box for ALL, or only FULL boxes?', newAr: 'اقرأ الطلب كويس: علب تكفي الكل، ولا العلب المليانة بس؟' },
+  { kinds: ['bake', 'rem', 'ceil', 'share'], hands: false, newEn: 'The oven: how many should we bake?', newAr: 'الفرن: نخبز كام؟' }
+];
+const ORDERS_PER_DAY = 4, MAX_HEAT = 4;
+const S = { day: Math.min(DAYS.length - 1, ((SI.chProf(CH.id).bakery || {}).lvl) || 0), score: 0, heat: 0, misses: 0, n: 0, o: null, busy: false, t0: Date.now(), field: 0, vals: [], kid: null, used: new Set(), mood: 'knead', kidMood: 'happy' };
+
+/* ---------- orders ---------- */
+function makeOrder(kind, d) {
+  const good = pick(GOODS), kid = pick(KIDS.filter(k => !S.kid || k.id !== S.kid.id) );
+  let o;
+  for (let t = 0; t < 60; t++) {
+    if (kind === 'group') { const per = d === 0 ? rint(2, 5) : rint(3, 9), b = d === 0 ? rint(2, 4) : rint(3, 7); o = { per, boxes: b, total: per * b, ans: [b] }; }
+    if (kind === 'share') { const k = d === 1 ? rint(2, 4) : rint(3, 6), e = d === 1 ? rint(2, 5) : rint(3, 8); o = { per: e, boxes: k, total: e * k, ans: [e] }; }
+    if (kind === 'rem' || kind === 'ceil' || kind === 'floor') { const per = rint(3, 9), q = rint(2, 6), r = rint(1, per - 1); o = { per, total: per * q + r, q, r, ans: kind === 'rem' ? [q, r] : kind === 'ceil' ? [q + 1] : [q] }; }
+    if (kind === 'bake') { const per = pick([10, 10, 4, 5, 6, 7, 8, 9]), b = rint(2, per === 10 ? 9 : 7); o = { per, boxes: b, total: per * b, ans: [per * b] }; }
+    if (o.total <= 66 && !S.used.has(kind + o.total + '/' + o.per)) break;
+  }
+  S.used.add(kind + o.total + '/' + o.per);
+  return Object.assign(o, { kind, good, kid });
+}
+
+/* ---------- texts of an order ---------- */
+const gn = o => T(o.good.en, o.good.ar);
+const kn = o => T(o.kid.en, o.kid.ar);
+const wants = o => AR ? (o.kid.f ? 'عايزة' : 'عايز') : 'wants';
+function orderSay(o) {
+  const g = gn(o), k = kn(o);
+  switch (o.kind) {
+    case 'group': return T(`${k} wants ${D(o.total)} ${g}, ${D(o.per)} in each box. How many boxes?`, `${k} ${wants(o)} ${D(o.total)} ${g}، في كل علبة ${D(o.per)}. كام علبة؟`);
+    case 'share': return T(`${k} wants ${D(o.total)} ${g} shared equally into ${D(o.boxes)} boxes for friends. How many in each box?`, `${k} ${wants(o)} ${D(o.total)} ${g} تتوزّع بالتساوي على ${D(o.boxes)} علب لأصحابه. كام في كل علبة؟`);
+    case 'rem': return T(`${D(o.total)} ${g}, ${D(o.per)} in each box. How many full boxes, and how many are left over?`, `${D(o.total)} ${g}، في كل علبة ${D(o.per)}. كام علبة مليانة، وكام يفضل برّه؟`);
+    case 'ceil': return T(`${k} wants ALL ${D(o.total)} ${g} in boxes of ${D(o.per)}. How many boxes are needed so that none is left out?`, `${k} ${wants(o)} الـ ${D(o.total)} ${g} كلهم في علب، في كل علبة ${D(o.per)}. كام علبة نحتاج عشان ولا واحدة تفضل برّه؟`);
+    case 'floor': return T(`We have ${D(o.total)} ${g}. ${k} buys only FULL boxes of ${D(o.per)}. How many full boxes can we sell?`, `عندنا ${D(o.total)} ${g}. ${k} بيشتري العلب المليانة بس، في كل علبة ${D(o.per)}. كام علبة مليانة نقدر نبيع؟`);
+    case 'bake': return T(`${k} ordered ${D(o.boxes)} boxes with ${D(o.per)} ${g} in each box. How many should we bake?`, `${k} طلب${o.kid.f ? 'ت' : ''} ${D(o.boxes)} علب، في كل علبة ${D(o.per)} ${g}. نخبز كام؟`);
+  }
+}
+/* the slip: the fields the child fills (the operation is written only on days 1-2, while the child learns to write it) */
+function slipHTML(o) {
+  const F = i => `<button type="button" class="fld" data-f="${i}">${S.vals[i] === '' ? '?' : D(S.vals[i])}</button>`;
+  const hands = DAYS[S.day].hands;
+  switch (o.kind) {
+    case 'group': return hands ? `<div class="line">${D(o.total)} ÷ ${D(o.per)} = ${F(0)} <span class="lbl">${T('boxes', 'علب')}</span></div>` : `<div class="line"><span class="lbl">${T('Boxes:', 'عدد العلب:')}</span> ${F(0)}</div>`;
+    case 'share': return hands ? `<div class="line">${D(o.total)} ÷ ${D(o.boxes)} = ${F(0)} <span class="lbl">${T('in each box', 'في كل علبة')}</span></div>` : `<div class="line"><span class="lbl">${T('In each box:', 'في كل علبة:')}</span> ${F(0)}</div>`;
+    case 'rem': return `<div class="line"><span class="lbl">${T('Full boxes:', 'علب مليانة:')}</span> ${F(0)} <span class="lbl">${T('Left over:', 'الباقي:')}</span> ${F(1)}</div>`;
+    case 'ceil': case 'floor': return `<div class="line"><span class="lbl">${T('Boxes:', 'عدد العلب:')}</span> ${F(0)}</div>`;
+    case 'bake': return `<div class="line"><span class="lbl">${T('Bake:', 'نخبز:')}</span> ${F(0)} <span class="lbl">${gn(o)}</span></div>`;
+  }
+}
+function hintText(o) {
+  const t = o.kind === 'share' ? o.boxes : o.per;
+  const table = T(`Think of the ${D(t)} times table: ${D(t)}, ${D(2 * t)}, ${D(3 * t)}, …`, `فكّر في جدول ضرب ${D(t)}: ${D(t)}، ${D(2 * t)}، ${D(3 * t)}، …`);
+  switch (o.kind) {
+    case 'group': return DAYS[S.day].hands && S.packing ? T('Tap one sweet at a time. A full box closes by itself.', 'اضغط على حلوى واحدة كل مرة. العلبة لما تتملي بتتقفل لوحدها.') : T(`Count the closed boxes, or ${table}`, `عُدّ العلب المقفولة، أو ${table}`);
+    case 'share': return DAYS[S.day].hands && S.packing ? T('Give one to each box in turn, again and again, so they stay equal.', 'ادّي كل علبة واحدة بالدور، وكرّر، عشان يفضلوا متساويين.') : T(`${D(o.boxes)} boxes, the same in each: ${D(o.boxes)} × ? = ${D(o.total)}`, `${D(o.boxes)} علب، في كل واحدة نفس العدد: ${D(o.boxes)} × ؟ = ${D(o.total)}`);
+    case 'rem': return T(`Find the biggest number in the ${D(o.per)} times table that is not more than ${D(o.total)}. The left over must be less than ${D(o.per)}.`, `دوّر على أكبر عدد في جدول ضرب ${D(o.per)} مش أكبر من ${D(o.total)}. والباقي لازم يكون أصغر من ${D(o.per)}.`);
+    case 'ceil': return T(`First find the full boxes. Do the sweets left over need a box too?`, `أوجد العلب المليانة الأول. الحلويات اللي بتفضل، محتاجة علبة كمان؟`);
+    case 'floor': return T(`A box that is not full cannot be sold. ${table}`, `العلبة اللي مش مليانة ما تتباعش. ${table}`);
+    case 'bake': return T(`${D(o.boxes)} boxes, ${D(o.per)} in each: the same number again and again.`, `${D(o.boxes)} علب، في كل علبة ${D(o.per)}: نفس العدد بيتكرر.`);
+  }
+}
+/* after a right answer: the operation and, for a remainder, the check with multiplication (separate lines, no two operations on one line) */
+function checkHTML(o) {
+  switch (o.kind) {
+    case 'group': return `${D(o.total)} ÷ ${D(o.per)} = ${D(o.boxes)} ${T('boxes', 'علب')} ✔`;
+    case 'share': return `${D(o.total)} ÷ ${D(o.boxes)} = ${D(o.per)} ${T('in each box', 'في كل علبة')} ✔`;
+    case 'bake': return `${D(o.boxes)} × ${D(o.per)} = ${D(o.total)} ✔`;
+    default: {
+      const L1 = `${D(o.total)} ÷ ${D(o.per)} = ${D(o.q)} ${T('remainder', 'والباقي')} ${D(o.r)}`;
+      const L2 = `${T('Check:', 'التحقق:')} ${D(o.per)} × ${D(o.q)} = ${D(o.per * o.q)}`;
+      const L3 = `${D(o.per * o.q)} + ${D(o.r)} = ${D(o.total)} ✔`;
+      const L4 = o.kind === 'ceil' ? T(`The ${D(o.r)} left over need one more box: ${D(o.q + 1)} boxes.`, `الـ ${D(o.r)} الباقيين محتاجين علبة كمان: ${D(o.q + 1)} علب.`) : o.kind === 'floor' ? T(`Only ${D(o.q)} boxes are full.`, `${D(o.q)} علب بس هي المليانة.`) : '';
+      return [L1, L2, L3, L4].filter(Boolean).join('<br>');
+    }
+  }
+}
+
+/* ---------- scene (SVG 480×268 over the owner's bakery picture) ---------- */
+function drawScene(extra = '') {
+  const im = (k, x, y, w, h, cls = '') => `<image href="${src(k)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${cls ? `class="${cls}"` : ''}/>`;
+  let h = `<image href="${IMG}bg_bakery.jpg" x="0" y="0" width="480" height="268" preserveAspectRatio="xMidYMid slice"/>`;
+  // customer behind the counter (bust, bottom at the counter top)
+  if (S.o) h += im(`kid${S.o.kid.id}_${S.kidMood}`, 312, 60, 140, 130, S.kidMood === 'happy' ? 'bob' : '');
+  // counter front strip again, so the customer stands behind it
+  h += `<rect x="0" y="183" width="480" height="6" fill="#e9b98a"/>`;
+  // oven with heat glow and smoke
+  const hot = S.heat / MAX_HEAT;
+  h += `<ellipse cx="170" cy="150" rx="${46 + hot * 20}" ry="${40 + hot * 16}" fill="#ff7a2f" opacity="${hot * .45}"/>`;
+  h += im('oven', 132, 118, 78, 70);
+  for (let i = 0; i < S.heat; i++) h += im('smoke', 150 + i * 9 - 10, 70 - i * 6, 40, 46, 'smk');
+  h += im('bell', 282, 160, 26, 26);
+  // Reesho in front
+  const pose = { knead: [112, 160], cheer: [134, 160], worry: [84, 166], fire: [112, 170] }[S.mood];
+  h += `<ellipse cx="74" cy="262" rx="52" ry="6" fill="#0003"/>` + im('reesho_' + S.mood, 74 - pose[0] / 2, 264 - pose[1], pose[0], pose[1], S.mood === 'knead' ? 'bob' : '');
+  // heat meter
+  h += `<rect x="8" y="8" width="150" height="30" rx="15" fill="#fff" opacity=".92"/><text x="${AR ? 140 : 18}" y="28" font-size="13" font-weight="800" fill="#6b3f24" text-anchor="${AR ? 'end' : 'start'}" font-family="Nunito,Cairo">${T('Oven', 'الفرن')}</text>`;
+  for (let i = 0; i < MAX_HEAT; i++) { const x = AR ? 22 + i * 18 : 66 + i * 18, on = i < S.heat; h += `<path transform="translate(${x},12)" d="M7 0 C9 6 15 8 13 15 C12 20 2 20 1 15 C0 10 5 9 7 0Z" fill="${on ? '#e2603f' : '#ead9c6'}"/>`; }
+  // customers served today
+  h += `<rect x="352" y="8" width="120" height="30" rx="15" fill="#fff" opacity=".92"/>`;
+  for (let i = 0; i < ORDERS_PER_DAY; i++) h += `<circle cx="${368 + i * 29}" cy="23" r="9" fill="${i < S.n ? '#2e9e6b' : '#ead9c6'}"/>${i < S.n ? `<path d="M${363 + i * 29} 23 l4 4 l7 -8" stroke="#fff" stroke-width="2.6" fill="none"/>` : ''}`;
+  $('#scene').innerHTML = h + extra;
+}
+function setMood(m) { S.mood = m; $('#sayPic').src = src('reesho_' + m); drawScene(); }
+function say(html, mood) { $('#say').innerHTML = html; if (mood) setMood(mood); }
+
+/* ---------- tray and boxes ---------- */
+function goodImg(o, cls = 'g') { return `<img class="${cls}" src="${src(o.good.k)}" alt="">`; }
+function drawTray(n, tappable) {
+  const t = $('#tray'); t.classList.toggle('lock', !tappable);
+  t.style.setProperty('--gs', n > 40 ? '22px' : n > 24 ? '26px' : '32px');
+  t.innerHTML = n ? Array.from({ length: n }, () => goodImg(S.o)).join('') : `<span class="empty">${T('Tray is empty', 'الصينية فاضية')}</span>`;
+  if (tappable) t.querySelectorAll('.g').forEach(g => g.onclick = () => tapGood(g));
+}
+function boxHTML(i, count, { closed = false, tap = false, who = null } = {}) {
+  return `<button type="button" class="bx${closed ? ' closed' : ''}${tap ? ' tap' : ''}" data-b="${i}" ${tap ? '' : 'tabindex="-1"'} aria-label="${T('Box', 'علبة')} ${D(i + 1)}">
+    <img class="shell" src="${src(closed ? 'box_closed' : 'box_open')}" alt="">
+    <span class="in">${Array.from({ length: count }, () => `<img src="${src(S.o.good.k)}" alt="">`).join('')}</span>
+    <span class="cnt">${D(count)}</span>${who ? `<img class="who" src="${src('kid' + who + '_happy')}" alt="">` : ''}</button>`;
+}
+function setBox(i, count, opts) { const b = document.querySelector(`.bx[data-b="${i}"]`); if (!b) return; const w = document.createElement('div'); w.innerHTML = boxHTML(i, count, opts); const nb = w.firstElementChild; b.replaceWith(nb); if (opts && opts.tap) nb.onclick = () => tapBox(i); return nb; }
+/* a sweet flies from one element to another */
+async function flyGood(fromEl, toEl, ms = 380) {
+  const a = fromEl.getBoundingClientRect(), b = toEl.getBoundingClientRect();
+  const f = document.createElement('img'); f.src = src(S.o.good.k); f.className = 'fly';
+  const s = Math.max(22, a.width);
+  Object.assign(f.style, { left: a.left + 'px', top: a.top + 'px', width: s + 'px', height: s + 'px' });
+  document.body.appendChild(f);
+  f.style.transitionDuration = ms + 'ms';
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  f.style.transform = `translate(${b.left + b.width / 2 - a.left - s / 2}px,${b.top + b.height * .35 - a.top - s / 2}px) scale(.55)`;
+  await sleep(ms); f.remove();
+}
+
+/* ---------- hand packing (days 1-2) ---------- */
+function startHands() {
+  const o = S.o; S.packing = true; S.tray = o.total;
+  if (o.kind === 'group') { S.boxCounts = [0]; $('#boxes').innerHTML = boxHTML(0, 0); }
+  else { S.boxCounts = Array(o.boxes).fill(0); $('#boxes').innerHTML = S.boxCounts.map((c, i) => boxHTML(i, 0, { tap: true })).join(''); $('#boxes').querySelectorAll('.bx').forEach((b, i) => b.onclick = () => tapBox(i)); }
+  drawTray(o.total, o.kind === 'group');
+  $('#slip').innerHTML = `<div class="lbl" style="text-align:center">${o.kind === 'group' ? T('Tap the sweets to put them in the box.', 'اضغط على الحلويات عشان تحطها في العلبة.') : T('Tap a box to put one sweet in it.', 'اضغط على علبة عشان تحط فيها حلوى واحدة.')}</div>`;
+  $('#go').hidden = true;
+}
+/* every tap counts at once (a fast child is never ignored); the flight is only the picture */
+const flights = [];
+async function tapGood(g) {
+  if (S.busy || !S.packing || S.o.kind !== 'group' || g.classList.contains('gone')) return;
+  const o = S.o, i = S.boxCounts.length - 1, box = document.querySelector(`.bx[data-b="${i}"]`);
+  g.classList.add('gone'); g.style.visibility = 'hidden'; SFX.pop();
+  S.tray--; const c = ++S.boxCounts[i], full = c === o.per;
+  if (full && S.tray) { S.boxCounts.push(0); $('#boxes').insertAdjacentHTML('beforeend', boxHTML(i + 1, 0)); }
+  const f = flyGood(g, box, 300).then(() => { g.remove(); setBox(i, c, { closed: full }); if (full) { document.querySelector(`.bx[data-b="${i}"]`).classList.add('pop'); SFX.ribbon(); } });
+  flights.push(f);
+  if (!S.tray) { S.busy = true; await Promise.all(flights.splice(0)); drawTray(0, false); await sleep(300); S.packing = false; showSlip(); S.busy = false; }
+}
+async function tapBox(i) {
+  if (S.busy || !S.packing || S.o.kind !== 'share' || !S.tray) return;
+  const g = [...document.querySelectorAll('#tray .g:not(.gone)')].pop(), box = document.querySelector(`.bx[data-b="${i}"]`);
+  if (!g) return;
+  g.classList.add('gone'); g.style.visibility = 'hidden'; SFX.pop();
+  S.tray--; S.boxCounts[i]++;
+  flights.push(flyGood(g, box, 260).then(() => { g.remove(); setBox(i, S.boxCounts[i], { tap: true }); }));
+  if (!S.tray) {
+    S.busy = true; await Promise.all(flights.splice(0));
+    drawTray(0, false);
+    const eq = S.boxCounts.every(c => c === S.boxCounts[0]);
+    if (!eq) {
+      await mistake(T(`The boxes are not equal: ${S.boxCounts.map(D).join(', ')}. The friends will argue! Let’s share again.`, `العلب مش متساوية: ${S.boxCounts.map(D).join('، ')}. الأصحاب هيتخانقوا! نوزّع تاني.`));
+      if (S.heat < MAX_HEAT) startHands();
+    } else { S.boxCounts.forEach((c, k) => setBox(k, c, { closed: true })); SFX.ribbon(); S.packing = false; showSlip(); }
+    S.busy = false;
+  }
+}
+
+/* ---------- the slip and the number pad ---------- */
+function showSlip() {
+  const o = S.o; S.vals = o.ans.map(() => ''); S.field = 0;
+  $('#slip').innerHTML = slipHTML(o) + `<div class="pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(d => `<button type="button" data-k="${d}">${D(d)}</button>`).join('')}<button type="button" data-k="del" aria-label="${T('Delete', 'امسح')}">⌫</button><button type="button" data-k="next" aria-label="${T('Next box', 'الخانة اللي بعدها')}">${o.ans.length > 1 ? (AR ? '⇠' : '⇢') : '✓'}</button></div>`;
+  $('#slip').querySelectorAll('.fld').forEach(f => f.onclick = () => { S.field = +f.dataset.f; markField(); });
+  $('#slip').querySelectorAll('.pad button').forEach(b => b.onclick = () => key(b.dataset.k));
+  markField();
+  $('#go').hidden = false; $('#go').disabled = false;
+  $('#go').textContent = DAYS[S.day].hands ? T('🧾 Give the order', '🧾 سلّم الطلب') : o.kind === 'bake' ? T('🔥 Bake and pack!', '🔥 اخبز وعبّي!') : T('📦 Pack it!', '📦 عبّي!');
+}
+function markField() { $('#slip').querySelectorAll('.fld').forEach(f => { const i = +f.dataset.f; f.classList.toggle('on', i === S.field); f.textContent = S.vals[i] === '' ? '?' : D(S.vals[i]); }); }
+function key(k) {
+  if (S.busy) return; SFX.click();
+  if (k === 'del') S.vals[S.field] = S.vals[S.field].slice(0, -1);
+  else if (k === 'next') { if (S.field < S.vals.length - 1) S.field++; else return deliver(); }
+  else if (S.vals[S.field].length < 2) S.vals[S.field] = (S.vals[S.field] === '0' ? '' : S.vals[S.field]) + k;
+  markField();
+}
+document.addEventListener('keydown', e => {
+  if (!$('#intro').hidden || !$('#dayCard').hidden || !$('#slip .pad')) return;
+  const m = '٠١٢٣٤٥٦٧٨٩'.indexOf(e.key), d = /^[0-9]$/.test(e.key) ? e.key : m >= 0 ? String(m) : null;
+  if (d) key(d); else if (e.key === 'Backspace') key('del'); else if (e.key === 'Enter') deliver(); else if (e.key === 'Tab' && S.vals.length > 1) { e.preventDefault(); S.field = (S.field + 1) % S.vals.length; markField(); }
+});
+
+/* ---------- delivering: the bakery shows what the child's numbers make ---------- */
+async function deliver() {
+  if (S.busy) return;
+  const o = S.o, v = S.vals.map(x => x === '' ? NaN : +x);
+  const empty = S.vals.findIndex(x => x === '');
+  if (empty >= 0) { S.field = empty; markField(); say(T('Write a number in every box of the slip first.', 'اكتب عدد في كل خانة في الورقة الأول.')); return; }
+  S.busy = true; $('#go').disabled = true;
+  if (DAYS[S.day].hands) {   // days 1-2: the boxes are already packed; the slip must say what the boxes show
+    if (v[0] === o.ans[0]) return win();
+    $('#slip .fld').classList.add('no');
+    await mistake(o.kind === 'group' ? T(`The slip says ${D(v[0])} boxes, but look at the counter: count the boxes again.`, `الورقة مكتوب فيها ${D(v[0])} علب، بس بُص على البنك: عُدّ العلب تاني.`) : T(`The slip says ${D(v[0])} in each box. Look at the number on each box.`, `الورقة مكتوب فيها ${D(v[0])} في كل علبة. بُص على الرقم اللي على كل علبة.`));
+    S.busy = false; $('#go').disabled = false; return;
+  }
+  // computed days: animate the packing the slip asks for
+  let boxes, per, made = o.total;
+  if (o.kind === 'share') { boxes = o.boxes; per = v[0]; }
+  else if (o.kind === 'bake') { made = Math.min(v[0], 99); boxes = o.boxes; per = o.per; }
+  else { boxes = Math.min(v[0], 12); per = o.per; }
+  if (o.kind === 'bake') { SFX.oven(); say(T(`Baking ${D(made)} ${gn(o)}…`, `بنخبز ${D(made)} ${gn(o)}…`)); await sleep(700); }
+  drawTray(made, false);
+  $('#boxes').innerHTML = Array.from({ length: boxes }, (_, i) => boxHTML(i, 0)).join('');
+  await sleep(250);
+  const counts = Array(boxes).fill(0); let left = made;
+  const speed = Math.max(40, Math.min(160, 2600 / Math.max(1, Math.min(made, boxes * per))));
+  if (o.kind === 'share') {          // one at a time to each box in turn, until each has the slip's number or the tray is empty
+    outer: for (let r = 0; r < per; r++) for (let i = 0; i < boxes; i++) { if (!left) break outer; await moveOne(i, counts, speed); left--; }
+  } else {
+    for (let i = 0; i < boxes; i++) for (let r = 0; r < per; r++) { if (!left) break; await moveOne(i, counts, speed); left--; }
+  }
+  // what the world says
+  const short = counts.filter(c => c < per), emptyBoxes = counts.filter(c => c === 0).length;
+  let err = null;
+  if (o.kind === 'rem') {
+    if (short.length) err = T(`Not enough ${gn(o)} for ${D(v[0])} full boxes!`, `الحلويات ما تكفيش ${D(v[0])} علب مليانة!`);
+    else if (left >= per) err = T(`${D(left)} are still on the tray: that is enough for another full box!`, `لسه فيه ${D(left)} على الصينية: دول يكفوا علبة مليانة كمان!`);
+    else if (v[1] !== left) err = T(`Count what is left on the tray: the slip says ${D(v[1])} left over.`, `عُدّ اللي فاضل على الصينية: الورقة مكتوب فيها الباقي ${D(v[1])}.`);
+  } else if (o.kind === 'ceil') {
+    if (left) err = T(`${D(left)} ${gn(o)} have no box! ${kn(o)} wanted all of them.`, `${D(left)} ${gn(o)} ملهمش علبة! ${kn(o)} ${wants(o)} الكل.`);
+    else if (emptyBoxes) err = T(`An empty box! We used more boxes than we need.`, `علبة فاضية! استخدمنا علب أكتر من اللازم.`);
+  } else if (o.kind === 'floor') {
+    if (short.length) err = T(`One box is not full: ${kn(o)} will not buy it.`, `فيه علبة مش مليانة: ${kn(o)} ${o.kid.f ? 'مش هتشتريها' : 'مش هيشتريها'}.`);
+    else if (left >= per) err = T(`${D(left)} are still on the tray: we can fill another box and sell it!`, `لسه فيه ${D(left)} على الصينية: نقدر نملا علبة كمان ونبيعها!`);
+  } else {
+    if (short.length) err = emptyBoxes && o.kind !== 'share' ? T(`Empty boxes! There are not enough ${gn(o)}.`, `علب فاضية! الحلويات ما تكفيش.`) : T(`The ${gn(o)} ran out before the boxes were full.`, `الحلويات خلصت قبل ما العلب تتملي.`);
+    else if (left) err = T(`${D(left)} ${gn(o)} are still on the tray.`, `لسه فيه ${D(left)} ${gn(o)} على الصينية.`);
+  }
+  if (!err) return win();
+  document.querySelectorAll('.bx').forEach((b, i) => { if (counts[i] < per) b.classList.add('bad', counts[i] ? 'x' : 'empty'); });
+  await mistake(err);
+  if (S.heat < MAX_HEAT) { await sleep(500); resetComputed(); }
+  S.busy = false; $('#go').disabled = false;
+}
+async function moveOne(i, counts, ms) {
+  const g = [...document.querySelectorAll('#tray .g:not(.gone)')].pop(), box = document.querySelector(`.bx[data-b="${i}"]`);
+  if (!g || !box) return;
+  g.classList.add('gone'); g.style.visibility = 'hidden'; SFX.pop(.5);
+  flyGood(g, box, ms * 1.6).then(() => { g.remove(); if (!$('#tray .g')) drawTray(0, false); });
+  await sleep(ms);
+  counts[i]++; setBox(i, counts[i]);
+}
+function resetComputed() { drawTray(S.o.kind === 'bake' ? 0 : S.o.total, false); $('#boxes').innerHTML = ''; }
+
+/* ---------- right and wrong ---------- */
+async function mistake(text) {
+  S.heat++; S.misses++; S.orderMiss++;
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.day + 1, step: S.n + 1 });
+  S.kidMood = 'grumpy'; SFX.wrong(); if (S.heat >= 2) SFX.sizzle();
+  say('🦜 ' + text + (S.heat < MAX_HEAT ? ' ' + T(`The oven is getting hot! 🔥 ${D(MAX_HEAT - S.heat)} left.`, `الفرن بيسخن! 🔥 فاضل ${D(MAX_HEAT - S.heat)}.`) : ''), S.heat >= 3 ? 'fire' : 'worry');
+  await sleep(900);
+  if (S.heat >= MAX_HEAT) return burnt();
+  S.kidMood = 'happy'; drawScene();
+}
+async function win() {
+  const o = S.o, pts = S.orderMiss ? 10 : 15;
+  S.score += pts; $('#score').textContent = D(S.score);
+  const shown = [...document.querySelectorAll('.bx')].map(b => +b.querySelector('.cnt').textContent.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+  const oid = S.o;
+  shown.forEach(async (c, i) => { await sleep(i * 90); if (S.o !== oid) return; const nb = setBox(i, c, { closed: c > 0 }); if (nb) nb.classList.add('pop'); });
+  $('#slip').querySelectorAll('.fld').forEach(f => f.classList.add('ok'));
+  SFX.ribbon(); await sleep(250); SFX.cash();
+  S.kidMood = 'happy';
+  setMood('cheer');
+  drawScene(`<g>${[0, 1, 2].map(i => `<path class="hrt" style="animation-delay:${i * .2}s" transform="translate(${360 + i * 24},${70 + (i % 2) * 10})" d="M10 18 L2 9 A5 5 0 0 1 10 3 A5 5 0 0 1 18 9 Z" fill="#e46f8a"/>`).join('')}</g>`);
+  $('#check').hidden = false; $('#check').innerHTML = checkHTML(o);
+  say(`🦜 ${pick([T('Perfect packing!', 'تعبئة مظبوطة!'), T('The customer is happy!', 'الزبون مبسوط!'), T('Yummy and right!', 'حلو ومظبوط!')])} +${D(pts)}`);
+  S.n++; drawScene();
+  $('#go').hidden = false; $('#go').disabled = false;
+  $('#go').textContent = S.n >= ORDERS_PER_DAY ? T('🌙 Close the bakery', '🌙 اقفل المخبز') : T('🔔 Next customer', '🔔 الزبون اللي بعده');
+  $('#go').onclick = () => { $('#go').onclick = deliver; S.n >= ORDERS_PER_DAY ? endDay(true) : nextOrder(); };
+  $('#slip').querySelectorAll('.pad button').forEach(b => b.disabled = true);
+  S.busy = false;
+}
+async function burnt() {
+  setMood('fire'); SFX.burn();
+  drawScene(`<rect x="0" y="0" width="480" height="268" fill="#3b2a20" opacity=".35"/><rect x="110" y="96" width="260" height="42" rx="21" fill="#0009"/><text x="240" y="124" font-size="22" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('The batch burnt! 🔥', 'الصينية اتحرقت! 🔥')}</text>`);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.day + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+  await sleep(1300); endDay(false);
+}
+
+/* ---------- flow ---------- */
+function nextOrder() {
+  const d = DAYS[S.day];
+  const kind = d.kinds[S.n % d.kinds.length];
+  S.o = makeOrder(kind, S.day); S.kid = S.o.kid; S.orderMiss = 0; S.kidMood = 'happy'; S.busy = false;
+  $('#check').hidden = true; $('#boxes').innerHTML = ''; $('#go').onclick = deliver;
+  const o = S.o;
+  $('#ticket').innerHTML = `<span class="tag">${T('Order', 'طلب')} ${D(S.n + 1)}/${D(ORDERS_PER_DAY)}</span>
+    ${o.kind === 'bake' ? `<span class="it">📦 × ${D(o.boxes)}</span><span class="it"><img src="${src(o.good.k)}" alt="">${D(o.per)} ${T('in each box', 'في كل علبة')}</span>`
+      : `<span class="it"><img src="${src(o.good.k)}" alt="">× ${D(o.total)}</span><span class="it">📦 ${o.kind === 'share' ? `${D(o.boxes)} ${T('boxes', 'علب')}` : `${D(o.per)} ${T('in each box', 'في كل علبة')}`}</span>`}
+    <span class="q">${orderSay(o)}</span>`;
+  SFX.bell(); setMood('knead');
+  say('🦜 ' + orderSay(o));
+  if (d.hands) startHands();
+  else { drawTray(o.kind === 'bake' ? 0 : o.total, false); showSlip(); }
+  drawScene();
+}
+function startDay() {
+  S.n = 0; S.heat = 0; S.misses = 0; S.used = new Set(); S.t0 = Date.now(); S.kid = null;
+  $('#day').textContent = D(S.day + 1);
+  music('play'); nextOrder();
+}
+function dayStars() { return S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1; }
+function endDay(won) {
+  music('off');
+  const last = S.day === DAYS.length - 1;
+  let stars = 0;
+  if (won) { stars = dayStars(); saveWin(stars); SFX.win(); }
+  else SFX.lose();
+  $('#dayPic').src = src(won ? 'reesho_cheer' : 'reesho_worry');
+  $('#dayT').textContent = won ? (last ? T('The best bakery in town! 🏆', 'أحسن مخبز في البلد! 🏆') : T(`Day ${D(S.day + 1)} done!`, `خلص اليوم ${D(S.day + 1)}!`)) : T('Oh no, the batch burnt!', 'يا خبر، الصينية اتحرقت!');
+  $('#dayStars').textContent = won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
+  $('#dayText').innerHTML = won ? (last ? T(`You served every customer for six days. Score: ${D(S.score)}.`, `خدّمت كل الزباين ستة أيام. نقطك: ${D(S.score)}.`) : T(`${D(ORDERS_PER_DAY)} happy customers. Tomorrow is a little harder:`, `${D(ORDERS_PER_DAY)} زباين مبسوطين. بكرة أصعب شوية:`))
+    : T('Read the order again, and check the numbers on the slip before you pack.', 'اقرأ الطلب تاني، وراجع الأرقام في الورقة قبل ما تعبّي.');
+  const nxt = won && !last ? DAYS[S.day + 1] : DAYS[S.day];
+  $('#dayNew').hidden = won && last; $('#dayNew').textContent = '✨ ' + T(nxt.newEn, nxt.newAr);
+  $('#dayBtn').textContent = won ? (last ? T('Play again', 'العب من الأول') : T('Open tomorrow ➜', 'افتح بكرة ⬅')) : T('Try the day again', 'جرّب اليوم تاني');
+  $('#dayBtn').onclick = () => { $('#dayCard').hidden = true; if (won) S.day = last ? 0 : S.day + 1; if (won && last) { S.score = 0; $('#score').textContent = D(0); } startDay(); };
+  $('#dayCard').hidden = false;
+}
+/* progress: SI.chProf('mg3u3').bakery = { lvl: next day to play, best: days won (1-6), stars: [per day] } */
+function saveWin(stars) {
+  const done = S.day + 1, pts = 20 + stars * 10;
+  SI.updateChProf(c => { const o = c.bakery = c.bakery || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.day] = Math.max(o.stars[S.day] || 0, stars); o.lvl = done >= DAYS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: S.score, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+$('#hint').onclick = () => { if (S.o) { SFX.click(); say('🦜 ' + hintText(S.o)); } };
+
+/* ---------- music and sounds (Web Audio, no files): a bouncy bakery tune in C major that speeds up as the oven heats ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0, mode: 'off' };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .5 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 3000, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol = .2, cut = 1800) {
+  const c = A.ctx, b = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.value = cut; g.gain.value = vol;
+  s.connect(f); f.connect(g); g.connect(A.master); s.start(t);
+}
+const MEL = [72, 76, 79, 76, 77, 74, 71, 74, 72, 76, 79, 84, 83, 79, 77, 74];
+const BASS = [48, 55, 52, 55, 50, 55, 53, 55];
+function musicTick() {
+  const c = A.ctx; if (!c) return;
+  const spb = 60 / (112 + S.heat * 10) / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    if (i % 2 === 0) tone(MEL[(A.beat / 2 | 0) % 16], t, spb * 1.6, { type: 'triangle', vol: .07, cut: 2600 });
+    if (i % 4 === 0) tone(BASS[(A.beat / 4 | 0) % 8], t, spb * 1.8, { type: 'sine', vol: .12, cut: 700 });
+    if (i % 4 === 2) noise(t, .04, .05, 6000);
+    if (S.heat >= 3 && i % 2 === 1) tone(93, t, .03, { type: 'square', vol: .025, cut: 5000 });
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) {
+  if (!ac()) return; A.mode = mode; clearInterval(A.timer); A.timer = null;
+  if (mode === 'play') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); }
+}
+const SFX = {
+  click() { if (!ac()) return; tone(96, A.ctx.currentTime, .03, { type: 'square', vol: .04, cut: 5000 }); },
+  pop(v = 1) { if (!ac()) return; const t = A.ctx.currentTime; tone(74 + rnd(5), t, .12, { type: 'sine', vol: .14 * v, glide: 12 }); },
+  ribbon() { if (!ac()) return; const t = A.ctx.currentTime; tone(84, t, .18, { type: 'triangle', vol: .12 }); tone(88, t + .08, .25, { type: 'triangle', vol: .1 }); },
+  bell() { if (!ac()) return; const t = A.ctx.currentTime; [88, 100, 95].forEach((m, i) => tone(m, t, 1.1 - i * .3, { type: 'sine', vol: .1 - i * .025 })); },
+  cash() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .06, .15, 4000); tone(91, t + .05, .3, { type: 'sine', vol: .12 }); tone(96, t + .12, .45, { type: 'sine', vol: .12 }); },
+  wrong() { if (!ac()) return; const t = A.ctx.currentTime; tone(55, t, .32, { type: 'sawtooth', vol: .1, cut: 900, glide: -4 }); tone(54, t + .02, .32, { type: 'square', vol: .05, cut: 700 }); },
+  sizzle() { if (!ac()) return; noise(A.ctx.currentTime, .7, .12, 3500); },
+  oven() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .6, .08, 900); tone(60, t, .5, { type: 'sine', vol: .06, glide: 7 }); tone(96, t + .55, .4, { type: 'sine', vol: .1 }); },
+  burn() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, 1.2, .2, 1200); [64, 63, 62, 57].forEach((m, i) => tone(m, t + .2 + i * .25, .45, { type: 'triangle', vol: .13, cut: 1200 })); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [72, 76, 79, 84, 79, 84, 88].forEach((m, i) => tone(m, t + i * .1, .45, { type: 'triangle', vol: .14 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [67, 65, 64, 60].forEach((m, i) => tone(m, t + i * .26, .45, { type: 'triangle', vol: .13, cut: 1400 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .5 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+/* ---------- intro ---------- */
+$('#introT').textContent = T('Welcome to Reesho’s Bakery!', 'أهلًا بيك في مخبز ريشو!');
+$('#rules').innerHTML = [
+  T('Customers order sweets packed in boxes.', 'الزباين بيطلبوا حلويات متعبّية في علب.'),
+  T('Pack each order right: first by hand, then by writing the numbers on the order slip.', 'عبّي كل طلب صح: الأول بإيدك، وبعدين بكتابة الأرقام في ورقة الطلب.'),
+  T(`Each mistake heats the oven 🔥. <b>${D(MAX_HEAT)} mistakes</b> and the batch burns!`, `كل غلطة الفرن بيسخن 🔥. <b>${D(MAX_HEAT)} غلطات</b> والصينية تتحرق!`),
+  T(`Serve <b>${D(ORDERS_PER_DAY)} customers</b> to finish the day. There are ${D(DAYS.length)} days.`, `خدّم <b>${D(ORDERS_PER_DAY)} زباين</b> عشان يخلص اليوم. قدامك ${D(DAYS.length)} أيام.`)
+].map(x => `<li>${x}</li>`).join('');
+$('#days').textContent = D(DAYS.length);
+$('#start').textContent = G(T('Open the bakery! 🧁', 'يلا نفتح المخبز! 🧁'), T('Open the bakery! 🧁', 'يلا نفتح المخبز! 🧁'));
+$('#start').onclick = () => { $('#intro').hidden = true; ac(); SI.ga('game_start', { game: GAME, chapter: CH.id }); startDay(); };
+$('#score').textContent = D(0);
+drawScene();
+window.__bake = S; window.__bakeApi = { makeOrder, nextOrder, startDay, deliver, showSlip, DAYS, setDay: d => { S.day = d; } };
+})();
+</script>
+</body>
+</html>
