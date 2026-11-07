@@ -438,7 +438,7 @@ window.CHAPTERS = [
     map: { img: 'math/assets/map_mg3u10.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_mg3u10.svg', quizBg: 'math/assets/bg_mg3u10.svg',
     lessons: ['Multiplying Tens and Hundreds', 'Vertical Multiplication (2-digit × 1-digit)', 'Vertical Multiplication (3-digit × 1-digit)', 'Rules of Multiplication', 'Using Multiplication'],
-    questionsAr: 'math/questions_mg3u10_ar.js',
+    questions: 'math/questions_mg3u10_en.js', questionsAr: 'math/questions_mg3u10_ar.js',
     lessonsAr: ['الضرب في العشرات والمئات', 'الضرب الرأسي (عدد من رقمين × عدد من رقم واحد)', 'الضرب الرأسي (عدد من ٣ أرقام × عدد من رقم واحد)', 'قواعد الضرب', 'استخدام الضرب'] },
 
   /* Grade 6 Math, first term 2026/2027. Source: the English school book (Primary 6, Math Term 1), Units 1 and 2 (the official October scope). Only the English file exists so far;
