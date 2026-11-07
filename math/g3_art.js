@@ -543,7 +543,7 @@
 
 
   /* ---------- Unit 9 · numbers greater than 10 000 ---------- */
-  const big = v => dg(String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ' '));   /* 865 000: narrow no-break space keeps the number in one piece in Arabic text */
+  const big = v => dg(String(v).replace(/\B(?=(\d{3})+(?!\d))/g, AR() ? ' ' : ','));   /* 865 000: narrow no-break space keeps the number in one piece in Arabic text */
   /* the book's place-value table: ones on the right, «الألوف» under the left three; pic: { n, fill: digits shown, ask: place 0-5 with «؟» } */
   function g3Place(q) {
     const p = (q && q.pic) || { n: 865000, fill: true }, cw = 52, x0 = (W - 6 * cw) / 2 - 3, y0 = 14, hh = 34, dh = 44;
@@ -554,7 +554,8 @@
       const x = X(k), a = p.ask === k;
       s += `<rect x="${f1(x)}" y="${y0}" width="${cw}" height="${hh}" fill="${a ? '#ffe7a3' : k >= 3 ? '#e3f2fb' : '#fde8d6'}" stroke="${INK}" stroke-width="1.4"/>`;
       const nm = NAMES[k].split(' ');
-      s += nm.length > 1 ? txt(x + cw / 2, y0 + 14, nm[0], { fs: 10, w: 700 }) + txt(x + cw / 2, y0 + 28, nm[1], { fs: 10, w: 700 }) : txt(x + cw / 2, y0 + 22, nm[0], { fs: 11, w: 700 });
+      const fz = (w, m) => Math.min(m, (cw - 6) / (w.length * .62));   /* long English names shrink to the cell */
+      s += nm.length > 1 ? txt(x + cw / 2, y0 + 14, nm[0], { fs: fz(nm[0], 10), w: 700 }) + txt(x + cw / 2, y0 + 28, nm[1], { fs: fz(nm[1], 10), w: 700 }) : txt(x + cw / 2, y0 + 22, nm[0], { fs: fz(nm[0], 11), w: 700 });
       s += `<rect x="${f1(x)}" y="${y0 + hh}" width="${cw}" height="${dh}" fill="${a ? '#fff4d6' : '#fff'}" stroke="${a ? '#d99a12' : INK}" stroke-width="${a ? 2.4 : 1.4}"/>`;
       if (a) s += txt(x + cw / 2, y0 + hh + 30, QM(), { fs: 22, fill: '#d99a12' });
       else if (p.fill && ds[k] != null) s += txt(x + cw / 2, y0 + hh + 31, dg(ds[k]), { fs: 24, fill: k >= 3 ? '#23799f' : '#e2603f' });

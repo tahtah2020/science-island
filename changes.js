@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'Grade 3 Math: English units 7-9',
+    items: [
+      { text: 'Mental Math, Division with Remainders and Numbers Bigger than 10,000 now open on the Languages track' },
+      { text: 'Place-value table and big numbers written like the English book (865,000)' }
+    ] },
   { date: '2026-11-07', title: 'Grade 3 Math: new pictures for units 4 and 6',
     items: [
       { text: 'Owner icons in the word problems (teddy, stationery set, soccer ball, meal, sneakers, handbag, cow) and the fruit tally (peach, grape)' },
