@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107j{{{">
+<link rel="stylesheet" href="common.css?v=20261107k{{{">
 <style>
 /* «نجوم متفوّق» (7 Nov 2026): evening sky, golden pyramid, three boards, badges, level rings, team goal, «مكانك» bar, photos after approval */
 body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-height:100svh}
@@ -57,7 +57,7 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
 .slot.empty .av{background:rgba(255,255,255,.18);border-style:dashed;color:#fff6d8}
 .slot:focus-visible{outline:3px solid #fff;outline-offset:3px;border-radius:14px}
 .slot .crown{position:absolute;top:calc(var(--a)*-.55);width:calc(var(--a)*.62);left:50%;transform:translateX(-50%);z-index:3;animation:crown 1s cubic-bezier(.3,1.5,.5,1) 1.4s both}
-.pyrReesho{position:absolute;width:15%;top:-3%;inset-inline-end:8%;animation:fly 3.5s ease-in-out infinite;filter:drop-shadow(0 6px 8px rgba(0,0,0,.3))}
+.pyrReesho{position:absolute;width:15%;top:3%;right:8%;z-index:2;animation:fly 3.5s ease-in-out infinite;filter:drop-shadow(0 6px 8px rgba(0,0,0,.3))}
 @keyframes fly{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
 .det .bdg{justify-content:center}
 .det .bdg span{font-size:13px}
@@ -213,13 +213,13 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
 </div>
 
 <div class="veil" id="celVeil" hidden>
-  <div class="cel"><img src="assets/parrot_celebrate.png" alt=""><h3 id="celH"></h3><p id="celP"></p><button class="btn primary big" type="button" id="celOk" data-ar="يلّا نكمّل!">Let’s go!</button></div>
+  <div class="cel"><img src="assets/stars/reesho_crown.webp" alt=""><h3 id="celH"></h3><p id="celP"></p><button class="btn primary big" type="button" id="celOk" data-ar="يلّا نكمّل!">Let’s go!</button></div>
 </div>
 
-<script src="firebase-config.js?v=20261107j{{{"></script>
-<script src="chapters.js?v=20261107j{{{"></script>
-<script src="wardrobe_items.js?v=20261107j{{{"></script>
-<script src="common.js?v=20261107j{{{"></script>
+<script src="firebase-config.js?v=20261107k{{{"></script>
+<script src="chapters.js?v=20261107k{{{"></script>
+<script src="wardrobe_items.js?v=20261107k{{{"></script>
+<script src="common.js?v=20261107k{{{"></script>
 <script>
 (async () => {
   'use strict';
@@ -274,7 +274,7 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   const W = 1024, H = 765, AX = 512, AY = 74;
   const ROWS = [[160, 1], [295, 2], [430, 3], [568, 4]];           // centre line of each row, students on it
   const half = y => .815 * (y - AY);
-  const pyramidSVG = () => '<img class="bg" src="assets/stars/pyramid.jpg" alt="">';
+  const pyramidSVG = () => '<img class="bg" src="assets/stars/pyramid.jpg" alt=""><img class="pyrReesho" src="assets/stars/reesho_crown.webp" alt="">';
   let shown = [];
   function draw(rows, k) {
     const pyr = $('#pyr'); pyr.style.opacity = '';
