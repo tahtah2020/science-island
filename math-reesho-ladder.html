@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Rescue Ladder · Length and Multiplication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 3 adventure «سلم الإنقاذ / Rescue Ladder» (7 Nov 2026).
+     Concepts: Unit 5 Length (lesson 1: 1 m = 100 cm, metres and centimetres), Unit 1 Rules of multiplication (lessons 3-4: multiplying tens, ×10),
+     Unit 10 Vertical multiplication (2-digit × 1-digit). The maths is the move: the child chooses how many ladder pieces to join (each piece has a
+     known length); the ladder is raised against the wall and Reesho climbs: too short and he cannot reach the kitten, too long and the ladder breaks
+     the window, exact and he brings the kitten down. The ladder is shown lying in pieces (no scale) before it is raised, so the height cannot be
+     matched by eye. 6 missions × 4 kittens, one small step each; 4 alarm bells (lives).
+     Pictures: Reesho the firefighter, the kitten, the ladder piece, fire truck, broken window, alarm bell, star, tree and the street background made
+     by the owner with Gemini (prompts by Claude), cut out to math/assets/ladder/ (the gaps between the rungs made transparent). The building,
+     windows, heights and lengths are drawn in code. Progress: SI.chProf('mg3u5').ladder = { lvl, best, stars[] }. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--cream:#fffaf0;--ok:#2e9e6b;--gold:#f2b134;--coral:#e2603f;--fire:#d9432f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;color:var(--navy);min-height:100svh;background:linear-gradient(#cdebf6,#eaf6ea 55%,#f6ecd6)}
+.wrap{max-width:780px;margin:0 auto;padding:8px 12px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0;color:var(--fire);text-shadow:0 2px 0 #fff}
+.pills{display:flex;gap:6px;align-items:center}
+.pill{background:#fff;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px;box-shadow:0 2px 0 #e7c9b8}
+.ib{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#fff;border:0;border-radius:99px;font-size:16px;width:34px;height:30px;cursor:pointer;box-shadow:0 2px 0 #e7c9b8}
+.stage{position:relative;margin-top:6px;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px #1f3d5733;background:#cfe9f4}
+#scene{width:100%;height:auto;display:block}
+.say{display:flex;gap:8px;align-items:center;margin:8px 0}
+.say img{width:46px;height:46px;object-fit:contain;flex:none}
+.bubble{background:#fff;border-radius:16px;padding:9px 13px;font-size:15.5px;font-weight:700;flex:1;min-height:46px;box-shadow:0 3px 10px #1f3d5722;line-height:1.6}
+.panel{background:var(--cream);border-radius:22px;padding:12px;box-shadow:0 6px 20px #1f3d5726;border:3px solid #fff}
+.order{display:flex;align-items:center;gap:12px;background:#fff;border:2px dashed #f2b8ab;border-radius:16px;padding:8px 12px}
+.order img{width:50px;flex:none}
+.order .q{font-weight:800;font-size:16px;line-height:1.65}
+.order .tag{display:inline-block;background:var(--fire);color:#fff;border-radius:10px;padding:1px 9px;font-weight:900;font-size:13px;margin-inline-end:6px}
+.big{font-weight:900;color:var(--fire);white-space:nowrap}
+.pick{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;flex-wrap:wrap}
+.pick button{width:52px;height:52px;border:0;border-radius:14px;background:#ffe9e2;font:900 28px Nunito,Cairo;color:var(--fire);cursor:pointer;box-shadow:0 3px 0 #f2b8ab}
+.pick button:active{transform:translateY(2px);box-shadow:0 1px 0 #f2b8ab}
+.pick .n{text-align:center;font-weight:900;font-size:15px;color:var(--ink)}
+.pick .n b{display:block;font-size:34px;color:var(--navy);line-height:1.1}
+.pieces{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;min-height:40px;margin-top:8px;padding:6px;background:#f3ead8;border-radius:12px;direction:ltr}
+.pieces img{height:44px;width:auto}
+.row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.fire{background:var(--fire);color:#fff;box-shadow:0 4px 0 #a23222}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #ead6cc}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.check{margin-top:10px;background:#eefaf4;border-radius:14px;padding:8px 12px;font-weight:800;line-height:1.8;border:2px solid #bfe8d6;text-align:center}
+.check[hidden]{display:none}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:30}
+.veil[hidden]{display:none}
+.card{background:#fff;border-radius:24px;padding:18px 20px;max-width:400px;width:100%;text-align:center;box-shadow:0 10px 40px #0004;border:4px solid #f2b8ab}
+.card h2{margin:4px 0 8px;color:var(--fire)}
+.card ol{text-align:start;padding-inline-start:22px;line-height:1.85;margin:6px 0 12px;font-weight:700}
+.card .hero{height:120px;object-fit:contain}
+.stars{font-size:34px;letter-spacing:4px;color:var(--gold)}
+.new{display:inline-block;background:#fff4d6;border:2px solid var(--gold);border-radius:12px;padding:6px 10px;font-weight:800;margin:6px 0}
+.new[hidden]{display:none}
+@keyframes shake{20%,60%{transform:translateX(-2px)}40%,80%{transform:translateX(2px)}}
+#scene .shk{animation:shake .4s ease-in-out infinite;transform-box:fill-box}
+@media (prefers-reduced-motion:reduce){#scene .shk{animation:none}}
+@media (max-width:440px){.top h1{font-size:18px}.order .q{font-size:15px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🪜 سلم الإنقاذ">🪜 Rescue Ladder</h1>
+    <div class="pills"><span class="pill"><span data-ar="المهمة">Mission</span> <b id="day">1</b>/<b id="days">6</b></span><span class="pill">⭐ <b id="score">0</b></span>
+      <button class="ib" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="ib home" href="adventures.html" aria-label="Back" data-ar-label="رجوع">🗺️</a></div></div>
+  <div class="stage"><svg id="scene" viewBox="0 0 480 268" role="img" aria-label="A kitten at a window of a building and Reesho with a ladder" data-ar-label="قطة في شباك مبنى وريشو معاه سلم"></svg></div>
+  <div class="say"><img id="sayPic" src="math/assets/ladder/reesho_carry.webp" alt=""><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="order" id="order"></div>
+    <div class="pick"><button type="button" id="minus" aria-label="One piece less" data-ar-label="قطعة أقل">−</button><div class="n"><b id="n">1</b><span data-ar="قطع السلم">ladder pieces</span></div><button type="button" id="plus" aria-label="One piece more" data-ar-label="قطعة زيادة">+</button></div>
+    <div class="pieces" id="pieces" aria-hidden="true"></div>
+    <div class="check" id="check" hidden></div>
+    <div class="row"><button class="btn fire" id="go" type="button"></button><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="card">
+  <img class="hero" src="math/assets/ladder/reesho_carry.webp" alt="">
+  <h2 id="introT"></h2><ol id="rules"></ol>
+  <button class="btn fire" id="start" type="button"></button></div></div>
+<div class="veil" id="dayCard" hidden><div class="card">
+  <img class="hero" id="dayPic" src="math/assets/ladder/reesho_hug.webp" alt="">
+  <h2 id="dayT"></h2><div class="stars" id="dayStars"></div><p id="dayText"></p><div class="new" id="dayNew"></div><br>
+  <button class="btn fire" id="dayBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261107g"></script>
+<script src="chapters.js?v=20261107g"></script>
+<script src="common.js?v=20261107g"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('mg3u5'); if (!CH) return;
+const T = SI.T, AR = SI.isAr(), GAME = 'math-reesho-ladder.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rnd = k => Math.floor(Math.random() * k);
+const rint = (a, b) => a + rnd(b - a + 1);
+const pick = a => a[rnd(a.length)];
+const dig = x => AR ? String(x).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]) : String(x);
+const cm = v => `${dig(v)} ${T('cm', 'سم')}`;
+const mcm = v => { const m = Math.floor(v / 100), c = v % 100; return [m ? `${dig(m)} ${T('m', 'م')}` : '', c ? `${dig(c)} ${T('cm', 'سم')}` : ''].filter(Boolean).join(' '); };
+document.documentElement.lang = AR ? 'ar' : 'en'; document.documentElement.dir = AR ? 'rtl' : 'ltr';
+document.querySelectorAll('[data-ar]').forEach(e => { if (AR) e.textContent = e.dataset.ar; });
+document.querySelectorAll('[data-ar-label]').forEach(e => { if (AR) e.setAttribute('aria-label', e.dataset.arLabel); });
+document.title = T('Rescue Ladder · Length and Multiplication', 'سلم الإنقاذ · الطول والضرب');
+
+const IMG = 'math/assets/ladder/';
+const src = k => IMG + k + '.webp';
+['reesho_carry', 'reesho_climb', 'reesho_worry', 'reesho_hug', 'cat_scared', 'cat_happy', 'piece', 'truck', 'broken', 'alarm', 'star', 'tree'].forEach(k => { const i = new Image(); i.src = src(k); });
+
+/* ---------- missions: one small step each ---------- */
+const DAYS = [
+  { gen: () => { const n = rint(2, 4); return { L: 100, n, shown: 'cm' }; }, newEn: '1 metre = 100 centimetres.', newAr: '١ متر = ١٠٠ سنتيمتر.' },
+  { gen: () => { const n = rint(3, 8); return { L: 50, n, shown: 'mcm' }; }, newEn: 'Pieces of 50 cm, heights in metres and centimetres.', newAr: 'قطع ٥٠ سم، والارتفاع بالمتر والسنتيمتر.' },
+  { gen: () => { const L = pick([20, 30, 40]), n = rint(4, Math.min(9, Math.floor(400 / L))); return { L, n, shown: 'mcm' }; }, newEn: 'Pieces of 20, 30 or 40 cm: multiply by tens.', newAr: 'قطع ٢٠ أو ٣٠ أو ٤٠ سم: الضرب في العشرات.' },
+  { gen: () => { const L = pick([15, 25, 35, 45, 24, 32, 42]), n = rint(3, Math.min(9, Math.floor(400 / L))); return { L, n, shown: 'cm' }; }, newEn: 'Pieces like 25 cm: vertical multiplication.', newAr: 'قطع زي ٢٥ سم: الضرب الرأسي.' },
+  { gen: () => { const L = pick([25, 35, 45, 24, 32, 42, 55]), n = rint(3, Math.min(8, Math.floor(400 / L))); return { L, n, shown: 'mcm' }; }, newEn: 'Change metres to centimetres, then multiply.', newAr: 'حوّل المتر لسنتيمتر، وبعدين اضرب.' },
+  { gen: () => pick([DAYS[1], DAYS[2], DAYS[3], DAYS[4]]).gen(), newEn: 'Mixed rescues!', newAr: 'إنقاذات متنوّعة!' }
+];
+const TASKS = 4, LIVES = 4, MAXN = 12;
+const S = { day: Math.min(DAYS.length - 1, ((SI.chProf(CH.id).ladder || {}).lvl) || 0), score: 0, lives: LIVES, misses: 0, n: 0, o: null, busy: false, t0: Date.now(), pick: 1, used: new Set() };
+
+function makeTask(day) {
+  for (let t = 0; t < 60; t++) { const g = DAYS[day].gen(), o = { ...g, H: g.L * g.n }; if (o.H < 100 || o.H > 450) continue; o.key = o.L + '/' + o.n; if (!S.used.has(o.key)) { S.used.add(o.key); return o; } }
+  return { L: 50, n: 4, H: 200, shown: 'mcm' };
+}
+const heightText = o => o.shown === 'cm' ? cm(o.H) : mcm(o.H);
+const orderText = o => T(`The kitten is stuck at a window <span class="big">${heightText(o)}</span> high. Each ladder piece is <span class="big">${cm(o.L)}</span>. How many pieces make the ladder reach exactly?`, `القطة محبوسة في شباك على ارتفاع <span class="big">${heightText(o)}</span>. طول كل قطعة سلم <span class="big">${cm(o.L)}</span>. كام قطعة نوصّلهم عشان السلم يوصل بالظبط؟`);
+function hintText(o) {
+  const conv = o.shown === 'mcm' && o.H >= 100 ? T(`First change the height to centimetres: 1 m = 100 cm. `, `حوّل الارتفاع لسنتيمترات الأول: ١ م = ١٠٠ سم. `) : '';
+  if (o.L === 100) return T('Each piece is 100 cm, that is 1 metre. How many metres is the height?', 'كل قطعة ١٠٠ سم، يعني ١ متر. الارتفاع كام متر؟');
+  if (o.L === 50) return conv + T('Count in fifties: 50, 100, 150, …', 'عُدّ بالخمسينات: ٥٠، ١٠٠، ١٥٠، …');
+  if (o.L % 10 === 0) return conv + T(`Think of the ${dig(o.L / 10)} times table: ${dig(o.L / 10)} × ? and put a zero after the answer.`, `فكّر في جدول ضرب ${dig(o.L / 10)}: ${dig(o.L / 10)} × ؟ وحط صفر بعد الناتج.`);
+  return conv + T(`Try a number of pieces and multiply it by ${dig(o.L)} in columns: ones first, then tens.`, `جرّب عدد قطع واضربه في ${dig(o.L)} رأسيًا: الآحاد الأول، وبعدين العشرات.`);
+}
+const checkHTML = o => `${dig(o.n)} × ${cm(o.L)} = ${cm(o.H)}${o.shown === 'mcm' && o.H % 100 !== o.H ? ` = ${mcm(o.H)}` : ''} ✔`;
+
+/* ---------- scene ---------- */
+const GY = 204, K = 0.37;                     // ground line, pixels per centimetre (450 cm ≈ 166 px)
+const WALL_X = 238, WALL_W = 150, LAD_X = 210, LAD_W = 26;
+const yAt = h => GY - h * K;
+function sceneSVG({ ladder = 0, climber = null, cat = 'scared', broken = false, extra = '' } = {}) {
+  const o = S.o; let h = `<image href="${IMG}bg_street.jpg" x="0" y="0" width="480" height="268" preserveAspectRatio="xMidYMid slice"/>`;
+  h += `<image href="${src('tree')}" x="400" y="${GY - 70}" width="62" height="74"/><image href="${src('truck')}" x="8" y="${GY - 36}" width="96" height="68"/>`;
+  if (o) {
+    const top = Math.min(yAt(o.H) - 70, 18);
+    // the building (drawn in code: no height marks on it)
+    h += `<rect x="${WALL_X}" y="${top}" width="${WALL_W}" height="${GY - top + 4}" fill="#f2d7b6" stroke="#8a5a3c" stroke-width="2.5"/>`;
+    h += `<rect x="${WALL_X - 6}" y="${top - 8}" width="${WALL_W + 12}" height="10" rx="3" fill="#c96a4a" stroke="#8a5a3c" stroke-width="2"/>`;
+    for (let y = top + 22; y < GY - 12; y += 22) h += `<line x1="${WALL_X}" y1="${y}" x2="${WALL_X + WALL_W}" y2="${y}" stroke="#e6c39d" stroke-width="1.5"/>`;
+    h += `<rect x="${WALL_X + 96}" y="${GY - 42}" width="30" height="42" rx="3" fill="#8a5a3c"/>`;     // door
+    // the kitten's window: the sill is at height H
+    const sy = yAt(o.H), wx = WALL_X + 8;
+    h += `<rect x="${wx}" y="${sy - 44}" width="54" height="44" rx="4" fill="#bfe3f2" stroke="#8a5a3c" stroke-width="2.5"/><line x1="${wx + 27}" y1="${sy - 44}" x2="${wx + 27}" y2="${sy}" stroke="#8a5a3c" stroke-width="2"/>`;
+    h += `<rect x="${wx - 6}" y="${sy - 2}" width="66" height="7" rx="2" fill="#a86f4a"/>`;
+    if (broken) h += `<image href="${src('broken')}" x="${wx - 2}" y="${sy - 50}" width="58" height="58"/>`;
+    if (cat) h += `<image href="${src('cat_' + cat)}" x="${wx + 4}" y="${sy - 40}" width="36" height="42" ${cat === 'scared' ? 'class="shk"' : ''}/>`;
+    // height tag (the given)
+    h += `<g transform="translate(${WALL_X + 72},${sy - 34})"><rect width="${AR ? 74 : 82}" height="26" rx="8" fill="#fff" stroke="#d9432f" stroke-width="2"/><text x="${(AR ? 74 : 82) / 2}" y="18" font-size="14" font-weight="900" text-anchor="middle" fill="#d9432f" font-family="Nunito,Cairo">${heightText(o)}</text></g>`;
+    // the raised ladder: pieces stacked from the ground
+    for (let i = 0; i < ladder; i++) { const ph = o.L * K; h += `<image href="${src('piece')}" x="${LAD_X}" y="${(GY - (i + 1) * ph).toFixed(1)}" width="${LAD_W}" height="${(ph + .6).toFixed(1)}" preserveAspectRatio="none"/>`; }
+  }
+  if (climber) h += `<image href="${src(climber.k)}" x="${climber.x}" y="${climber.y}" width="${climber.w}" height="${climber.h}"/>`;
+  h += `<g transform="translate(${AR ? 8 : 352},8)"><rect width="120" height="30" rx="15" fill="#fff" opacity=".92"/>${Array.from({ length: LIVES }, (_, i) => `<image href="${src('alarm')}" x="${10 + i * 27}" y="4" width="22" height="22" opacity="${i < S.lives ? 1 : .18}"/>`).join('')}</g>`;
+  $('#scene').innerHTML = h + extra;
+}
+const restReesho = () => ({ k: 'reesho_carry', x: 110, y: GY - 62, w: 66, h: 63 });
+function sayMood(html, pose) { $('#say').innerHTML = html; if (pose) $('#sayPic').src = src('reesho_' + pose); }
+
+/* ---------- choosing the pieces (shown lying down, no scale) ---------- */
+function setPick(v) { if (S.busy) return; S.pick = Math.max(1, Math.min(MAXN, v)); $('#n').textContent = dig(S.pick); $('#pieces').innerHTML = Array.from({ length: S.pick }, () => `<img src="${src('piece')}" alt="">`).join(''); SFX.tick(); }
+$('#minus').onclick = () => setPick(S.pick - 1);
+$('#plus').onclick = () => setPick(S.pick + 1);
+document.addEventListener('keydown', e => { if (!$('#intro').hidden || !$('#dayCard').hidden) return; if (e.key === '+' || e.key === 'ArrowUp') setPick(S.pick + 1); if (e.key === '-' || e.key === 'ArrowDown') setPick(S.pick - 1); if (e.key === 'Enter') $('#go').click(); });
+
+/* ---------- flow ---------- */
+function nextTask() {
+  S.o = makeTask(S.day); S.busy = false; S.orderMiss = 0;
+  const o = S.o;
+  $('#check').hidden = true; $('#go').disabled = false; $('#go').onclick = raise; $('#go').textContent = T('🪜 Raise the ladder!', '🪜 ارفع السلم!');
+  $('#order').innerHTML = `<img src="${src('piece')}" alt=""><div class="q"><span class="tag">${dig(S.n + 1)}/${dig(TASKS)}</span>${orderText(o)}</div>`;
+  setPick(1);
+  sceneSVG({ climber: restReesho() });
+  sayMood('🦜 ' + orderText(o), 'carry');
+}
+async function raise() {
+  if (S.busy) return; S.busy = true; $('#go').disabled = true;
+  const o = S.o, k = S.pick, reach = k * o.L, ph = o.L * K;
+  // the pieces go up one by one
+  for (let i = 1; i <= k; i++) { SFX.clack(); sceneSVG({ ladder: i, climber: restReesho(), broken: reach > o.H && i * o.L > o.H }); await sleep(150); }
+  if (reach > o.H) SFX.glass();
+  // Reesho climbs to the top of the ladder or to the window, whichever is lower
+  const stopH = Math.min(reach, o.H), y0 = GY - 62, y1 = yAt(stopH) - 40;
+  await anim(Math.max(700, k * 160), t => sceneSVG({ ladder: k, broken: reach > o.H, climber: { k: 'reesho_climb', x: LAD_X - 16, y: y0 + (y1 - y0) * t, w: 52, h: 66 } }));
+  if (reach === o.H) return win();
+  sceneSVG({ ladder: k, broken: reach > o.H, climber: { k: 'reesho_worry', x: LAD_X - 30, y: y1 - 4, w: 40, h: 72 } });
+  const msg = reach < o.H
+    ? T(`${dig(k)} pieces × ${cm(o.L)} = ${cm(reach)}. Too short: Reesho cannot reach the kitten at ${heightText(o)}!`, `${dig(k)} قطع × ${cm(o.L)} = ${cm(reach)}. السلم قصير: ريشو مش واصل للقطة اللي على ارتفاع ${heightText(o)}!`)
+    : T(`${dig(k)} pieces × ${cm(o.L)} = ${cm(reach)}. Too long: the ladder broke the window above the kitten!`, `${dig(k)} قطع × ${cm(o.L)} = ${cm(reach)}. السلم طويل: كسر الشباك فوق القطة!`);
+  await miss(msg);
+}
+function anim(ms, step) { return new Promise(res => { const t0 = performance.now(); (function f(t) { const k = Math.min(1, (t - t0) / ms); step(k); k < 1 ? requestAnimationFrame(f) : res(); })(t0); }); }
+async function miss(text) {
+  S.lives--; S.misses++; S.orderMiss++; SFX.wrong();
+  SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.day + 1, step: S.n + 1 });
+  sayMood('🦜 ' + text + (S.lives ? ' ' + T(`🔔 ${dig(S.lives)} alarm bells left.`, `🔔 فاضل ${dig(S.lives)} أجراس.`) : ''), 'worry');
+  await sleep(1800);
+  if (!S.lives) return endDay(false);
+  S.busy = false; $('#go').disabled = false; sceneSVG({ climber: restReesho() });
+}
+async function win() {
+  const o = S.o, pts = S.orderMiss ? 10 : 15, k = S.pick;
+  S.score += pts; $('#score').textContent = dig(S.score);
+  SFX.meow(); await sleep(250);
+  const y1 = yAt(o.H) - 40, y0 = GY - 74;
+  await anim(Math.max(700, k * 130), t => sceneSVG({ ladder: k, cat: null, climber: { k: 'reesho_hug', x: LAD_X - 22, y: y1 + (y0 - y1) * t, w: 56, h: 76 } }));
+  SFX.win();
+  sceneSVG({ ladder: k, cat: null, climber: { k: 'reesho_hug', x: 130, y: GY - 80, w: 62, h: 84 }, extra: `<image href="${src('star')}" x="${WALL_X + 8}" y="${yAt(o.H) - 60}" width="54" height="50"/>` + confetti() });
+  $('#check').hidden = false; $('#check').innerHTML = checkHTML(o);
+  sayMood(`🦜 ${pick([T('Kitten saved!', 'القطة اتنقذت!'), T('Exactly the right height!', 'الارتفاع مظبوط بالظبط!'), T('Meow! Thank you, Reesho!', 'مياو! شكرًا يا ريشو!')])} +${dig(pts)}`, 'hug');
+  S.n++; S.busy = false; $('#go').disabled = false;
+  $('#go').textContent = S.n >= TASKS ? T('🏁 Mission complete', '🏁 خلصت المهمة') : T('🐱 Next kitten', '🐱 القطة اللي بعدها');
+  $('#go').onclick = () => { S.n >= TASKS ? endDay(true) : nextTask(); };
+}
+function confetti() { let s = ''; for (let i = 0; i < 24; i++) s += `<rect x="${20 + rnd(440)}" y="${20 + rnd(140)}" width="7" height="11" rx="2" fill="${pick(['#f2b134', '#d9432f', '#3aa79a', '#23799f', '#fff'])}"/>`; return s; }
+function startDay() { S.n = 0; S.lives = LIVES; S.misses = 0; S.used = new Set(); S.t0 = Date.now(); $('#day').textContent = dig(S.day + 1); music('play'); nextTask(); }
+function endDay(won) {
+  music('off');
+  const last = S.day === DAYS.length - 1, stars = won ? (S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1) : 0;
+  if (won) { saveWin(stars); SFX.win(); } else { SFX.lose(); SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.day + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 }); }
+  $('#dayPic').src = src(won ? 'reesho_hug' : 'reesho_worry');
+  $('#dayT').textContent = won ? (last ? T('Hero of the fire station! 🏆', 'بطل المطافي! 🏆') : T(`Mission ${dig(S.day + 1)} done!`, `خلصت المهمة ${dig(S.day + 1)}!`)) : T('Out of alarm bells!', 'الأجراس خلصت!');
+  $('#dayStars').textContent = won ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
+  $('#dayText').innerHTML = won ? (last ? T(`All six missions done. Score: ${dig(S.score)}.`, `خلّصت الست مهمات. نقطك: ${dig(S.score)}.`) : T('The next mission is a little harder:', 'المهمة الجاية أصعب شوية:')) : T('Change the height to centimetres first, then find how many pieces make it: pieces × length of a piece.', 'حوّل الارتفاع لسنتيمترات الأول، وبعدين دوّر على عدد القطع: عدد القطع × طول القطعة.');
+  const nxt = won && !last ? DAYS[S.day + 1] : DAYS[S.day];
+  $('#dayNew').hidden = won && last; $('#dayNew').textContent = '✨ ' + T(nxt.newEn, nxt.newAr);
+  $('#dayBtn').textContent = won ? (last ? T('Play again', 'العب من الأول') : T('Next mission ➜', 'المهمة اللي بعدها ⬅')) : T('Try the mission again', 'جرّب المهمة تاني');
+  $('#dayBtn').onclick = () => { $('#dayCard').hidden = true; if (won) S.day = last ? 0 : S.day + 1; if (won && last) { S.score = 0; $('#score').textContent = dig(0); } startDay(); };
+  $('#dayCard').hidden = false;
+}
+function saveWin(stars) {
+  const done = S.day + 1;
+  SI.updateChProf(c => { const o = c.ladder = c.ladder || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.day] = Math.max(o.stars[S.day] || 0, stars); o.lvl = done >= DAYS.length ? 0 : done; }, CH.id);
+  SI.addXP(20 + stars * 10);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: S.score, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+$('#hint').onclick = () => { if (S.o) { SFX.tick(); sayMood('🦜 ' + hintText(S.o)); } };
+
+/* ---------- music and sounds (Web Audio, no files): a brave little march ---------- */
+const A = { ctx: null, on: !SI.isMuted(), timer: null, beat: 0, next: 0 };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .5 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+function tone(m, t, dur, { type = 'triangle', vol = .2, cut = 3000, glide = 0 } = {}) {
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur);
+  f.type = 'lowpass'; f.frequency.value = cut; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, vol = .2, cut = 1800) {
+  const c = A.ctx, b = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.value = cut; g.gain.value = vol;
+  s.connect(f); f.connect(g); g.connect(A.master); s.start(t);
+}
+const MEL = [67, 67, 72, 74, 76, 74, 72, 67, 69, 69, 72, 74, 72, 71, 72, 72];
+function musicTick() {
+  const c = A.ctx; if (!c) return; const spb = 60 / 116 / 2;
+  while (A.next < c.currentTime + .12) {
+    const i = A.beat % 16, t = A.next;
+    if (i % 2 === 0) tone(MEL[(A.beat / 2 | 0) % 16], t, spb * 1.4, { type: 'square', vol: .035, cut: 2000 });
+    if (i % 4 === 0) tone([48, 43, 45, 43][(A.beat / 4 | 0) % 4], t, spb * 1.6, { type: 'triangle', vol: .1, cut: 700 });
+    if (i % 4 === 2) noise(t, .05, .06, 3000);
+    A.beat++; A.next += spb;
+  }
+}
+function music(mode) { if (!ac()) return; clearInterval(A.timer); A.timer = null; if (mode === 'play') { A.beat = 0; A.next = A.ctx.currentTime + .1; A.timer = setInterval(musicTick, 30); } }
+const SFX = {
+  tick() { if (!ac()) return; tone(96, A.ctx.currentTime, .03, { type: 'square', vol: .035, cut: 6000 }); },
+  clack() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .06, .12, 1200); tone(60, t, .08, { type: 'square', vol: .04, cut: 1500 }); },
+  glass() { if (!ac()) return; const t = A.ctx.currentTime; noise(t, .5, .16, 6500); [100, 104, 98].forEach((m, i) => tone(m, t + i * .05, .2, { type: 'sine', vol: .05 })); },
+  meow() { if (!ac()) return; const t = A.ctx.currentTime; tone(79, t, .35, { type: 'sawtooth', vol: .04, cut: 1800, glide: 5 }); tone(84, t + .2, .3, { type: 'sawtooth', vol: .035, cut: 1800, glide: -7 }); },
+  wrong() { if (!ac()) return; tone(55, A.ctx.currentTime + .1, .32, { type: 'sawtooth', vol: .09, cut: 900, glide: -4 }); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [72, 76, 79, 84, 88].forEach((m, i) => tone(m, t + i * .09, .4, { type: 'triangle', vol: .13 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [67, 65, 64, 60].forEach((m, i) => tone(m, t + i * .26, .45, { type: 'triangle', vol: .13, cut: 1400 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .5 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); };
+$('#snd').textContent = A.on ? '🔊' : '🔇';
+
+$('#introT').textContent = T('Firefighter Reesho to the rescue!', 'ريشو رجل المطافي للإنقاذ!');
+$('#rules').innerHTML = [
+  T('A kitten is stuck at a window. Its height is written next to it.', 'قطة محبوسة في شباك، وارتفاعه مكتوب جنبها.'),
+  T('Each ladder piece has a length. Choose how many pieces to join with − and +.', 'كل قطعة سلم ليها طول. اختار عدد القطع اللي نوصّلها بـ − و +.'),
+  T('Raise the ladder: too short, Reesho cannot reach; too long, it breaks the window.', 'ارفع السلم: لو قصير ريشو مش هيوصل، ولو طويل هيكسر الشباك.'),
+  T(`A wrong ladder costs an alarm bell 🔔. You have <b>${dig(LIVES)}</b> in each mission.`, `السلم الغلط بيضيّع جرس 🔔. معاك <b>${dig(LIVES)}</b> في كل مهمة.`)
+].map(x => `<li>${x}</li>`).join('');
+$('#days').textContent = dig(DAYS.length);
+$('#start').textContent = T('To the rescue! 🚒', 'يلا ننقذ! 🚒');
+$('#start').onclick = () => { $('#intro').hidden = true; ac(); SI.ga('game_start', { game: GAME, chapter: CH.id }); startDay(); };
+$('#score').textContent = dig(0);
+sceneSVG({ climber: restReesho() });
+window.__ld = S; window.__ldApi = { makeTask, nextTask, startDay, raise, setDay: d => { S.day = d; }, setPick };
+})();
+</script>
+</body>
+</html>
