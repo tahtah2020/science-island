@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107r{{{">
+<link rel="stylesheet" href="common.css?v=20261107s{{{">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -154,6 +154,11 @@ details.about>*:not(summary){margin-inline:18px}
 .grades .choice .ar{font-size:13px;line-height:1.3}
 .grades .choice[data-grade^="p"] .ic{background:#fde8d2}
 
+.aqBox{display:flex;flex-direction:column;gap:6px}
+.aqBox[hidden]{display:none}
+.aqMsg{margin:0;text-align:center;font:800 15px "Cairo","Nunito",sans-serif;color:var(--navy);background:var(--card);border-radius:14px;padding:7px 12px;box-shadow:0 3px 10px rgba(31,61,87,.12)}
+.aqMsg b{color:var(--primary)}
+
 .foot{margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .foot a.tg{align-items:center;background:#229ed9;color:#fff}
 .foot a.tg svg{flex:none;align-self:center}
@@ -176,8 +181,8 @@ details.about>*:not(summary){margin-inline:18px}
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107r{{{">
-      <img src="assets/banner.jpg?v=20261107r{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107s{{{">
+      <img src="assets/banner.jpg?v=20261107s{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
@@ -276,6 +281,12 @@ details.about>*:not(summary){margin-inline:18px}
     <button class="back" type="button" data-back="stepTrack">‹ Back</button>
   </section>
 
+  <!-- «حوض متفوّق»: every student is a fish that grows with points (owner, 7 Nov 2026; aquarium.js) -->
+  <section class="aqBox" id="aqBox" dir="rtl" aria-label="حوض متفوّق">
+    <div id="tank"></div>
+    <p class="aqMsg" id="aqMsg"></p>
+  </section>
+
   <!-- book questions: a tile under the player card -->
   <nav class="tiles" id="tilesLow" dir="rtl" aria-label="أسئلة الدروس">
     <a class="tile tLes wide" href="/lessons/"><span class="tIc" aria-hidden="true">📚</span><b>أسئلة بالإجابات</b><small>كل درس في الكتاب المدرسي</small></a>
@@ -317,9 +328,10 @@ details.about>*:not(summary){margin-inline:18px}
   </details>
   <p class="foot"><a href="contact.html">✉️ تواصل معنا</a></p>
 </main>
-<script src="firebase-config.js?v=20261107r{{{"></script>
-<script src="common.js?v=20261107r{{{"></script>
-<script src="chapters.js?v=20261107r{{{"></script>
+<script src="firebase-config.js?v=20261107s{{{"></script>
+<script src="common.js?v=20261107s{{{"></script>
+<script src="chapters.js?v=20261107s{{{"></script>
+<script src="aquarium.js?v=20261107s{{{"></script>
 <script>
 (() => {
   'use strict';
@@ -375,7 +387,7 @@ details.about>*:not(summary){margin-inline:18px}
       }
     } catch (e) { console.warn(e); }
   } else show('stepGrade');
-  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('#tiles').hidden = true; $('#tilesLow').hidden = true; show('stepTrack'); }
+  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('#tiles').hidden = true; $('#tilesLow').hidden = true; $('#aqBox').hidden = true; show('stepTrack'); }
 
   $('#newPlayer').onclick = () => { SI.sfx.tick(); show('stepGrade'); };
   /* recovery code: the server copy comes back on this device (merged with it if the player is already here) */
@@ -419,6 +431,9 @@ details.about>*:not(summary){margin-inline:18px}
     ga('onboarding_done', { grade: choice.grade, track: choice.track });
     SI.sfx.ok(); enter();   // Reesho introduces himself
   });
+
+  /* the aquarium after the page has settled (it reads the Stars board) */
+  window.addEventListener('load', () => setTimeout(() => { if (!$('#aqBox').hidden && window.SI_Aquarium) SI_Aquarium($('#tank'), { msg: $('#aqMsg') }); }, 300));
 
   /* "Players say": up to three of the answers the owner chose to show (first name and one line) */
   window.addEventListener('load', () => setTimeout(async () => {
