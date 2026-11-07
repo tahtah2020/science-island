@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107p{{{">
+<link rel="stylesheet" href="common.css?v=20261107q{{{">
 <style>
 /* «نجوم متفوّق» (7 Nov 2026): evening sky, golden pyramid, three boards, badges, level rings, team goal, «مكانك» bar, photos after approval */
 body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-height:100svh}
@@ -219,10 +219,10 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   <div class="cel"><img src="assets/stars/reesho_crown.webp" alt=""><h3 id="celH"></h3><p id="celP"></p><button class="btn primary big" type="button" id="celOk" data-ar="يلّا نكمّل!">Let’s go!</button></div>
 </div>
 
-<script src="firebase-config.js?v=20261107p{{{"></script>
-<script src="chapters.js?v=20261107p{{{"></script>
-<script src="wardrobe_items.js?v=20261107p{{{"></script>
-<script src="common.js?v=20261107p{{{"></script>
+<script src="firebase-config.js?v=20261107q{{{"></script>
+<script src="chapters.js?v=20261107q{{{"></script>
+<script src="wardrobe_items.js?v=20261107q{{{"></script>
+<script src="common.js?v=20261107q{{{"></script>
 <script>
 (async () => {
   'use strict';
@@ -412,10 +412,10 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
     $('#phDel').hidden = !(own && own.data);
     $('#phPrev').innerHTML = own && own.data ? `<img src="${esc(own.data)}" alt="">` : esc([...me.name][0] || '?');
     $('#phPrev').style.setProperty('--c', colorOf(me.name));
-    $('#phInfo').textContent = st === 'pending' ? T('Your photo is waiting for approval. Only you can see it now.', 'صورتك مستنية الموافقة. إنت بس اللي شايفها دلوقتي.')
+    $('#phInfo').textContent = st === 'pending' ? T('Your photo is being reviewed: it will be approved within 24 hours. Only you can see it now.', SI.G('صورتك بتتراجع، وهتتم الموافقة عليها خلال 24 ساعة. إنت بس اللي شايفها دلوقتي.', 'صورتك بتتراجع، وهتتم الموافقة عليها خلال 24 ساعة. إنتي بس اللي شايفاها دلوقتي.'))
       : st === 'ok' ? T('Your photo is approved: everybody can see it. ✓', 'صورتك اتوافق عليها: الكل شايفها. ✓')
       : st === 'no' ? T('That photo was not approved. Try another one.', 'الصورة دي ما اتقبلتش. جرّب صورة تانية.')
-      : T('Choose a photo of your face or a drawing you love. Everybody sees it after the site approves it.', 'اختار صورة لوشّك أو رسمة بتحبها. الكل هيشوفها بعد موافقة الموقع.');
+      : T('Choose a photo of your face or a drawing you love. We review every photo and approve it within 24 hours; then everybody sees it.', SI.G('اختار صورة لوشّك أو رسمة بتحبها. كل صورة بنراجعها ونوافق عليها خلال 24 ساعة، وبعدها الكل يشوفها.', 'اختاري صورة لوشّك أو رسمة بتحبيها. كل صورة بنراجعها ونوافق عليها خلال 24 ساعة، وبعدها الكل يشوفها.'));
     $('#photoVeil').hidden = false; $('#phPick').focus();
   }
   $('#avBtn').onclick = openPhoto;
@@ -438,7 +438,7 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   $('#phSend').onclick = async () => {
     if (!pending) return; $('#phSend').disabled = true;
     const r = await LB.sendPhoto(pending); $('#phSend').disabled = false;
-    $('#phMsg').textContent = r.ok ? T('Sent! It shows for everybody after approval. ✓', 'اتبعتت! هتظهر للكل بعد الموافقة. ✓') : T('Saved on this device. Sending did not work now: try again later.', 'اتحفظت على الجهاز ده. الإرسال ما نفعش دلوقتي: جرّب تاني بعدين.');
+    $('#phMsg').textContent = r.ok ? T('Sent! ✓ We will review it and approve it within 24 hours.', 'اتبعتت! ✓ هنراجعها ونوافق عليها خلال 24 ساعة، وبعدها تظهر للكل.') : T('Saved on this device. Sending did not work now: try again later.', 'اتحفظت على الجهاز ده. الإرسال ما نفعش دلوقتي: جرّب تاني بعدين.');
     $('#phSend').hidden = true; $('#phDel').hidden = false; pending = null;
     $('#meAv').innerHTML = avatar({ id: myId, name: me.name, score: 0 }); load(kind);
   };
