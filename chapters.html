@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107v{{{">
+<link rel="stylesheet" href="common.css?v=20261107w{{{">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -42,6 +42,12 @@
 .advStrip:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .advs{display:grid;grid-template-columns:1fr;gap:12px}
 .advs:empty{display:none}
+.advs.two{grid-template-columns:1fr 1fr}
+.aqStrip{background:#1d7fd0 url(assets/aquarium/bg.jpg) center 40%/cover;border-color:#bfeaf7}
+.aqStrip .t b,.aqStrip .t small{text-shadow:0 1px 4px rgba(0,30,70,.6)}
+.aqStrip small{color:#fff!important}
+@media (max-width:600px){.advs.two .advStrip{flex-wrap:wrap;gap:4px 8px;padding:8px 10px}.advs.two .advStrip .go{display:none}.advs.two .advStrip img{height:38px}.advs.two .advStrip .t{flex:1 1 0}.advs.two .advStrip .t b{font-size:15px}.advs.two .advStrip .t small{font-size:11.5px}}
+
 .list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
 .ch{display:flex;align-items:center;gap:12px;width:100%;height:100%;text-align:left;font:inherit;color:var(--navy);text-decoration:none;
   background:var(--card);border:3px solid transparent;border-radius:var(--radius);padding:10px 12px 10px 10px;box-shadow:0 6px 20px rgba(31,61,87,.13);transition:transform .12s,border-color .12s}
@@ -151,9 +157,9 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="firebase-config.js?v=20261107v{{{"></script>
-<script src="chapters.js?v=20261107v{{{"></script>
-<script src="common.js?v=20261107v{{{"></script>
+<script src="firebase-config.js?v=20261107w{{{"></script>
+<script src="chapters.js?v=20261107w{{{"></script>
+<script src="common.js?v=20261107w{{{"></script>
 <script>
 (() => {
   'use strict';
@@ -206,6 +212,15 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
     a.innerHTML = `<img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><span class="t"><b>${T('🎮 Reesho’s Adventures', '🎮 مغامرات ريشو')}</b><small>${T(`${advN} game${advN > 1 ? 's' : ''} for ${esc(SI.subjectName())}`, `${advN} ${advN > 2 && advN < 11 ? 'ألعاب' : 'لعبة'} في ${esc(SI.subjectName())}`)}</small></span><span class="go">${T('Open ▸', 'افتح ◂')}</span>`;
     a.onclick = () => SI.sfx.tick();
     $('#advs').appendChild(a);
+  }
+  /* «حوض متفوّق» beside Reesho's adventures (owner, 7 Nov 2026), with today's state of the player's fish */
+  {
+    const lx = SI.prof().lx || '', fed = lx === SI.today();
+    const aq = document.createElement('a'); aq.className = 'advStrip aqStrip'; aq.href = 'aquarium.html';
+    aq.innerHTML = `<img src="assets/aquarium/fish_clown.webp" alt="" aria-hidden="true"><span class="t"><b>${T('Aquarium', 'حوض متفوّق')}</b><small>${fed ? T('Your fish ate today 🍤', 'سمكتك أكلت النهارده 🍤') : T('Your fish is hungry 😋', 'سمكتك جعانة 😋')}</small></span><span class="go">${T('Open ▸', 'افتح ◂')}</span>`;
+    aq.onclick = () => SI.sfx.tick();
+    $('#advs').appendChild(aq);
+    $('#advs').classList.toggle('two', $('#advs').children.length > 1);
   }
   list.forEach(c => {
     const li = document.createElement('li');
