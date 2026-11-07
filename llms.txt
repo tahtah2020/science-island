@@ -4,7 +4,7 @@
 
 ## الدروس والأسئلة التدريبية بالإجابات
 - [كل الدروس](https://motafawek.com/lessons/)
-- [رياضيات undefined](https://motafawek.com/lessons/math-g3.html)
+- [رياضيات الصف الثالث الابتدائي](https://motafawek.com/lessons/math-g3.html)
 - [رياضيات الصف الرابع الابتدائي](https://motafawek.com/lessons/math-g4.html)
 - [علوم الصف الرابع الابتدائي](https://motafawek.com/lessons/science-g4.html)
 - [دراسات اجتماعية الصف الرابع الابتدائي](https://motafawek.com/lessons/studies-g4.html)

@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107m{{{">
+<link rel="stylesheet" href="common.css?v=20261107n{{{">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -43,9 +43,11 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 .title p .tag{font-family:"Cairo",sans-serif;font-size:19px;font-weight:900;color:var(--navy)}
 .step{background:var(--card);border-radius:24px;padding:18px;box-shadow:0 8px 28px rgba(31,61,87,.16)}
 .step h2{margin:0 0 4px;font-size:22px;font-weight:900;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
-.step h2 .ar{font-size:19px;color:var(--ink);display:block;width:100%}
+.step h2{justify-content:space-between}
+.step h2 .ar{font-size:20px;color:var(--navy);font-weight:900}
 .step .hint{margin:0 0 12px;font-weight:700;color:var(--ink);font-size:14.5px}
-.hint .ar,.title p .ar{display:block}
+.title p .ar{display:block}
+.step .hint{display:flex;justify-content:space-between;flex-wrap:wrap;gap:2px 12px}
 .ar{direction:rtl;unicode-bidi:isolate}
 .choices{display:grid;gap:10px}
 .choice{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;border:3px solid var(--line);background:#fff;border-radius:18px;padding:12px 14px;cursor:pointer;color:var(--navy);min-height:64px}
@@ -94,29 +96,59 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 .about p,.about li{font-weight:700;font-size:15px;line-height:1.75}
 .about p{margin:0}
 .about ul{margin:0;padding:0 18px 0 0}
-.advBtn{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;border-radius:20px;padding:8px 16px;background:linear-gradient(135deg,#1d3a52,#2f5f7d 70%,#c58b4a);border:3px solid #f2b134;box-shadow:0 6px 18px rgba(31,61,87,.3);font-weight:900}
-.tgBar{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;background:#229ed9;border-radius:16px;padding:7px 14px;box-shadow:0 4px 12px rgba(34,158,217,.3);font-weight:900}
-.tgBar svg{width:26px;height:26px;flex:none}
-.tgBar span{display:flex;flex-direction:column;flex:1;min-width:0}
-.tgBar b{font-size:16px}.tgBar small{font-size:12px;color:#e6f5fd;font-weight:700}
-.tgBar .go{flex:none;background:#fff;color:#1b7fb0;border-radius:10px;padding:3px 10px;font-size:15px}
-.tgBar:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
-.advBtn img{height:58px;width:auto;flex:none}
-.advBtn span{display:flex;flex-direction:column;flex:1;min-width:0}
-.advBtn b{font-size:18px}.advBtn small{font-size:13px;color:#e3eef5;font-weight:700}
-.advBtn .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:4px 12px;font-size:20px}
-.advBtn:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
-.advBtn[hidden]{display:none}
-.starsBtn{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;border-radius:20px;padding:6px 16px;background:linear-gradient(135deg,#132b45,#1f4a6e 60%,#c58b4a);border:3px solid #f2b134;box-shadow:0 6px 18px rgba(31,61,87,.3);font-weight:900;position:relative;overflow:hidden}
-.starsBtn::before{content:"";position:absolute;inset:0;background:radial-gradient(1.5px 1.5px at 18% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 75%,#fff,transparent),radial-gradient(2px 2px at 62% 22%,#fff7c9,transparent),radial-gradient(1.5px 1.5px at 85% 60%,#fff,transparent);opacity:.8;pointer-events:none}
-.starsBtn img{height:62px;width:auto;flex:none;position:relative;animation:sbFly 3.5s ease-in-out infinite}
+
+/* ---- home redesign (7 Nov 2026): parents bar under the banner, the player card, then tiles; «عن متفوّق» folded ---- */
+.parents{display:flex;align-items:center;gap:10px;background:#fff8ea;border-radius:20px;padding:8px 10px 8px 12px;box-shadow:0 6px 18px rgba(31,61,87,.16);border:2px solid #f6c9b6;font-family:"Cairo","Nunito",sans-serif}
+.parents .pIc{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,#ffe3d6,#ffd0bb)}
+.parents .pTx{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.3}
+.parents .pTx b{font-size:16px;font-weight:900;color:var(--navy)}
+.parents .pTx small{font-size:12.5px;font-weight:700;color:var(--ink)}
+.parents .pBtns{display:flex;gap:6px;flex:none}
+.parents a{display:inline-flex;align-items:center;gap:5px;text-decoration:none;font-weight:900;font-size:14.5px;border-radius:12px;padding:8px 12px;min-height:42px;white-space:nowrap}
+.parents .pMsg{background:var(--coral);color:#fff;box-shadow:0 3px 0 #b9482c}
+.parents .pTg{background:#229ed9;color:#fff;box-shadow:0 3px 0 #1a7fb0}
+.parents a:active{transform:translateY(2px);box-shadow:none}
+.parents a:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tiles[hidden]{display:none}
+.tile{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;min-height:112px;padding:12px 14px;border-radius:20px;text-decoration:none;overflow:hidden;color:#fff;font-family:"Cairo","Nunito",sans-serif;box-shadow:0 6px 18px rgba(31,61,87,.22);border:3px solid rgba(255,255,255,.55);transition:transform .12s}
+.tile:hover{transform:translateY(-2px)}
+.tile:active{transform:translateY(1px)}
+.tile:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.tile[hidden]{display:none}
+.tile b{font-size:18px;font-weight:900;line-height:1.25;position:relative}
+.tile small{font-size:12.5px;font-weight:700;opacity:.92;position:relative;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile img{position:absolute;top:6px;left:8px;height:62px;width:auto;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.tile .tIc{position:absolute;top:10px;left:12px;font-size:38px}
+.tAdv{background:linear-gradient(140deg,#1d3a52,#2f5f7d 65%,#c58b4a);border-color:#f2b134}
+.tStars{background:linear-gradient(140deg,#132b45,#1f4a6e 60%,#c58b4a);border-color:#f2b134}
+.tStars::before{content:"";position:absolute;inset:0;background:radial-gradient(1.5px 1.5px at 70% 25%,#fff,transparent),radial-gradient(1.5px 1.5px at 85% 60%,#fff,transparent),radial-gradient(2px 2px at 50% 15%,#fff7c9,transparent),radial-gradient(1.5px 1.5px at 30% 40%,#fff,transparent);opacity:.85}
+.tStars img{animation:sbFly 3.5s ease-in-out infinite}
 @keyframes sbFly{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
-.starsBtn span{display:flex;flex-direction:column;flex:1;min-width:0;position:relative}
-.starsBtn b{font-size:18px}.starsBtn small{font-size:13px;color:#ffe7a6;font-weight:700}
-.starsBtn .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:4px 12px;font-size:20px}
-.starsBtn:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
-.starsBtn[hidden]{display:none}
-@media (prefers-reduced-motion:reduce){.starsBtn img{animation:none}}
+.tLes{background:linear-gradient(140deg,#2e9e6b,#23799f);color:#fff}
+.tiles.three .tile:last-child{grid-column:1/-1;min-height:84px}
+.tiles.three .tLes .tIc{font-size:32px;top:50%;transform:translateY(-50%)}
+details.about{padding:0}
+details.about summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;align-items:center;gap:8px}
+details.about summary::-webkit-details-marker{display:none}
+details.about summary h2{margin:0;font-size:16.5px;flex:1}
+details.about summary::after{content:"＋";font-weight:900;color:var(--primary);font-size:20px}
+details.about[open] summary::after{content:"－"}
+details.about[open]{padding-bottom:16px}
+details.about>*:not(summary){margin-inline:18px}
+@media (max-width:400px){
+  .parents{flex-wrap:wrap}.parents .pBtns{width:100%}.parents .pBtns a{flex:1;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){.tStars img{animation:none}}
+
+/* grades as a 3-column grid: more grades add a row, not a screen (7 Nov 2026) */
+.grades{grid-template-columns:repeat(3,1fr)}
+.grades .choice{flex-direction:column;justify-content:center;text-align:center;gap:4px;padding:10px 6px;min-height:104px}
+.grades .choice .go{display:none}
+.grades .choice .tx{align-items:center}
+.grades .choice b{font-size:15px}
+.grades .choice .ar{font-size:13px;line-height:1.3}
+.grades .choice[data-grade^="p"] .ic{background:#fde8d2}
 
 .foot{margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .foot a.tg{align-items:center;background:#229ed9;color:#fff}
@@ -140,20 +172,21 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107m{{{">
-      <img src="assets/banner.jpg?v=20261107m{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107n{{{">
+      <img src="assets/banner.jpg?v=20261107n{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
 
-  <!-- Telegram channel: right under the banner so parents see it without scrolling (owner, 6 Nov 2026) -->
-  <a class="tgBar" dir="rtl" href="https://t.me/motafawek" target="_blank" rel="noopener" data-tg="home"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.6c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.5-.6-.2L6.2 13.3l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span><b>قناة متفوّق على تليجرام</b><small>لأولياء الأمور: أخبار الوحدات والألعاب الجديدة</small></span><span class="go" aria-hidden="true">تابع ◂</span></a>
-
-  <!-- Reesho's adventures: one page with every adventure, by grade (owner, 28 Oct 2026) -->
-  <a class="advBtn" href="adventures.html"><img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><span><b>🎮 مغامرات ريشو</b><small>Reesho’s Adventures · اختار صفك والعب</small></span><span class="go" aria-hidden="true">▸</span></a>
-
-  <!-- «نجوم متفوّق»: shown only when this device has a player (the page needs one), owner 7 Nov 2026 -->
-  <a class="starsBtn" dir="rtl" href="champions.html" id="starsBtn" hidden><img src="assets/stars/reesho_crown.webp" alt="" aria-hidden="true"><span><b>⭐ نجوم متفوّق</b><small id="starsSub">اطلع لقمة الهرم الذهبي</small></span><span class="go" aria-hidden="true">◂</span></a>
+  <!-- parents and teachers: right under the banner, one compact row (owner, 7 Nov 2026: the contact link at the bottom was not seen) -->
+  <section class="parents" dir="rtl" aria-label="لأولياء الأمور والمعلمين">
+    <span class="pIc" aria-hidden="true">👨‍👩‍👧</span>
+    <span class="pTx"><b>لأولياء الأمور والمعلمين</b><small>سؤال أو اقتراح؟ رسالتك بتوصلنا مباشرة</small></span>
+    <span class="pBtns">
+      <a class="pMsg" href="contact.html" data-ga="parents_contact">✉️ راسلنا</a>
+      <a class="pTg" href="https://t.me/motafawek" target="_blank" rel="noopener" data-tg="home" aria-label="قناة متفوّق على تليجرام"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.6c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.5-.6-.2L6.2 13.3l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg><span>تليجرام</span></a>
+    </span>
+  </section>
 
   <!-- step 0: who is playing (only when this device already has players) -->
   <section class="step" id="stepWho" hidden>
@@ -168,7 +201,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   <!-- step 1: grade -->
   <section class="step" id="stepGrade" hidden>
     <h2>Choose your grade <span class="ar">اختر صفك الدراسي</span></h2>
-    <div class="choices">
+    <div class="choices grades">
       <button class="choice" type="button" data-grade="g3"><span class="ic">3</span><span class="tx"><b>Grade 3</b><span class="ar">الصف الثالث</span></span><span class="go">›</span></button>
       <button class="choice" type="button" data-grade="g4"><span class="ic">4</span><span class="tx"><b>Grade 4</b><span class="ar">الصف الرابع</span></span><span class="go">›</span></button>
       <button class="choice" type="button" data-grade="g5"><span class="ic">5</span><span class="tx"><b>Grade 5</b><span class="ar">الصف الخامس</span></span><span class="go">›</span></button>
@@ -233,12 +266,19 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
     <button class="back" type="button" data-back="stepTrack">‹ Back</button>
   </section>
 
+  <!-- everything else as tiles: a new feature is one more tile, the page does not grow (owner, 7 Nov 2026) -->
+  <nav class="tiles" id="tiles" dir="rtl" aria-label="أقسام متفوّق">
+    <a class="tile tAdv" href="adventures.html"><img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><b>مغامرات ريشو</b><small>ألعاب حقيقية لكل صف</small></a>
+    <a class="tile tStars" href="champions.html" id="starsBtn" hidden><img src="assets/stars/reesho_crown.webp" alt="" aria-hidden="true"><b>نجوم متفوّق</b><small id="starsSub">اطلع لقمة الهرم الذهبي</small></a>
+    <a class="tile tLes" href="/lessons/"><span class="tIc" aria-hidden="true">📚</span><b>أسئلة بالإجابات</b><small>كل درس في الكتاب المدرسي</small></a>
+  </nav>
+
   <section class="says" id="says" hidden>
     <h2>Players say <span class="ar">آراء الأبطال</span></h2>
     <ul id="saysList"></ul>
   </section>
-  <section class="about" id="about">
-    <h2>ألعاب تعليمية للمنهج المصري</h2>
+  <details class="about" id="about">
+    <summary><h2>عن متفوّق: ألعاب تعليمية للمنهج المصري</h2></summary>
     <p>متفوّق موقع للتعلم باللعب لطلاب المرحلة الابتدائية والإعدادية في مصر. مع ريشو البغبغان يلعب الطالب ويجاوب أسئلة مرتبطة بدروس الكتاب المدرسي، ويكسب نقاطًا ونجومًا ويدخل لوحة الأبطال.</p>
     <h3>المواد والصفوف</h3>
     <ul>
@@ -250,7 +290,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
     <h3>أسئلة بالإجابات على كل درس</h3>
     <ul>
       <li><a href="/lessons/">كل الدروس والأسئلة التدريبية بالإجابات</a></li>
-      <li><a href="/lessons/math-g3.html">رياضيات undefined</a></li>
+      <li><a href="/lessons/math-g3.html">رياضيات الصف الثالث الابتدائي</a></li>
       <li><a href="/lessons/math-g4.html">رياضيات الصف الرابع الابتدائي</a></li>
       <li><a href="/lessons/science-g4.html">علوم الصف الرابع الابتدائي</a></li>
       <li><a href="/lessons/studies-g4.html">دراسات اجتماعية الصف الرابع الابتدائي</a></li>
@@ -266,12 +306,12 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
     <!--/SEO_LINKS-->
     <h3>ماذا يجد الطالب؟</h3>
     <p>لعبة لكل فصل أو وحدة، وأسئلة تدريب يومية، ومراجعة تعيد الأسئلة التي أخطأ فيها، وامتحان شهري، كل ذلك حسب ترتيب الكتاب المدرسي. ولأولياء الأمور والمعلمين صفحة للتواصل معنا.</p>
-  </section>
-  <p class="foot"><a href="contact.html">For parents and teachers <span class="ar">لأولياء الأمور والمعلمين</span></a></p>
+  </details>
+  <p class="foot"><a href="contact.html">✉️ تواصل معنا</a></p>
 </main>
-<script src="firebase-config.js?v=20261107m{{{"></script>
-<script src="common.js?v=20261107m{{{"></script>
-<script src="chapters.js?v=20261107m{{{"></script>
+<script src="firebase-config.js?v=20261107n{{{"></script>
+<script src="common.js?v=20261107n{{{"></script>
+<script src="chapters.js?v=20261107n{{{"></script>
 <script>
 (() => {
   'use strict';
@@ -295,9 +335,9 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   const list = Object.entries(SI.players());
   /* the Stars button: only with a player on this device (champions.html sends visitors without one back here) */
   if (list.length) {
-    const sb = $('#starsBtn'); sb.hidden = false;
+    const sb = $('#starsBtn'); sb.hidden = false; $('#tiles').classList.add('three');
     sb.onclick = e => { const cur = SI.player && SI.player(); if (!cur) { e.preventDefault(); show('stepWho'); $('#stepWho').scrollIntoView({ behavior: 'smooth' }); } };
-    SI.LB.top(1).then(t => { const r = (t.rows || [])[0]; if (r) $('#starsSub').innerHTML = `👑 في القمة: <bdi>${SI.esc(r.name)}</bdi> بـ ${r.score} نقطة`; }).catch(() => {});
+    SI.LB.top(1).then(t => { const r = (t.rows || [])[0]; if (r) $('#starsSub').innerHTML = `👑 في القمة: <bdi>${SI.esc(r.name)}</bdi>`; }).catch(() => {});
   }
   const GRADE_TAG = { g3: ['Grade 3', 'الصف ٣'], g4: ['Grade 4', 'الصف ٤'], g5: ['Grade 5', 'الصف ٥'], g6: ['Grade 6', 'الصف ٦'], p1: ['Prep 1', 'أولى إعدادي'], p2: ['Prep 2', 'تانية إعدادي'] }, GRADE_HINT = { g3: 'Grade 3 · الصف الثالث', g4: 'Grade 4 · الصف الرابع', g5: 'Grade 5 · الصف الخامس', g6: 'Grade 6 · الصف السادس', p1: 'Prep 1 · الصف الأول الإعدادي', p2: 'Prep 2 · الصف الثاني الإعدادي' };
   const manyGrades = new Set(list.map(([, p]) => p.grade || 'g5')).size > 1;
@@ -321,7 +361,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
       }
     } catch (e) { console.warn(e); }
   } else show('stepGrade');
-  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('.advBtn').hidden = true; $('#starsBtn').hidden = true; show('stepTrack'); }
+  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('#tiles').hidden = true; show('stepTrack'); }
 
   $('#newPlayer').onclick = () => { SI.sfx.tick(); show('stepGrade'); };
   /* recovery code: the server copy comes back on this device (merged with it if the player is already here) */

@@ -25,7 +25,7 @@ function load(file) {
 const W = load('chapters.js');
 const SUBJECTS = W.SUBJECTS || [];
 const CHAPTERS = W.CHAPTERS || [];
-const GRADES = { g4: 'الصف الرابع الابتدائي', g5: 'الصف الخامس الابتدائي', g6: 'الصف السادس الابتدائي', p1: 'الصف الأول الإعدادي', p2: 'الصف الثاني الإعدادي' };
+const GRADES = { g1: 'الصف الأول الابتدائي', g2: 'الصف الثاني الابتدائي', g3: 'الصف الثالث الابتدائي', g4: 'الصف الرابع الابتدائي', g5: 'الصف الخامس الابتدائي', g6: 'الصف السادس الابتدائي', p1: 'الصف الأول الإعدادي', p2: 'الصف الثاني الإعدادي', p3: 'الصف الثالث الإعدادي' };
 const GRADE_ORDER = ['g4', 'g5', 'g6', 'p1', 'p2'];
 const UNIT_GRADES = { p1: true, p2: true };
 const subj = c => c.subject || 'science';
