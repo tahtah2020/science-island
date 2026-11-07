@@ -1405,6 +1405,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       ['chapters.html', '📚', T('All units and subjects', 'كل الوحدات والمواد'), ''],
       ch ? ['map.html', '🗺️', T('This unit’s map', 'خريطة الوحدة'), `${chWord(ch)} ${ch.n || ''} · ${chTitle(ch)}`] : null,
       ['adventures.html', '🎮', T('Reesho’s adventures', 'مغامرات ريشو'), ''],
+      ['aquarium.html', '🐠', T('Motafawek aquarium', 'حوض متفوّق'), (prof().lx || '') === today() ? T('Your fish ate today 🍤', 'سمكتك أكلت النهارده 🍤') : T('Your fish is hungry 😋', 'سمكتك جعانة 😋')],
       ['champions.html', '⭐', T('Motafawek Stars', 'نجوم متفوّق'), '']
     ].filter(Boolean);
     const btn = document.createElement('button');
