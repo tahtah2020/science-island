@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107q{{{">
+<link rel="stylesheet" href="common.css?v=20261107r{{{">
 <style>
 /* «نجوم متفوّق» (7 Nov 2026): evening sky, golden pyramid, three boards, badges, level rings, team goal, «مكانك» bar, photos after approval */
 body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-height:100svh}
@@ -67,8 +67,12 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
 .spark{position:fixed;z-index:46;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;background:radial-gradient(circle,#fff7c9 0 35%,#f2b134 36% 60%,transparent 61%);border-radius:50%}
 .flyTag{position:fixed;z-index:46;pointer-events:none;transform:translate(-50%,-100%);background:#f2b134;color:#1f3d57;font-weight:900;font-size:15px;border-radius:999px;padding:3px 12px;border:2px solid #fff;white-space:nowrap;box-shadow:0 4px 10px rgba(0,0,0,.3)}
 @media (prefers-reduced-motion:reduce){.slot,.slot .crown,.pyrReesho,.cap-shine{animation:none}}
-/* podium (not used since the pyramid) */
-.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:8px;margin-top:18px}
+/* podium */
+.podium{position:relative;display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:8px;margin-top:18px;transition:opacity .2s}
+.podium .pyrReesho{width:62px;top:-46px;right:-6px}
+button.pd{border:0;background:none;font:inherit;padding:0;cursor:pointer;color:inherit}
+button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset:3px;border-radius:16px}
+.row{cursor:pointer}
 .pd{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
 .pd .nm{color:#fff;font-weight:900;font-size:16px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pd .sc{color:#ffe7a6;font-weight:900;font-size:15px;font-variant-numeric:tabular-nums}
@@ -164,7 +168,7 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   <div class="wrap">
     <div class="hero">
       <svg id="reesho" viewBox="0 -110 376 630" role="img" aria-label="Reesho"><image href="assets/parrot_wave.png" width="376" height="520"/><g id="hat"></g></svg>
-      <div><h2 data-ar="اطلع لقمة الهرم!">Climb to the top of the pyramid!</h2><p id="lead"></p></div>
+      <div><h2 data-ar="اطلع على المنصة!">Climb the podium!</h2><p id="lead"></p></div>
     </div>
     <div class="tabs" role="tablist" id="tabs">
       <button role="tab" data-k="all" aria-selected="true" data-ar="كل الطلاب">All students</button>
@@ -172,7 +176,8 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
       <button role="tab" data-k="week" aria-selected="false" data-ar="🚀 الأكثر تقدّمًا">🚀 This week</button>
     </div>
     <p class="empty" id="tabNote" hidden></p>
-    <div class="pyr" id="pyr" aria-live="polite"></div>
+    <div class="podium" id="podium" aria-live="polite"></div>
+    <ol class="list" id="list" hidden></ol>
     <div class="card team" id="team" hidden>
       <div class="gift" aria-hidden="true">🎉</div>
       <div style="flex:1;min-width:0">
@@ -219,10 +224,10 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   <div class="cel"><img src="assets/stars/reesho_crown.webp" alt=""><h3 id="celH"></h3><p id="celP"></p><button class="btn primary big" type="button" id="celOk" data-ar="يلّا نكمّل!">Let’s go!</button></div>
 </div>
 
-<script src="firebase-config.js?v=20261107q{{{"></script>
-<script src="chapters.js?v=20261107q{{{"></script>
-<script src="wardrobe_items.js?v=20261107q{{{"></script>
-<script src="common.js?v=20261107q{{{"></script>
+<script src="firebase-config.js?v=20261107r{{{"></script>
+<script src="chapters.js?v=20261107r{{{"></script>
+<script src="wardrobe_items.js?v=20261107r{{{"></script>
+<script src="common.js?v=20261107r{{{"></script>
 <script>
 (async () => {
   'use strict';
@@ -263,7 +268,7 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   async function load(k) {
     kind = k; const id = ++loadId;
     document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.k === k)));
-    $('#pyr').style.opacity = '.45'; $('#tabNote').hidden = true;
+    $('#podium').style.opacity = '.45'; $('#tabNote').hidden = true;
     const res = k === 'all' ? await LB.show(10) : await LB.topOf(k, 10);
     if (id !== loadId) return;
     const rows = res.rows || [], ids = rows.map(r => r.id);
@@ -272,40 +277,38 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
     draw(rows, k);
     meBar(k, rows, res.online);
   }
-  /* the pyramid: the owner's Gemini picture (assets/stars/pyramid.jpg, 1024 × 765, right face warmed with PIL); apex (512, 74),
-     capstone down to y 218, base y 650; the faces' half width grows 0.815 px per px down */
-  const W = 1024, H = 765, AX = 512, AY = 74;
-  const ROWS = [[160, 1], [295, 2], [430, 3], [568, 4]];           // centre line of each row, students on it
-  const half = y => .815 * (y - AY);
-  const pyramidSVG = () => '<img class="bg" src="assets/stars/pyramid.jpg" alt=""><img class="pyrReesho" src="assets/stars/reesho_crown.webp" alt="">';
+  /* podium (owner, 7 Nov 2026: back from the pyramid, which did not fit phones): top 3 on steps, #1 in the middle with the crown,
+     Reesho the explorer flies beside it; 4-10 as rows with the gap to the child above. Tap anyone = details sheet. */
   let shown = [];
   function draw(rows, k) {
-    const pyr = $('#pyr'); pyr.style.opacity = '';
+    const pod = $('#podium'), list = $('#list'); pod.style.opacity = '';
     shown = rows;
     if (!rows.length) {
+      pod.innerHTML = ''; list.hidden = true;
       const n = $('#tabNote'); n.hidden = false;
       n.textContent = k === 'week' ? T('Nobody has points this week yet. Play now and be the first!', SI.G('لسه محدش جمع نقاط الأسبوع ده. العب دلوقتي وكن الأول!', 'لسه محدش جمع نقاط الأسبوع ده. العبي دلوقتي وكوني الأولى!'))
         : k === 'grade' ? T('Your grade’s list is starting. Play to be on it!', SI.G('قائمة صفّك بتبدأ. العب علشان تكون فيها!', 'قائمة صفّك بتبدأ. العبي علشان تكوني فيها!'))
         : T('Loading the stars…', 'بنحمّل النجوم…');
+      return;
     }
-    const rtl = document.documentElement.dir === 'rtl';
-    let html = pyramidSVG(), idx = 0;
-    ROWS.forEach(([y, n], ri) => {
-      const h = half(y) * (ri === 0 ? 0 : .78), a = ['max(40px,10cqw)', 'max(34px,8cqw)', 'max(31px,7cqw)', 'max(29px,6.3cqw)'][ri], f = ['max(12px,2.4cqw)', 'max(11.5px,2cqw)', 'max(11px,1.8cqw)', 'max(10.5px,1.7cqw)'][ri], wdt = ri === 3 ? 21 : ri === 2 ? 25 : 30;
-      for (let j = 0; j < n; j++, idx++) {
-        const r = rows[idx], frac = n === 1 ? 0 : (j / (n - 1)) * 2 - 1, x = AX + (rtl ? -1 : 1) * frac * h;
-        const left = (100 * x / W).toFixed(2) + '%', top = (100 * y / H).toFixed(2) + '%';
-        const delay = ((3 - ri) * .25 + j * .06).toFixed(2) + 's';
-        const st = `left:${left};top:${top};--a:${a};--f:${f};--w:${wdt}%;animation-delay:${delay}`;
-        if (!r) { html += `<div class="slot empty" style="${st}"><span class="av">?</span><span class="nm">${T('Free stone', 'حجر فاضي')}</span></div>`; continue; }
-        const isMe = r.id === myId;
-        html += `<button class="slot${isMe ? ' me' : ''}" style="${st}" data-i="${idx}" type="button" aria-label="${esc(r.name)} ${r.score}">
-          <span class="rk">${idx + 1}</span>${idx === 0 ? CROWN : ''}${avatar(r)}
-          <span class="nm" data-you="${youTxt}">${esc(r.name)}<span class="mini"> · ${r.score}</span></span><span class="sc">${r.score} ⭐</span></button>`;
-      }
+    pod.innerHTML = '<img class="pyrReesho" src="assets/stars/reesho_crown.webp" alt="">' + [1, 0, 2].map(i => {
+      const r = rows[i]; if (!r) return '<div></div>';
+      return `<button type="button" class="pd p${i + 1}${r.id === myId ? ' me' : ''}" data-i="${i}"><div class="crownWrap">${i === 0 ? CROWN : ''}${avatar(r)}</div>
+        <div class="nm" data-you="${youTxt}">${esc(r.name)}</div><div class="sc">${r.score} ⭐</div>${badgesOf(r, k, i)}
+        <div class="step">${['🥇', '🥈', '🥉'][i]}</div></button>`;
+    }).join('');
+    const rest = rows.slice(3);
+    list.hidden = !rest.length;
+    list.innerHTML = rest.map((r, j) => {
+      const i = j + 3, up = rows[i - 1], gap = up.score - r.score;
+      return `<li class="row${r.id === myId ? ' me' : ''}" data-i="${i}" tabindex="0" role="button"><span class="r">${i + 1}</span>${avatar(r)}
+        <div class="who"><div class="nm" data-you="${youTxt}">${esc(r.name)}</div>${badgesOf(r, k, i)}</div>
+        <div class="sc">${r.score}<span class="gap">${T(`${gap + 1} to pass #${i}`, `ناقص ${gap + 1} عن #${i}`)}</span><div class="bar"><i style="width:${Math.max(6, Math.round(100 * r.score / Math.max(1, up.score)))}%"></i></div></div></li>`;
+    }).join('');
+    document.querySelectorAll('#podium [data-i], #list [data-i]').forEach(el => {
+      el.onclick = () => details(+el.dataset.i, k);
+      el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); details(+el.dataset.i, k); } };
     });
-    pyr.innerHTML = html;
-    pyr.querySelectorAll('.slot[data-i]').forEach(b => { b.onclick = () => details(+b.dataset.i, k); });
   }
   /* tap a student: big photo, points, badges, how far from the stone above */
   function details(i, k) {
@@ -344,7 +347,7 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   function celebrate(rank) {
     const key = 'si.rank.' + me.id; let last = 0; try { last = +localStorage.getItem(key) || 0; localStorage.setItem(key, String(rank)); } catch (e) {}
     if (!last || rank >= last) return;
-    $('#celH').textContent = T(`You climbed to #${rank}!`, SI.G(`طلعت حجر أعلى: المركز ${rank}!`, `طلعتي حجر أعلى: المركز ${rank}!`));
+    $('#celH').textContent = T(`You climbed to #${rank}!`, SI.G(`طلعت المركز ${rank}!`, `طلعتي المركز ${rank}!`));
     $('#celP').textContent = T(`You were #${last}. Keep going!`, SI.G(`كنت #${last}. كمّل كده!`, `كنتي #${last}. كمّلي كده!`));
     $('#celVeil').hidden = false; SI.voice('champion'); climbed = rank;
     const cs = ['#f2b134', '#e2603f', '#2e9e6b', '#23799f', '#8fd3ee', '#d4507a'];
@@ -358,7 +361,7 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   let climbed = 0;
   async function flyCrown(rank) {
     const home = document.querySelector('.pyrReesho');
-    const target = document.querySelector('.slot.me .av') || document.querySelector('#meAv .av');
+    const target = document.querySelector('.pd.me .av, .row.me .av') || document.querySelector('#meAv .av');
     if (!home || !target || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     target.scrollIntoView({ block: 'center', behavior: 'smooth' }); await new Promise(r => setTimeout(r, 500));
     const a = home.getBoundingClientRect(), b = target.getBoundingClientRect();
