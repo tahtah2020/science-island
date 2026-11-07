@@ -446,7 +446,7 @@
     /* fourth set (English units 1-3) */
     'pudding', 'jelly', 'water', 'block', 'train2', 'aquarium', 'flowershop', 'schoolbus',
     /* fifth set (English units 4-6, 7 Nov 2026) */
-    'teddy', 'stationery', 'soccer', 'meal', 'sneakers', 'handbag', 'cow3', 'peach', 'grape',
+    'teddy', 'stationery', 'soccer', 'meal', 'sneakers', 'handbag', 'cow3', 'peach', 'grape', 'keychain',
     /* second Gemini set (6 Nov 2026, units 7-9) */
     'cookie', 'candy2', 'paper2', 'seed', 'plate', 'boxopen', 'box', 'bench', 'wheel', 'can', 'wagon', 'ribbon', 'pencil2', 'marble', 'books', 'backpack', 'boy', 'girl', 'boy2', 'girl2', 'teacher', 'father', 'grandma', 'kids']);
   const CHILD = ['boy', 'girl', 'boy2', 'girl2'];   /* 'child' in a story = the owner's four children in turn */

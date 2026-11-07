@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'Grade 3 Math: keychain picture',
+    items: [
+      { text: 'Owner\'s keychain icon in unit 10 (both tracks)' }
+    ] },
   { date: '2026-11-07', title: 'Grade 3 Math: English unit 10',
     items: [
       { text: 'Vertical Multiplication (Part 1) now open on the Languages track: all 10 units in English' }
