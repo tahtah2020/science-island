@@ -648,9 +648,15 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       const p = player(); if (!p) return { ok: false };
       try { if (data) localStorage.setItem('si.photo.' + p.id, JSON.stringify({ data, st: 'pending' })); else localStorage.removeItem('si.photo.' + p.id); } catch (e) {}
       const db = await this.ready(); if (!db) return { ok: false };
-      try { const fs = this._fs; await fs.setDoc(fs.doc(db, 'photos', await this.myId()), { name: p.name, data: data || '', status: 'pending', at: fs.serverTimestamp() }); return { ok: true }; }
+      try {
+        const fs = this._fs; await fs.setDoc(fs.doc(db, 'photos', await this.myId()), { name: p.name, data: data || '', status: 'pending', at: fs.serverTimestamp() });
+        try { if (data) localStorage.setItem('si.photo.' + p.id, JSON.stringify({ data, st: 'pending', sent: 1 })); } catch (e) {}
+        return { ok: true };
+      }
       catch (e) { console.warn(e); return { ok: false, denied: e && e.code === 'permission-denied' }; }
     },
+    /* a photo saved on the device while sending failed (e.g. before the rules were published) is sent again on the next page */
+    async retryPhoto() { const m = this.myPhoto(); if (m && m.data && m.st === 'pending' && !m.sent) return this.sendPhoto(m.data); },
     /* after approval (ok) or refusal (no) the child can read the status of his own photo */
     async photoStatus() {
       const mine = this.myPhoto(); if (!mine || !mine.data) return null;
@@ -709,6 +715,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   };
   /* every visit posts the player's total points once, so every student who has played is on the board */
   setTimeout(() => { try { if (sessionStorage.getItem('si.lbsent')) return; sessionStorage.setItem('si.lbsent', '1'); } catch (e) {} LB.submitWeek().catch(() => {}); }, 2500);
+  setTimeout(() => { try { if (LB.counts()) LB.retryPhoto().catch(() => {}); } catch (e) {} }, 3500);
 
 
   /* ---------- progress saved online + recovery code «رمز الاستعادة» ----------

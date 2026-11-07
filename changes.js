@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'إعادة إرسال صور الطلاب',
+    items: [
+      { text: 'الصور التي حُفظت على جهاز الطالب قبل نشر القواعد تُرسل تلقائيًا للموافقة عند فتح أي صفحة' }
+    ] },
   { date: '2026-11-07', title: 'لعبة جديدة للصف الثالث: سلم الإنقاذ',
     items: [
       { text: 'مغامرة «سلم الإنقاذ»: يختار الطالب عدد قطع السلم لينقذ ريشو القطة؛ ١ م = ١٠٠ سم والمتر والسنتيمتر (الوحدة ٥)، والضرب في العشرات (الوحدة ١)، والضرب الرأسي (الوحدة ١٠)؛ ٦ مهمات كل مهمة خطوة صغيرة جديدة', links: [{ label: 'اللعبة', href: 'math-reesho-ladder.html', ch: 'mg3u5' }] },
