@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'الهرم الذهبي بصورة جديدة',
+    items: [
+      { text: 'صورة هرم جديدة مرسومة بجيميناي في صفحة نجوم متفوّق، وترتيب أوضح على الهاتف', links: [{ label: 'نجوم متفوّق', href: 'champions.html' }] }
+    ] },
   { date: '2026-11-07', title: 'نجوم متفوّق: الهرم الذهبي',
     items: [
       { text: 'العشرة الأوائل على هرم من الحجارة، والأول فوق القمة الذهبية بالتاج، والضغط على أي طالب يعرض تفاصيله وأوسمته', links: [{ label: 'نجوم متفوّق', href: 'champions.html' }] }

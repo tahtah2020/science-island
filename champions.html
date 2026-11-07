@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107i{{{">
+<link rel="stylesheet" href="common.css?v=20261107j{{{">
 <style>
 /* «نجوم متفوّق» (7 Nov 2026): evening sky, golden pyramid, three boards, badges, level rings, team goal, «مكانك» bar, photos after approval */
 body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-height:100svh}
@@ -39,8 +39,10 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
 
 
 /* «الهرم الذهبي» (owner's choice, 7 Nov 2026): the top 10 sit on a pyramid of 4 rows (1 + 2 + 3 + 4); #1 on the golden capstone */
-.pyr{position:relative;width:100%;max-width:720px;margin:6px auto 0;aspect-ratio:1000/760;container-type:inline-size;transition:opacity .2s}
-@media (max-width:600px){.pyr{aspect-ratio:1000/1250}}
+.pyr{position:relative;width:100%;max-width:760px;margin:6px auto 0;aspect-ratio:1024/765;container-type:inline-size;transition:opacity .2s;border-radius:22px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.pyr>img.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.slot .mini{display:none;color:#fff3c4}
+@media (max-width:600px){.slot .sc{display:none}.slot .rk{font-size:10px;min-width:18px;height:18px}}
 .pyr>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .cap-shine{animation:shine 3.2s ease-in-out infinite}
 @keyframes shine{0%,100%{opacity:.15}50%{opacity:.75}}
@@ -214,10 +216,10 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   <div class="cel"><img src="assets/parrot_celebrate.png" alt=""><h3 id="celH"></h3><p id="celP"></p><button class="btn primary big" type="button" id="celOk" data-ar="يلّا نكمّل!">Let’s go!</button></div>
 </div>
 
-<script src="firebase-config.js?v=20261107i{{{"></script>
-<script src="chapters.js?v=20261107i{{{"></script>
-<script src="wardrobe_items.js?v=20261107i{{{"></script>
-<script src="common.js?v=20261107i{{{"></script>
+<script src="firebase-config.js?v=20261107j{{{"></script>
+<script src="chapters.js?v=20261107j{{{"></script>
+<script src="wardrobe_items.js?v=20261107j{{{"></script>
+<script src="common.js?v=20261107j{{{"></script>
 <script>
 (async () => {
   'use strict';
@@ -267,39 +269,12 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
     draw(rows, k);
     meBar(k, rows, res.online);
   }
-  /* the pyramid: a sandstone pyramid on dunes under the night sky, drawn in code (viewBox 1000 × 760) */
-  const W = 1000, AX = 500, AY = 70, BY = 640, HB = 470;           // apex, base line, half of the base
-  const ROWS = [[160, 1], [290, 2], [425, 3], [565, 4]];           // centre line of each row, students on it
-  const half = y => HB * (y - AY) / (BY - AY);
-  function pyramidSVG() {
-    let joints = '';
-    const courses = 14;
-    for (let i = 1; i < courses; i++) {
-      const y = 205 + (BY - 205) * i / courses, h = half(y);
-      joints += `<line x1="${AX - h}" y1="${y}" x2="${AX + h}" y2="${y}" />`;
-      const prev = 205 + (BY - 205) * (i - 1) / courses, step = 62, off = i % 2 ? 0 : step / 2;
-      for (let x = AX - h + off + step; x < AX + h - 10; x += step) joints += `<line x1="${x}" y1="${prev}" x2="${x}" y2="${y}" />`;
-    }
-    const capY = 205, capH = half(capY);
-    return `<svg viewBox="0 0 ${W} 760" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="pl" x1="0" x2="1"><stop offset="0" stop-color="#f6d79a"/><stop offset="1" stop-color="#e2b56c"/></linearGradient>
-        <linearGradient id="pr" x1="0" x2="1"><stop offset="0" stop-color="#c58f4a"/><stop offset="1" stop-color="#a87236"/></linearGradient>
-        <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".45" stop-color="#f7c948"/><stop offset="1" stop-color="#c98c10"/></linearGradient>
-        <linearGradient id="dune" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d7a65e"/><stop offset="1" stop-color="#9c6a33"/></linearGradient>
-        <radialGradient id="glow"><stop offset="0" stop-color="#ffe9a0" stop-opacity=".9"/><stop offset="1" stop-color="#ffe9a0" stop-opacity="0"/></radialGradient>
-      </defs>
-      <ellipse cx="${AX}" cy="${AY + 60}" rx="170" ry="150" fill="url(#glow)" class="cap-shine"/>
-      <path d="M0 610 Q180 560 360 600 T700 590 T1000 600 L1000 760 L0 760Z" fill="#7d5428" opacity=".8"/>
-      <polygon points="${AX},${AY} ${AX - HB},${BY} ${AX},${BY}" fill="url(#pl)"/>
-      <polygon points="${AX},${AY} ${AX + HB},${BY} ${AX},${BY}" fill="url(#pr)"/>
-      <g stroke="#8a5a26" stroke-opacity=".35" stroke-width="3">${joints}</g>
-      <polygon points="${AX},${AY} ${AX - capH},${capY} ${AX + capH},${capY}" fill="url(#gold)" stroke="#b07a0c" stroke-width="4" stroke-linejoin="round"/>
-      <polygon points="${AX},${AY} ${AX - capH * .35},${capY - 30} ${AX - capH * .1},${capY - 40}" fill="#fff" opacity=".55" class="cap-shine"/>
-      <path d="M0 690 Q250 630 520 680 T1000 660 L1000 760 L0 760Z" fill="url(#dune)"/>
-      <g fill="#5b3a17" opacity=".75"><path d="M880 640 q-6 -60 6 -110" stroke="#5b3a17" stroke-width="10" fill="none"/><path d="M886 532 q-40 -10 -62 18 q30 -6 62 -18zM886 532 q36 -18 64 2 q-32 0 -64 -2zM886 532 q-8 -34 18 -52 q-6 28 -18 52zM886 532 q-30 -30 -26 -60 q12 30 26 60z"/></g>
-    </svg>`;
-  }
+  /* the pyramid: the owner's Gemini picture (assets/stars/pyramid.jpg, 1024 × 765, right face warmed with PIL); apex (512, 74),
+     capstone down to y 218, base y 650; the faces' half width grows 0.815 px per px down */
+  const W = 1024, H = 765, AX = 512, AY = 74;
+  const ROWS = [[160, 1], [295, 2], [430, 3], [568, 4]];           // centre line of each row, students on it
+  const half = y => .815 * (y - AY);
+  const pyramidSVG = () => '<img class="bg" src="assets/stars/pyramid.jpg" alt="">';
   let shown = [];
   function draw(rows, k) {
     const pyr = $('#pyr'); pyr.style.opacity = '';
@@ -313,17 +288,17 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
     const rtl = document.documentElement.dir === 'rtl';
     let html = pyramidSVG(), idx = 0;
     ROWS.forEach(([y, n], ri) => {
-      const h = half(y) * (ri === 0 ? 0 : .78), a = ['max(62px,10.5cqw)', 'max(50px,8.6cqw)', 'max(44px,7.4cqw)', 'max(40px,6.6cqw)'][ri], f = ['max(15px,2.5cqw)', 'max(13.5px,2.1cqw)', 'max(12.5px,1.9cqw)', 'max(12px,1.8cqw)'][ri], wdt = ri === 3 ? 21 : ri === 2 ? 25 : 30;
+      const h = half(y) * (ri === 0 ? 0 : .78), a = ['max(40px,10cqw)', 'max(34px,8cqw)', 'max(31px,7cqw)', 'max(29px,6.3cqw)'][ri], f = ['max(12px,2.4cqw)', 'max(11.5px,2cqw)', 'max(11px,1.8cqw)', 'max(10.5px,1.7cqw)'][ri], wdt = ri === 3 ? 21 : ri === 2 ? 25 : 30;
       for (let j = 0; j < n; j++, idx++) {
         const r = rows[idx], frac = n === 1 ? 0 : (j / (n - 1)) * 2 - 1, x = AX + (rtl ? -1 : 1) * frac * h;
-        const left = (100 * x / W).toFixed(2) + '%', top = (100 * (y - 6) / 760).toFixed(2) + '%';
+        const left = (100 * x / W).toFixed(2) + '%', top = (100 * y / H).toFixed(2) + '%';
         const delay = ((3 - ri) * .25 + j * .06).toFixed(2) + 's';
         const st = `left:${left};top:${top};--a:${a};--f:${f};--w:${wdt}%;animation-delay:${delay}`;
         if (!r) { html += `<div class="slot empty" style="${st}"><span class="av">?</span><span class="nm">${T('Free stone', 'حجر فاضي')}</span></div>`; continue; }
         const isMe = r.id === myId;
         html += `<button class="slot${isMe ? ' me' : ''}" style="${st}" data-i="${idx}" type="button" aria-label="${esc(r.name)} ${r.score}">
           <span class="rk">${idx + 1}</span>${idx === 0 ? CROWN : ''}${avatar(r)}
-          <span class="nm" data-you="${youTxt}">${esc(r.name)}</span><span class="sc">${r.score} ⭐</span></button>`;
+          <span class="nm" data-you="${youTxt}">${esc(r.name)}<span class="mini"> · ${r.score}</span></span><span class="sc">${r.score} ⭐</span></button>`;
       }
     });
     pyr.innerHTML = html;
