@@ -345,7 +345,7 @@
     };
     s += arrow(A, C, m(p.l1), -16) + arrow(C, B, m(p.l2), -16) + arrow(A, B, m(p.d), 18);
     [A, B, C].forEach(P => { s += `<circle cx="${P[0]}" cy="${P[1]}" r="5" fill="${INK}"/>`; });
-    s += placeIcon(p.ia || 'house', 40, 112) + txt(42, 196, p.a, { fs: 13 }) + placeIcon(p.ib || 'park', 300, 92) + txt(296, 170, p.b, { fs: 13 });
+    s += placeIcon(p.ia || 'house', 40, 112) + txt(Math.max(42, String(p.a).length * 3.7 + 14), 196, p.a, { fs: 13 }) + placeIcon(p.ib || 'park', 300, 92) + txt(Math.min(296, 326 - String(p.b).length * 3.7), 170, p.b, { fs: 13 });
     return svg(216, T('A small map with a road and a straight line', 'خريطة صغيرة فيها طريق وخط مستقيم'), s);
   }
 
@@ -365,19 +365,21 @@
   }
   function g3Tally(q) {
     const p = (q && q.pic) || { rows: [['التفاح', 'apple', 13]] }, rh = 40, nameW = 124, x0 = 14, tw = 312;
-    /* other: indexes of rows that go into «أخرى» — tinted gold, and a gold «أخرى» row with «؟» is added at the bottom */
+    /* other: indexes of rows that go into «أخرى» — tinted gold, and a gold «أخرى» row with «؟» is added at the bottom.
+       Arabic: names on the right; English (Languages track): names on the left like the English book. Marks always run left to right. */
+    const ar = AR(), nx = ar ? x0 + tw - nameW : x0, mx = ar ? x0 : x0 + nameW, ix = ar ? x0 + tw - 20 : x0 + 20, tx = ar ? x0 + tw - nameW / 2 - 16 : x0 + nameW / 2 + 16;
     const oth = p.other || [], GOLD = '#d99a12', rows = p.rows.length + (oth.length ? 1 : 0), H = rows * rh + 20 + (oth.length ? 8 : 0);
     let s = '';
     p.rows.forEach(([name, icon, n], r) => {
       const y = 10 + r * rh, o = oth.includes(r);
-      s += `<rect x="${x0 + tw - nameW}" y="${y}" width="${nameW}" height="${rh}" fill="${o ? '#ffe7a3' : '#fde3cf'}" stroke="${INK}" stroke-width="1.6"/><rect x="${x0}" y="${y}" width="${tw - nameW}" height="${rh}" fill="${o ? '#fff4d6' : '#fff'}" stroke="${INK}" stroke-width="1.6"/>`;
-      s += img(icon, x0 + tw - 20, y + rh / 2, 28) + txt(x0 + tw - nameW / 2 - 16, y + 26, name, { fs: name.length > 10 ? 11.5 : 14 });
-      s += tallyMarks(n, x0 + 14, y + 9, 22);
+      s += `<rect x="${nx}" y="${y}" width="${nameW}" height="${rh}" fill="${o ? '#ffe7a3' : '#fde3cf'}" stroke="${INK}" stroke-width="1.6"/><rect x="${mx}" y="${y}" width="${tw - nameW}" height="${rh}" fill="${o ? '#fff4d6' : '#fff'}" stroke="${INK}" stroke-width="1.6"/>`;
+      s += img(icon, ix, y + rh / 2, 28) + txt(icon ? tx : nx + nameW / 2, y + 26, name, { fs: name.length > 10 ? 11.5 : 14 });
+      s += tallyMarks(n, mx + 14, y + 9, 22);
     });
     if (oth.length) {
       const y = 18 + p.rows.length * rh;
-      s += `<rect x="${x0 + tw - nameW}" y="${y}" width="${nameW}" height="${rh}" fill="${GOLD}" stroke="${INK}" stroke-width="1.6"/><rect x="${x0}" y="${y}" width="${tw - nameW}" height="${rh}" fill="#fff" stroke="${GOLD}" stroke-width="2.4" stroke-dasharray="6 4"/>`;
-      s += txt(x0 + tw - nameW / 2, y + 27, T('other', 'أخرى'), { fs: 17, fill: '#fff' }) + txt(x0 + (tw - nameW) / 2, y + 28, QM(), { fs: 22, fill: GOLD });
+      s += `<rect x="${nx}" y="${y}" width="${nameW}" height="${rh}" fill="${GOLD}" stroke="${INK}" stroke-width="1.6"/><rect x="${mx}" y="${y}" width="${tw - nameW}" height="${rh}" fill="#fff" stroke="${GOLD}" stroke-width="2.4" stroke-dasharray="6 4"/>`;
+      s += txt(nx + nameW / 2, y + 27, T('Other', 'أخرى'), { fs: 17, fill: '#fff' }) + txt(mx + (tw - nameW) / 2, y + 28, QM(), { fs: 22, fill: GOLD });
     }
     return svg(H, T('A tally table', 'جدول علامات العدّ'), s);
   }

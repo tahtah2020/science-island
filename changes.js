@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'Grade 3 Math: English units 4-6',
+    items: [
+      { text: 'Addition and Subtraction, Length and Organizing Data now open on the Languages track (English book wording and numbers)' },
+      { text: 'Tally tables read left to right in English' }
+    ] },
   { date: '2026-11-06', title: 'لعبة جديدة للصف الثالث: صاروخ خط الأعداد',
     items: [
       { text: 'مغامرة «صاروخ خط الأعداد»: يضغط الطالب على خط الأعداد وينطلق صاروخ ريشو وينزّل الطرد على القرية؛ الأعداد الكبيرة على الخط وبالحروف والصيغة الممتدة، والمقارنة، والضرب في ١٠ والقسمة على ١٠ (الوحدة ٩)، والقفز بزيادة أو نقص ألوف؛ ٦ مهمات كل مهمة خطوة صغيرة جديدة', links: [{ label: 'اللعبة', href: 'math-reesho-rocket.html', ch: 'mg3u9' }] },

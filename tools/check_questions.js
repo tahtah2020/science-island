@@ -99,7 +99,7 @@ for (const f of files) {
   });
   console.log(`${f}: ${w.IDEAS.length} ideas (${core} core), ${nv} phrasings`);
 }
-// EN/AR parity
+// EN/AR parity (a phrasing with bookDiff: true follows its own book's numbers, so its answer may differ)
 for (const [en, ar] of pairs) {
   const L = f => (fs.existsSync(path.join(ROOT, f)) ? load(f).IDEAS : null);
   const E = L(en), A = L(ar); if (!E || !A) { bad++; console.log('missing file', E ? ar : en); continue; }
@@ -107,7 +107,7 @@ for (const [en, ar] of pairs) {
   E.forEach((I, k) => { const J = A[k]; if (!J || J.id !== I.id) { bad++; return console.log('parity id', en, I.id); }
     if (J.variants.length !== I.variants.length) { bad++; console.log('parity count', I.id); }
     ['lesson', 'boss', 'bonus', 'guide'].forEach(key => { if ((I[key] || 0) !== (J[key] || 0)) { bad++; console.log('parity', key, en, I.id); } });
-    I.variants.forEach((v, i) => { const u = J.variants[i]; if (u && (u.type !== v.type || u.mode !== v.mode || u.level !== v.level || (JSON.stringify(u.answer) !== JSON.stringify(v.answer) && !['term', 'fix'].includes(v.type)))) { bad++; console.log('parity', en, I.id + '.' + (i + 1), v.type, u.type); } }); });
+    I.variants.forEach((v, i) => { const u = J.variants[i]; if (u && (u.type !== v.type || u.mode !== v.mode || u.level !== v.level || (JSON.stringify(u.answer) !== JSON.stringify(v.answer) && !['term', 'fix'].includes(v.type) && !v.bookDiff))) { bad++; console.log('parity', en, I.id + '.' + (i + 1), v.type, u.type); } }); });
 }
 console.log(bad ? bad + ' PROBLEMS' : 'all good');
 process.exit(bad ? 1 : 0);
