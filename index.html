@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107s{{{">
+<link rel="stylesheet" href="common.css?v=20261107t{{{">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -154,10 +154,14 @@ details.about>*:not(summary){margin-inline:18px}
 .grades .choice .ar{font-size:13px;line-height:1.3}
 .grades .choice[data-grade^="p"] .ic{background:#fde8d2}
 
-.aqBox{display:flex;flex-direction:column;gap:6px}
-.aqBox[hidden]{display:none}
-.aqMsg{margin:0;text-align:center;font:800 15px "Cairo","Nunito",sans-serif;color:var(--navy);background:var(--card);border-radius:14px;padding:7px 12px;box-shadow:0 3px 10px rgba(31,61,87,.12)}
-.aqMsg b{color:var(--primary)}
+
+.tAq{background:linear-gradient(160deg,#5fd0ec,#2a9fd0 55%,#16679b);border-color:#bfeaf7}
+.tAq::before{content:"";position:absolute;inset:auto 0 0 0;height:16px;background:#f3d9a4;border-radius:50% 50% 0 0/60% 60% 0 0;opacity:.9}
+.tAq .tFish{position:absolute;top:14px;left:12px;width:64px;animation:tSwim 4s ease-in-out infinite}
+@keyframes tSwim{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(14px) translateY(-5px)}}
+.tAq b,.tAq small{text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.tiles .tile.full{grid-column:1/-1;min-height:86px}
+@media (prefers-reduced-motion:reduce){.tAq .tFish{animation:none}}
 
 .foot{margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .foot a.tg{align-items:center;background:#229ed9;color:#fff}
@@ -181,8 +185,8 @@ details.about>*:not(summary){margin-inline:18px}
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107s{{{">
-      <img src="assets/banner.jpg?v=20261107s{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107t{{{">
+      <img src="assets/banner.jpg?v=20261107t{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
@@ -201,6 +205,7 @@ details.about>*:not(summary){margin-inline:18px}
   <nav class="tiles" id="tiles" dir="rtl" aria-label="أقسام متفوّق">
     <a class="tile tAdv" href="adventures.html"><img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><b>مغامرات ريشو</b><small>ألعاب حقيقية لكل صف</small></a>
     <a class="tile tStars" href="champions.html" id="starsBtn" hidden><span class="topAv" id="topAv" aria-hidden="true"><svg class="tc" viewBox="-62 -76 124 88"><path d="M-52 6 L-58 -52 L-27 -26 L0 -66 L27 -26 L58 -52 L52 6Z" fill="#f2b134" stroke="#c98c10" stroke-width="6" stroke-linejoin="round"/><circle cx="0" cy="-68" r="9" fill="#e2603f"/></svg><span class="face">⭐</span></span><b>نجوم متفوّق</b><small id="starsSub">اطلع على منصة التتويج</small></a>
+    <a class="tile tAq" href="aquarium.html" id="aqTile"><svg class="tFish" viewBox="-8 -34 116 68" aria-hidden="true"><path d="M18 0 L-6 -22 Q0 0 -6 22Z" fill="#d9541f"/><ellipse cx="52" cy="0" rx="42" ry="24" fill="#ff7a59" stroke="#d9541f" stroke-width="3"/><path d="M40 -22 Q34 0 40 22" fill="none" stroke="#ffb59e" stroke-width="5"/><circle cx="78" cy="-5" r="8" fill="#fff"/><circle cx="80" cy="-5" r="4.5" fill="#1f3d57"/></svg><b>حوض متفوّق</b><small>سمكتك بتكبر مع نقاطك</small></a>
   </nav>
 
   <!-- step 0: who is playing (only when this device already has players) -->
@@ -281,12 +286,6 @@ details.about>*:not(summary){margin-inline:18px}
     <button class="back" type="button" data-back="stepTrack">‹ Back</button>
   </section>
 
-  <!-- «حوض متفوّق»: every student is a fish that grows with points (owner, 7 Nov 2026; aquarium.js) -->
-  <section class="aqBox" id="aqBox" dir="rtl" aria-label="حوض متفوّق">
-    <div id="tank"></div>
-    <p class="aqMsg" id="aqMsg"></p>
-  </section>
-
   <!-- book questions: a tile under the player card -->
   <nav class="tiles" id="tilesLow" dir="rtl" aria-label="أسئلة الدروس">
     <a class="tile tLes wide" href="/lessons/"><span class="tIc" aria-hidden="true">📚</span><b>أسئلة بالإجابات</b><small>كل درس في الكتاب المدرسي</small></a>
@@ -328,10 +327,9 @@ details.about>*:not(summary){margin-inline:18px}
   </details>
   <p class="foot"><a href="contact.html">✉️ تواصل معنا</a></p>
 </main>
-<script src="firebase-config.js?v=20261107s{{{"></script>
-<script src="common.js?v=20261107s{{{"></script>
-<script src="chapters.js?v=20261107s{{{"></script>
-<script src="aquarium.js?v=20261107s{{{"></script>
+<script src="firebase-config.js?v=20261107t{{{"></script>
+<script src="common.js?v=20261107t{{{"></script>
+<script src="chapters.js?v=20261107t{{{"></script>
 <script>
 (() => {
   'use strict';
@@ -355,7 +353,7 @@ details.about>*:not(summary){margin-inline:18px}
   const list = Object.entries(SI.players());
   /* the Stars button: only with a player on this device (champions.html sends visitors without one back here) */
   if (list.length) {
-    const sb = $('#starsBtn'); sb.hidden = false;
+    const sb = $('#starsBtn'); sb.hidden = false; $('#aqTile').classList.add('full');   // 3 tiles: the aquarium takes the whole row
     sb.onclick = e => { const cur = SI.player && SI.player(); if (!cur) { e.preventDefault(); show('stepWho'); $('#stepWho').scrollIntoView({ behavior: 'smooth' }); } };
     SI.LB.top(1).then(async t => {
       const r = (t.rows || [])[0]; if (!r) return;
@@ -387,7 +385,7 @@ details.about>*:not(summary){margin-inline:18px}
       }
     } catch (e) { console.warn(e); }
   } else show('stepGrade');
-  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('#tiles').hidden = true; $('#tilesLow').hidden = true; $('#aqBox').hidden = true; show('stepTrack'); }
+  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('#tiles').hidden = true; $('#tilesLow').hidden = true; show('stepTrack'); }
 
   $('#newPlayer').onclick = () => { SI.sfx.tick(); show('stepGrade'); };
   /* recovery code: the server copy comes back on this device (merged with it if the player is already here) */
@@ -431,9 +429,6 @@ details.about>*:not(summary){margin-inline:18px}
     ga('onboarding_done', { grade: choice.grade, track: choice.track });
     SI.sfx.ok(); enter();   // Reesho introduces himself
   });
-
-  /* the aquarium after the page has settled (it reads the Stars board) */
-  window.addEventListener('load', () => setTimeout(() => { if (!$('#aqBox').hidden && window.SI_Aquarium) SI_Aquarium($('#tank'), { msg: $('#aqMsg') }); }, 300));
 
   /* "Players say": up to three of the answers the owner chose to show (first name and one line) */
   window.addEventListener('load', () => setTimeout(async () => {

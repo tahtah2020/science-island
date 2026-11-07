@@ -84,7 +84,7 @@
       b.onclick = () => { b.classList.add('show'); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('show'), 2500); };
       el.appendChild(b);
       const speed = (isMe ? 34 : 18 + Math.random() * 22) * (1.2 - size / 160);
-      return { b, svg: b.querySelector('svg'), size, x: Math.random() * Math.max(10, W() - size), y: 30 + Math.random() * Math.max(10, H() - 40), vx: (Math.random() < .5 ? -1 : 1) * speed, ph: Math.random() * 6, ty: 0, isMe };
+      return { b, svg: b.querySelector('svg'), tag: b.querySelector('.tag'), size, x: Math.random() * Math.max(10, W() - size), y: 30 + Math.random() * Math.max(10, H() - 40), vx: (Math.random() < .5 ? -1 : 1) * speed, ph: Math.random() * 6, ty: 0, isMe };
     });
 
     /* the message under the tank */
@@ -95,7 +95,7 @@
     }
 
     /* swimming: a slow drift left and right with a gentle wave; turn at the glass */
-    const draw = f => { f.b.style.transform = `translate(${f.x}px,${f.y + Math.sin(f.ph) * 6}px)`; const d = f.vx < 0 ? -1 : 1; if (f.d !== d) { f.d = d; f.svg.style.transform = `scaleX(${d})`; } };   // only the drawing turns, the name tag stays readable
+    const draw = f => { f.b.style.transform = `translate(${f.x}px,${f.y + Math.sin(f.ph) * 6}px)`; if (f.tag) { const w = W(), edge = f.x + f.size / 2 > w - 90 ? 'r' : f.x + f.size / 2 < 90 ? 'l' : ''; if (f.edge !== edge) { f.edge = edge; f.tag.style.cssText = edge === 'r' ? 'left:auto;right:0;transform:none' : edge === 'l' ? 'left:0;transform:none' : ''; } }   // the name tag stays inside the glass const d = f.vx < 0 ? -1 : 1; if (f.d !== d) { f.d = d; f.svg.style.transform = `scaleX(${d})`; } };   // only the drawing turns, the name tag stays readable
     fishes.forEach(draw);
     if (reduce) return;
     let last = performance.now(), on = true, raf = 0;
