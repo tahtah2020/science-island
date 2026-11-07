@@ -118,25 +118,25 @@ window.IDEAS = [
 /* Word problems as pictures (owner, 6 Nov 2026): the things, how many, and who they go to. Key = idea.phrasing (1-based). */
 const S = (icon, n, label, more) => Object.assign({ icon, n, label }, more || {});
 const STORY = {
-  'P1.4': [S('cow', 243, '243 cows'), S('horse', 187, '187 horses')],
-  'P2.1': [S('shoe', null, 'shoes 246 EGP'), S('bag', null, 'bag 485 EGP')],
+  'P1.4': [S('cow3', 243, '243 cows'), S('horse', 187, '187 horses')],
+  'P2.1': [S('sneakers', null, 'shoes 246 EGP'), S('handbag', null, 'bag 485 EGP')],
   'P2.2': [S('refbook', 475, '475 books'), S('refbook', 125, '125 more')],
   'P2.3': [S('rose', 435, '435 roses'), S('rose', 168, '168 more')],
   'P2.4': [S('refbook', 485, '485 books'), S('refbook', 235, '235 more')],
   'P2.5': [S('rose', 345, '345 roses'), S('rose', 153, '153 more')],
-  'P3.1': [S('cow', 243, '243 cows'), S('horse', 187, '187 horses')],
-  'P3.2': [S('pencils', null, 'set 415 EGP'), S('ball', null, 'ball 825 EGP')],
+  'P3.1': [S('cow3', 243, '243 cows'), S('horse', 187, '187 horses')],
+  'P3.2': [S('stationery', null, 'set 415 EGP'), S('soccer', null, 'ball 825 EGP')],
   'P3.3': [S('kid', 602, '602 children'), S('adult', 518, '518 adults')],
-  'P3.4': [S('pencils', null, 'set 425 EGP'), S('ball', null, 'ball 805 EGP')],
+  'P3.4': [S('stationery', null, 'set 425 EGP'), S('soccer', null, 'ball 805 EGP')],
   'P3.5': [S('kid', 508, '508 children'), S('adult', 419, '419 adults')],
   'P4.1': [S('banknote', null, 'you have 1,000 EGP'), S('backpack', null, 'backpack 520 EGP')],
-  'P4.2': [S('banknote', null, 'paid 200 EGP'), S('sandwich', null, 'meal 124 EGP')],
+  'P4.2': [S('banknote', null, 'paid 200 EGP'), S('meal', null, 'meal 124 EGP')],
   'P4.3': [S('page', 325, 'book 325 pages'), S('page', 141, 'read 141')],
-  'P4.4': [S('banknote', null, 'paid 200 EGP'), S('other', null, 'toy 164 EGP')],
-  'P4.5': [S('banknote', null, 'paid 200 EGP'), S('sandwich', null, 'meal 136 EGP')],
+  'P4.4': [S('banknote', null, 'paid 200 EGP'), S('teddy', null, 'stuffed animal 164 EGP')],
+  'P4.5': [S('banknote', null, 'paid 200 EGP'), S('meal', null, 'meal 136 EGP')],
   'P5.1': [S('paper', 1000, '1,000 sheets'), S('paper', 347, 'used 347')],
   'P5.2': [S('banknote', null, 'paid 1,000 EGP'), S('books', null, 'books 805 EGP')],
-  'P5.3': [S('shoe', null, 'shoes 246 EGP'), S('bag', null, 'bag 485 EGP')]
+  'P5.3': [S('sneakers', null, 'shoes 246 EGP'), S('handbag', null, 'bag 485 EGP')]
 };
 window.IDEAS.forEach(I => I.variants.forEach((v, i) => { const st = STORY[I.id + '.' + (i + 1)]; if (st && !v.fig) Object.assign(v, Array.isArray(st) ? { fig: 'g3Story', pic: { parts: st } } : st); }));
 })();

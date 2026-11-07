@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'Grade 3 Math: new pictures for units 4 and 6',
+    items: [
+      { text: 'Owner icons in the word problems (teddy, stationery set, soccer ball, meal, sneakers, handbag, cow) and the fruit tally (peach, grape)' },
+      { text: 'English column sums: the sign on the left like the English book' }
+    ] },
   { date: '2026-11-07', title: 'Grade 3 Math: English units 4-6',
     items: [
       { text: 'Addition and Subtraction, Length and Organizing Data now open on the Languages track (English book wording and numbers)' },

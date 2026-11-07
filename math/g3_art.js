@@ -306,8 +306,8 @@
     }
     const row = (str, y) => { for (let i = 0; i < str.length; i++) { const k = str.length - 1 - i; s += txt(colX(k) + cw / 2, y, dg(str[i]), { fs: 26 }); } };
     row(A, y0 + 28); row(B, y0 + 28 + rh);
-    s += txt(x0 + cols * cw + 24, y0 + 28 + rh, p.op === '-' ? '−' : p.op === 'x' ? '×' : '+', { fs: 28, fill: '#e2603f' });
-    s += `<path d="M${f1(x0)} ${y0 + 2 * rh + 6}H${f1(x0 + cols * cw + 40)}" stroke="${INK}" stroke-width="3"/>`;
+    s += txt(AR() ? x0 + cols * cw + 24 : x0 - 20, y0 + 28 + rh, p.op === '-' ? '−' : p.op === 'x' ? '×' : '+', { fs: 28, fill: '#e2603f' });
+    s += `<path d="M${f1(AR() ? x0 : x0 - 40)} ${y0 + 2 * rh + 6}H${f1(AR() ? x0 + cols * cw + 40 : x0 + cols * cw)}" stroke="${INK}" stroke-width="3"/>`;
     for (let k = 0; k < cols; k++) s += `<rect x="${f1(colX(k) + 8)}" y="${y0 + 2 * rh + 14}" width="${cw - 16}" height="${rh - 8}" rx="6" fill="#fff" stroke="#9aa9b5" stroke-width="1.6" stroke-dasharray="4 3"/>`;
     return svg(y0 + 3 * rh + 26, T('A column sum with an empty answer row', 'عملية رأسية والناتج فارغ'), s);
   }
@@ -445,6 +445,8 @@
     'chocolate', 'juice', 'medal', 'bouquet', 'cakebox', 'snackbox', 'pencils', 'sandwich', 'paperbox', 'banknote', 'coin2', 'paperbundle', 'notebook2', 'lake', 'runner', 'basket',
     /* fourth set (English units 1-3) */
     'pudding', 'jelly', 'water', 'block', 'train2', 'aquarium', 'flowershop', 'schoolbus',
+    /* fifth set (English units 4-6, 7 Nov 2026) */
+    'teddy', 'stationery', 'soccer', 'meal', 'sneakers', 'handbag', 'cow3', 'peach', 'grape',
     /* second Gemini set (6 Nov 2026, units 7-9) */
     'cookie', 'candy2', 'paper2', 'seed', 'plate', 'boxopen', 'box', 'bench', 'wheel', 'can', 'wagon', 'ribbon', 'pencil2', 'marble', 'books', 'backpack', 'boy', 'girl', 'boy2', 'girl2', 'teacher', 'father', 'grandma', 'kids']);
   const CHILD = ['boy', 'girl', 'boy2', 'girl2'];   /* 'child' in a story = the owner's four children in turn */

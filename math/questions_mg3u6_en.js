@@ -23,7 +23,7 @@ const fig = (name, pic) => ({ fig: name, pic });
 
 /* the book's data */
 const SUBJ = [['Math', 'math', 11], ['English', 'english', 6], ['P.E.', 'pe', 13], ['Music', 'music', 2], ['Art', 'drawing', 3]];
-const FRUIT = [['Apple', 'apple', 13], ['Strawberry', 'strawberry', 7], ['Banana', 'banana', 9], ['Peach', null, 3], ['Grape', null, 2]];
+const FRUIT = [['Apple', 'apple', 13], ['Strawberry', 'strawberry', 7], ['Banana', 'banana', 9], ['Peach', 'peach', 3], ['Grape', 'grape', 2]];
 const CARS = [['Passenger Car', 'car', 17], ['Bus', 'bus', 3], ['Motorcycle', 'motorbike', 8], ['Truck', 'truck', 3], ['Taxi', 'taxi', 1], ['Police Car', 'police', 1]];
 const COLORS = { title: 'Favorite Colors Survey', unit: 'students', max: 10, step: 1, bars: [['Red', null, 9, '#e85a6b'], ['Blue', null, 8, '#6cc4ef'], ['Green', null, 2, '#79c69a'], ['Other', null, 5, '#b9bec4']] };
 const BOOKS = { title: 'Survey of Books Borrowed from the Library', unit: 'books', max: 20, step: 2, bars: [['Reference', 'refbook', 14], ['Picture', 'picturebook', 12], ['Science', 'sciencebook', 4], ['Other', 'other', 10]] };
