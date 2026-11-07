@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'تنبيه تليجرام عند رفع صورة',
+    items: [
+      { text: 'رسالة على تليجرام لصاحب الموقع عند وصول صورة طالب جديدة للموافقة' }
+    ] },
   { date: '2026-11-07', title: 'الصفحة الرئيسية: المغامرات والنجوم فوق',
     items: [
       { text: 'مغامرات ريشو ونجوم متفوّق فوق بطاقة مين بيلعب، وبطاقة النجوم تعرض صورة الطالب الأول بتاج', links: [{ label: 'الصفحة الرئيسية', href: 'index.html' }] }

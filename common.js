@@ -651,6 +651,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       try {
         const fs = this._fs; await fs.setDoc(fs.doc(db, 'photos', await this.myId()), { name: p.name, data: data || '', status: 'pending', at: fs.serverTimestamp() });
         try { if (data) localStorage.setItem('si.photo.' + p.id, JSON.stringify({ data, st: 'pending', sent: 1 })); } catch (e) {}
+        /* tell the owner on Telegram (Cloudflare Pages Function functions/api/notify.js; only on the live site) */
+        if (data && /motafawek\.com$/.test(location.hostname)) fetch('/api/notify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: p.name }) }).catch(() => {});
         return { ok: true };
       }
       catch (e) { console.warn(e); return { ok: false, denied: e && e.code === 'permission-denied' }; }
