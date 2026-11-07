@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107l{{{">
+<link rel="stylesheet" href="common.css?v=20261107m{{{">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -107,6 +107,17 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 .advBtn .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:4px 12px;font-size:20px}
 .advBtn:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .advBtn[hidden]{display:none}
+.starsBtn{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;border-radius:20px;padding:6px 16px;background:linear-gradient(135deg,#132b45,#1f4a6e 60%,#c58b4a);border:3px solid #f2b134;box-shadow:0 6px 18px rgba(31,61,87,.3);font-weight:900;position:relative;overflow:hidden}
+.starsBtn::before{content:"";position:absolute;inset:0;background:radial-gradient(1.5px 1.5px at 18% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 75%,#fff,transparent),radial-gradient(2px 2px at 62% 22%,#fff7c9,transparent),radial-gradient(1.5px 1.5px at 85% 60%,#fff,transparent);opacity:.8;pointer-events:none}
+.starsBtn img{height:62px;width:auto;flex:none;position:relative;animation:sbFly 3.5s ease-in-out infinite}
+@keyframes sbFly{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+.starsBtn span{display:flex;flex-direction:column;flex:1;min-width:0;position:relative}
+.starsBtn b{font-size:18px}.starsBtn small{font-size:13px;color:#ffe7a6;font-weight:700}
+.starsBtn .go{flex:none;background:#f2b134;color:#1f3d57;border-radius:12px;padding:4px 12px;font-size:20px}
+.starsBtn:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.starsBtn[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.starsBtn img{animation:none}}
+
 .foot{margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .foot a.tg{align-items:center;background:#229ed9;color:#fff}
 .foot a.tg svg{flex:none;align-self:center}
@@ -129,8 +140,8 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107l{{{">
-      <img src="assets/banner.jpg?v=20261107l{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107m{{{">
+      <img src="assets/banner.jpg?v=20261107m{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
@@ -140,6 +151,9 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 
   <!-- Reesho's adventures: one page with every adventure, by grade (owner, 28 Oct 2026) -->
   <a class="advBtn" href="adventures.html"><img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><span><b>🎮 مغامرات ريشو</b><small>Reesho’s Adventures · اختار صفك والعب</small></span><span class="go" aria-hidden="true">▸</span></a>
+
+  <!-- «نجوم متفوّق»: shown only when this device has a player (the page needs one), owner 7 Nov 2026 -->
+  <a class="starsBtn" dir="rtl" href="champions.html" id="starsBtn" hidden><img src="assets/stars/reesho_crown.webp" alt="" aria-hidden="true"><span><b>⭐ نجوم متفوّق</b><small id="starsSub">اطلع لقمة الهرم الذهبي</small></span><span class="go" aria-hidden="true">◂</span></a>
 
   <!-- step 0: who is playing (only when this device already has players) -->
   <section class="step" id="stepWho" hidden>
@@ -255,9 +269,9 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   </section>
   <p class="foot"><a href="contact.html">For parents and teachers <span class="ar">لأولياء الأمور والمعلمين</span></a></p>
 </main>
-<script src="firebase-config.js?v=20261107l{{{"></script>
-<script src="common.js?v=20261107l{{{"></script>
-<script src="chapters.js?v=20261107l{{{"></script>
+<script src="firebase-config.js?v=20261107m{{{"></script>
+<script src="common.js?v=20261107m{{{"></script>
+<script src="chapters.js?v=20261107m{{{"></script>
 <script>
 (() => {
   'use strict';
@@ -279,6 +293,12 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
   });
 
   const list = Object.entries(SI.players());
+  /* the Stars button: only with a player on this device (champions.html sends visitors without one back here) */
+  if (list.length) {
+    const sb = $('#starsBtn'); sb.hidden = false;
+    sb.onclick = e => { const cur = SI.player && SI.player(); if (!cur) { e.preventDefault(); show('stepWho'); $('#stepWho').scrollIntoView({ behavior: 'smooth' }); } };
+    SI.LB.top(1).then(t => { const r = (t.rows || [])[0]; if (r) $('#starsSub').innerHTML = `👑 في القمة: <bdi>${SI.esc(r.name)}</bdi> بـ ${r.score} نقطة`; }).catch(() => {});
+  }
   const GRADE_TAG = { g3: ['Grade 3', 'الصف ٣'], g4: ['Grade 4', 'الصف ٤'], g5: ['Grade 5', 'الصف ٥'], g6: ['Grade 6', 'الصف ٦'], p1: ['Prep 1', 'أولى إعدادي'], p2: ['Prep 2', 'تانية إعدادي'] }, GRADE_HINT = { g3: 'Grade 3 · الصف الثالث', g4: 'Grade 4 · الصف الرابع', g5: 'Grade 5 · الصف الخامس', g6: 'Grade 6 · الصف السادس', p1: 'Prep 1 · الصف الأول الإعدادي', p2: 'Prep 2 · الصف الثاني الإعدادي' };
   const manyGrades = new Set(list.map(([, p]) => p.grade || 'g5')).size > 1;
   if (list.length) {
@@ -301,7 +321,7 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
       }
     } catch (e) { console.warn(e); }
   } else show('stepGrade');
-  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('.advBtn').hidden = true; show('stepTrack'); }
+  if (advPending && GRADE_HINT[advPending.grade]) { choice.grade = advPending.grade; $('#gradeHint').textContent = GRADE_HINT[choice.grade]; $('.advBtn').hidden = true; $('#starsBtn').hidden = true; show('stepTrack'); }
 
   $('#newPlayer').onclick = () => { SI.sfx.tick(); show('stepGrade'); };
   /* recovery code: the server copy comes back on this device (merged with it if the player is already here) */
