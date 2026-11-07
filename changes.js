@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'السمكة لازم تاكل كل يوم',
+    items: [
+      { text: 'السمكة تاكل فقط في الأيام اللي الطالب يكسب فيها نقط؛ لو غاب تجوع ثم تصغر يومًا بعد يوم، وبعد 7 أيام تخرج من الحوض، وترجع بحجمها أول ما يلعب', links: [{ label: 'حوض متفوّق', href: 'aquarium.html' }] }
+    ] },
   { date: '2026-11-07', title: 'حوض متفوّق بصور جديدة وإطعام السمك',
     items: [
       { text: 'خلفية حوض وشعاب، والسمكة تتحول لنوع سمك جديد مع كل مستوى، وسلحفاة وأخطبوط وقلعة وسفينة وكنز وريشو الغطاس' },

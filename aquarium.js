@@ -7,6 +7,10 @@
      of «نجوم متفوّق» is reached) and Reesho the diver sit on the sand. Pictures: owner's ChatGPT sheets cut out with PIL
      into assets/aquarium/ (bg.jpg, fish_*.webp, turtle, octopus, castle, ship, chest_closed/open, reesho_diver).
    - Tap the water = food pellets fall; nearby fish swim to them and eat them (owner's choice).
+   - A fish eats only on the days its student earns points (owner, 7 Nov 2026): played today = full size; missed days make it
+     hungry, then smaller (−13 % a day from the 2nd day), and after 7 days without points it leaves the tank. Points are never
+     lost: the fish comes back at full size the day the student plays again. Last day = the board's `at` (it changes only when
+     the score goes up) or, for the player, `prof.lx` (common.js noteGain). Only students active in the last 7 days are read.
    Usage: SI_Aquarium(document.getElementById('tank'), { msg: element for the message }) */
 (function () {
   'use strict';
@@ -61,7 +65,9 @@
 .aq .fish .body.gold img{filter:sepia(.55) saturate(2.2) hue-rotate(-12deg) brightness(1.08) drop-shadow(0 0 7px #ffd95a)}
 .aq .fish .tail{transform-origin:18px 0;animation:aqTail .5s ease-in-out infinite alternate}
 @keyframes aqTail{from{transform:scaleY(.8) rotate(-8deg)}to{transform:scaleY(1.05) rotate(8deg)}}
-.aq .fish .body>svg.crown{position:absolute;width:34%;left:38%;top:-24%;height:auto}
+.aq .fish .body>svg.crown{position:absolute;width:34%;left:36%;top:-12%;height:auto}
+.aq .fish.hungry .body{filter:saturate(.75)}
+.aq .fish.starving .body{filter:saturate(.45) brightness(.92);opacity:.85}
 .aq .fish.me .body{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 10px #ffe9a0)}
 .aq .fish.chomp .body{animation:aqChomp .3s}
 @keyframes aqChomp{50%{scale:1.15}}
@@ -104,20 +110,35 @@
     /* students: the board's top 30 + me (my fish always, from my own points) */
     let rows = [], myId = null;
     try { myId = me ? await SI.LB.myId() : null; } catch (e) {}
-    try { rows = ((await SI.LB.top(30)).rows || []).filter(r => r && r.name); } catch (e) {}
+    /* how many whole days since the student last earned points (0 = today) */
+    const DAY = 864e5, midnight = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x.getTime(); }, today0 = midnight(Date.now());
+    const msOf = v => !v ? 0 : typeof v === 'number' ? v : typeof v.toMillis === 'function' ? v.toMillis() : v.seconds ? v.seconds * 1000 : 0;
+    const daysSince = ms => ms ? Math.max(0, Math.round((today0 - midnight(ms)) / DAY)) : 0;
+    const GONE = 8;                                                    // 8 days without points: the fish leaves the tank
+    try { rows = ((await SI.LB.activeSince(today0 - (GONE - 1) * DAY, 40)).rows || []).filter(r => r && r.name); } catch (e) {}
+    rows.forEach(r => { r.days = daysSince(msOf(r.at)); });
     const myXP = me ? Math.round((SI.xp && SI.xp()) || 0) : 0;
-    if (me && myId && !rows.some(r => r.id === myId)) rows.push({ id: myId, name: me.name, score: myXP });
-    rows.forEach(r => { if (r.id === myId) r.score = Math.max(r.score || 0, myXP); });
+    let myDays = null;
+    if (me) {
+      const lx = (SI.prof && SI.prof().lx) || '', [yy, mm, dd] = lx.split('-').map(Number);
+      const local = lx ? daysSince(new Date(yy, mm - 1, dd).getTime()) : null, board = rows.find(r => r.id === myId);
+      myDays = local !== null ? (board ? Math.min(local, board.days) : local) : board ? board.days : (myXP ? GONE : 0);
+      if (myId && !board) rows.push({ id: myId, name: me.name, score: myXP, days: myDays });
+      rows.forEach(r => { if (r.id === myId) { r.score = Math.max(r.score || 0, myXP); r.days = myDays; } });
+    }
+    rows = rows.filter(r => r.days < GONE).sort((a, b) => b.score - a.score).slice(0, 30);
     const topScore = rows.reduce((m, r) => Math.max(m, r.score || 0), 0);
 
     const fishes = rows.map((r, i) => {
-      const isMe = !!myId && r.id === myId, score = r.score || 0, size = sizeOf(score) * Math.max(.62, Math.min(1, W() / 800)), k = kindOf(score);   // smaller fish in a phone-sized tank
+      const isMe = !!myId && r.id === myId, score = r.score || 0, k = kindOf(score);
+      const hunger = r.days <= 1 ? 1 : Math.max(.2, 1 - (r.days - 1) * .13);   // 2+ days without points: smaller every day
+      const size = sizeOf(score) * Math.max(.62, Math.min(1, W() / 800)) * hunger;   // smaller fish in a phone-sized tank
       const h = hash(r.id || r.name), color = COLORS[h % COLORS.length];
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'fish' + (isMe ? ' me' : '');
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'fish' + (isMe ? ' me' : '') + (r.days >= 3 ? ' starving' : r.days >= 1 ? ' hungry' : '');
       b.style.width = size + 'px';
       b.setAttribute('aria-label', `${r.name}: ${score} · ${T(k[3], k[2])}`);
       const pic = k[0] ? `<img src="${A}${k[0]}.webp" alt="" draggable="false">` : drawnFish(color, i);
-      b.innerHTML = `<span class="body ${k[4]}" style="--hue:${(h % 7) * 50}deg">${pic}${score && score === topScore ? CROWN : ''}</span><span class="tag">${isMe ? T('Your fish', 'سمكتك') + ' · ' : ''}${esc(r.name)} · ${score}</span>`;
+      b.innerHTML = `<span class="body ${k[4]}" style="--hue:${(h % 7) * 50}deg">${pic}${score && score === topScore ? CROWN : ''}</span><span class="tag">${isMe ? T('Your fish', 'سمكتك') + ' · ' : ''}${esc(r.name)} · ${score} ${r.days ? '😋' : '🍤'}</span>`;
       b.onclick = e => { e.stopPropagation(); b.classList.add('show'); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('show'), 2500); };
       b.onpointerdown = e => e.stopPropagation();
       el.appendChild(b);
@@ -129,9 +150,15 @@
     /* the message under the tank: points, and how far to the next fish */
     if (opts.msg) {
       if (!me) opts.msg.innerHTML = T('🐟 Every student has a fish that grows with points. Sign in and get yours!', '🐟 كل طالب له سمكة بتكبر مع نقاطه. سجّل اسمك وخد سمكتك!');
+      else if (myDays >= GONE) opts.msg.innerHTML = T(`😢 Your fish left the tank: no points for ${myDays} days. Your points are safe: play today and it comes back!`,
+        SI.G(`😢 سمكتك خرجت من الحوض لأنك غبت ${myDays} يوم. نقاطك محفوظة: العب النهارده وهترجع!`, `😢 سمكتك خرجت من الحوض لأنك غبتي ${myDays} يوم. نقاطك محفوظة: العبي النهارده وهترجع!`));
+      else if (myDays >= 2) opts.msg.innerHTML = T(`😟 Your fish is getting smaller: it has not eaten for ${myDays} days. Play today and it gets its full size back!`,
+        SI.G(`😟 سمكتك بتصغر لأنها ما أكلتش من ${myDays} أيام. العب النهارده وترجع لحجمها!`, `😟 سمكتك بتصغر لأنها ما أكلتش من ${myDays} أيام. العبي النهارده وترجع لحجمها!`));
+      else if (myDays === 1 || !myXP) opts.msg.innerHTML = T('😋 Your fish is hungry! It eats when you earn points: play today so it does not shrink.',
+        SI.G('😋 سمكتك جعانة! بتاكل لما تكسب نقط: العب النهارده علشان ما تصغرش.', '😋 سمكتك جعانة! بتاكل لما تكسبي نقط: العبي النهارده علشان ما تصغرش.'));
       else {
         const li = SI.levelInfo(myXP), nx = li.to ? KINDS[Math.min(6, li.n + 1)] : null;
-        opts.msg.innerHTML = T(`🐟 Your fish has <b>${myXP}</b> points.`, `🐟 سمكتك عندها <b>${myXP}</b> نقطة.`) + ' '
+        opts.msg.innerHTML = T(`🍤 Your fish ate today! It has <b>${myXP}</b> points.`, `🍤 سمكتك أكلت النهارده! عندها <b>${myXP}</b> نقطة.`) + ' '
           + (nx ? T(`${li.to - myXP} more points and it becomes a <b>${nx[3]}</b>!`, SI.G(`باقي <b>${li.to - myXP}</b> نقطة وتتحول لـ<b>${nx[2]}</b>! العب أكتر.`, `باقي <b>${li.to - myXP}</b> نقطة وتتحول لـ<b>${nx[2]}</b>! العبي أكتر.`))
                 : T('It is the golden angelfish: play more and it keeps growing!', SI.G('دي سمكة الملاك الذهبية: العب أكتر وهتفضل تكبر!', 'دي سمكة الملاك الذهبية: العبي أكتر وهتفضل تكبر!')));
       }

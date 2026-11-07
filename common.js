@@ -226,6 +226,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   function noteGain(p, n, before) {
     if (!n) return;
     const k = weekKey(); if (p.wkK !== k) { p.wkK = k; p.wkB = before; }
+    p.lx = today();   // the last day the player earned points (the aquarium: a fish eats only on days its student plays)
     let s = 'science'; try { s = subjectId() || 'science'; } catch (e) {}
     p.sx = p.sx || {}; p.sx[s] = (p.sx[s] || 0) + n;
   }
@@ -628,6 +629,15 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
         const above = ab.docs[0] ? Object.assign({ id: ab.docs[0].id }, ab.docs[0].data()) : null;
         return { id, score, rank: c.data().count + 1, above, online: true };
       } catch (e) { console.warn(e); return kind === 'all' ? this.me() : null; }
+    },
+    /* students who earned points since `ms` (the board's `at` changes only when the score goes up), most points first */
+    async activeSince(ms, n = 40) {
+      const db = await this.ready(); if (!db) return { online: false, rows: this.localRows().slice(0, n) };
+      try {
+        const fs = this._fs, q = fs.query(fs.collection(db, 'boards', this.board(), 'scores'), fs.where('at', '>=', fs.Timestamp.fromMillis(ms)), fs.orderBy('at', 'desc'), fs.limit(n));
+        const ss = await fs.getDocs(q);
+        return { online: true, rows: ss.docs.map(d => Object.assign({ id: d.id }, d.data())).sort((a, b) => b.score - a.score) };
+      } catch (e) { console.warn(e); return Object.assign(await this.top(n), { fallback: true }); }
     },
     async cards(ids) {
       const db = await this.ready(); if (!db) return {};
