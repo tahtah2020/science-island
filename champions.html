@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107k{{{">
+<link rel="stylesheet" href="common.css?v=20261107l{{{">
 <style>
 /* «نجوم متفوّق» (7 Nov 2026): evening sky, golden pyramid, three boards, badges, level rings, team goal, «مكانك» bar, photos after approval */
 body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-height:100svh}
@@ -63,6 +63,9 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
 .det .bdg span{font-size:13px}
 .det .av{--s:96px}
 .det .big{font-size:26px;font-weight:900;color:#1b6182}
+.flyR{position:fixed;z-index:45;pointer-events:none;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))}
+.spark{position:fixed;z-index:46;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;background:radial-gradient(circle,#fff7c9 0 35%,#f2b134 36% 60%,transparent 61%);border-radius:50%}
+.flyTag{position:fixed;z-index:46;pointer-events:none;transform:translate(-50%,-100%);background:#f2b134;color:#1f3d57;font-weight:900;font-size:15px;border-radius:999px;padding:3px 12px;border:2px solid #fff;white-space:nowrap;box-shadow:0 4px 10px rgba(0,0,0,.3)}
 @media (prefers-reduced-motion:reduce){.slot,.slot .crown,.pyrReesho,.cap-shine{animation:none}}
 /* podium (not used since the pyramid) */
 .podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:8px;margin-top:18px}
@@ -216,10 +219,10 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
   <div class="cel"><img src="assets/stars/reesho_crown.webp" alt=""><h3 id="celH"></h3><p id="celP"></p><button class="btn primary big" type="button" id="celOk" data-ar="يلّا نكمّل!">Let’s go!</button></div>
 </div>
 
-<script src="firebase-config.js?v=20261107k{{{"></script>
-<script src="chapters.js?v=20261107k{{{"></script>
-<script src="wardrobe_items.js?v=20261107k{{{"></script>
-<script src="common.js?v=20261107k{{{"></script>
+<script src="firebase-config.js?v=20261107l{{{"></script>
+<script src="chapters.js?v=20261107l{{{"></script>
+<script src="wardrobe_items.js?v=20261107l{{{"></script>
+<script src="common.js?v=20261107l{{{"></script>
 <script>
 (async () => {
   'use strict';
@@ -343,12 +346,51 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
     if (!last || rank >= last) return;
     $('#celH').textContent = T(`You climbed to #${rank}!`, SI.G(`طلعت حجر أعلى: المركز ${rank}!`, `طلعتي حجر أعلى: المركز ${rank}!`));
     $('#celP').textContent = T(`You were #${last}. Keep going!`, SI.G(`كنت #${last}. كمّل كده!`, `كنتي #${last}. كمّلي كده!`));
-    $('#celVeil').hidden = false; SI.voice('champion');
+    $('#celVeil').hidden = false; SI.voice('champion'); climbed = rank;
     const cs = ['#f2b134', '#e2603f', '#2e9e6b', '#23799f', '#8fd3ee', '#d4507a'];
     for (let i = 0; i < 60; i++) { const c = document.createElement('i'); c.className = 'conf'; c.style.cssText = `left:${Math.random() * 100}vw;background:${cs[i % cs.length]};animation-duration:${2 + Math.random() * 2}s;animation-delay:${Math.random() * .8}s`; document.body.appendChild(c); setTimeout(() => c.remove(), 5000); }
     $('#celOk').focus();
   }
-  $('#celOk').onclick = () => { $('#celVeil').hidden = true; };
+  $('#celOk').onclick = () => { $('#celVeil').hidden = true; if (climbed) { const r = climbed; climbed = 0; setTimeout(() => flyCrown(r), 250); } };
+
+  /* after a climb: Reesho flies with the crown from the capstone to the child's stone (or to his avatar in the «مكانك» bar
+     when he is not in the top 10), sparkles fall on him, then Reesho flies back to the capstone */
+  let climbed = 0;
+  async function flyCrown(rank) {
+    const home = document.querySelector('.pyrReesho');
+    const target = document.querySelector('.slot.me .av') || document.querySelector('#meAv .av');
+    if (!home || !target || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    target.scrollIntoView({ block: 'center', behavior: 'smooth' }); await new Promise(r => setTimeout(r, 500));
+    const a = home.getBoundingClientRect(), b = target.getBoundingClientRect();
+    const w = Math.max(70, a.width * 1.2), h = w * 420 / 295;
+    const img = document.createElement('img'); img.src = home.src; img.alt = ''; img.className = 'flyR';
+    img.style.cssText = `left:${a.left}px;top:${a.top}px;width:${w}px`;
+    document.body.appendChild(img); home.style.visibility = 'hidden';
+    const tx = b.left + b.width / 2 - w / 2 - a.left, ty = b.top - h * .78 - a.top;   // the crown just above the child's head
+    const mid = { x: tx / 2, y: Math.min(0, ty) / 2 - 90 };
+    await img.animate([
+      { transform: 'translate(0,0) rotate(0) scale(1)' },
+      { transform: `translate(${mid.x}px,${mid.y}px) rotate(-12deg) scale(1.15)`, offset: .5 },
+      { transform: `translate(${tx}px,${ty}px) rotate(0) scale(1)` }
+    ], { duration: 1600, easing: 'ease-in-out', fill: 'forwards' }).finished;
+    /* hover over the child, sparkles, a little tag, the avatar bounces */
+    SI.voice('champion');
+    const cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+    for (let i = 0; i < 16; i++) {
+      const sp = document.createElement('i'); sp.className = 'spark'; sp.style.left = cx + 'px'; sp.style.top = (b.top - 10) + 'px'; document.body.appendChild(sp);
+      const ang = Math.PI * (0.15 + 0.7 * Math.random()), d = 40 + Math.random() * 50;
+      sp.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${Math.cos(ang) * d * (i % 2 ? 1 : -1)}px,${Math.sin(ang) * d}px) scale(.3)`, opacity: 0 }], { duration: 900 + Math.random() * 400, easing: 'ease-out', fill: 'forwards' }).finished.then(() => sp.remove());
+    }
+    const tag = document.createElement('div'); tag.className = 'flyTag'; tag.textContent = T(`⬆ #${rank}`, `⬆ المركز ${rank}`);
+    tag.style.left = cx + 'px'; tag.style.top = Math.max(60, b.top - h * .78) + 'px';   // above Reesho's crown document.body.appendChild(tag);
+    tag.animate([{ opacity: 0, transform: 'translate(-50%,-60%)' }, { opacity: 1, transform: 'translate(-50%,-100%)' }], { duration: 400, fill: 'forwards' });
+    target.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 700, easing: 'ease-in-out', iterations: 2 });
+    await img.animate([{ transform: `translate(${tx}px,${ty}px)` }, { transform: `translate(${tx}px,${ty - 8}px)` }, { transform: `translate(${tx}px,${ty}px)` }], { duration: 700, iterations: 2 }).finished;
+    /* back to the capstone */
+    await img.animate([{ transform: `translate(${tx}px,${ty}px) scale(1)` }, { transform: `translate(${mid.x}px,${mid.y}px) rotate(10deg) scale(1.1)`, offset: .5 }, { transform: 'translate(0,0) scale(1)' }], { duration: 1400, easing: 'ease-in-out', fill: 'forwards' }).finished;
+    img.remove(); home.style.visibility = '';
+    setTimeout(() => tag.remove(), 1800);
+  }
 
   /* team goal: everybody's points this week; reached → Reesho wears the party hat */
   (async () => {

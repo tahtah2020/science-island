@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'ريشو يطير بالتاج',
+    items: [
+      { text: 'عندما يصعد الطالب في الترتيب يطير ريشو بالتاج من قمة الهرم إلى حجره (أو إلى صورته في شريط مكانك) ثم يعود', links: [{ label: 'نجوم متفوّق', href: 'champions.html' }] }
+    ] },
   { date: '2026-11-07', title: 'ريشو المستكشف فوق الهرم',
     items: [
       { text: 'ريشو بقبعة المستكشف يطير بالتاج بجانب قمة الهرم، ويظهر في احتفال صعود الترتيب', links: [{ label: 'نجوم متفوّق', href: 'champions.html' }] }
