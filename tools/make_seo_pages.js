@@ -181,7 +181,10 @@ for (const c of CHAPTERS) {
 
     const gradeAr = GRADES[g], subAr = subjAr(s), uw = unitWord(c);
     const title = `أسئلة على درس ${lessonName} ${subAr} ${gradeAr} ترم أول 2027 بالإجابات | متفوّق`;
-    const desc = `أسئلة تدريبية بالإجابات على درس ${lessonName} من ${uw} ${c.titleAr} في ${subAr} ${gradeAr} (المنهج المصري، الترم الأول)، ثم العب واختبر نفسك مع ريشو.`;
+    /* lead the description with a real question + its answer: people search the question text, and the snippet can answer it */
+    const quick = items[0] ? (items[0].filled || (items[0].q + ' الإجابة: ' + items[0].a)).replace(/\s+/g, ' ').replace(/[.。\s]+$/, '').trim() : '';
+    const quickShort = quick.length > 110 ? '' : quick;
+    const desc = `${quickShort ? quickShort + '. ' : ''}أسئلة تدريبية بالإجابات على درس ${lessonName} من ${uw} ${c.titleAr} في ${subAr} ${gradeAr} (المنهج المصري، الترم الأول)، ثم العب واختبر نفسك مع ريشو.`;
     const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [lessonName, null]];
 
     const qHtml = items.map((it, i) => `<section class="q">
@@ -333,7 +336,7 @@ const hubKeys = Object.keys(hubs).filter(k => hubs[k].units.some(u => u.lessons.
 for (const k of hubKeys) {
   const { s, g, units } = hubs[k];
   const gradeAr = GRADES[g], subAr = subjAr(s), url = `/lessons/${k}.html`;
-  const title = `أسئلة ${subAr} ${gradeAr} بالإجابات – كل الدروس | متفوّق`;
+  const title = `أسئلة ${subAr} ${gradeAr} الترم الأول بالإجابات – كل الدروس | متفوّق`;
   const desc = `أسئلة تدريبية بالإجابات على دروس ${subAr} ${gradeAr} (المنهج المصري، الترم الأول) مرتبة حسب الكتاب المدرسي، مع ألعاب وامتحان شهري.`;
   const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, null]];
   const exams = hubs[k].exams || [];
