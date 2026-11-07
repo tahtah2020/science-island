@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-07', title: 'نجوم متفوّق بشكل جديد',
+    items: [
+      { text: 'منصة تتويج للثلاثة الأوائل، وتبويبات: كل الطلاب، نجوم صفّي، الأكثر تقدّمًا هذا الأسبوع' },
+      { text: 'أوسمة تحت الاسم، وإطار ملوّن حسب المستوى، وهدف الفريق الأسبوعي، واحتفال عند صعود الترتيب' },
+      { text: 'شريط مكانك أسفل الصفحة، ورفع صورة الطالب تظهر للجميع بعد موافقة الإدارة', links: [{ label: 'نجوم متفوّق', href: 'champions.html' }] }
+    ] },
   { date: '2026-11-07', title: 'Grade 3 Math: keychain picture',
     items: [
       { text: 'Owner\'s keychain icon in unit 10 (both tracks)' }

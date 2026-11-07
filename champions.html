@@ -8,40 +8,119 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107e{{{">
+<link rel="stylesheet" href="common.css?v=20261107f{{{">
 <style>
-.wrap{max-width:720px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-.head{display:flex;align-items:flex-end;gap:12px}
-.head img{height:130px;flex:none}
-.head .card{flex:1;min-width:0}
-.head h2{margin:0;font-size:28px;font-weight:900}
-.head h2 .ar{font-size:22px;color:var(--ink);margin-left:6px}
-.head p{margin:4px 0 0;font-weight:800;color:var(--ink);font-size:14.5px}
-.board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.board li{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:10px;background:#fff;border:3px solid var(--line);border-radius:16px;padding:8px 14px;font-weight:900;font-size:18px}
-.board li .r{font-size:22px;text-align:center;font-variant-numeric:tabular-nums}
-.board li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.board li .sc{font-variant-numeric:tabular-nums;color:var(--primary-d)}
-.board li.top1{border-color:#f2c94c;background:#fff9e3;padding:12px 14px}
-.board li.top1 .nm{font-size:25px;color:#8a5a00}
-.board li .cup{font-size:24px;margin-inline-start:6px;vertical-align:-2px;display:inline-block;animation:cup 2.4s ease-in-out infinite}
-@keyframes cup{0%,100%{transform:rotate(0)}50%{transform:rotate(-10deg) scale(1.12)}}
-@media (prefers-reduced-motion:reduce){.board li .cup{animation:none}}
-.board li.top2{border-color:#cfd8dc}
-.board li.top3{border-color:#e0b48a}
-.board li.me{border-color:var(--ok);box-shadow:0 0 0 3px rgba(46,158,107,.2)}
-.board li .you{font-size:12px;background:var(--ok);color:#fff;border-radius:99px;padding:2px 8px;margin-inline-start:6px;vertical-align:middle}
-.empty{text-align:center;font-weight:800;color:var(--ink);padding:18px 8px}
-.mine{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.mine b{font-size:20px}
-.note{font-size:13px;font-weight:700;color:var(--ink);text-align:center;margin:0}
-@media (max-width:520px){ .head img{height:86px} .head h2{font-size:22px} .board li{font-size:16px;grid-template-columns:40px minmax(0,1fr) auto;padding:7px 10px} }
+/* «نجوم متفوّق» (7 Nov 2026): evening sky, podium, three boards, badges, level rings, team goal, «مكانك» bar, photos after approval */
+body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-height:100svh}
+.sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.sky i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.7;animation:tw 3s ease-in-out infinite}
+.sky i.b{width:5px;height:5px;box-shadow:0 0 8px #fff7c9;background:#fff7c9}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+.app{position:relative;z-index:1;padding-bottom:120px}
+.top .brand h1{color:#fff}.top .brand p{color:#cfe6f5}
+.wrap{max-width:760px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+
+.hero{display:flex;align-items:center;gap:12px;color:#fff}
+.hero svg{width:78px;height:auto;flex:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25))}
+.hero h2{margin:0;font-size:26px;font-weight:900}
+.hero p{margin:2px 0 0;font-weight:800;color:#d7ecf8;font-size:15px}
+
+.tabs{display:flex;gap:6px;background:rgba(255,255,255,.12);padding:5px;border-radius:999px}
+.tabs button{flex:1;border:0;background:transparent;color:#e3f2fb;font:inherit;font-weight:900;font-size:15px;padding:10px 6px;border-radius:999px;cursor:pointer;min-height:44px}
+.tabs button[aria-selected="true"]{background:#f2b134;color:#1f3d57;box-shadow:0 3px 0 #c98c10}
+.tabs button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+/* avatar + level ring */
+.av{--s:48px;width:var(--s);height:var(--s);border-radius:50%;flex:none;display:grid;place-items:center;font-weight:900;color:#fff;font-size:calc(var(--s)*.42);position:relative;background:var(--c,#7fb7d6);border:3px solid #fff;box-shadow:0 0 0 3px var(--ring,transparent)}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.av.t2{--ring:#c98a52}.av.t3{--ring:#b7c4ce}.av.t4{--ring:#f2b134}
+.av.t5{box-shadow:0 0 0 3px #7fe3ff,0 0 12px 2px rgba(127,227,255,.75)}
+.av .pend{position:absolute;bottom:-4px;inset-inline-end:-6px;font-size:12px;background:#f2b134;border-radius:999px;padding:1px 5px;color:#1f3d57;border:2px solid #fff}
+
+/* podium */
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:8px;margin-top:18px}
+.pd{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
+.pd .nm{color:#fff;font-weight:900;font-size:16px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd .sc{color:#ffe7a6;font-weight:900;font-size:15px;font-variant-numeric:tabular-nums}
+.pd .step{width:100%;border-radius:16px 16px 6px 6px;display:grid;place-items:center;font-weight:900;font-size:30px;color:#1f3d57;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12)}
+.pd.p1 .step{height:118px;background:linear-gradient(#ffe08a,#f2b134)}
+.pd.p2 .step{height:86px;background:linear-gradient(#eef3f7,#c4d1da)}
+.pd.p3 .step{height:66px;background:linear-gradient(#f7d9bf,#d9a477)}
+.pd.p1 .av{--s:76px}.pd.p2 .av,.pd.p3 .av{--s:58px}
+.pd .crownWrap{position:relative}
+.pd .crown{position:absolute;left:50%;top:-30px;width:46px;transform:translateX(-50%);animation:crown 1s cubic-bezier(.3,1.5,.5,1) .3s both}
+@keyframes crown{from{transform:translate(-50%,-60px) rotate(-25deg);opacity:0}to{transform:translateX(-50%);opacity:1}}
+.pd.me .nm::after,.row.me .nm::after{content:attr(data-you);font-size:11px;background:#2e9e6b;color:#fff;border-radius:999px;padding:1px 7px;margin-inline-start:6px;vertical-align:2px}
+.pd .bdg{justify-content:center}
+
+/* rows 4-10 */
+.list{list-style:none;margin:0;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--card);border-radius:22px}
+.row{display:grid;grid-template-columns:30px auto minmax(0,1fr) auto;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);border-radius:16px;padding:8px 12px}
+.row.me{border-color:#2e9e6b;box-shadow:0 0 0 3px rgba(46,158,107,.2)}
+.row .r{font-weight:900;font-size:20px;text-align:center;font-variant-numeric:tabular-nums}
+.row .av{--s:44px}
+.row .who{min-width:0}
+.row .nm{font-weight:900;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sc{font-weight:900;font-size:18px;color:var(--primary-d);font-variant-numeric:tabular-nums;text-align:end}
+.row .gap{display:block;font-size:11.5px;font-weight:800;color:var(--ink)}
+.bar{height:6px;border-radius:9px;background:#e3eef4;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#8fd3ee,#23799f);border-radius:9px}
+.bdg{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.bdg span{font-size:11.5px;font-weight:800;background:#fff4d6;color:#7a5200;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.pd .bdg span{background:rgba(255,255,255,.16);color:#fff3cf}
+.empty{text-align:center;font-weight:800;color:#e3f2fb;padding:22px 8px}
+
+/* team goal */
+.team{display:flex;gap:12px;align-items:center}
+.team h3{margin:0;font-size:18px;font-weight:900}
+.team p{margin:2px 0 6px;font-size:14px;font-weight:700;color:var(--ink)}
+.team .big{height:14px;border-radius:9px;background:#e3eef4;overflow:hidden}
+.team .big i{display:block;height:100%;background:linear-gradient(90deg,#f7d36b,#f2b134);transition:width 1.2s}
+.team .num{font-size:13px;font-weight:900;margin-top:4px;font-variant-numeric:tabular-nums}
+.team .gift{font-size:40px;flex:none}
+
+/* «مكانك» bar */
+.mebar{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(760px,calc(100% - 20px));
+  background:#fff8ea;border:3px solid #f2b134;border-radius:22px;padding:8px 12px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.mebar .avBtn{border:0;background:none;padding:0;cursor:pointer;position:relative}
+.mebar .avBtn .cam{position:absolute;bottom:-3px;inset-inline-start:-5px;background:#23799f;color:#fff;border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px;border:2px solid #fff}
+.mebar .av{--s:50px}
+.mebar .t1{font-weight:900;font-size:15px}
+.mebar .t2{font-weight:800;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mebar .rk{font-weight:900;font-size:26px;color:#1f3d57;font-variant-numeric:tabular-nums;text-align:center;line-height:1}
+.mebar .rk small{display:block;font-size:11px;color:var(--ink)}
+
+/* photo sheet + celebration */
+.veil{position:fixed;inset:0;z-index:50;background:rgba(10,25,40,.6);display:grid;place-items:center;padding:16px}
+.sheet{background:#fff8ea;border-radius:24px;padding:18px;max-width:420px;width:100%;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.sheet h3{margin:0;font-size:21px;font-weight:900}
+.sheet p{margin:0;font-weight:700;color:var(--ink);font-size:14.5px}
+.sheet .prev{--s:130px}
+.sheet .btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.sheet .btn{font-size:16px;min-height:46px;padding:10px 16px}
+.sheet .msg{font-weight:900;color:#1b6182;min-height:20px}
+.cel{text-align:center;color:#fff}
+.cel img{width:170px;animation:pop .6s cubic-bezier(.3,1.6,.5,1)}
+.cel h3{font-size:30px;margin:6px 0;font-weight:900}
+.cel p{font-size:18px;font-weight:800;margin:0 0 14px}
+@keyframes pop{from{transform:scale(.3)}to{transform:scale(1)}}
+.conf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:60;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@media (prefers-reduced-motion:reduce){.sky i,.pd .crown,.cel img,.conf{animation:none}.conf{display:none}}
+@media (max-width:520px){
+  .hero svg{width:60px}.hero h2{font-size:21px}.hero p{font-size:13.5px}
+  .tabs button{font-size:13px}
+  .pd .nm{font-size:14px}.pd.p1 .av{--s:62px}.pd.p2 .av,.pd.p3 .av{--s:50px}
+  .pd.p1 .step{height:96px}.pd.p2 .step{height:70px}.pd.p3 .step{height:54px}
+  .row{grid-template-columns:24px auto minmax(0,1fr) auto;gap:8px;padding:7px 9px}.row .av{--s:38px}.row .nm{font-size:15px}
+}
 </style>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
+<div class="sky" id="sky" aria-hidden="true"></div>
 <div class="app">
   <header class="top">
     <a class="brand" href="chapters.html" title="Back" data-ar-label="رجوع">
@@ -53,50 +132,229 @@
     </div>
   </header>
   <div class="wrap">
-    <div class="head">
-      <img src="assets/parrot_celebrate.png" alt="Reesho the parrot" data-ar-label="البغبغان ريشو">
-      <div class="card">
-        <h2 id="boardTitle" data-ar="أعلى ١٠ نجوم">Top 10 stars</h2>
-        <p id="reset"></p>
+    <div class="hero">
+      <svg id="reesho" viewBox="0 -110 376 630" role="img" aria-label="Reesho"><image href="assets/parrot_wave.png" width="376" height="520"/><g id="hat"></g></svg>
+      <div><h2 data-ar="اطلع على المنصة!">Climb the podium!</h2><p id="lead"></p></div>
+    </div>
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-k="all" aria-selected="true" data-ar="كل الطلاب">All students</button>
+      <button role="tab" data-k="grade" aria-selected="false" id="tabGrade">My grade</button>
+      <button role="tab" data-k="week" aria-selected="false" data-ar="🚀 الأكثر تقدّمًا">🚀 This week</button>
+    </div>
+    <p class="empty" id="tabNote" hidden></p>
+    <div class="podium" id="podium" aria-live="polite"></div>
+    <ol class="list" id="list" hidden></ol>
+    <div class="card team" id="team" hidden>
+      <div class="gift" aria-hidden="true">🎉</div>
+      <div style="flex:1;min-width:0">
+        <h3 data-ar="هدف الفريق">Team goal</h3>
+        <p id="teamTxt"></p>
+        <div class="big"><i id="teamBar" style="width:0"></i></div>
+        <div class="num" id="teamNum"></div>
       </div>
     </div>
-    <div class="card mine" id="mine" hidden></div>
-    <div class="card">
-      <ol class="board" id="board" aria-live="polite"><li class="empty" style="display:block;border:0" data-ar="جاري التحميل…">Loading…</li></ol>
-    </div>
-    <p class="note" id="note"></p>
-    <div class="row"><a class="btn primary big" id="playQuest" href="chapters.html" data-ar="العب واجمع نقاط ◂">Play and earn points ▸</a></div>
+    <div style="display:flex;justify-content:center"><a class="btn primary big" href="chapters.html" data-ar="العب واجمع نقاط ◂">Play and earn points ▸</a></div>
   </div>
 </div>
-<script src="firebase-config.js?v=20261107e{{{"></script>
-<script src="chapters.js?v=20261107e{{{"></script>
-<script src="common.js?v=20261107e{{{"></script>
+
+<div class="mebar" id="mebar" hidden>
+  <button class="avBtn" id="avBtn" type="button" aria-label="Add your photo" data-ar-label="أضف صورتك"><span id="meAv"></span><span class="cam" aria-hidden="true">📷</span></button>
+  <div style="min-width:0"><div class="t1" id="meT1"></div><div class="t2" id="meT2"></div></div>
+  <div class="rk" id="meRk"></div>
+</div>
+
+<div class="veil" id="photoVeil" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="phH">
+    <h3 id="phH" data-ar="صورتك في النجوم">Your photo on the Stars</h3>
+    <div class="av prev" id="phPrev"></div>
+    <p id="phInfo"></p>
+    <input type="file" id="phFile" accept="image/*" hidden>
+    <div class="btns">
+      <button class="btn primary" type="button" id="phPick" data-ar="اختار صورة">Choose a photo</button>
+      <button class="btn" type="button" id="phSend" hidden data-ar="أرسل للموافقة">Send for approval</button>
+      <button class="btn" type="button" id="phDel" hidden data-ar="احذف صورتي">Remove my photo</button>
+      <button class="btn" type="button" id="phClose" data-ar="إغلاق">Close</button>
+    </div>
+    <p class="msg" id="phMsg" role="status"></p>
+  </div>
+</div>
+
+<div class="veil" id="celVeil" hidden>
+  <div class="cel"><img src="assets/parrot_celebrate.png" alt=""><h3 id="celH"></h3><p id="celP"></p><button class="btn primary big" type="button" id="celOk" data-ar="يلّا نكمّل!">Let’s go!</button></div>
+</div>
+
+<script src="firebase-config.js?v=20261107f{{{"></script>
+<script src="chapters.js?v=20261107f{{{"></script>
+<script src="wardrobe_items.js?v=20261107f{{{"></script>
+<script src="common.js?v=20261107f{{{"></script>
 <script>
 (async () => {
   'use strict';
   const me = SI.requirePlayer(); if (!me) return;
   SI.applyTheme();
-  const $ = s => document.querySelector(s), T = SI.T;
+  const $ = s => document.querySelector(s), T = SI.T, G = SI.G, esc = SI.esc, LB = SI.LB;
   if (SI.isAr()) document.title = 'نجوم متفوّق · متفوّق';
-  $('#reset').textContent = T('Every point you earn counts: quests, games, adventures, Daily 5 and Review. The list keeps your points: keep playing and climb!', 'كل نقطة تكسبها بتتحسب: التحديات والألعاب والمغامرات والأسئلة اليومية والمراجعة. القائمة بتحتفظ بنقاطك: كمّل لعب واطلع لفوق!');
-  const { online, rows, last, myId } = await SI.LB.show(10);
-  const board = $('#board'); board.innerHTML = '';
-  if (!rows.length) board.innerHTML = `<li class="empty" style="display:block;border:0">${T('Loading the stars…', 'بنحمّل النجوم…')}</li>`;
-  rows.forEach((r, i) => {
-    const li = document.createElement('li'), mine = !last && r.id === myId;
-    li.className = (i < 3 ? `top${i + 1}` : '') + (mine ? ' me' : '');
-    li.innerHTML = `<span class="r">${['🥇', '🥈', '🥉'][i] || i + 1}</span><span class="nm">${SI.esc(r.name)}${i === 0 ? '<span class="cup" aria-hidden="true">🏆</span>' : ''}${mine ? `<span class="you">${T('YOU', 'أنت')}</span>` : ''}</span><span class="sc">${r.score}</span>`;
-    board.appendChild(li);
-  });
-  const m = await SI.LB.me(), mine = $('#mine');
-  if (m) {
-    const above = !last && rows[m.rank - 2];
-    mine.innerHTML = T(`<div>Your points: <b>${m.score}</b><br>Rank <b>#${m.rank}</b></div>`, `<div>نقاطك: <b>${m.score}</b><br>ترتيبك <b>#${m.rank}</b></div>`)
-      + (m.rank === 1 ? T('<div>👑 You are number 1!</div>', SI.G('<div>👑 إنت رقم ١!</div>', '<div>👑 إنتي رقم ١!</div>')) : above ? T(`<div>${above.score - m.score + 1} more points to pass <b>${SI.esc(above.name)}</b>!</div>`, `<div>محتاج ${above.score - m.score + 1} نقطة علشان تعدّي <b>${SI.esc(above.name)}</b>!</div>`) : '');
-    mine.hidden = false;
-    if (m.rank <= 3) SI.voice('champion');
+  const TEAM_GOAL = 5000;   // everybody's points this week together → Reesho wears the party hat
+
+  /* twinkling sky */
+  const sky = $('#sky'); for (let i = 0; i < 70; i++) { const s = document.createElement('i'); if (i % 9 === 0) s.className = 'b'; s.style.cssText = `left:${Math.random() * 100}%;top:${Math.random() * 70}%;animation-delay:${(Math.random() * 3).toFixed(2)}s`; sky.appendChild(s); }
+
+  $('#lead').textContent = T('Every point counts: quests, games, adventures, Daily 5 and Review.', 'كل نقطة بتتحسب: التحديات والألعاب والمغامرات والأسئلة اليومية والمراجعة.');
+  $('#tabGrade').textContent = T('⭐ My grade', '⭐ نجوم صفّي');
+  const youTxt = T('YOU', SI.G('أنت', 'أنتِ'));
+
+  /* avatars: approved photo for everybody, my own photo for me on this device, else my initial on a colour */
+  const COLORS = ['#e2603f', '#23799f', '#2e9e6b', '#8a6fd1', '#e0912f', '#d4507a', '#3f9fb5', '#6c8f2f'];
+  const colorOf = n => { let h = 0; for (const ch of String(n)) h = (h * 31 + ch.codePointAt(0)) | 0; return COLORS[Math.abs(h) % COLORS.length]; };
+  const tierOf = lvl => lvl >= 5 ? 't5' : lvl === 4 ? 't4' : lvl === 3 ? 't3' : lvl === 2 ? 't2' : '';
+  let myId = await LB.myId(), cards = {}, photos = {};
+  const mine = () => LB.myPhoto();
+  function avatar(r, extra = '') {
+    const c = cards[r.id] || {}, lvl = c.lvl || SI.levelInfo(r.score || 0).n, own = r.id === myId && mine();
+    const src = own && own.data && own.st !== 'no' ? own.data : photos[r.id];
+    const pend = own && own.st === 'pending' ? '<span class="pend" title="waiting">⏳</span>' : '';
+    const inner = src ? `<img src="${esc(src)}" alt="">` : esc([...String(r.name || '?')][0] || '?');
+    return `<span class="av ${tierOf(lvl)} ${extra}" style="--c:${colorOf(r.name)}">${inner}${pend}</span>`;
   }
-  $('#note').textContent = online ? T('Students from every device and every grade.', 'الطلاب من كل الأجهزة وكل الصفوف.') : T('Showing players on this device only.', 'اللاعبين على الجهاز ده بس.');
+  const badgesOf = (r, kind, i) => {
+    const c = cards[r.id] || {}, list = LB.badgeList(c.bdg, c.g);
+    if (kind === 'week' && i < 3) list.unshift({ t: T('🚀 Most improved', c.g === 'f' ? '🚀 الأكثر تقدّمًا' : '🚀 الأكثر تقدّمًا') });
+    return list.length ? `<div class="bdg">${list.slice(0, 3).map(b => `<span>${esc(b.t)}</span>`).join('')}</div>` : '';
+  };
+  const CROWN = `<svg class="crown" viewBox="-62 -76 124 88" aria-hidden="true"><path d="M-52 6 L-58 -52 L-27 -26 L0 -66 L27 -26 L58 -52 L52 6Z" fill="#f2b134" stroke="#c98c10" stroke-width="4" stroke-linejoin="round"/><rect x="-52" y="-6" width="104" height="14" rx="5" fill="#e09a14" stroke="#c98c10" stroke-width="3"/><circle cx="-58" cy="-54" r="7" fill="#e2603f"/><circle cx="0" cy="-68" r="8" fill="#23799f"/><circle cx="58" cy="-54" r="7" fill="#2e9e6b"/></svg>`;
+
+  let kind = 'all', loadId = 0;
+  async function load(k) {
+    kind = k; const id = ++loadId;
+    document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.k === k)));
+    $('#podium').innerHTML = `<p class="empty" style="grid-column:1/-1">${T('Loading the stars…', 'بنحمّل النجوم…')}</p>`; $('#list').hidden = true; $('#tabNote').hidden = true;
+    const res = k === 'all' ? await LB.show(10) : await LB.topOf(k, 10);
+    if (id !== loadId) return;
+    const rows = res.rows || [], ids = rows.map(r => r.id);
+    [cards, photos] = await Promise.all([LB.cards(ids), LB.photos(ids)]);
+    if (id !== loadId) return;
+    draw(rows, k);
+    meBar(k, rows, res.online);
+  }
+  function draw(rows, k) {
+    const pod = $('#podium'), list = $('#list');
+    if (!rows.length) {
+      pod.innerHTML = '';
+      const n = $('#tabNote'); n.hidden = false;
+      n.textContent = k === 'week' ? T('Nobody has points this week yet. Play now and be the first!', SI.G('لسه محدش جمع نقاط الأسبوع ده. العب دلوقتي وكن الأول!', 'لسه محدش جمع نقاط الأسبوع ده. العبي دلوقتي وكوني الأولى!'))
+        : k === 'grade' ? T('Your grade’s list is starting. Play to be on it!', SI.G('قائمة صفّك بتبدأ. العب علشان تكون فيها!', 'قائمة صفّك بتبدأ. العبي علشان تكوني فيها!'))
+        : T('Loading the stars…', 'بنحمّل النجوم…');
+      return;
+    }
+    const order = [1, 0, 2];
+    pod.innerHTML = order.map(i => {
+      const r = rows[i]; if (!r) return '<div></div>';
+      const isMe = r.id === myId;
+      return `<div class="pd p${i + 1}${isMe ? ' me' : ''}"><div class="crownWrap">${i === 0 ? CROWN : ''}${avatar(r)}</div>
+        <div class="nm" data-you="${youTxt}">${esc(r.name)}</div><div class="sc">${r.score} ⭐</div>${badgesOf(r, k, i)}
+        <div class="step">${['🥇', '🥈', '🥉'][i]}</div></div>`;
+    }).join('');
+    const rest = rows.slice(3);
+    list.hidden = !rest.length;
+    list.innerHTML = rest.map((r, j) => {
+      const i = j + 3, up = rows[i - 1], isMe = r.id === myId, gap = up.score - r.score;
+      return `<li class="row${isMe ? ' me' : ''}"><span class="r">${i + 1}</span>${avatar(r)}
+        <div class="who"><div class="nm" data-you="${youTxt}">${esc(r.name)}</div>${badgesOf(r, k, i)}</div>
+        <div class="sc">${r.score}<span class="gap">${T(`${gap + 1} to pass #${i}`, `ناقص ${gap + 1} عن #${i}`)}</span><div class="bar"><i style="width:${Math.max(6, Math.round(100 * r.score / Math.max(1, up.score)))}%"></i></div></div></li>`;
+    }).join('');
+  }
+
+  /* «مكانك»: my avatar (tap = photo), rank on this board, points, how many to pass the child above */
+  async function meBar(k, rows, online) {
+    const m = await LB.meOf(k), bar = $('#mebar');
+    const myRow = { id: myId, name: me.name, score: m ? m.score : 0 };
+    $('#meAv').innerHTML = avatar(myRow);
+    bar.hidden = false;
+    if (!m) {
+      $('#meT1').textContent = me.name;
+      $('#meT2').textContent = k === 'week' ? T('Earn points this week to join the list!', SI.G('اجمع نقاط الأسبوع ده وادخل القائمة!', 'اجمعي نقاط الأسبوع ده وادخلي القائمة!')) : T('Play to get on the list!', SI.G('العب علشان تدخل القائمة!', 'العبي علشان تدخلي القائمة!'));
+      $('#meRk').innerHTML = '📷';
+      return;
+    }
+    $('#meT1').textContent = T(`Your points: ${m.score}`, `نقاطك: ${m.score}`);
+    $('#meT2').innerHTML = m.rank === 1 ? T('👑 You are number 1!', SI.G('👑 إنت رقم ١!', '👑 إنتي رقم ١!'))
+      : m.above ? T(`${m.above.score - m.score + 1} more points to pass <b>${esc(m.above.name)}</b>!`, `باقي لك ${m.above.score - m.score + 1} نقطة وتسبق <b>${esc(m.above.name)}</b>!`) : '';
+    $('#meRk').innerHTML = `#${m.rank}<small>${T('rank', 'ترتيبك')}</small>`;
+    if (k === 'all') celebrate(m.rank);
+  }
+
+  /* climbed since the last visit → confetti + Reesho */
+  function celebrate(rank) {
+    const key = 'si.rank.' + me.id; let last = 0; try { last = +localStorage.getItem(key) || 0; localStorage.setItem(key, String(rank)); } catch (e) {}
+    if (!last || rank >= last) return;
+    $('#celH').textContent = T(`You climbed to #${rank}!`, SI.G(`طلعت المركز ${rank}!`, `طلعتي المركز ${rank}!`));
+    $('#celP').textContent = T(`You were #${last}. Keep going!`, SI.G(`كنت #${last}. كمّل كده!`, `كنتي #${last}. كمّلي كده!`));
+    $('#celVeil').hidden = false; SI.voice('champion');
+    const cs = ['#f2b134', '#e2603f', '#2e9e6b', '#23799f', '#8fd3ee', '#d4507a'];
+    for (let i = 0; i < 60; i++) { const c = document.createElement('i'); c.className = 'conf'; c.style.cssText = `left:${Math.random() * 100}vw;background:${cs[i % cs.length]};animation-duration:${2 + Math.random() * 2}s;animation-delay:${Math.random() * .8}s`; document.body.appendChild(c); setTimeout(() => c.remove(), 5000); }
+    $('#celOk').focus();
+  }
+  $('#celOk').onclick = () => { $('#celVeil').hidden = true; };
+
+  /* team goal: everybody's points this week; reached → Reesho wears the party hat */
+  (async () => {
+    const t = await LB.weekTotal(); if (t === null) return;
+    const pct = Math.min(100, Math.round(100 * t / TEAM_GOAL)), done = t >= TEAM_GOAL;
+    $('#teamTxt').textContent = done ? T('We did it! Reesho put on his party hat this week. 🎉', 'عملناها! ريشو لبس قبعة الحفلة الأسبوع ده. 🎉')
+      : T(`If all of us together reach ${TEAM_GOAL} points this week, Reesho wears his party hat!`, `لو جمعنا كلنا ${TEAM_GOAL} نقطة الأسبوع ده، ريشو يلبس قبعة الحفلة!`);
+    $('#teamNum').textContent = `${t} / ${TEAM_GOAL}`;
+    $('#team').hidden = false; requestAnimationFrame(() => { $('#teamBar').style.width = pct + '%'; });
+    const hat = (window.WARDROBE || []).find(w => w.id === 'party');
+    if (done && hat) $('#hat').innerHTML = `<g transform="translate(${hat.at[0]} ${hat.at[1]}) rotate(${hat.at[2]})">${hat.svg}</g>`;
+  })();
+
+  /* photo: cropped to a square in the browser, about 10 KB, shown to everybody only after the owner approves it */
+  let pending = null;
+  function openPhoto() {
+    const own = mine(), st = own && own.st;
+    pending = null; $('#phSend').hidden = true; $('#phMsg').textContent = '';
+    $('#phDel').hidden = !(own && own.data);
+    $('#phPrev').innerHTML = own && own.data ? `<img src="${esc(own.data)}" alt="">` : esc([...me.name][0] || '?');
+    $('#phPrev').style.setProperty('--c', colorOf(me.name));
+    $('#phInfo').textContent = st === 'pending' ? T('Your photo is waiting for approval. Only you can see it now.', 'صورتك مستنية الموافقة. إنت بس اللي شايفها دلوقتي.')
+      : st === 'ok' ? T('Your photo is approved: everybody can see it. ✓', 'صورتك اتوافق عليها: الكل شايفها. ✓')
+      : st === 'no' ? T('That photo was not approved. Try another one.', 'الصورة دي ما اتقبلتش. جرّب صورة تانية.')
+      : T('Choose a photo of your face or a drawing you love. Everybody sees it after the site approves it.', 'اختار صورة لوشّك أو رسمة بتحبها. الكل هيشوفها بعد موافقة الموقع.');
+    $('#photoVeil').hidden = false; $('#phPick').focus();
+  }
+  $('#avBtn').onclick = openPhoto;
+  $('#phClose').onclick = () => { $('#photoVeil').hidden = true; };
+  $('#phPick').onclick = () => $('#phFile').click();
+  $('#phFile').onchange = async e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+    try {
+      const url = URL.createObjectURL(f), img = new Image();
+      await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = url; });
+      const S = 160, cv = document.createElement('canvas'); cv.width = cv.height = S;
+      const side = Math.min(img.naturalWidth, img.naturalHeight), sx = (img.naturalWidth - side) / 2, sy = (img.naturalHeight - side) / 2;
+      const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, S, S); ctx.drawImage(img, sx, sy, side, side, 0, 0, S, S);
+      URL.revokeObjectURL(url);
+      let data = cv.toDataURL('image/webp', .8); if (!/^data:image\/webp/.test(data)) data = cv.toDataURL('image/jpeg', .82);
+      pending = data; $('#phPrev').innerHTML = `<img src="${data}" alt="">`; $('#phSend').hidden = false; $('#phSend').focus();
+      $('#phMsg').textContent = '';
+    } catch (err) { $('#phMsg').textContent = T('Could not open this photo. Try another one.', 'مقدرناش نفتح الصورة دي. جرّب صورة تانية.'); }
+  };
+  $('#phSend').onclick = async () => {
+    if (!pending) return; $('#phSend').disabled = true;
+    const r = await LB.sendPhoto(pending); $('#phSend').disabled = false;
+    $('#phMsg').textContent = r.ok ? T('Sent! It shows for everybody after approval. ✓', 'اتبعتت! هتظهر للكل بعد الموافقة. ✓') : T('Saved on this device. Sending did not work now: try again later.', 'اتحفظت على الجهاز ده. الإرسال ما نفعش دلوقتي: جرّب تاني بعدين.');
+    $('#phSend').hidden = true; $('#phDel').hidden = false; pending = null;
+    $('#meAv').innerHTML = avatar({ id: myId, name: me.name, score: 0 }); load(kind);
+  };
+  $('#phDel').onclick = async () => {
+    await LB.sendPhoto(''); $('#phPrev').innerHTML = esc([...me.name][0] || '?'); $('#phDel').hidden = true;
+    $('#phMsg').textContent = T('Removed.', 'اتشالت.'); load(kind);
+  };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { $('#photoVeil').hidden = true; $('#celVeil').hidden = true; } });
+
+  document.querySelectorAll('#tabs button').forEach(b => { b.onclick = () => load(b.dataset.k); });
+  LB.photoStatus().catch(() => {});
+  load('all');
 })();
 </script>
 </body>

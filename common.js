@@ -222,11 +222,33 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      left in the middle saw nothing on the board). bankXP(n) adds n now; the board gets the new total a few seconds later
      (one write for a burst of answers) and at once when the page is hidden or closed. At the end the page calls
      addXP(total, banked): only total − banked is added, but the result (level up, gems, gained) covers the whole activity. */
+  /* «نجوم متفوّق» extras (7 Nov 2026): points this week (wkK = week key, wkB = XP when the week started) and points per subject (sx) */
+  function noteGain(p, n, before) {
+    if (!n) return;
+    const k = weekKey(); if (p.wkK !== k) { p.wkK = k; p.wkB = before; }
+    let s = 'science'; try { s = subjectId() || 'science'; } catch (e) {}
+    p.sx = p.sx || {}; p.sx[s] = (p.sx[s] || 0) + n;
+  }
+  const weekXP = () => { const p = prof(); return p.wkK === weekKey() ? Math.max(0, (p.xp || 0) - (p.wkB || 0)) : 0; };
+  /* a Boss question answered right (quiz.html) → the «صيّاد التحديات» badge */
+  function countBoss() { updateProf(p => { p.boss = (p.boss || 0) + 1; }); }
+  /* badges shown under the name on «نجوم متفوّق»: "fire:5,sub:math,boss:12,adv:3,full:4" */
+  function badges() {
+    const p = prof(), out = [], st = dailyState().streak;
+    if (st >= 2) out.push('fire:' + st);
+    const sx = Object.entries(p.sx || {}).sort((a, b) => b[1] - a[1]); if (sx[0] && sx[0][1] >= 150) out.push('sub:' + sx[0][0]);
+    if ((p.boss || 0) >= 5) out.push('boss:' + p.boss);
+    const ch = p.ch || {};
+    const adv = (window.ADVENTURES || []).filter(a => { const v = (ch[a.ch] || {})[a.id]; return v && ((v.stars || []).some(x => x > 0) || (v.best || 0) > 0); }).length;
+    if (adv >= 2) out.push('adv:' + adv);
+    const full = Object.values(ch).filter(c => ((c || {}).quest || {}).stars >= 3).length; if (full >= 2) out.push('full:' + full);
+    return out.join(',').slice(0, 80);
+  }
   let lbTimer = null;
   const lbFlush = () => { if (!lbTimer) return; clearTimeout(lbTimer); lbTimer = null; LB.submitWeek().catch(() => {}); };
   function bankXP(n) {
     n = Math.max(0, Math.round(n || 0)); if (!n) return 0;
-    updateProf(p => { p.xp = (p.xp || 0) + n; });
+    updateProf(p => { const b = p.xp || 0; p.xp = b + n; noteGain(p, n, b); });
     clearTimeout(lbTimer); lbTimer = setTimeout(() => { lbTimer = null; LB.submitWeek().catch(() => {}); }, 4000);
     return n;
   }
@@ -234,7 +256,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   window.addEventListener('pagehide', lbFlush);
   function addXP(n, banked = 0) {
     banked = Math.max(0, Math.round(banked || 0)); n = Math.max(0, Math.round(n || 0));
-    let b = 0, a = 0; updateProf(p => { a = p.xp || 0; p.xp = a + Math.max(0, n - banked); a = p.xp; b = Math.max(0, a - n); });
+    let b = 0, a = 0; updateProf(p => { a = p.xp || 0; const g = Math.max(0, n - banked); p.xp = a + g; noteGain(p, g, a); a = p.xp; b = Math.max(0, a - n); });
     clearTimeout(lbTimer); lbTimer = null;
     sync.dirty(); LB.submitWeek().catch(() => {}).then(() => setTimeout(rankToast, 1200));
     return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
@@ -559,10 +581,104 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       try {
         const snap = await fs.getDoc(ref);
         if (!snap.exists() || snap.data().score < score) await fs.setDoc(ref, { name: p.name, score, at: fs.serverTimestamp() });
+        await this.extras(id, p, score).catch(e => console.warn('Stars extras:', e));
         return { saved: true, online: true };
       } catch (e) { console.warn(e); return { saved: true, online: false }; }
     },
     submit() { return this.submitWeek(); },   // older callers
+    /* 7 Nov 2026: the same total on the child's grade board (grades/{grade}/scores), this week's points on the week board
+       (weeks/{weekKey}/scores) and a public card (cards/{id}: grade, gender, streak, level, badges). These collections need
+       their own Firestore rules; until they are published the writes fail quietly and the page hides what has no data. */
+    async extras(id, p, score) {
+      const db = this._db, fs = this._fs; if (!db) return;
+      const up = async (ref, sc) => { if (!sc) return; const sn = await fs.getDoc(ref); if (!sn.exists() || sn.data().score < sc) await fs.setDoc(ref, { name: p.name, score: sc, at: fs.serverTimestamp() }); };
+      const g = p.grade || grade();
+      await up(fs.doc(db, 'grades', g, 'scores', id), score).catch(e => console.warn(e));
+      await up(fs.doc(db, 'weeks', weekKey(), 'scores', id), Math.min(this.CAP, weekXP())).catch(e => console.warn(e));
+      const card = { name: p.name, grade: g, g: p.g === 'f' ? 'f' : 'm', streak: dailyState().streak || 0, lvl: levelInfo(score).n, bdg: badges() };
+      const key = 'si.card.' + id, js = JSON.stringify(card);
+      let same = false; try { same = sessionStorage.getItem(key) === js; } catch (e) {}
+      if (!same) { await fs.setDoc(fs.doc(db, 'cards', id), Object.assign(card, { at: fs.serverTimestamp() })); try { sessionStorage.setItem(key, js); } catch (e) {} }
+    },
+    /* which board: 'all' (never reset), 'grade' (the player's grade, total points), 'week' (points this week) */
+    col(kind) {
+      const db = this._db, fs = this._fs, p = player() || {};
+      if (kind === 'grade') return fs.collection(db, 'grades', p.grade || grade(), 'scores');
+      if (kind === 'week') return fs.collection(db, 'weeks', weekKey(), 'scores');
+      return fs.collection(db, 'boards', this.board(), 'scores');
+    },
+    async topOf(kind = 'all', n = 10) {
+      if (kind === 'all') return this.top(n);
+      const db = await this.ready(); if (!db) return { online: false, rows: [] };
+      try {
+        const fs = this._fs, ss = await fs.getDocs(fs.query(this.col(kind), fs.orderBy('score', 'desc'), fs.limit(n)));
+        return { online: true, rows: ss.docs.map(d => Object.assign({ id: d.id }, d.data())) };
+      } catch (e) { console.warn(e); return { online: true, rows: [], failed: true }; }
+    },
+    /* my place on a board, and the child just above me (to say how many points to pass him) */
+    async meOf(kind = 'all') {
+      const p = player(); if (!p || !this.counts()) return null;
+      const db = await this.ready(); if (!db) return kind === 'all' ? this.me() : null;
+      try {
+        const fs = this._fs, col = this.col(kind), id = await this.myId();
+        const snap = await fs.getDoc(fs.doc(col, id)); if (!snap.exists()) return null;
+        const score = snap.data().score;
+        const c = await fs.getCountFromServer(fs.query(col, fs.where('score', '>', score)));
+        const ab = await fs.getDocs(fs.query(col, fs.where('score', '>', score), fs.orderBy('score', 'asc'), fs.limit(1)));
+        const above = ab.docs[0] ? Object.assign({ id: ab.docs[0].id }, ab.docs[0].data()) : null;
+        return { id, score, rank: c.data().count + 1, above, online: true };
+      } catch (e) { console.warn(e); return kind === 'all' ? this.me() : null; }
+    },
+    async cards(ids) {
+      const db = await this.ready(); if (!db) return {};
+      const fs = this._fs, out = {};
+      await Promise.all(ids.map(async id => { try { const s = await fs.getDoc(fs.doc(db, 'cards', id)); if (s.exists()) out[id] = s.data(); } catch (e) {} }));
+      return out;
+    },
+    /* photos: a child's photo is shown to everybody only after the owner approves it in admin.html (status 'ok') */
+    async photos(ids) {
+      const db = await this.ready(); if (!db) return {};
+      const fs = this._fs, out = {};
+      await Promise.all(ids.map(async id => { try { const s = await fs.getDoc(fs.doc(db, 'photos', id)); const v = s.exists() && s.data(); if (v && v.status === 'ok' && /^data:image\/(jpeg|webp|png);base64,/.test(v.data || '')) out[id] = v.data; } catch (e) {} }));
+      return out;
+    },
+    /* the child's own photo on this device (shown to him at once, before approval): localStorage si.photo.<player id> */
+    myPhoto() { const p = player(); if (!p) return null; try { return JSON.parse(localStorage.getItem('si.photo.' + p.id)); } catch (e) { return null; } },
+    async sendPhoto(data) {
+      const p = player(); if (!p) return { ok: false };
+      try { if (data) localStorage.setItem('si.photo.' + p.id, JSON.stringify({ data, st: 'pending' })); else localStorage.removeItem('si.photo.' + p.id); } catch (e) {}
+      const db = await this.ready(); if (!db) return { ok: false };
+      try { const fs = this._fs; await fs.setDoc(fs.doc(db, 'photos', await this.myId()), { name: p.name, data: data || '', status: 'pending', at: fs.serverTimestamp() }); return { ok: true }; }
+      catch (e) { console.warn(e); return { ok: false, denied: e && e.code === 'permission-denied' }; }
+    },
+    /* after approval (ok) or refusal (no) the child can read the status of his own photo */
+    async photoStatus() {
+      const mine = this.myPhoto(); if (!mine || !mine.data) return null;
+      const db = await this.ready(); if (!db) return mine.st;
+      try {
+        const fs = this._fs, s = await fs.getDoc(fs.doc(db, 'photos', await this.myId())), v = s.exists() && s.data();
+        if (v && (v.status === 'ok' || v.status === 'no')) { mine.st = v.status; localStorage.setItem('si.photo.' + player().id, JSON.stringify(mine)); }
+      } catch (e) {}   // pending documents are not readable: still waiting
+      return mine.st;
+    },
+    /* everybody's points this week together (the team goal) */
+    async weekTotal() {
+      const db = await this.ready(); if (!db) return null;
+      try { const fs = this._fs; const r = await fs.getAggregateFromServer(this.col('week'), { t: fs.sum('score') }); return r.data().t || 0; }
+      catch (e) { console.warn(e); return null; }
+    },
+    badgeList(str, g) {
+      const sub = id => { const s = (window.SUBJECTS || []).find(x => x.id === id); return s ? T(s.title, s.titleAr) : id; };
+      return String(str || '').split(',').filter(Boolean).map(b => {
+        const [k, v] = b.split(':'), n = +v || 0, f = g === 'f';
+        if (k === 'fire') return { k, t: T(`🔥 ${n} days in a row`, n === 2 ? '🔥 يومين ورا بعض' : n <= 10 ? `🔥 ${n} أيام ورا بعض` : `🔥 ${n} يوم ورا بعض`) };
+        if (k === 'sub') return { k, t: T(`🏆 ${sub(v)} champion`, `🏆 ${f ? 'بطلة' : 'بطل'} ${sub(v)}`) };
+        if (k === 'boss') return { k, t: T('👑 Boss hunter', f ? '👑 صيّادة التحديات' : '👑 صيّاد التحديات') };
+        if (k === 'adv') return { k, t: T(`🗺️ Adventurer ×${n}`, `🗺️ ${f ? 'مغامِرة' : 'مغامِر'} ×${n}`) };
+        if (k === 'full') return { k, t: T(`⭐ 3 stars ×${n}`, `⭐ ٣ نجوم ×${n}`) };
+        return null;
+      }).filter(Boolean);
+    },
     async top(n = 10) {
       const db = await this.ready();
       if (db) {
@@ -1310,7 +1426,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, bankXP, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
-    weekKey, weekEndsIn, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
+    weekKey, weekEndsIn, weekXP, countBoss, badges, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT, navMenu };
   applyLang();
   sync.auto();

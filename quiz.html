@@ -396,9 +396,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261107e{{{"></script>
-<script src="chapters.js?v=20261107e{{{"></script>
-<script src="common.js?v=20261107e{{{"></script>
+<script src="firebase-config.js?v=20261107f{{{"></script>
+<script src="chapters.js?v=20261107f{{{"></script>
+<script src="common.js?v=20261107f{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -1205,7 +1205,7 @@ async function playList(list, label, resume) {
     window.__cur = q;
     const r = await ask(q);
     hideTimer();
-    if (label !== 'retry') { recordCard(q.id, r.firstTry); trackAnswer(q, r, label); }
+    if (label !== 'retry') { recordCard(q.id, r.firstTry); trackAnswer(q, r, label); if (q.mode === 'boss' && r.correct && SI.countBoss) SI.countBoss(); }
     results[i] = r.firstTry;
     const ex = $('#explain');
     if (r.correct) {
