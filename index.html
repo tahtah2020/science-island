@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107t{{{">
+<link rel="stylesheet" href="common.css?v=20261107u{{{">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -155,11 +155,11 @@ details.about>*:not(summary){margin-inline:18px}
 .grades .choice[data-grade^="p"] .ic{background:#fde8d2}
 
 
-.tAq{background:linear-gradient(160deg,#5fd0ec,#2a9fd0 55%,#16679b);border-color:#bfeaf7}
-.tAq::before{content:"";position:absolute;inset:auto 0 0 0;height:16px;background:#f3d9a4;border-radius:50% 50% 0 0/60% 60% 0 0;opacity:.9}
+.tAq{background:#1d7fd0 url(assets/aquarium/bg.jpg) center 40%/cover;border-color:#bfeaf7}
+.tAq::before{display:none;content:"";position:absolute;inset:auto 0 0 0;height:16px;background:#f3d9a4;border-radius:50% 50% 0 0/60% 60% 0 0;opacity:.9}
 .tAq .tFish{position:absolute;top:14px;left:12px;width:64px;animation:tSwim 4s ease-in-out infinite}
 @keyframes tSwim{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(14px) translateY(-5px)}}
-.tAq b,.tAq small{text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.tAq b,.tAq small{text-shadow:0 1px 4px rgba(0,30,70,.6)}
 .tiles .tile.full{grid-column:1/-1;min-height:86px}
 @media (prefers-reduced-motion:reduce){.tAq .tFish{animation:none}}
 
@@ -185,8 +185,8 @@ details.about>*:not(summary){margin-inline:18px}
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107t{{{">
-      <img src="assets/banner.jpg?v=20261107t{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261107u{{{">
+      <img src="assets/banner.jpg?v=20261107u{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
@@ -205,7 +205,7 @@ details.about>*:not(summary){margin-inline:18px}
   <nav class="tiles" id="tiles" dir="rtl" aria-label="أقسام متفوّق">
     <a class="tile tAdv" href="adventures.html"><img src="math/assets/reesho_miner.webp" alt="" aria-hidden="true"><b>مغامرات ريشو</b><small>ألعاب حقيقية لكل صف</small></a>
     <a class="tile tStars" href="champions.html" id="starsBtn" hidden><span class="topAv" id="topAv" aria-hidden="true"><svg class="tc" viewBox="-62 -76 124 88"><path d="M-52 6 L-58 -52 L-27 -26 L0 -66 L27 -26 L58 -52 L52 6Z" fill="#f2b134" stroke="#c98c10" stroke-width="6" stroke-linejoin="round"/><circle cx="0" cy="-68" r="9" fill="#e2603f"/></svg><span class="face">⭐</span></span><b>نجوم متفوّق</b><small id="starsSub">اطلع على منصة التتويج</small></a>
-    <a class="tile tAq" href="aquarium.html" id="aqTile"><svg class="tFish" viewBox="-8 -34 116 68" aria-hidden="true"><path d="M18 0 L-6 -22 Q0 0 -6 22Z" fill="#d9541f"/><ellipse cx="52" cy="0" rx="42" ry="24" fill="#ff7a59" stroke="#d9541f" stroke-width="3"/><path d="M40 -22 Q34 0 40 22" fill="none" stroke="#ffb59e" stroke-width="5"/><circle cx="78" cy="-5" r="8" fill="#fff"/><circle cx="80" cy="-5" r="4.5" fill="#1f3d57"/></svg><b>حوض متفوّق</b><small>سمكتك بتكبر مع نقاطك</small></a>
+    <a class="tile tAq" href="aquarium.html" id="aqTile"><img class="tFish" src="assets/aquarium/fish_clown.webp" alt="" aria-hidden="true"><b>حوض متفوّق</b><small>سمكتك بتكبر مع نقاطك</small></a>
   </nav>
 
   <!-- step 0: who is playing (only when this device already has players) -->
@@ -327,9 +327,9 @@ details.about>*:not(summary){margin-inline:18px}
   </details>
   <p class="foot"><a href="contact.html">✉️ تواصل معنا</a></p>
 </main>
-<script src="firebase-config.js?v=20261107t{{{"></script>
-<script src="common.js?v=20261107t{{{"></script>
-<script src="chapters.js?v=20261107t{{{"></script>
+<script src="firebase-config.js?v=20261107u{{{"></script>
+<script src="common.js?v=20261107u{{{"></script>
+<script src="chapters.js?v=20261107u{{{"></script>
 <script>
 (() => {
   'use strict';
