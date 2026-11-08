@@ -247,8 +247,14 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
   let lbTimer = null;
   const lbFlush = () => { if (!lbTimer) return; clearTimeout(lbTimer); lbTimer = null; LB.submitWeek().catch(() => {}); };
+  /* the same activity (page + mode + chapter) finished again on the same day gives fewer points (owner, 8 Nov 2026), so the
+     total grows by learning, not by replaying one easy quiz: 1st and 2nd time full points, 3rd half, 4th and after a quarter.
+     The count goes up in addXP (end of the activity); bankXP during play uses the same rate, so addXP's «total − banked» matches. */
+  const actKey = () => { let c = ''; try { c = chapterId() || ''; } catch (e) {} return location.pathname.split('/').pop() + (location.hash.split(/[=&.]/)[0] || '') + ':' + c; };
+  const playsToday = p => { const r = p.rp || {}; return r.d === today() ? (r.k || {})[actKey()] || 0 : 0; };
+  const repeatRate = (p = prof()) => { const n = playsToday(p); return n < 2 ? 1 : n === 2 ? .5 : .25; };
   function bankXP(n) {
-    n = Math.max(0, Math.round(n || 0)); if (!n) return 0;
+    n = Math.max(0, Math.round((n || 0) * repeatRate())); if (!n) return 0;
     updateProf(p => { const b = p.xp || 0; p.xp = b + n; noteGain(p, n, b); });
     clearTimeout(lbTimer); lbTimer = setTimeout(() => { lbTimer = null; LB.submitWeek().catch(() => {}); }, 4000);
     return n;
@@ -256,13 +262,25 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') lbFlush(); });
   window.addEventListener('pagehide', lbFlush);
   function addXP(n, banked = 0) {
-    banked = Math.max(0, Math.round(banked || 0)); n = Math.max(0, Math.round(n || 0));
-    let b = 0, a = 0; updateProf(p => { a = p.xp || 0; const g = Math.max(0, n - banked); p.xp = a + g; noteGain(p, g, a); a = p.xp; b = Math.max(0, a - n); });
+    banked = Math.max(0, Math.round(banked || 0));
+    const rate = repeatRate(); n = Math.max(0, Math.round((n || 0) * rate));
+    let b = 0, a = 0; updateProf(p => {
+      const r = p.rp && p.rp.d === today() ? p.rp : (p.rp = { d: today(), k: {} }); r.k[actKey()] = (r.k[actKey()] || 0) + 1; a = p.xp || 0; const g = Math.max(0, n - banked); p.xp = a + g; noteGain(p, g, a); a = p.xp; b = Math.max(0, a - n); });
     clearTimeout(lbTimer); lbTimer = null;
     sync.dirty(); LB.submitWeek().catch(() => {}).then(() => setTimeout(rankToast, 1200));
-    return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP) }; }
+    if (rate < 1) setTimeout(() => repeatToast(rate), 300);
+    return { before: levelInfo(b), after: levelInfo(a), gained: a - b, gems: Math.floor(a / GEM_XP) - Math.floor(b / GEM_XP), rate }; }
 
 
+  /* the activity was played many times today: say why the points are fewer, and point to something new */
+  function repeatToast(rate) {
+    if (document.getElementById('si-rep')) return;
+    const t = document.createElement('div'); t.id = 'si-rep';
+    t.style.cssText = 'position:fixed;z-index:401;left:50%;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px));max-width:min(92vw,460px);background:#fff8e6;color:#1f3d57;border:3px solid #f2b134;border-radius:18px;padding:10px 16px;font:800 14px/1.5 Cairo,Nunito,sans-serif;text-align:center;box-shadow:0 6px 18px rgba(31,61,87,.25);direction:' + (isAr() ? 'rtl' : 'ltr');
+    t.textContent = T(`You played this one many times today, so it gave ${rate === .5 ? 'half' : 'a quarter of'} the points. Try a new lesson or an adventure for full points! 🚀`,
+      G(`لعبت النشاط ده كتير النهارده، فأخدت ${rate === .5 ? 'نص' : 'ربع'} النقاط بس. جرّب درس جديد أو مغامرة وخد النقاط كاملة! 🚀`, `لعبتي النشاط ده كتير النهارده، فأخدتي ${rate === .5 ? 'نص' : 'ربع'} النقاط بس. جرّبي درس جديد أو مغامرة وخدي النقاط كاملة! 🚀`));
+    document.body.appendChild(t); setTimeout(() => t.remove(), 7000);
+  }
   /* after any game that gives points: a small note with the child's place in «نجوم متفوّق», unless the page shows it itself (quiz, kit games) */
   async function rankToast() {
     try {
@@ -596,6 +614,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       const g = p.grade || grade();
       await up(fs.doc(db, 'grades', g, 'scores', id), score).catch(e => console.warn(e));
       await up(fs.doc(db, 'weeks', weekKey(), 'scores', id), Math.min(this.CAP, weekXP())).catch(e => console.warn(e));
+      await up(fs.doc(db, 'wgrades', weekKey() + '_' + g, 'scores', id), Math.min(this.CAP, weekXP())).catch(e => console.warn(e));   // 8 Nov 2026: this week, my grade only
       const card = { name: p.name, grade: g, g: p.g === 'f' ? 'f' : 'm', streak: dailyState().streak || 0, lvl: levelInfo(score).n, bdg: badges() };
       const key = 'si.card.' + id, js = JSON.stringify(card);
       let same = false; try { same = sessionStorage.getItem(key) === js; } catch (e) {}
@@ -606,10 +625,26 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       const db = this._db, fs = this._fs, p = player() || {};
       if (kind === 'grade') return fs.collection(db, 'grades', p.grade || grade(), 'scores');
       if (kind === 'week') return fs.collection(db, 'weeks', weekKey(), 'scores');
+      if (kind === 'wgrade') return fs.collection(db, 'wgrades', weekKey() + '_' + (p.grade || grade()), 'scores');
       return fs.collection(db, 'boards', this.board(), 'scores');
+    },
+    /* «نجوم الأسبوع · صفّي» (owner, 8 Nov 2026): this week's points, my grade only. Until the wgrades rules are published (or
+       while that board is still empty), it is built from the week board filtered by each child's public card grade. */
+    async wgradeRows() {
+      const db = await this.ready(); if (!db) return null;
+      try {
+        const fs = this._fs, ss = await fs.getDocs(fs.query(this.col('wgrade'), fs.orderBy('score', 'desc'), fs.limit(60)));
+        if (ss.size) return { rows: ss.docs.map(d => Object.assign({ id: d.id }, d.data())) };
+      } catch (e) { console.warn(e); }
+      try {
+        const fs = this._fs, ss = await fs.getDocs(fs.query(this.col('week'), fs.orderBy('score', 'desc'), fs.limit(80)));
+        const rows = ss.docs.map(d => Object.assign({ id: d.id }, d.data())), cards = await this.cards(rows.map(r => r.id)), g = (player() || {}).grade || grade();
+        return { rows: rows.filter(r => (cards[r.id] || {}).grade === g), fallback: true };
+      } catch (e) { console.warn(e); return null; }
     },
     async topOf(kind = 'all', n = 10) {
       if (kind === 'all') return this.top(n);
+      if (kind === 'wgrade') { const r = await this.wgradeRows(); return r ? { online: true, rows: r.rows.slice(0, n), fallback: r.fallback } : { online: false, rows: [] }; }
       const db = await this.ready(); if (!db) return { online: false, rows: [] };
       try {
         const fs = this._fs, ss = await fs.getDocs(fs.query(this.col(kind), fs.orderBy('score', 'desc'), fs.limit(n)));
@@ -620,6 +655,11 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     async meOf(kind = 'all') {
       const p = player(); if (!p || !this.counts()) return null;
       const db = await this.ready(); if (!db) return kind === 'all' ? this.me() : null;
+      if (kind === 'wgrade') {   // from the list (60 at most): rank, the two above and the two below me
+        const r = await this.wgradeRows(), id = await this.myId(); if (!r) return null;
+        const i = r.rows.findIndex(x => x.id === id); if (i < 0) return null;
+        return { id, score: r.rows[i].score, rank: i + 1, above: r.rows[i - 1] || null, near: r.rows.slice(Math.max(0, i - 2), i + 3), online: true };
+      }
       try {
         const fs = this._fs, col = this.col(kind), id = await this.myId();
         const snap = await fs.getDoc(fs.doc(col, id)); if (!snap.exists()) return null;
@@ -627,7 +667,15 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
         const c = await fs.getCountFromServer(fs.query(col, fs.where('score', '>', score)));
         const ab = await fs.getDocs(fs.query(col, fs.where('score', '>', score), fs.orderBy('score', 'asc'), fs.limit(1)));
         const above = ab.docs[0] ? Object.assign({ id: ab.docs[0].id }, ab.docs[0].data()) : null;
-        return { id, score, rank: c.data().count + 1, above, online: true };
+        /* «منافسينك القريبين»: the two just above and the two just below me (8 Nov 2026) */
+        let near = null;
+        try {
+          const up2 = await fs.getDocs(fs.query(col, fs.where('score', '>', score), fs.orderBy('score', 'asc'), fs.limit(2)));
+          const dn2 = await fs.getDocs(fs.query(col, fs.where('score', '<', score), fs.orderBy('score', 'desc'), fs.limit(2)));
+          const row = d => Object.assign({ id: d.id }, d.data());
+          near = [...up2.docs.map(row).reverse(), Object.assign({ id }, snap.data()), ...dn2.docs.map(row)];
+        } catch (e) { console.warn(e); }
+        return { id, score, rank: c.data().count + 1, above, near, online: true };
       } catch (e) { console.warn(e); return kind === 'all' ? this.me() : null; }
     },
     /* students who earned points since `ms` (the board's `at` changes only when the score goes up), most points first */
@@ -638,6 +686,13 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
         const ss = await fs.getDocs(q);
         return { online: true, rows: ss.docs.map(d => Object.assign({ id: d.id }, d.data())).sort((a, b) => b.score - a.score) };
       } catch (e) { console.warn(e); return Object.assign(await this.top(n), { fallback: true }); }
+    },
+    async lastWeek() {
+      const db = await this.ready(); if (!db) return null;
+      try {
+        const fs = this._fs, k = weekKey(new Date(Date.now() - 7 * 864e5)), s = await fs.getDoc(fs.doc(db, 'weeks', k, 'scores', await this.myId()));
+        return s.exists() ? s.data().score || 0 : 0;
+      } catch (e) { console.warn(e); return null; }
     },
     async cards(ids) {
       const db = await this.ready(); if (!db) return {};
@@ -1445,7 +1500,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
-    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, bankXP, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
+    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, bankXP, repeatRate, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, weekXP, countBoss, badges, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
     gender, G, setGender, visit, greet, bye, VOICE_TEXT, navMenu };
   applyLang();

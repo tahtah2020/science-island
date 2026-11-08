@@ -3,6 +3,14 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-08', title: 'نجوم متفوّق: سباق كل أسبوع',
+    items: [
+      { text: 'القائمة الأولى بقت نقاط الأسبوع لطلاب نفس الصف، وتبدأ من جديد كل سبت' },
+      { text: 'لوحة الشرف بتحفظ كل النقاط من أول يوم' },
+      { text: 'منافسينك القريبين: اللي فوقك واللي تحتك بكام نقطة' },
+      { text: 'مقارنة بالأسبوع اللي فات' },
+      { text: 'تكرار نفس النشاط أكتر من مرتين في اليوم بيدي نقاط أقل', links: [{ label: 'نجوم متفوّق', href: 'champions.html' }] }
+    ] },
   { date: '2026-11-08', title: 'حوض متفوّق: حوض دائري واسع',
     items: [
       { text: 'اسحب الحوض يمين وشمال ويلف معاك بلا نهاية' },

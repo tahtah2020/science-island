@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261108a{{{">
+<link rel="stylesheet" href="common.css?v=20261108b{{{">
 <style>
 /* «نجوم متفوّق» (7 Nov 2026): evening sky, golden pyramid, three boards, badges, level rings, team goal, «مكانك» bar, photos after approval */
 body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-height:100svh}
@@ -29,6 +29,17 @@ body{background:linear-gradient(180deg,#132b45 0%,#1f4a6e 45%,#2f6f95 100%);min-
 .tabs button{flex:1;border:0;background:transparent;color:#e3f2fb;font:inherit;font-weight:900;font-size:15px;padding:10px 6px;border-radius:999px;cursor:pointer;min-height:44px}
 .tabs button[aria-selected="true"]{background:#f2b134;color:#1f3d57;box-shadow:0 3px 0 #c98c10}
 .tabs button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.tabInfo{margin:-2px 0 22px;position:relative;z-index:2;text-align:center;font:800 13.5px "Cairo","Nunito",sans-serif;color:#e3f2fb}
+.near{padding:14px 16px}
+.near h3{margin:0 0 8px;font:900 17px "Cairo","Nunito",sans-serif;color:var(--navy)}
+.near ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.near li{display:grid;grid-template-columns:44px 40px 1fr auto;align-items:center;gap:8px;background:rgba(35,121,159,.07);border-radius:14px;padding:6px 10px}
+.near li.me{background:#ffe9a0;box-shadow:inset 0 0 0 2px #f2b134}
+.near .r{font:900 17px "Nunito",sans-serif;color:var(--navy);text-align:center}
+.near .av{width:40px;height:40px;font-size:18px}
+.near .nm{font:900 15px "Cairo","Nunito",sans-serif;color:var(--navy);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.near .nt{font:800 12.5px "Cairo",sans-serif;color:var(--ink)}
+.near .sc{font:900 16px "Nunito",sans-serif;color:var(--primary-d)}
 
 /* avatar + level ring */
 .av{--s:48px;width:var(--s);height:var(--s);border-radius:50%;flex:none;display:grid;place-items:center;font-weight:900;color:#fff;font-size:calc(var(--s)*.42);position:relative;background:var(--c,#7fb7d6);border:3px solid #fff;box-shadow:0 0 0 3px var(--ring,transparent)}
@@ -171,13 +182,15 @@ button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset
       <div><h2 data-ar="اطلع على المنصة!">Climb the podium!</h2><p id="lead"></p></div>
     </div>
     <div class="tabs" role="tablist" id="tabs">
-      <button role="tab" data-k="all" aria-selected="true" data-ar="كل الطلاب">All students</button>
-      <button role="tab" data-k="grade" aria-selected="false" id="tabGrade">My grade</button>
-      <button role="tab" data-k="week" aria-selected="false" data-ar="🚀 الأكثر تقدّمًا">🚀 This week</button>
+      <button role="tab" data-k="wgrade" aria-selected="true" data-ar="⭐ أسبوع صفّي">⭐ My grade</button>
+      <button role="tab" data-k="week" aria-selected="false" data-ar="🌍 أسبوع الكل">🌍 Everyone</button>
+      <button role="tab" data-k="all" aria-selected="false" data-ar="🏆 لوحة الشرف">🏆 Hall of fame</button>
     </div>
+    <p class="tabInfo" id="tabInfo"></p>
     <p class="empty" id="tabNote" hidden></p>
     <div class="podium" id="podium" aria-live="polite"></div>
     <ol class="list" id="list" hidden></ol>
+    <div class="card near" id="near" hidden><h3 data-ar="⚔️ منافسينك القريبين">⚔️ Your closest rivals</h3><ol id="nearList"></ol></div>
     <div class="card team" id="team" hidden>
       <div class="gift" aria-hidden="true">🎉</div>
       <div style="flex:1;min-width:0">
@@ -224,10 +237,10 @@ button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset
   <div class="cel"><img src="assets/stars/reesho_crown.webp" alt=""><h3 id="celH"></h3><p id="celP"></p><button class="btn primary big" type="button" id="celOk" data-ar="يلّا نكمّل!">Let’s go!</button></div>
 </div>
 
-<script src="firebase-config.js?v=20261108a{{{"></script>
-<script src="chapters.js?v=20261108a{{{"></script>
-<script src="wardrobe_items.js?v=20261108a{{{"></script>
-<script src="common.js?v=20261108a{{{"></script>
+<script src="firebase-config.js?v=20261108b{{{"></script>
+<script src="chapters.js?v=20261108b{{{"></script>
+<script src="wardrobe_items.js?v=20261108b{{{"></script>
+<script src="common.js?v=20261108b{{{"></script>
 <script>
 (async () => {
   'use strict';
@@ -241,7 +254,12 @@ button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset
   const sky = $('#sky'); for (let i = 0; i < 70; i++) { const s = document.createElement('i'); if (i % 9 === 0) s.className = 'b'; s.style.cssText = `left:${Math.random() * 100}%;top:${Math.random() * 70}%;animation-delay:${(Math.random() * 3).toFixed(2)}s`; sky.appendChild(s); }
 
   $('#lead').textContent = T('Every point counts: quests, games, adventures, Daily 5 and Review.', 'كل نقطة بتتحسب: التحديات والألعاب والمغامرات والأسئلة اليومية والمراجعة.');
-  $('#tabGrade').textContent = T('⭐ My grade', '⭐ نجوم صفّي');
+  const INFO = {
+    wgrade: T(`This week’s points, ${SI.gradeName()} only. A new race starts every Saturday: your points are always kept in the Hall of fame.`,
+      `نقاط الأسبوع ده لطلاب ${SI.gradeName()} بس. السباق بيبدأ من جديد كل سبت، ونقاطك كلها محفوظة في لوحة الشرف.`),
+    week: T('This week’s points, all grades. A new race every Saturday.', 'نقاط الأسبوع ده لكل الصفوف. سباق جديد كل سبت.'),
+    all: T('All the points since the start. They are never deleted.', 'كل النقاط من أول يوم. ما بتتمسحش أبدًا.')
+  };
   const youTxt = T('YOU', SI.G('أنت', 'أنتِ'));
 
   /* avatars: approved photo for everybody, my own photo for me on this device, else my initial on a colour */
@@ -259,16 +277,15 @@ button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset
   }
   const badgesOf = (r, kind, i) => {
     const c = cards[r.id] || {}, list = LB.badgeList(c.bdg, c.g);
-    if (kind === 'week' && i < 3) list.unshift({ t: T('🚀 Most improved', c.g === 'f' ? '🚀 الأكثر تقدّمًا' : '🚀 الأكثر تقدّمًا') });
     return list.length ? `<div class="bdg">${list.slice(0, 3).map(b => `<span>${esc(b.t)}</span>`).join('')}</div>` : '';
   };
   const CROWN = `<svg class="crown" viewBox="-62 -76 124 88" aria-hidden="true"><path d="M-52 6 L-58 -52 L-27 -26 L0 -66 L27 -26 L58 -52 L52 6Z" fill="#f2b134" stroke="#c98c10" stroke-width="4" stroke-linejoin="round"/><rect x="-52" y="-6" width="104" height="14" rx="5" fill="#e09a14" stroke="#c98c10" stroke-width="3"/><circle cx="-58" cy="-54" r="7" fill="#e2603f"/><circle cx="0" cy="-68" r="8" fill="#23799f"/><circle cx="58" cy="-54" r="7" fill="#2e9e6b"/></svg>`;
 
-  let kind = 'all', loadId = 0;
+  let kind = 'wgrade', loadId = 0;
   async function load(k) {
     kind = k; const id = ++loadId;
     document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.k === k)));
-    $('#podium').style.opacity = '.45'; $('#tabNote').hidden = true;
+    $('#podium').style.opacity = '.45'; $('#tabNote').hidden = true; $('#tabInfo').textContent = INFO[k] || '';
     const res = k === 'all' ? await LB.show(10) : await LB.topOf(k, 10);
     if (id !== loadId) return;
     const rows = res.rows || [], ids = rows.map(r => r.id);
@@ -286,7 +303,7 @@ button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset
     if (!rows.length) {
       pod.innerHTML = ''; list.hidden = true;
       const n = $('#tabNote'); n.hidden = false;
-      n.textContent = k === 'week' ? T('Nobody has points this week yet. Play now and be the first!', SI.G('لسه محدش جمع نقاط الأسبوع ده. العب دلوقتي وكن الأول!', 'لسه محدش جمع نقاط الأسبوع ده. العبي دلوقتي وكوني الأولى!'))
+      n.textContent = k === 'week' || k === 'wgrade' ? T('Nobody has points this week yet. Play now and be the first!', SI.G('لسه محدش جمع نقاط الأسبوع ده. العب دلوقتي وكن الأول!', 'لسه محدش جمع نقاط الأسبوع ده. العبي دلوقتي وكوني الأولى!'))
         : k === 'grade' ? T('Your grade’s list is starting. Play to be on it!', SI.G('قائمة صفّك بتبدأ. العب علشان تكون فيها!', 'قائمة صفّك بتبدأ. العبي علشان تكوني فيها!'))
         : T('Loading the stars…', 'بنحمّل النجوم…');
       return;
@@ -331,6 +348,7 @@ button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset
     $('#meAv').innerHTML = avatar(myRow);
     bar.hidden = false;
     if (!m) {
+      $('#near').hidden = true;
       $('#meT1').textContent = me.name;
       $('#meT2').textContent = k === 'week' ? T('Earn points this week to join the list!', SI.G('اجمع نقاط الأسبوع ده وادخل القائمة!', 'اجمعي نقاط الأسبوع ده وادخلي القائمة!')) : T('Play to get on the list!', SI.G('العب علشان تدخل القائمة!', 'العبي علشان تدخلي القائمة!'));
       $('#meRk').innerHTML = '📷';
@@ -341,6 +359,26 @@ button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset
       : m.above ? T(`${m.above.score - m.score + 1} more points to pass <b>${esc(m.above.name)}</b>!`, `باقي لك ${m.above.score - m.score + 1} نقطة وتسبق <b>${esc(m.above.name)}</b>!`) : '';
     $('#meRk').innerHTML = `#${m.rank}<small>${T('rank', 'ترتيبك')}</small>`;
     if (k === 'all') celebrate(m.rank);
+    if (k !== 'all') {   // this week against last week: you race yourself too
+      const lw = await LB.lastWeek();
+      if (lw !== null && kind === k) $('#meT2').innerHTML += `<br>${m.score > lw ? T(`🚀 Better than last week (${lw})!`, `🚀 أحسن من الأسبوع اللي فات (${lw})!`)
+        : T(`Last week: ${lw}. ${lw - m.score + 1} more to beat it!`, `الأسبوع اللي فات: ${lw}. باقي ${lw - m.score + 1} وتكسر رقمك!`)}`;
+    }
+    nearCard(m, rows, k);
+  }
+
+  /* «منافسينك القريبين»: when I am not in the top list, the two just above me, me, the two just below (how many points apart) */
+  async function nearCard(m, rows, k) {
+    const box = $('#near'), list = m && m.near;
+    if (!list || list.length < 2 || rows.some(r => r.id === myId) || kind !== k) { box.hidden = true; return; }
+    const at = list.findIndex(r => r.id === myId);
+    Object.assign(cards, await LB.cards(list.map(r => r.id).filter(id => !cards[id])));
+    $('#nearList').innerHTML = list.map((r, j) => {
+      const rank = m.rank + j - at, d = r.score - m.score;
+      const note = r.id === myId ? T('you', SI.G('إنت', 'إنتي')) : d > 0 ? T(`${d + 1} to pass`, `باقي ${d + 1} وتسبقه`) : T(`${-d} behind you`, `وراك بـ ${-d}`);
+      return `<li class="${r.id === myId ? 'me' : ''}"><span class="r">#${rank}</span>${avatar(r)}<div style="min-width:0"><div class="nm">${esc(r.name)}</div><div class="nt">${note}</div></div><span class="sc">${r.score}</span></li>`;
+    }).join('');
+    box.hidden = false;
   }
 
   /* climbed since the last visit → confetti + Reesho */
@@ -453,7 +491,7 @@ button.pd:focus-visible,.row:focus-visible{outline:3px solid #fff;outline-offset
 
   document.querySelectorAll('#tabs button').forEach(b => { b.onclick = () => load(b.dataset.k); });
   LB.photoStatus().catch(() => {});
-  load('all');
+  load('wgrade');
 })();
 </script>
 </body>

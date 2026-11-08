@@ -87,6 +87,25 @@ service cloud.firestore {
         && request.resource.data.score > resource.data.score;
       allow delete: if false;
     }
+    match /wgrades/{wk}/scores/{player} {
+      allow read: if true;
+      allow create: if wk.matches('^20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]_(g[1-6]|p[1-3])$')
+        && request.resource.data.keys().hasOnly(['name', 'score', 'at'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 14
+        && request.resource.data.score is int
+        && request.resource.data.score >= 0 && request.resource.data.score <= 100000
+        && request.resource.data.at == request.time;
+      allow update: if wk.matches('^20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]_(g[1-6]|p[1-3])$')
+        && request.resource.data.keys().hasOnly(['name', 'score', 'at'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 14
+        && request.resource.data.score is int
+        && request.resource.data.score >= 0 && request.resource.data.score <= 100000
+        && request.resource.data.at == request.time
+        && request.resource.data.score > resource.data.score;
+      allow delete: if false;
+    }
     match /cards/{player} {
       allow read: if true;
       allow delete: if false;
