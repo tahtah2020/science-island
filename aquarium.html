@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261107x{{{">
+<link rel="stylesheet" href="common.css?v=20261108a{{{">
 <style>
 /* «حوض متفوّق» (owner, 7 Nov 2026): the aquarium on its own page, opened from a tile on the home page */
 body{background:linear-gradient(180deg,#bfeaf7,#7fcde9 60%,#4fb3dc)}
@@ -17,6 +17,10 @@ body{background:linear-gradient(180deg,#bfeaf7,#7fcde9 60%,#4fb3dc)}
 .aqMsg{margin:0;text-align:center;font:800 16px "Cairo","Nunito",sans-serif;color:var(--navy);background:var(--card);border-radius:16px;padding:9px 14px;box-shadow:0 3px 10px rgba(31,61,87,.12)}
 .aqMsg b{color:var(--primary)}
 .how{font:700 14px "Cairo",sans-serif;color:var(--ink);text-align:center;margin:0}
+.aqBar{display:flex;gap:10px;align-items:center}
+.aqBar #aqMap{flex:1;min-width:0}
+.aqBar .btn{white-space:nowrap;flex:none}
+@media (max-width:560px){.aqBar{flex-direction:column-reverse;align-items:stretch}.aqBar #aqMap{flex:none}}
 </style>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -33,15 +37,16 @@ body{background:linear-gradient(180deg,#bfeaf7,#7fcde9 60%,#4fb3dc)}
   </header>
   <div class="wrap">
     <div id="tank"></div>
+    <div class="aqBar"><button class="btn primary" type="button" id="aqMine">🔍 أين سمكتي؟</button><div id="aqMap"></div></div>
     <p class="aqMsg" id="aqMsg"></p>
-    <p class="how">اضغط على سمكة لتعرف صاحبها ونقاطه، واضغط في الماء علشان تأكّل السمك 🍤</p>
+    <p class="how">اسحب الحوض يمين وشمال علشان تلف فيه، كل صف له مكان. اضغط على سمكة لتعرف صاحبها، واضغط في الماء علشان تأكّل السمك 🍤</p>
     <div style="display:flex;justify-content:center"><a class="btn primary big" href="index.html">العب وكبّر سمكتك ◂</a></div>
   </div>
 </div>
-<script src="firebase-config.js?v=20261107x{{{"></script>
-<script src="chapters.js?v=20261107x{{{"></script>
-<script src="common.js?v=20261107x{{{"></script>
-<script src="aquarium.js?v=20261107x{{{"></script>
-<script>SI_Aquarium(document.getElementById('tank'), { msg: document.getElementById('aqMsg') });</script>
+<script src="firebase-config.js?v=20261108a{{{"></script>
+<script src="chapters.js?v=20261108a{{{"></script>
+<script src="common.js?v=20261108a{{{"></script>
+<script src="aquarium.js?v=20261108a{{{"></script>
+<script>SI_Aquarium(document.getElementById('tank'), { msg: document.getElementById('aqMsg'), mine: document.getElementById('aqMine'), map: document.getElementById('aqMap') });</script>
 </body>
 </html>

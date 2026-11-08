@@ -11,7 +11,13 @@
      hungry, then smaller (−13 % a day from the 2nd day), and after 7 days without points it leaves the tank. Points are never
      lost: the fish comes back at full size the day the student plays again. Last day = the board's `at` (it changes only when
      the score goes up) or, for the player, `prof.lx` (common.js noteGain). Only students active in the last 7 days are read.
-   Usage: SI_Aquarium(document.getElementById('tank'), { msg: element for the message }) */
+   8 Nov 2026 (owner): a WIDE tank that wraps round (360°): drag/swipe left-right and the water moves with you, arrows and the
+   mouse wheel too; one zone per grade (grade 3 on the right … prep 2 on the left), each student's fish lives in its grade's
+   zone (grade from `cards/{id}`, else the player's own grade, else spread by name); fish keep apart (no pile-up);
+   «أين سمكتي؟» button + a small map under the tank (zones, dots, the window you see; tap it to jump). Background = bg.jpg
+   tiles, every other one mirrored, so the seams match and the world width is a whole number of tile pairs.
+   A student under HATCH points is an EGG on the sand (cracks as the points grow) that hatches into a fish at HATCH.
+   Usage: SI_Aquarium(document.getElementById('tank'), { msg, mine: «أين سمكتي؟» button, map: element for the small map }) */
 (function () {
   'use strict';
   const A = 'assets/aquarium/';
@@ -44,22 +50,44 @@
   }
   const CROWN = '<svg class="crown" viewBox="-62 -76 124 88" aria-hidden="true"><path d="M-52 6 L-58 -52 L-27 -26 L0 -66 L27 -26 L58 -52 L52 6Z" fill="#f2b134" stroke="#c98c10" stroke-width="6" stroke-linejoin="round"/><circle cx="0" cy="-68" r="9" fill="#e2603f"/></svg>';
 
+  const HATCH = 100;        // points to hatch the egg into a fish (owner, 8 Nov 2026)
+  const ZONES = [['g3', 'Grade 3', 'الصف الثالث', 'G3', 'ثالث'], ['g4', 'Grade 4', 'الصف الرابع', 'G4', 'رابع'], ['g5', 'Grade 5', 'الصف الخامس', 'G5', 'خامس'],
+    ['g6', 'Grade 6', 'الصف السادس', 'G6', 'سادس'], ['p1', 'Prep 1', 'الأول الإعدادي', 'P1', '١ إعدادي'], ['p2', 'Prep 2', 'الثاني الإعدادي', 'P2', '٢ إعدادي']];   // [id, name, short name for the map]
+  const BG_RATIO = 1400 / 933;   // bg.jpg width / height
+
+  function drawnEgg(color, id, crack) {
+    const light = shade(color, 1.35), dark = shade(color, .8);
+    const cracks = crack >= 2 ? '<path d="M14 34 L22 40 L18 46 L28 52 L24 58 M46 30 L40 38 L46 44 L38 50" fill="none" stroke="#1f3d57" stroke-width="2.4" stroke-linejoin="round"/>'
+      : crack >= 1 ? '<path d="M16 36 L24 42 L20 48 L30 54" fill="none" stroke="#1f3d57" stroke-width="2.4" stroke-linejoin="round"/>' : '';
+    return `<svg viewBox="0 0 60 74" aria-hidden="true"><defs><radialGradient id="e${id}" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="${light}"/><stop offset="1" stop-color="${dark}"/></radialGradient></defs>
+      <ellipse cx="30" cy="70" rx="20" ry="4" fill="rgba(0,40,80,.25)"/>
+      <path d="M30 4 C48 4 56 30 56 44 C56 60 45 70 30 70 C15 70 4 60 4 44 C4 30 12 4 30 4Z" fill="url(#e${id})" stroke="#1f3d57" stroke-width="3"/>
+      <circle cx="21" cy="28" r="4" fill="${color}" opacity=".7"/><circle cx="38" cy="22" r="3" fill="${color}" opacity=".7"/><circle cx="40" cy="50" r="5" fill="${color}" opacity=".6"/>${cracks}</svg>`;
+  }
+
   const CSS = `
 .aq{position:relative;height:220px;border-radius:22px;overflow:hidden;border:4px solid #bfeaf7;box-shadow:0 10px 28px rgba(31,61,87,.28),inset 0 0 0 2px rgba(255,255,255,.35);
-  background:#1d7fd0 url(${A}bg.jpg) center bottom/cover no-repeat;touch-action:manipulation;cursor:pointer;user-select:none;-webkit-user-select:none}
+  background:#1d7fd0;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.aq.drag{cursor:grabbing}
+.aq .strip{position:absolute;left:0;top:0;bottom:0;display:flex;will-change:transform;pointer-events:none}
+.aq .strip i{flex:none;height:100%;background:url(${A}bg.jpg) center bottom/100% 100% no-repeat}
+.aq .strip i.m{transform:scaleX(-1)}
 .aq .bub{position:absolute;bottom:14%;width:9px;height:9px;border-radius:50%;border:2px solid rgba(255,255,255,.75);animation:aqBub linear infinite;pointer-events:none}
 @keyframes aqBub{from{transform:translateY(0);opacity:.9}to{transform:translateY(-110vh);opacity:0}}
-.aq .dec{position:absolute;bottom:2%;pointer-events:none;filter:drop-shadow(0 4px 4px rgba(0,40,80,.25))}
-.aq .octo{animation:aqBob 3s ease-in-out infinite}
+.aq .dec{position:absolute;left:0;bottom:2%;pointer-events:none;will-change:transform}
+.aq .dec img{display:block;width:100%;filter:drop-shadow(0 4px 4px rgba(0,40,80,.25))}
+.aq .octo img{animation:aqBob 3s ease-in-out infinite}
 @keyframes aqBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
-.aq .diver{animation:aqBob 4s ease-in-out infinite}
-.aq .say{position:absolute;bottom:calc(2% + var(--h));right:3%;max-width:46%;background:#fff;color:#1f3d57;border-radius:14px;padding:5px 10px;font:800 13px "Cairo","Nunito",sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.2);pointer-events:none;direction:rtl;transition:opacity .4s}
+.aq .diver img{animation:aqBob 4s ease-in-out infinite}
+.aq .sign{position:absolute;left:0;top:10px;pointer-events:none;will-change:transform;font:900 13px "Cairo","Nunito",sans-serif;color:#1f3d57;background:rgba(255,250,240,.88);border:2px solid #fff;border-radius:999px;padding:2px 12px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,40,80,.2);direction:rtl}
+.aq .sign.mine{background:#ffe9a0}
+.aq .say{position:absolute;bottom:100%;right:0;width:max-content;max-width:180px;margin-bottom:6px;background:#fff;color:#1f3d57;border-radius:14px;padding:5px 10px;font:800 13px "Cairo","Nunito",sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.2);direction:rtl;transition:opacity .4s}
 .aq .say::after{content:"";position:absolute;bottom:-7px;right:24px;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
 .aq .turtle{position:absolute;left:0;top:0;pointer-events:none;will-change:transform}
 .aq .turtle img{display:block;width:100%;transition:transform .4s}
-.aq .fish{position:absolute;left:0;top:0;cursor:pointer;will-change:transform;border:0;background:none;padding:0}
+.aq .fish{position:absolute;left:0;top:0;cursor:pointer;will-change:transform;border:0;background:none;padding:0;touch-action:pan-y}
 .aq .fish .body{display:block;position:relative;transition:transform .3s}
-.aq .fish .body img,.aq .fish .body>svg{display:block;width:100%;height:auto;overflow:visible}
+.aq .fish .body img,.aq .fish .body>svg{display:block;width:100%;height:auto;overflow:visible;pointer-events:none}
 .aq .fish .body.hue img{filter:hue-rotate(var(--hue))}
 .aq .fish .body.shine img{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 9px #8fe3ff)}
 .aq .fish .body.gold img{filter:sepia(.55) saturate(2.2) hue-rotate(-12deg) brightness(1.08) drop-shadow(0 0 7px #ffd95a)}
@@ -69,8 +97,12 @@
 .aq .fish.hungry .body{filter:saturate(.75)}
 .aq .fish.starving .body{filter:saturate(.45) brightness(.92);opacity:.85}
 .aq .fish.me .body{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 10px #ffe9a0)}
+.aq .fish.egg .body{animation:aqWob 2.6s ease-in-out infinite;transform-origin:50% 92%}
+@keyframes aqWob{0%,70%,100%{transform:rotate(0)}76%{transform:rotate(-7deg)}82%{transform:rotate(6deg)}88%{transform:rotate(-3deg)}}
 .aq .fish.chomp .body{animation:aqChomp .3s}
 @keyframes aqChomp{50%{scale:1.15}}
+.aq .fish.flash .body{animation:aqFlash .45s ease-in-out 4 alternate}
+@keyframes aqFlash{to{scale:1.3;filter:drop-shadow(0 0 12px #fff) drop-shadow(0 0 22px #ffd95a)}}
 .aq .tag{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);white-space:nowrap;font:900 12px "Cairo","Nunito",sans-serif;color:#1f3d57;background:#fff;border-radius:999px;padding:1px 8px;box-shadow:0 2px 6px rgba(0,0,0,.2);pointer-events:none}
 .aq .fish:not(.me) .tag{opacity:0;transition:opacity .2s}
 .aq .fish.show .tag{opacity:1;z-index:5}
@@ -78,39 +110,57 @@
 .aq .pel{position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffd08a,#c9752a);box-shadow:0 1px 2px rgba(0,0,0,.3);pointer-events:none}
 .aq .pop{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #fff;pointer-events:none;animation:aqPop .5s ease-out forwards}
 @keyframes aqPop{from{transform:scale(.4);opacity:1}to{transform:scale(1.8);opacity:0}}
-.aq .aqTitle{position:absolute;top:8px;right:12px;font:900 15px "Cairo",sans-serif;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.35);direction:rtl;pointer-events:none}
-@media (prefers-reduced-motion:reduce){.aq .bub,.aq .octo,.aq .diver,.aq .fish .tail{animation:none}}`;
+.aq .aqTitle{position:absolute;top:8px;right:12px;font:900 15px "Cairo",sans-serif;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.35);direction:rtl;pointer-events:none;z-index:6}
+.aq .arr{position:absolute;top:50%;margin-top:-22px;width:44px;height:44px;border-radius:50%;border:3px solid #fff;background:rgba(31,61,87,.45);color:#fff;font:900 24px/1 "Nunito",sans-serif;cursor:pointer;z-index:6;display:grid;place-items:center;padding:0 0 3px}
+.aq .arr:hover{background:rgba(31,61,87,.7)}
+.aq .arr.l{left:8px}.aq .arr.r{right:8px}
+.aq .drag-hint{position:absolute;left:50%;bottom:16%;transform:translateX(-50%);font:900 15px "Cairo",sans-serif;color:#fff;background:rgba(31,61,87,.55);border-radius:999px;padding:4px 14px;pointer-events:none;z-index:6;white-space:nowrap;animation:aqHint 1.6s ease-in-out infinite;transition:opacity .5s}
+@keyframes aqHint{0%,100%{translate:-14px 0}50%{translate:14px 0}}
+.aqmap{position:relative;height:40px;border-radius:14px;overflow:hidden;background:#1d6fa8;border:3px solid #fff;box-shadow:0 3px 10px rgba(31,61,87,.18);cursor:pointer;direction:ltr;touch-action:manipulation}
+.aqmap .z{position:absolute;top:0;bottom:0;display:flex;align-items:flex-end;justify-content:center;font:800 10.5px "Cairo",sans-serif;color:rgba(255,255,255,.85);padding-bottom:1px;border-left:1px dashed rgba(255,255,255,.35);white-space:nowrap;overflow:hidden}
+.aqmap .z.mine{background:rgba(255,233,160,.22);color:#ffe9a0}
+.aqmap .d{position:absolute;top:9px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#bfeaf7}
+.aqmap .d.me{width:10px;height:10px;margin:-2px 0 0 -5px;background:#ffd95a;border:2px solid #fff;z-index:2}
+.aqmap .d.e{background:#fff4d6;border-radius:50% 50% 45% 45%}
+.aqmap .win{position:absolute;top:2px;bottom:2px;border:2px solid #fff;border-radius:8px;background:rgba(255,255,255,.14);pointer-events:none}
+@media (prefers-reduced-motion:reduce){.aq .bub,.aq .octo img,.aq .diver img,.aq .fish .tail,.aq .fish.egg .body,.aq .drag-hint{animation:none}}`;
 
   window.SI_Aquarium = async function (el, opts = {}) {
     if (!el || !window.SI) return;
     if (!document.getElementById('aq-css')) { const st = document.createElement('style'); st.id = 'aq-css'; st.textContent = CSS; document.head.appendChild(st); }
     const T = SI.T, esc = SI.esc, me = SI.player(), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     el.classList.add('aq');
-    el.setAttribute('aria-label', T('Aquarium: every student is a fish that grows with points. Tap the water to feed the fish.', 'حوض السمك: كل طالب سمكة بتكبر مع نقاطه. اضغط في الماء علشان تأكّل السمك.'));
+    el.setAttribute('aria-label', T('Aquarium: every student is a fish that grows with points. Drag to swim around the tank, tap the water to feed the fish.', 'حوض السمك: كل طالب سمكة بتكبر مع نقاطه. اسحب علشان تلف في الحوض، واضغط في الماء علشان تأكّل السمك.'));
     const W = () => el.clientWidth, Hh = () => el.clientHeight;
     const sand = () => Hh() * .86;                                     // where the sand starts in bg.jpg (bottom 14 %)
-    const dw = (pct, min, max) => `width:clamp(${min}px,${pct}%,${max}px)`;
-    el.innerHTML = `<span class="aqTitle">${T('🐠 Motafawek aquarium', '🐠 حوض متفوّق')}</span>
-      <img class="dec" src="${A}castle.webp" alt="" style="left:1%;${dw(17, 62, 170)}">
-      <img class="dec octo" src="${A}octopus.webp" alt="" style="left:19%;bottom:4%;${dw(11, 44, 100)}">
-      <img class="dec" id="aqChest" src="${A}chest_closed.webp" alt="" style="left:41%;${dw(14, 54, 140)}">
-      <img class="dec" src="${A}ship.webp" alt="" style="left:58%;${dw(18, 66, 180)}">
-      <img class="dec diver" src="${A}reesho_diver.webp" alt="" style="right:1%;${dw(13, 56, 120)}">`;
+
+    /* ---- the world: WW px wide, wraps round; zone i (grade) = [zoneX(i) ± zoneW/2] ---- */
+    let WW = 1, zoneW = 1, tileW = 1, camX = 0;
+    const NZ = ZONES.length;
+    const mod = (a, n) => ((a % n) + n) % n;
+    const wdx = (a, b) => mod(a - b + WW / 2, WW) - WW / 2;           // shortest way from b to a, round the tank
+    const zoneX = i => (NZ - 1 - i + .5) * zoneW;                       // grade 3 on the right (Arabic reading order)
+    const screenX = x => { let s = mod(x - camX, WW); if (s > W() + 160) s -= WW; return s; };
+    const strip = document.createElement('div'); strip.className = 'strip';
+    function layout() {
+      const old = WW;
+      tileW = Math.max(200, Hh() * BG_RATIO);
+      const want = NZ * Math.max(320, W() * .8);
+      WW = Math.ceil(want / (2 * tileW)) * 2 * tileW;                  // whole pairs of tiles: the mirrored seam matches round the wrap
+      zoneW = WW / NZ;
+      const n = Math.ceil((W() + 2 * tileW) / tileW) + 1;
+      strip.innerHTML = Array.from({ length: n }, (_, i) => `<i class="${i % 2 ? 'm' : ''}" style="width:${tileW + 2}px;margin-right:-2px"></i>`).join('');
+      return old > 1 ? WW / old : 1;
+    }
+    layout();
+
+    el.innerHTML = '';   // the page header already says «حوض متفوّق»; the top of the tank shows the grade signs
+    el.appendChild(strip);
     for (let i = 0; i < 8; i++) { const b = document.createElement('i'); b.className = 'bub'; b.style.cssText = `left:${6 + Math.random() * 88}%;animation-duration:${5 + Math.random() * 5}s;animation-delay:${Math.random() * 6}s;scale:${.6 + Math.random() * .8}`; el.appendChild(b); }
-    /* Reesho the diver says how to feed (hidden after the first feeding) */
-    const say = document.createElement('div'); say.className = 'say';
-    say.textContent = T('Tap the water to feed the fish! 🍤', 'اضغط في الماء وأكّل السمك! 🍤');
-    say.style.setProperty('--h', 'clamp(70px, 18%, 150px)'); el.appendChild(say);
 
-    /* the turtle swims across now and then */
-    const tu = document.createElement('div'); tu.className = 'turtle'; tu.innerHTML = `<img src="${A}turtle.webp" alt="">`; el.appendChild(tu);
-    const turtle = { el: tu, img: tu.firstChild, w: Math.max(60, Math.min(110, W() * .13)), x: -120, y: 0, vx: 16, wait: 2 };
-    tu.style.width = turtle.w + 'px';
-
-    /* students: the board's top 30 + me (my fish always, from my own points) */
+    /* the students: those who earned points in the last 7 days (top 40) + me */
     let rows = [], myId = null;
     try { myId = me ? await SI.LB.myId() : null; } catch (e) {}
-    /* how many whole days since the student last earned points (0 = today) */
     const DAY = 864e5, midnight = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x.getTime(); }, today0 = midnight(Date.now());
     const msOf = v => !v ? 0 : typeof v === 'number' ? v : typeof v.toMillis === 'function' ? v.toMillis() : v.seconds ? v.seconds * 1000 : 0;
     const daysSince = ms => ms ? Math.max(0, Math.round((today0 - midnight(ms)) / DAY)) : 0;
@@ -123,124 +173,261 @@
       const lx = (SI.prof && SI.prof().lx) || '', [yy, mm, dd] = lx.split('-').map(Number);
       const local = lx ? daysSince(new Date(yy, mm - 1, dd).getTime()) : null, board = rows.find(r => r.id === myId);
       myDays = local !== null ? (board ? Math.min(local, board.days) : local) : board ? board.days : (myXP ? GONE : 0);
-      if (myId && !board) rows.push({ id: myId, name: me.name, score: myXP, days: myDays });
-      rows.forEach(r => { if (r.id === myId) { r.score = Math.max(r.score || 0, myXP); r.days = myDays; } });
+      if (!board) rows.push({ id: myId || 'me', name: me.name, score: myXP, days: myDays, grade: me.grade });
+      rows.forEach(r => { if (r.id === myId) { r.score = Math.max(r.score || 0, myXP); r.days = myDays; r.grade = me.grade; } });
     }
-    rows = rows.filter(r => r.days < GONE).sort((a, b) => b.score - a.score).slice(0, 30);
-    const topScore = rows.reduce((m, r) => Math.max(m, r.score || 0), 0);
+    const isMe = r => !!me && (r.id === myId || r.id === 'me');
+    rows = rows.filter(r => r.days < GONE || isMe(r)).sort((a, b) => b.score - a.score).slice(0, 30);
+    /* the grade of each student (public card), to put the fish in its grade's zone */
+    try { const cards = SI.LB.cards ? await SI.LB.cards(rows.filter(r => !r.grade).map(r => r.id)) : {}; rows.forEach(r => { if (!r.grade && cards[r.id]) r.grade = cards[r.id].grade; }); } catch (e) {}
+    const zoneOf = r => { const i = ZONES.findIndex(z => z[0] === r.grade); return i >= 0 ? i : hash(r.id || r.name) % NZ; };
+    const myZone = me ? Math.max(0, ZONES.findIndex(z => z[0] === me.grade)) : -1;
+    const topScore = rows.reduce((m, r) => Math.max(m, r.days < GONE ? r.score || 0 : 0), 0);
 
-    const fishes = rows.map((r, i) => {
-      const isMe = !!myId && r.id === myId, score = r.score || 0, k = kindOf(score);
-      const hunger = r.days <= 1 ? 1 : Math.max(.2, 1 - (r.days - 1) * .13);   // 2+ days without points: smaller every day
-      const size = sizeOf(score) * Math.max(.62, Math.min(1, W() / 800)) * hunger;   // smaller fish in a phone-sized tank
-      const h = hash(r.id || r.name), color = COLORS[h % COLORS.length];
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'fish' + (isMe ? ' me' : '') + (r.days >= 3 ? ' starving' : r.days >= 1 ? ' hungry' : '');
-      b.style.width = size + 'px';
-      b.setAttribute('aria-label', `${r.name}: ${score} · ${T(k[3], k[2])}`);
-      const pic = k[0] ? `<img src="${A}${k[0]}.webp" alt="" draggable="false">` : drawnFish(color, i);
-      b.innerHTML = `<span class="body ${k[4]}" style="--hue:${(h % 7) * 50}deg">${pic}${score && score === topScore ? CROWN : ''}</span><span class="tag">${isMe ? T('Your fish', 'سمكتك') + ' · ' : ''}${esc(r.name)} · ${score} ${r.days ? '😋' : '🍤'}</span>`;
-      b.onclick = e => { e.stopPropagation(); b.classList.add('show'); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('show'), 2500); };
-      b.onpointerdown = e => e.stopPropagation();
-      el.appendChild(b);
-      const speed = (isMe ? 34 : 18 + Math.random() * 22) * (1.25 - size / 160);
-      return { b, body: b.querySelector('.body'), tag: b.querySelector('.tag'), size, hgt: size * k[1], speed,
-        x: Math.random() * Math.max(10, W() - size), y: 30 + Math.random() * Math.max(10, sand() - 70 - size * k[1]), vx: (Math.random() < .5 ? -1 : 1) * speed, ph: Math.random() * 6, ty: 0 };
+    /* decorations, one or two per zone (world x = zone centre + offset in zone widths) */
+    const DECOR = [['castle', -.32, 17, 62, 170], ['octopus', .3, 11, 44, 100, 'octo'], ['ship', -.28, 18, 66, 180], ['chest_closed', .3, 14, 54, 140, '', 'aqChest'],
+      ['castle', .26, 15, 58, 150], ['octopus', -.3, 10, 42, 90, 'octo'], ['ship', .28, 16, 60, 160], ['castle', -.3, 14, 56, 140]];
+    const decs = DECOR.map(([img, off, pct, min, max, cls, id], i) => {
+      const d = document.createElement('div'); d.className = 'dec ' + (cls || '');
+      d.style.width = `clamp(${min}px,${pct}vw,${max}px)`; if (img === 'octopus') d.style.bottom = '4%';
+      d.innerHTML = `<img src="${A}${img}.webp" alt="" draggable="false"${id ? ` id="${id}"` : ''}>`;
+      el.appendChild(d); return { el: d, zone: i % NZ, off };
     });
+    /* Reesho the diver lives in my grade's zone and says how to swim round and feed */
+    const diver = document.createElement('div'); diver.className = 'dec diver'; diver.style.width = 'clamp(56px,13vw,120px)';
+    diver.innerHTML = `<div class="say">${T('Drag to swim round the tank, tap the water to feed! 🍤', 'اسحب الحوض علشان تلف، واضغط في الماء وأكّل السمك! 🍤')}</div><img src="${A}reesho_diver.webp" alt="" draggable="false">`;
+    el.appendChild(diver); decs.push({ el: diver, zone: myZone >= 0 ? myZone : 2, off: .4 });
+    const say = diver.querySelector('.say');
+    const signs = ZONES.map((z, i) => { const s = document.createElement('div'); s.className = 'sign' + (i === myZone ? ' mine' : ''); s.textContent = (i === myZone ? '⭐ ' : '') + T(z[1], z[2]); el.appendChild(s); return s; });
 
-    /* the message under the tank: points, and how far to the next fish */
+    /* the turtle swims across now and then (world coordinates, round the tank) */
+    const tu = document.createElement('div'); tu.className = 'turtle'; tu.innerHTML = `<img src="${A}turtle.webp" alt="">`; el.appendChild(tu);
+    const turtle = { w: Math.max(60, Math.min(110, W() * .13)), x: 0, y: sand() * .5, vx: 22 };
+    tu.style.width = turtle.w + 'px';
+
+    /* fish and eggs */
+    const fishes = rows.map((r, i) => {
+      const mine = isMe(r), score = r.score || 0, k = kindOf(score), egg = score < HATCH, zone = zoneOf(r);
+      const hunger = r.days <= 1 ? 1 : Math.max(.2, 1 - (r.days - 1) * .13);   // 2+ days without points: smaller every day
+      const scale = Math.max(.62, Math.min(1, W() / 800));
+      const size = egg ? (30 + score / HATCH * 16) * scale : sizeOf(score) * scale * hunger;
+      const h = hash(r.id || r.name), color = COLORS[h % COLORS.length];
+      const b = document.createElement('button'); b.type = 'button';
+      b.className = 'fish' + (mine ? ' me' : '') + (egg ? ' egg' : r.days >= 3 ? ' starving' : r.days >= 1 ? ' hungry' : '');
+      b.style.width = size + 'px';
+      const left = HATCH - score;
+      b.setAttribute('aria-label', egg ? `${r.name}: ${T('egg', 'بيضة')} · ${score}` : `${r.name}: ${score} · ${T(k[3], k[2])}`);
+      const pic = egg ? drawnEgg(color, i, score >= HATCH * .7 ? 2 : score >= HATCH * .35 ? 1 : 0) : k[0] ? `<img src="${A}${k[0]}.webp" alt="" draggable="false">` : drawnFish(color, i);
+      const label = egg ? `🥚 ${mine ? T('Your egg', 'بيضتك') + ' · ' : ''}${esc(r.name)} · ${T(`${left} to hatch`, `باقي ${left}`)}`
+        : `${mine ? T('Your fish', 'سمكتك') + ' · ' : ''}${esc(r.name)} · ${score} ${r.days ? '😋' : '🍤'}`;
+      b.innerHTML = `<span class="body ${egg ? '' : k[4]}" style="--hue:${(h % 7) * 50}deg">${pic}${!egg && score && score === topScore ? CROWN : ''}</span><span class="tag">${label}</span>`;
+      b.onclick = e => { e.stopPropagation(); if (moved) return; b.classList.add('show'); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('show'), 2500); };
+      el.appendChild(b);
+      const speed = egg ? 0 : (mine ? 34 : 18 + Math.random() * 22) * (1.25 - size / 160);
+      const hgt = egg ? size * 74 / 60 : size * k[1];
+      return { b, body: b.querySelector('.body'), tag: b.querySelector('.tag'), mine, egg, zone, size, hgt, speed,
+        x: zoneX(zone) + (egg ? ((h % 100) / 100 - .5) * zoneW * .7 : (Math.random() - .5) * zoneW * .8),
+        y: egg ? 0 : 30 + Math.random() * Math.max(10, sand() - 70 - hgt), vx: (Math.random() < .5 ? -1 : 1) * speed, ph: Math.random() * 6, ty: 0 };
+    });
+    const myFish = fishes.find(f => f.mine);
+
+    /* the message under the tank */
     if (opts.msg) {
+      const G = SI.G;
       if (!me) opts.msg.innerHTML = T('🐟 Every student has a fish that grows with points. Sign in and get yours!', '🐟 كل طالب له سمكة بتكبر مع نقاطه. سجّل اسمك وخد سمكتك!');
+      else if (myXP < HATCH) opts.msg.innerHTML = T(`🥚 Your fish is still an egg! <b>${HATCH - myXP}</b> more points and it hatches.`,
+        G(`🥚 سمكتك لسه بيضة! باقي <b>${HATCH - myXP}</b> نقطة وتفقس. العب علشان تطلع سمكتك!`, `🥚 سمكتك لسه بيضة! باقي <b>${HATCH - myXP}</b> نقطة وتفقس. العبي علشان تطلع سمكتك!`));
       else if (myDays >= GONE) opts.msg.innerHTML = T(`😢 Your fish left the tank: no points for ${myDays} days. Your points are safe: play today and it comes back!`,
-        SI.G(`😢 سمكتك خرجت من الحوض لأنك غبت ${myDays} يوم. نقاطك محفوظة: العب النهارده وهترجع!`, `😢 سمكتك خرجت من الحوض لأنك غبتي ${myDays} يوم. نقاطك محفوظة: العبي النهارده وهترجع!`));
+        G(`😢 سمكتك خرجت من الحوض لأنك غبت ${myDays} يوم. نقاطك محفوظة: العب النهارده وهترجع!`, `😢 سمكتك خرجت من الحوض لأنك غبتي ${myDays} يوم. نقاطك محفوظة: العبي النهارده وهترجع!`));
       else if (myDays >= 2) opts.msg.innerHTML = T(`😟 Your fish is getting smaller: it has not eaten for ${myDays} days. Play today and it gets its full size back!`,
-        SI.G(`😟 سمكتك بتصغر لأنها ما أكلتش من ${myDays} أيام. العب النهارده وترجع لحجمها!`, `😟 سمكتك بتصغر لأنها ما أكلتش من ${myDays} أيام. العبي النهارده وترجع لحجمها!`));
-      else if (myDays === 1 || !myXP) opts.msg.innerHTML = T('😋 Your fish is hungry! It eats when you earn points: play today so it does not shrink.',
-        SI.G('😋 سمكتك جعانة! بتاكل لما تكسب نقط: العب النهارده علشان ما تصغرش.', '😋 سمكتك جعانة! بتاكل لما تكسبي نقط: العبي النهارده علشان ما تصغرش.'));
+        G(`😟 سمكتك بتصغر لأنها ما أكلتش من ${myDays} أيام. العب النهارده وترجع لحجمها!`, `😟 سمكتك بتصغر لأنها ما أكلتش من ${myDays} أيام. العبي النهارده وترجع لحجمها!`));
+      else if (myDays === 1) opts.msg.innerHTML = T('😋 Your fish is hungry! It eats when you earn points: play today so it does not shrink.',
+        G('😋 سمكتك جعانة! بتاكل لما تكسب نقط: العب النهارده علشان ما تصغرش.', '😋 سمكتك جعانة! بتاكل لما تكسبي نقط: العبي النهارده علشان ما تصغرش.'));
       else {
         const li = SI.levelInfo(myXP), nx = li.to ? KINDS[Math.min(6, li.n + 1)] : null;
         opts.msg.innerHTML = T(`🍤 Your fish ate today! It has <b>${myXP}</b> points.`, `🍤 سمكتك أكلت النهارده! عندها <b>${myXP}</b> نقطة.`) + ' '
-          + (nx ? T(`${li.to - myXP} more points and it becomes a <b>${nx[3]}</b>!`, SI.G(`باقي <b>${li.to - myXP}</b> نقطة وتتحول لـ<b>${nx[2]}</b>! العب أكتر.`, `باقي <b>${li.to - myXP}</b> نقطة وتتحول لـ<b>${nx[2]}</b>! العبي أكتر.`))
-                : T('It is the golden angelfish: play more and it keeps growing!', SI.G('دي سمكة الملاك الذهبية: العب أكتر وهتفضل تكبر!', 'دي سمكة الملاك الذهبية: العبي أكتر وهتفضل تكبر!')));
+          + (nx ? T(`${li.to - myXP} more points and it becomes a <b>${nx[3]}</b>!`, G(`باقي <b>${li.to - myXP}</b> نقطة وتتحول لـ<b>${nx[2]}</b>! العب أكتر.`, `باقي <b>${li.to - myXP}</b> نقطة وتتحول لـ<b>${nx[2]}</b>! العبي أكتر.`))
+                : T('It is the golden angelfish: play more and it keeps growing!', G('دي سمكة الملاك الذهبية: العب أكتر وهتفضل تكبر!', 'دي سمكة الملاك الذهبية: العبي أكتر وهتفضل تكبر!')));
       }
     }
-    /* the treasure chest opens when everybody together reached this week's team goal */
-    SI.LB.weekTotal && SI.LB.weekTotal().then(t => { if (t !== null && t >= TEAM_GOAL) el.querySelector('#aqChest').src = A + 'chest_open.webp'; }).catch(() => {});
+    SI.LB.weekTotal && SI.LB.weekTotal().then(t => { const c = el.querySelector('#aqChest'); if (c && t !== null && t >= TEAM_GOAL) c.src = A + 'chest_open.webp'; }).catch(() => {});
 
-    /* drawing: only the body turns, the name tag stays readable and inside the glass */
-    const draw = f => {
-      f.b.style.transform = `translate(${f.x}px,${f.y + Math.sin(f.ph) * 5}px)`;
-      const d = f.vx < 0 ? -1 : 1; if (f.d !== d) { f.d = d; f.body.style.transform = `scaleX(${d})`; }
-      const edge = f.x + f.size / 2 > W() - 90 ? 'r' : f.x + f.size / 2 < 90 ? 'l' : '';
-      if (f.edge !== edge) { f.edge = edge; f.tag.style.cssText = edge === 'r' ? 'left:auto;right:0;transform:none' : edge === 'l' ? 'left:0;transform:none' : ''; }
-    };
-    fishes.forEach(draw);
-    if (reduce) { say.hidden = true; return; }
+    /* ---- camera: drag, inertia, arrows, wheel, glide to a point ---- */
+    let vel = 0, target = null, moved = false, drag = null;
+    const glide = x => { target = mod(x - W() / 2, WW); vel = 0; };
+    const startX = myFish ? myFish.x : myZone >= 0 ? zoneX(myZone) : (() => {   // else the busiest zone
+      const n = Array(NZ).fill(0); fishes.forEach(f => n[f.zone]++); return zoneX(n.indexOf(Math.max(...n)));
+    })();
+    camX = mod(startX - W() / 2, WW);
+    const hint = document.createElement('div'); hint.className = 'drag-hint'; hint.textContent = T('⇠ drag ⇢', '⇠ اسحب ⇢'); el.appendChild(hint);
+    const hideHint = () => { hint.style.opacity = '0'; setTimeout(() => hint.remove(), 600); };
+    setTimeout(hideHint, 5000);
+    ['l', 'r'].forEach(s => {
+      const a = document.createElement('button'); a.type = 'button'; a.className = 'arr ' + s; a.textContent = s === 'l' ? '‹' : '›';
+      a.setAttribute('aria-label', T(s === 'l' ? 'Swim left' : 'Swim right', s === 'l' ? 'لف شمال' : 'لف يمين'));
+      a.onpointerdown = e => e.stopPropagation();
+      a.onclick = e => { e.stopPropagation(); hideHint(); glide(camX + W() / 2 + (s === 'l' ? -1 : 1) * W() * .75); };
+      el.appendChild(a);
+    });
+    el.addEventListener('wheel', e => {
+      const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.shiftKey ? e.deltaY : 0;
+      if (!d) return; e.preventDefault(); target = null; camX = mod(camX + d, WW); hideHint();
+    }, { passive: false });
 
-    /* food: a tap in the water drops a few pellets; they sink to the sand and fade there */
+    /* food: a tap (not a drag) in the water drops a few pellets; world coordinates */
     const pels = [];
-    el.addEventListener('pointerdown', e => {
-      const r = el.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-      if (y > sand() + 10) return;
+    const feed = (sx, sy) => {
+      if (sy > sand() + 10) return;
       say.style.opacity = '0';
       for (let i = 0; i < 4 && pels.length < 40; i++) {
-        const p = { x: x + (Math.random() - .5) * 26, y: y + (Math.random() - .5) * 14, vy: 20 + Math.random() * 14, ph: Math.random() * 6, rest: 0, el: document.createElement('i') };
+        const p = { x: mod(camX + sx + (Math.random() - .5) * 26, WW), y: sy + (Math.random() - .5) * 14, vy: 20 + Math.random() * 14, ph: Math.random() * 6, rest: 0, el: document.createElement('i') };
         p.el.className = 'pel'; el.appendChild(p.el); pels.push(p);
       }
       if (SI.sfx && SI.sfx.tick) try { SI.sfx.tick(); } catch (err) {}
+    };
+    el.addEventListener('pointerdown', e => {
+      if (e.button > 0) return;
+      const r = el.getBoundingClientRect();
+      drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, cam0: camX, lx: e.clientX, lt: performance.now(), sx: e.clientX - r.left, sy: e.clientY - r.top };
+      moved = false; vel = 0; target = null;
     });
+    window.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x0;
+      if (!moved && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(e.clientY - drag.y0)) { moved = true; el.classList.add('drag'); hideHint(); }
+      if (!moved) return;
+      camX = mod(drag.cam0 - dx, WW);
+      const t = performance.now(), dt = Math.max(1, t - drag.lt);
+      vel = vel * .6 + (-(e.clientX - drag.lx) / dt * 1000) * .4; drag.lx = e.clientX; drag.lt = t;
+    });
+    const up = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      el.classList.remove('drag');
+      if (!moved && e.type === 'pointerup' && !e.target.closest('.fish,.arr')) feed(drag.sx, drag.sy);
+      if (performance.now() - drag.lt > 120) vel = 0;
+      drag = null; setTimeout(() => { moved = false; }, 0);
+    };
+    window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+
+    /* «أين سمكتي؟» */
+    if (opts.mine) {
+      if (!myFish) opts.mine.hidden = true;
+      else opts.mine.onclick = () => {
+        hideHint(); glide(myFish.x + myFish.size / 2);
+        setTimeout(() => { myFish.b.classList.remove('flash'); void myFish.b.offsetWidth; myFish.b.classList.add('flash', 'show');
+          setTimeout(() => myFish.b.classList.remove('flash', 'show'), 2200); }, 450);
+      };
+    }
+    /* the small map: zones, a dot per fish, the window you see; tap = glide there */
+    let mapDots = [], mapWin = [];
+    if (opts.map) {
+      const m = opts.map; m.classList.add('aqmap');
+      m.innerHTML = ZONES.map((z, i) => `<span class="z${i === myZone ? ' mine' : ''}" style="left:${(NZ - 1 - i) / NZ * 100}%;width:${100 / NZ}%">${T(z[3], z[4])}</span>`).join('')
+        + fishes.map(f => `<i class="d${f.mine ? ' me' : ''}${f.egg ? ' e' : ''}"></i>`).join('') + '<b class="win"></b><b class="win"></b>';
+      mapDots = [...m.querySelectorAll('.d')]; mapWin = [...m.querySelectorAll('.win')];
+      m.setAttribute('role', 'img'); m.setAttribute('aria-label', T('Map of the tank: tap a place to swim there', 'خريطة الحوض: اضغط على مكان علشان تروح له'));
+      m.onclick = e => { const r = m.getBoundingClientRect(); hideHint(); glide((e.clientX - r.left) / r.width * WW); };
+    }
+    let mapT = 0;
+    const drawMap = () => {
+      if (!mapDots.length) return;
+      fishes.forEach((f, i) => { mapDots[i].style.left = (mod(f.x + f.size / 2, WW) / WW * 100) + '%'; mapDots[i].style.top = f.egg ? '22px' : (4 + Math.min(1, f.y / sand()) * 18) + 'px'; });
+      const a = camX / WW * 100, w = W() / WW * 100;
+      mapWin[0].style.cssText = `left:${a}%;width:${Math.min(w, 100 - a)}%`;
+      mapWin[1].style.cssText = a + w > 100 ? `left:0;width:${a + w - 100}%` : 'display:none';
+    };
+
+    /* ---- drawing ---- */
+    const place = (node, x, w, extra = '') => { node.style.transform = `translate(${screenX(x - w / 2)}px,0)${extra}`; };
+    const draw = f => {
+      const sx = screenX(f.x);
+      const y = f.egg ? sand() - f.hgt * .8 : f.y + Math.sin(f.ph) * 5;
+      f.b.style.transform = `translate(${sx}px,${y}px)`;
+      if (!f.egg) { const d = f.vx < 0 ? -1 : 1; if (f.d !== d) { f.d = d; f.body.style.transform = `scaleX(${d})`; } }
+      const edge = sx + f.size / 2 > W() - 90 ? 'r' : sx + f.size / 2 < 90 ? 'l' : '';
+      if (f.edge !== edge) { f.edge = edge; f.tag.style.cssText = edge === 'r' ? 'left:auto;right:0;transform:none' : edge === 'l' ? 'left:0;transform:none' : ''; }
+    };
+    const drawWorld = () => {
+      strip.style.transform = `translateX(${-mod(camX, 2 * tileW)}px)`;
+      decs.forEach(d => place(d.el, zoneX(d.zone) + d.off * zoneW, d.el.offsetWidth));
+      signs.forEach((s, i) => place(s, zoneX(i), s.offsetWidth));
+      fishes.forEach(draw);
+      tu.style.transform = `translate(${screenX(turtle.x)}px,${turtle.y + Math.sin(performance.now() / 900) * 6}px)`;
+      turtle.img = turtle.img || tu.firstChild; turtle.img.style.transform = `scaleX(${turtle.vx > 0 ? 1 : -1})`;
+    };
+    window.addEventListener('resize', () => {
+      const k = layout(); if (k === 1) return;
+      camX *= k; fishes.forEach(f => { f.x *= k; }); pels.forEach(p => { p.x *= k; }); turtle.x *= k; drawWorld(); drawMap();
+    });
+
     const eat = (f, i) => {
       const p = pels[i]; pels.splice(i, 1); p.el.remove();
-      const pop = document.createElement('i'); pop.className = 'pop'; pop.style.left = p.x + 'px'; pop.style.top = p.y + 'px'; el.appendChild(pop); setTimeout(() => pop.remove(), 520);
+      const pop = document.createElement('i'); pop.className = 'pop'; pop.style.left = screenX(p.x) + 'px'; pop.style.top = p.y + 'px'; el.appendChild(pop); setTimeout(() => pop.remove(), 520);
       f.b.classList.remove('chomp'); void f.b.offsetWidth; f.b.classList.add('chomp');
     };
+    const swimmers = fishes.filter(f => !f.egg);
 
     let last = performance.now(), on = true, raf = 0;
     const step = t => {
       const dt = Math.min(.05, (t - last) / 1000); last = t;
-      const w = W(), sd = sand();
+      const sd = sand();
+      /* camera */
+      if (target !== null) { const d = wdx(target, camX); camX = mod(camX + d * Math.min(1, dt * 5), WW); if (Math.abs(d) < 1) target = null; }
+      else if (!drag && Math.abs(vel) > 5) { camX = mod(camX + vel * dt, WW); vel *= Math.pow(.05, dt); }
       /* pellets */
       for (let i = pels.length - 1; i >= 0; i--) {
         const p = pels[i];
-        if (p.y < sd - 4) { p.y += p.vy * dt; p.ph += dt * 3; p.x += Math.sin(p.ph) * dt * 10; }
+        if (p.y < sd - 4) { p.y += p.vy * dt; p.ph += dt * 3; p.x = mod(p.x + Math.sin(p.ph) * dt * 10, WW); }
         else if ((p.rest += dt) > 6) { p.el.remove(); pels.splice(i, 1); continue; }
-        p.el.style.transform = `translate(${p.x}px,${p.y}px)`; p.el.style.opacity = p.rest > 4 ? String(1 - (p.rest - 4) / 2) : '';
+        p.el.style.transform = `translate(${screenX(p.x)}px,${p.y}px)`; p.el.style.opacity = p.rest > 4 ? String(1 - (p.rest - 4) / 2) : '';
       }
-      /* fish: chase the nearest pellet within reach, otherwise drift */
-      fishes.forEach(f => {
-        f.ph += dt * 2;
-        const cx = f.x + f.size / 2, cy = f.y + f.hgt / 2;
-        let best = -1, bd = 1e9;
-        pels.forEach((p, i) => { const d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
-        if (best >= 0 && bd < Math.max(260, w * .45)) {
-          const p = pels[best], sp = f.speed * 2.2 + 28, dx = p.x - cx, dy = p.y - cy, n = Math.hypot(dx, dy) || 1;
-          f.vx = (dx / n) * sp || f.vx; f.x += f.vx * dt; f.y += (dy / n) * sp * dt; f.ty = 0;
-          if (n < Math.max(14, f.size * .4)) eat(f, best);
-        } else {
-          if (Math.abs(f.vx) > f.speed * 1.05) f.vx = Math.sign(f.vx) * f.speed;   // calm down after a meal
-          f.x += f.vx * dt;
-          if (Math.random() < dt * .15) f.ty = 30 + Math.random() * Math.max(10, sd - 70 - f.hgt);
-          if (f.ty) f.y += (f.ty - f.y) * dt * .6;
-          if (Math.random() < dt * .05) f.vx = -f.vx;
+      if (!reduce) {
+        /* fish: chase the nearest pellet within reach, otherwise drift around home (their grade's zone) */
+        swimmers.forEach(f => {
+          f.ph += dt * 2;
+          const cx = f.x + f.size / 2, cy = f.y + f.hgt / 2;
+          let best = -1, bd = 1e9;
+          pels.forEach((p, i) => { const d = Math.hypot(wdx(p.x, cx), p.y - cy); if (d < bd) { bd = d; best = i; } });
+          if (best >= 0 && bd < Math.max(260, W() * .45)) {
+            const p = pels[best], sp = f.speed * 2.2 + 28, dx = wdx(p.x, cx), dy = p.y - cy, n = Math.hypot(dx, dy) || 1;
+            f.vx = (dx / n) * sp || f.vx; f.x += f.vx * dt; f.y += (dy / n) * sp * dt; f.ty = 0;
+            if (n < Math.max(14, f.size * .4)) eat(f, best);
+          } else {
+            if (Math.abs(f.vx) > f.speed * 1.05) f.vx = Math.sign(f.vx) * f.speed;   // calm down after a meal
+            const home = wdx(zoneX(f.zone), cx);
+            if (Math.abs(home) > zoneW * .45 && Math.sign(home) !== Math.sign(f.vx)) f.vx = -f.vx;   // turn back towards home
+            f.x += f.vx * dt;
+            if (Math.random() < dt * .15) f.ty = 30 + Math.random() * Math.max(10, sd - 70 - f.hgt);
+            if (f.ty) f.y += (f.ty - f.y) * dt * .6;
+            if (Math.random() < dt * .04 && Math.abs(home) < zoneW * .3) f.vx = -f.vx;
+          }
+        });
+        /* keep apart: two fish that overlap push each other away (mostly up/down, so they pass instead of piling up) */
+        for (let i = 0; i < swimmers.length; i++) for (let j = i + 1; j < swimmers.length; j++) {
+          const a = swimmers[i], b = swimmers[j];
+          const dx = wdx(b.x + b.size / 2, a.x + a.size / 2), dy = (b.y + b.hgt / 2) - (a.y + a.hgt / 2);
+          const minX = (a.size + b.size) * .48, minY = (a.hgt + b.hgt) * .55;
+          if (Math.abs(dx) < minX && Math.abs(dy) < minY) {
+            const push = (1 - Math.abs(dy) / minY) * 60 * dt, sy = dy >= 0 ? 1 : -1, sx = dx >= 0 ? 1 : -1;
+            a.y -= sy * push; b.y += sy * push; a.x -= sx * push * .4; b.x += sx * push * .4; a.ty = b.ty = 0;
+          }
         }
-        if (f.x < 0) { f.x = 0; f.vx = Math.abs(f.vx) || f.speed; } else if (f.x > w - f.size) { f.x = w - f.size; f.vx = -Math.abs(f.vx) || -f.speed; }
-        f.y = Math.max(24, Math.min(sd - f.hgt * .7, f.y));
-        draw(f);
-      });
-      /* the turtle: crosses the tank slowly, rests off screen, comes back the other way */
-      if (turtle.wait > 0) { turtle.wait -= dt; if (turtle.wait <= 0) { turtle.y = sd * (.45 + Math.random() * .3); turtle.x = turtle.vx > 0 ? -turtle.w : w; } }
-      else {
-        turtle.x += turtle.vx * dt;
-        if (turtle.x > w + 10 || turtle.x < -turtle.w - 10) { turtle.vx = -turtle.vx; turtle.wait = 6 + Math.random() * 8; }
-        tu.style.transform = `translate(${turtle.x}px,${turtle.y + Math.sin(t / 900) * 6}px)`;
-        turtle.img.style.transform = `scaleX(${turtle.vx > 0 ? 1 : -1})`;
+        swimmers.forEach(f => { f.x = mod(f.x, WW); f.y = Math.max(34, Math.min(sd - f.hgt * .7, f.y)); });
+        /* the turtle crosses the whole tank slowly, round and round */
+        turtle.x = mod(turtle.x + turtle.vx * dt, WW);
+        if (Math.random() < dt * .02) turtle.y = sd * (.4 + Math.random() * .3);
       }
+      drawWorld();
+      if ((mapT += dt) > .2) { mapT = 0; drawMap(); }
       if (on) raf = requestAnimationFrame(step);
     };
-    tu.style.transform = 'translate(-200px,0)';
+    turtle.x = mod(camX - 60, WW);
+    drawWorld(); drawMap();
     raf = requestAnimationFrame(step);
     /* stop when the tank is off screen or the tab is hidden */
     const go = v => { if (v && !on) { on = true; last = performance.now(); raf = requestAnimationFrame(step); } else if (!v) { on = false; cancelAnimationFrame(raf); } };
     if ('IntersectionObserver' in window) new IntersectionObserver(es => go(es[0].isIntersecting)).observe(el);
     document.addEventListener('visibilitychange', () => go(document.visibilityState === 'visible'));
+    window.__aq = { fishes, get camX() { return camX; }, get WW() { return WW; }, glide, zoneX };   // test hook
   };
 })();

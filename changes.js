@@ -3,6 +3,13 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-08', title: 'حوض متفوّق: حوض دائري واسع',
+    items: [
+      { text: 'اسحب الحوض يمين وشمال ويلف معاك بلا نهاية' },
+      { text: 'كل صف له مكان في الحوض، والسمك ما بقاش فوق بعضه' },
+      { text: 'زر «أين سمكتي؟» وخريطة صغيرة تحت الحوض' },
+      { text: 'الطالب تحت ١٠٠ نقطة سمكته بيضة بتفقس عند ١٠٠', links: [{ label: 'حوض متفوّق', href: 'aquarium.html' }] }
+    ] },
   { date: '2026-11-07', title: 'حوض متفوّق في القائمة',
     items: [
       { text: 'سطر حوض متفوّق في القائمة بين مغامرات ريشو ونجوم متفوّق، ومعه حالة السمكة اليوم' }
