@@ -8,18 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261108b{{{">
+<link rel="stylesheet" href="game_kit.css?v=20261109a{{{">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Decimal Dock.</noscript>
-<script src="firebase-config.js?v=20261108b{{{"></script>
-<script src="chapters.js?v=20261108b{{{"></script>
-<script src="common.js?v=20261108b{{{"></script>
-<script src="game_kit.js?v=20261108b{{{"></script>
-<script src="math/m5_art.js?v=20261108b{{{"></script>
+<script src="firebase-config.js?v=20261109a{{{"></script>
+<script src="chapters.js?v=20261109a{{{"></script>
+<script src="common.js?v=20261109a{{{"></script>
+<script src="game_kit.js?v=20261109a{{{"></script>
+<script src="math/m5_art.js?v=20261109a{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -140,9 +140,9 @@ async function stage2() { await mission1(); await mission2(); await mission3(); 
 const PAIRS = [['29.9', '30.2', '<'], ['36.5', '35.6', '>'], ['40.5', '41.0', '<'], ['35.2', '34.7', '>'], ['38.80', '38.8', '='], ['98.013', '98.101', '<'], ['50.009', '50.100', '<'], ['10.1', '10.011', '>'], ['2.01', '2.099', '<'], ['34.5', '34.500', '='], ['45.057', '45.100', '<'], ['0.7', '0.07', '>']];
 async function stage3() {
   Object.assign(sc, { mode: 'chart', num: '', note: '', cap: '', hl: null }); g.paint();
-  await g.speedRound({ items: PAIRS.map(([a, b, r]) => ({ t: `${L(a)} <span style="opacity:.5">?</span> ${L(b)}`, ans: r, why: T(`${a} ${r} ${b}.`, L(`${a} ${r} ${b}`) + '.') })), rounds: 8, ms: 10000,
+  await g.speedRound({ items: PAIRS.map(([a, b, r]) => ({ t: L(`${a} <span style="opacity:.5">?</span> ${b}`), ans: r, why: T(`${a} ${r} ${b}.`, L(`${a} ${r} ${b}`) + '.') })), rounds: 8, ms: 10000,
     buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }],
-    ask: T('Which sign: <, = or >?', 'أي علامة: <، = ولا >؟'), intro: T('Speed Round! Two crates come in. Press the sign that fits. Compare place by place, and remember: zeros at the end do not change a decimal.', 'جولة السرعة! صندوقين هيظهروا. اضغط على العلامة المناسبة. قارن خانة خانة، وافتكر: الأصفار في الآخر مبتغيّرش قيمة العدد العشري.'), think: T('Place by place, from the left!', 'خانة خانة من الشمال!') });
+    ask: T('Which sign: <, = or >?', `أي علامة: ${L('< = >')}؟`), intro: T('Speed Round! Two crates come in. Press the sign that fits. Compare place by place, and remember: zeros at the end do not change a decimal.', 'جولة السرعة! صندوقين هيظهروا. اضغط على العلامة المناسبة. قارن خانة خانة، وافتكر: الأصفار في الآخر مبتغيّرش قيمة العدد العشري.'), think: T('Place by place, from the left!', 'خانة خانة من الشمال!') });
 }
 
 g.run({

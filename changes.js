@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-09', title: 'Fix: comparison sign buttons in Arabic',
+    items: [
+      { text: 'The < and > buttons showed reversed in Arabic (the browser mirrored them); signs now stay left to right in all comparison games, and Speed Round pairs keep their order.' }
+    ] },
   { date: '2026-11-08', title: 'نجوم متفوّق: سباق كل أسبوع',
     items: [
       { text: 'القائمة الأولى بقت نقاط الأسبوع لطلاب نفس الصف، وتبدأ من جديد كل سبت' },

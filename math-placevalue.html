@@ -8,18 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261108b{{{">
+<link rel="stylesheet" href="game_kit.css?v=20261109a{{{">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Place Value Nest.</noscript>
-<script src="firebase-config.js?v=20261108b{{{"></script>
-<script src="chapters.js?v=20261108b{{{"></script>
-<script src="common.js?v=20261108b{{{"></script>
-<script src="game_kit.js?v=20261108b{{{"></script>
-<script src="math/g4_art.js?v=20261108b{{{"></script>
+<script src="firebase-config.js?v=20261109a{{{"></script>
+<script src="chapters.js?v=20261109a{{{"></script>
+<script src="common.js?v=20261109a{{{"></script>
+<script src="game_kit.js?v=20261109a{{{"></script>
+<script src="math/g4_art.js?v=20261109a{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -149,10 +149,10 @@ const PAIRS = [['14,108', '15,108', '<'], ['123,978', '123,568', '>'], ['6,235,5
   ['17,425,605', '17,420,605', '>'], ['8,400,761,903', '8,040,761,903', '>'], ['423,012', '432,021', '<'], ['100,513', '89,906', '>'], ['43,110', '43,120', '<'], ['654,300', '6,543', '>'], ['1,976,888', '1,976,888', '=']];
 async function stage3() {
   Object.assign(sc, { mode: 'hills', a: '', b: '', cap: '' }); g.paint();
-  await g.speedRound({ items: PAIRS.map(([a, b, r]) => ({ t: `${L(a)} <span style="opacity:.5">?</span> ${L(b)}`, ans: r, why: T(`${a} ${r} ${b}.`, L(`${a} ${r} ${b}`) + '.') })), rounds: 8, ms: 10000,
+  await g.speedRound({ items: PAIRS.map(([a, b, r]) => ({ t: L(`${a} <span style="opacity:.5">?</span> ${b}`), ans: r, why: T(`${a} ${r} ${b}.`, L(`${a} ${r} ${b}`) + '.') })), rounds: 8, ms: 10000,
     buttons: [{ label: '<', value: '<', c: 0 }, { label: '=', value: '=', c: 1 }, { label: '>', value: '>', c: 2 }],
-    ask: T('Which sign: <, = or >?', 'أي علامة: <، = ولا >؟'), intro: T('Speed Round! Two hills come in. Press the sign that fits. Start from the left and stop at the first place that differs.', 'جولة السرعة! تلين هيظهروا. اضغط على العلامة المناسبة. ابدأ من الشمال وقف عند أول خانة بتختلف.'),
-    think: T('Which sign: <, = or >?', 'أي علامة: <، = ولا >؟') });
+    ask: T('Which sign: <, = or >?', `أي علامة: ${L('< = >')}؟`), intro: T('Speed Round! Two hills come in. Press the sign that fits. Start from the left and stop at the first place that differs.', 'جولة السرعة! تلين هيظهروا. اضغط على العلامة المناسبة. ابدأ من الشمال وقف عند أول خانة بتختلف.'),
+    think: T('Which sign: <, = or >?', `أي علامة: ${L('< = >')}؟`) });
 }
 
 g.run({

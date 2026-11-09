@@ -172,6 +172,8 @@
       tray.innerHTML = ''; tray.hidden = !buttons; $('#stageCard').classList.toggle('trayOn', !!buttons);
       if (!buttons) return [];
       tray.className = 'tray n' + buttons.length;
+      /* math signs (< = >) stay left to right: in an Arabic page the browser mirrors < and > and puts the first button on the right */
+      if (buttons.every(x => /^[\s<>=≠≤≥]+$/.test(String(x.label)))) tray.dir = 'ltr'; else tray.removeAttribute('dir');
       return buttons.map((x, i) => { const b = btn(x.label, 'pick c' + (x.c == null ? i : x.c)); b.dataset.v = x.value; if (x.value === correct) b.dataset.right = '1'; tray.appendChild(b); return b; });
     }
     /* sort one thing: press its button. One try; the right button is then shown */
