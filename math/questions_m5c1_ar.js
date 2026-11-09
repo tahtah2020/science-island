@@ -95,15 +95,15 @@ window.IDEAS = [
       { type: 'mc', mode: 'normal', level: 'medium', q: 'ما الصيغة الممتدة للعدد ' + ltr('34.527') + '؟', options: [ltr('30 + 4 + 0.5 + 0.02 + 0.007'), ltr('30 + 4 + 5 + 2 + 7'), ltr('3 + 4 + 0.5 + 0.2 + 0.7'), ltr('34 + 0.5 + 0.2 + 0.7')], answer: 0 },
       { type: 'num', mode: 'normal', level: 'easy', q: 'اكتب العدد: ' + ltr('10 + 2 + 0.4 + 0.02'), answer: '12.42', calc: '10+2+0.4+0.02' },
       { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'ما قيمة الرقم 3 في العدد ' + ltr('14.932') + '؟', options: ['0.03', '0.3', '3', '0.003'], answer: 0 },
-      { type: 'fill', mode: 'normal', level: 'medium', q: ltr('231.128 = 200 + 30 + 1 + 0.1 + 0.02 +') + ' ___', options: ['0.008', '0.8', '0.08'], answer: 0 },
+      { type: 'fill', mode: 'normal', level: 'medium', q: ltr('231.128 = 200 + 30 + 1 + 0.1 + 0.02 + ___'), options: ['0.008', '0.8', '0.08'], answer: 0 },
       { type: 'num', mode: 'normal', level: 'hard', q: 'اكتب العدد: ' + ltr('500 + 8 + 0.1 + 0.07'), answer: '508.17', calc: '500+8+0.1+0.07' }
     ] },
   { id: 'C2', lesson: 3, concept: 'طرق أخرى لتحليل الكسر العشري',
     explain: 'يمكن تحليل الكسر العشري بطرق كثيرة. ' + ltr('12.42 = 12 + 0.42') + ' و' + ltr('12.4 + 0.02') + ' و' + ltr('10 + 2.42') + ' كلها صحيحة لأن مجموع كل زوج منها يساوي ' + ltr('12.42') + '. ' + ltr('21.045 = 20 + 1.045 = 21 + 0.045 = 21.04 + 0.005') + '.',
     variants: [
       { type: 'multi', mode: 'normal', level: 'medium', q: 'أي مما يلي طرق صحيحة لتحليل ' + ltr('12.42') + '؟ اختر كل الإجابات الصحيحة.', options: [ltr('12 + 0.42'), ltr('12.4 + 0.02'), ltr('10 + 2.42'), ltr('12 + 0.042')], answer: [0, 1, 2] },
-      { type: 'num', mode: 'normal', level: 'medium', q: ltr('12.42 = 12.4 +') + ' ___', answer: '0.02', calc: '12.42-12.4' },
-      { type: 'fill', mode: 'normal', level: 'medium', q: ltr('34.527 = 34 +') + ' ___', options: ['0.527', '5.27', '0.0527'], answer: 0 },
+      { type: 'num', mode: 'normal', level: 'medium', q: ltr('12.42 = 12.4 + ___'), answer: '0.02', calc: '12.42-12.4' },
+      { type: 'fill', mode: 'normal', level: 'medium', q: ltr('34.527 = 34 + ___'), options: ['0.527', '5.27', '0.0527'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'hard', q: 'أي مما يلي ليس طريقة لكتابة ' + ltr('21.045') + '؟', options: [ltr('20 + 1.45'), ltr('21 + 0.045'), ltr('21.04 + 0.005'), ltr('20 + 1 + 0.04 + 0.005')], answer: 0 }
     ] },
   { id: 'C3', lesson: 3, concept: 'قراءة الأرقام في البيانات',
@@ -128,17 +128,17 @@ window.IDEAS = [
   { id: 'D1', lesson: 4, concept: 'مقارنة الكسور العشرية خانة خانة',
     explain: 'لمقارنة الكسور العشرية نقارن الأرقام من اليسار، خانة خانة، وأول خانة يختلف فيها الرقمان تحسم المقارنة. ' + ltr('29.9 < 30.2') + ' لأن 29 وحدة أقل من 30 وحدة؛ ' + ltr('36.5 > 35.6') + ' لأن 6 آحاد أكبر من 5 آحاد؛ ' + ltr('40.5 < 41.0') + '؛ ' + ltr('35.2 > 34.7') + '.',
     variants: [
-      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('29.9') + ' ___ ' + ltr('30.2'), options: ['<', '>', '='], answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('36.5') + ' ___ ' + ltr('35.6'), options: ['>', '<', '='], answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('40.5') + ' ___ ' + ltr('41.0'), options: ['<', '>', '='], answer: 0 },
+      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('29.9 ___ 30.2'), options: ['<', '>', '='], answer: 0 },
+      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('36.5 ___ 35.6'), options: ['>', '<', '='], answer: 0 },
+      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('40.5 ___ 41.0'), options: ['<', '>', '='], answer: 0 },
       { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: ltr('35.2 > 34.7'), answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'medium', q: ltr('35.2') + ' ___ ' + ltr('34.7'), options: ['>', '<', '='], answer: 0 }
+      { type: 'mc', mode: 'normal', level: 'medium', q: ltr('35.2 ___ 34.7'), options: ['>', '<', '='], answer: 0 }
     ] },
   { id: 'D2', lesson: 4, concept: 'الكسور العشرية المتساوية: أصفار في الآخر',
     explain: 'الأصفار على يمين آخر رقم غير صفري في الكسر العشري لا تغيّر قيمته: ' + ltr('38.80 = 38.8') + ' و' + ltr('34.5 = 34.500') + '، لأن 5 أجزاء من عشرة = 50 جزءًا من مائة = 500 جزء من ألف. أما ' + ltr('0.07') + ' فمختلف: هو 7 أجزاء من مائة.',
     variants: [
-      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('38.80') + ' ___ ' + ltr('38.8'), options: ['=', '<', '>'], answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('34.5') + ' ___ ' + ltr('34.500'), options: ['=', '<', '>'], answer: 0 },
+      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('38.80 ___ 38.8'), options: ['=', '<', '>'], answer: 0 },
+      { type: 'mc', mode: 'normal', level: 'easy', q: ltr('34.5 ___ 34.500'), options: ['=', '<', '>'], answer: 0 },
       { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: ltr('2.50') + ' أكبر من ' + ltr('2.5') + '.', answer: 1 },
       { type: 'multi', mode: 'normal', level: 'medium', q: 'أي الأعداد التالية يساوي ' + ltr('0.7') + '؟ اختر كل الإجابات الصحيحة.', options: ['0.70', '0.700', '0.07', '0.007'], answer: [0, 1] },
       { type: 'fill', mode: 'normal', level: 'medium', q: ltr('0.5 = 0.500') + '، لأن 5 أجزاء من عشرة = ___ جزء من ألف.', options: ['500', '50', '5'], answer: 0 }
@@ -146,9 +146,9 @@ window.IDEAS = [
   { id: 'D3', lesson: 4, concept: 'كثرة الأرقام العشرية لا تعني عددًا أكبر',
     explain: 'الكسر العشري الذي فيه أرقام أكثر ليس دائمًا أكبر. ' + ltr('45.057 < 45.100') + ' لأن ' + ltr('45.100') + ' فيه جزء من عشرة و' + ltr('45.057') + ' ليس فيه أجزاء من عشرة؛ ' + ltr('98.013 < 98.101') + '؛ ' + ltr('50.009 < 50.100') + '؛ ' + ltr('10.1 > 10.011') + '؛ ' + ltr('2.01 < 2.099') + '. قارن الخانات من اليسار، لا عدد الأرقام.',
     variants: [
-      { type: 'mc', mode: 'normal', level: 'medium', q: ltr('45.057') + ' ___ ' + ltr('45.100'), options: ['<', '>', '='], answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'medium', q: ltr('10.1') + ' ___ ' + ltr('10.011'), options: ['>', '<', '='], answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'medium', q: ltr('2.01') + ' ___ ' + ltr('2.099'), options: ['<', '>', '='], answer: 0 },
+      { type: 'mc', mode: 'normal', level: 'medium', q: ltr('45.057 ___ 45.100'), options: ['<', '>', '='], answer: 0 },
+      { type: 'mc', mode: 'normal', level: 'medium', q: ltr('10.1 ___ 10.011'), options: ['>', '<', '='], answer: 0 },
+      { type: 'mc', mode: 'normal', level: 'medium', q: ltr('2.01 ___ 2.099'), options: ['<', '>', '='], answer: 0 },
       { type: 'mc', style: 'story', mode: 'normal', level: 'hard', q: 'تقول لينا إن ' + ltr('98.013') + ' أكبر من ' + ltr('98.101') + ' لأن فيه أرقامًا أكثر بعد العلامة العشرية. هل هي على صواب؟', options: ['لا. ' + ltr('98.101') + ' فيه جزء من عشرة، و' + ltr('98.013') + ' ليس فيه أجزاء من عشرة', 'نعم. كثرة الأرقام تعني عددًا أكبر', 'نعم. 13 أكبر من 1', 'لا. العددان متساويان'], answer: 0 },
       { type: 'fix', mode: 'normal', level: 'hard', q: 'الكسر العشري الذي فيه أرقام أكثر يكون دائمًا أكبر.', wrong: 'دائمًا', answer: 'ليس دائمًا' }
     ] },

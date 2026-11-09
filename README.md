@@ -225,6 +225,7 @@ The Prep 1 book is divided into **units** (not chapters), so for a `p1` player t
 - Reesho's Exam Hall: `p1oct`, the October monthly test on Unit 1, lessons 1 to 3 (`minParts: 1` lets a one-unit test show on the units page)
 - Units 2 to 4 are listed as "soon"
 - In the Arabic files, symbols, formulas and electron configurations are wrapped in left-to-right isolates (`ltr()`) and configurations are written without spaces (2,8,1), so they read correctly inside Arabic sentences
+- Comparisons in Arabic (9 Nov 2026): a sign-only option or button (< = >) is shown left to right (`signHtml` in quiz.html, `tray.dir='ltr'` in game_kit.js), otherwise the browser mirrors < and >. A comparison with a sign blank (`29.9 ___ 30.2`) or a number blank (`34.527 = 34 + ___`) goes in ONE `ltr()` (quiz.html wraps a fill blank inside an isolate in `<bdi dir="ltr">`); a blank that takes Arabic words («أكبر من») keeps two separate isolates so it reads from the right.
 
 Notes for the science review (Unit 1):
 - The book counts vitamin D among molecules with "several thousands" of atoms (it has about 70), so that idea uses only plastic polymers and hemoglobin.

@@ -396,9 +396,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261109a{{{"></script>
-<script src="chapters.js?v=20261109a{{{"></script>
-<script src="common.js?v=20261109a{{{"></script>
+<script src="firebase-config.js?v=20261109b{{{"></script>
+<script src="chapters.js?v=20261109b{{{"></script>
+<script src="common.js?v=20261109b{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -658,7 +658,7 @@ function ask(q) {
     const qt = $('#qtext'); qt.className = 'qtext' + (q.style === 'story' ? ' story' : '');
     keyHandler = null;
     const lead = LEAD[q.type === 'build' ? q.style : q.type];
-    qt.innerHTML = (lead ? `<span class="lead">${lead}</span>` : '') + (q.type === 'fill' ? esc(q.q).replace('___', '<span class="gap" id="gap">&nbsp;</span>')
+    qt.innerHTML = (lead ? `<span class="lead">${lead}</span>` : '') + (q.type === 'fill' ? esc(q.q).replace(/\u2066([^\u2069]*___[^\u2069]*)\u2069/, '<bdi dir="ltr">$1</bdi>').replace('___', '<span class="gap" id="gap">&nbsp;</span>')
       : q.type === 'fix' ? esc(q.q).replace(esc(q.wrong), `<u class="wrong">${esc(q.wrong)}</u>`) : esc(q.q));
     if (q.fig && q.type !== 'tap') { const fg = (window.CH_DIAGRAMS || {})[q.fig]; if (fg) area.appendChild(mk('div', 'diagramWrap', fg(q))); }   // a picture above the question (Math: grids, place value chart, number line)
     const ex = $('#explain'); ex.hidden = true; ex.className = 'explain';
@@ -680,6 +680,8 @@ function ask(q) {
     else hideTimer();
 
     let reveal = () => {};
+    /* a math sign alone (< = >) stays left to right: in an Arabic page the browser mirrors < and > */
+    const signHtml = h => /^[\s<>=≠≤≥]+$/.test(h.replace(/&lt;/g, '<').replace(/&gt;/g, '>')) ? `<bdi dir="ltr">${h}</bdi>` : h;
     const optBtn = (html, key) => { const b = mk('button', 'btn opt', (key ? `<span class="k">${key}</span>` : '') + `<span>${html}</span>`); b.type = 'button'; return b; };
 
     if (q.type === 'mc' || q.type === 'fill' || q.type === 'tf' || q.type === 'term') {
@@ -689,7 +691,7 @@ function ask(q) {
       const wrap = mk('div', 'choices' + (q.type === 'tf' ? ' two tf' : q.type === 'fill' ? ' two' : ''));
       const maxTries = retry ? Infinity : 1;   // practice: until right; timed and exam: one try
       const btns = order.map((oi, k) => {
-        const b = optBtn(q.type === 'tf' ? (oi === 0 ? T('✓ True', '✓ صح') : T('✗ False', '✗ خطأ')) : esc(opts[oi]), q.type === 'tf' ? '' : T('ABCD', 'أبجد')[k]);
+        const b = optBtn(q.type === 'tf' ? (oi === 0 ? T('✓ True', '✓ صح') : T('✗ False', '✗ خطأ')) : signHtml(esc(opts[oi])), q.type === 'tf' ? '' : T('ABCD', 'أبجد')[k]);
         b.dataset.oi = oi;
         b.onclick = () => {
           if (finished) return;
