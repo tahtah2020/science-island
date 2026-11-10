@@ -143,6 +143,7 @@
 .aq .mineBtn{position:absolute;top:44px;left:50%;transform:translateX(-50%);z-index:7;border:3px solid #fff;border-radius:999px;background:#f2b134;color:#1f3d57;font:900 15px "Cairo","Nunito",sans-serif;padding:5px 16px;box-shadow:0 4px 12px rgba(0,40,80,.3);cursor:pointer;white-space:nowrap;animation:aqPulse 2s ease-in-out infinite}
 @keyframes aqPulse{0%,100%{scale:1}50%{scale:1.06}}
 .aq .card{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:8;width:min(92%,420px);background:rgba(255,250,240,.97);border:3px solid #fff;border-radius:18px;padding:10px 14px 12px;box-shadow:0 8px 24px rgba(0,40,80,.35);direction:rtl;text-align:center;font:700 14.5px/1.6 "Cairo","Nunito",sans-serif;color:#1f3d57;cursor:default}
+.aq .card.top{bottom:auto;top:88px}
 .aq .card h3{margin:0 0 2px;font:900 17px "Cairo",sans-serif}
 .aq .card p{margin:0 0 8px}
 .aq .card .x{position:absolute;top:4px;left:8px;border:0;background:none;font:900 20px "Nunito",sans-serif;color:#3a5c75;cursor:pointer}
@@ -204,7 +205,8 @@
       rows.forEach(r => { if (r.id === myId) { r.score = Math.max(r.score || 0, myXP); r.days = myDays; r.grade = me.grade; } });
     }
     const isMe = r => !!me && (r.id === myId || r.id === 'me');
-    rows = rows.filter(r => r.days < GONE || isMe(r)).sort((a, b) => b.score - a.score).slice(0, 30);
+    rows = rows.filter(r => r.days < GONE || isMe(r)).sort((a, b) => b.score - a.score);
+    { const mine = rows.filter(isMe).slice(0, 1); rows = rows.filter(r => !isMe(r)).slice(0, 30 - mine.length).concat(mine); }   // my fish (or egg) is always in the tank, even with 0 points (10 Nov 2026: a new player was cut by the top-30 limit, so «أين سمكتي؟» showed an empty card)
     /* the grade of each student (public card), to put the fish in its grade's zone */
     try { const cards = SI.LB.cards ? await SI.LB.cards(rows.filter(r => !r.grade).map(r => r.id)) : {}; rows.forEach(r => { if (!r.grade && cards[r.id]) r.grade = cards[r.id].grade; }); } catch (e) {}
     const zoneOf = r => { const i = ZONES.findIndex(z => z[0] === r.grade); return i >= 0 ? i : hash(r.id || r.name) % NZ; };
@@ -348,7 +350,7 @@
       closeCard();
       let h = '', p = '', act = '';
       if (!me) { h = T('You have no fish yet', 'لسه مالكش سمكة'); p = T('Sign in with your name and you get an egg with your name on it!', G('سجّل اسمك وهتاخد بيضة عليها اسمك!', 'سجّلي اسمك وهتاخدي بيضة عليها اسمك!')); act = `<a class="btn primary" href="index.html">${T('Sign in ▸', 'سجّل اسمك ◂')}</a>`; }
-      else if (myFish && myFish.egg) {
+      else if ((myFish && myFish.egg) || (!myFish && myXP < HATCH)) {
         const pct = Math.round(Math.min(1, myXP / HATCH) * 100);
         h = T(`🥚 This is your egg, ${esc(me.name)}!`, `🥚 دي بيضتك يا ${esc(me.name)}!`);
         p = T(`Your fish is inside it. Win <b>${HATCH - myXP}</b> more points and it hatches.`, G(`سمكتك جوّاها. اكسب <b>${HATCH - myXP}</b> نقطة كمان وهتفقس وتطلع سمكتك.`, `سمكتك جوّاها. اكسبي <b>${HATCH - myXP}</b> نقطة كمان وهتفقس وتطلع سمكتك.`))
@@ -359,14 +361,14 @@
         p = T(`You were away for ${SI.NET_DAYS}+ days. Answer 5 questions: every right answer cuts one string, and after 5 strings your fish is free!`,
           G(`علشان غبت ${SI.NET_DAYS} أيام أو أكتر. جاوب 5 أسئلة: كل إجابة صح بتقطع خيط، وبعد 5 خيوط سمكتك تخرج حرة!`, `علشان غبتي ${SI.NET_DAYS} أيام أو أكتر. جاوبي 5 أسئلة: كل إجابة صح بتقطع خيط، وبعد 5 خيوط سمكتك تخرج حرة!`));
         act = `<a class="btn primary" href="quiz.html#rescue">${T('✂️ Free my fish', G('✂️ حرّر سمكتك', '✂️ حرّري سمكتك'))}</a>`;
-      } else if (myFish) {
+      } else {
         const li = SI.levelInfo(myXP), nx = li.to ? KINDS[Math.min(6, li.n + 1)] : null;
         h = T(`Here is your fish, ${esc(me.name)}! 🐟`, `دي سمكتك يا ${esc(me.name)}! 🐟`);
         p = T(`It has <b>${myXP}</b> points.`, `عندها <b>${myXP}</b> نقطة.`) + ' ' + (nx ? T(`${li.to - myXP} more and it becomes a ${nx[3]}.`, `باقي ${li.to - myXP} نقطة وتتحول لـ${nx[2]}.`) : '')
           + (myDays >= 1 ? ' ' + T('It is hungry: play today!', G('وهي جعانة: العب النهارده!', 'وهي جعانة: العبي النهارده!')) : '');
         act = `<a class="btn primary" href="chapters.html">${T('Play ▸', G('العب ◂', 'العبي ◂'))}</a>`;
       }
-      card = document.createElement('div'); card.className = 'card'; card.setAttribute('role', 'dialog');
+      card = document.createElement('div'); card.className = 'card' + ((myFish && myFish.egg) || (!myFish && myXP < HATCH) ? ' top' : '');   // an egg sits on the sand: the card goes up so it does not hide it card.setAttribute('role', 'dialog');
       card.innerHTML = `<button class="x" type="button" aria-label="${T('Close', 'إغلاق')}">×</button><h3>${h}</h3><p>${p}</p>${act}`;
       card.onpointerdown = e => e.stopPropagation(); card.onclick = e => e.stopPropagation();
       card.querySelector('.x').onclick = closeCard;
