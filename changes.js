@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-10', title: 'رياضيات الصف الخامس: الوحدة السادسة «التعبيرات العددية والأنماط»',
+    items: [
+      { text: 'وحدة جديدة للمسارين: ترتيب العمليات، والأقواس، وكتابة تعبير عددي لمسألة، والأنماط العددية — 22 فكرة و113 سؤالًا، ولكل سؤال تلميح', links: [{ label: 'الوحدة 6', href: 'map.html', ch: 'm5c6' }] },
+      { text: 'صور جديدة مرسومة بالكود: بطاقات التعبيرات، ومحطات أتوبيس علي، وبلاط ياسين، وجداول المُدخل والمُخرج، ومدخرات كامل، وزهريات هدى، ودراجة منير' }
+    ] },
   { date: '2026-11-10', title: 'مواد الصف الثالث',
     items: [
       { text: 'الصف الثالث يرى فقط: الرياضيات، اللغة الإنجليزية، اكتشف (قريبًا)' },

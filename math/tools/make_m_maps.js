@@ -216,6 +216,36 @@ ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
   save('bg_m5c5.svg', b);
 })();
 
+/* ---------- Grade 5 · Unit 6 · Numerical Expressions and Patterns: a town island with a bus road and four stops, a tiled plaza (Yaseen's pattern), bicycles and an expression board ---------- */
+(function () {
+  const keepSeed = seed; seed = 61;   /* the seed is put back at the end so the maps after this block stay byte-identical */
+  const D = ctx.window.CH_DIAGRAMS;
+  const stopSign = (x, y, k, n) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0V-80" stroke="#1f3d57" stroke-width="6"/><circle cy="-96" r="22" fill="#e2603f" stroke="#1f3d57" stroke-width="4"/>${M.num(0, -88, String(n), { fs: 22, fill: '#fff' })}</g>`;
+  const plaza = (x, y, k) => { let t = ''; for (let r = -3; r <= 3; r++) for (let c = -3; c <= 3; c++) { if (r && c) continue; t += `<rect x="${c * 34 - 13}" y="${r * 34 - 13}" width="26" height="26" transform="rotate(45 ${c * 34} ${r * 34})" fill="#f2a24a" stroke="#b9671a" stroke-width="3"/>`; } return `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-130" y="-130" width="260" height="260" rx="30" fill="#f6e3bd" stroke="#c9a25e" stroke-width="5"/>${t}</g>`; };
+  const bike = (x, y, k, c) => `<g transform="translate(${x} ${y}) scale(${k})"><circle cx="-26" cy="8" r="20" fill="none" stroke="#333" stroke-width="6"/><circle cx="26" cy="8" r="20" fill="none" stroke="#333" stroke-width="6"/><path d="M-26 8L-6 -20H20L26 8M-6 -20L0 8H-26M0 8L20 -20M-10 -28H2M14 -30H28" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+  const bus = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-80" y="-56" width="160" height="88" rx="16" fill="#d9413a" stroke="#8f2420" stroke-width="5"/>${[-64, -24, 16].map(c => `<rect x="${c}" y="-42" width="34" height="28" rx="5" fill="#e8f4fb"/>`).join('')}<rect x="54" y="-42" width="18" height="40" rx="4" fill="#e8f4fb"/><rect x="-80" y="0" width="160" height="10" fill="#f7cf4d"/><circle cx="-44" cy="36" r="16" fill="#333"/><circle cx="44" cy="36" r="16" fill="#333"/><circle cx="-44" cy="36" r="6" fill="#ccc"/><circle cx="44" cy="36" r="6" fill="#ccc"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="270" ry="160" fill="#fde9c8" opacity=".8"/><ellipse cx="930" cy="1000" rx="250" ry="150" fill="#e4f1d6" opacity=".7"/><ellipse cx="930" cy="320" rx="280" ry="200" fill="#efe3f5" opacity=".6"/>`;
+  /* the bus road across the island */
+  inside += `<path d="M-20 880C260 820 380 960 640 900S1000 800 1260 860" fill="none" stroke="#8a8f96" stroke-width="64" stroke-linecap="round"/><path d="M-20 880C260 820 380 960 640 900S1000 800 1260 860" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="26 22"/>`;
+  for (let i = 0; i < 24; i++) { const x = f(90 + rnd() * 1040), y = f(160 + rnd() * 1000); if (!(y > 800 && y < 980)) inside += tuft(x, y); }
+  let s = island([[0, '#fbe6c8'], [.5, '#ece4f3'], [1, '#e4f1d6']], ['#f3e6b8', '#f6efd2'], inside);
+  s += stopSign(150, 860, 1, 1) + stopSign(470, 935, 1, 2) + stopSign(800, 870, 1, 3) + stopSign(1110, 840, 1, 4) + bus(640, 870, .9);
+  s += plaza(260, 420, 1) + bike(980, 1080, 1.1, '#2f78b5') + bike(1080, 1100, 1, '#79c69a');
+  s += board(930, 260, 300, 120, '<g transform="translate(-140 -40) scale(.82)">' + D.seqStrip({ pic: { plain: true, nums: ['5', '10', '20', '40', '?'] } }) + '</g>');
+  s += board(600, 640, 300, 110, '<g transform="translate(-140 -30)">' + `<rect x="0" y="0" width="280" height="56" rx="12" fill="#fff" stroke="#9db3c4" stroke-width="3"/>` + `<text x="140" y="38" text-anchor="middle" direction="ltr" font-size="26" font-weight="900" fill="#1f3d57">5 + <tspan fill="#8a63c4">(</tspan>2 <tspan fill="#e2603f">×</tspan> 3<tspan fill="#8a63c4">)</tspan> <tspan fill="#2f78b5">−</tspan> 1</text></g>`);
+  s += crate(400, 1150, 1, '( )') + crate(458, 1162, .9, '×÷') + crate(512, 1154, .8, '+−');
+  s += at(1090, 140, 2.2, A.sun(26)) + cloud(140, 110, .8, .85) + cloud(600, 70, .7, .85) + '</svg>';
+  save('map_m5c6.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".6" stop-color="#f6eefa"/><stop offset="1" stop-color="#ece0f2"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}${cloud(1300, 200, 1, .7)}
+<path d="M0 820H1600V1000H0Z" fill="#b9bdc2"/><path d="M0 900H1600" stroke="#fff" stroke-width="8" stroke-dasharray="40 34"/>${bus(380, 830, 1.6)}${stopSign(1000, 840, 1.6, 1)}${bike(1320, 860, 1.5, '#2f78b5')}
+${at(1300, 150, 2.4, A.sun(26))}</svg>`;
+  save('bg_m5c6.svg', b);
+  seed = keepSeed;
+})();
+
 /* ---------- Grade 3 · Unit 1 · Multiplication Rules: a fair island with candy rows, a throwing target, pencil boxes and a ten-seat bus ---------- */
 (function () {
   seed = 57;

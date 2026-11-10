@@ -19,7 +19,13 @@
      Unit 5: tenthsGrid  (picture only)                       q.pic = { a: 3, b: 4 }  (rows and columns in tenths; overlap darker; the product is never printed)
              jumpLine    (picture only)                       q.pic = { step: 0.3, n: 3, to: 3 }  (equal jumps, the landing point not labelled)
              placeSlide  (picture only)                       q.pic = { num: '25.4' }  (place-value boxes, whole part blue, decimal part orange, the decimal point between)
-   Every Unit 2 to 5 picture honours q.pic.plain (inner markup only, for the game scene).
+     Unit 6: exprCard    (picture only)                       q.pic = { expr: '56.5 × 2.3 − 15 + 12.7', lines: ['…'], ask: true }  (× ÷ coral, + − blue, parentheses purple; lines = rewritten after each step)
+             busRoute    (picture only)                       q.pic = { expr, stop: 1-4 }  (Ali's bus at the stop asked, earlier stops ticked)
+             tilePlus    (picture only)                       q.pic = { stages: [1, 2, 3], ask: 4 }  (Yaseen's tiles, every tile drawn; the asked stage is a «?» card)
+             ioTable     (picture only)                       q.pic = { rows: [[1, 8], [2, '?']], ask: 1, bikes: true }  (Arabic: input column on the right, as the book)
+             seqStrip    (picture only)                       q.pic = { nums: ['5', '10', '?'] }  (the rule is never written)
+             saveFig, vaseFig, bikeFig (picture only)          Kamel's savings, Hoda's 16 vases, Mounir's ride (Lesson 3 story problems)
+   Every Unit 2 to 6 picture honours q.pic.plain (inner markup only, for the game scene).
    The numbers on every picture stay left to right, also for an Arabic player (as in the school book).
    The names read by screen readers describe what is drawn, never the answer. */
 (function () {
@@ -388,6 +394,160 @@
     return s + close2(q);
   }
 
+  /* ================= Unit 6 · Numerical Expressions and Patterns ================= */
+  const isAr = () => T('en', 'ar') === 'ar';
+  const OPC = { md: '#e2603f', as: '#2f78b5', par: '#8a63c4' };
+  /* an expression in colour: × ÷ coral, + − blue, parentheses purple; numbers ink. Returns a <text> centred at x */
+  function exprText(x, y, expr, fs, o = {}) {
+    const toks = String(expr).split(' ');
+    const sp = toks.map(t => {
+      let fill = o.fill || COL.ink;
+      if (t === '×' || t === '÷') fill = OPC.md; else if (t === '+' || t === '−') fill = OPC.as;
+      const parts = t.split(/([()\[\]])/).filter(Boolean);
+      return parts.map(pc => `<tspan fill="${/[()\[\]]/.test(pc) ? OPC.par : fill}"${/[()\[\]]/.test(pc) ? ' font-weight="900"' : ''}>${esc(pc)}</tspan>`).join('');
+    }).join(' ');
+    return `<text x="${f1(x)}" y="${f1(y)}" text-anchor="middle" direction="ltr" unicode-bidi="embed" font-size="${f1(fs)}" font-weight="${o.fw || 900}" fill="${COL.ink}">${sp}</text>`;
+  }
+  const fitFs = (s, max = 21, w = 318) => Math.min(max, w / (String(s).length * 0.56));
+  /* the expression on a card; lines = the expression rewritten after each step; ask = a last line «= ?» (book p121: «rewrite the expression after each step») */
+  function exprCard(q) {
+    const p = (q && q.pic) || { expr: '56.5 × 2.3 − 15 + 12.7' }, lines = p.lines || [], n = lines.length + (p.ask ? 1 : 0);
+    const H = 70 + n * 30 + 6;
+    let s = open2(q, H, T('A numerical expression', 'تعبير عددي'));
+    const fs = fitFs(p.expr);
+    s += `<rect x="10" y="12" width="320" height="48" rx="12" fill="#fff" stroke="${COL.line}" stroke-width="2"/>` + exprText(170, 36 + fs * .36, p.expr, fs);
+    let y = 60;
+    lines.forEach(l => { y += 30; const f = fitFs('= ' + l, 18); s += exprText(170, y + 4, '= ' + l, f, { fw: 800 }); });
+    if (p.ask) { y += 30; s += `<text x="170" y="${y + 4}" text-anchor="middle" direction="ltr" unicode-bidi="embed" font-size="18" font-weight="900" fill="${C2.prime}">= ?</text>`; }
+    return s + close2(q);
+  }
+  /* a small bus (book p122 «Tour bus»), facing right */
+  const busIcon = (x, y, k = 1) => at(x, y, k, `<rect x="-20" y="-14" width="40" height="22" rx="5" fill="#d9413a" stroke="#8f2420" stroke-width="1.5"/><rect x="-16" y="-10" width="9" height="7" rx="1.5" fill="#e8f4fb"/><rect x="-5" y="-10" width="9" height="7" rx="1.5" fill="#e8f4fb"/><rect x="6" y="-10" width="10" height="9" rx="1.5" fill="#e8f4fb"/><rect x="-20" y="1" width="40" height="3" fill="#f7cf4d"/><circle cx="-11" cy="9" r="4.2" fill="#333"/><circle cx="11" cy="9" r="4.2" fill="#333"/><circle cx="-11" cy="9" r="1.6" fill="#ccc"/><circle cx="11" cy="9" r="1.6" fill="#ccc"/>`);
+  /* Ali's bus route: the expression on a sign, four stops on a road, the bus at the stop asked (earlier stops ticked) */
+  function busRoute(q) {
+    const p = (q && q.pic) || { expr: '300.53 − 11.04 × 0.2 ÷ 0.01 + 13.07', stop: 1 }, H = 150;
+    let s = open2(q, H, T('A bus route with four stops', 'مسار أتوبيس فيه أربع محطات'));
+    const fs = fitFs(p.expr, 18);
+    s += `<rect x="10" y="10" width="320" height="38" rx="10" fill="#fff" stroke="${COL.line}" stroke-width="2"/>` + exprText(170, 29 + fs * .36, p.expr, fs);
+    const y = 112, xs = [52, 130, 208, 286];
+    s += `<rect x="12" y="${y - 6}" width="316" height="22" rx="11" fill="#8a8f96"/><path d="M22 ${y + 5}H318" stroke="#fff" stroke-width="2" stroke-dasharray="10 8"/>`;
+    xs.forEach((x, i) => {
+      const k = i + 1, done = k < p.stop, now = k === p.stop;
+      s += `<path d="M${x} ${y - 6}V${y - 34}" stroke="${COL.ink}" stroke-width="2.4"/>`;
+      s += `<circle cx="${x}" cy="${y - 44}" r="13" fill="${now ? C2.prime : done ? '#79c69a' : '#fff'}" stroke="${COL.ink}" stroke-width="2"/>` + num(x, y - 39, done ? '✓' : String(k), { fs: 14, fill: now || done ? '#fff' : COL.ink });
+      s += lab(x, y + 34, T('Stop ' + k, 'المحطة ' + k), { fs: 11 });
+    });
+    s += busIcon(xs[Math.max(0, Math.min(3, (p.stop || 1) - 1))] - 34, y - 8, .9);
+    return s + close2(q);
+  }
+  /* Yaseen's tiles (book p127): stage n = a plus with arms of n tiles (4n + 1 tiles), every tile drawn; ask = a «?» card for that stage */
+  function tilePlus(q) {
+    const p = (q && q.pic) || { stages: [1, 2, 3] }, st = p.stages || [1, 2, 3];
+    const c = st.length === 1 ? 22 : 13, gap = 16, askW = p.ask ? 64 : 0;
+    const widths = st.map(n => (2 * n + 1) * c), total = widths.reduce((a, b) => a + b, 0) + gap * (st.length - (p.ask ? 0 : 1)) + askW;
+    const maxH = (2 * Math.max(...st) + 1) * c, H = maxH + 50;
+    let s = open2(q, H, T('A pattern of square tiles', 'نمط من البلاط'));
+    const tile = (x, y) => `<rect x="${f1(x - c * .36)}" y="${f1(y - c * .36)}" width="${f1(c * .72)}" height="${f1(c * .72)}" transform="rotate(45 ${f1(x)} ${f1(y)})" fill="#f2a24a" stroke="#b9671a" stroke-width="1.2"/>`;
+    let x = (340 - total) / 2;
+    const cy = 12 + maxH / 2;
+    st.forEach((n, i) => {
+      const w = widths[i], cx = x + w / 2;
+      for (let k = -n; k <= n; k++) { s += tile(cx + k * c, cy); if (k) s += tile(cx, cy + k * c); }
+      s += lab(cx, H - 14, T('Stage ' + n, 'المرحلة ' + n), { fs: 11 });
+      x += w + gap;
+    });
+    if (p.ask) {
+      s += `<rect x="${f1(x)}" y="${f1(cy - 30)}" width="${askW}" height="60" rx="10" fill="#fff" stroke="${C2.prime}" stroke-width="2.4" stroke-dasharray="6 4"/>` + num(x + askW / 2, cy + 10, '?', { fs: 30, fill: C2.prime });
+      s += lab(x + askW / 2, H - 14, T('Stage ' + p.ask, 'المرحلة ' + p.ask), { fs: 11, fill: C2.prime });
+    }
+    return s + close2(q);
+  }
+  /* a small bicycle */
+  const bikeIcon = (x, y, k = 1, col = '#2f78b5') => at(x, y, k, `<circle cx="-8" cy="3" r="6" fill="none" stroke="#333" stroke-width="2"/><circle cx="8" cy="3" r="6" fill="none" stroke="#333" stroke-width="2"/><path d="M-8 3L-2 -6H6L8 3M-2 -6L0 3H-8M0 3L6 -6M-3 -9H0M5 -9H9" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`);
+  /* an input / output table (book p128-130); rows = [[in, out], …], ask = row with the «?»; bikes = draw the bicycles of each input. Arabic: input on the right (as the book) */
+  function ioTable(q) {
+    const p = (q && q.pic) || { rows: [[1, 8], [2, 16]] }, rows = p.rows, rh = 26, top = 12, hh = 30, ar = isAr();
+    const cw = p.bikes ? 150 : 110, W = cw * 2, x0 = (340 - W) / 2, H = top + hh + rows.length * rh + 14;
+    let s = open2(q, H, T('An input and output table', 'جدول المُدخل والمُخرج'));
+    const xin = ar ? x0 + cw : x0, xout = ar ? x0 : x0 + cw;
+    s += `<rect x="${x0}" y="${top}" width="${W}" height="${hh + rows.length * rh}" rx="10" fill="#fff" stroke="${C2.purple}" stroke-width="2"/>`;
+    s += `<path d="M${x0 + 1} ${top + hh}H${x0 + W - 1}" stroke="${C2.purple}" stroke-width="2"/><rect x="${x0 + 1}" y="${top + 1}" width="${W - 2}" height="${hh - 1}" rx="9" fill="#e6dcf3"/><path d="M${x0 + cw} ${top}V${top + hh + rows.length * rh}" stroke="${C2.purple}" stroke-width="1.5"/>`;
+    s += lab(xin + cw / 2, top + 20, p.bikes ? T('Bicycles (input)', 'عدد الدراجات (المُدخل)') : T('Input', 'المُدخل'), { fs: 12 }) + lab(xout + cw / 2, top + 20, p.bikes ? T('Wheels (output)', 'عدد العجلات (المُخرج)') : T('Output', 'المُخرج'), { fs: 12 });
+    rows.forEach((r, i) => {
+      const y = top + hh + i * rh, asked = i === p.ask;
+      if (i) s += `<path d="M${x0 + 1} ${y}H${x0 + W - 1}" stroke="#e1d6ef" stroke-width="1"/>`;
+      const cell = (x, v) => v === '?' ? `<rect x="${f1(x + cw / 2 - 20)}" y="${y + 3}" width="40" height="${rh - 6}" rx="6" fill="#fde3db" stroke="${C2.prime}" stroke-width="1.6"/>` + num(x + cw / 2, y + 18, '?', { fs: 15, fill: C2.prime }) : num(x + cw / 2, y + 18, String(v), { fs: 15, fill: asked ? C2.prime : COL.ink });
+      if (p.bikes && r[0] !== '?') {
+        const n = +r[0];
+        s += num(xin + 18, y + 18, String(n), { fs: 15 });
+        if (n <= 5) for (let k = 0; k < n; k++) s += bikeIcon(xin + 46 + k * 21, y + 13, .8);
+        else s += bikeIcon(xin + 52, y + 13, .8) + num(xin + 82, y + 18, '× ' + n, { fs: 12, fill: '#2f78b5' });
+      } else s += cell(xin, r[0]);
+      s += cell(xout, r[1]);
+    });
+    return s + close2(q);
+  }
+  /* a set of numbers in boxes with arrows between them (book p128); the rule is never written */
+  function seqStrip(q) {
+    const p = (q && q.pic) || { nums: ['5', '10', '20'] }, n = p.nums.length, bw = 44, gap = 12, W = n * bw + (n - 1) * gap, x0 = (340 - W) / 2, H = 64;
+    let s = open2(q, H, T('A set of numbers', 'مجموعة من الأعداد'));
+    p.nums.forEach((v, i) => {
+      const x = x0 + i * (bw + gap), qm = v === '?';
+      s += `<rect x="${f1(x)}" y="14" width="${bw}" height="36" rx="8" fill="${qm ? '#fde3db' : '#fff'}" stroke="${qm ? C2.prime : COL.line}" stroke-width="2"${qm ? ' stroke-dasharray="5 3"' : ''}/>` + num(x + bw / 2, 38, v, { fs: v.length > 3 ? 14 : 17, fill: qm ? C2.prime : COL.ink });
+      if (i < n - 1) s += `<path d="M${f1(x + bw + 2)} 32H${f1(x + bw + gap - 2)}m-4 -3l4 3l-4 3" fill="none" stroke="${COL.ink}" stroke-width="1.6"/>`;
+    });
+    return s + close2(q);
+  }
+  /* a banknote */
+  const note = (x, y, v, w = 44, col = '#9fd3b0', dark = '#3f9a6a') => `<rect x="${f1(x - w / 2)}" y="${f1(y - 11)}" width="${w}" height="22" rx="4" fill="${col}" stroke="${dark}" stroke-width="1.6"/><circle cx="${f1(x - w / 2 + 7)}" cy="${f1(y)}" r="3" fill="none" stroke="${dark}" stroke-width="1.2"/>` + num(x + 4, y + 5, v, { fs: 13, fill: '#1f4d35' });
+  /* Kamel's savings (book p126): 1,000 LE now, and each of 4 weeks 50 LE + 30 LE */
+  function saveFig(q) {
+    const H = 150, ar = isAr();
+    let s = open2(q, H, T('Kamel’s savings', 'مدخرات كامل'));
+    const bx = ar ? 290 : 50;
+    s += `<rect x="${bx - 38}" y="30" width="76" height="70" rx="12" fill="#fff4d6" stroke="#c9a25e" stroke-width="2"/>` + note(bx, 60, '1,000', 58, '#f7d98a', '#b8862b') + lab(bx, 88, T('he has', 'معه الآن'), { fs: 11 });
+    const wx = ar ? [214, 160, 106, 52] : [126, 180, 234, 288];
+    wx.forEach((x, i) => {
+      s += `<rect x="${x - 25}" y="26" width="50" height="86" rx="10" fill="#f3f8fc" stroke="${COL.line}" stroke-width="1.6"/>` + note(x, 52, '50', 40) + note(x, 82, '30', 40, '#bfe0f5', '#4ea5d9');
+      s += lab(x, 128, T('week ' + (i + 1), 'أسبوع ' + (i + 1)), { fs: 11 });
+    });
+    s += lab(ar ? 133 : 207, 18, T('job 1 + job 2, every week', 'الوظيفة 1 + الوظيفة 2 كل أسبوع'), { fs: 11, fill: '#3f9a6a' });
+    s += lab(bx, 128, T('LE', 'جنيه'), { fs: 11 });
+    return s + close2(q);
+  }
+  /* Hoda's vases (book p126): 15.75 L in the jug, 16 identical vases, 3.75 L left */
+  function vaseFig(q) {
+    const H = 156, ar = isAr();
+    let s = open2(q, H, T('A jug of water and 16 vases', 'إبريق ماء و16 زهرية'));
+    const jug = (x, y, k, level) => at(x, y, k, `<path d="M-22 -40H22L26 34Q26 44 16 44H-16Q-26 44 -26 34Z" fill="#fff" stroke="#4ea5d9" stroke-width="2.4"/><path d="M${-25 + (1 - level) * 0} ${44 - 84 * level}H25L26 34Q26 44 16 44H-16Q-26 44 -26 34Z" fill="#9ed2f0" opacity=".85"/><path d="M22 -30Q40 -24 36 0Q34 14 25 16" fill="none" stroke="#4ea5d9" stroke-width="3"/>`);
+    const jx = ar ? 292 : 48;
+    s += jug(jx, 64, 1, .9) + num(jx, 128, '15.75', { fs: 14 }) + lab(jx, 144, T('L at the start', 'لترًا في البداية'), { fs: 10.5 });
+    const vase = (x, y) => `<path d="M${x - 5} ${y - 16}H${x + 5}L${x + 3} ${y - 10}Q${x + 10} ${y - 2} ${x + 6} ${y + 9}H${x - 6}Q${x - 10} ${y - 2} ${x - 3} ${y - 10}Z" fill="#f4c1de" stroke="#d98ab8" stroke-width="1.4"/>`;
+    const vx0 = ar ? 96 : 104;
+    for (let i = 0; i < 16; i++) s += vase(vx0 + (i % 8) * 20, 44 + Math.floor(i / 8) * 38);
+    s += lab(vx0 + 70, 120, T('16 identical vases', '16 زهرية متطابقة'), { fs: 11 });
+    s += `<path d="M${ar ? 262 : 78} 64H${ar ? 250 : 90}m${ar ? 5 : -5} -4l${ar ? -5 : 5} 4l${ar ? 5 : -5} 4" fill="none" stroke="${COL.ink}" stroke-width="1.6"/>`;
+    const lx = ar ? 40 : 300;
+    s += jug(lx, 72, .55, .35) + num(lx, 112, '3.75', { fs: 13 }) + lab(lx, 128, T('L left', 'لترًا متبقية'), { fs: 10.5 });
+    return s + close2(q);
+  }
+  /* Mounir's ride (book p126): a cyclist on a 38.7 km road and a clock showing 2 hours */
+  function bikeFig(q) {
+    const H = 140, ar = isAr();
+    let s = open2(q, H, T('A cyclist on a road and a clock', 'راكب دراجة على طريق وساعة'));
+    s += `<rect x="14" y="96" width="312" height="14" rx="7" fill="#8a8f96"/><path d="M24 103H316" stroke="#fff" stroke-width="1.6" stroke-dasharray="9 7"/>`;
+    s += `<path d="M24 80V88M316 80V88M24 84H316" stroke="${C2.prime}" stroke-width="2"/>` + `<rect x="128" y="70" width="84" height="22" rx="11" fill="#fff" stroke="${C2.prime}" stroke-width="1.6"/>` + num(156, 86, '38.7', { fs: 14, fill: C2.prime }) + lab(190, 86, T('km', 'كم'), { fs: 12, fill: C2.prime });
+    const rx = ar ? 290 : 50, flagX = ar ? 30 : 312;
+    s += at(rx, 80, 1.25, `<circle cx="-9" cy="6" r="7" fill="none" stroke="#333" stroke-width="2"/><circle cx="9" cy="6" r="7" fill="none" stroke="#333" stroke-width="2"/><path d="M-9 6L-2 -4H7L9 6M-2 -4L0 6H-9M0 6L7 -4" fill="none" stroke="#2f78b5" stroke-width="2" stroke-linejoin="round"/><path d="M-1 -6L3 -18L9 -6" fill="none" stroke="#f2a24a" stroke-width="3" stroke-linecap="round"/><circle cx="4" cy="-22" r="4" fill="#f2c9a0"/>`);
+    s += `<path d="M${flagX} 96V58" stroke="${COL.ink}" stroke-width="2"/><path d="M${flagX} 58h${ar ? 16 : -16}l${ar ? -4 : 4} 6l${ar ? 4 : -4} 6h${ar ? -16 : 16}" fill="#79c69a" stroke="#3f9a6a" stroke-width="1.2"/>`;
+    const cx = 170, cy = 34;
+    s += `<circle cx="${cx}" cy="${cy}" r="20" fill="#fff" stroke="${COL.ink}" stroke-width="2"/>`;
+    for (let h = 0; h < 12; h++) { const a = h * Math.PI / 6; s += `<path d="M${f1(cx + 16 * Math.sin(a))} ${f1(cy - 16 * Math.cos(a))}L${f1(cx + 19 * Math.sin(a))} ${f1(cy - 19 * Math.cos(a))}" stroke="${COL.ink}" stroke-width="1.4"/>`; }
+    s += `<path d="M${cx} ${cy}V${cy - 13}M${cx} ${cy}L${f1(cx + 8 * Math.sin(Math.PI / 3))} ${f1(cy - 8 * Math.cos(Math.PI / 3))}" stroke="${COL.ink}" stroke-width="2.2" stroke-linecap="round"/>`;
+    s += lab(ar ? cx - 52 : cx + 52, cy + 5, T('2 hours', 'ساعتان'), { fs: 13, fill: COL.ink });
+    return s + close2(q);
+  }
+
   window.M5ART = { COL, T, f1, esc, at, num, lab, hot, ringRect, svgOpen, grid100, slices, PLACES, digitsOf, chart, chartHots, line, isPrime };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeChart, numLine, gridShade, gridModel, barModel, factorTree, multVenn, skipLine, areaModel, unitGrid, longMult, divModel, longDiv, tenthsGrid, jumpLine, placeSlide });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { placeChart, numLine, gridShade, gridModel, barModel, factorTree, multVenn, skipLine, areaModel, unitGrid, longMult, divModel, longDiv, tenthsGrid, jumpLine, placeSlide, exprCard, busRoute, tilePlus, ioTable, seqStrip, saveFig, vaseFig, bikeFig });
 })();

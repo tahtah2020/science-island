@@ -303,8 +303,11 @@ window.CHAPTERS = [
     map: { img: 'math/assets/map_m5c5.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'math/assets/map_m5c5.svg', quizBg: 'math/assets/bg_m5c5.svg',
     lessonsAr: ['الضرب في قوى العدد 10', 'ضرب الكسور العشرية في أعداد صحيحة', 'ضرب الأجزاء من عشرة في أجزاء من عشرة', 'ضرب الكسور العشرية باستخدام نموذج مساحة المستطيل', 'ضرب الكسور العشرية حتى جزء من مائة', 'ضرب الكسور العشرية حتى جزء من الألف', 'الكسور العشرية والنظام المتري', 'القياس والكسور العشرية وقوى العدد 10', 'حل مسائل كلامية متعددة الخطوات', 'القسمة على قوى العدد 10', 'الأنماط والعلاقات في قوى العدد 10', 'قسمة كسور عشرية على أعداد صحيحة', 'قسمة كسور عشرية على كسور عشرية'] },
-  { id: 'm5c6', subject: 'math', grade: 'g5', n: 6, title: 'Numerical Expressions and Patterns', titleAr: 'التعبيرات العددية والأنماط', icon: '🧩', tint: '#fff1c9', ready: false,
+  { id: 'm5c6', subject: 'math', grade: 'g5', n: 6, title: 'Numerical Expressions and Patterns', titleAr: 'التعبيرات العددية والأنماط', icon: '🧩', tint: '#fff1c9', ready: true,
     lessons: ['Ordering of Mathematical Operations', 'Numerical Expressions with Parentheses', 'Writing Expressions to Represent Scenarios', 'Identifying Numerical Patterns'],
+    questions: 'math/questions_m5c6.js', questionsAr: 'math/questions_m5c6_ar.js', art: 'math/m5_art.js',
+    bookOrder: true, questMax: 22, map: { img: 'math/assets/map_m5c6.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'math/assets/map_m5c6.svg', quizBg: 'math/assets/bg_m5c6.svg',
     lessonsAr: ['ترتيب إجراء العمليات الحسابية', 'تعبيرات عددية تتضمن أقواسًا', 'كتابة تعبير عددي لتمثيل موقف ما', 'تحديد الأنماط العددية'] },
 
   /* Grade 4 Math, first term 2026/2027. Sources: the Arabic and English school books (each track follows its own book; same content).
