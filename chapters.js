@@ -558,7 +558,15 @@ window.CHAPTERS = [
     lessonsAr: ['ما الحواس الخمس؟', 'العادات الصحية', 'وقت الحكاية: وجبة جحا الرائعة', 'الكتابة: كلمات الترتيب', 'فكّر وابتكر: عرض تقديمي'] },
 
   /* Units 2-6 of the book (scope and sequence, p. 3-5): locked until their pages arrive. Idea letters will continue from F. */
-  { id: 'eg4u2', subject: 'english', grade: 'g4', n: 2, title: 'My Community', titleAr: 'مجتمعي', icon: '🏘️', tint: '#fdebd5', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg4u2', subject: 'english', grade: 'g4', n: 2, title: 'My Community', titleAr: 'مجتمعي', icon: '🏘️', tint: '#fdebd5', ready: false, bookOrder: true,
+    lessons: ['Helping Our Community', 'Community Problems and Solutions', 'Egypt: My Culture', 'Writing: A Diary Entry', 'Think and Create: A Poster'],
+    questions: 'english/questions_eg4u2.js', art: 'english/g4_art.js',
+    game: { href: 'english-community.html', name: 'Community Helpers', nameAr: 'أبطال المجتمع', icon: '🏘️',
+      hint: 'Help your community, fix traffic and trash, visit the Delta and Upper Egypt, write a diary, then race the Speed Round!',
+      hintAr: 'ساعد مجتمعك، وحلّ مشكلة الزحمة والقمامة، وزور الدلتا والصعيد، واكتب مذكراتك، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg4u2.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg4u2.svg', quizBg: 'english/assets/bg_eg4u2.svg',
+    lessonsAr: ['مساعدة مجتمعنا', 'مشكلات المجتمع وحلولها', 'مصر: ثقافتي', 'الكتابة: المذكرات اليومية', 'فكّر وابتكر: ملصق'] },
   { id: 'eg4u3', subject: 'english', grade: 'g4', n: 3, title: 'In Our World', titleAr: 'في عالمنا', icon: '🐘', tint: '#e2f4dc', ready: false, lessons: [], lessonsAr: [] },
   { id: 'eg4u4', subject: 'english', grade: 'g4', n: 4, title: 'Egypt: My Homeland', titleAr: 'مصر وطني', icon: '🏛️', tint: '#fbe9c8', ready: false, lessons: [], lessonsAr: [] },
   { id: 'eg4u5', subject: 'english', grade: 'g4', n: 5, title: 'A Day at Work', titleAr: 'يوم في العمل', icon: '👩‍⚕️', tint: '#e1effb', ready: false, lessons: [], lessonsAr: [] },

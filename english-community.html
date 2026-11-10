@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Community Helpers · My Community</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261110h">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Community Helpers.</noscript>
+<script src="firebase-config.js?v=20261110h"></script>
+<script src="chapters.js?v=20261110h"></script>
+<script src="common.js?v=20261110h"></script>
+<script src="english/g4_art.js?v=20261110h"></script>
+<script src="game_kit.js?v=20261110h"></script>
+<script>
+(() => {
+'use strict';
+/* Community Helpers · the game of English Grade 4, Unit 2 "My Community" (ministry book "English Primary 4", term 1). Built on the shared game kit (game_kit.js).
+   No owner pictures for this unit: every scene is drawn in code. The scene never shows the answer.
+   Stage 1 (Warm Up): ways to help the community, tap the picture; the helping verbs on a card (lesson 1, page 26, Quick Review p 37).
+   Stage 2 (Missions): 1 traffic and trash, problems and solutions (lesson 2, pp 27-28) · 2 don't / doesn't and Do / Does (p 29)
+                       3 the Delta and Upper Egypt (lesson 3, pp 30-31) · 4 the /f/ and /v/ sounds (p 32) · 5 prefixes dis- il- ir- (p 33)
+                       6 Hana's diary and how to write a diary entry (lesson 4, pp 34-35) · 7 the poster against air pollution (lesson 5, p 36).
+   Stage 3 (Speed Round): Do or Does? (p 29).
+   English is English-only on both tracks (SI.isAr() is false for this subject); every T('English', 'عربي') still has both languages. */
+const T = SI.T, G = SI.G, E = E4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const sc = { mode: 'help', only: null, fill: '', lines: [], cars: 8, bus: false, trash: true, bins: false, hi: '', word: '', pic: '', diary: 0 };
+const set = (mode, o) => { Object.assign(sc, { mode, only: null, fill: '', lines: [], cars: 8, bus: false, trash: true, bins: false, hi: '', word: '', pic: '', diary: 0 }, o || {}); g.paint(); };
+
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 24}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const cardSvg = () => {
+  let s = bg() + `<rect x="16" y="34" width="308" height="232" rx="20" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, y0 = 150 - (n - 1) * 20;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 40;
+    const len = parts.join(sc.fill || '_____').length, fs = Math.min(23, Math.floor(284 / (len * .58)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+};
+const car = (x, y, c) => `<g transform="translate(${x} ${y})"><path d="M-18 6V-4Q-16 -8 -10 -8L-6 -15H8L13 -8Q18 -8 18 -4V6Z" fill="${c}" stroke="#2a3a4a" stroke-width="1.6" stroke-linejoin="round"/><path d="M-4 -13H6L9 -8H-7Z" fill="#cfe8f6"/><circle cx="-10" cy="7" r="4.4" fill="#2a3a4a"/><circle cx="10" cy="7" r="4.4" fill="#2a3a4a"/></g>`;
+const bus = (x, y) => `<g transform="translate(${x} ${y})"><rect x="-40" y="-26" width="80" height="34" rx="6" fill="#f2b134" stroke="#c98a14" stroke-width="2"/>${[-30, -14, 2, 18].map(a => `<rect x="${a}" y="-20" width="12" height="11" rx="2" fill="#cfe8f6"/>`).join('')}<rect x="-40" y="-2" width="80" height="4" fill="#2a3a4a" opacity=".3"/><circle cx="-24" cy="9" r="6" fill="#2a3a4a"/><circle cx="24" cy="9" r="6" fill="#2a3a4a"/></g>`;
+const school = () => `<g transform="translate(270 60)"><rect x="-48" y="-10" width="96" height="66" fill="#f6d7b0" stroke="#b9805a" stroke-width="2.4"/><path d="M-56 -10L0 -40L56 -10Z" fill="#e2603f" stroke="#a8341c" stroke-width="2.4" stroke-linejoin="round"/>${[-34, -10, 14].map(a => `<rect x="${a}" y="6" width="18" height="16" fill="#cfe8f6" stroke="#b9805a" stroke-width="1.6"/>`).join('')}<rect x="-8" y="30" width="16" height="26" fill="#8a5a28"/><path d="M0 -40V-58" stroke="${INK}" stroke-width="2"/><path d="M0 -58H18V-48H0Z" fill="#2e9e6b"/></g>`;
+const trafficSvg = () => {
+  let s = bg('#e8f4dc') + school() + `<rect x="0" y="150" width="${VW}" height="96" fill="#9aa3ab"/><path d="M0 198H340" stroke="#fff" stroke-width="4" stroke-dasharray="18 14"/>`;
+  const C = ['#e2603f', '#6fa8dc', '#2e9e6b', '#a678d8', '#f2b134', '#ef6a7a', '#5f8fb0', '#d9a066', '#4f9f52', '#e2603f'];
+  for (let i = 0; i < sc.cars; i++) s += car(26 + (i % 6) * 54 + (i > 5 ? 26 : 0), i > 5 ? 228 : 182, C[i % C.length]);
+  if (sc.bus) s += bus(200, 230);
+  return s;
+};
+const trashBit = (x, y, k) => k === 0 ? `<rect x="${x - 4}" y="${y - 10}" width="8" height="16" rx="2" fill="#cfe8f6" stroke="#5f8fb0" stroke-width="1.6" transform="rotate(70 ${x} ${y})"/>`
+  : k === 1 ? `<rect x="${x - 5}" y="${y - 6}" width="10" height="12" rx="1.5" fill="#e2603f" stroke="#a8341c" stroke-width="1.6"/>` : `<path d="M${x - 8} ${y}l6 -6 5 4 6 -5 -2 8 -8 3z" fill="#fff" stroke="#b9c2cc" stroke-width="1.4"/>`;
+const bin = x => `<g transform="translate(${x} 208)"><path d="M-14 -24H14L11 10H-11Z" fill="#2e9e6b" stroke="#1f7a50" stroke-width="2" stroke-linejoin="round"/><rect x="-16" y="-30" width="32" height="7" rx="2" fill="#1f7a50"/><path d="M-5 -16V4M5 -16V4" stroke="#1f7a50" stroke-width="2"/></g>`;
+const house = (x, c, r) => `<g transform="translate(${x} 110)"><rect x="-30" y="0" width="60" height="58" fill="${c}" stroke="#7a6a58" stroke-width="2"/><path d="M-36 0L0 -28L36 0Z" fill="${r}" stroke="#7a6a58" stroke-width="2" stroke-linejoin="round"/><rect x="-18" y="12" width="14" height="14" fill="#cfe8f6" stroke="#7a6a58" stroke-width="1.4"/><rect x="6" y="30" width="14" height="28" fill="#8a5a28"/></g>`;
+const streetSvg = () => {
+  let s = bg('#dff0fa') + house(60, '#fbe3b8', '#e2603f') + house(170, '#e1effb', '#5f8fb0') + house(280, '#e8f6e2', '#4f9f52') + `<rect y="168" width="${VW}" height="132" fill="#e9d9b0"/>`;
+  if (sc.trash) [[40, 236, 0], [90, 262, 1], [140, 226, 2], [196, 268, 0], [236, 232, 1], [290, 258, 2], [70, 284, 2], [168, 290, 1], [318, 286, 0]].forEach(([x, y, k]) => { s += trashBit(x, y, k); });
+  if (sc.bins) s += bin(40) + bin(170) + bin(300);
+  return s;
+};
+const egyptSvg = () => {
+  const hiN = sc.hi === 'north', hiS = sc.hi === 'south';
+  let s = bg('#dff0fa') + `<path d="M70 40L270 40L280 70L262 120L250 186L232 260L120 260L80 200L60 120Z" fill="#f3e2b4" stroke="#c9a15c" stroke-width="2.6" stroke-linejoin="round"/>`
+    + `<path d="M120 40Q170 92 222 40Z" fill="${hiN ? '#9fd88a' : '#cfe9b9'}" stroke="#6fa85a" stroke-width="2"/>`
+    + `<path d="M160 84Q150 120 170 160Q186 200 176 250" fill="none" stroke="#3c8cc4" stroke-width="5" stroke-linecap="round"/>`
+    + `<path d="M150 150Q178 140 196 156L204 250H150Q140 200 150 150Z" fill="${hiS ? '#f2b134' : '#f6d7a4'}" opacity=".75" stroke="#c98a14" stroke-width="2"/>`
+    + `<g transform="translate(300 70)"><path d="M0 -26L8 0H-8Z" fill="#e2603f"/><path d="M0 26L8 0H-8Z" fill="#9aa9b8"/>${txt(0, -32, 'N', { fs: 18 })}</g>`;
+  return s;
+};
+const wordPicSvg = () => {
+  let s = bg() + `<rect x="30" y="30" width="280" height="240" rx="24" fill="#fff" stroke="#d8c9a6" stroke-width="4"/>`;
+  if (sc.pic) s += E.at(170, 112, 1.5, `<circle r="46" fill="${E.WTINT[sc.pic]}"/>${E.W8[sc.pic]()}`);
+  const fs = Math.min(sc.pic ? 44 : 60, Math.floor(250 / (sc.word.length * .6)));   // a long word gets a smaller font, so it stays inside the card
+  return s + txt(170, sc.pic ? 236 : 170, sc.word, { fs, w: 900, fill: '#23799f' });
+};
+const diarySvg = () => {
+  let s = bg('#eef6fb') + `<rect x="40" y="20" width="260" height="262" rx="10" fill="#fffdf4" stroke="#5f8fb0" stroke-width="3"/>`;
+  for (let i = 0; i < 8; i++) s += `<circle cx="40" cy="${42 + i * 32}" r="6" fill="#fff" stroke="#5f8fb0" stroke-width="2.4"/>`;
+  const rows = [60, 92, 124, 156, 188, 220, 256];
+  rows.forEach((y, i) => { s += `<path d="M60 ${y}H284" stroke="${sc.diary === i + 1 ? '#e2603f' : '#cfdbe4'}" stroke-width="${sc.diary === i + 1 ? 4 : 2}" stroke-dasharray="${sc.diary === i + 1 ? '0' : '5 6'}"/>`; });
+  if (sc.diary) s += `<text x="${sc.diary === 1 ? 264 : 70}" y="${rows[sc.diary - 1] - 8}" font-size="26">❓</text>`;
+  return s;
+};
+const posterSvg = () => {
+  let s = bg('#e3f2fb') + `<circle cx="170" cy="150" r="70" fill="#6fb8e8" stroke="#3c8cc4" stroke-width="3"/><path d="M130 110Q150 100 160 120Q150 150 128 140Z M178 160Q206 150 214 176Q196 200 180 190Z M184 98Q210 100 214 120Q196 126 186 114Z" fill="#6fbf63" stroke="#4f9f52" stroke-width="2"/>`;
+  s += `<g fill="#9aa3ab" opacity=".55"><circle cx="70" cy="70" r="20"/><circle cx="92" cy="58" r="22"/><circle cx="270" cy="66" r="20"/><circle cx="250" cy="54" r="18"/></g>`;
+  return s + txt(170, 272, sc.word || '', { fs: 22 });
+};
+function render() {
+  const m = sc.mode;
+  if (m === 'help') return bg() + `<g transform="translate(0 25)">${D.helping6({ pic: { plain: true, only: sc.only || undefined } })}</g>`;
+  if (m === 'card') return cardSvg();
+  if (m === 'traffic') return trafficSvg();
+  if (m === 'street') return streetSvg();
+  if (m === 'egypt') return egyptSvg();
+  if (m === 'word') return wordPicSvg();
+  if (m === 'diary') return diarySvg();
+  if (m === 'poster') return posterSvg();
+  return bg();
+}
+const helpRings = () => { const r = D.helping6.rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.CNAMES[id], ring: E.ringEl(x + w / 2, y + h / 2 + 25, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg4u2', logo: '🏘️', title: ['Community Helpers', 'أبطال المجتمع'], sub: ['Unit 2 · My Community', 'الوحدة 2 · مجتمعي'],
+  bg: 'english/assets/bg_eg4u2.svg', bgc: '#fdebd5', label: ['Helping the community, problems and solutions, and Egypt’s culture', 'مساعدة المجتمع والمشكلات وحلولها وثقافة مصر'], render, view: [VW, VH] });
+
+async function fillCard(lines, options, correct, sayEn, sayAr, hintEn, hintAr, okEn, okAr) {
+  set('card', { lines });
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { sc.fill = correct; g.paint(); } });
+}
+async function sortWords(mode, intro, buttons, list, key) {   // one card per word; the child presses the group
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    if (mode === 'word') set('word', { word: it.w, pic: it.pic || '' }); else set('card', { lines: it.lines || [it.w] });
+    await g.pick({ buttons, correct: it[key], ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up (lesson 1) ---------- */
+async function stage1() {
+  const steps = [
+    ['feed', 'He <b>feeds</b> the dogs in his street. Tap the picture.', 'بيأكّل الكلاب في الشارع. اضغط على الصورة.', 'Look for an animal and its food.', 'دوّر على حيوان وأكله.', `He ${kw('feeds')} the dogs.`],
+    ['plant', 'They <b>plant</b> flowers and trees in the park. Tap the picture.', 'بيزرعوا ورد وشجر في الحديقة. اضغط على الصورة.', 'Something green grows in the soil.', 'حاجة خضرا بتطلع من التربة.', `They ${kw('plant')} trees.`],
+    ['collect', 'They <b>collect</b> trash. Tap the picture.', 'بيجمعوا القمامة. اضغط على الصورة.', 'Trash goes into a big bag.', 'القمامة بتتحط في كيس كبير.', `They ${kw('collect')} trash.`],
+    ['help', 'We <b>help</b> our neighbors. Tap the picture.', 'بنساعد جيراننا. اضغط على الصورة.', 'Look for an old man and a young man.', 'دوّر على راجل كبير وشاب.', `We ${kw('help')} our neighbors.`]
+  ];
+  g.say(T('Welcome to Community Helpers! There are many ways to help our community. Let’s find them.', P('أهلًا في أبطال المجتمع! فيه طرق كتير نساعد بيها مجتمعنا. يلّا نلاقيها.')), 'wave');
+  await g.next();
+  for (const [id, en, ar, hEn, hAr, ok] of steps) {
+    set('help');
+    g.say(T(en, ar), 'think');
+    await g.spot(helpRings(), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+  }
+  await fillCard(['She ___ at the', 'community garden.'], ['volunteers', 'feeds', 'collects'], 'volunteers', 'Choose the word that fits.', 'اختار الكلمة المناسبة.',
+    'She helps there and does not take money.', 'بتساعد هناك من غير فلوس.', `She ${kw('volunteers')} at the community garden.`, L('She volunteers at the community garden.'));
+  await fillCard(['Hana and Youssef ___', 'clothes from people.'], ['collect', 'feed', 'plant'], 'collect', 'Choose the word that fits.', 'اختار الكلمة المناسبة.',
+    'They take many clothes and put them together.', 'بياخدوا هدوم كتير ويحطّوها مع بعض.', `They ${kw('collect')} clothes.`, L('They collect clothes from people.'));
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {                 // lesson 2: traffic and trash
+  set('traffic', { cars: 10 });
+  g.say(T('Mission 1: community problems. Look! Cars don’t move quickly near the school. What is this problem?', 'المهمة ١: مشكلات المجتمع. بص! العربيات مش بتتحرك بسرعة جنب المدرسة. إيه المشكلة دي؟'), 'point');
+  await g.choice({ options: ['Traffic', 'Trash', 'Noise'], correct: 'Traffic', hint: T('Too many cars on the road.', 'عربيات كتير في الشارع.'), ok: T(`The problem is ${kw('traffic')}.`, L('The problem is traffic.')) });
+  set('traffic', { cars: 10 });
+  g.say(T('What is the best way to reduce traffic?', 'إيه أحسن طريقة نقلّل بيها الزحمة؟'), 'think');
+  await g.choice({ options: ['Take the school bus instead', 'Buy a car for each person', 'Leave the engines running'], correct: 'Take the school bus instead',
+    hint: T('One bus carries many children.', 'أتوبيس واحد بياخد عيال كتير.'), ok: T(`Yes! With the school bus, there are ${kw('fewer cars')} on the road.`, L('With the school bus, there are fewer cars on the road.')) });
+  set('traffic', { cars: 3, bus: true }); await g.next();
+  set('street', { trash: true });
+  g.say(T('Now look at this street. Some people don’t put trash in bins. What is the solution?', 'بص على الشارع ده. فيه ناس مش بتحط القمامة في الصناديق. إيه الحل؟'), 'think');
+  await g.choice({ options: ['Put bins everywhere', 'Take the school bus', 'Throw trash on the ground'], correct: 'Put bins everywhere',
+    hint: T('Where should trash go?', 'القمامة المفروض تروح فين؟'), ok: T(`Ali’s neighbors put ${kw('new bins')} everywhere. Now the street is very clean!`, L('Now the street is very clean!')) });
+  set('street', { trash: false, bins: true }); await g.next();
+}
+async function mission2() {                 // lesson 2: don't / doesn't, do / does
+  g.say(T('Mission 2: don’t and doesn’t. Use <b>don’t</b> with I, you, we, they. Use <b>doesn’t</b> with he, she, it.', 'المهمة ٢: don’t وdoesn’t. بنستخدم don’t مع I وyou وwe وthey، وdoesn’t مع he وshe وit.'), 'point');
+  await g.next();
+  await fillCard(['Cars ___ move quickly', 'in the morning.'], ['don’t', 'doesn’t'], 'don’t', 'Choose the right word.', 'اختار الكلمة الصح.', 'Cars is plural, like they.', 'Cars جمع زي they.', `Cars ${kw('don’t')} move quickly.`, L('Cars don’t move quickly.'));
+  await fillCard(['She ___ like pollution.'], ['doesn’t', 'don’t'], 'doesn’t', 'Choose the right word.', 'اختار الكلمة الصح.', 'She goes with does.', 'She بتيجي مع does.', `She ${kw('doesn’t')} like pollution.`, L('She doesn’t like pollution.'));
+  await fillCard(['___ your street', 'have this problem?'], ['Does', 'Do'], 'Does', 'Now a question. Do or Does?', 'دلوقتي سؤال. Do ولا Does؟', 'Your street is one street, like it.', 'Your street حاجة واحدة زي it.', `${kw('Does')} your street have this problem?`, L('Does your street have this problem?'));
+  await fillCard(['___ you know how to', 'solve this problem?'], ['Do', 'Does'], 'Do', 'Do or Does?', 'Do ولا Does؟', 'You goes with Do.', 'You بتيجي مع Do.', `${kw('Do')} you know how to solve this problem?`, L('Do you know how to solve this problem?'));
+}
+async function mission3() {                 // lesson 3: Delta and Upper Egypt
+  set('egypt', { hi: 'north' });
+  g.say(T('Mission 3: Egypt, my culture. Egypt has two special regions. The green part is in the north. What is it called?', 'المهمة ٣: مصر ثقافتي. مصر فيها منطقتين مميزين. الجزء الأخضر في الشمال. اسمه إيه؟'), 'point');
+  await g.choice({ options: ['The Delta', 'Upper Egypt', 'Nubia'], correct: 'The Delta', hint: T('Upper Egypt is in the south.', 'الصعيد في الجنوب.'), ok: T(`The ${kw('Delta')} is in the north. Upper Egypt is in the south.`, L('The Delta is in the north. Upper Egypt is in the south.')) });
+  set('egypt');
+  const buttons = [{ label: 'The Delta', value: 'd', c: 0 }, { label: 'Upper Egypt', value: 'u', c: 1 }];
+  const list = [
+    { lines: ['the Spring Festival'], r: 'd', why: 'The Delta celebrates the Spring Festival.' }, { lines: ['rice and cotton'], r: 'd', why: 'Farmers in the Delta grow rice and cotton.' },
+    { lines: ['the sugar cane', 'harvest'], r: 'u', why: 'Upper Egypt celebrates the sugar cane harvest.' }, { lines: ['pottery and', 'colorful carpets'], r: 'u', why: 'People in Upper Egypt make pottery and weave carpets.' },
+    { lines: ['factories and', 'beautiful crafts'], r: 'd', why: 'In the Delta, many people work in factories and make crafts.' }, { lines: ['galabeyas', 'and turbans'], r: 'u', why: 'In Upper Egypt, men wear galabeyas and sometimes turbans.' }];
+  await sortWords('card', T('Where is it? Press the Delta or Upper Egypt.', 'ده فين؟ اضغط على الدلتا أو الصعيد.'), buttons, list, 'r');
+}
+async function mission4() {                 // lesson 3: /f/ and /v/
+  g.say(T('Mission 4: the /f/ sound is voiceless (your throat doesn’t vibrate), like in “fish”. The /v/ sound is voiced (your throat vibrates), like in “van”. Which sound does each word start with?', 'المهمة ٤: صوت f من غير اهتزاز في الزور زي fish، وصوت v الزور بيهتز زي van. كل كلمة بتبدأ بأي صوت؟'), 'point');
+  const buttons = [{ label: '/f/', value: 'f', c: 0 }, { label: '/v/', value: 'v', c: 1 }];
+  const list = [['frog', 'wFrog', 'f'], ['forest', 'wForest', 'f'], ['factory', 'wFactory', 'f'], ['flag', 'wFlag', 'f'], ['van', 'wVan', 'v'], ['violin', 'wViolin', 'v'], ['view', 'wView', 'v'], ['vest', 'wVest', 'v']]
+    .map(([w, pic, s]) => ({ w, pic, s, why: `“${w}” starts with /${s}/.` }));
+  await sortWords('word', T('Press /f/ or /v/.', 'اضغط /f/ أو /v/.'), buttons, list, 's');
+}
+async function mission5() {                 // lesson 3: prefixes
+  g.say(T('Mission 5: prefixes. A prefix goes at the beginning of a word and changes its meaning. dis = not or opposite, il = not, ir = not. Which prefix makes the opposite?', 'المهمة ٥: البادئات. البادئة بتيجي في أول الكلمة وبتغيّر معناها. dis وil وir معناهم "مش". أي بادئة بتعمل العكس؟'), 'point');
+  const buttons = [{ label: 'dis', value: 'dis', c: 0 }, { label: 'il', value: 'il', c: 1 }, { label: 'ir', value: 'ir', c: 2 }];
+  const list = [['appear', 'dis'], ['honest', 'dis'], ['like', 'dis'], ['legal', 'il'], ['logical', 'il'], ['regular', 'ir'], ['responsible', 'ir'], ['relevant', 'ir']].map(([w, p]) => ({ w, p, why: `${w} → ${p}${w}` }));
+  await sortWords('word', T('Press the prefix.', 'اضغط البادئة.'), buttons, list, 'p');
+}
+async function mission6() {                 // lesson 4: the diary
+  g.say(T('Mission 6: Hana writes a diary. Grandpa told her about the neighborhood fifty years ago.', 'المهمة ٦: هنا بتكتب مذكراتها. جدّها حكى لها عن الحي من خمسين سنة.'), 'point');
+  await g.next();
+  await fillCard(['Where the big supermarket', 'stands now, there was', 'a beautiful old ___.'], ['market', 'train station', 'school'], 'market', 'Choose the word that fits.', 'اختار الكلمة المناسبة.',
+    'It had wooden stalls with fruits and vegetables.', 'كان فيه فرشات خشب عليها فاكهة وخضار.', `There was a beautiful old ${kw('market')} with wooden stalls.`, L('There was a beautiful old market.'));
+  await fillCard(['There was a small', 'train station where', 'our ___ is now.'], ['park', 'supermarket', 'school'], 'park', 'Choose the word that fits.', 'اختار الكلمة المناسبة.',
+    'Today children play there.', 'النهارده العيال بتلعب هناك.', `The train station was where the ${kw('park')} is now.`, L('There was a small train station where our park is now.'));
+  set('diary', { diary: 1 });
+  g.say(T('Now let’s write a diary. What goes at the very top of the page?', 'يلّا نكتب مذكرات. إيه اللي بيتكتب في أول الصفحة خالص؟'), 'think');
+  await g.choice({ options: ['The date', 'Yours truly,', 'Dear diary,'], correct: 'The date', hint: T('Hana’s diary starts with March 15, 2025.', 'مذكرات هنا بتبدأ بـ March 15, 2025.'), ok: T(`We start with the ${kw('date')}.`, L('We start with the date.')) });
+  set('diary', { diary: 2 });
+  g.say(T('What comes next?', 'وبعدها إيه؟'), 'think');
+  await g.choice({ options: ['Dear diary,', 'Yours truly,', 'The date'], correct: 'Dear diary,', hint: T('It is the greeting.', 'دي التحية.'), ok: T(`Then the greeting: ${kw('Dear diary,')}`, L('Dear diary,')) });
+  set('diary', { diary: 7 });
+  g.say(T('And how do we end the diary?', 'وبنختم المذكرات إزاي؟'), 'think');
+  await g.choice({ options: ['Yours truly, and your name', 'Dear diary,', 'The date'], correct: 'Yours truly, and your name', hint: T('It is the closing.', 'دي الخاتمة.'), ok: T(`We end with ${kw('Yours truly,')} and our name.`, L('Yours truly, Hana')) });
+}
+async function mission7() {                 // lesson 5: the poster
+  g.say(T('Mission 7: a poster to stop air pollution. Does each action help or not?', 'المهمة ٧: ملصق لوقف تلوث الهوا. كل فعل بيساعد ولا لأ؟'), 'point');
+  const buttons = [{ label: T('Helps 👍', 'Helps 👍'), value: 'y', c: 0 }, { label: T('Doesn’t help 👎', 'Doesn’t help 👎'), value: 'n', c: 2 }];
+  const list = [['Walk or cycle', 'to school.', 'y', 'Fewer cars make cleaner air.'], ['Use less plastic.', '', 'y', 'Less plastic is better for our world.'], ['Plant trees in', 'your community.', 'y', 'Trees help the air.'],
+    ['Keep your', 'community clean.', 'y', 'A clean community is healthy.'], ['Leave the car', 'engine running.', 'n', 'A running engine makes the air dirty.'], ['Throw trash', 'on the ground.', 'n', 'Trash makes the community dirty.']]
+    .map(([a, b, y, why]) => ({ lines: b ? [a, b] : [a], y, why }));
+  for (const it of g.shuffle(list)) { set('card', { lines: it.lines }); await g.pick({ buttons, correct: it.y, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) }); }
+  g.setTray(null);
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); await mission7(); }
+
+/* ---------- Stage 3 · Speed Round (p 29) ---------- */
+async function stage3() {
+  set('card', { lines: ['Do or Does?'] });
+  const buttons = [{ label: 'Do', value: 'do', c: 0 }, { label: 'Does', value: 'does', c: 1 }];
+  const items = [['you volunteer?', 'do'], ['she help her community?', 'does'], ['they collect bottles?', 'do'], ['he take the bus?', 'does'], ['your street have bins?', 'does'],
+    ['cars move quickly?', 'do'], ['we plant trees?', 'do'], ['Ali feed the dogs?', 'does'], ['the bus reduce traffic?', 'does'], ['Hana and Youssef collect clothes?', 'do']]
+    .map(([t, ans]) => ({ t: `___ ${t}`, ans, why: ans === 'do' ? 'Do goes with I, you, we, they and plural nouns.' : 'Does goes with he, she, it and one person or thing.' }));
+  await g.speedRound({ items, buttons, rounds: 8,
+    ask: T('Do or Does?', 'Do ولا Does؟'), intro: T('Speed Round! Press Do or Does to start each question. Be quick!', 'جولة السرعة! اضغط Do أو Does في أول كل سؤال. بسرعة!'), think: T('Do or Does?', 'Do ولا Does؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Help your community, solve its problems, visit the Delta and Upper Egypt, and write a diary. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! ساعد مجتمعك، وحلّ مشاكله، وزور الدلتا والصعيد، واكتب مذكراتك. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know how to help your community, don’t / doesn’t and Do / Does, Egypt’s culture, /f/ and /v/, prefixes and diaries. Next, try the questions of this unit.', 'بقيت تعرف إزاي تساعد مجتمعك، وdon’t وdoesn’t وDo وDoes، وثقافة مصر، وصوتي f وv، والبادئات والمذكرات. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

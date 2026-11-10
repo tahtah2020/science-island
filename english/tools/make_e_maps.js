@@ -71,6 +71,12 @@ ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
 build('eg4u1', badge(120, 880, 1.4, 'eye') + badge(1010, 250, 1.4, 'ear') + badge(190, 330, 1.4, 'nose') + badge(640, 1150, 1.3, 'tongue') + badge(1060, 640, 1.4, 'palm') + apple(1000, 1040, 1.5) + apple(140, 600, 1.2),
   `${badge(300, 760, 1.9, 'eye')}${badge(760, 770, 1.7, 'ear')}${badge(1180, 770, 1.8, 'nose')}${apple(520, 800, 2)}`);
 
+/* unit 2 My Community: the six helping badges, houses and bins (palette PEACH) */
+const EC = { TINT: E.CTINT, D: E.C };
+const PEACH = { blobs: ['#fde6cf', '#d8efd0', '#fbe9c8', '#dcecf8'], land: [[0, '#fdebd5'], [.5, '#e3efc4'], [1, '#f8e4cf']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#fde3c8', '#fdf3dc', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#f6c9a0'] };
+build('eg4u2', badge(120, 880, 1.4, 'plant', EC) + badge(1010, 250, 1.4, 'help', EC) + badge(190, 330, 1.4, 'collect', EC) + badge(640, 1150, 1.3, 'clean', EC) + badge(1060, 640, 1.4, 'feed', EC) + badge(150, 600, 1.2, 'volunteer', EC),
+  `${badge(300, 760, 1.9, 'plant', EC)}${badge(760, 770, 1.7, 'volunteer', EC)}${badge(1180, 770, 1.8, 'feed', EC)}`, PEACH);
+
 /* ---------- grade 5 ---------- */
 const b5 = (x, y, k, id) => badge(x, y, k, id, E5);
 const reed = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})" stroke="#5d9a4a" stroke-width="5" stroke-linecap="round" fill="none"><path d="M-14 0Q-18 -30 -10 -52"/><path d="M0 0Q2 -36 -2 -64"/><path d="M14 0Q18 -28 12 -50"/></g>`;

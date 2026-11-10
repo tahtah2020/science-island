@@ -33,6 +33,8 @@ const TAPS = { stretchLengths: ['str5', 'str10', 'str15'], bandCounts: ['band1',
   gridShade: ['gA', 'gB', 'gC'], multVenn: ['mvL', 'mvM', 'mvR'], barModel: [], skipLine: [], areaBox: [], colMul: [], placeTable: ['b1', 'm100', 'm10', 'm1', 't100', 't10', 't1', 'u100', 'u10', 'u1'], placeChart: ['hundreds', 'tens', 'ones', 'tenths', 'hundredths', 'thousandths'], numLine: ['n0', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'n10'],
   /* English (english/g4_art.js) */
   fiveSenses: ['eye', 'ear', 'nose', 'tongue', 'palm'],
+  helping6: ['plant', 'help', 'collect', 'clean', 'volunteer', 'feed'],
+  fvWords: ['wVan', 'wFactory', 'wVest', 'wForest', 'wFrog', 'wFlag', 'wViolin', 'wView'],
   nileLife: ['crocodile', 'weeds', 'insect', 'fish', 'bird', 'river'],
   bodyParts: ['heart', 'lungs', 'muscle', 'blood', 'vessels', 'fist'],
   weatherSix: ['thunderstorm', 'sandstorm', 'flood', 'drought', 'wildfire', 'heatwave'],
