@@ -18,8 +18,8 @@
    tiles, every other one mirrored, so the seams match and the world width is a whole number of tile pairs.
    A student under HATCH points is an EGG on the sand (cracks as the points grow) that hatches into a fish at HATCH.
    10 Nov 2026 (owner): «الشبكة»: after SI.NET_DAYS (3) days without points the player's own fish is caught in a net that hangs
-   from the surface (only its owner sees the net: SI.inNet() is local); it stays, whatever the days, until the student cuts its
-   5 strings in quiz.html#rescue. Other students away 3+ days sleep on the sand (💤), so nobody sees a classmate in a net.
+   from the surface (own fish: SI.inNet(), local); it stays, whatever the days, until the student cuts its
+   5 strings in quiz.html#rescue. Everyone sees the net: another student's fish is netted when its last points are 3+ days old.
    «أين سمكتي؟» is always shown (also as a button on the water): it glides to the fish and opens a card with its state:
    egg (name on it, points left to hatch), net (button to the rescue game), or fish (points, next kind).
    Usage: SI_Aquarium(document.getElementById('tank'), { msg, mine: «أين سمكتي؟» button, map: element for the small map }) */
@@ -192,7 +192,7 @@
     const DAY = 864e5, midnight = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x.getTime(); }, today0 = midnight(Date.now());
     const msOf = v => !v ? 0 : typeof v === 'number' ? v : typeof v.toMillis === 'function' ? v.toMillis() : v.seconds ? v.seconds * 1000 : 0;
     const daysSince = ms => ms ? Math.max(0, Math.round((today0 - midnight(ms)) / DAY)) : 0;
-    const GONE = 8;                                                    // 8 days without points: the fish leaves the tank
+    const GONE = 31;   // a fish in the net stays in the tank until its student comes back (read up to 30 days back)                                                    // 8 days without points: the fish leaves the tank
     try { rows = ((await SI.LB.activeSince(today0 - (GONE - 1) * DAY, 40)).rows || []).filter(r => r && r.name); } catch (e) {}
     rows.forEach(r => { r.days = daysSince(msOf(r.at)); });
     const myXP = me ? Math.round((SI.xp && SI.xp()) || 0) : 0;
@@ -237,7 +237,7 @@
     /* fish and eggs */
     const fishes = rows.map((r, i) => {
       const mine = isMe(r), score = r.score || 0, k = kindOf(score), egg = score < HATCH, zone = zoneOf(r);
-      const net = mine && !egg && SI.inNet && SI.inNet(), sleep = !mine && !egg && r.days >= (SI.NET_DAYS || 3);
+      const net = !egg && (mine ? SI.inNet && SI.inNet() : r.days >= (SI.NET_DAYS || 3)), sleep = false;   // owner, 10 Nov 2026: everyone sees the net (another student's fish: 3+ days since its last points)
       const hunger = net || r.days <= 1 ? 1 : Math.max(.75, 1 - (r.days - 1) * .13);   // 2 days without points: a little smaller; from day 3 net / sleep
       const scale = Math.max(.62, Math.min(1, W() / 800));
       const size = egg ? (30 + score / HATCH * 16) * scale : sizeOf(score) * scale * hunger;
@@ -257,7 +257,7 @@
       const hgt = egg ? size * 74 / 60 : size * k[1];
       return { b, body: b.querySelector('.body'), tag: b.querySelector('.tag'), rope: b.querySelector('.rope'), mine, egg, net, sleep, zone, size, hgt, speed,
         x: zoneX(zone) + (egg ? ((h % 100) / 100 - .5) * zoneW * .7 : (Math.random() - .5) * zoneW * .8),
-        y: egg ? 0 : net ? Math.max(70, sand() * .4) : sleep ? sand() - hgt * .85 : 30 + Math.random() * Math.max(10, sand() - 70 - hgt), vx: (Math.random() < .5 ? -1 : 1) * speed, ph: Math.random() * 6, ty: 0 };
+        y: egg ? 0 : net ? Math.max(70, sand() * (mine ? .4 : .28 + (h % 5) * .06)) : sleep ? sand() - hgt * .85 : 30 + Math.random() * Math.max(10, sand() - 70 - hgt), vx: (Math.random() < .5 ? -1 : 1) * speed, ph: Math.random() * 6, ty: 0 };
     });
     const myFish = fishes.find(f => f.mine);
 
