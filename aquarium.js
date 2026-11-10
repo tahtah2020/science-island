@@ -17,6 +17,11 @@
    «أين سمكتي؟» button + a small map under the tank (zones, dots, the window you see; tap it to jump). Background = bg.jpg
    tiles, every other one mirrored, so the seams match and the world width is a whole number of tile pairs.
    A student under HATCH points is an EGG on the sand (cracks as the points grow) that hatches into a fish at HATCH.
+   10 Nov 2026 (owner): «الشبكة»: after SI.NET_DAYS (3) days without points the player's own fish is caught in a net that hangs
+   from the surface (only its owner sees the net: SI.inNet() is local); it stays, whatever the days, until the student cuts its
+   5 strings in quiz.html#rescue. Other students away 3+ days sleep on the sand (💤), so nobody sees a classmate in a net.
+   «أين سمكتي؟» is always shown (also as a button on the water): it glides to the fish and opens a card with its state:
+   egg (name on it, points left to hatch), net (button to the rescue game), or fish (points, next kind).
    Usage: SI_Aquarium(document.getElementById('tank'), { msg, mine: «أين سمكتي؟» button, map: element for the small map }) */
 (function () {
   'use strict';
@@ -50,6 +55,9 @@
   }
   const CROWN = '<svg class="crown" viewBox="-62 -76 124 88" aria-hidden="true"><path d="M-52 6 L-58 -52 L-27 -26 L0 -66 L27 -26 L58 -52 L52 6Z" fill="#f2b134" stroke="#c98c10" stroke-width="6" stroke-linejoin="round"/><circle cx="0" cy="-68" r="9" fill="#e2603f"/></svg>';
 
+  /* the net over the player's fish: a diamond mesh in rope colour, knotted at the top */
+  const NET = '<svg class="netov" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><pattern id="aqMesh" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H12M0 0V12" stroke="#d9b679" stroke-width="2.4" fill="none"/></pattern></defs>'
+    + '<path d="M50 2 C20 8 4 30 6 58 C8 84 30 98 50 98 C70 98 92 84 94 58 C96 30 80 8 50 2Z" fill="url(#aqMesh)" stroke="#9c7a44" stroke-width="3"/><circle cx="50" cy="4" r="4" fill="#9c7a44"/></svg>';
   const HATCH = 100;        // points to hatch the egg into a fish (owner, 8 Nov 2026)
   const ZONES = [['g3', 'Grade 3', 'الصف الثالث', 'G3', 'ثالث'], ['g4', 'Grade 4', 'الصف الرابع', 'G4', 'رابع'], ['g5', 'Grade 5', 'الصف الخامس', 'G5', 'خامس'],
     ['g6', 'Grade 6', 'الصف السادس', 'G6', 'سادس'], ['p1', 'Prep 1', 'الأول الإعدادي', 'P1', '١ إعدادي'], ['p2', 'Prep 2', 'الثاني الإعدادي', 'P2', '٢ إعدادي']];   // [id, name, short name for the map]
@@ -123,6 +131,25 @@
 .aqmap .d.me{width:10px;height:10px;margin:-2px 0 0 -5px;background:#ffd95a;border:2px solid #fff;z-index:2}
 .aqmap .d.e{background:#fff4d6;border-radius:50% 50% 45% 45%}
 .aqmap .win{position:absolute;top:2px;bottom:2px;border:2px solid #fff;border-radius:8px;background:rgba(255,255,255,.14);pointer-events:none}
+.aq .fish.net{cursor:pointer}
+.aq .fish.net .body{animation:aqSwing 3.2s ease-in-out infinite;transform-origin:50% -40%}
+@keyframes aqSwing{0%,100%{rotate:-4deg}50%{rotate:4deg}}
+.aq .fish .netov{position:absolute;inset:-22% -12% -18%;width:124%;height:140%;pointer-events:none}
+.aq .fish .rope{position:absolute;left:50%;bottom:100%;width:3px;margin-left:-1.5px;background:repeating-linear-gradient(180deg,#c9a46a 0 6px,#9c7a44 6px 9px);pointer-events:none}
+.aq .fish.net .tag{bottom:auto;top:105%}
+.aq .fish.sleep .body{filter:saturate(.5) brightness(.95);opacity:.8}
+.aq .fish .zz{position:absolute;right:-6px;top:-14px;font:900 15px "Nunito",sans-serif;color:#fff;text-shadow:0 1px 3px rgba(0,40,80,.5);animation:aqZz 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes aqZz{0%,100%{translate:0 0;opacity:.5}50%{translate:4px -6px;opacity:1}}
+.aq .mineBtn{position:absolute;top:44px;left:50%;transform:translateX(-50%);z-index:7;border:3px solid #fff;border-radius:999px;background:#f2b134;color:#1f3d57;font:900 15px "Cairo","Nunito",sans-serif;padding:5px 16px;box-shadow:0 4px 12px rgba(0,40,80,.3);cursor:pointer;white-space:nowrap;animation:aqPulse 2s ease-in-out infinite}
+@keyframes aqPulse{0%,100%{scale:1}50%{scale:1.06}}
+.aq .card{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:8;width:min(92%,420px);background:rgba(255,250,240,.97);border:3px solid #fff;border-radius:18px;padding:10px 14px 12px;box-shadow:0 8px 24px rgba(0,40,80,.35);direction:rtl;text-align:center;font:700 14.5px/1.6 "Cairo","Nunito",sans-serif;color:#1f3d57;cursor:default}
+.aq .card h3{margin:0 0 2px;font:900 17px "Cairo",sans-serif}
+.aq .card p{margin:0 0 8px}
+.aq .card .x{position:absolute;top:4px;left:8px;border:0;background:none;font:900 20px "Nunito",sans-serif;color:#3a5c75;cursor:pointer}
+.aq .card .btn{display:inline-block}
+.aq .card .meter{height:12px;border-radius:999px;background:#e3eef3;overflow:hidden;margin:2px 0 10px}
+.aq .card .meter i{display:block;height:100%;background:linear-gradient(90deg,#7bd389,#2e9e6b);border-radius:999px}
+@media (prefers-reduced-motion:reduce){.aq .fish.net .body,.aq .fish .zz,.aq .mineBtn{animation:none}}
 @media (prefers-reduced-motion:reduce){.aq .bub,.aq .octo img,.aq .diver img,.aq .fish .tail,.aq .fish.egg .body,.aq .drag-hint{animation:none}}`;
 
   window.SI_Aquarium = async function (el, opts = {}) {
@@ -208,26 +235,27 @@
     /* fish and eggs */
     const fishes = rows.map((r, i) => {
       const mine = isMe(r), score = r.score || 0, k = kindOf(score), egg = score < HATCH, zone = zoneOf(r);
-      const hunger = r.days <= 1 ? 1 : Math.max(.2, 1 - (r.days - 1) * .13);   // 2+ days without points: smaller every day
+      const net = mine && !egg && SI.inNet && SI.inNet(), sleep = !mine && !egg && r.days >= (SI.NET_DAYS || 3);
+      const hunger = net || r.days <= 1 ? 1 : Math.max(.75, 1 - (r.days - 1) * .13);   // 2 days without points: a little smaller; from day 3 net / sleep
       const scale = Math.max(.62, Math.min(1, W() / 800));
       const size = egg ? (30 + score / HATCH * 16) * scale : sizeOf(score) * scale * hunger;
       const h = hash(r.id || r.name), color = COLORS[h % COLORS.length];
       const b = document.createElement('button'); b.type = 'button';
-      b.className = 'fish' + (mine ? ' me' : '') + (egg ? ' egg' : r.days >= 3 ? ' starving' : r.days >= 1 ? ' hungry' : '');
+      b.className = 'fish' + (mine ? ' me' : '') + (egg ? ' egg' : net ? ' net' : sleep ? ' sleep' : r.days >= 1 ? ' hungry' : '');
       b.style.width = size + 'px';
       const left = HATCH - score;
       b.setAttribute('aria-label', egg ? `${r.name}: ${T('egg', 'بيضة')} · ${score}` : `${r.name}: ${score} · ${T(k[3], k[2])}`);
       const pic = egg ? drawnEgg(color, i, score >= HATCH * .7 ? 2 : score >= HATCH * .35 ? 1 : 0) : k[0] ? `<img src="${A}${k[0]}.webp" alt="" draggable="false">` : drawnFish(color, i);
       const label = egg ? `🥚 ${mine ? T('Your egg', 'بيضتك') + ' · ' : ''}${esc(r.name)} · ${T(`${left} to hatch`, `باقي ${left}`)}`
-        : `${mine ? T('Your fish', 'سمكتك') + ' · ' : ''}${esc(r.name)} · ${score} ${r.days ? '😋' : '🍤'}`;
-      b.innerHTML = `<span class="body ${egg ? '' : k[4]}" style="--hue:${(h % 7) * 50}deg">${pic}${!egg && score && score === topScore ? CROWN : ''}</span><span class="tag">${label}</span>`;
-      b.onclick = e => { e.stopPropagation(); if (moved) return; b.classList.add('show'); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('show'), 2500); };
+        : `${mine ? T('Your fish', 'سمكتك') + ' · ' : ''}${esc(r.name)} · ${score} ${net ? '🕸' : sleep ? '💤' : r.days ? '😋' : '🍤'}`;
+      b.innerHTML = `<span class="body ${egg ? '' : k[4]}" style="--hue:${(h % 7) * 50}deg">${pic}${!egg && score && score === topScore ? CROWN : ''}${net ? NET : ''}${sleep ? '<span class="zz">z<small>z</small></span>' : ''}</span>${net ? '<span class="rope"></span>' : ''}<span class="tag">${label}</span>`;
+      b.onclick = e => { e.stopPropagation(); if (moved) return; if (mine) { showCard(); return; } b.classList.add('show'); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('show'), 2500); };
       el.appendChild(b);
-      const speed = egg ? 0 : (mine ? 34 : 18 + Math.random() * 22) * (1.25 - size / 160);
+      const speed = egg || net || sleep ? 0 : (mine ? 34 : 18 + Math.random() * 22) * (1.25 - size / 160);
       const hgt = egg ? size * 74 / 60 : size * k[1];
-      return { b, body: b.querySelector('.body'), tag: b.querySelector('.tag'), mine, egg, zone, size, hgt, speed,
+      return { b, body: b.querySelector('.body'), tag: b.querySelector('.tag'), rope: b.querySelector('.rope'), mine, egg, net, sleep, zone, size, hgt, speed,
         x: zoneX(zone) + (egg ? ((h % 100) / 100 - .5) * zoneW * .7 : (Math.random() - .5) * zoneW * .8),
-        y: egg ? 0 : 30 + Math.random() * Math.max(10, sand() - 70 - hgt), vx: (Math.random() < .5 ? -1 : 1) * speed, ph: Math.random() * 6, ty: 0 };
+        y: egg ? 0 : net ? Math.max(70, sand() * .4) : sleep ? sand() - hgt * .85 : 30 + Math.random() * Math.max(10, sand() - 70 - hgt), vx: (Math.random() < .5 ? -1 : 1) * speed, ph: Math.random() * 6, ty: 0 };
     });
     const myFish = fishes.find(f => f.mine);
 
@@ -237,6 +265,8 @@
       if (!me) opts.msg.innerHTML = T('🐟 Every student has a fish that grows with points. Sign in and get yours!', '🐟 كل طالب له سمكة بتكبر مع نقاطه. سجّل اسمك وخد سمكتك!');
       else if (myXP < HATCH) opts.msg.innerHTML = T(`🥚 Your fish is still an egg! <b>${HATCH - myXP}</b> more points and it hatches.`,
         G(`🥚 سمكتك لسه بيضة! باقي <b>${HATCH - myXP}</b> نقطة وتفقس. العب علشان تطلع سمكتك!`, `🥚 سمكتك لسه بيضة! باقي <b>${HATCH - myXP}</b> نقطة وتفقس. العبي علشان تطلع سمكتك!`));
+      else if (SI.inNet && SI.inNet()) opts.msg.innerHTML = T('🕸 Your fish is caught in a net! Cut its 5 strings: one right answer cuts one string.',
+        G('🕸 سمكتك وقعت في الشبكة! اقطع خيوطها الخمسة: كل إجابة صح بتقطع خيط.', '🕸 سمكتك وقعت في الشبكة! اقطعي خيوطها الخمسة: كل إجابة صح بتقطع خيط.'));
       else if (myDays >= GONE) opts.msg.innerHTML = T(`😢 Your fish left the tank: no points for ${myDays} days. Your points are safe: play today and it comes back!`,
         G(`😢 سمكتك خرجت من الحوض لأنك غبت ${myDays} يوم. نقاطك محفوظة: العب النهارده وهترجع!`, `😢 سمكتك خرجت من الحوض لأنك غبتي ${myDays} يوم. نقاطك محفوظة: العبي النهارده وهترجع!`));
       else if (myDays >= 2) opts.msg.innerHTML = T(`😟 Your fish is getting smaller: it has not eaten for ${myDays} days. Play today and it gets its full size back!`,
@@ -309,15 +339,53 @@
     };
     window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
 
-    /* «أين سمكتي؟» */
-    if (opts.mine) {
-      if (!myFish) opts.mine.hidden = true;
-      else opts.mine.onclick = () => {
-        hideHint(); glide(myFish.x + myFish.size / 2);
+    /* «أين سمكتي؟» (owner, 10 Nov 2026): always shown, on the page and on the water; glides to the fish (or egg) and opens a
+       card that says where it is and what to do: egg → points left to hatch; net → cut the strings; fish → points, next kind */
+    const G = SI.G;
+    let card = null;
+    const closeCard = () => { if (card) { card.remove(); card = null; } };
+    function showCard() {
+      closeCard();
+      let h = '', p = '', act = '';
+      if (!me) { h = T('You have no fish yet', 'لسه مالكش سمكة'); p = T('Sign in with your name and you get an egg with your name on it!', G('سجّل اسمك وهتاخد بيضة عليها اسمك!', 'سجّلي اسمك وهتاخدي بيضة عليها اسمك!')); act = `<a class="btn primary" href="index.html">${T('Sign in ▸', 'سجّل اسمك ◂')}</a>`; }
+      else if (myFish && myFish.egg) {
+        const pct = Math.round(Math.min(1, myXP / HATCH) * 100);
+        h = T(`🥚 This is your egg, ${esc(me.name)}!`, `🥚 دي بيضتك يا ${esc(me.name)}!`);
+        p = T(`Your fish is inside it. Win <b>${HATCH - myXP}</b> more points and it hatches.`, G(`سمكتك جوّاها. اكسب <b>${HATCH - myXP}</b> نقطة كمان وهتفقس وتطلع سمكتك.`, `سمكتك جوّاها. اكسبي <b>${HATCH - myXP}</b> نقطة كمان وهتفقس وتطلع سمكتك.`))
+          + `<div class="meter" aria-label="${pct}%"><i style="width:${pct}%"></i></div>`;
+        act = `<a class="btn primary" href="chapters.html">${T('Play and win points ▸', G('العب واكسب نقاط ◂', 'العبي واكسبي نقاط ◂'))}</a>`;
+      } else if (myFish && myFish.net) {
+        h = T('🕸 Your fish is caught in a net!', '🕸 سمكتك وقعت في الشبكة!');
+        p = T(`You were away for ${SI.NET_DAYS}+ days. Answer 5 questions: every right answer cuts one string, and after 5 strings your fish is free!`,
+          G(`علشان غبت ${SI.NET_DAYS} أيام أو أكتر. جاوب 5 أسئلة: كل إجابة صح بتقطع خيط، وبعد 5 خيوط سمكتك تخرج حرة!`, `علشان غبتي ${SI.NET_DAYS} أيام أو أكتر. جاوبي 5 أسئلة: كل إجابة صح بتقطع خيط، وبعد 5 خيوط سمكتك تخرج حرة!`));
+        act = `<a class="btn primary" href="quiz.html#rescue">${T('✂️ Free my fish', G('✂️ حرّر سمكتك', '✂️ حرّري سمكتك'))}</a>`;
+      } else if (myFish) {
+        const li = SI.levelInfo(myXP), nx = li.to ? KINDS[Math.min(6, li.n + 1)] : null;
+        h = T(`Here is your fish, ${esc(me.name)}! 🐟`, `دي سمكتك يا ${esc(me.name)}! 🐟`);
+        p = T(`It has <b>${myXP}</b> points.`, `عندها <b>${myXP}</b> نقطة.`) + ' ' + (nx ? T(`${li.to - myXP} more and it becomes a ${nx[3]}.`, `باقي ${li.to - myXP} نقطة وتتحول لـ${nx[2]}.`) : '')
+          + (myDays >= 1 ? ' ' + T('It is hungry: play today!', G('وهي جعانة: العب النهارده!', 'وهي جعانة: العبي النهارده!')) : '');
+        act = `<a class="btn primary" href="chapters.html">${T('Play ▸', G('العب ◂', 'العبي ◂'))}</a>`;
+      }
+      card = document.createElement('div'); card.className = 'card'; card.setAttribute('role', 'dialog');
+      card.innerHTML = `<button class="x" type="button" aria-label="${T('Close', 'إغلاق')}">×</button><h3>${h}</h3><p>${p}</p>${act}`;
+      card.onpointerdown = e => e.stopPropagation(); card.onclick = e => e.stopPropagation();
+      card.querySelector('.x').onclick = closeCard;
+      el.appendChild(card);
+    }
+    const findMine = () => {
+      hideHint();
+      if (myFish) {
+        glide(myFish.x + myFish.size / 2);
         setTimeout(() => { myFish.b.classList.remove('flash'); void myFish.b.offsetWidth; myFish.b.classList.add('flash', 'show');
           setTimeout(() => myFish.b.classList.remove('flash', 'show'), 2200); }, 450);
-      };
-    }
+      }
+      setTimeout(showCard, myFish ? 700 : 0);
+    };
+    const mb = document.createElement('button'); mb.type = 'button'; mb.className = 'mineBtn'; mb.textContent = T('🔍 Where is my fish?', '🔍 أين سمكتي؟');
+    mb.onpointerdown = e => e.stopPropagation(); mb.onclick = e => { e.stopPropagation(); findMine(); };
+    el.appendChild(mb);
+    if (opts.mine) { opts.mine.hidden = false; opts.mine.onclick = findMine; }
+    if (myFish && myFish.net) setTimeout(findMine, 900);   // a fish in the net: show it at once
     /* the small map: zones, a dot per fish, the window you see; tap = glide there */
     let mapDots = [], mapWin = [];
     if (opts.map) {
@@ -341,7 +409,8 @@
     const place = (node, x, w, extra = '') => { node.style.transform = `translate(${screenX(x - w / 2)}px,0)${extra}`; };
     const draw = f => {
       const sx = screenX(f.x);
-      const y = f.egg ? sand() - f.hgt * .8 : f.y + Math.sin(f.ph) * 5;
+      const y = f.egg ? sand() - f.hgt * .8 : f.net || f.sleep ? f.y : f.y + Math.sin(f.ph) * 5;
+      if (f.rope) f.rope.style.height = Math.max(0, y) + 'px';
       f.b.style.transform = `translate(${sx}px,${y}px)`;
       if (!f.egg) { const d = f.vx < 0 ? -1 : 1; if (f.d !== d) { f.d = d; f.body.style.transform = `scaleX(${d})`; } }
       const edge = sx + f.size / 2 > W() - 90 ? 'r' : sx + f.size / 2 < 90 ? 'l' : '';
@@ -365,7 +434,7 @@
       const pop = document.createElement('i'); pop.className = 'pop'; pop.style.left = screenX(p.x) + 'px'; pop.style.top = p.y + 'px'; el.appendChild(pop); setTimeout(() => pop.remove(), 520);
       f.b.classList.remove('chomp'); void f.b.offsetWidth; f.b.classList.add('chomp');
     };
-    const swimmers = fishes.filter(f => !f.egg);
+    const swimmers = fishes.filter(f => !f.egg && !f.net && !f.sleep);
 
     let last = performance.now(), on = true, raf = 0;
     const step = t => {

@@ -1461,7 +1461,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       ['chapters.html', '📚', T('All units and subjects', 'كل الوحدات والمواد'), ''],
       ch ? ['map.html', '🗺️', T('This unit’s map', 'خريطة الوحدة'), `${chWord(ch)} ${ch.n || ''} · ${chTitle(ch)}`] : null,
       ['adventures.html', '🎮', T('Reesho’s adventures', 'مغامرات ريشو'), ''],
-      ['aquarium.html', '🐠', T('Motafawek aquarium', 'حوض متفوّق'), (prof().lx || '') === today() ? T('Your fish ate today 🍤', 'سمكتك أكلت النهارده 🍤') : T('Your fish is hungry 😋', 'سمكتك جعانة 😋')],
+      ['aquarium.html', '🐠', T('Motafawek aquarium', 'حوض متفوّق'), fishLine()],
       ['champions.html', '⭐', T('Motafawek Stars', 'نجوم متفوّق'), '']
     ].filter(Boolean);
     const btn = document.createElement('button');
@@ -1499,11 +1499,30 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       setTimeout(() => mo.disconnect(), 5000);
     }
   }
+  /* «الشبكة» (owner, 10 Nov 2026): a student who earned no points for NET_DAYS days finds their fish caught in a net. Only the
+     owner of the fish sees the net (aquarium.html); it stays there, whatever the days, until the student cuts its 5 strings in
+     the rescue game (quiz.html#rescue: one string per right answer). Kept as p.net = { in: day caught, out: day freed }; two
+     dates so the sync merge (later date wins) keeps a fish freed on one device free on the other. Eggs (< 100 XP) are never caught. */
+  const NET_DAYS = 3, NET_STRINGS = 5, NET_MIN_XP = 100;
+  const dayMs = s => { const [y, m, d] = String(s || '').split('-').map(Number); return y ? new Date(y, m - 1, d).getTime() : 0; };
+  const daysAgo = s => { const t = dayMs(s); return t ? Math.round((dayMs(today()) - t) / 864e5) : null; };
+  function inNet(p = prof()) { const n = p.net || {}; return !!n.in && !(n.out && n.out >= n.in); }
+  function checkNet() {
+    if (!player()) return false;
+    const p = prof(), d = daysAgo(p.lx);
+    if (!inNet(p) && d !== null && d >= NET_DAYS && (p.xp || 0) >= NET_MIN_XP) updateProf(q => { q.net = Object.assign({}, q.net, { in: today(), away: d }); });
+    return inNet();
+  }
+  function freeNet() { updateProf(q => { q.net = Object.assign({}, q.net, { out: today() }); }); try { sync.dirty && sync.dirty(); } catch (e) {} }
+  const fishState = () => { const p = prof(); return (p.xp || 0) < NET_MIN_XP ? 'egg' : inNet(p) ? 'net' : (p.lx || '') === today() ? 'fed' : 'hungry'; };
+  const fishLine = () => ({ egg: T('Your egg is waiting 🥚', 'بيضتك مستنياك 🥚'), net: T('Your fish is in a net! 🕸', 'سمكتك في الشبكة! 🕸'),
+    fed: T('Your fish ate today 🍤', 'سمكتك أكلت النهارده 🍤'), hungry: T('Your fish is hungry 😋', 'سمكتك جعانة 😋') })[fishState()];
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, bankXP, repeatRate, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, weekXP, countBoss, badges, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
-    gender, G, setGender, visit, greet, bye, VOICE_TEXT, navMenu };
+    gender, G, setGender, visit, greet, bye, VOICE_TEXT, navMenu, NET_DAYS, NET_STRINGS, inNet, checkNet, freeNet, fishState, fishLine };
+  try { checkNet(); } catch (e) {}
   applyLang();
   sync.auto();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', navMenu); else navMenu();

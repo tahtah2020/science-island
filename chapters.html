@@ -217,7 +217,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   {
     const lx = SI.prof().lx || '', fed = lx === SI.today();
     const aq = document.createElement('a'); aq.className = 'advStrip aqStrip'; aq.href = 'aquarium.html';
-    aq.innerHTML = `<img src="assets/aquarium/fish_clown.webp" alt="" aria-hidden="true"><span class="t"><b>${T('Aquarium', 'حوض متفوّق')}</b><small>${fed ? T('Your fish ate today 🍤', 'سمكتك أكلت النهارده 🍤') : T('Your fish is hungry 😋', 'سمكتك جعانة 😋')}</small></span><span class="go">${T('Open ▸', 'افتح ◂')}</span>`;
+    aq.innerHTML = `<img src="assets/aquarium/fish_clown.webp" alt="" aria-hidden="true"><span class="t"><b>${T('Aquarium', 'حوض متفوّق')}</b><small>${SI.fishLine()}</small></span><span class="go">${T('Open ▸', 'افتح ◂')}</span>`;
     aq.onclick = () => SI.sfx.tick();
     $('#advs').appendChild(aq);
     $('#advs').classList.toggle('two', $('#advs').children.length > 1);

@@ -353,6 +353,26 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   .slot{height:34px} .tile{height:38px}
   .sheet .mark{font-size:40px}
 }
+/* «حرّر سمكتك» rescue (owner, 10 Nov 2026): the fish in the net above the question; one string cut per right answer */
+.netBox{position:relative;margin:-4px 0 12px;border-radius:18px;overflow:hidden;border:3px solid #bfeaf7;background:linear-gradient(180deg,#8fd6f0,#3a9fd6 70%,#2d86c0);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.netBox svg{display:block;width:100%;height:auto;max-height:190px}
+.netBox .cnt{position:absolute;top:8px;right:10px;font:900 15px "Cairo","Nunito",sans-serif;color:#1f3d57;background:rgba(255,250,240,.92);border-radius:999px;padding:2px 12px;direction:rtl}
+.netBox .rp{transition:opacity .6s .5s}
+.netBox .rp .up,.netBox .rp .dn{transition:transform .7s cubic-bezier(.5,0,.8,.6)}
+.netBox .rp.cut .up{transform:translateY(-14px) rotate(-14deg)}
+.netBox .rp.cut .dn{transform:translateY(40px) rotate(18deg)}
+.netBox .rp.cut{opacity:.15}
+.netBox .snip{font-size:26px;animation:netSnip .7s ease-out forwards}
+@keyframes netSnip{0%{opacity:0;transform:scale(.4)}30%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(1) translateY(-18px)}}
+.netBox .mesh{transition:opacity 1s}
+.netBox.free .mesh{opacity:0}
+.netBox .fishG{transition:transform 1.6s ease-in .6s}
+.netBox.free .fishG{transform:translateX(260px)}
+.netBox .fishG .wig{animation:netWig 1.4s ease-in-out infinite;transform-origin:180px 92px;transform-box:view-box}
+@keyframes netWig{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.netBox.oops .fishG .wig{animation:netOops .4s}
+@keyframes netOops{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.netBox .fishG .wig{animation:none}}
 </style>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -1198,12 +1218,15 @@ async function playList(list, label, resume) {
     } else if (q.mode === 'boss' && list[i - 1] && list[i - 1].mode !== 'boss') {
       sfx.boss(); SI.voice('boss'); await banner(T('Get ready', 'استعد'), T('Boss Round!', 'التحدي الكبير!'), 'boss');
       say(T('Boss questions mix two ideas. Take your time!', G('أسئلة التحدي الكبير بتجمع فكرتين. خد وقتك!', 'أسئلة التحدي الكبير بتجمع فكرتين. خدي وقتك!')), 'point');
+    } else if (i === 0 && label === 'rescue') {
+      say(T('Every right answer cuts one string. Let’s free your fish!', G('كل إجابة صح بتقطع خيط. يلّا نحرّر سمكتك!', 'كل إجابة صح بتقطع خيط. يلّا نحرّري سمكتك!')), 'point');
     } else if (i === 0) {
       say(label === 'review' ? T('Let’s practise the tricky ones again!', 'يلّا نراجع الأسئلة الصعبة تاني!') : label === 'daily' ? T('Five quick ones. Let’s go!', 'خمسة سريعين. يلّا بينا!') : T('Read carefully and have fun!', G('اقرأ كويس واستمتع!', 'اقري كويس واستمتعي!')), 'point');
     } else {
       say(q.mode === 'timed' ? T('Quick one! Watch the timer.', 'سؤال سريع! خلّي بالك من الوقت.') : q.style === 'story' ? T('Read the story first.', G('اقرأ القصة الأول.', 'اقري القصة الأول.')) : T('You can do it!', G('إنت تقدر!', 'إنتي تقدري!')), 'think');
     }
     header(q, i, list.length, results);
+    if (label === 'rescue') RESCUE.count();
     window.__cur = q;
     const r = await ask(q);
     hideTimer();
@@ -1229,9 +1252,11 @@ async function playList(list, label, resume) {
       const card = $('#qcard'); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
     }
     header(q, i, list.length, results);
+    if (label === 'rescue') { if (r.correct) RESCUE.cut(); else RESCUE.oops(); RESCUE.count(); }
     if (label === 'quest') saveRun(list, i + 1, results, missed, firstRight);   // leave now and the Quest continues from the next question
     await nextBtn(i === list.length - 1 ? T('Finish ▸', 'إنهاء ◂') : T('Next ▸', 'التالي ◂'));
     if (r.firstTry && streak > 0 && streak % 5 === 0) await mysteryBox();
+    if (label === 'rescue' && RESCUE.left() <= 0) break;
   }
   return { results, missed, firstRight };
 }
@@ -1278,6 +1303,82 @@ function buildDaily() {
 }
 function buildReview() {
   return dueCards().slice(0, 10).map(ideaById).filter(Boolean).map(I => { const q = variantOf(I); if (q.mode === 'boss') q.mode = 'normal'; return q; });
+}
+
+/* «حرّر سمكتك» (owner, 10 Nov 2026): the student's fish was caught in a net after 3 days away (common.js checkNet).
+   Five strings hold the net; each right answer cuts one. Easy ideas first (the rescue must feel doable), no Boss, no timer;
+   practice rules (wrong = try again with the hint). If a question still ends wrong, more questions follow until 5 strings are cut. */
+const RESCUE = (() => {
+  let box = null, done = 0;
+  const N = () => SI.NET_STRINGS || 5;
+  const ropeX = i => 112 + i * 34;
+  function mount(kind, color) {
+    const fish = kind ? `<image href="assets/aquarium/${kind}.webp" x="140" y="58" width="82" height="66" preserveAspectRatio="xMidYMid meet"/>`
+      : `<g transform="translate(138 70) scale(.78)"><path d="M18 30 L-6 8 Q0 30 -6 52Z" fill="${color}" stroke="#1f3d57" stroke-width="3"/><ellipse cx="52" cy="30" rx="42" ry="24" fill="${color}" stroke="#1f3d57" stroke-width="3"/><circle cx="78" cy="25" r="8" fill="#fff" stroke="#1f3d57" stroke-width="1.5"/><circle cx="80" cy="25" r="4.5" fill="#1f3d57"/></g>`;
+    const ropes = Array.from({ length: N() }, (_, i) => `<g class="rp" data-i="${i}"><g class="up"><path d="M${ropeX(i)} 6 V86" stroke="#9c7a44" stroke-width="7" stroke-linecap="round"/><path d="M${ropeX(i)} 6 V86" stroke="#d9b679" stroke-width="3" stroke-dasharray="5 4"/></g><g class="dn"><path d="M${ropeX(i)} 92 V160" stroke="#9c7a44" stroke-width="7" stroke-linecap="round"/><path d="M${ropeX(i)} 92 V160" stroke="#d9b679" stroke-width="3" stroke-dasharray="5 4"/></g><circle cx="${ropeX(i)}" cy="89" r="7" fill="#b98d4e" stroke="#7a5a2a" stroke-width="2"/></g>`).join('');
+    box = document.createElement('div'); box.className = 'netBox'; box.setAttribute('aria-hidden', 'true');
+    box.innerHTML = `<svg viewBox="0 0 360 170"><defs><pattern id="rMesh" width="13" height="13" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H13M0 0V13" stroke="#e3c48d" stroke-width="2" fill="none"/></pattern></defs>
+      <path d="M0 158 Q90 148 180 156 T360 152 V170 H0Z" fill="#f3dca4"/>
+      <circle cx="40" cy="120" r="5" fill="none" stroke="#fff" stroke-width="2" opacity=".6"/><circle cx="320" cy="60" r="7" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>
+      <g class="fishG"><g class="wig">${fish}</g></g>
+      <path class="mesh" d="M180 8 C120 14 92 50 94 92 C96 136 136 162 180 162 C224 162 264 136 266 92 C268 50 240 14 180 8Z" fill="url(#rMesh)" stroke="#9c7a44" stroke-width="3"/>
+      ${ropes}<g class="sn"></g></svg><div class="cnt"></div>`;
+    $('#qcard').prepend(box);
+    count();
+  }
+  function count() { const c = box && box.querySelector('.cnt'); if (c) c.textContent = done >= N() ? T('Free! 🎉', 'حرة! 🎉') : T(`✂️ ${N() - done} strings left`, `✂️ باقي ${N() - done} ${N() - done > 2 ? 'خيوط' : 'خيط'}`); const cp = $('#countPill'); if (cp) cp.innerHTML = `✂️ <bdi dir="ltr">${done} / ${N()}</bdi>`; const pr = $('#progress'); if (pr) pr.hidden = true; }
+  function cut() {
+    if (!box || done >= N()) return;
+    const g = box.querySelector(`.rp[data-i="${done}"]`); g.classList.add('cut');
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'text'); s.setAttribute('x', ropeX(done) - 13); s.setAttribute('y', 98); s.setAttribute('class', 'snip'); s.textContent = '✂️';
+    box.querySelector('.sn').appendChild(s); setTimeout(() => s.remove(), 800);
+    done++;
+    if (done >= N()) setTimeout(() => box.classList.add('free'), 500);
+  }
+  function oops() { if (!box) return; box.classList.remove('oops'); void box.offsetWidth; box.classList.add('oops'); }
+  return { mount, cut, oops, count, left: () => N() - done, get done() { return done; } };
+})();
+function buildRescue() {
+  const rank = { easy: 0, medium: 1, hard: 2 }, cards = SI.chProf().cards || {}, box = id => (cards[id] ? cards[id].box : -1);
+  const pool = window.IDEAS.filter(I => !I.bonus && !I.boss);
+  const ideas = shuffle(pool).sort((a, b) => box(b.id) - box(a.id)).map(I => variantOf(I)).sort((a, b) => (rank[a.level] ?? 1) - (rank[b.level] ?? 1));
+  return ideas.slice(0, 10).map(q => Object.assign(q, { mode: 'normal' }));   // practice rules: no timer, try again until right
+}
+async function rescueMain(set) {
+  const me = SI.player();
+  set(T('Free your fish', G('حرّر سمكتك', 'حرّري سمكتك')), T('Cut the 5 strings of the net', 'اقطع الخيوط الخمسة للشبكة'));
+  if (!(SI.inNet && SI.inNet()) && !/[&?]try\b/.test(location.hash)) {
+    notice(T('Your fish is free!', 'سمكتك حرة!'), T('Your fish is not in a net. Keep playing every day so it stays free!', G('سمكتك مش في شبكة. العب كل يوم علشان تفضل حرة!', 'سمكتك مش في شبكة. العبي كل يوم علشان تفضل حرة!')),
+      `<a class="btn primary" href="aquarium.html">🐠 ${T('Aquarium', 'حوض متفوّق')}</a><a class="btn" href="map.html">${T('Map', 'الخريطة')}</a>`);
+    return;
+  }
+  const xp = SI.xp(), lv = Math.min(6, SI.levelInfo(xp).n), KIND = { 2: 'fish_round', 3: 'fish_clown', 4: 'fish_angel', 5: 'fish_angel', 6: 'fish_angel' };
+  const COLORS = ['#ff7a59', '#ffb627', '#4cc9f0', '#f15bb5', '#7bd389', '#9b5de5', '#00bbf9', '#fee440', '#ff006e', '#3a86ff', '#fb5607', '#06d6a0'];
+  let id = me.name; try { id = (await SI.LB.myId()) || id; } catch (e) {}
+  let h = 0; for (const c of String(id)) h = (h * 31 + c.codePointAt(0)) | 0;
+  RESCUE.mount(KIND[lv] || null, COLORS[Math.abs(h) % COLORS.length]);
+  const list = buildRescue(); rememberVariants(list);
+  await intro(T('Your fish is in a net!', 'سمكتك في الشبكة! 🕸'), T(`Away ${SI.NET_DAYS}+ days`, `غياب ${SI.NET_DAYS} أيام أو أكتر`),
+    T('Five strings hold the net. Every right answer cuts one string. A wrong answer? Try again: Reesho gives you a hint.',
+      G('خمس خيوط ماسكين الشبكة. كل إجابة صح بتقطع خيط. غلطت؟ جرّب تاني وريشو هيديك تلميح.', 'خمس خيوط ماسكين الشبكة. كل إجابة صح بتقطع خيط. غلطتي؟ جرّبي تاني وريشو هيديكي تلميح.')), T('✂️ Start cutting', 'ابدأ القطع ✂️'));
+  track('quiz_start', { mode: 'rescue', chapter: CH.id || '' });
+  const res = await playList(list, 'rescue');
+  if (RESCUE.left() > 0) return;   // ran out of questions (a very small unit): the net stays, try again later
+  SI.freeNet();
+  track('quiz_complete', { mode: 'rescue', chapter: CH.id || '', accuracy: Math.round(res.firstRight / Math.max(1, RESCUE.done) * 100) });
+  const gain = SI.addXP(score, banked); banked = 0;
+  sfx.win(); confetti(70); SI.voice('finish');
+  say(T(`You did it, ${esc(me.name)}! Your fish is free!`, G(`عملتها يا ${esc(me.name)}! سمكتك خرجت حرة!`, `عملتيها يا ${esc(me.name)}! سمكتك خرجت حرة!`)), 'celebrate');
+  await new Promise(r => setTimeout(r, 1900));
+  const o = mk('div', 'overlay', `<div class="panel">
+    <img class="hero" src="assets/parrot_celebrate.png" alt="">
+    <h2>${T('Your fish is free! 🐟', 'سمكتك خرجت حرة! 🐟')}</h2>
+    <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Right first time', 'صح من أول مرة')}: ${res.firstRight}</span></div>
+    ${levelBlock(gain)}
+    <p>${T('Play a little every day so it never gets caught again!', G('العب شوية كل يوم علشان ما تقعش في الشبكة تاني!', 'العبي شوية كل يوم علشان ما تقعش في الشبكة تاني!'))}</p>
+    <div class="row acts"><a class="btn primary" href="aquarium.html">🐠 ${T('See my fish', 'شوف سمكتك')}</a><a class="btn" href="map.html">${T('Map', 'الخريطة')}</a></div></div>`);
+  document.body.appendChild(o);
+  try { await SI.LB.submitWeek(); } catch (e) {}
 }
 
 function levelBlock(gain) {
@@ -1534,12 +1635,13 @@ async function examMain() {
 
 async function main() {
   const me = SI.player();
-  const mode = /^#(daily|review)$/.test(location.hash) ? location.hash.slice(1) : (/^#preview/.test(location.hash) && SI.isOwner()) ? 'preview' : 'quest';   // preview opens only after the owner signs in on admin.html
+  const mode = /^#rescue\b/.test(location.hash) ? 'rescue' : /^#(daily|review)$/.test(location.hash) ? location.hash.slice(1) : (/^#preview/.test(location.hash) && SI.isOwner()) ? 'preview' : 'quest';   // preview opens only after the owner signs in on admin.html
   say(T(`Hi, ${esc(me.name)}! I’m Reesho.`, `أهلًا يا ${esc(me.name)}! أنا ريشو.`), 'wave');
   const set = (t, s) => { $('#title').textContent = t; $('#subtitle').textContent = s; document.title = t + T(' · Motafawek', ' · متفوّق'); };
   const TITLE = SI.chTitle(CH);
 
   if (mode === 'preview') return preview(set);
+  if (mode === 'rescue') return rescueMain(set);
   if (mode === 'quest') {
     let saved = loadRun();
     if (saved) {   // the child left in the middle: continue from the last question, or start again
