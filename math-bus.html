@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Ali’s Bus Stops · Order of Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Math Grade 5 · Unit 6 (m5c6) adventure «محطات أتوبيس علي / Ali’s Bus Stops», lessons 1-2 (order of operations, parentheses),
+     from the book's «المسار الصحيح» (p122): the bus route IS the expression. At every stop the child taps the operation whose turn it is,
+     then types its result; the expression is rewritten (book p121: «rewrite the expression after each step») and the bus drives on.
+     A wrong operation or a wrong result costs one can of fuel (5 per level); the message says in words what went wrong, never the answer.
+     6 levels × 3 trips, each a small step harder: 1 whole numbers × and + (2 operations) · 2 whole numbers with ÷ and − (3 operations)
+     · 3 decimals with × and ÷ by 10, 100, 0.1 · 4 parentheses, whole numbers · 5 parentheses and decimals · 6 book-like expressions.
+     Expressions are made at random and kept only if every step is a non-negative number with at most 3 decimal places (divisions exact).
+     Pictures: the bus, road and town are drawn in code; Reesho from math/assets (reesho_point, reesho_happy, reesho_sad).
+     Sounds are made in the page with Web Audio (no files). Progress: SI.chProf('m5c6').bus = { lvl, best, stars[] }. -->
+<style>
+:root{--navy:#1f3d57;--ink:#3a5c75;--card:rgba(255,250,240,.97);--pri:#23799f;--mint:#bfe8d6;--coral:#e2603f;--ok:#2e9e6b;--gold:#f2b134;--md:#e2603f;--as:#2f78b5;--par:#8a63c4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Nunito,Cairo,sans-serif;background:linear-gradient(#bfe6f7,#e9f5fb 40%,#efe6f5);color:var(--navy);min-height:100svh}
+.wrap{max-width:720px;margin:0 auto;padding:10px 14px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{background:#fff;border-radius:99px;padding:3px 12px;font-weight:800;font-size:14px;box-shadow:0 2px 6px #1f3d5722}
+#scene{width:100%;height:auto;display:block;margin-top:6px;border-radius:18px;box-shadow:0 4px 14px #1f3d5730}
+.say{display:flex;gap:8px;align-items:flex-start;margin:8px 0 10px}
+.say img{width:52px;height:52px;object-fit:contain;flex:none}
+.bubble{background:#fff;border-radius:16px;padding:8px 12px;font-size:15.5px;flex:1;min-height:44px;box-shadow:0 3px 10px #0002;line-height:1.6}
+.panel{background:var(--card);border-radius:20px;padding:12px;box-shadow:0 6px 20px #1f3d5733}
+.goal{font-size:13.5px;font-weight:800;color:var(--ink);text-align:center;margin-bottom:8px}
+.expr{direction:ltr;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;background:#fff;border:2px solid #d6e2ea;border-radius:16px;padding:12px 8px;min-height:70px}
+.tk{font:900 24px Nunito,Cairo;color:var(--navy);padding:2px 2px;border-radius:8px;transition:.2s}
+.tk.par{color:var(--par)}
+.op{font:900 24px Nunito,Cairo;width:44px;height:44px;border-radius:12px;border:2px solid;cursor:pointer;background:#fff;transition:.15s}
+.op.md{color:var(--md);border-color:#f3b3a2;background:#fff4f0}
+.op.as{color:var(--as);border-color:#a9cbe8;background:#f0f7fd}
+.op:active{transform:scale(.92)}
+.op.bad{animation:sh .4s;background:#fde3db}
+.sel{background:#fff3c4;box-shadow:0 0 0 3px var(--gold)}
+.tk.new{animation:pop .5s}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes sh{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.calc{margin-top:12px;text-align:center}
+.calc[hidden]{display:none}
+.ask{direction:ltr;font:900 22px Nunito,Cairo;display:inline-flex;gap:8px;align-items:center;background:#fffaf0;border-radius:14px;padding:6px 14px;border:2px dashed var(--gold)}
+.ans{min-width:90px;height:44px;border-radius:10px;background:#fff;border:2px solid var(--pri);display:inline-flex;align-items:center;justify-content:center;font:900 24px Nunito,Cairo;color:var(--pri);padding:0 8px}
+.ans.bad{border-color:var(--coral);color:var(--coral);animation:sh .4s}
+.pad{direction:ltr;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-width:330px;margin:10px auto 0}
+.pad button{height:46px;border:0;border-radius:12px;background:var(--mint);font:900 21px Nunito,Cairo;color:var(--navy);cursor:pointer;box-shadow:0 3px 0 #8ccbb0}
+.pad button:active{transform:translateY(2px);box-shadow:0 1px 0 #8ccbb0}
+.pad .ok{background:var(--gold);box-shadow:0 3px 0 #c88f1c;grid-column:span 2}
+.pad .del{background:#e9eef2;box-shadow:0 3px 0 #c9d6dc}
+.row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 22px;font:900 17px Nunito,Cairo;background:var(--gold);color:var(--navy);cursor:pointer;box-shadow:0 4px 0 #c88f1c}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c88f1c}
+.btn.alt{background:#fff;box-shadow:0 4px 0 #c9d6dc}
+.veil{position:fixed;inset:0;background:#1f3d57cc;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.veil[hidden]{display:none}
+.box{background:#fff;border-radius:20px;padding:18px;max-width:390px;text-align:center;max-height:94svh;overflow:auto}
+.box h2{margin:4px 0 8px}
+.box ol{text-align:start;padding-inline-start:20px;line-height:1.8;margin:6px 0 10px}
+.ex{direction:ltr;display:flex;flex-direction:column;gap:2px;align-items:center;background:#f3f8fc;border-radius:12px;padding:8px;margin:0 auto 12px;font:900 19px Nunito,Cairo}
+.ex .md{color:var(--md)}.ex .as{color:var(--as)}.ex .hl{background:#fff3c4;border-radius:6px;padding:0 4px}
+.stars{font-size:34px;letter-spacing:4px}
+bdi{font-weight:900;color:var(--pri)}
+.home,.snd{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#fff;border:0;border-radius:99px;color:var(--navy);font-size:16px;width:34px;height:30px;cursor:pointer;box-shadow:0 2px 6px #1f3d5722}
+@media (max-width:420px){.tk,.op{font-size:21px}.op{width:40px;height:40px}.bubble{font-size:14.5px}}
+@media (prefers-reduced-motion:reduce){.tk.new,.op.bad,.ans.bad{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1 data-ar="🚌 محطات أتوبيس علي">🚌 Ali’s Bus Stops</h1><div class="pills"><span class="pill"><span data-ar="المرحلة">Level</span> <b id="lvl">1</b>/6</span><span class="pill"><span data-ar="الرحلة">Trip</span> <b id="trip">1</b>/3</span><span class="pill">⭐ <b id="score">0</b></span><button class="snd" id="snd" type="button" aria-label="Sound" data-ar-label="الصوت">🔊</button><a class="home" href="map.html" aria-label="Back to the map" data-ar-label="رجوع للخريطة">🗺️</a></div></div>
+  <svg id="scene" viewBox="0 0 440 190" role="img" aria-label="Ali’s bus on a road with stops" data-ar-label="أتوبيس علي على طريق فيه محطات"></svg>
+  <div class="say"><img id="rimg" src="math/assets/reesho_point.webp" alt=""><div class="bubble" id="say" aria-live="polite"></div></div>
+  <div class="panel">
+    <div class="goal" id="goal"></div>
+    <div class="expr" id="expr"></div>
+    <div class="calc" id="calc" hidden>
+      <div class="ask" id="ask"></div>
+      <div class="pad" id="pad"></div>
+    </div>
+    <div class="row"><button class="btn alt" id="hint" type="button" data-ar="🦜 تلميح">🦜 Hint</button></div>
+  </div>
+</div>
+
+<div class="veil" id="intro"><div class="box">
+  <div style="font-size:42px" aria-hidden="true">🚌🚏🦜</div>
+  <h2 data-ar="أتوبيس علي محتاج سوّاق شاطر!">Ali’s bus needs a smart driver!</h2>
+  <ol id="rules"></ol>
+  <div class="ex" id="example"></div>
+  <button class="btn" id="go" type="button"></button></div></div>
+
+<div class="veil" id="end" hidden><div class="box"><div id="endArt" style="font-size:44px" aria-hidden="true"></div><h2 id="endTitle"></h2><div class="stars" id="endStars"></div><p id="endText"></p><button class="btn" id="endBtn" type="button"></button></div></div>
+
+<script src="firebase-config.js?v=20261110e{{{"></script>
+<script src="chapters.js?v=20261110e{{{"></script>
+<script src="common.js?v=20261110e{{{"></script>
+<script>
+(() => {
+'use strict';
+const me = SI.requirePlayer(); if (!me) return;
+const CH = SI.requireChapter('m5c6'); if (!CH) return;
+const T = SI.T, G = SI.G || ((m, f) => m), GAME = 'math-bus.html';
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const n = s => `<bdi dir="ltr">${s}</bdi>`;
+const rnd = k => Math.floor(Math.random() * k);
+const pick = a => a[rnd(a.length)];
+document.title = T('Ali’s Bus Stops · Order of Operations', 'محطات أتوبيس علي · ترتيب العمليات');
+
+/* ---------- numbers ---------- */
+const fmt = x => String(+(+x).toFixed(6));
+const decs = x => { const s = fmt(x); return s.includes('.') ? s.split('.')[1].length : 0; };
+const OPS = { '×': (a, b) => a * b, '÷': (a, b) => a / b, '+': (a, b) => a + b, '−': (a, b) => a - b };
+const MD = o => o === '×' || o === '÷';
+const W = (lo, hi) => String(lo + rnd(hi - lo + 1));                       // a whole number
+const D1 = (lo, hi) => fmt((lo * 10 + rnd((hi - lo) * 10 + 1)) / 10);        // one decimal place
+/* six levels, each a small step harder (owner: progressive games). A template's letters are filled by the level's samplers. */
+const LEVELS = [
+  { name: ['× and + first', 'الضرب قبل الجمع'], t: ['A + B × C', 'A + B × C', 'A × B + C × D'], f: { A: () => W(2, 20), B: () => W(2, 9), C: () => W(2, 9), D: () => W(2, 9) } },
+  { name: ['÷ and − too', 'والقسمة والطرح كمان'], t: ['A − B × C', 'A ÷ B + C', 'A + B ÷ C − D', 'A × B − C ÷ D', 'A − B ÷ C + D'], f: { A: () => W(10, 60), B: () => W(2, 9), C: () => W(2, 9), D: () => W(2, 9) }, div: true },
+  { name: ['Decimals and powers of ten', 'كسور عشرية وقوى العدد 10'], t: ['A + B × 10 − C', 'A − B ÷ 10 + C', 'A − B × 0.1 + C', 'A + B ÷ 0.1 − C', 'A + B × 100'], f: { A: () => D1(1, 40), B: () => D1(0.1, 9), C: () => D1(0.1, 9) } },
+  { name: ['Parentheses first', 'الأقواس الأول'], t: ['(A + B) × C', '(A + B) × C − D', 'A × (B − C) + D', '(A + B) ÷ C + D', 'A + B × (C − D)'], f: { A: () => W(2, 30), B: () => W(2, 20), C: () => W(2, 9), D: () => W(1, 9) }, div: true },
+  { name: ['Parentheses with decimals', 'أقواس وكسور عشرية'], t: ['(A + B) × 10 − C', 'A − (B + C) × 0.1', '(A − B) ÷ 0.1 + C', '(A + B) × 2 − C', 'A + (B − C) × 10'], f: { A: () => D1(5, 60), B: () => D1(0.1, 9), C: () => D1(0.1, 9) } },
+  { name: ['Like the book', 'زي الكتاب'], t: ['A + (B − C) × D ÷ 10', '(A + B) ÷ C − D × 0.1', 'A × (B + C) − D ÷ 0.1', 'A − B × 0.2 ÷ 0.01 + C', '(A − B) × C + D ÷ 0.01'], f: { A: () => D1(10, 90), B: () => D1(0.1, 9), C: () => W(2, 9), D: () => D1(0.1, 4) }, div: true }
+];
+/* tokens: { k: 'n', v: '12.5' } · { k: 'o', v: '×' } · { k: '(' } · { k: ')' } */
+function tokens(str) { return str.split(' ').flatMap(w => { const out = []; let s = w; while (s.startsWith('(')) { out.push({ k: '(' }); s = s.slice(1); } let close = 0; while (s.endsWith(')')) { close++; s = s.slice(0, -1); } out.push(OPS[s] ? { k: 'o', v: s } : { k: 'n', v: s }); for (let i = 0; i < close; i++) out.push({ k: ')' }); return out; }); }
+const show = tk => tk.map(t => t.k === 'n' || t.k === 'o' ? t.v : t.k).join(' ').replace(/\( /g, '(').replace(/ \)/g, ')');
+/* the operation whose turn it is: innermost parentheses first, then × ÷ from left to right, then + − from left to right */
+function range(tk) {
+  for (let i = 0; i < tk.length; i++) if (tk[i].k === '(') { let j = i + 1; while (tk[j].k !== ')' && tk[j].k !== '(') j++; if (tk[j].k === ')') return [i + 1, j - 1, i]; }
+  return [0, tk.length - 1, -1];
+}
+function nextOp(tk) { const [a, b] = range(tk); let first = -1; for (let i = a; i <= b; i++) if (tk[i].k === 'o') { if (MD(tk[i].v)) return i; if (first < 0) first = i; } return first; }
+function apply(tk, i) {
+  const r = OPS[tk[i].v](+tk[i - 1].v, +tk[i + 1].v), out = tk.slice(0, i - 1).concat([{ k: 'n', v: fmt(r), fresh: true }], tk.slice(i + 2));
+  const j = i - 1; if (out[j - 1] && out[j - 1].k === '(' && out[j + 1] && out[j + 1].k === ')') { out.splice(j + 1, 1); out.splice(j - 1, 1); }
+  return { out, r };
+}
+function steps(tk) { const list = []; let t = tk.map(x => ({ ...x })); while (t.some(x => x.k === 'o')) { const i = nextOp(t), a = +t[i - 1].v, b = +t[i + 1].v, o = t[i].v, { out, r } = apply(t, i); list.push({ a, b, o, r }); t = out; } return list; }
+function makeTrip(lv) {
+  for (let tries = 0; tries < 4000; tries++) {
+    const tpl = pick(lv.t), str = tpl.replace(/[A-D]/g, L => lv.f[L]());
+    const tk = tokens(str), st = steps(tk);
+    const ok = st.every(s => s.r >= 0 && s.r <= 3000 && decs(s.r) <= 3 && (s.o !== '÷' || (s.b !== 0 && decs(s.r) <= (lv.div ? 0 : 2) + (decs(s.a) > 0 ? 2 : 0))) && !(s.o === '−' && s.r === 0));
+    if (!ok) continue;
+    // the order must matter: working only from left to right gives another value
+    const flat = tk.filter(x => x.k !== '(' && x.k !== ')'); let lr = +flat[0].v; for (let i = 1; i < flat.length; i += 2) lr = OPS[flat[i].v](lr, +flat[i + 1].v);
+    if (Math.abs(lr - st[st.length - 1].r) < 1e-9) continue;
+    return { str, tk, total: st.length, final: st[st.length - 1].r };
+  }
+  throw new Error('no trip');
+}
+
+/* ---------- state ---------- */
+const S = { t0: Date.now(), lvl: Math.min(5, ((SI.chProf(CH.id).bus || {}).lvl) || 0), trip: 0, score: 0, fuel: 5, misses: 0, tk: [], total: 0, done: 0, sel: -1, entry: '', busy: false, hintN: 0, busX: 40, start: '' };
+const LV = () => LEVELS[S.lvl];
+const say = (html, img = 'reesho_point') => { $('#say').innerHTML = html; $('#rimg').src = 'math/assets/' + img + '.webp'; };
+
+/* ---------- scene: town, road, stops, the bus, fuel ---------- */
+const STOP_X0 = 70, STOP_X1 = 390;
+const stopX = k => STOP_X0 + (STOP_X1 - STOP_X0) * k / Math.max(1, S.total);
+function busSVG(x, y, wrong) {
+  return `<g transform="translate(${x} ${y})${wrong ? ' rotate(-6)' : ''}"><rect x="-34" y="-30" width="68" height="36" rx="8" fill="#d9413a" stroke="#8f2420" stroke-width="2"/>${[-28, -12, 4].map(c => `<rect x="${c}" y="-24" width="13" height="11" rx="2" fill="#e8f4fb"/>`).join('')}<rect x="20" y="-24" width="9" height="18" rx="2" fill="#e8f4fb"/><rect x="-34" y="-6" width="68" height="5" fill="#f7cf4d"/><circle cx="-19" cy="7" r="7" fill="#333"/><circle cx="19" cy="7" r="7" fill="#333"/><circle cx="-19" cy="7" r="2.6" fill="#ccc"/><circle cx="19" cy="7" r="2.6" fill="#ccc"/><text x="0" y="-33" font-size="11" text-anchor="middle" font-weight="900" fill="#8f2420" font-family="Nunito,Cairo">${T('Ali', 'علي')}</text></g>`;
+}
+function drawScene(opt = {}) {
+  const x = opt.x ?? S.busX;
+  let h = `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd8f2"/><stop offset="1" stop-color="#e3f4fb"/></linearGradient></defs><rect width="440" height="190" fill="url(#sky)"/>`;
+  [[20, 70, 40, '#e9d6f2'], [64, 52, 34, '#f6e3bd'], [300, 60, 46, '#dbeaf7'], [350, 44, 30, '#fde3db'], [384, 74, 50, '#e4f1d6'], [150, 80, 30, '#f6e3bd'], [196, 66, 40, '#e9d6f2']].forEach(([bx, by, bw, c]) => { h += `<rect x="${bx}" y="${by}" width="${bw}" height="${120 - by}" fill="${c}" stroke="#c9d6dc"/>`; for (let wy = by + 8; wy < 112; wy += 14) for (let wx = bx + 6; wx < bx + bw - 8; wx += 12) h += `<rect x="${wx}" y="${wy}" width="6" height="7" fill="#fff" opacity=".8"/>`; });
+  h += `<rect x="0" y="118" width="440" height="10" fill="#cfe8b0"/><rect x="0" y="128" width="440" height="40" fill="#8a8f96"/><path d="M0 148H440" stroke="#fff" stroke-width="2.4" stroke-dasharray="16 12"/><rect x="0" y="168" width="440" height="22" fill="#cfe8b0"/>`;
+  for (let k = 1; k <= S.total; k++) {
+    const sx = stopX(k), last = k === S.total, passed = k <= S.done;
+    h += `<path d="M${sx} 128V88" stroke="#1f3d57" stroke-width="2.4"/>`;
+    h += last ? `<rect x="${sx - 26}" y="66" width="52" height="24" rx="6" fill="${passed ? '#2e9e6b' : '#1f3d57'}"/><text x="${sx}" y="83" font-size="11" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${passed ? '✓ ' : ''}${T('END', 'النهاية')}</text>`
+      : `<circle cx="${sx}" cy="80" r="11" fill="${passed ? '#2e9e6b' : '#fff'}" stroke="#1f3d57" stroke-width="2"/><text x="${sx}" y="85" font-size="12" text-anchor="middle" fill="${passed ? '#fff' : '#1f3d57'}" font-weight="900" font-family="Nunito,Cairo">${passed ? '✓' : k}</text>`;
+  }
+  h += `<rect x="${STOP_X0 - 66}" y="70" width="44" height="20" rx="5" fill="#fff" stroke="#c9d6dc"/><text x="${STOP_X0 - 44}" y="84" font-size="10.5" text-anchor="middle" font-weight="900" fill="#1f3d57" font-family="Nunito,Cairo">${T('START', 'البداية')}</text>`;
+  // fuel cans
+  h += `<rect x="8" y="8" width="150" height="28" rx="14" fill="#ffffffd9"/><text x="${T(26, 140)}" y="27" font-size="15" text-anchor="middle">⛽</text>`;
+  for (let i = 0; i < 5; i++) h += `<rect x="${T(42, 30) + i * 20}" y="15" width="13" height="14" rx="3" fill="${i < S.fuel ? '#f2b134' : '#d9dee2'}" stroke="${i < S.fuel ? '#c88f1c' : '#b8c2c9'}"/>`;
+  if (opt.wrong) h += `<g><rect x="${Math.min(330, Math.max(110, x - 60))}" y="40" width="120" height="26" rx="13" fill="#e2603f"/><text x="${Math.min(390, Math.max(170, x))}" y="58" font-size="13" text-anchor="middle" fill="#fff" font-weight="900" font-family="Nunito,Cairo">${T('✖ Wrong way!', '✖ طريق غلط!')}</text></g>`;
+  h += busSVG(x, opt.wrong ? 156 : 150, opt.wrong);
+  if (opt.party) for (let i = 0; i < 24; i++) h += `<rect x="${20 + rnd(400)}" y="${10 + rnd(110)}" width="7" height="11" rx="2" fill="${pick(['#f2b134', '#e2603f', '#45b36b', '#23799f', '#8a63c4'])}"/>`;
+  $('#scene').innerHTML = h;
+}
+async function driveTo(x2) { const x1 = S.busX, t0 = performance.now(); SFX.engine(); await new Promise(res => { (function f(t) { const k = Math.min(1, (t - t0) / 650); S.busX = x1 + (x2 - x1) * (1 - (1 - k) * (1 - k)); drawScene(); k < 1 ? requestAnimationFrame(f) : res(); })(t0); }); }
+
+/* ---------- the expression ---------- */
+function drawExpr() {
+  const sel = S.sel;
+  $('#expr').innerHTML = S.tk.map((t, i) => {
+    const hl = sel >= 0 && i >= sel - 1 && i <= sel + 1 ? ' sel' : '';
+    if (t.k === 'o') return `<button class="op ${MD(t.v) ? 'md' : 'as'}${hl}" type="button" data-i="${i}" aria-label="${t.v}">${t.v}</button>`;
+    if (t.k === 'n') return `<span class="tk${hl}${t.fresh ? ' new' : ''}">${t.v}</span>`;
+    return `<span class="tk par">${t.k}</span>`;
+  }).join('');
+  S.tk.forEach(t => delete t.fresh);
+  $('#expr').querySelectorAll('.op').forEach(b => b.onclick = () => pickOp(+b.dataset.i, b));
+}
+function why(i) {
+  const [a, b, p] = range(S.tk), o = S.tk[i].v, right = nextOp(S.tk);
+  if (p >= 0 && (i < a || i > b)) return T('There are still parentheses! What is inside them comes first.', 'لسه فيه أقواس! اللي جوه الأقواس عليه الدور الأول.');
+  if (!MD(o) && MD(S.tk[right].v)) return T('There is still a × or ÷ here: they come before + and −.', 'لسه فيه ضرب أو قسمة هنا، ودول قبل الجمع والطرح.');
+  return T('Another operation of the same kind comes before it: go from left to right.', 'فيه عملية من نفس النوع قبلها: امشِ من الشمال لليمين.');
+}
+async function pickOp(i, btn) {
+  if (S.busy || S.sel >= 0) return;
+  if (i === nextOp(S.tk)) {
+    SFX.ok(); S.sel = i; S.entry = ''; drawExpr();
+    $('#ask').innerHTML = `${S.tk[i - 1].v} ${S.tk[i].v} ${S.tk[i + 1].v} = <span class="ans" id="ans">?</span>`;
+    $('#calc').hidden = false;
+    say(T('Right stop! Now work it out and type the result.', G('محطة صح! احسبها واكتب الناتج.', 'محطة صح! احسبيها واكتبي الناتج.')));
+    return;
+  }
+  btn.classList.remove('bad'); void btn.offsetWidth; btn.classList.add('bad');
+  await mistake(why(i));
+}
+async function mistake(msg) {
+  S.busy = true; S.fuel--; S.misses++; SI.ga('game_mistake', { game: GAME, chapter: CH.id, stage: S.lvl + 1, step: 5 - S.fuel });
+  SFX.honk(); drawScene({ wrong: true }); await sleep(650); drawScene();
+  if (S.fuel <= 0) {
+    SFX.lose(); say(T('The tank is empty… the bus stopped.', 'البنزين خلص… الأتوبيس وقف.'), 'reesho_sad');
+    SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: S.lvl + 1, score: 0, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 0 });
+    await sleep(900); showEnd('lose'); return;
+  }
+  say(`${msg} ${T(`Fuel left: ${n(S.fuel)}.`, `فاضل ${n(S.fuel)} بنزين.`)}`, 'reesho_sad');
+  S.busy = false;
+}
+/* the number pad (left to right, also for Arabic) */
+$('#pad').innerHTML = ['7', '8', '9', '⌫', '4', '5', '6', '.', '1', '2', '3', '0'].map(k => `<button type="button" class="${k === '⌫' ? 'del' : ''}" data-k="${k}">${k}</button>`).join('') + `<button type="button" class="ok" data-k="ok" style="grid-column:span 4">${T('✔ Drive on', '✔ اطلع على المحطة')}</button>`;
+$('#pad').querySelectorAll('button').forEach(b => b.onclick = () => key(b.dataset.k));
+document.addEventListener('keydown', e => { if ($('#calc').hidden || !$('#intro').hidden || !$('#end').hidden) return; if (/^[0-9.]$/.test(e.key)) key(e.key); else if (e.key === 'Backspace') key('⌫'); else if (e.key === 'Enter') key('ok'); });
+function key(k) {
+  if (S.busy || S.sel < 0) return;
+  if (k === '⌫') S.entry = S.entry.slice(0, -1);
+  else if (k === 'ok') return check();
+  else if (k === '.' ? !S.entry.includes('.') && S.entry.length < 9 : S.entry.length < 9) S.entry += k;
+  SFX.click(); $('#ans').textContent = S.entry || '?';
+}
+async function check() {
+  if (!S.entry || S.entry === '.') return;
+  const i = S.sel, a = +S.tk[i - 1].v, b = +S.tk[i + 1].v, want = OPS[S.tk[i].v](a, b), got = +S.entry;
+  if (Math.abs(got - want) < 1e-9) {
+    S.busy = true;
+    const { out } = apply(S.tk, i); S.tk = out; S.sel = -1; S.done++; $('#calc').hidden = true; drawExpr(); SFX.ok();
+    await driveTo(stopX(S.done));
+    if (S.done >= S.total) return tripDone();
+    say(pick([T('On to the next stop! Which operation is next?', 'على المحطة اللي بعدها! أنهي عملية عليها الدور؟'), T('Good driving! What comes next?', G('سواقة حلوة! إيه اللي بعده؟', 'سواقة حلوة! إيه اللي بعده؟'))]));
+    S.busy = false; return;
+  }
+  const el = $('#ans'); el.classList.remove('bad'); void el.offsetWidth; el.classList.add('bad');
+  const msg = got > want ? T('That result is too big.', 'الناتج ده أكبر من اللازم.') : T('That result is too small.', 'الناتج ده أصغر من اللازم.');
+  S.entry = ''; setTimeout(() => { if ($('#ans')) $('#ans').textContent = '?'; }, 400);
+  await mistake(msg + ' ' + calcHint(S.tk[i].v, a, b));
+}
+/* a hint for the calculation: names the method, never the result */
+function calcHint(o, a, b) {
+  if ((o === '×' && [10, 100, 1000].includes(b)) || (o === '÷' && [0.1, 0.01].includes(b))) return T('This makes the number bigger: every digit moves to the left.', 'ده بيكبّر العدد: كل رقم بيتحرك خانة أو أكتر ناحية الشمال.');
+  if ((o === '÷' && [10, 100, 1000].includes(b)) || (o === '×' && [0.1, 0.01].includes(b))) return T('This makes the number smaller: every digit moves to the right.', 'ده بيصغّر العدد: كل رقم بيتحرك خانة أو أكتر ناحية اليمين.');
+  if (o === '×' && (decs(a) || decs(b))) return T('Multiply as whole numbers, then count the decimal places.', 'اضرب كأنهم أعداد صحيحة، وبعدين عدّ الأماكن العشرية.');
+  if (o === '÷') return T(`Think: ${n(fmt(b))} × what = ${n(fmt(a))}?`, `فكّر: ${n(fmt(b))} × كام = ${n(fmt(a))}؟`);
+  if (o === '+' || o === '−') return decs(a) || decs(b) ? T('Line up the decimal points.', 'رتّب العلامات العشرية تحت بعض.') : T('Work it out slowly.', 'احسبها على مهلك.');
+  return '';
+}
+function hint() {
+  if (S.busy) return; S.hintN++;
+  if (S.sel >= 0) { say('🦜 ' + (calcHint(S.tk[S.sel].v, +S.tk[S.sel - 1].v, +S.tk[S.sel + 1].v) || T('Work it out slowly.', 'احسبها على مهلك.')), 'reesho_point'); return; }
+  const [, , p] = range(S.tk);
+  say('🦜 ' + (p >= 0 ? T('Look for the parentheses: inside them, × and ÷ first, then + and −.', 'دوّر على الأقواس: جوّاها الضرب والقسمة الأول، وبعدين الجمع والطرح.')
+    : S.tk.some(t => t.k === 'o' && MD(t.v)) ? T('Look for × or ÷, the first one from the left.', 'دوّر على الضرب أو القسمة، أول واحدة من الشمال.')
+    : T('Only + and − are left: the first one from the left.', 'فاضل جمع وطرح بس: أول واحدة من الشمال.')), 'reesho_point');
+}
+
+/* ---------- sound (Web Audio, no files) ---------- */
+const A = { ctx: null, on: !SI.isMuted() };
+function ac() { if (!A.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; A.ctx = new C(); A.master = A.ctx.createGain(); A.master.gain.value = A.on ? .5 : 0; A.master.connect(A.ctx.destination); } if (A.ctx.state === 'suspended') A.ctx.resume(); return A.ctx; }
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+function tone(m, t, dur, { type = 'triangle', vol = .18, cut = 2400, glide = 0 } = {}) { const c = A.ctx, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter(); o.type = type; o.frequency.setValueAtTime(hz(m), t); if (glide) o.frequency.exponentialRampToValueAtTime(hz(m + glide), t + dur); f.type = 'lowpass'; f.frequency.value = cut; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + dur); o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + dur + .05); }
+const SFX = {
+  click() { if (!ac()) return; tone(96, A.ctx.currentTime, .04, { type: 'square', vol: .04, cut: 5000 }); },
+  ok() { if (!ac()) return; const t = A.ctx.currentTime; tone(76, t, .18, { type: 'sine', vol: .14 }); tone(83, t + .07, .22, { type: 'sine', vol: .11 }); },
+  honk() { if (!ac()) return; const t = A.ctx.currentTime; [0, .22].forEach(d => { tone(58, t + d, .18, { type: 'square', vol: .09, cut: 1400 }); tone(62, t + d, .18, { type: 'square', vol: .07, cut: 1400 }); }); },
+  engine() { if (!ac()) return; tone(38, A.ctx.currentTime, .6, { type: 'sawtooth', vol: .06, cut: 300, glide: 7 }); },
+  win() { if (!ac()) return; const t = A.ctx.currentTime; [60, 64, 67, 72, 76, 79, 84].forEach((m, i) => tone(m, t + i * .09, .5, { vol: .15 })); },
+  lose() { if (!ac()) return; const t = A.ctx.currentTime; [64, 62, 60, 55].forEach((m, i) => tone(m, t + i * .26, .45, { vol: .14, cut: 1200 })); }
+};
+function setSound(on) { A.on = on; SI.setMuted(!on); $('#snd').textContent = on ? '🔊' : '🔇'; if (A.master) A.master.gain.setTargetAtTime(on ? .5 : 0, A.ctx.currentTime, .05); }
+$('#snd').onclick = () => { ac(); setSound(!A.on); }; $('#snd').textContent = A.on ? '🔊' : '🔇';
+
+/* ---------- flow ---------- */
+function startTrip() {
+  const t = makeTrip(LV());
+  S.tk = t.tk; S.total = t.total; S.done = 0; S.sel = -1; S.entry = ''; S.busy = false; S.busX = STOP_X0 - 44; S.start = t.str;
+  $('#lvl').textContent = S.lvl + 1; $('#trip').textContent = S.trip + 1; $('#calc').hidden = true;
+  $('#goal').innerHTML = T(`🎯 Drive the bus to the END: work out the expression one stop at a time. Stops: ${n(S.total)}`, `🎯 وصّل الأتوبيس للنهاية: احسب التعبير محطة محطة. عدد المحطات: ${n(S.total)}`);
+  drawScene(); drawExpr();
+  say(S.trip === 0 ? T(`Level ${n(S.lvl + 1)}: ${LV().name[0]}. Tap the operation whose turn it is.`, `المرحلة ${n(S.lvl + 1)}: ${LV().name[1]}. ${G('اضغط', 'اضغطي')} العملية اللي عليها الدور.`) : T('New trip! Which operation comes first?', 'رحلة جديدة! أنهي عملية عليها الدور الأول؟'));
+}
+async function tripDone() {
+  drawScene({ party: true }); SFX.win();
+  say(T(`We arrived! ${n(S.start + ' = ' + S.tk[0].v)}`, `وصلنا! ${n(S.start + ' = ' + S.tk[0].v)}`), 'reesho_happy');
+  await sleep(1500);
+  S.trip++;
+  if (S.trip < 3) { startTrip(); return; }
+  const stars = S.misses === 0 ? 3 : S.misses <= 2 ? 2 : 1, pts = 20 + stars * 10;
+  S.score += pts; $('#score').textContent = S.score;
+  saveWin(stars, pts);
+  showEnd(S.lvl === LEVELS.length - 1 ? 'all' : 'win', stars);
+}
+function showEnd(kind, stars = 0) {
+  $('#end').hidden = false;
+  const cfg = {
+    win: ['🚌🎉', T('Level complete!', 'خلّصت المرحلة!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`Next: ${LEVELS[S.lvl + 1] ? LEVELS[S.lvl + 1].name[0] : ''}. A little harder… ready?`, `اللي جاي: ${LEVELS[S.lvl + 1] ? LEVELS[S.lvl + 1].name[1] : ''}. أصعب شوية… ${G('جاهز', 'جاهزة')}؟`), T('Next level ➜', 'المرحلة اللي بعدها ⬅')],
+    all: ['🏆🚌', T('You drove every route!', 'سقت كل الخطوط!'), '⭐'.repeat(stars) + '☆'.repeat(3 - stars), T(`You scored ${n(S.score)} points. You know the order of operations now.`, `مجموع نقطك ${n(S.score)}. ${G('بقيت شاطر', 'بقيتي شاطرة')} في ترتيب العمليات.`), T('Play again', 'العب من الأول')],
+    lose: ['⛽🚌', T('Out of fuel', 'البنزين خلص'), '', T('Remember: parentheses first, then × and ÷ from left to right, then + and − from left to right.', 'افتكر: الأقواس الأول، وبعدين الضرب والقسمة من الشمال لليمين، وبعدين الجمع والطرح من الشمال لليمين.'), T('Try the level again', 'جرّب المرحلة تاني')]
+  }[kind];
+  $('#endArt').textContent = cfg[0]; $('#endTitle').textContent = cfg[1]; $('#endStars').textContent = cfg[2]; $('#endText').innerHTML = cfg[3]; $('#endBtn').textContent = cfg[4];
+  $('#endBtn').onclick = () => { $('#end').hidden = true; if (kind === 'win') S.lvl++; if (kind === 'all') { S.lvl = 0; S.score = 0; $('#score').textContent = 0; } startLevel(); };
+}
+function startLevel() { S.trip = 0; S.fuel = 5; S.misses = 0; S.hintN = 0; S.t0 = Date.now(); startTrip(); }
+/* progress: SI.chProf('m5c6').bus = { lvl: next level to play, best: highest level finished (1-6), stars: [per level] } */
+function saveWin(stars, pts) {
+  const done = S.lvl + 1;
+  SI.updateChProf(c => { const o = c.bus = c.bus || {}; o.best = Math.max(o.best || 0, done); o.stars = o.stars || []; o.stars[S.lvl] = Math.max(o.stars[S.lvl] || 0, stars); o.lvl = done >= LEVELS.length ? 0 : done; }, CH.id);
+  SI.addXP(pts);
+  SI.ga('game_complete', { game: GAME, chapter: CH.id, stage: done, score: pts, mistakes: S.misses, seconds: Math.round((Date.now() - S.t0) / 1000), won: 1 });
+}
+
+$('#rules').innerHTML = [T('The bus route is the expression. Every operation is a stop.', 'طريق الأتوبيس هو التعبير العددي، وكل عملية محطة.'),
+  T('At each stop: tap the operation whose turn it is, then type its result.', G('في كل محطة: اضغط العملية اللي عليها الدور، وبعدين اكتب ناتجها.', 'في كل محطة: اضغطي العملية اللي عليها الدور، وبعدين اكتبي ناتجها.')),
+  T('The order: parentheses first, then × and ÷ from left to right, then + and − from left to right.', 'الترتيب: الأقواس الأول، وبعدين الضرب والقسمة من الشمال لليمين، وبعدين الجمع والطرح من الشمال لليمين.'),
+  T('Every mistake costs a can of fuel. You have only <b>5</b>!', 'كل غلطة بتصرف تنكة بنزين، ومعاك <b>5</b> بس!')].map(x => `<li>${x}</li>`).join('');
+$('#example').innerHTML = `<div>3 <span class="as">+</span> <span class="hl">4 <span class="md">×</span> 2</span></div><div>= <span class="hl">3 <span class="as">+</span> 8</span></div><div>= 11 🏁</div>`;
+$('#go').textContent = T('Start the engine! 🚌', 'شغّل الموتور! 🚌');
+$('#go').onclick = () => { $('#intro').hidden = true; ac(); SI.ga('game_start', { game: GAME, chapter: CH.id }); };
+$('#hint').onclick = hint;
+window.__bus = S; window.__busApi = { makeTrip, steps, tokens, nextOp, apply, startTrip, startLevel, LEVELS, answer: () => S.sel >= 0 ? fmt(OPS[S.tk[S.sel].v](+S.tk[S.sel - 1].v, +S.tk[S.sel + 1].v)) : nextOp(S.tk) };
+startLevel();
+})();
+</script>
+</body>
+</html>

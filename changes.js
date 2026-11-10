@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-10', title: 'محطات أتوبيس علي',
+    items: [
+      { text: 'مغامرة جديدة للوحدة السادسة رياضيات الصف الخامس: يسوق الطفل الأتوبيس محطة محطة، يختار العملية اللي عليها الدور ويحسبها — 6 مراحل متدرجة من الضرب والجمع حتى الأقواس والكسور العشرية', links: [{ label: 'العب', href: 'math-bus.html', ch: 'm5c6' }] }
+    ] },
   { date: '2026-11-10', title: 'حوض متفوّق: الشبكة ولعبة قطع الخيوط',
     items: [
       { text: 'بعد 3 أيام غياب تقع السمكة في شبكة يراها صاحبها فقط' },
