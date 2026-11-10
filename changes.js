@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-10', title: 'مواد الصف الثالث',
+    items: [
+      { text: 'الصف الثالث يرى فقط: الرياضيات، اللغة الإنجليزية، اكتشف (قريبًا)' },
+      { text: 'العلوم والدراسات لا تظهر للصف الثالث' }
+    ] },
   { date: '2026-11-09', title: 'Fix: comparison questions in Arabic',
     items: [
       { text: 'Sign choices (< = >) in quizzes no longer show mirrored; comparisons like 29.9 ___ 30.2 now show in the right order (Grade 4, 5 and 6 math), and number blanks sit in the right place.' }

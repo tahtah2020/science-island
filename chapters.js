@@ -22,13 +22,16 @@
    Lesson names follow the school book. */
 /* subjects, in the order of the tabs on the chapters page.
    lang: which questions file each track reads ({ lang: 'en', ar: 'ar' } when left out: Languages track English, Arabic track Arabic).
-   soon: the tab shows "coming soon" · hidden: not shown at all */
+   soon: the tab shows "coming soon" · hidden: not shown at all
+   grades: optional: the grades that study this subject (a tab only for them); left out = every grade.
+           Grade 3 (owner, 10 Nov 2026): Math, English and Discover «اكتشف» only (no Science or Social Studies before Grade 4). */
 window.SUBJECTS = [
-  { id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬', tint: '#dcefff', dir: 'science' },
+  { id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬', tint: '#dcefff', dir: 'science', grades: ['g4', 'g5', 'g6', 'p1', 'p2', 'p3'] },
   { id: 'math', title: 'Math', titleAr: 'الرياضيات', icon: '🔢', tint: '#ffe6cc', dir: 'math' },
-  { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' } },
+  { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' }, grades: ['g4', 'g5', 'g6', 'p1', 'p2', 'p3'] },
   { id: 'arabic', title: 'Arabic', titleAr: 'اللغة العربية', icon: '📖', tint: '#fbe3e3', dir: 'arabic', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
-  { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' } }
+  { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' } },
+  { id: 'discover', title: 'Discover', titleAr: 'اكتشف', icon: '🧭', tint: '#fff3c4', dir: 'discover', grades: ['g1', 'g2', 'g3'] }
 ];
 
 window.CHAPTERS = [

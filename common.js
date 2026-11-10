@@ -89,11 +89,12 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   /* subjects (chapters.js: window.SUBJECTS). A chapter or test without `subject` belongs to Science, the first subject the site had.
      A subject's `lang` says which questions file each track reads: { lang: 'en', ar: 'ar' } (the default: Languages track English,
      Arabic track Arabic), { lang: 'ar', ar: 'ar' } for a subject taught in Arabic on both tracks, { lang: 'en', ar: 'en' } for English. */
-  const subjects = () => (window.SUBJECTS || [{ id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬' }]).filter(s => !s.hidden);
+  const subjects = () => (window.SUBJECTS || [{ id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬' }]).filter(s => !s.hidden && (!s.grades || s.grades.includes(grade())));   // only the subjects the player's grade studies
   const subjectById = id => subjects().find(s => s.id === id) || (window.SUBJECTS || []).find(s => s.id === id) || null;
   const chSubject = c => (c && c.subject) || 'science';
   const FIRST_SUBJECT = { g3: 'math' };   // a grade whose first subject on the site is not Science opens on that subject
-  const subjectId = () => prof().subj || (prof().cur ? chSubject(chapterById(prof().cur)) : FIRST_SUBJECT[grade()] || 'science');
+  const subjectId = () => { const id = prof().subj || (prof().cur ? chSubject(chapterById(prof().cur)) : FIRST_SUBJECT[grade()] || 'science');
+    return subjects().some(s => s.id === id) ? id : (FIRST_SUBJECT[grade()] || (subjects()[0] || {}).id || 'science'); };   // a subject the grade does not study (e.g. Science in Grade 3) falls back
   const subject = () => subjectById(subjectId()) || subjects()[0];
   function setSubject(id) { if (subjectById(id)) updateProf(p => { p.subj = id; p.curAt = Date.now(); }); return subject(); }
   const subjectName = s => { s = s || subject(); return s ? T(s.title, s.titleAr) : ''; };
