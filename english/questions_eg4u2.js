@@ -1,6 +1,6 @@
 /* English · Grade 4 · Term 1 · Unit 2 "My Community" · ministry book "English Primary 4", first term 2026/2027 (book pages 23-38)
    One English book for both tracks (subject lang { lang: 'en', ar: 'en' }), so there is no _ar file.
-   Lessons: 1 Helping Our Community (pp 23-26; the site has pages 26 only, see below) · 2 Community Problems and Solutions (pp 27-29)
+   Lessons: 1 Helping the Community (pp 24-26) · 2 Community Problems and Solutions (pp 27-29)
             3 Egypt: My Culture + Pronunciation /f/ /v/ + prefixes (pp 30-33) · 4 Writing: A Diary Entry (pp 34-35) · 5 Think and Create: A Poster (p 36)
             Quick Review and Self-Assessment (pp 37-38) are spread over the lessons.
    Idea letters (one per lesson): F, G, H, I, J.  Boss ideas: F4, G7, H9, I4, J3.
@@ -10,10 +10,8 @@
    Tap pictures (english/g4_art.js, drawn in code; the owner gave no pictures for this unit):
      helping6 -> plant | help | collect | clean | volunteer | feed      fvWords -> wVan | wFactory | wVest | wForest | wFrog | wFlag | wViolin | wView
    Review notes:
-   - The book's pages 23-25 (unit cover and lesson 1, activities 1-5) were not sent yet. Lesson 1 uses page 26 and the Quick Review p 37 only;
-     the title "Helping Our Community" is ours until page 23 is read. The unit stays ready: false until those pages are in.
-   - p 26 "Read and complete" prints no word box on page 26 (it is probably on page 25): the verbs are taken from the unit vocabulary (collect, volunteer, feed)
-     and the six pictures; review when page 25 arrives.
+   - Pages 23-25 arrived on 11 Nov 2026: F5 (p 24 word box) and F6 (p 25 "Helping Hands") added; p 24 "How can we help others?" is open, not asked.
+   - p 26 "Read and complete" uses the p 24 word box (plant - feed - collect - help - clean - volunteer).
    - Listening tasks (p 26 "Listen and number", p 32 "Listen, say, and write") are asked as reading or picture questions (no audio here).
    - Open tasks are not asked: "Read and think" and "Think" p 26, "Think and discuss" p 28, the group discussion p 31, writing the diary p 35, making the poster p 36,
      "Write three…" type tasks.
@@ -23,7 +21,26 @@
 window.CHAPTER = { id: 'eg4u2', title: 'My Community' };
 
 window.IDEAS = [
-  /* ---------- Lesson 1 · Helping Our Community (page 26, Quick Review p 37) ---------- */
+  /* ---------- Lesson 1 · Helping the Community (pages 24-26, Quick Review p 37) ---------- */
+  { id: 'F5', lesson: 1, concept: 'Helping words in sentences (p 24)',
+    explain: 'We volunteer to help in the park. We clean the streets and collect bottles. We plant flowers and trees. We feed the ducks. It is fun to help and make the park nice for everyone.',
+    variants: [
+      { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'We ___ flowers and trees.', options: ['plant', 'feed', 'clean'], answer: 0, hint: 'Flowers and trees grow in the soil.' },
+      { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'We ___ the ducks.', options: ['feed', 'plant', 'collect'], answer: 0, hint: 'Ducks need food.' },
+      { type: 'fill', mode: 'normal', level: 'easy', q: 'We clean the streets and ___ bottles.', options: ['collect', 'feed', 'plant'], answer: 0, hint: 'We pick up many bottles and put them together.' },
+      { type: 'fill', mode: 'normal', level: 'medium', q: 'We ___ to help in the park.', options: ['volunteer', 'feed', 'plant'], answer: 0, hint: 'We work there and we don’t take money.' },
+      { type: 'fill', mode: 'normal', level: 'medium', q: 'It is fun to ___ and make the park nice for everyone.', options: ['help', 'feed', 'collect'], answer: 0, hint: 'The lesson title: ___ing the community.' }
+    ] },
+  { id: 'F6', lesson: 1, concept: 'Helping Hands: Adam, his sister and Amira (p 25)',
+    explain: 'Adam cleans trash from the streets with his friends every Saturday. He plants trees in the park. Sometimes he feeds the dogs and cats; he feels so happy when he gives them food. His sister helps their neighbors and volunteers at the community park. Amira collects clothes and gives them to people who need them. When we all help, we make our community great.',
+    variants: [
+      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'What does Adam do on Saturdays?', options: ['He cleans trash from the streets.', 'He collects clothes.', 'He goes to the zoo.', 'He feeds the ducks.'], answer: 0, hint: 'He does it with his friends.' },
+      { type: 'mc', mode: 'normal', level: 'easy', q: 'What does Adam plant?', options: ['Trees in the park', 'Flowers at school', 'Vegetables at home', 'Rice in the field'], answer: 0, hint: 'Read Adam’s second answer.' },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'What does Amira do with clothes?', options: ['She collects them and gives them to people who need them.', 'She sells them.', 'She washes them.', 'She throws them away.'], answer: 0, hint: 'Look at the box of clothes in the picture.' },
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'Adam feels happy when he gives food to the dogs and cats.', answer: 0, hint: 'Adam says: I feel so ___.' },
+      { type: 'tf', mode: 'normal', level: 'medium', q: 'Adam’s sister doesn’t help.', answer: 1, hint: 'Amira asks: Does your sister help too? What does Adam say?' },
+      { type: 'fill', mode: 'normal', level: 'medium', q: 'Adam’s sister volunteers at the community ___.', options: ['park', 'school', 'hospital'], answer: 0, hint: 'A place with trees and grass.' }
+    ] },
   { id: 'F1', lesson: 1, concept: 'Ways to help our community',
     explain: 'We can help our community: we plant flowers and trees, help old people, collect trash, clean the street, volunteer and feed the dogs in our street.',
     variants: [

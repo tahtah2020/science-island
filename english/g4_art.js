@@ -6,6 +6,11 @@
      helping6 (tap) ids plant · help · collect · clean · volunteer · feed   six ways to help the community (book p 26 "Listen and number", p 37 "Look and write")
      fvWords  (tap) ids wVan · wFactory · wVest · wForest · wFrog · wFlag · wViolin · wView   the eight /f/ and /v/ words of p 32 (ids start with w: admin TAP already has 'factory')
        both honour q.pic.plain; q.pic.only = [ids] draws only those badges (the game uses it), q.pic.cols overrides the grid.
+   Units 3 and 4 (11 Nov 2026): the owner's Gemini pictures (english/assets/a4_*, e4_*, pb_*.webp, cut from his sheets, plain background removed)
+     inside pastel circles (photoGrid). Tap pictures: animals6, actions6, care6, story3, blends6 (unit 3); places6, city6, pb8 (unit 4).
+     Pictures for one question: photo (q.pic.src = ['a4_lion', …], up to 3 side by side; never a picture that shows the answer in words).
+     Drawn in code (the answer is an exact place or a digit): prepBox (q.pic.pos in|on|front|behind|next|between), livingRoom (q.pic.hi = item),
+     prepScene (q.pic.kind house|dog), bigNum (q.pic.n, q.pic.hi = index of the digit the arrow points at), footprints (arrows all going into the cave).
    Screen-reader names say what is drawn ("an open eye"), as the question itself asks about the sense.
    window.E4ART = the pieces the game and the map script reuse. */
 (function () {
@@ -109,6 +114,118 @@
   function fvWords(q) { return grid(q, F8, W8, WNAMES, WTINT, 340, 190, 4, 38, 'Eight round pictures: a van, a factory, a vest, a forest, a frog, a flag, a violin and a view').svg; }
   fvWords.rings = q => { const { pos } = grid(q, F8, W8, WNAMES, WTINT, 340, 190, 4, 38, ''); const o = {}; Object.keys(pos).forEach(id => { o[id] = [pos[id][0] - 38, pos[id][1] - 38, 76, 76]; }); return o; };
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { fiveSenses, helping6, fvWords });
-  window.E4ART = { D, POS, TINT, R, NAMES, at, hot, ringEl, INK, f1, esc, FONT, C, CNAMES, CTINT, W8, WNAMES, WTINT, head };
+  /* ================= Units 3 and 4 · the owner's pictures ================= */
+  const IMG = id => `english/assets/${id}.webp`;
+  const pimg = (id, x, y, s) => `<image href="${IMG(id)}" x="${f1(x - s / 2)}" y="${f1(y - s / 2)}" width="${f1(s)}" height="${f1(s)}" preserveAspectRatio="xMidYMid meet"/>`;
+  const PH = {   // id -> [file, screen-reader description (never the answer word when it is asked), tint]
+    lion: ['a4_lion', 'a yellow animal with a big mane', '#fbefd2'], monkey: ['a4_monkey', 'a small brown animal with a curly tail', '#f3e6d6'], elephant: ['a4_elephant', 'a big gray animal with a trunk', '#e4ecf3'],
+    giraffe: ['a4_giraffe', 'a tall spotted animal with a long neck', '#fbf1d6'], zebra: ['a4_zebra', 'a black and white striped animal', '#eceef2'], bear: ['a4_bear', 'a big brown animal with thick fur', '#f1e4d8'],
+    spray: ['a4_spray', 'an elephant spraying water', '#e1effb'], climb: ['a4_climb', 'a monkey on a tree', '#e8f6e2'], run: ['a4_run', 'zebras running together', '#eceef2'],
+    fish: ['a4_fish', 'a bear with a fish by a river', '#e1effb'], night: ['a4_night', 'a lion under the moon', '#e3e6f6'], leaves: ['a4_leaves', 'a giraffe at a tall tree', '#e8f6e2'],
+    walkdog: ['a4_walkdog', 'a boy walking his dog', '#e1effb'], vet: ['a4_vet', 'a woman with a stethoscope and a dog', '#e4f3f8'], rabbitveg: ['a4_rabbitveg', 'a rabbit with a carrot and lettuce', '#fbe9ee'],
+    birdcage: ['a4_birdcage', 'a bird in a cage', '#fbf3d6'], officer: ['a4_officer', 'a woman in green with binoculars among trees', '#e2f4dc'], owner: ['a4_owner', 'a girl giving food to her cat', '#fbe3e8'],
+    fox: ['a4_fox', 'a small red-brown animal with a fluffy tail', '#fde6cf'], cave: ['a4_cave', 'a dark hole in rocks', '#ebe6e0'], prints: ['a4_prints', 'marks on the sand', '#f6efd2'],
+    frown: ['a4_frown', 'a girl with an unhappy face', '#fbe3e8'], drum: ['a4_drum', 'a drum with two sticks', '#fbf3d6'], plane: ['a4_plane', 'a plane in the sky', '#e1effb'],
+    bPlant: ['a4_plant', 'a small green plant in a pot', '#e8f6e2'], draw: ['a4_draw', 'a girl with a pencil and paper', '#e4ecf3'], fruit: ['a4_fruit', 'a bowl of strawberry, grapes, apple and orange', '#fdeee0'],
+    pyramids: ['e4_pyramids', 'pyramids in the desert', '#fbf1d6'], nile: ['e4_nile', 'a sailing boat on a river with palm trees', '#e1effb'], tower: ['e4_tower', 'a very tall slim tower', '#eef0f6'],
+    siwa: ['e4_siwa', 'a lake with palm trees and a flat rocky hill', '#e8f6e2'], museum: ['e4_museum', 'a pink-red building with an arched door', '#fbe9e9'], khan: ['e4_khan', 'a shop with lanterns and copper plates', '#fbeedd'],
+    library: ['e4_library', 'a room with shelves of books', '#fbf3d6'], school: ['e4_school', 'a building with children and school bags', '#e1effb'], mall: ['e4_mall', 'a glass building with shopping bags', '#e4f3f8'],
+    post: ['e4_post', 'a green building with a mailbox, letters and a parcel', '#e2f4dc'], hospital: ['e4_hospital', 'a building with a red crescent and an ambulance', '#fbe9e9'], cmuseum: ['e4_cmuseum', 'a building with an old statue in front', '#fbeedd'],
+    pBear: ['pb_bear', 'a brown bear', '#f1e4d8'], pPear: ['pb_pear', 'a green pear', '#eef6dc'], pPin: ['pb_pin', 'a pin with a red head', '#fbe9e9'], pBin: ['pb_bin', 'a green trash bin', '#e2f4dc'],
+    pPond: ['pb_pond', 'water with lilies', '#e1effb'], pPeak: ['pb_peak', 'the snowy top of a mountain', '#eef0f6'], pPan: ['pb_pan', 'a frying pan', '#eceef2'], pBat: ['pb_bat', 'a flying animal with wings', '#efe8fb']
+  };
+  function photoGrid(q, ids, w, h, cols, r, label) {
+    const pic = (q && q.pic) || {}, plain = !!pic.plain, only = pic.only || ids, n = only.length, c = pic.cols || Math.min(cols, n), rows = Math.ceil(n / c);
+    const gx = w / c, gy = h / rows, pos = {};
+    only.forEach((id, i) => { const row = Math.floor(i / c), inRow = row === rows - 1 ? n - row * c : c, x0 = (w - inRow * gx) / 2; pos[id] = [x0 + gx * (i % c) + gx / 2, gy * row + gy / 2]; });
+    let s = plain ? '' : `<rect width="${w}" height="${h}" rx="14" fill="#fbf6e6"/>`;
+    only.forEach(id => { const [x, y] = pos[id], P = PH[id]; s += `<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${P[2]}" stroke="#fff" stroke-width="3"/><circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="none" stroke="#d8c9a6" stroke-width="1.4"/>${pimg(P[0], x, y, r * 1.55)}`; });
+    if (!plain) only.forEach(id => { const [x, y] = pos[id]; s += hot(id, PH[id][1], ringEl(x, y, r, r)); });
+    return { svg: wrap(w, h, label, s, plain), pos };
+  }
+  const gridFig = (ids, w, h, cols, r, label) => {
+    const fn = q => photoGrid(q, ids, w, h, cols, r, label).svg;
+    fn.rings = q => { const { pos } = photoGrid(q, ids, w, h, cols, r, ''); const o = {}; Object.keys(pos).forEach(id => { o[id] = [pos[id][0] - r, pos[id][1] - r, 2 * r, 2 * r]; }); return o; };
+    return fn;
+  };
+  const animals6 = gridFig(['lion', 'monkey', 'elephant', 'giraffe', 'zebra', 'bear'], 340, 240, 3, 52, 'Six round pictures of wild animals');
+  const actions6 = gridFig(['spray', 'climb', 'run', 'fish', 'night', 'leaves'], 340, 240, 3, 52, 'Six round pictures of animals doing things');
+  const care6 = gridFig(['walkdog', 'vet', 'rabbitveg', 'birdcage', 'officer', 'owner'], 340, 240, 3, 52, 'Six round pictures about caring for animals');
+  const story3 = gridFig(['fox', 'cave', 'prints'], 340, 130, 3, 54, 'Three round pictures from the story');
+  const blends6 = gridFig(['frown', 'drum', 'plane', 'bPlant', 'draw', 'fruit'], 340, 240, 3, 52, 'Six round pictures');
+  const places6 = gridFig(['pyramids', 'nile', 'tower', 'siwa', 'museum', 'khan'], 340, 240, 3, 52, 'Six round pictures of famous places in Egypt');
+  const city6 = gridFig(['library', 'school', 'mall', 'post', 'hospital', 'cmuseum'], 340, 240, 3, 52, 'Six round pictures of places in a city');
+  const pb8 = gridFig(['pBear', 'pPear', 'pPin', 'pBin', 'pPond', 'pPeak', 'pPan', 'pBat'], 340, 190, 4, 38, 'Eight round pictures');
+  function photo(q) {   // one to three pictures side by side for a single question
+    const src = (q && q.pic && q.pic.src) || [], n = src.length || 1, w = 340, h = 150, gx = w / n;
+    let s = `<rect width="${w}" height="${h}" rx="14" fill="#fbf6e6"/>`;
+    src.forEach((f, i) => { const x = gx * i + gx / 2; s += `<rect x="${f1(x - 64)}" y="11" width="128" height="128" rx="22" fill="#fff" stroke="#d8c9a6" stroke-width="1.6"/>${pimg(f, x, 75, 118)}`; });
+    return wrap(w, h, (q && q.pic && q.pic.label) || 'A picture for the question', s, q && q.pic && q.pic.plain);
+  }
+  /* --- prepositions, drawn in code --- */
+  const kitten = (x, y, k = 1) => at(x, y, k, `<path d="M-15 22Q-17 0 -10 -6H10Q17 0 15 22Z" fill="#d9dde3" stroke="#6b7480" stroke-width="2"/><path d="M14 18Q30 14 26 -2" fill="none" stroke="#6b7480" stroke-width="4" stroke-linecap="round"/>`
+    + `<circle cy="-14" r="14" fill="#e4e7ec" stroke="#6b7480" stroke-width="2"/><path d="M-12 -22L-11 -36L-2 -26Z M12 -22L11 -36L2 -26Z" fill="#e4e7ec" stroke="#6b7480" stroke-width="2" stroke-linejoin="round"/>`
+    + `<circle cx="-5" cy="-15" r="2.4" fill="${INK}"/><circle cx="5" cy="-15" r="2.4" fill="${INK}"/><path d="M-2 -10h4l-2 2z" fill="#ef8aa0"/>`);
+  const kittenHead = (x, y, k = 1) => at(x, y, k, `<circle cy="-14" r="14" fill="#e4e7ec" stroke="#6b7480" stroke-width="2"/><path d="M-12 -22L-11 -36L-2 -26Z M12 -22L11 -36L2 -26Z" fill="#e4e7ec" stroke="#6b7480" stroke-width="2" stroke-linejoin="round"/><circle cx="-5" cy="-15" r="2.4" fill="${INK}"/><circle cx="5" cy="-15" r="2.4" fill="${INK}"/><path d="M-2 -10h4l-2 2z" fill="#ef8aa0"/>`);
+  const box = (x, y, open) => at(x, y, 1, `<path d="M-36 0H36V48H-36Z" fill="#f08a3c" stroke="#a8541c" stroke-width="2.4" stroke-linejoin="round"/><path d="M-36 0H36" stroke="#a8541c" stroke-width="2.4"/>${open ? `<path d="M-36 0L-48 -14H-20L-8 0Z M36 0L48 -14H20L8 0Z" fill="#f6a861" stroke="#a8541c" stroke-width="2.2" stroke-linejoin="round"/>` : ''}<path d="M-30 14H30" stroke="#d86f22" stroke-width="2"/>`);
+  function prepBox(q) {
+    const pos = (q && q.pic && q.pic.pos) || 'in', w = 340, h = 170, fl = `<rect width="${w}" height="${h}" rx="14" fill="#fbf6e6"/><path d="M0 140H${w}" stroke="#e6d8b4" stroke-width="3"/>`;
+    let s = fl;
+    if (pos === 'in') s += kittenHead(170, 98, 1.15) + box(170, 92, true);
+    else if (pos === 'on') s += box(170, 92) + kitten(170, 64, 1.05);
+    else if (pos === 'front') s += box(170, 76) + kitten(170, 116, 1.25);
+    else if (pos === 'behind') s += kittenHead(186, 86, 1.05) + box(170, 92);
+    else if (pos === 'next') s += box(140, 92) + kitten(222, 118, 1.05);
+    else s += box(76, 92) + kitten(170, 118, 1.05) + box(264, 92);
+    return wrap(w, h, 'A gray cat and an orange box', s, q && q.pic && q.pic.plain);
+  }
+  function livingRoom(q) {
+    const hi = q && q.pic && q.pic.hi, w = 340, h = 230, ring = (x, y, rx, ry) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="none" stroke="#e2603f" stroke-width="3.5" stroke-dasharray="7 5"/>`;
+    let s = `<rect width="${w}" height="${h}" rx="14" fill="#e6dcf3"/><path d="M${[20, 60, 100, 140, 180, 220, 260, 300].map(x => `M${x} 0V160`).join('')}" stroke="#d8cbec" stroke-width="6"/><rect y="160" width="${w}" height="70" fill="#e9c9a0"/>`;
+    s += `<rect x="146" y="22" width="44" height="50" rx="3" fill="#fff8e6" stroke="#8a5a28" stroke-width="4"/><circle cx="160" cy="44" r="7" fill="#f6c9a4"/><circle cx="176" cy="44" r="7" fill="#f6c9a4"/><path d="M152 66Q160 54 168 66M168 66Q176 54 184 66" fill="#6fa8dc"/>`;
+    s += `<rect x="128" y="124" width="80" height="44" fill="#c99560" stroke="#8a5a28" stroke-width="2.4"/><rect x="138" y="84" width="60" height="40" rx="3" fill="#2a3a4a" stroke="#1a2530" stroke-width="2.4"/><path d="M168 124V118" stroke="#1a2530" stroke-width="4"/>`;
+    s += `<path d="M110 168V100" stroke="#8a5a28" stroke-width="3"/><path d="M96 100L104 74H116L124 100Z" fill="#fbe3b0" stroke="#c9a15c" stroke-width="2"/><path d="M100 168H120" stroke="#8a5a28" stroke-width="4"/>`;
+    s += `<rect x="236" y="64" width="80" height="6" fill="#8a5a28"/><rect x="242" y="44" width="12" height="20" fill="#e2603f"/><path d="M276 64V52" stroke="#4f9f52" stroke-width="3"/><path d="M276 54Q266 44 270 38Q278 44 276 54Q286 44 284 38Q274 44 276 54Z" fill="#6fbf63"/><rect x="266" y="56" width="20" height="8" fill="#c97a4a"/><rect x="298" y="48" width="10" height="16" fill="#f2b134"/>`;
+    const chair = x => `<path d="M${x - 34} 196V150Q${x - 34} 136 ${x - 20} 136H${x + 20}Q${x + 34} 136 ${x + 34} 150V196Z" fill="#4f86c6" stroke="#2f5a8a" stroke-width="2.4"/><rect x="${x - 40}" y="160" width="12" height="36" rx="5" fill="#3c74a8"/><rect x="${x + 28}" y="160" width="12" height="36" rx="5" fill="#3c74a8"/>`;
+    s += chair(56) + kittenHead(300, 168, .8) + chair(278);
+    s += `<rect x="140" y="186" width="56" height="8" fill="#e2603f" stroke="#a8341c" stroke-width="2"/><path d="M146 194V214M190 194V214" stroke="#a8341c" stroke-width="4"/><rect x="154" y="176" width="22" height="10" rx="3" fill="#f2b134" stroke="#c98a14" stroke-width="1.6"/><circle cx="159" cy="187" r="3" fill="${INK}"/><circle cx="171" cy="187" r="3" fill="${INK}"/>`;
+    const R = { picture: [168, 47, 30, 34], cat: [300, 160, 22, 22], car: [165, 181, 18, 12], lamp: [110, 112, 22, 54], table: [168, 200, 38, 20], plant: [276, 52, 16, 18] };
+    if (hi && R[hi]) s += ring(...R[hi]);
+    return wrap(w, h, 'A living room with a TV, a lamp, two blue chairs, a table, a shelf, a picture and a cat', s);
+  }
+  function prepScene(q) {
+    const kind = (q && q.pic && q.pic.kind) || 'house', w = 340, h = 160;
+    let s = `<rect width="${w}" height="${h}" rx="14" fill="#dff0fa"/><rect y="124" width="${w}" height="36" fill="#bfe3a0"/>`;
+    if (kind === 'house') {
+      s += `<g transform="translate(60 124)"><rect x="-6" y="-40" width="12" height="40" fill="#8a5a28"/><circle cy="-58" r="30" fill="#6fbf63" stroke="#4f9f52" stroke-width="2"/></g>`;
+      s += `<g transform="translate(170 124)"><rect x="-34" y="-56" width="68" height="56" fill="#fbe3b8" stroke="#8a6a48" stroke-width="2.4"/><path d="M-42 -56L0 -88L42 -56Z" fill="#c9653c" stroke="#8a6a48" stroke-width="2.4" stroke-linejoin="round"/><rect x="-8" y="-30" width="16" height="30" fill="#8a5a28"/></g>`;
+      s += `<g transform="translate(278 124)"><rect x="-40" y="-70" width="80" height="70" fill="#e8b97e" stroke="#9a6a34" stroke-width="2.4"/>${[-28, -6, 16].map(a => `<rect x="${a}" y="-58" width="14" height="14" fill="#cfe8f6" stroke="#9a6a34" stroke-width="1.4"/>`).join('')}<rect x="-8" y="-26" width="16" height="26" fill="#8a5a28"/><path d="M0 -70V-88" stroke="${INK}" stroke-width="2"/><path d="M0 -88H16V-80H0Z" fill="#2e9e6b"/></g>`;
+    } else {
+      s += `<g transform="translate(170 124)"><rect x="-44" y="-112" width="88" height="112" fill="#f3ece4" stroke="#8a6a48" stroke-width="2.4"/><rect x="-26" y="-92" width="52" height="92" rx="4" fill="#d9423a" stroke="#8a2a24" stroke-width="2.4"/><circle cx="16" cy="-46" r="3" fill="#f2b134"/></g>`;
+      s += `<g transform="translate(176 150)"><ellipse cy="-14" rx="22" ry="16" fill="#e8c27a" stroke="#a87a34" stroke-width="2"/><circle cx="-8" cy="-36" r="13" fill="#e8c27a" stroke="#a87a34" stroke-width="2"/><path d="M-20 -40Q-26 -28 -18 -26" fill="#c99a4a"/><circle cx="-11" cy="-38" r="2" fill="${INK}"/><circle cx="-3" cy="-38" r="2" fill="${INK}"/><ellipse cx="-7" cy="-31" rx="3" ry="2" fill="${INK}"/></g>`;
+    }
+    return wrap(w, h, kind === 'house' ? 'A tree, a house and a school' : 'A dog and a red door', s);
+  }
+  function bigNum(q) {
+    const pic = (q && q.pic) || {}, n = pic.n || '1,000,000,000', hi = pic.hi, w = 340, h = 120, ch = n.split(''), cw = 300 / ch.length;
+    let s = `<rect width="${w}" height="${h}" rx="14" fill="#fbf6e6"/>`, d = 0;
+    ch.forEach((c, i) => {
+      const x = 20 + cw * i + cw / 2, isD = c !== ',';
+      s += `<text x="${f1(x)}" y="58" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${c === ',' ? 30 : 34}" font-weight="900" fill="${isD && d === hi ? '#e2603f' : INK}">${c}</text>`;
+      if (isD && d === hi) s += `<path d="M${f1(x)} 104V74M${f1(x - 7)} 82L${f1(x)} 72L${f1(x + 7)} 82" fill="none" stroke="#e2603f" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+      if (isD) d++;
+    });
+    return wrap(w, h, 'The number ' + n, s);
+  }
+  function footprints(q) {   // the sand in front of the cave: every track goes in, none comes out
+    const w = 340, h = 150;
+    let s = `<rect width="${w}" height="${h}" rx="14" fill="#f6e7c4"/>${pimg('a4_cave', 280, 72, 130)}`;
+    const paw = (x, y) => `<g transform="translate(${x} ${y})"><ellipse rx="5" ry="4" fill="#a87a4a"/><circle cx="-5" cy="-6" r="2" fill="#a87a4a"/><circle cx="0" cy="-8" r="2" fill="#a87a4a"/><circle cx="5" cy="-6" r="2" fill="#a87a4a"/></g>`;
+    [[30, 50], [80, 120]].forEach(([y0, y1]) => { for (let i = 0; i < 6; i++) s += paw(26 + i * 34, f1(y0 + (y1 - y0) * 0 + (i % 2) * 8 + (y0 < 60 ? i * 4 : -i * 5))); });
+    s += `<path d="M30 100H200M188 92L202 100L188 108" fill="none" stroke="#2e9e6b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>`;
+    return wrap(w, h, 'Animal footprints on the sand in front of a cave', s, q && q.pic && q.pic.plain);
+  }
+
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { fiveSenses, helping6, fvWords, animals6, actions6, care6, story3, blends6, places6, city6, pb8, photo, prepBox, livingRoom, prepScene, bigNum, footprints });
+  window.E4ART = { D, POS, TINT, R, NAMES, at, hot, ringEl, INK, f1, esc, FONT, C, CNAMES, CTINT, W8, WNAMES, WTINT, head, PH, pimg, IMG, kitten, kittenHead, box };
 })();
