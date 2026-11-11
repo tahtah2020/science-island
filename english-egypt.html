@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Egypt Tour Guide · Egypt: My Homeland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261111b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Egypt Tour Guide.</noscript>
+<script src="firebase-config.js?v=20261111b"></script>
+<script src="chapters.js?v=20261111b"></script>
+<script src="common.js?v=20261111b"></script>
+<script src="english/g4_art.js?v=20261111b"></script>
+<script src="game_kit.js?v=20261111b"></script>
+<script>
+(() => {
+'use strict';
+/* Egypt Tour Guide · the game of English Grade 4, Unit 4 "Egypt: My Homeland" (ministry book "English Primary 4", term 1). Built on the shared game kit.
+   Pictures: the owner's Gemini pictures (english/assets/e4_*.webp, pb_*.webp, bg_eg4u4_giza.jpg, 11 Nov 2026). Prepositions, the living room
+   and the big numbers are drawn in code (english/g4_art.js). The scene is set before every question and never shows the answer word.
+   Stage 1 (Warm Up): tap the famous places (lesson 1, p 62).
+   Stage 2 (Missions): 1 Ali the tour guide (p 63) · 2 places in sentences (pp 62, 64) · 3 places in the city (lesson 2, p 65) · 4 the cat and the box (p 67)
+                       5 my living room (p 67) · 6 big numbers (lesson 3, p 68) · 7 /p/ or /b/ (p 69) · 8 Tarek's blog (lesson 4, pp 70-71)
+                       9 the Siwa leaflet (lesson 5, pp 74-75).
+   Stage 3 (Speed Round): /p/ or /b/? (p 69). */
+const T = SI.T, G = SI.G, E = E4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const IMG = f => `english/assets/${f}`;
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const photoBox = (f, x, y, s) => `<rect x="${x - s / 2}" y="${y - s / 2}" width="${s}" height="${s}" rx="20" fill="#fff" stroke="#d8c9a6" stroke-width="2.4"/><image href="${IMG(f + '.webp')}" x="${x - s * .45}" y="${y - s * .45}" width="${s * .9}" height="${s * .9}" preserveAspectRatio="xMidYMid meet"/>`;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += photoBox(ph[0], 170, 82, 136);
+  if (ph.length === 2) s += photoBox(ph[0], 92, 82, 132) + photoBox(ph[1], 248, 82, 132);
+  s += `<rect x="14" y="${top + 14}" width="312" height="${VH - top - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = top + (VH - top) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'giza') return `<image href="${IMG('bg_eg4u4_giza.jpg')}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`
+    + (sc.lines.length ? `<rect x="20" y="226" width="300" height="56" rx="16" fill="#fffaf0" opacity=".95"/>${txt(170, 262, sc.lines[0], { fs: 20 })}` : '');
+  if (m === 'grid') return bg() + `<g transform="translate(0 30)">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'fig') return bg() + `<g transform="translate(0 ${sc.dy || 40})">${D[sc.fig](Object.assign({ pic: {} }, { pic: sc.pic })).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = fig => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + 30, w / 2, h / 2) }; }); };
+
+
+const g = G4Game({ ch: 'eg4u4', logo: '🐫', title: ['Egypt Tour Guide', 'مرشد رحلات مصر'], sub: ['Unit 4 · Egypt: My Homeland', 'الوحدة 4 · مصر وطني'],
+  bg: 'english/assets/bg_eg4u4.svg', bgc: '#fbe9c8', label: ['Famous places in Egypt, places in the city, prepositions, big numbers, a blog and a leaflet', 'أماكن مصر الشهيرة وأماكن المدينة وحروف الجر والأعداد الكبيرة والمدونة والمطوية'], render, view: [VW, VH] });
+
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr, reveal) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: reveal || (() => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } }) });
+}
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortPics(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+const PREP = ['in', 'on', 'next to', 'between', 'in front of', 'behind'];
+const prepOpts = ans => g.shuffle(g.shuffle(PREP.filter(p => p !== ans)).slice(0, 2).concat(ans));
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('giza');
+  g.say(T('Welcome to Egypt! A tourist is visiting for the first time. You are the tour guide. Let’s find the famous places!', P('أهلًا بيك في مصر! فيه سائح جاي أول مرة. إنت المرشد السياحي. يلّا نلاقي الأماكن المشهورة!', 'أهلًا بيكي في مصر! فيه سائح جاي أول مرة. إنتي المرشدة السياحية. يلّا نلاقي الأماكن المشهورة!')), 'wave');
+  await g.next();
+  await tapIt('egypt6', 'pyramids', 'Tap the <b>Pyramids</b>.', 'اضغط على الأهرامات.', 'Look for the desert.', 'دوّر على الصحرا.', 'These are the Pyramids.');
+  await tapIt('egypt6', 'nile', 'Tap the <b>Nile River</b>.', 'اضغط على نهر النيل.', 'A boat on the water.', 'مركب على المية.', 'This is the Nile River.');
+  await tapIt('egypt6', 'tower', 'Tap <b>Cairo Tower</b>.', 'اضغط على برج القاهرة.', 'Very tall and slim.', 'طويل جدًا ورفيع.', 'This is Cairo Tower.');
+  await tapIt('egypt6', 'khan', 'Tap <b>Khan Al-Khalili Bazaar</b>.', 'اضغط على خان الخليلي.', 'A shop with lanterns.', 'محل فيه فوانيس.', 'This is Khan Al-Khalili Bazaar.');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // Ali, p 63
+  set('giza');
+  g.say(T('Mission 1: Ali and John are at the Pyramids. “Hi, I’m Ali! I work as a tour guide. Welcome to Egypt!”', 'المهمة ١: علي وجون عند الأهرامات. «أهلًا، أنا علي! بشتغل مرشد سياحي. أهلًا بيك في مصر!»'), 'point'); await g.next();
+  await ask('card', { photos: ['e4_camelride'], lines: ['Many people ride ___', 'near the Pyramids.'] }, 'What do people ride near the Pyramids?', 'الناس بتركب إيه جنب الأهرامات؟', ['camels', 'boats', 'bikes'], 'camels', 'Look at the picture.', 'بص على الصورة.', `Many people ride ${kw('camels')} near the Pyramids. It’s fun!`, L('Many people ride camels near the Pyramids.'));
+  await ask('giza', {}, 'What can they visit after the Pyramids? It has many treasures, and history too!', 'يزوروا إيه بعد الأهرامات؟ فيه كنوز كتير وتاريخ كمان!', ['the Egyptian Museum', 'Siwa Oasis', 'the Nile River'], 'the Egyptian Museum', 'Treasures and history.', 'كنوز وتاريخ.', `Next, the ${kw('Egyptian Museum')}!`, L('the Egyptian Museum'));
+  await ask('giza', {}, 'Where can they go to buy some gifts?', 'يروحوا فين يشتروا هدايا؟', ['Khan Al-Khalili', 'Cairo Tower', 'the Pyramids'], 'Khan Al-Khalili', 'A busy bazaar.', 'سوق زحمة.', `They can go to ${kw('Khan Al-Khalili')} to buy gifts.`, L('Khan Al-Khalili'));
+}
+async function mission2() {   // sentences
+  set('giza'); g.say(T('Mission 2: complete the sentences about the places.', 'المهمة ٢: كمّل الجمل عن الأماكن.'), 'point'); await g.next();
+  const v = [['e4_siwa', ['The Siwa ___ has lots', 'of trees and water.'], ['Oasis', 'Tower', 'Bazaar'], 'Oasis'], ['e4_tower', ['The Cairo ___ is very tall.'], ['Tower', 'Oasis', 'River'], 'Tower'],
+    ['e4_nile', ['Boats sail on the', 'Nile ___.'], ['River', 'Museum', 'Tower'], 'River'], ['e4_khan', ['Khan Al-Khalili ___', 'is a busy market.'], ['Bazaar', 'Oasis', 'Tower'], 'Bazaar']];
+  for (const [f, lines, opts, ans] of v) await ask('card', { photos: [f], lines }, 'Choose the word that fits.', 'اختار الكلمة المناسبة.', opts, ans, 'Look at the picture and say the full name of the place.', 'بص على الصورة وقول اسم المكان كامل.', lines.join(' ').replace('___', kw(ans)), L(lines.join(' ').replace('___', ans)));
+}
+async function mission3() {   // city
+  set('card', { lines: ['Our city has many important', 'places that help people', 'every day.'] });
+  g.say(T('Mission 3: places in our city. Where do we go?', 'المهمة ٣: أماكن في مدينتنا. بنروح فين؟'), 'point'); await g.next();
+  await tapIt('city6', 'hospital', 'Doctors and nurses help sick people feel better. Tap the <b>hospital</b>.', 'الدكاترة والممرضات بيساعدوا العيانين. اضغط على المستشفى.', 'Look for the ambulance.', 'دوّر على الإسعاف.', 'Doctors and nurses work at the hospital.');
+  await tapIt('city6', 'library', 'The library has many books to read or borrow. Tap the <b>library</b>.', 'المكتبة فيها كتب كتير نقراها أو نستلفها. اضغط على المكتبة.', 'Shelves full of books.', 'رفوف مليانة كتب.', 'We borrow books from the library.');
+  await tapIt('city6', 'post', 'People send letters and packages to stay connected. Tap the <b>post office</b>.', 'الناس بتبعت جوابات وطرود. اضغط على مكتب البريد.', 'Look for letters and a parcel.', 'دوّر على الجوابات والطرد.', 'We send letters at the post office.');
+  await ask('card', { photos: ['e4_mall'], lines: ['People buy things and', 'eat at the ___.'] }, 'Choose the place.', 'اختار المكان.', ['shopping mall', 'hospital', 'post office'], 'shopping mall', 'It has many stores and restaurants.', 'فيه محلات ومطاعم كتير.', `The ${kw('shopping mall')} has stores and restaurants.`, L('The shopping mall has many stores and restaurants.'));
+}
+async function mission4() {   // cat and box
+  set('fig', { fig: 'prepBox', pic: { pos: 'on' }, dy: 60 });
+  g.say(T('Mission 4: prepositions of place show <b>where</b> things are. Where is the cat?', 'المهمة ٤: حروف الجر بتوضّح الحاجة فين. القطة فين؟'), 'point'); await g.next();
+  for (const [pos, ans, hEn, hAr] of [['in', 'in', 'Its head is out of the open box.', 'راسها بس طالعة من الصندوق المفتوح.'], ['on', 'on', 'It sits on the top.', 'قاعدة فوقه.'], ['next', 'next to', 'At the side of the box.', 'جنب الصندوق.'],
+    ['between', 'between', 'A box on each side.', 'صندوق من كل ناحية.'], ['front', 'in front of', 'The box is at its back.', 'الصندوق ورا ضهرها.'], ['behind', 'behind', 'The box hides most of the cat.', 'الصندوق مخبّي معظم القطة.']]) {
+    const box = pos === 'between' ? 'the boxes' : 'the box';
+    await ask('fig', { fig: 'prepBox', pic: { pos }, dy: 60 }, `The cat is ___ ${box}.`, `The cat is ___ ${box}.`, prepOpts(ans), ans, hEn, hAr, `The cat is ${kw(ans)} ${box}.`, L(`The cat is ${ans} ${box}.`));
+  }
+}
+async function mission5() {   // living room
+  set('fig', { fig: 'livingRoom', pic: {}, dy: 30 });
+  g.say(T('Mission 5: “This is my living room!” Look at the red ring.', 'المهمة ٥: «دي أوضة المعيشة بتاعتي!» بص على الدايرة الحمرا.'), 'point'); await g.next();
+  for (const [hi, sent, ans, hEn, hAr] of [['picture', 'My family picture is ___ the wall.', 'on', 'It hangs on the wall.', 'متعلّقة على الحيطة.'], ['lamp', 'The lamp is ___ the TV.', 'next to', 'At the side of the TV.', 'جنب التلفزيون.'],
+    ['table', 'The table is ___ the TV.', 'in front of', 'Between you and the TV.', 'بينك وبين التلفزيون.'], ['cat', 'My cat is ___ the blue chair.', 'behind', 'Only its head shows over the chair.', 'راسها بس باينة فوق الكرسي.'],
+    ['plant', 'The plant is ___ a book and a notebook.', 'between', 'Something on each side.', 'حاجة من كل ناحية.']])
+    await ask('fig', { fig: 'livingRoom', pic: { hi }, dy: 30 }, sent, sent, prepOpts(ans), ans, hEn, hAr, sent.replace('___', kw(ans)), L(sent.replace('___', ans)));
+}
+async function mission6() {   // big numbers
+  set('fig', { fig: 'bigNum', pic: { n: '1,000,000,000' }, dy: 90 });
+  g.say(T('Mission 6: the world of big numbers. A <b>billion</b> is a thousand million: 1,000,000,000.', 'المهمة ٦: عالم الأعداد الكبيرة. البليون (billion) يعني ألف مليون: 1,000,000,000.'), 'point'); await g.next();
+  const pl = [[0, 'billions', 'The first digit of a billion.', 'أول رقم في البليون.'], [3, 'millions', 'The last digit before the second comma.', 'آخر رقم قبل الفاصلة التانية.'], [6, 'thousands', 'The last digit before the third comma.', 'آخر رقم قبل الفاصلة التالتة.'], [9, 'ones', 'The last digit on the right.', 'آخر رقم على اليمين.']];
+  for (const [hi, ans, hEn, hAr] of pl) await ask('fig', { fig: 'bigNum', pic: { n: '1,000,000,000', hi }, dy: 90 }, 'What is the place of the digit the arrow points to?', 'الرقم اللي السهم بيشاور عليه في أي خانة؟', g.shuffle(['billions', 'millions', 'thousands', 'ones'].filter(x => x !== ans).slice(0, 2).concat(ans)), ans, hEn, hAr, `It is the ${kw(ans)} place.`, L(ans));
+  await ask('card', { lines: ['73,000,000'] }, 'How do we read this number?', 'بنقرا الرقم ده إزاي؟', ['seventy-three million', 'seventy-three hundred thousand', 'seventy-three billion'], 'seventy-three million', 'Six zeros = million.', '٦ أصفار = مليون.', `73,000,000 = ${kw('seventy-three million')}`, L('seventy-three million'));
+}
+async function mission7() {   // p or b
+  const buttons = [{ label: '/p/', value: 'p', c: 0 }, { label: '/b/', value: 'b', c: 1 }];
+  const list = [['pb_pear', 'pear', 'p'], ['pb_pin', 'pin', 'p'], ['pb_pond', 'pond', 'p'], ['pb_pan', 'pan', 'p'], ['pb_bear', 'bear', 'b'], ['pb_bin', 'bin', 'b'], ['pb_bat', 'bat', 'b'], ['pb_peak', 'peak', 'p']]
+    .map(([f, w, b]) => ({ photos: [f], lines: [w], ans: b, why: `“${w}” starts with /${b}/.` }));
+  set('card', { lines: ['/p/ · /b/'] });
+  await sortPics(T('Mission 7: “p” is voiceless: press your lips together and blow out air. “b” is voiced: press your lips and use your voice. Which sound does each word start with?', 'المهمة ٧: p من غير صوت: اقفل شفايفك وانفخ هوا. b بصوت: اقفل شفايفك واستخدم صوتك. كل كلمة بتبدأ بأي صوت؟'), buttons, list);
+}
+async function mission8() {   // blog
+  set('card', { photos: ['e4_monastery'], lines: ['A Visit to', 'St. Catherine Mountain'] });
+  g.say(T('Mission 8: Tarek wrote a blog post about St. Catherine Mountain.', 'المهمة ٨: طارق كتب مدونة عن جبل سانت كاترين.'), 'point'); await g.next();
+  await ask('card', { photos: ['e4_monastery'], lines: ['Where is', 'St. Catherine Mountain?'] }, 'Choose the answer.', 'اختار الإجابة.', ['South Sinai, Egypt', 'Cairo, Egypt', 'North Egypt'], 'South Sinai, Egypt', 'Read the first sentence of the blog.', 'اقرأ أول جملة في المدونة.', `It is in ${kw('South Sinai')}, Egypt.`, L('South Sinai, Egypt'));
+  await ask('card', { photos: ['e4_hiker'], lines: ['They wear warm clothes', 'because it’s ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['cold', 'hot', 'rainy'], 'cold', 'Warm clothes keep you warm.', 'الهدوم التقيلة بتدفّي.', `They wear warm clothes because it’s ${kw('cold')}.`, L('because it’s cold'));
+  await ask('card', { lines: ['By Tarek'] }, 'This part of the blog shows who wrote it. What is it?', 'الجزء ده بيوضح مين كتب المدونة. اسمه إيه؟', ['the writer’s name', 'the title', 'the date'], 'the writer’s name', 'Who wrote it?', 'مين اللي كتب؟', `“By Tarek” is the ${kw('writer’s name')}.`, L('the writer’s name'));
+  await ask('card', { lines: ['March 15, 2024'] }, 'And this part?', 'والجزء ده؟', ['the date', 'the title', 'the writer’s name'], 'the date', 'When was it written?', 'اتكتبت إمتى؟', `It is the ${kw('date')}.`, L('the date'));
+}
+async function mission9() {   // leaflet
+  set('card', { photos: ['e4_siwa'], lines: ['Welcome to the Siwa Oasis!'] });
+  g.say(T('Mission 9: a leaflet about the Siwa Oasis. What is this big title at the top?', 'المهمة ٩: مطوية عن واحة سيوة. العنوان الكبير ده اللي فوق اسمه إيه؟'), 'think');
+  await g.choice({ options: ['main heading', 'call to action', 'sub-heading'], correct: 'main heading', hint: T('The big title at the top.', 'العنوان الكبير اللي فوق.'), ok: T(`It is the ${kw('main heading')}.`, L('main heading')) });
+  await ask('card', { photos: ['e4_dates'], lines: ['LOCAL FOOD'] }, 'This is a smaller title. What is it?', 'ده عنوان أصغر. اسمه إيه؟', ['sub-heading', 'main heading', 'image'], 'sub-heading', 'The smaller title.', 'العنوان الأصغر.', `It is a ${kw('sub-heading')}.`, L('sub-heading'));
+  await ask('card', { lines: ['Book now: +2010XXXXXXX'] }, 'And this invitation?', 'والدعوة دي؟', ['call to action', 'detailed description', 'main heading'], 'call to action', 'It invites you to come.', 'بتدعوك تيجي.', `It is the ${kw('call to action')}.`, L('call to action'));
+  await ask('card', { lines: ['Night time in the desert:', 'bring a ___.'] }, 'What should you bring at night?', 'تاخد معاك إيه بالليل؟', ['jacket', 'swimsuit', 'umbrella'], 'jacket', 'Desert nights are cold.', 'ليالي الصحرا برد.', `Night time: bring a ${kw('jacket')}.`, L('bring a jacket'));
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); await mission7(); await mission8(); await mission9(); }
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: ['/p/ · /b/'] });
+  const buttons = [{ label: '/p/', value: 'p', c: 0 }, { label: '/b/', value: 'b', c: 1 }];
+  const items = ['pear', 'pin', 'pond', 'peak', 'pan', 'pat', 'bear', 'bin', 'bond', 'beak', 'ban', 'bat'].map(w => ({ t: w, ans: w[0], why: `“${w}” starts with /${w[0]}/.` }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('/p/ or /b/?', '/p/ ولا /b/؟'), intro: T('Speed Round! Does the word start with /p/ or /b/? Be quick!', 'جولة السرعة! الكلمة بتبدأ بـ /p/ ولا /b/؟ بسرعة!'), think: T('/p/ or /b/?', '/p/ ولا /b/؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Be a tour guide in Egypt: show the famous places, find your way in the city, read big numbers, and read a blog and a leaflet. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! ${P('خليك مرشد سياحي', 'خليكي مرشدة سياحية')} في مصر: فرّج السائح على الأماكن المشهورة، واعرف طريقك في المدينة، واقرأ الأعداد الكبيرة والمدونة والمطوية. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done, tour guide!', P('برافو يا مرشد!', 'برافو يا مرشدة!')), text: T('You know Egypt’s famous places, places in the city, prepositions, big numbers, /p/ and /b/, blogs and leaflets. Next, try the questions of this unit.', 'بقيت تعرف أماكن مصر المشهورة وأماكن المدينة وحروف الجر والأعداد الكبيرة وصوتي p وb والمدونة والمطوية. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

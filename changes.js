@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-11', title: 'English Grade 4 · Units 3 and 4 are open',
+    items: [
+      { text: 'Unit 3 Animals in Our World: 28 ideas / 131 questions, game Forest Park Guide' },
+      { text: 'Unit 4 Egypt: My Homeland: 26 ideas / 122 questions, game Egypt Tour Guide' },
+      { text: 'Pictures made by the owner with Gemini; prepositions and big numbers drawn in code', links: [{ label: 'Forest Park Guide', href: 'english-animals.html', ch: 'eg4u3' }, { label: 'Egypt Tour Guide', href: 'english-egypt.html', ch: 'eg4u4' }] }
+    ] },
   { date: '2026-11-11', title: 'English Grade 4 · Unit 2 My Community is open',
     items: [
       { text: 'Lesson 1 completed from book pages 24-25 (Helping Hands): 29 ideas, 143 questions with a hint each', links: [{ label: 'Unit 2 game', href: 'english-community.html', ch: 'eg4u2' }] }

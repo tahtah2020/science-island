@@ -7,7 +7,7 @@
      fvWords  (tap) ids wVan · wFactory · wVest · wForest · wFrog · wFlag · wViolin · wView   the eight /f/ and /v/ words of p 32 (ids start with w: admin TAP already has 'factory')
        both honour q.pic.plain; q.pic.only = [ids] draws only those badges (the game uses it), q.pic.cols overrides the grid.
    Units 3 and 4 (11 Nov 2026): the owner's Gemini pictures (english/assets/a4_*, e4_*, pb_*.webp, cut from his sheets, plain background removed)
-     inside pastel circles (photoGrid). Tap pictures: animals6, actions6, care6, story3, blends6 (unit 3); places6, city6, pb8 (unit 4).
+     inside pastel circles (photoGrid). Tap pictures: animals6, actions6, care6, story3, blends6 (unit 3); egypt6, city6, pb8 (unit 4).
      Pictures for one question: photo (q.pic.src = ['a4_lion', …], up to 3 side by side; never a picture that shows the answer in words).
      Drawn in code (the answer is an exact place or a digit): prepBox (q.pic.pos in|on|front|behind|next|between), livingRoom (q.pic.hi = item),
      prepScene (q.pic.kind house|dog), bigNum (q.pic.n, q.pic.hi = index of the digit the arrow points at), footprints (arrows all going into the cave).
@@ -153,7 +153,7 @@
   const care6 = gridFig(['walkdog', 'vet', 'rabbitveg', 'birdcage', 'officer', 'owner'], 340, 240, 3, 52, 'Six round pictures about caring for animals');
   const story3 = gridFig(['fox', 'cave', 'prints'], 340, 130, 3, 54, 'Three round pictures from the story');
   const blends6 = gridFig(['frown', 'drum', 'plane', 'bPlant', 'draw', 'fruit'], 340, 240, 3, 52, 'Six round pictures');
-  const places6 = gridFig(['pyramids', 'nile', 'tower', 'siwa', 'museum', 'khan'], 340, 240, 3, 52, 'Six round pictures of famous places in Egypt');
+  const egypt6 = gridFig(['pyramids', 'nile', 'tower', 'siwa', 'museum', 'khan'], 340, 240, 3, 52, 'Six round pictures of famous places in Egypt');
   const city6 = gridFig(['library', 'school', 'mall', 'post', 'hospital', 'cmuseum'], 340, 240, 3, 52, 'Six round pictures of places in a city');
   const pb8 = gridFig(['pBear', 'pPear', 'pPin', 'pBin', 'pPond', 'pPeak', 'pPan', 'pBat'], 340, 190, 4, 38, 'Eight round pictures');
   function photo(q) {   // one to three pictures side by side for a single question
@@ -174,22 +174,22 @@
     if (pos === 'in') s += kittenHead(170, 98, 1.15) + box(170, 92, true);
     else if (pos === 'on') s += box(170, 92) + kitten(170, 64, 1.05);
     else if (pos === 'front') s += box(170, 76) + kitten(170, 116, 1.25);
-    else if (pos === 'behind') s += kittenHead(186, 86, 1.05) + box(170, 92);
+    else if (pos === 'behind') s += kittenHead(190, 104, 1.05) + box(170, 92);
     else if (pos === 'next') s += box(140, 92) + kitten(222, 118, 1.05);
     else s += box(76, 92) + kitten(170, 118, 1.05) + box(264, 92);
     return wrap(w, h, 'A gray cat and an orange box', s, q && q.pic && q.pic.plain);
   }
   function livingRoom(q) {
     const hi = q && q.pic && q.pic.hi, w = 340, h = 230, ring = (x, y, rx, ry) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="none" stroke="#e2603f" stroke-width="3.5" stroke-dasharray="7 5"/>`;
-    let s = `<rect width="${w}" height="${h}" rx="14" fill="#e6dcf3"/><path d="M${[20, 60, 100, 140, 180, 220, 260, 300].map(x => `M${x} 0V160`).join('')}" stroke="#d8cbec" stroke-width="6"/><rect y="160" width="${w}" height="70" fill="#e9c9a0"/>`;
+    let s = `<rect width="${w}" height="${h}" rx="14" fill="#e6dcf3"/><path d="${[20, 60, 100, 140, 180, 220, 260, 300].map(x => `M${x} 0V160`).join('')}" stroke="#d8cbec" stroke-width="6"/><rect y="160" width="${w}" height="70" fill="#e9c9a0"/>`;
     s += `<rect x="146" y="22" width="44" height="50" rx="3" fill="#fff8e6" stroke="#8a5a28" stroke-width="4"/><circle cx="160" cy="44" r="7" fill="#f6c9a4"/><circle cx="176" cy="44" r="7" fill="#f6c9a4"/><path d="M152 66Q160 54 168 66M168 66Q176 54 184 66" fill="#6fa8dc"/>`;
     s += `<rect x="128" y="124" width="80" height="44" fill="#c99560" stroke="#8a5a28" stroke-width="2.4"/><rect x="138" y="84" width="60" height="40" rx="3" fill="#2a3a4a" stroke="#1a2530" stroke-width="2.4"/><path d="M168 124V118" stroke="#1a2530" stroke-width="4"/>`;
     s += `<path d="M110 168V100" stroke="#8a5a28" stroke-width="3"/><path d="M96 100L104 74H116L124 100Z" fill="#fbe3b0" stroke="#c9a15c" stroke-width="2"/><path d="M100 168H120" stroke="#8a5a28" stroke-width="4"/>`;
     s += `<rect x="236" y="64" width="80" height="6" fill="#8a5a28"/><rect x="242" y="44" width="12" height="20" fill="#e2603f"/><path d="M276 64V52" stroke="#4f9f52" stroke-width="3"/><path d="M276 54Q266 44 270 38Q278 44 276 54Q286 44 284 38Q274 44 276 54Z" fill="#6fbf63"/><rect x="266" y="56" width="20" height="8" fill="#c97a4a"/><rect x="298" y="48" width="10" height="16" fill="#f2b134"/>`;
     const chair = x => `<path d="M${x - 34} 196V150Q${x - 34} 136 ${x - 20} 136H${x + 20}Q${x + 34} 136 ${x + 34} 150V196Z" fill="#4f86c6" stroke="#2f5a8a" stroke-width="2.4"/><rect x="${x - 40}" y="160" width="12" height="36" rx="5" fill="#3c74a8"/><rect x="${x + 28}" y="160" width="12" height="36" rx="5" fill="#3c74a8"/>`;
-    s += chair(56) + kittenHead(300, 168, .8) + chair(278);
+    s += chair(56) + kittenHead(292, 146, .85) + chair(278);
     s += `<rect x="140" y="186" width="56" height="8" fill="#e2603f" stroke="#a8341c" stroke-width="2"/><path d="M146 194V214M190 194V214" stroke="#a8341c" stroke-width="4"/><rect x="154" y="176" width="22" height="10" rx="3" fill="#f2b134" stroke="#c98a14" stroke-width="1.6"/><circle cx="159" cy="187" r="3" fill="${INK}"/><circle cx="171" cy="187" r="3" fill="${INK}"/>`;
-    const R = { picture: [168, 47, 30, 34], cat: [300, 160, 22, 22], car: [165, 181, 18, 12], lamp: [110, 112, 22, 54], table: [168, 200, 38, 20], plant: [276, 52, 16, 18] };
+    const R = { picture: [168, 47, 30, 34], cat: [292, 128, 20, 20], car: [165, 181, 18, 12], lamp: [110, 112, 22, 54], table: [168, 200, 38, 20], plant: [276, 52, 16, 18] };
     if (hi && R[hi]) s += ring(...R[hi]);
     return wrap(w, h, 'A living room with a TV, a lamp, two blue chairs, a table, a shelf, a picture and a cat', s);
   }
@@ -226,6 +226,6 @@
     return wrap(w, h, 'Animal footprints on the sand in front of a cave', s, q && q.pic && q.pic.plain);
   }
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { fiveSenses, helping6, fvWords, animals6, actions6, care6, story3, blends6, places6, city6, pb8, photo, prepBox, livingRoom, prepScene, bigNum, footprints });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { fiveSenses, helping6, fvWords, animals6, actions6, care6, story3, blends6, egypt6, city6, pb8, photo, prepBox, livingRoom, prepScene, bigNum, footprints });
   window.E4ART = { D, POS, TINT, R, NAMES, at, hot, ringEl, INK, f1, esc, FONT, C, CNAMES, CTINT, W8, WNAMES, WTINT, head, PH, pimg, IMG, kitten, kittenHead, box };
 })();

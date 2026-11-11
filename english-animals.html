@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forest Park Guide · Animals in Our World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261111b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Forest Park Guide.</noscript>
+<script src="firebase-config.js?v=20261111b"></script>
+<script src="chapters.js?v=20261111b"></script>
+<script src="common.js?v=20261111b"></script>
+<script src="english/g4_art.js?v=20261111b"></script>
+<script src="game_kit.js?v=20261111b"></script>
+<script>
+(() => {
+'use strict';
+/* Forest Park Guide · the game of English Grade 4, Unit 3 "Animals in Our World" (ministry book "English Primary 4", term 1). Built on the shared game kit.
+   Pictures: the owner's Gemini pictures (english/assets/a4_*.webp, bg_eg4u3_park.jpg, bg_eg4u3_cave.jpg, 11 Nov 2026). Footprints are drawn in code.
+   The scene is set before every question and never shows the answer word.
+   Stage 1 (Warm Up): tap the six animals (lesson 1, p 40).
+   Stage 2 (Missions): 1 who is it? descriptions (p 40) · 2 what animals do and adjectives (p 42) · 3 owners, vets and forest officers (lesson 2, p 43)
+                       4 comparatives with two pictures (pp 45, 55) · 5 the old lion and the fox (lesson 3, pp 46-48) · 6 blends fr, dr, pl (p 49)
+                       7 endangered animals (lesson 4, p 50).
+   Stage 3 (Speed Round): which comparative rule? (p 45). */
+const T = SI.T, G = SI.G, E = E4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const IMG = f => `english/assets/${f}`;
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const photoBox = (f, x, y, s) => `<rect x="${x - s / 2}" y="${y - s / 2}" width="${s}" height="${s}" rx="20" fill="#fff" stroke="#d8c9a6" stroke-width="2.4"/><image href="${IMG(f + '.webp')}" x="${x - s * .45}" y="${y - s * .45}" width="${s * .9}" height="${s * .9}" preserveAspectRatio="xMidYMid meet"/>`;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += photoBox(ph[0], 170, 82, 136);
+  if (ph.length === 2) s += photoBox(ph[0], 92, 82, 132) + photoBox(ph[1], 248, 82, 132);
+  s += `<rect x="14" y="${top + 14}" width="312" height="${VH - top - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = top + (VH - top) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'park' || m === 'cave') return `<image href="${IMG(m === 'park' ? 'bg_eg4u3_park.jpg' : 'bg_eg4u3_cave.jpg')}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`
+    + (sc.lines.length ? `<rect x="20" y="226" width="300" height="56" rx="16" fill="#fffaf0" opacity=".95"/>${txt(170, 262, sc.lines[0], { fs: 20 })}` : '');
+  if (m === 'grid') return bg() + `<g transform="translate(0 30)">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'prints') return bg('#f6e7c4') + `<g transform="translate(0 70)">${D.footprints({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = fig => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + 30, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg4u3', logo: '🦁', title: ['Forest Park Guide', 'مرشد حديقة الغابة'], sub: ['Unit 3 · Animals in Our World', 'الوحدة 3 · الحيوانات في عالمنا'],
+  bg: 'english/assets/bg_eg4u3.svg', bgc: '#e2f4dc', label: ['Animals at the forest park, caring for animals, comparing them, and the story of the old lion and the fox', 'حيوانات حديقة الغابة ورعايتها ومقارنتها وقصة الأسد العجوز والثعلب'], render, view: [VW, VH] });
+
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr, reveal) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: reveal || (() => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } }) });
+}
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortPics(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('park');
+  g.say(T('Welcome to the forest park! Nadia’s dad is a forest guide. Today you are the guide. Let’s meet the animals!', P('أهلًا في حديقة الغابة! والد نادية مرشد في الغابة. النهارده إنت المرشد. يلّا نتعرّف على الحيوانات!', 'أهلًا في حديقة الغابة! والد نادية مرشد في الغابة. النهارده إنتي المرشدة. يلّا نتعرّف على الحيوانات!')), 'wave');
+  await g.next();
+  await tapIt('animals6', 'elephant', 'Tap the <b>elephant</b>.', 'اضغط على الفيل (elephant).', 'Big and gray, with a trunk.', 'كبير ورمادي وله خرطوم.', 'This is the elephant.');
+  await tapIt('animals6', 'zebra', 'Tap the <b>zebra</b>.', 'اضغط على الحمار الوحشي (zebra).', 'Black and white stripes.', 'خطوط سودا وبيضا.', 'This is the zebra.');
+  await tapIt('animals6', 'giraffe', 'Tap the <b>giraffe</b>.', 'اضغط على الزرافة (giraffe).', 'A very long neck.', 'رقبة طويلة جدًا.', 'This is the giraffe.');
+  await tapIt('animals6', 'bear', 'Tap the <b>bear</b>.', 'اضغط على الدب (bear).', 'Brown, with thick fur.', 'بني وفروه تقيل.', 'This is the bear.');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // descriptions, p 40
+  set('park'); g.say(T('Mission 1: Who is it? Read the description and choose the animal.', 'المهمة ١: مين ده؟ اقرأ الوصف واختار الحيوان.'), 'point'); await g.next();
+  const items = [
+    [['It is small and has a long tail.', 'It climbs trees.'], 'The monkey', 'It lives in the trees.', 'بيعيش فوق الشجر.'],
+    [['It has a striped coat.', 'It runs in groups.'], 'The zebra', 'Striped means lines.', 'مخطط يعني فيه خطوط.'],
+    [['It has yellow fur.', 'It hunts animals at night.'], 'The lion', 'The king of the jungle.', 'ملك الغابة.'],
+    [['It has thick fur and sharp claws.', 'It catches fish.'], 'The bear', 'It is big and brown.', 'كبير وبني.']];
+  for (const [lines, ans, hEn, hAr] of items) {
+    const opts = g.shuffle(['The monkey', 'The zebra', 'The lion', 'The bear', 'The giraffe'].filter(o => o !== ans)).slice(0, 2).concat(ans);
+    await ask('card', { lines }, 'Who is it?', 'مين ده؟', g.shuffle(opts), ans, hEn, hAr, `${kw(ans)}! ${lines.join(' ')}`, L(`${ans}: ${lines.join(' ')}`));
+  }
+}
+async function mission2() {   // verbs and adjectives, p 42
+  set('park'); g.say(T('Mission 2: What do animals do? Look at the picture and choose the word.', 'المهمة ٢: الحيوانات بتعمل إيه؟ بص على الصورة واختار الكلمة.'), 'point'); await g.next();
+  const v = [['a4_spray', ['The elephant ___', 'lots of water.'], ['drinks', 'climbs', 'runs'], 'drinks'], ['a4_climb', ['The monkey ___ trees.'], ['climbs', 'drinks', 'catches'], 'climbs'],
+    ['a4_run', ['The zebra ___', 'in groups.'], ['runs', 'catches', 'climbs'], 'runs'], ['a4_fish', ['The bear ___ fish.'], ['catches', 'climbs', 'drinks'], 'catches']];
+  for (const [f, lines, opts, ans] of v) await ask('card', { photos: [f], lines }, 'Choose the word that fits.', 'اختار الكلمة المناسبة.', opts, ans, 'Look at what the animal does in the picture.', 'بص الحيوان بيعمل إيه في الصورة.', `${lines.join(' ').replace('___', kw(ans))}`, L(lines.join(' ').replace('___', ans)));
+  await ask('card', { photos: ['a4_zebra'], lines: ['The zebra has', 'a ___ coat.'] }, 'Which adjective?', 'أي صفة؟', ['striped', 'heavy', 'thick'], 'striped', 'Black and white lines.', 'خطوط سودا وبيضا.', `The zebra has a ${kw('striped')} coat.`, L('The zebra has a striped coat.'));
+  await ask('card', { photos: ['a4_bear'], lines: ['The bear has ___ fur.'] }, 'Which adjective?', 'أي صفة؟', ['thick', 'striped', 'long'], 'thick', 'Lots of warm fur.', 'فرو كتير ودافي.', `The bear has ${kw('thick')} fur.`, L('The bear has thick fur.'));
+}
+async function mission3() {   // care, p 43
+  set('park'); g.say(T('Mission 3: Animals need our help to stay healthy and safe. Who helps them?', 'المهمة ٣: الحيوانات محتاجة مساعدتنا عشان تفضل بصحة وأمان. مين بيساعدها؟'), 'point'); await g.next();
+  await tapIt('care6', 'vet', 'Vets often check animals’ health. Tap the <b>vet</b>.', 'الطبيب البيطري بيكشف على الحيوانات. اضغط على الـ vet.', 'Look for a stethoscope.', 'دوّر على السماعة.', 'The vet checks the dog’s health.');
+  await tapIt('care6', 'officer', 'Forest officers protect animals and their homes. Tap the <b>forest officer</b>.', 'ضابط الغابة بيحمي الحيوانات وبيوتها. اضغط عليه.', 'Look for trees and binoculars.', 'دوّر على الشجر والنظارة المكبرة.', 'Forest officers protect wild animals.');
+  await tapIt('care6', 'walkdog', 'Dogs need <b>exercise</b>. Tap the picture.', 'الكلاب محتاجة رياضة. اضغط على الصورة.', 'Look for a walk.', 'دوّر على مشوار.', 'Dogs need exercise every day.');
+  await ask('card', { photos: ['a4_owner'], lines: ['Pets need ___ care', 'from their owners.'] }, 'Choose the word.', 'اختار الكلمة.', ['daily', 'weekly', 'yearly'], 'daily', 'Every day.', 'كل يوم.', `Pets need ${kw('daily')} care.`, L('Pets need daily care from their owners.'));
+}
+async function mission4() {   // comparatives
+  set('card', { lines: ['short → shorter', 'safe → safer', 'big → bigger', 'healthy → healthier'] });
+  g.say(T('Mission 4: we use comparative adjectives to compare two animals. Look at both pictures!', 'المهمة ٤: بنستخدم صيغة المقارنة لما نقارن بين حيوانين. بص على الصورتين!'), 'point'); await g.next();
+  const c = [['a4_zebra', 'a4_giraffe', 'A zebra is ___', 'than a giraffe.', ['shorter', 'taller'], 'shorter', 'The giraffe has a very long neck.', 'الزرافة رقبتها طويلة جدًا.'],
+    ['a4_bear', 'a4_dog', 'Bears are ___', 'than dogs.', ['bigger', 'biger', 'smaller'], 'bigger', 'big: double the g.', 'big: نكرر حرف g.'],
+    ['a4_cat', 'a4_lion', 'Cats are ___', 'than lions.', ['safer', 'safeer', 'more safe'], 'safer', 'safe ends in -e: add -r.', 'safe آخرها e: نزود r بس.'],
+    ['a4_mouse', 'a4_rabbit', 'A mouse is ___', 'than a rabbit.', ['smaller', 'bigger', 'smallier'], 'smaller', 'A mouse is tiny.', 'الفأر صغير جدًا.'],
+    ['a4_cheetah', 'a4_turtle', 'A cheetah is ___', 'than a turtle.', ['faster', 'slower', 'fastier'], 'faster', 'The turtle is slow.', 'السلحفاة بطيئة.']];
+  for (const [a, b, l1, l2, opts, ans, hEn, hAr] of c) await ask('card', { photos: [a, b], lines: [l1, l2] }, 'Compare the two animals.', 'قارن بين الحيوانين.', opts, ans, hEn, hAr, `${l1.replace('___', kw(ans))} ${l2}`, L(`${l1.replace('___', ans)} ${l2}`));
+}
+async function mission5() {   // the old lion and the fox
+  set('cave');
+  g.say(T('Mission 5: Story time! An old lion couldn’t hunt anymore. He was too weak to catch animals for food. So he thought of a clever trick…', 'المهمة ٥: وقت القصة! أسد عجوز مبقاش قادر يصطاد. كان ضعيف جدًا. ففكّر في حيلة ذكية…'), 'point'); await g.next();
+  await ask('card', { photos: ['a4_lioncave'], lines: ['The lion went into his cave', 'and ___ to be very sick.'] }, 'What did the lion do?', 'الأسد عمل إيه؟', ['pretended', 'hunted', 'ran away'], 'pretended', 'He was not really sick.', 'مكانش عيّان بجد.', `He ${kw('pretended')} to be sick.`, L('He pretended to be sick.'));
+  set('prints');
+  g.say(T('Many animals went into the cave to visit him. A wise fox came near the cave and looked at the footprints. Where do the footprints go?', 'حيوانات كتير دخلت الكهف تزوره. ثعلب حكيم قرّب وبص على آثار الأقدام. الآثار رايحة فين؟'), 'think');
+  await g.choice({ options: ['They all go into the cave.', 'They all come out of the cave.', 'Half go in, half come out.'], correct: 'They all go into the cave.', hint: T('Follow the green arrow.', 'امشي ورا السهم الأخضر.'), ok: T(`Many footprints going ${kw('in')}, but none coming out!`, L('Footprints going in, but none coming out!')) });
+  set('cave');
+  g.say(T('So what did the wise fox do?', 'طيب الثعلب الحكيم عمل إيه؟'), 'think');
+  await g.choice({ options: ['He ran away safely.', 'He went into the cave.', 'He lay down and slept.'], correct: 'He ran away safely.', hint: T('He learned from the mistakes of others.', 'اتعلّم من غلط غيره.'), ok: T(`He ${kw('ran away safely')}, laughing at the lion’s trick.`, L('He ran away safely.')) });
+  await ask('card', { lines: ['The moral of the story:'] }, 'What is the moral, the lesson of the story?', 'إيه العبرة، يعني الدرس اللي بنتعلمه من القصة؟', ['Learn from the mistakes of others.', 'Lions are kind.', 'Always visit sick friends.'], 'Learn from the mistakes of others.', 'What did the fox say?', 'الثعلب قال إيه؟', `${kw('Learn from the mistakes of others!')}`, L('Learn from the mistakes of others!'), () => { sc.lines = ['The moral of the story:', 'Learn from the mistakes', 'of others.']; g.paint(); });
+}
+async function mission6() {   // blends
+  const buttons = [{ label: 'fr', value: 'fr', c: 0 }, { label: 'dr', value: 'dr', c: 1 }, { label: 'pl', value: 'pl', c: 2 }];
+  const list = [['a4_frown', 'frown', 'fr'], ['a4_fruit', 'fruit', 'fr'], ['a4_drum', 'drum', 'dr'], ['a4_draw', 'draw', 'dr'], ['a4_plane', 'plane', 'pl'], ['a4_plant', 'plant', 'pl']]
+    .map(([f, w, b]) => ({ photos: [f], lines: [w], ans: b, why: `“${w}” starts with ${b}.` }));
+  set('card', { lines: ['fr · dr · pl'] });
+  await sortPics(T('Mission 6: blends! When you blend, you join two sounds together, like “drum” and “fruit”. Which blend does each word start with?', 'المهمة ٦: الأصوات المدموجة! بندمج صوتين مع بعض زي drum وfruit. كل كلمة بتبدأ بأي صوتين؟'), buttons, list);
+}
+async function mission7() {   // endangered animals
+  set('card', { photos: ['a4_leopard'], lines: ['Endangered animals are in danger', 'of disappearing forever.'] });
+  g.say(T('Mission 7: endangered animals. This is the Arabian Leopard. Less than 200 remain in the wild.', 'المهمة ٧: الحيوانات المهددة بالانقراض. ده النمر العربي. فاضل منه أقل من ٢٠٠ في البرية.'), 'point'); await g.next();
+  await ask('card', { photos: ['a4_leopard'], lines: ['Why is the Arabian Leopard', 'in danger?'] }, 'Choose the reason.', 'اختار السبب.', ['People build houses in their habitats.', 'It eats sea grass.', 'It is too fast.'], 'People build houses in their habitats.', 'Its home is getting taken.', 'بيته بيتاخد منه.', `People build houses in its ${kw('habitats')}.`, L('People build houses in their habitats.'));
+  await ask('card', { photos: ['a4_dugong'], lines: ['Why is the Red Sea Dugong', 'in danger?'] }, 'This gentle sea animal eats sea grass. Why is it in danger?', 'الحيوان البحري الهادي ده بياكل حشائش البحر. ليه في خطر؟', ['Pollution and fishing nets', 'Tall buildings', 'Too much food'], 'Pollution and fishing nets', 'Think about the sea.', 'فكّر في البحر.', `${kw('Pollution and fishing nets')} put it in danger.`, L('Pollution and fishing nets'));
+  const buttons = [{ label: 'Helps 👍', value: 'y', c: 0 }, { label: 'Doesn’t help 👎', value: 'n', c: 2 }];
+  const list = [['Protect their homes.', 'y'], ['Stop pollution.', 'y'], ['Create safe areas.', 'y'], ['Teach people about them.', 'y'], ['Build houses in their habitats.', 'n']].map(([a, y]) => ({ lines: [a], ans: y, why: y === 'y' ? 'This helps endangered animals.' : 'This puts them in danger.' }));
+  await sortPics(T('Does it help endangered animals?', 'ده بيساعد الحيوانات المهددة ولا لأ؟'), buttons, list);
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); await mission7(); }
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: ['+er · +r · double · y → ier'] });
+  const buttons = [{ label: '+er', value: 'er', c: 0 }, { label: '+r', value: 'r', c: 1 }, { label: 'double +er', value: 'dbl', c: 2 }, { label: 'y → ier', value: 'ier', c: 3 }];
+  const W = { er: ['short', 'shorter'], er2: ['clean', 'cleaner'], er3: ['tall', 'taller'], er4: ['cold', 'colder'], er5: ['small', 'smaller'], er6: ['fast', 'faster'], r: ['safe', 'safer'], dbl: ['big', 'bigger'], ier: ['healthy', 'healthier'], ier2: ['lazy', 'lazier'] };
+  const items = Object.keys(W).map(k => ({ t: W[k][0], ans: k.replace(/\d/, ''), why: `${W[k][0]} → ${W[k][1]}` }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('Which rule makes the comparative?', 'أي قاعدة بتعمل صيغة المقارنة؟'), intro: T('Speed Round! Which rule makes the comparative? Be quick!', 'جولة السرعة! أي قاعدة بتعمل صيغة المقارنة؟ بسرعة!'), think: T('Which rule?', 'أي قاعدة؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Be the guide of the forest park: meet the animals, care for them, compare them, and hear the story of the old lion and the fox. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! ${P('خليك مرشد', 'خليكي مرشدة')} حديقة الغابة: اتعرّف على الحيوانات، واهتم بيها، وقارن بينها، واسمع قصة الأسد العجوز والثعلب. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done, guide!', P('برافو يا مرشد!', 'برافو يا مرشدة!')), text: T('You know the animals, how to care for them, comparatives, the fox’s lesson, blends and endangered animals. Next, try the questions of this unit.', 'بقيت تعرف الحيوانات ورعايتها والمقارنة ودرس الثعلب والأصوات المدموجة والحيوانات المهددة. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

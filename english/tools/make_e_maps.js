@@ -77,6 +77,20 @@ const PEACH = { blobs: ['#fde6cf', '#d8efd0', '#fbe9c8', '#dcecf8'], land: [[0, 
 build('eg4u2', badge(120, 880, 1.4, 'plant', EC) + badge(1010, 250, 1.4, 'help', EC) + badge(190, 330, 1.4, 'collect', EC) + badge(640, 1150, 1.3, 'clean', EC) + badge(1060, 640, 1.4, 'feed', EC) + badge(150, 600, 1.2, 'volunteer', EC),
   `${badge(300, 760, 1.9, 'plant', EC)}${badge(760, 770, 1.7, 'volunteer', EC)}${badge(1180, 770, 1.8, 'feed', EC)}`, PEACH);
 
+/* units 3 and 4: badges with the owner's pictures, embedded (an SVG shown as an image cannot load other files) */
+const PIC = (f, s = 78) => { const b = fs.readFileSync(path.join(__dirname, '..', 'assets', f + '.webp')).toString('base64'); return `<image href="data:image/webp;base64,${b}" x="${-s / 2}" y="${-s / 2}" width="${s}" height="${s}" preserveAspectRatio="xMidYMid meet"/>`; };
+const PB = (files, tints) => ({ TINT: tints, D: Object.fromEntries(Object.keys(files).map(k => [k, () => PIC(files[k])])) });
+const A3 = PB({ lion: 'a4_lion', elephant: 'a4_elephant', giraffe: 'a4_giraffe', zebra: 'a4_zebra', monkey: 'a4_monkey', fox: 'a4_fox', leopard: 'a4_leopard' },
+  { lion: '#fbefd2', elephant: '#e4ecf3', giraffe: '#fbf1d6', zebra: '#eceef2', monkey: '#f3e6d6', fox: '#fde6cf', leopard: '#fbf1d6' });
+const SAVANNA = { blobs: ['#e2f4dc', '#fbeccf', '#d8efd0', '#f6e7c4'], land: [[0, '#e2f4dc'], [.5, '#e9efc0'], [1, '#f6e7c4']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#dff0fa', '#fdf3dc', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#f6d7a4'] };
+build('eg4u3', badge(120, 880, 1.4, 'lion', A3) + badge(1010, 250, 1.4, 'elephant', A3) + badge(190, 330, 1.4, 'giraffe', A3) + badge(640, 1150, 1.3, 'zebra', A3) + badge(1060, 640, 1.4, 'monkey', A3) + badge(150, 600, 1.2, 'fox', A3),
+  `${badge(300, 760, 1.9, 'giraffe', A3)}${badge(760, 770, 1.7, 'leopard', A3)}${badge(1180, 770, 1.8, 'elephant', A3)}`, SAVANNA);
+const A4 = PB({ pyramids: 'e4_pyramids', tower: 'e4_tower', nile: 'e4_nile', khan: 'e4_khan', siwa: 'e4_siwa', museum: 'e4_museum', camel: 'e4_camelride' },
+  { pyramids: '#fbf1d6', tower: '#eef0f6', nile: '#e1effb', khan: '#fbeedd', siwa: '#e8f6e2', museum: '#fbe9e9', camel: '#fbf1d6' });
+const DESERT = { blobs: ['#fbe9c8', '#e1effb', '#f6e7c4', '#e8f6e2'], land: [[0, '#fbe9c8'], [.5, '#f3e2b4'], [1, '#f6e7c4']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#dff0fa', '#fdf3dc', '#fbe9c8'], hill: ['#e8cf9a', '#d9b97a', '#bfe3a0'] };
+build('eg4u4', badge(120, 880, 1.4, 'pyramids', A4) + badge(1010, 250, 1.4, 'tower', A4) + badge(190, 330, 1.4, 'nile', A4) + badge(640, 1150, 1.3, 'khan', A4) + badge(1060, 640, 1.4, 'siwa', A4) + badge(150, 600, 1.2, 'museum', A4),
+  `${badge(300, 760, 1.9, 'pyramids', A4)}${badge(760, 770, 1.7, 'camel', A4)}${badge(1180, 770, 1.8, 'nile', A4)}`, DESERT);
+
 /* ---------- grade 5 ---------- */
 const b5 = (x, y, k, id) => badge(x, y, k, id, E5);
 const reed = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})" stroke="#5d9a4a" stroke-width="5" stroke-linecap="round" fill="none"><path d="M-14 0Q-18 -30 -10 -52"/><path d="M0 0Q2 -36 -2 -64"/><path d="M14 0Q18 -28 12 -50"/></g>`;
