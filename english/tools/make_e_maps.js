@@ -91,6 +91,18 @@ const DESERT = { blobs: ['#fbe9c8', '#e1effb', '#f6e7c4', '#e8f6e2'], land: [[0,
 build('eg4u4', badge(120, 880, 1.4, 'pyramids', A4) + badge(1010, 250, 1.4, 'tower', A4) + badge(190, 330, 1.4, 'nile', A4) + badge(640, 1150, 1.3, 'khan', A4) + badge(1060, 640, 1.4, 'siwa', A4) + badge(150, 600, 1.2, 'museum', A4),
   `${badge(300, 760, 1.9, 'pyramids', A4)}${badge(760, 770, 1.7, 'camel', A4)}${badge(1180, 770, 1.8, 'nile', A4)}`, DESERT);
 
+/* units 5 and 6 (owner's pictures, embedded) */
+const A5 = PB({ doctor: 'j5_doctor', engineer: 'j5_engineer', fire: 'j5_firefighter', nurse: 'j5_nurse', teacher: 'j5_teacher', carp: 'j5_carpenter', truck: 'f5_truck' },
+  { doctor: '#e4f3f8', engineer: '#fbf3d6', fire: '#fbe9e9', nurse: '#e1effb', teacher: '#e8f6e2', carp: '#fbeedd', truck: '#fbe9e9' });
+const SKY = { blobs: ['#e1effb', '#fbeccf', '#d8efd0', '#e4ecf3'], land: [[0, '#e1effb'], [.5, '#e3efc4'], [1, '#f3ece4']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#dff0fa', '#fdf3dc', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#c9d9ec'] };
+build('eg4u5', badge(120, 880, 1.4, 'doctor', A5) + badge(1010, 250, 1.4, 'engineer', A5) + badge(190, 330, 1.4, 'fire', A5) + badge(640, 1150, 1.3, 'nurse', A5) + badge(1060, 640, 1.4, 'teacher', A5) + badge(150, 600, 1.2, 'carp', A5),
+  `${badge(300, 760, 1.9, 'fire', A5)}${badge(760, 770, 1.7, 'carp', A5)}${badge(1180, 770, 1.8, 'truck', A5)}`, SKY);
+const A6 = PB({ wanda: 'c6_wanda', peggy: 'c6_peggy', maddie: 'c6_maddie', mason: 'c6_mason', dress: 'd6_dress', medal: 'd6_medal', drawings: 'd6_drawings' },
+  { wanda: '#f1e8fb', peggy: '#fbf3d6', maddie: '#e2f4dc', mason: '#e1effb', dress: '#fbe3e8', medal: '#fbf3d6', drawings: '#f1e8fb' });
+const ROSE = { blobs: ['#fbe3e8', '#f1e8fb', '#fbeccf', '#e1effb'], land: [[0, '#fbe3e8'], [.5, '#f6e4ef'], [1, '#f3ece4']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#fde3ec', '#fdf3dc', '#f1e8fb'], hill: ['#f3c9d8', '#e6b4c8', '#bfe3a0'] };
+build('eg4u6', badge(120, 880, 1.4, 'wanda', A6) + badge(1010, 250, 1.4, 'dress', A6) + badge(190, 330, 1.4, 'peggy', A6) + badge(640, 1150, 1.3, 'medal', A6) + badge(1060, 640, 1.4, 'maddie', A6) + badge(150, 600, 1.2, 'mason', A6),
+  `${badge(300, 760, 1.9, 'drawings', A6)}${badge(760, 770, 1.7, 'wanda', A6)}${badge(1180, 770, 1.8, 'dress', A6)}`, ROSE);
+
 /* ---------- grade 5 ---------- */
 const b5 = (x, y, k, id) => badge(x, y, k, id, E5);
 const reed = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})" stroke="#5d9a4a" stroke-width="5" stroke-linecap="round" fill="none"><path d="M-14 0Q-18 -30 -10 -52"/><path d="M0 0Q2 -36 -2 -64"/><path d="M14 0Q18 -28 12 -50"/></g>`;

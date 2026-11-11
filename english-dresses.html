@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wanda's Hundred Dresses · The Hundred Dresses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261111c">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Wanda's Hundred Dresses.</noscript>
+<script src="firebase-config.js?v=20261111c"></script>
+<script src="chapters.js?v=20261111c"></script>
+<script src="common.js?v=20261111c"></script>
+<script src="english/g4_art.js?v=20261111c"></script>
+<script src="game_kit.js?v=20261111c"></script>
+<script>
+(() => {
+'use strict';
+/* Wanda's Hundred Dresses · the game of English Grade 4, Unit 6 "The Hundred Dresses" (story by Eleanor Estes, as retold in the ministry book
+   "English Primary 4", term 1, pp 95-108). Built on the shared game kit.
+   Pictures: the owner's Gemini pictures (english/assets/d6_*, c6_*.webp, bg_eg4u6_wall.jpg, 11 Nov 2026); characters drawn in our own style.
+   The scene is set before every question and never shows the answer word.
+   Stage 1 (Warm Up): tap the characters (p 97).
+   Stage 2 (Missions): 1 story words (p 96) · 2 Wanda's faded dress (p 98) · 3 in the playground (p 99) · 4 the drawing competition (p 100)
+                       5 letters (pp 101-102) · 6 who said this? (p 103) · 7 story elements and the right action (pp 106-108).
+   Stage 3 (Speed Round): true or false? (p 105). */
+const T = SI.T, G = SI.G, E = E4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const IMG = f => `english/assets/${f}`;
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const photoBox = (f, x, y, s) => `<rect x="${x - s / 2}" y="${y - s / 2}" width="${s}" height="${s}" rx="20" fill="#fff" stroke="#d8c9a6" stroke-width="2.4"/><image href="${IMG(f + '.webp')}" x="${x - s * .45}" y="${y - s * .45}" width="${s * .9}" height="${s * .9}" preserveAspectRatio="xMidYMid meet"/>`;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += photoBox(ph[0], 170, 82, 136);
+  if (ph.length === 2) s += photoBox(ph[0], 92, 82, 132) + photoBox(ph[1], 248, 82, 132);
+  s += `<rect x="14" y="${top + 14}" width="312" height="${VH - top - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = top + (VH - top) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'scene') return `<image href="${IMG(sc.img)}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (m === 'grid') return bg() + `<g transform="translate(0 30)">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'fig') return bg() + `<g transform="translate(0 ${sc.dy || 40})">${D[sc.fig](Object.assign({ pic: {} }, { pic: sc.pic })).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = fig => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + 30, w / 2, h / 2) }; }); };
+
+
+const g = G4Game({ ch: 'eg4u6', logo: '👗', title: ['Wanda’s Hundred Dresses', 'فساتين واندا المائة'], sub: ['Unit 6 · The Hundred Dresses', 'الوحدة 6 · الفساتين المائة'],
+  bg: 'english/assets/bg_eg4u6.svg', bgc: '#fbe3e8', label: ['The story of Wanda, her drawings, and kindness', 'قصة واندا ورسوماتها واللطف'], render, view: [VW, VH] });
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr, reveal) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: reveal || (() => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } }) });
+}
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortPics(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('scene', { img: 'bg_eg4u6_wall.jpg' });
+  g.say(T('Welcome to the story of the hundred dresses! First, meet the characters.', P('أهلًا في قصة الفساتين المائة! الأول، اتعرّف على الشخصيات.')), 'wave');
+  await g.next();
+  await tapIt('chars4', 'cWanda', 'Wanda is a quiet girl. She always wears the same faded blue dress. Tap <b>Wanda</b>.', 'واندا بنت هادية، دايمًا لابسة نفس الفستان الأزرق الباهت. اضغط عليها.', 'Braids and a blue dress.', 'ضفاير وفستان أزرق.', 'This is Wanda.');
+  await tapIt('chars4', 'cMason', 'Miss Mason is the teacher. Tap <b>Miss Mason</b>.', 'مس ميسون هي المدرسة. اضغط عليها.', 'She is a grown-up.', 'هي الكبيرة.', 'This is Miss Mason.');
+  await tapIt('chars4', 'cPeggy', 'Peggy is a popular girl with long red hair. Tap <b>Peggy</b>.', 'بيجي بنت مشهورة شعرها أحمر طويل. اضغط عليها.', 'A pink headband.', 'توكة شعر بمبي.', 'This is Peggy.');
+  await tapIt('chars4', 'cMaddie', 'Maddie is Peggy’s friend. Tap <b>Maddie</b>.', 'مادي صاحبة بيجي. اضغط عليها.', 'Short blond hair.', 'شعر أصفر قصير.', 'This is Maddie.');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // words
+  set('scene', { img: 'bg_eg4u6_wall.jpg' });
+  g.say(T('Mission 1: story words. Find them!', 'المهمة ١: كلمات القصة. دوّر عليها!'), 'point'); await g.next();
+  await tapIt('dress10', 'dMedal', 'Tap the <b>medal</b>.', 'اضغط على الميدالية.', 'A gold prize on a ribbon.', 'جايزة دهب على شريطة.', 'A medal is a prize given to a winner.');
+  await tapIt('dress10', 'dCloset', 'Tap the <b>closet</b>.', 'اضغط على الدولاب.', 'Clothes are kept in it.', 'بنحط فيه الهدوم.', 'Clothes are lined up in a closet.');
+  await tapIt('dress10', 'dCompetition', 'Tap the <b>competition</b>.', 'اضغط على المسابقة.', 'Children around a gold cup.', 'عيال حوالين كاس دهب.', 'A competition is a contest.');
+  await tapIt('dress10', 'dSign', 'Tap: <b>sign</b>.', 'اضغط على: sign.', 'A hand writes a name.', 'إيد بتكتب اسم.', 'Wanda signed all her drawings.');
+}
+async function mission2() {
+  await ask('card', { photos: ['d6_faded'], lines: ['Wanda always wore the same', '___ blue dress every day.'] }, 'Mission 2: In a small school there was a girl named Wanda. Choose the word.', 'المهمة ٢: في مدرسة صغيرة كان فيه بنت اسمها واندا. اختار الكلمة.', ['faded', 'new', 'expensive'], 'faded', 'Light in color because it is old.', 'لونه فاتح عشان قديم.', `The same ${kw('faded')} blue dress.`, L('the same faded blue dress'));
+  await ask('card', { photos: ['d6_quiet'], lines: ['Wanda sat in the ___', 'of the classroom.'] }, 'She was a quiet girl. Where did she sit?', 'كانت بنت هادية. كانت بتقعد فين؟', ['back', 'front', 'middle'], 'back', 'Far from the board.', 'بعيد عن السبورة.', `She sat in the ${kw('back')} of the classroom.`, L('She sat in the back of the classroom.'));
+  await ask('card', { photos: ['d6_closet'], lines: ['Wanda said she had a ___', 'beautiful dresses at home.'] }, 'How many dresses did she say she had?', 'قالت عندها كام فستان؟', ['hundred', 'two', 'ten'], 'hundred', 'The title of the story.', 'اسم القصة.', `A ${kw('hundred')} dresses, lined up in her closet!`, L('a hundred dresses'));
+}
+async function mission3() {   // playground
+  set('card', { photos: ['d6_playground'], lines: ['“Hey, Wanda, tell us about', 'your hundred dresses!”'] });
+  g.say(T('Mission 3: in the playground, the popular girls laughed at Wanda. Who said this?', 'المهمة ٣: في الحوش، البنات المشهورين ضحكوا على واندا. مين قال كده؟'), 'think');
+  await g.choice({ options: ['Peggy', 'Maddie', 'Miss Mason'], correct: 'Peggy', hint: T('The girl with the pink headband.', 'البنت اللي لابسة التوكة البمبي.'), ok: T(`${kw('Peggy')} said it, and the other girls laughed.`, L('Peggy said it.')) });
+  await ask('card', { photos: ['c6_maddie'], lines: ['Why did Maddie', 'stay quiet?'] }, 'Maddie didn’t like it, but she stayed quiet. Why?', 'مادي مكانتش عاجبها، بس سكتت. ليه؟', ['She was afraid of losing Peggy’s friendship.', 'She liked it.', 'She didn’t hear.'], 'She was afraid of losing Peggy’s friendship.', 'Read p 99.', 'اقرا صفحة ٩٩.', `She was afraid of losing ${kw('Peggy’s friendship')}.`, L('She was afraid of losing Peggy’s friendship.'));
+}
+async function mission4() {   // competition
+  set('scene', { img: 'bg_eg4u6_wall.jpg' });
+  g.say(T('Mission 4: Miss Mason announced the annual drawing competition. Look at the walls!', 'المهمة ٤: مس ميسون أعلنت مسابقة الرسم السنوية. بص على الحيطان!'), 'point'); await g.next();
+  await ask('scene', { img: 'bg_eg4u6_wall.jpg' }, '“I will choose one boy and one girl as ___.”', '“I will choose one boy and one girl as ___.”', ['winners', 'medals', 'walls'], 'winners', 'The people who win.', 'اللي بيكسبوا.', `One boy and one girl as ${kw('winners')}.`, L('one boy and one girl as winners'));
+  await ask('card', { photos: ['d6_drawings'], lines: ['Wanda drew and ___', 'all the drawings.'] }, 'Who made these hundred drawings?', 'مين رسم الرسومات المية دي؟', ['signed', 'sang', 'moved'], 'signed', 'She wrote her name on them.', 'كتبت اسمها عليها.', `Wanda drew and ${kw('signed')} all the drawings.`, L('Wanda drew and signed all the drawings.'));
+  await ask('card', { photos: ['d6_medal'], lines: ['Wanda won, but she wasn’t', 'there to receive her ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['medal', 'letter', 'dress'], 'medal', 'The winner’s prize.', 'جايزة الفايز.', `She wasn’t there to receive her ${kw('medal')}.`, L('her medal'));
+}
+async function mission5() {   // letters
+  set('card', { photos: ['d6_letter'], lines: ['Wanda was absent for several days,', 'but no one noticed.'] });
+  g.say(T('Mission 5: Miss Mason read a letter. Who sent it?', 'المهمة ٥: مس ميسون قرت جواب. مين بعته؟'), 'think');
+  await g.choice({ options: ['Wanda’s dad', 'Wanda’s mom', 'Peggy'], correct: 'Wanda’s dad', hint: T('Not her mom.', 'مش مامتها.'), ok: T(`A letter from ${kw('Wanda’s dad')}: the family moved to the big city.`, L('A letter from Wanda’s dad.')) });
+  await ask('card', { lines: ['Wanda’s hundred dresses', 'were her ___.'] }, 'Peggy and Maddie felt terrible. What did they realize?', 'بيجي ومادي حسّوا بالذنب. فهموا إيه؟', ['drawings', 'real dresses', 'mother’s dresses'], 'drawings', 'Her dreams on paper.', 'أحلامها على الورق.', `They were her ${kw('drawings')}, her dreams on paper.`, L('her drawings'));
+  await ask('card', { photos: ['d6_letter'], lines: ['They wrote her a letter', 'to ___.'] }, 'Why did Peggy and Maddie write to Wanda?', 'بيجي ومادي كتبوا لواندا ليه؟', ['apologize', 'announce', 'win'], 'apologize', 'To say “I’m sorry”.', 'عشان يقولوا آسفين.', `They wrote to ${kw('apologize')}.`, L('to apologize'));
+  await ask('card', { photos: ['c6_wanda'], lines: ['“I want you to keep', 'my ___.”'] }, 'Wanda wrote back. What did she say?', 'واندا ردّت. قالت إيه؟', ['drawings', 'medal', 'closet'], 'drawings', 'Her pictures of dresses.', 'رسومات الفساتين.', `“I want you to keep my ${kw('drawings')}.”`, L('I want you to keep my drawings.'));
+}
+async function mission6() {   // who said
+  const buttons = [{ label: 'Wanda', value: 'w', c: 0 }, { label: 'Peggy', value: 'p', c: 1 }, { label: 'Maddie', value: 'm', c: 2 }, { label: 'Miss Mason', value: 'mm', c: 3 }];
+  const list = [[['“Tell us about your', 'hundred dresses!”'], 'p', 'Peggy said it in the playground.'], [['“I want you to keep', 'my drawings.”'], 'w', 'Wanda wrote it in her letter.'],
+    [['“We need to write to Wanda', 'and apologize.”'], 'm', 'Maddie said it to Peggy.'], [['“I will choose one boy', 'and one girl as winners.”'], 'mm', 'Miss Mason, the teacher, said it.']]
+    .map(([lines, ans, why]) => ({ lines, ans, why }));
+  await sortPics(T('Mission 6: who said this?', 'المهمة ٦: مين قال كده؟'), buttons, list);
+}
+async function mission7() {   // elements
+  set('card', { lines: ['Setting · Characters · Moral'] });
+  g.say(T('Mission 7: story elements.', 'المهمة ٧: عناصر القصة.'), 'point'); await g.next();
+  await ask('card', { lines: ['Where does the story', 'take place?'] }, 'What is the setting?', 'المكان فين؟', ['the school', 'a forest', 'a museum'], 'the school', 'Where Wanda and the girls meet.', 'المكان اللي فيه واندا والبنات.', `The setting is ${kw('the school')}.`, L('The setting is the school.'));
+  await ask('card', { lines: ['What is the moral?'] }, 'The moral is the lesson of the story.', 'العبرة هي الدرس اللي بنتعلمه.', ['We shouldn’t judge others by their appearance.', 'Learn from the mistakes of others.', 'Always build strong houses.'], 'We shouldn’t judge others by their appearance.', 'They laughed at Wanda because of her old dress.', 'ضحكوا على واندا عشان فستانها القديم.', `${kw('We shouldn’t judge others by their appearance.')}`, L('We shouldn’t judge others by their appearance.'), () => { sc.lines = ['We shouldn’t judge others', 'by their appearance.']; g.paint(); });
+  await ask('card', { photos: ['d6_faded'], lines: ['Your friend laughs at a classmate', 'who wears old clothes.'] }, 'What will you do?', P('هتعمل إيه؟', 'هتعملي إيه؟'), ['Tell the teacher.', 'Laugh with your friend.', 'Ignore it and walk away.'], 'Tell the teacher.', 'Speak up when there is bullying.', 'اتكلم لما يكون فيه تنمّر.', `${kw('Tell the teacher')} about the situation.`, L('Tell the teacher about the situation.'));
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); await mission7(); }
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: [] });
+  const buttons = [{ label: 'True ✓', value: 't', c: 0 }, { label: 'False ✗', value: 'f', c: 2 }];
+  const items = [['Wanda drew 100 dresses.', 't'], ['Wanda had 100 real dresses.', 'f'], ['Peggy was kind to Wanda.', 'f'], ['Maddie stayed quiet.', 't'], ['Miss Mason is the teacher.', 't'],
+    ['Wanda’s mom sent a letter.', 'f'], ['Wanda moved to a big city.', 't'], ['The girls sent an email.', 'f'], ['Wanda won the competition.', 't'], ['Wanda got her medal.', 'f']]
+    .map(([t, ans]) => ({ t, ans, why: ans === 't' ? 'True.' : 'False.' }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('True or false?', 'صح ولا غلط؟'), intro: T('Speed Round! True or false? Be quick!', 'جولة السرعة! صح ولا غلط؟ بسرعة!'), think: T('True or false?', 'صح ولا غلط؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Read the story of Wanda and her hundred dresses: the playground, the drawing competition and the letters. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! اقرا قصة واندا وفساتينها المية: الحوش ومسابقة الرسم والجوابات. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('Kindness matters more than expensive clothes. Next, try the questions of this unit.', 'اللطف أهم من الهدوم الغالية. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-11', title: 'English Grade 4 · Units 5 and 6 are open (all of term 1)',
+    items: [
+      { text: 'Unit 5 A Day at Work: 28 ideas / 138 questions, game Job Helpers' },
+      { text: 'Unit 6 The Hundred Dresses + Review 2: 25 ideas / 99 questions, game Wanda’s Hundred Dresses' },
+      { text: 'Pictures made by the owner with Gemini', links: [{ label: 'Job Helpers', href: 'english-jobs.html', ch: 'eg4u5' }, { label: 'Wanda’s Hundred Dresses', href: 'english-dresses.html', ch: 'eg4u6' }] }
+    ] },
   { date: '2026-11-11', title: 'English Grade 4 · Units 3 and 4 are open',
     items: [
       { text: 'Unit 3 Animals in Our World: 28 ideas / 131 questions, game Forest Park Guide' },

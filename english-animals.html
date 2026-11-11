@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261111b">
+<link rel="stylesheet" href="game_kit.css?v=20261111c">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Forest Park Guide.</noscript>
-<script src="firebase-config.js?v=20261111b"></script>
-<script src="chapters.js?v=20261111b"></script>
-<script src="common.js?v=20261111b"></script>
-<script src="english/g4_art.js?v=20261111b"></script>
-<script src="game_kit.js?v=20261111b"></script>
+<script src="firebase-config.js?v=20261111c"></script>
+<script src="chapters.js?v=20261111c"></script>
+<script src="common.js?v=20261111c"></script>
+<script src="english/g4_art.js?v=20261111c"></script>
+<script src="game_kit.js?v=20261111c"></script>
 <script>
 (() => {
 'use strict';
@@ -167,7 +167,7 @@ async function stage2() { await mission1(); await mission2(); await mission3(); 
 
 /* ---------- Stage 3 · Speed Round ---------- */
 async function stage3() {
-  set('card', { lines: ['+er · +r · double · y → ier'] });
+  set('card', { lines: [] });
   const buttons = [{ label: '+er', value: 'er', c: 0 }, { label: '+r', value: 'r', c: 1 }, { label: 'double +er', value: 'dbl', c: 2 }, { label: 'y → ier', value: 'ier', c: 3 }];
   const W = { er: ['short', 'shorter'], er2: ['clean', 'cleaner'], er3: ['tall', 'taller'], er4: ['cold', 'colder'], er5: ['small', 'smaller'], er6: ['fast', 'faster'], r: ['safe', 'safer'], dbl: ['big', 'bigger'], ier: ['healthy', 'healthier'], ier2: ['lazy', 'lazier'] };
   const items = Object.keys(W).map(k => ({ t: W[k][0], ans: k.replace(/\d/, ''), why: `${W[k][0]} → ${W[k][1]}` }));

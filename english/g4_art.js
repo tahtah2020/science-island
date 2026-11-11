@@ -116,7 +116,7 @@
 
   /* ================= Units 3 and 4 · the owner's pictures ================= */
   const IMG = id => `english/assets/${id}.webp`;
-  const pimg = (id, x, y, s) => `<image href="${IMG(id)}" x="${f1(x - s / 2)}" y="${f1(y - s / 2)}" width="${f1(s)}" height="${f1(s)}" preserveAspectRatio="xMidYMid meet"/>`;
+  const pimg = (id, x, y, s) => id.startsWith('txt:') ? `<text x="${f1(x)}" y="${f1(y + s * .32)}" text-anchor="middle" font-family="${FONT}" font-size="${f1(s * .9)}" font-weight="900" fill="#f2b134" stroke="#c98a14" stroke-width="3">${id.slice(4)}</text>` : `<image href="${IMG(id)}" x="${f1(x - s / 2)}" y="${f1(y - s / 2)}" width="${f1(s)}" height="${f1(s)}" preserveAspectRatio="xMidYMid meet"/>`;
   const PH = {   // id -> [file, screen-reader description (never the answer word when it is asked), tint]
     lion: ['a4_lion', 'a yellow animal with a big mane', '#fbefd2'], monkey: ['a4_monkey', 'a small brown animal with a curly tail', '#f3e6d6'], elephant: ['a4_elephant', 'a big gray animal with a trunk', '#e4ecf3'],
     giraffe: ['a4_giraffe', 'a tall spotted animal with a long neck', '#fbf1d6'], zebra: ['a4_zebra', 'a black and white striped animal', '#eceef2'], bear: ['a4_bear', 'a big brown animal with thick fur', '#f1e4d8'],
@@ -132,6 +132,22 @@
     library: ['e4_library', 'a room with shelves of books', '#fbf3d6'], school: ['e4_school', 'a building with children and school bags', '#e1effb'], mall: ['e4_mall', 'a glass building with shopping bags', '#e4f3f8'],
     post: ['e4_post', 'a green building with a mailbox, letters and a parcel', '#e2f4dc'], hospital: ['e4_hospital', 'a building with a red crescent and an ambulance', '#fbe9e9'], cmuseum: ['e4_cmuseum', 'a building with an old statue in front', '#fbeedd'],
     pBear: ['pb_bear', 'a brown bear', '#f1e4d8'], pPear: ['pb_pear', 'a green pear', '#eef6dc'], pPin: ['pb_pin', 'a pin with a red head', '#fbe9e9'], pBin: ['pb_bin', 'a green trash bin', '#e2f4dc'],
+    jDoctor: ['j5_doctor', 'a man in a white coat with a stethoscope', '#e4f3f8'], jNurse: ['j5_nurse', 'a woman in a light blue uniform and cap', '#e1effb'], jTeacher: ['j5_teacher', 'a woman with a pointer and a green board', '#e8f6e2'],
+    jEngineer: ['j5_engineer', 'a woman in a yellow helmet and vest', '#fbf3d6'], jFirefighter: ['j5_firefighter', 'a man in a dark uniform with yellow stripes and a red helmet', '#fbe9e9'], jPolice: ['j5_police', 'a man in a white uniform and a dark cap', '#eef0f6'],
+    jMentor: ['j5_mentor', 'a woman helping a girl with a notebook', '#f1e8fb'], jPhoto: ['j5_photographer', 'a man with a big camera and a lion far away', '#e8f6e2'], jPuppets: ['j5_puppets', 'a woman with hand puppets and children', '#fbe3e8'],
+    jVoice: ['j5_voice', 'a man with headphones and a microphone', '#e1effb'], jCarpenter: ['j5_carpenter', 'a man with a hammer making a wooden chair', '#fbeedd'], jGift: ['j5_gift', 'a box with a ribbon', '#fbf3d6'],
+    hStrong: ['h5_strong', 'a neat wooden house', '#e8f6e2'], hWeak: ['h5_weak', 'a crooked broken wooden house', '#fbe9e9'], hFurniture: ['h5_furniture', 'a wooden chair and table', '#fbeedd'],
+    hKeys: ['h5_keys', 'three keys on a ring', '#fbf3d6'], hHammer: ['h5_hammer', 'a hammer and nails', '#eef0f6'], hBoards: ['h5_boards', 'three wooden boards', '#fbeedd'],
+    seCube: ['se_cube', 'a red box shape', '#fbe9e9'], seSlide: ['se_slide', 'a blue playground slide', '#e1effb'], seStone: ['se_stone', 'a gray rock', '#eef0f6'], seGate: ['se_gate', 'a wooden garden door', '#e8f6e2'],
+    seFace: ['se_face', 'a smiling girl', '#fbe3e8'], seRope: ['se_rope', 'a coiled rope', '#fbeedd'], seFlute: ['se_flute', 'a boy playing music', '#e8f6e2'], sePlate: ['se_plate', 'a white dish', '#e4ecf3'], seNine: ['txt:9', 'a big yellow number', '#fbf3d6'],
+    fTruck: ['f5_truck', 'a red truck with a ladder', '#fbe9e9'], fHose: ['f5_hose', 'a rolled tube with a nozzle', '#fbf3d6'], fLadder: ['f5_ladder', 'a metal ladder', '#eef0f6'],
+    fOxygen: ['f5_oxygen', 'a yellow tank with a mask', '#fbf3d6'], fUniform: ['f5_uniform', 'a dark jacket with yellow stripes and a red helmet', '#e4ecf3'], fStation: ['f5_station', 'a red building with a big garage door', '#fbe9e9'],
+    oPaper: ['o5_paper', 'colored paper squares', '#fbf3d6'], oScissors: ['o5_scissors', 'red scissors', '#fbe9e9'], oMarkers: ['o5_markers', 'three markers', '#f1e8fb'], oGlue: ['o5_glue', 'a glue stick', '#e1effb'], oRuler: ['o5_ruler', 'a yellow ruler', '#fbf3d6'], oCoat: ['o5_coat', 'a folded paper white coat', '#e4f3f8'],
+    dDress: ['d6_dress', 'a pink party dress', '#fbe3e8'], dCloset: ['d6_closet', 'an open cupboard full of clothes', '#fbeedd'], dPlayground: ['d6_playground', 'swings, a slide and a green field by a school', '#e8f6e2'],
+    dCompetition: ['d6_competition', 'children cheering around a gold cup', '#fbf3d6'], dDrawings: ['d6_drawings', 'a picture of a dress on an easel', '#f1e8fb'], dMedal: ['d6_medal', 'a gold medal with a red ribbon', '#fbf3d6'],
+    dSign: ['d6_sign', 'a hand writing a name with a pen', '#e4ecf3'], dLetter: ['d6_letter', 'an envelope', '#eef0f6'], dAnnounce: ['d6_announce', 'a boy with a megaphone', '#e1effb'], dWinner: ['d6_winner', 'a happy boy with a medal', '#fbf3d6'],
+    dFaded: ['d6_faded', 'an old pale blue dress with a patch', '#e1effb'], dQuiet: ['d6_quiet', 'a girl sitting alone in a classroom', '#eef0f6'],
+    cWanda: ['c6_wanda', 'a girl with brown braids and a blue dress', '#f1e8fb'], cPeggy: ['c6_peggy', 'a girl with long red hair and a pink headband', '#fbf3d6'], cMaddie: ['c6_maddie', 'a girl with short blond hair', '#e2f4dc'], cMason: ['c6_mason', 'a young woman with her hair tied back', '#e1effb'],
     pPond: ['pb_pond', 'water with lilies', '#e1effb'], pPeak: ['pb_peak', 'the snowy top of a mountain', '#eef0f6'], pPan: ['pb_pan', 'a frying pan', '#eceef2'], pBat: ['pb_bat', 'a flying animal with wings', '#efe8fb']
   };
   function photoGrid(q, ids, w, h, cols, r, label) {
@@ -156,6 +172,23 @@
   const egypt6 = gridFig(['pyramids', 'nile', 'tower', 'siwa', 'museum', 'khan'], 340, 240, 3, 52, 'Six round pictures of famous places in Egypt');
   const city6 = gridFig(['library', 'school', 'mall', 'post', 'hospital', 'cmuseum'], 340, 240, 3, 52, 'Six round pictures of places in a city');
   const pb8 = gridFig(['pBear', 'pPear', 'pPin', 'pBin', 'pPond', 'pPeak', 'pPan', 'pBat'], 340, 190, 4, 38, 'Eight round pictures');
+  const jobs6 = gridFig(['jDoctor', 'jNurse', 'jTeacher', 'jEngineer', 'jFirefighter', 'jPolice'], 340, 240, 3, 52, 'Six round pictures of people at work');
+  const funjobs4 = gridFig(['jMentor', 'jPhoto', 'jPuppets', 'jVoice'], 340, 240, 2, 54, 'Four round pictures of people at work');
+  const house6 = gridFig(['hStrong', 'hWeak', 'hFurniture', 'hKeys', 'hHammer', 'hBoards'], 340, 240, 3, 52, 'Six round pictures from the carpenter story');
+  const silentE9 = gridFig(['seNine', 'seCube', 'seStone', 'seRope', 'seFace', 'seFlute', 'seSlide', 'seGate', 'sePlate'], 340, 260, 3, 42, 'Nine round pictures');
+  const fire6 = gridFig(['fTruck', 'fHose', 'fLadder', 'fOxygen', 'fUniform', 'fStation'], 340, 240, 3, 52, 'Six round pictures of a firefighter’s things');
+  const origami6 = gridFig(['oPaper', 'oScissors', 'oMarkers', 'oGlue', 'oRuler', 'oCoat'], 340, 240, 3, 52, 'Six round pictures of art things');
+  const dress10 = gridFig(['dDress', 'dCloset', 'dPlayground', 'dCompetition', 'dDrawings', 'dMedal', 'dSign', 'dLetter', 'dAnnounce', 'dWinner'], 340, 200, 5, 30, 'Ten round pictures of story words');
+  const chars4 = gridFig(['cWanda', 'cPeggy', 'cMaddie', 'cMason'], 340, 130, 4, 40, 'Four round pictures of the story people');
+  function pens3(q) {   // book Review 2: three pens, the blue one longest (drawn in code: the answer is a length)
+    const pen = (x, len, c) => `<g transform="translate(${x} 20)"><rect x="-9" y="0" width="18" height="${len}" rx="8" fill="${c}" stroke="${INK}" stroke-width="2"/><rect x="-9" y="0" width="18" height="16" rx="6" fill="#fff" stroke="${INK}" stroke-width="2"/><path d="M-9 ${len}L0 ${len + 18}L9 ${len}Z" fill="#f6d7a4" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/></g>`;
+    return wrap(340, 150, 'Three pens: blue, green and red', `<rect width="340" height="150" rx="14" fill="#fbf6e6"/>${pen(110, 104, '#4f86c6')}${pen(170, 78, '#4f9f52')}${pen(230, 56, '#e2603f')}`, q && q.pic && q.pic.plain);
+  }
+  function screens2(q) {   // book Review 2: a computer and a small tablet
+    const s = `<rect width="340" height="150" rx="14" fill="#fbf6e6"/><rect x="60" y="24" width="150" height="92" rx="6" fill="#2a3a4a" stroke="${INK}" stroke-width="2.4"/><rect x="68" y="32" width="134" height="76" fill="#9fd88a"/><path d="M120 116h30l6 16h-42Z" fill="#9aa9b8" stroke="${INK}" stroke-width="2"/>`
+      + `<rect x="246" y="70" width="40" height="58" rx="6" fill="#e2603f" stroke="${INK}" stroke-width="2.4"/><rect x="251" y="76" width="30" height="44" fill="#f6d7a4"/>`;
+    return wrap(340, 150, 'A computer and a small tablet', s, q && q.pic && q.pic.plain);
+  }
   function photo(q) {   // one to three pictures side by side for a single question
     const src = (q && q.pic && q.pic.src) || [], n = src.length || 1, w = 340, h = 150, gx = w / n;
     let s = `<rect width="${w}" height="${h}" rx="14" fill="#fbf6e6"/>`;
@@ -226,6 +259,6 @@
     return wrap(w, h, 'Animal footprints on the sand in front of a cave', s, q && q.pic && q.pic.plain);
   }
 
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { fiveSenses, helping6, fvWords, animals6, actions6, care6, story3, blends6, egypt6, city6, pb8, photo, prepBox, livingRoom, prepScene, bigNum, footprints });
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { fiveSenses, helping6, fvWords, animals6, actions6, care6, story3, blends6, egypt6, city6, pb8, photo, prepBox, livingRoom, prepScene, bigNum, footprints, jobs6, funjobs4, house6, silentE9, fire6, origami6, dress10, chars4, pens3, screens2 });
   window.E4ART = { D, POS, TINT, R, NAMES, at, hot, ringEl, INK, f1, esc, FONT, C, CNAMES, CTINT, W8, WNAMES, WTINT, head, PH, pimg, IMG, kitten, kittenHead, box };
 })();

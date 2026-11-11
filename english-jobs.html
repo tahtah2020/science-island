@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Helpers · A Day at Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261111c">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Job Helpers.</noscript>
+<script src="firebase-config.js?v=20261111c"></script>
+<script src="chapters.js?v=20261111c"></script>
+<script src="common.js?v=20261111c"></script>
+<script src="english/g4_art.js?v=20261111c"></script>
+<script src="game_kit.js?v=20261111c"></script>
+<script>
+(() => {
+'use strict';
+/* Job Helpers · the game of English Grade 4, Unit 5 "A Day at Work" (ministry book "English Primary 4", term 1). Built on the shared game kit.
+   Pictures: the owner's Gemini pictures (english/assets/j5_*, h5_*, se_*, f5_*, o5_*.webp, bg_eg4u5_houses.jpg, bg_eg4u5_fire.jpg, 11 Nov 2026);
+   the pens and screens for superlatives are drawn in code. The scene is set before every question and never shows the answer word.
+   Stage 1 (Warm Up): tap the jobs (lesson 1, p 80).
+   Stage 2 (Missions): 1 what do they wear? (pp 80-82) · 2 what do they do? (pp 81-82) · 3 four amazing jobs (lesson 2, p 83)
+                       4 superlatives (p 85, Review 2) · 5 the last house (lesson 3, pp 86-88) · 6 silent e long vowels (p 89)
+                       7 heroes who fight fires (lesson 4, p 90) · 8 origami art (lesson 5, p 92).
+   Stage 3 (Speed Round): which superlative rule? (p 85). */
+const T = SI.T, G = SI.G, E = E4ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const IMG = f => `english/assets/${f}`;
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const photoBox = (f, x, y, s) => `<rect x="${x - s / 2}" y="${y - s / 2}" width="${s}" height="${s}" rx="20" fill="#fff" stroke="#d8c9a6" stroke-width="2.4"/><image href="${IMG(f + '.webp')}" x="${x - s * .45}" y="${y - s * .45}" width="${s * .9}" height="${s * .9}" preserveAspectRatio="xMidYMid meet"/>`;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += photoBox(ph[0], 170, 82, 136);
+  if (ph.length === 2) s += photoBox(ph[0], 92, 82, 132) + photoBox(ph[1], 248, 82, 132);
+  s += `<rect x="14" y="${top + 14}" width="312" height="${VH - top - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = top + (VH - top) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'scene') return `<image href="${IMG(sc.img)}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (m === 'grid') return bg() + `<g transform="translate(0 30)">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'fig') return bg() + `<g transform="translate(0 ${sc.dy || 40})">${D[sc.fig](Object.assign({ pic: {} }, { pic: sc.pic })).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = fig => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + 30, w / 2, h / 2) }; }); };
+
+
+const g = G4Game({ ch: 'eg4u5', logo: '🧑‍🚒', title: ['Job Helpers', 'أبطال الوظائف'], sub: ['Unit 5 · A Day at Work', 'الوحدة 5 · يوم في العمل'],
+  bg: 'english/assets/bg_eg4u5.svg', bgc: '#e1effb', label: ['Jobs, uniforms, superlatives, the carpenter story, the fire station and origami', 'الوظائف والزي الرسمي وصيغة التفضيل وقصة النجار ومحطة الإطفاء والأوريجامي'], render, view: [VW, VH] });
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr, reveal) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: reveal || (() => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } }) });
+}
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortPics(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('scene', { img: 'bg_eg4u5_fire.jpg' });
+  g.say(T('Welcome to Job Helpers! Ms. Hala’s students are talking about what they want to be when they grow up. Let’s meet the jobs!', P('أهلًا في أبطال الوظائف! تلاميذ مس هالة بيتكلموا عن نفسهم يبقوا إيه لما يكبروا. يلّا نتعرّف على الوظائف!')), 'wave');
+  await g.next();
+  await tapIt('jobs6', 'jDoctor', 'Tap the <b>doctor</b>.', 'اضغط على الدكتور (doctor).', 'A white coat and a stethoscope.', 'بالطو أبيض وسماعة.', 'This is the doctor.');
+  await tapIt('jobs6', 'jFirefighter', 'Tap the <b>firefighter</b>.', 'اضغط على رجل الإطفاء (firefighter).', 'A red helmet.', 'خوذة حمرا.', 'This is the firefighter.');
+  await tapIt('jobs6', 'jEngineer', 'Tap the <b>engineer</b>.', 'اضغط على المهندسة (engineer).', 'A yellow helmet and a vest.', 'خوذة صفرا وسترة.', 'This is the engineer.');
+  await tapIt('jobs6', 'jPolice', 'Tap the <b>police officer</b>.', 'اضغط على الضابط (police officer).', 'A dark cap.', 'كاب غامق.', 'This is the police officer.');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // wear
+  set('scene', { img: 'bg_eg4u5_fire.jpg' });
+  g.say(T('Mission 1: What do they wear?', 'المهمة ١: بيلبسوا إيه؟'), 'point'); await g.next();
+  const v = [['j5_doctor', ['A doctor wears a ___.'], ['white coat', 'red helmet', 'yellow vest'], 'white coat', 'Sara says: I wear a white…', 'سارة بتقول: بلبس بالطو أبيض…'],
+    ['j5_engineer', ['An engineer wears', 'a yellow ___.'], ['helmet', 'coat', 'cap'], 'helmet', 'It protects the head.', 'بتحمي الراس.'],
+    ['j5_firefighter', ['A firefighter wears', 'a blue uniform and a ___.'], ['red helmet', 'white coat', 'yellow vest'], 'red helmet', 'Look at the picture.', 'بص على الصورة.'],
+    ['j5_nurse', ['A nurse wears', 'a blue uniform and a ___.'], ['cap', 'red helmet', 'yellow helmet'], 'cap', 'Not a helmet.', 'مش خوذة.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the answer.', 'اختار الإجابة.', opts, ans, hEn, hAr, lines.join(' ').replace('___', kw(ans)), L(lines.join(' ').replace('___', ans)));
+}
+async function mission2() {   // do
+  set('scene', { img: 'bg_eg4u5_fire.jpg' });
+  g.say(T('Mission 2: What do they do at their job?', 'المهمة ٢: بيعملوا إيه في شغلهم؟'), 'point'); await g.next();
+  const v = [['j5_engineer', ['An engineer ___', 'new buildings.'], ['designs', 'saves', 'checks'], 'designs', 'Ali says: I design…', 'علي بيقول: I design…'],
+    ['j5_doctor', ['A doctor ___ the health', 'of sick people.'], ['checks', 'designs', 'stops'], 'checks', 'He looks to see if they are well.', 'بيكشف عليهم.'],
+    ['j5_firefighter', ['A firefighter stops', 'fires and ___ people.'], ['saves', 'designs', 'teaches'], 'saves', 'He helps people in danger.', 'بيساعد الناس اللي في خطر.'],
+    ['j5_police', ['A police officer ___', 'the people.'], ['protects', 'designs', 'teaches'], 'protects', 'He keeps people safe.', 'بيحافظ على أمان الناس.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, lines.join(' ').replace('___', kw(ans)), L(lines.join(' ').replace('___', ans)));
+}
+async function mission3() {   // amazing jobs
+  set('scene', { img: 'bg_eg4u5_fire.jpg' });
+  g.say(T('Mission 3: four amazing jobs!', 'المهمة ٣: أربع وظايف مدهشة!'), 'point'); await g.next();
+  await tapIt('funjobs4', 'jPhoto', 'Amr takes pictures of wild animals. Tap the <b>wildlife photographer</b>.', 'عمرو بيصوّر الحيوانات البرية. اضغط على المصوّر.', 'Look for a camera.', 'دوّر على الكاميرا.', 'Amr is a wildlife photographer.');
+  await tapIt('funjobs4', 'jVoice', 'Adel makes voices for cartoons. Tap the <b>voice-over actor</b>.', 'عادل بيعمل أصوات للكرتون. اضغط عليه.', 'Look for a microphone.', 'دوّر على الميكروفون.', 'Adel is a voice-over actor.');
+  await ask('card', { photos: ['j5_mentor'], lines: ['How does Noha help', 'shy students?'] }, 'Noha is a mentor. Choose the answer.', 'نهى مرشدة. اختار الإجابة.', ['She helps them become brave.', 'She takes their pictures.', 'She makes puppets.'], 'She helps them become brave.', '“I help shy students become…”', '«بساعد التلاميذ الخجولين يبقوا…»', `She helps them become ${kw('brave')}.`, L('She helps them become brave.'));
+  await ask('card', { photos: ['j5_photographer'], lines: ['Amr has a safe job.', 'True or false?'] }, 'True or false?', 'صح ولا غلط؟', ['False', 'True'], 'False', 'Everyone says his job is really dangerous.', 'الكل بيقول شغله خطير.', `${kw('False')}: his job is dangerous.`, L('False: his job is dangerous.'));
+}
+async function mission4() {   // superlatives
+  set('card', { lines: ['tall → the tallest', 'big → the biggest', 'nice → the nicest', 'happy → the happiest'] });
+  g.say(T('Mission 4: superlatives show the greatest degree of something.', 'المهمة ٤: صيغة التفضيل بتوضّح أعلى درجة في حاجة.'), 'point'); await g.next();
+  const v = [[['This tree is the ___', 'tree in the park. (tall)'], ['tallest', 'taller', 'tallist'], 'tallest', 'Add -est.', 'نزود est.'],
+    [['I find the ___ lions. (big)'], ['biggest', 'bigest', 'bigger'], 'biggest', 'Double the g.', 'نكرر حرف g.'],
+    [['Mona is the ___ friend', 'I have. (nice)'], ['nicest', 'niceest', 'nicer'], 'nicest', 'nice ends in -e: add -st.', 'nice آخرها e: نزود st.'],
+    [['Nora is the ___ girl', 'in the class. (happy)'], ['happiest', 'happyest', 'happier'], 'happiest', 'y becomes -iest.', 'y تبقى iest.']];
+  for (const [lines, opts, ans, hEn, hAr] of v) await ask('card', { lines }, 'Choose the superlative.', 'اختار صيغة التفضيل.', opts, ans, hEn, hAr, lines.join(' ').replace('___', kw(ans)), L(lines.join(' ').replace('___', ans)));
+  await ask('fig', { fig: 'pens3', pic: {}, dy: 70 }, 'The blue pen is ___.', 'The blue pen is ___.', ['the longest', 'the shortest', 'longer'], 'the longest', 'Compare the three pens.', 'قارن بين الأقلام التلاتة.', `The blue pen is ${kw('the longest')}.`, L('The blue pen is the longest.'));
+}
+async function mission5() {   // the last house
+  set('scene', { img: 'bg_eg4u5_houses.jpg' });
+  g.say(T('Mission 5: Story time! Sami was a skilled carpenter. For many years he built strong houses and beautiful furniture. Then he grew tired…', 'المهمة ٥: وقت القصة! سامي كان نجّار ماهر. سنين طويلة بنى بيوت قوية وعفش جميل. وبعدين تعب…'), 'point'); await g.next();
+  await ask('scene', { img: 'bg_eg4u5_houses.jpg' }, 'What did the village king ask Sami to do?', 'ملك القرية طلب من سامي يعمل إيه؟', ['Build one last house', 'Stop building', 'Leave the village'], 'Build one last house', 'It will be his final gift to the village.', 'هتبقى آخر هدية للقرية.', `“Please ${kw('build one last house')}.”`, L('Please build one last house.'));
+  await ask('card', { photos: ['h5_weak'], lines: ['Sami used ___ wood.'] }, 'His heart was not in it. Look at the house.', 'قلبه مكانش في الشغل. بص على البيت.', ['weak', 'strong', 'new'], 'weak', 'The windows didn’t fit; the doors were crooked.', 'الشبابيك مش مظبوطة والأبواب معوّجة.', `He used ${kw('weak')} wood.`, L('He used weak wood.'));
+  await ask('card', { photos: ['h5_keys'], lines: ['“This house is for ___,', 'Sami.”'] }, 'Sami gave the keys to the king. What did the king say?', 'سامي إدّى المفاتيح للملك. الملك قال إيه؟', ['you', 'me', 'the village'], 'you', 'It’s a gift for all his wonderful work.', 'هدية على كل شغله الحلو.', `“This house is for ${kw('you')}, Sami.”`, L('This house is for you, Sami.'));
+  await ask('scene', { img: 'bg_eg4u5_houses.jpg' }, 'How did Sami feel?', 'سامي حس بإيه؟', ['Shocked and full of regret', 'Very happy', 'Bored'], 'Shocked and full of regret', 'His face turned red.', 'وشه احمر.', `He felt ${kw('regret')}.`, L('He felt regret.'));
+  await ask('card', { photos: ['h5_hammer'], lines: ['The story teaches us to…'] }, 'What is the lesson?', 'إيه الدرس؟', ['always do our best', 'stop when tired', 'use weak wood'], 'always do our best', 'Sami promised to always give his…', 'سامي وعد إنه دايمًا يدّي…', `${kw('Always do our best')}, even when no one is watching.`, L('Always do our best.'));
+}
+async function mission6() {   // silent e
+  const buttons = [{ label: 'a_e', value: 'a', c: 0 }, { label: 'i_e', value: 'i', c: 1 }, { label: 'o_e', value: 'o', c: 2 }, { label: 'u_e', value: 'u', c: 3 }];
+  const list = [['se_face', 'face', 'a'], ['se_gate', 'gate', 'a'], ['se_slide', 'slide', 'i'], ['se_rope', 'rope', 'o'], ['se_stone', 'stone', 'o'], ['se_cube', 'cube', 'u'], ['se_flute', 'flute', 'u']]
+    .map(([f, w, v]) => ({ photos: [f], lines: [w], ans: v, why: `“${w}” has a long ${v} with a silent e.` }));
+  set('card', { lines: ['rope · slide'] });
+  await sortPics(T('Mission 6: a silent “e” at the end makes the vowel before it long, like “rope” and “slide”. Which long vowel is in each word?', 'المهمة ٦: حرف e الصامت في الآخر بيخلي الحرف المتحرك اللي قبله طويل، زي rope وslide. كل كلمة فيها أي حرف طويل؟'), buttons, list);
+}
+async function mission7() {   // fire
+  set('scene', { img: 'bg_eg4u5_fire.jpg' });
+  g.say(T('Mission 7: Omar is a firefighter at the local fire station. He uses special tools to fight fires and save people.', 'المهمة ٧: عمر رجل إطفاء في محطة الإطفاء. بيستخدم أدوات خاصة عشان يطفي الحريق وينقذ الناس.'), 'point'); await g.next();
+  await tapIt('fire6', 'fHose', 'Tap the <b>water hose</b>.', 'اضغط على خرطوم المية.', 'Water comes out of it.', 'المية بتطلع منه.', 'He uses a long water hose to stop fires.');
+  await tapIt('fire6', 'fOxygen', 'Tap the <b>oxygen tank</b>.', 'اضغط على أنبوبة الأكسجين.', 'A yellow tank with a mask.', 'أنبوبة صفرا وقناع.', 'He uses an oxygen tank.');
+  await ask('scene', { img: 'bg_eg4u5_fire.jpg' }, 'What does Omar like most about his job?', 'عمر بيحب إيه أكتر حاجة في شغله؟', ['Saving lives and protecting the community', 'Driving fast', 'Wearing a helmet'], 'Saving lives and protecting the community', 'Read the last paragraph.', 'اقرا آخر فقرة.', `${kw('Saving lives')} and protecting our community.`, L('Saving lives and protecting our community.'));
+  await ask('card', { lines: ['“My neighbor, Omar, is a firefighter', 'at our local fire station.”'] }, 'In a non-fiction text, what is this sentence?', 'في النص الواقعي، الجملة دي إيه؟', ['an introductory sentence', 'a closing sentence', 'a made-up detail'], 'an introductory sentence', 'It starts the text.', 'بتبدأ بيها النص.', `It is the ${kw('introductory sentence')}.`, L('an introductory sentence'));
+}
+async function mission8() {   // origami
+  set('card', { photos: ['o5_coat'], lines: ['Origami: the art of', 'folding paper'] });
+  g.say(T('Mission 8: origami is the Japanese art of paper folding. What do you need?', 'المهمة ٨: الأوريجامي فن طي الورق الياباني. محتاج إيه؟'), 'point'); await g.next();
+  await tapIt('origami6', 'oScissors', 'Tap the <b>scissors</b>.', 'اضغط على المقص.', 'You cut with them.', 'بنقص بيه.', 'You need scissors.');
+  await tapIt('origami6', 'oMarkers', 'Add details like glasses or a watch. Tap the <b>markers</b>.', 'نزوّد تفاصيل زي النضارة والساعة. اضغط على الألوان.', 'You draw with them.', 'بنرسم بيها.', 'Add details using markers.');
+  await ask('card', { photos: ['o5_paper'], lines: ['Pick colored paper that', 'matches the ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['uniform', 'house', 'lion'], 'uniform', 'A nurse’s origami should be blue, like her clothes.', 'أوريجامي الممرضة يبقى أزرق زي لبسها.', `Pick paper that matches the ${kw('uniform')}.`, L('Pick colored paper that matches the uniform.'));
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); await mission6(); await mission7(); await mission8(); }
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: [] });
+  const buttons = [{ label: '+est', value: 'est', c: 0 }, { label: '+st', value: 'st', c: 1 }, { label: 'double +est', value: 'dbl', c: 2 }, { label: 'y → iest', value: 'ier', c: 3 }];
+  const W = [['tall', 'tallest', 'est'], ['kind', 'kindest', 'est'], ['great', 'greatest', 'est'], ['smart', 'smartest', 'est'], ['nice', 'nicest', 'st'], ['wise', 'wisest', 'st'], ['big', 'biggest', 'dbl'], ['hot', 'hottest', 'dbl'], ['happy', 'happiest', 'ier'], ['funny', 'funniest', 'ier'], ['heavy', 'heaviest', 'ier']];
+  const items = W.map(([a, b, k]) => ({ t: a, ans: k, why: `${a} → the ${b}` }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('Which rule makes the superlative?', 'أي قاعدة بتعمل صيغة التفضيل؟'), intro: T('Speed Round! Which rule makes the superlative? Be quick!', 'جولة السرعة! أي قاعدة بتعمل صيغة التفضيل؟ بسرعة!'), think: T('Which rule?', 'أي قاعدة؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Meet people at work: what they wear and what they do, the carpenter’s last house, the fire station and origami. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! اتعرّف على الناس في شغلهم: بيلبسوا إيه وبيعملوا إيه، وبيت النجار الأخير، ومحطة الإطفاء والأوريجامي. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know jobs and uniforms, superlatives, Sami’s lesson, silent e, firefighters’ tools and origami. Next, try the questions of this unit.', 'بقيت تعرف الوظائف وزيّها وصيغة التفضيل ودرس سامي وحرف e الصامت وأدوات الإطفاء والأوريجامي. بعد كده جرّب أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
