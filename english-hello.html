@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hello, Friends! · Let’s Learn Together!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261112a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Hello, Friends!</noscript>
+<script src="firebase-config.js?v=20261112a"></script>
+<script src="chapters.js?v=20261112a"></script>
+<script src="common.js?v=20261112a"></script>
+<script src="english/g3_art.js?v=20261112a"></script>
+<script src="game_kit.js?v=20261112a"></script>
+<script>
+(() => {
+'use strict';
+/* Hello, Friends! · the game of English Grade 3, Unit 1 "Let’s Learn Together!" (ministry book "English Primary 3", term 1, pp 5-26).
+   Built on the shared game kit. Pictures: the owner's Gemini pictures (english/assets/g3_*.webp, bg_eg3u1_class.jpg, bg_eg3u1_yard.jpg,
+   12 Nov 2026); the clock is drawn in code. The scene is set before every question and never shows the answer word.
+   The steps rise slowly: tap a picture → choose the reply → fill one word → sort words → a timed Speed Round.
+   Stage 1 (Warm Up): tap the greetings (lesson 1, p 6).
+   Stage 2 (Missions): 1 What do you say back? (p 9) · 2 Meet Sara (pp 7-8) · 3 Classroom rules (lesson 2, pp 10-11)
+                       4 “wh” words (p 12) · 5 Describe your friends (lesson 3, pp 13-15) · 6 am, is, are (p 16)
+                       7 Amir’s day (lesson 4, pp 19-22).  ?m=N opens mission N (to check one question quickly).
+   Stage 3 (Speed Round): no -s, +s or +es with he / she / it (p 23). */
+const T = SI.T, G = SI.G, E = E3ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const tintOf = f => { const k = Object.keys(E.PH).find(id => E.PH[id][0] === f); return k ? E.PH[k][2] : ''; };
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += E.tile(ph[0], 170, 80, 138, tintOf(ph[0]));
+  if (ph.length === 2) s += E.tile(ph[0], 92, 80, 134, tintOf(ph[0])) + E.tile(ph[1], 248, 80, 134, tintOf(ph[1]));
+  if (sc.clock) s = bg() + E.tile(sc.clock.src, 100, 80, 134, '') + E.clockFace(250, 82, 54, sc.clock.h);
+  const t = sc.clock ? 150 : top;
+  s += `<rect x="14" y="${t + 14}" width="312" height="${VH - t - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = t + (VH - t) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'scene') return `<image href="english/assets/${sc.img}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (m === 'grid') return bg() + `<g transform="translate(0 ${sc.dy || 30})">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = (fig, dy = 30) => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + dy, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg3u1', logo: '👋', title: ['Hello, Friends!', 'أهلًا يا أصحاب'], sub: ['Unit 1 · Let’s Learn Together!', 'الوحدة 1 · هيا نتعلم معًا!'],
+  bg: 'english/assets/bg_eg3u1.svg', bgc: '#efe3fb', label: ['Greetings, classroom rules, wh words, describing people and daily routines', 'التحية وقواعد الفصل وكلمات wh ووصف الأشخاص والروتين اليومي'], render, view: [VW, VH] });
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } } });
+}
+const line = (lines, ans) => lines.join(' ').replace('___', ans);
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig, dy: fig === 'routine8' || fig === 'daily8' ? 60 : fig.endsWith('3') ? 85 : 30 });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig, sc.dy), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortCards(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('scene', { img: 'bg_eg3u1_yard.jpg' });
+  g.say(T('Welcome to Hello, Friends! It is the first day at school. Let’s meet new friends and say hello!', P('أهلًا في «أهلًا يا أصحاب»! النهارده أول يوم في المدرسة. يلّا نتعرّف على أصحاب جداد ونقول hello!')), 'wave');
+  await g.next();
+  await tapIt('greet6', 'gHello', 'Tap the boy who says “<b>Hello!</b>”', 'اضغط على الولد اللي بيقول Hello.', 'He waves his hand. He is not going away.', 'بيشاور بإيده ومش ماشي.', 'He says “Hello!”');
+  await tapIt('greet6', 'gMorning', 'Tap the children who say “<b>Good morning!</b>”', 'اضغط على الأطفال اللي بيقولوا Good morning.', 'Look for the sun coming up.', 'دوّر على الشمس وهي طالعة.', 'They say “Good morning!”');
+  await tapIt('greet6', 'gBye', 'Tap the boy who says “<b>Goodbye!</b>”', 'اضغط على الولد اللي بيقول Goodbye.', 'He has his bag and he is going away.', 'معاه شنطته وماشي.', 'He says “Goodbye!”');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // responses, p 9
+  set('scene', { img: 'bg_eg3u1_yard.jpg' });
+  g.say(T('Mission 1: your friends talk to you. What do you say back?', 'المهمة ١: أصحابك بيكلموك. ترد تقول إيه؟'), 'point'); await g.next();
+  await ask('card', { photos: ['g3_morning'], lines: ['“Good morning, Rana!”'] }, 'What does Rana say back?', 'رنا ترد تقول إيه؟', ['Good morning!', 'Good night!', 'Goodbye!'], 'Good morning!', 'Look at the sun. Say the same words back.', 'بص على الشمس، وقول نفس الكلام.', `Rana says ${kw('Good morning!')}`, L('Good morning!'));
+  await ask('card', { photos: ['g3_fine'], lines: ['“Hello, Sami.', 'How are you?”'] }, 'What does Sami say?', 'سامي يرد يقول إيه؟', ['I’m fine, thank you.', 'See you later!', 'How are you?'], 'I’m fine, thank you.', 'Sami tells how he is.', 'سامي بيقول هو عامل إيه.', `Sami says ${kw('I’m fine, thank you.')}`, L('I’m fine, thank you.'));
+  await ask('card', { photos: ['g3_meet'], lines: ['“Nice to meet you, Nada!”'] }, 'What does Nada say?', 'ندى ترد تقول إيه؟', ['Nice to meet you, too.', 'Good night!', 'I’m fine, thank you.'], 'Nice to meet you, too.', 'Say it back and add “too”.', 'قول نفس الجملة وزوّد too.', `Nada says ${kw('Nice to meet you, too.')}`, L('Nice to meet you, too.'));
+  await ask('card', { photos: ['g3_goodbye'], lines: ['“See you later!”'] }, 'What do you say back?', 'ترد تقول إيه؟', ['Goodbye!', 'Good morning!', 'Nice to meet you.'], 'Goodbye!', 'Your friend is going away.', 'صاحبك ماشي.', `${kw('Goodbye!')}`, L('Goodbye!'));
+}
+async function mission2() {   // introducing yourself, pp 6-8
+  set('card', { photos: ['g3_intro'], lines: ['Hello! My name is Sara.'] });
+  g.say(T('Mission 2: Sara introduces herself. Help her finish her words.', 'المهمة ٢: سارة بتعرّف بنفسها. ساعدها تكمّل كلامها.'), 'point'); await g.next();
+  const v = [[['My ___ is Sara.'], ['name', 'years', 'from'], 'name', 'Sara is what people call her.', 'سارة هو اسمها.'],
+    [['I am 8 ___ old.'], ['years', 'name', 'Primary'], 'years', '8 is her age.', '٨ هو سنّها.'],
+    [['I am ___ Egypt.'], ['from', 'years', 'name'], 'from', 'Egypt is her country.', 'مصر بلدها.'],
+    [['I am in ___ 3.'], ['Primary', 'years', 'Egypt'], 'Primary', 'It is her class at school.', 'ده صفّها في المدرسة.'],
+    [['Nice to ___ you!'], ['meet', 'fine', 'later'], 'meet', 'She says it to a new friend.', 'بتقولها لصاحبة جديدة.']];
+  for (const [lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: ['g3_intro'], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission3() {   // classroom rules, pp 10-11
+  set('scene', { img: 'bg_eg3u1_class.jpg' });
+  g.say(T('Mission 3: welcome to our classroom! Let’s learn the rules.', 'المهمة ٣: أهلًا في فصلنا! يلّا نتعلم القواعد.'), 'point'); await g.next();
+  await tapIt('rules6', 'rRaise', 'You want to answer. Tap: “<b>Raise your hand.</b>”', 'عايز تجاوب. اضغط على Raise your hand.', 'One hand is up.', 'إيد واحدة مرفوعة.', 'Raise your hand.');
+  await tapIt('rules6', 'rListen', 'The teacher talks. Tap: “<b>Listen carefully.</b>”', 'المدرّسة بتتكلم. اضغط على Listen carefully.', 'Look for a hand near the ear.', 'دوّر على إيد جنب الودن.', 'Listen carefully.');
+  await ask('card', { photos: ['g3_shout'], lines: ['Your friend shouts loudly.', 'Say the rule!'] }, 'Say the rule.', 'قول القاعدة.', ['Don’t shout!', 'Sit down!', 'Raise your hand!'], 'Don’t shout!', 'Shouting is too loud.', 'الزعيق صوته عالي قوي.', `${kw('Don’t shout!')}`, L('Don’t shout!'));
+  await ask('card', { photos: ['g3_clean'], lines: ['Keep your classroom ___.'] }, 'What is he doing? Choose the word.', 'هو بيعمل إيه؟ اختار الكلمة.', ['clean', 'kind', 'shout'], 'clean', 'He puts paper in the bin.', 'بيرمي الورق في السلة.', line(['Keep your classroom ___.'], kw('clean')), L('Keep your classroom clean.'));
+  await ask('card', { photos: ['g3_kind'], lines: ['Be ___.'] }, 'She shares her crayons. Choose the word.', 'بتشارك ألوانها. اختار الكلمة.', ['kind', 'clean', 'loud'], 'kind', 'Sharing is a good thing to do.', 'المشاركة حاجة حلوة.', `Be ${kw('kind')}.`, L('Be kind.'));
+  await ask('card', { photos: ['g3_permit'], lines: ['You need to use the bathroom.', 'What do you say?'] }, 'Ask the teacher politely.', 'اسأل المدرّسة بأدب.', ['May I go to the bathroom?', 'Is it break time?', 'Can I draw?'], 'May I go to the bathroom?', 'Start with “May I…”.', 'ابدأ بـ May I.', `${kw('May I go to the bathroom?')}`, L('May I go to the bathroom?'));
+}
+async function mission4() {   // wh, p 12
+  set('card', { lines: ['what · when · where', 'whale · wheel · white'] });
+  g.say(T('Mission 4: w and h together say /w/. Listen: what, when, where, whale, wheel, white.', 'المهمة ٤: الحرفين w وh مع بعض بيطلعوا صوت /w/. زي what وwhen وwhere وwhale وwheel وwhite.'), 'point'); await g.next();
+  await tapIt('wh3', 'whWhale', 'Tap the <b>whale</b>.', 'اضغط على الحوت (whale).', 'It lives in the sea.', 'بيعيش في البحر.', 'whale');
+  await tapIt('wh3', 'whWheel', 'Tap the <b>wheel</b>.', 'اضغط على العجلة (wheel).', 'It is round. A bicycle has two.', 'مدوّرة، والعجلة اللي بنركبها فيها اتنين.', 'wheel');
+  await ask('card', { photos: ['g3_shirt'], lines: ['My shirt is ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['white', 'whale', 'wheel'], 'white', 'It is a color.', 'ده لون.', line(['My shirt is ___.'], kw('white')), L('My shirt is white.'));
+  const q = [[['___ is your name?'], 'What', 'Your name is a thing you tell.', 'اسمك حاجة بتقولها.'],
+    [['___ do you live?'], 'Where', 'The answer is a place.', 'الإجابة مكان.'],
+    [['“___ are you late?”'], 'Why', 'The teacher wants a reason.', 'المدرّسة عايزة تعرف السبب.']];
+  for (const [lines, ans, hEn, hAr] of q) await ask('card', { lines }, 'Choose the question word.', 'اختار كلمة السؤال.', ['What', 'Where', 'Why'], ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission5() {   // describing people, pp 13-15
+  set('scene', { img: 'bg_eg3u1_yard.jpg' });
+  g.say(T('Mission 5: describe your friends. How do they look? What are they like?', 'المهمة ٥: اوصف أصحابك. شكلهم إيه؟ وطبعهم إيه؟'), 'point'); await g.next();
+  const v = [['g3_curly', ['She has ___ hair.'], ['curly', 'straight', 'short'], 'curly', 'Her hair has lots of round curls.', 'شعرها فيه حلقات كتير.'],
+    ['g3_longhair', ['She has ___ hair.'], ['long', 'short', 'curly'], 'long', 'Her hair goes down to her waist.', 'شعرها نازل لحد وسطها.'],
+    ['g3_tallshort', ['The girl is tall.', 'The boy is ___.'], ['short', 'tall', 'funny'], 'short', 'He is smaller than the girl.', 'هو أصغر من البنت.'],
+    ['g3_funny', ['He makes his friends laugh.', 'He is ___.'], ['funny', 'shy', 'polite'], 'funny', 'Look: everyone laughs.', 'بص: الكل بيضحك.'],
+    ['g3_shy', ['She doesn’t like to talk much.', 'She is ___.'], ['shy', 'funny', 'friendly'], 'shy', 'She hides behind her book.', 'مستخبية ورا الكتاب.'],
+    ['g3_giving', ['She gives her toy to a little boy.', 'She is ___.'], ['kind', 'shy', 'tall'], 'kind', 'She shares.', 'بتشارك اللي معاها.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission6() {   // to be, p 16
+  const buttons = [{ label: 'am', value: 'am', c: 0 }, { label: 'is', value: 'is', c: 1 }, { label: 'are', value: 'are', c: 2 }];
+  const list = [[['I ___ a student.'], 'am', 'I goes with am.'], [['She ___ my sister.'], 'is', 'She goes with is.'], [['He ___ my brother.'], 'is', 'He goes with is.'],
+    [['They ___ my friends.'], 'are', 'They goes with are.'], [['We ___ in the classroom.'], 'are', 'We goes with are.'], [['You ___ very kind.'], 'are', 'You goes with are.']]
+    .map(([lines, ans, why]) => ({ lines, ans, why }));
+  set('card', { lines: ['I am · he / she / it is', 'you / we / they are'] });
+  await sortCards(T('Mission 6: am, is or are? I am. He, she and it: is. You, we and they: are.', 'المهمة ٦: am ولا is ولا are؟ I معاها am، وhe وshe وit معاهم is، وyou وwe وthey معاهم are.'), buttons, list);
+}
+async function mission7() {   // daily routines, pp 19-22
+  set('card', { photos: ['g3_wakeup'], lines: ['Hello, I am Amir.', 'This is my day!'] });
+  g.say(T('Mission 7: Amir tells us about his day. Every day, he wakes up at 6 a.m.', 'المهمة ٧: أمير بيحكي لنا يومه. كل يوم بيصحى الساعة ٦ الصبح.'), 'point'); await g.next();
+  await tapIt('routine8', 'tTeeth', 'Then Amir brushes his teeth. Tap: <b>brush my teeth</b>.', 'بعد كده بيغسل سنانه. اضغط على brush my teeth.', 'Look for a toothbrush.', 'دوّر على فرشة السنان.', 'I brush my teeth.');
+  await tapIt('routine8', 'tDressed', 'Then he gets dressed. Tap: <b>get dressed</b>.', 'بعد كده بيلبس هدومه. اضغط على get dressed.', 'He puts on his shirt.', 'بيلبس القميص.', 'I get dressed.');
+  await ask('card', { photos: ['g3_breakfast'], lines: ['After I have breakfast,', 'I go to ___.'] }, 'What does Amir do after breakfast?', 'أمير بيعمل إيه بعد الفطار؟', ['school', 'bed', 'sleep'], 'school', 'He learns and plays with his friends there.', 'بيتعلم ويلعب مع أصحابه هناك.', line(['After I have breakfast, I go to ___.'], kw('school')), L('After I have breakfast, I go to school.'));
+  await ask('card', { photos: ['g3_homework'], lines: ['After school, I go home', 'and do my ___.'] }, 'What does Amir do after school?', 'أمير بيعمل إيه بعد المدرسة؟', ['homework', 'breakfast', 'bed'], 'homework', 'He writes at his desk.', 'بيكتب على مكتبه.', line(['After school, I go home and do my ___.'], kw('homework')), L('After school, I go home and do my homework.'));
+  await ask('card', { clock: { src: 'g3_wakeup', h: 7 }, lines: ['I wake up at ___ a.m.'] }, 'Look at the clock. When does he wake up?', 'بص على الساعة. هو بيصحى إمتى؟', ['7', '6', '8'], '7', 'The short hand shows the hour.', 'العقرب الصغير بيوري الساعة.', line(['I wake up at ___ a.m.'], kw('7')), L('I wake up at 7 a.m.'));
+}
+const MISSIONS = [mission1, mission2, mission3, mission4, mission5, mission6, mission7];
+async function stage2() {
+  const m = Math.max(1, Math.min(MISSIONS.length, parseInt(new URLSearchParams(location.search).get('m'), 10) || 1));
+  for (let i = m - 1; i < MISSIONS.length; i++) await MISSIONS[i]();
+}
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: ['he · she · it: +s or +es', 'I · you · we · they: no -s'] });
+  const buttons = [{ label: 'no -s', value: 'no', c: 0 }, { label: '+s', value: 's', c: 1 }, { label: '+es', value: 'es', c: 2 }];
+  const W = [['I · play', 'no', 'I play'], ['They · go', 'no', 'They go'], ['We · brush', 'no', 'We brush'], ['You · eat', 'no', 'You eat'],
+    ['He · play', 's', 'He plays'], ['She · wake up', 's', 'She wakes up'], ['It · eat', 's', 'It eats'], ['Judy · read', 's', 'Judy reads'],
+    ['She · go', 'es', 'She goes'], ['He · watch', 'es', 'He watches'], ['Mariam · brush', 'es', 'Mariam brushes']];
+  const items = W.map(([t, ans, why]) => ({ t, ans, why: `${why}.` }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('How does the verb change?', 'الفعل بيتغيّر إزاي؟'),
+    intro: T('Speed Round! With he, she and it we add -s (or -es after ch, sh, o). With I, you, we and they: no -s. Be quick!', 'جولة السرعة! مع he وshe وit بنزوّد s (أو es بعد ch وsh وo). ومع I وyou وwe وthey مفيش s. بسرعة!'),
+    think: T('no -s, +s or +es?', 'من غير s ولا s ولا es؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Say hello to new friends, learn the classroom rules, describe your friends and follow Amir’s day. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! سلّم على أصحاب جداد، واتعلم قواعد الفصل، واوصف أصحابك، وتابع يوم أمير. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can greet friends, follow the classroom rules, read “wh” words, describe people and talk about your day. Next, try the questions of this unit.', 'بقيت تعرف تسلّم على أصحابك، وتمشي على قواعد الفصل، وتقرا كلمات wh، وتوصف الناس، وتحكي يومك. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

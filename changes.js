@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-12', title: 'English Grade 3 · Unit 1 «Let’s Learn Together!»',
+    items: [
+      { text: '32 ideas, 164 questions with a hint each: greetings, classroom rules, wh, describing people, to be, daily routines and present simple' },
+      { text: 'Owner\'s pictures in every lesson; new game Hello, Friends!', links: [{ label: 'Hello, Friends!', href: 'english-hello.html', ch: 'eg3u1' }] }
+    ] },
   { date: '2026-11-11', title: 'English Grade 4 · Units 5 and 6 are open (all of term 1)',
     items: [
       { text: 'Unit 5 A Day at Work: 28 ideas / 138 questions, game Job Helpers' },

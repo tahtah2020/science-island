@@ -129,3 +129,12 @@ build('eg5u5', b5(130, 880, 1.4, 'mapSun') + b5(1010, 270, 1.4, 'mapGem') + b5(2
   `${b5(300, 760, 1.9, 'mapGem')}${b5(760, 770, 1.7, 'mapSun')}${b5(1180, 770, 1.8, 'mapWheat')}${raindrop(520, 810, 2)}`, RES);
 build('eg5u6', b5(130, 880, 1.4, 'crocodile') + b5(1010, 270, 1.4, 'mapOwl') + b5(200, 340, 1.4, 'mapCanoe') + b5(660, 1150, 1.3, 'mapTurtle') + b5(1060, 640, 1.4, 'bird') + reed(1000, 1040, 1.6) + reed(140, 610, 1.3),
   `${b5(300, 760, 1.9, 'mapCanoe')}${b5(760, 770, 1.7, 'crocodile')}${b5(1180, 770, 1.8, 'mapOwl')}${reed(520, 820, 2)}`, GLADES);
+
+/* ---------- grade 3 (owner's pictures, embedded; full-scene pictures are clipped to the circle) ---------- */
+let g3clip = 0;
+const badge3 = (x, y, k, f, tint) => { const id = 'b3c' + (++g3clip), b = fs.readFileSync(path.join(__dirname, '..', 'assets', f + '.webp')).toString('base64');
+  return `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cy="52" rx="46" ry="11" fill="#000" opacity=".08"/><circle r="46" fill="${tint || '#fff'}" stroke="#fff" stroke-width="4"/><clipPath id="${id}"><circle r="44"/></clipPath>`
+    + `<image href="data:image/webp;base64,${b}" x="${tint ? -36 : -46}" y="${tint ? -36 : -46}" width="${tint ? 72 : 92}" height="${tint ? 72 : 92}" preserveAspectRatio="xMidYMid ${tint ? 'meet' : 'slice'}" clip-path="url(#${id})"/><circle r="46" fill="none" stroke="#d8c9a6" stroke-width="2"/></g>`; };
+const CLASS3 = { blobs: ['#efe3fb', '#fbeccf', '#d8efd0', '#e1effb'], land: [[0, '#efe3fb'], [.5, '#e3efc4'], [1, '#fbeccf']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#e6defa', '#fdf3dc', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#cdbdf0'] };
+build('eg3u1', badge3(120, 880, 1.4, 'g3_hello') + badge3(1010, 250, 1.4, 'g3_raise') + badge3(190, 330, 1.4, 'g3_curly', '#fbeedd') + badge3(640, 1150, 1.3, 'g3_whale', '#e1effb') + badge3(1060, 640, 1.4, 'g3_teeth') + badge3(150, 600, 1.2, 'g3_happy', '#fbf3d6'),
+  `${badge3(300, 760, 1.9, 'g3_friendly', '#e1effb')}${badge3(760, 770, 1.7, 'g3_play')}${badge3(1180, 770, 1.8, 'g3_morning')}`, CLASS3);

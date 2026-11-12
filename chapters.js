@@ -549,6 +549,18 @@ window.CHAPTERS = [
   /* English · Grade 4 · Term 1 (ministry book "English Primary 4", 2026/2027). One English book for both tracks:
      the subject's lang is { lang: 'en', ar: 'en' }, so every unit has only a questions file (no _ar file).
      Unit 1 "The Five Senses" (book pages 7-22). Idea letters: A-E (one per lesson). */
+  { id: 'eg3u1', subject: 'english', grade: 'g3', n: 1, title: 'Let’s Learn Together!', titleAr: 'هيا نتعلم معًا!', icon: '👋', tint: '#efe3fb', ready: true, bookOrder: true,
+    lessons: ['Greetings and Introductions', 'Classroom Rules', 'Describing People', 'Daily Routines'],
+    questions: 'english/questions_eg3u1.js', art: 'english/g3_art.js',
+    game: { href: 'english-hello.html', name: 'Hello, Friends!', nameAr: 'أهلًا يا أصحاب', icon: '👋', hint: 'Say hello to new friends, learn the classroom rules, describe your friends and follow Amir’s day, then race the Speed Round!', hintAr: 'سلّم على أصحاب جداد، واتعلم قواعد الفصل، واوصف أصحابك، وتابع يوم أمير، وبعدين جرّب جولة السرعة!' },
+    map: { img: 'english/assets/map_eg3u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'english/assets/map_eg3u1.svg', quizBg: 'english/assets/bg_eg3u1.svg',
+    lessonsAr: ['التحية والتعارف', 'قواعد الفصل', 'وصف الأشخاص', 'الروتين اليومي'] },
+  { id: 'eg3u2', subject: 'english', grade: 'g3', n: 2, title: 'My Family and I', titleAr: 'أسرتي وأنا', icon: '👨‍👩‍👧', tint: '#e1effb', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg3u3', subject: 'english', grade: 'g3', n: 3, title: 'New Adventures', titleAr: 'مغامرات جديدة', icon: '🚉', tint: '#e2f4dc', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg3u4', subject: 'english', grade: 'g3', n: 4, title: 'Let’s Tell Stories!', titleAr: 'هيا نحكي القصص!', icon: '📖', tint: '#fbeedd', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg3u5', subject: 'english', grade: 'g3', n: 5, title: 'Together Is Better', titleAr: 'معًا أفضل', icon: '🤝', tint: '#fbe9ee', ready: false, lessons: [], lessonsAr: [] },
+  { id: 'eg3u6', subject: 'english', grade: 'g3', n: 6, title: 'Dare to Dream', titleAr: 'تجرّأ وأحلم', icon: '🌟', tint: '#fbf3d6', ready: false, lessons: [], lessonsAr: [] },
   { id: 'eg4u1', subject: 'english', grade: 'g4', n: 1, title: 'The Five Senses', titleAr: 'الحواس الخمس', icon: '👀', tint: '#efe3fb', ready: true,
     lessons: ['What are the Five Senses?', 'Healthy Habits', 'Story Time: Goha’s Great Meal', 'Writing: Sequence Words', 'Think and Create: A Presentation'],
     questions: 'english/questions_eg4u1.js', art: 'english/g4_art.js',

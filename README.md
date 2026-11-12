@@ -1,6 +1,6 @@
 # Motafawek (متفوّق)
 
-Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math has started (Grade 4 Units 1 to 4, Grade 5 Units 1 to 5, Grade 6 Units 1 and 2, both tracks), Social Studies has started (Grade 4 Units 1 and 2, Grade 5 Units 1 to 5, Grade 6 Unit 1), English has started (Grade 4 Unit 1, Grade 5 Units 1-6), then Arabic.
+Learning through play for Egyptian school students, Reesho the parrot as the coach. Science is open; Math has started (Grade 4 Units 1 to 4, Grade 5 Units 1 to 5, Grade 6 Units 1 and 2, both tracks), Social Studies has started (Grade 4 Units 1 and 2, Grade 5 Units 1 to 5, Grade 6 Unit 1), English has started (Grade 3 Unit 1, Grade 4 Units 1-6, Grade 5 Units 1-6), then Arabic.
 
 ## Hosting (since 24 Oct 2026)
 - The live site is on **Cloudflare Pages** (project `motafawek`, domain motafawek.com). Since 2 Nov 2026 the Cloudflare project is linked to this GitHub repo: **a push to `main` publishes the site** (confirmed by the owner). No zip upload is needed any more.
@@ -379,6 +379,10 @@ Story games where the maths IS the move (no multiple choice), beside the units; 
   - Exam `eg5oct` (October Monthly Test): lessons 1-3 of each of the three units. The Quick Review, Self-Assessment and Review 1 pages are folded into the matching lessons.
   - Review notes: listening/audio tasks are asked as reading questions; open speaking, writing, drawing and discussion tasks are not asked. Not asked because the book prints no single answer: numbering the Koshari steps (p 18), the "t-o-p" sound ordering (p 33) and the missing-letter tasks "- - uck" (p 57). Page 43 asks "Why can't farmers grow food in the US?" but the dialogue says the drought is in China: skipped. Typos in the book's scope-and-sequence vocabulary ("muscels", "Naitonal") are not used. Page 47 prints "(went)" after "didn't": asked as "go".
   - Grade 5 has used every idea letter A-Z this term (units 1-6).
+- Grade 3 Unit 1 `eg3u1` «Let’s Learn Together!» (12 Nov 2026), book "English Primary 3" Term 1 pp 5-26: 4 lessons (Greetings and Introductions pp 6-9; Classroom Rules + digraph wh pp 10-12; Describing People + verb to be + reading "My friend Mona" pp 13-18; Daily Routines + present simple pp 19-26), ids A-D, 32 ideas / 164 phrasings, a hint on every phrasing, Boss A7, B7, C9, D9, `bookOrder: true`. Units 2-6 are listed (`ready: false`, no lessons yet) from the book's scope and sequence.
+  - Pictures: the owner's Gemini sheets (12 Nov 2026) cut into `english/assets/g3_*.webp` (cut-outs on a pastel tint or whole scenes clipped in rounded tiles), scenes `bg_eg3u1_class.jpg`, `bg_eg3u1_yard.jpg`. The "SCHOOL" word on the school building was painted out (it named the answer "go to school"); the hair-brushing cell was cut to the girl only (its mirror showed a different girl); a duplicate handshake, a blank cell and an "Are you OK?" speech bubble were left out. Drawings in `english/g3_art.js` (self-contained, `window.E3ART`): tap pictures greet6, rules6, wh3, looks5, people6, feel3, routine8, daily8; `photo` (q.pic.src) and `clock` (q.pic.h, drawn in code because the answer is an exact hour).
+  - Game `english-hello.html` (Hello, Friends!): Warm Up = tap the greetings; 7 missions (replies, Sara introduces herself, classroom rules, wh words, describing friends, am/is/are, Amir's day with the clock); Speed Round = no -s, +s or +es; `?m=N` opens mission N. Map and background from `english/tools/make_e_maps.js` (`badge3` clips scene pictures to the circle).
+  - Review notes (open tasks, the p 21 order with no single answer, the word search) are in the header of `english/questions_eg3u1.js`.
 - Other grades' English tab shows "Soon".
 
 ## Adding a subject (Math was the first)

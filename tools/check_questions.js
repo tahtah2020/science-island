@@ -31,6 +31,10 @@ const TAPS = { stretchLengths: ['str5', 'str10', 'str15'], bandCounts: ['band1',
   g3Groups: [], g3Split: [], g3Branch: [], g3Boxes: [], g3Target: [], g3Score: [], g3Clock: [], g3TimeLine: [], g3Stopwatch: [], g3Share: [], g3Tape: [], g3Column: [], g3Measure: [], g3Map: [], g3Tally: [], g3Scale: [], g3Bars: [], g3Table: [], g3Photo: [], g3Story: [], g3Jumps: [], g3Rem: [], g3Place: [], g3Bundles: [], g3NumLine: [],
   /* Math (math/m5_art.js) */
   gridShade: ['gA', 'gB', 'gC'], multVenn: ['mvL', 'mvM', 'mvR'], barModel: [], skipLine: [], areaBox: [], colMul: [], placeTable: ['b1', 'm100', 'm10', 'm1', 't100', 't10', 't1', 'u100', 'u10', 'u1'], placeChart: ['hundreds', 'tens', 'ones', 'tenths', 'hundredths', 'thousandths'], numLine: ['n0', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'n10'],
+  /* English Grade 3 (english/g3_art.js) */
+  greet6: ['gHello', 'gMorning', 'gMeet', 'gFine', 'gBye', 'gIntro'], rules6: ['rRaise', 'rListen', 'rSit', 'rKind', 'rClean', 'rShout'], wh3: ['whWhale', 'whWheel', 'whWhite'],
+  looks5: ['lTall', 'lCurly', 'lLong', 'lShort', 'lEyes'], people6: ['pFunny', 'pShy', 'pFriendly', 'pHelpful', 'pPolite', 'pKind'], feel3: ['fHappy', 'fSad', 'fAngry'],
+  routine8: ['tWake', 'tTeeth', 'tDressed', 'tBed', 'tHair', 'tBreakfast', 'tSchool', 'tHomework'], daily8: ['dSleep', 'dPlay', 'dRead', 'dSchool', 'dWake', 'dWrite', 'dEat', 'dTV'], clock: [],
   /* English (english/g4_art.js) */
   fiveSenses: ['eye', 'ear', 'nose', 'tongue', 'palm'],
   animals6: ['lion', 'monkey', 'elephant', 'giraffe', 'zebra', 'bear'],
