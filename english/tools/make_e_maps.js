@@ -144,3 +144,6 @@ build('eg3u2', badge3(120, 880, 1.4, 'g3_lovefamily') + badge3(1010, 250, 1.4, '
 const TOWN3 = { blobs: ['#e2f4dc', '#fbeedd', '#e1effb', '#fbf3d6'], land: [[0, '#e2f4dc'], [.5, '#f1ead2'], [1, '#e1effb']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#d8ecfb', '#fdf3dc', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#cfe6b8'] };
 build('eg3u3', badge3(120, 880, 1.4, 'g3_library') + badge3(1010, 250, 1.4, 'g3_pyramids') + badge3(190, 330, 1.4, 'g3_lion', '#fbf3d6') + badge3(640, 1150, 1.3, 'g3_duck', '#e1effb') + badge3(1060, 640, 1.4, 'g3_tower') + badge3(150, 600, 1.2, 'g3_bell', '#fbf3d6'),
   `${badge3(300, 760, 1.9, 'g3_park')}${badge3(760, 770, 1.7, 'g3_bus')}${badge3(1180, 770, 1.8, 'g3_museum')}`, TOWN3);
+const STORY3 = { blobs: ['#fbeedd', '#e1effb', '#fbe9ee', '#e8f6e2'], land: [[0, '#fbeedd'], [.5, '#e8f1d8'], [1, '#e1effb']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#fbe7d0', '#fdf3dc', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#f3cf9e'] };
+build('eg3u4', badge3(120, 880, 1.4, 'g3_ct_pull') + badge3(1010, 250, 1.4, 'g3_sa_swing') + badge3(190, 330, 1.4, 'g3_e_excited', '#fbf3d6') + badge3(640, 1150, 1.3, 'g3_c_cat', '#fbf3d6') + badge3(1060, 640, 1.4, 'g3_om_win') + badge3(150, 600, 1.2, 'g3_c_pencil', '#fbf3d6'),
+  `${badge3(300, 760, 1.9, 'g3_ct_lick')}${badge3(760, 770, 1.7, 'g3_sa_draw')}${badge3(1180, 770, 1.8, 'g3_om_goal')}`, STORY3);

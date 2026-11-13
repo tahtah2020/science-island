@@ -38,6 +38,8 @@ const TAPS = { stretchLengths: ['str5', 'str10', 'str15'], bandCounts: ['band1',
   family6: ['mbFather', 'mbMother', 'mbSister', 'mbBrother', 'mbGrandma', 'mbGrandpa'], help4: ['hpTakes', 'hpCooks', 'hpHomework', 'hpStory'],
   jobs5: ['jbFarmer', 'jbDoctor', 'jbTeacher', 'jbBaker', 'jbPilot'], celeb4: ['cbEid', 'cbSham', 'cbMother', 'cbOctober'], sounds5: ['sdExam', 'sdExit', 'sdPhone', 'sdPhoto', 'sdElephant'],
   town6: ['plHouse', 'plLibrary', 'plSuper', 'plPark', 'plStation', 'plMuseum'], landmarks3: ['lmTower', 'lmLibrary', 'lmPyramids'],
+  feel9: ['emHappy', 'emSad', 'emExcited', 'emAngry', 'emShy', 'emTired', 'emBored', 'emScared', 'emNervous'],
+  csound9: ['csCat', 'csCoat', 'csCup', 'csCold', 'csCarry', 'csCity', 'csIce', 'csFace', 'csPencil'],
   sounds8: ['snBell', 'snBee', 'snGrass', 'snWell', 'snDuck', 'snSock', 'snTruck', 'snLock'], prep: [],
   /* English (english/g4_art.js) */
   fiveSenses: ['eye', 'ear', 'nose', 'tongue', 'palm'],

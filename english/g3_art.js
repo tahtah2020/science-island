@@ -60,7 +60,16 @@
     plPark: ['g3_park', 'a bench under trees', ''], plStation: ['g3_station', 'a train at a platform', ''], plMuseum: ['g3_museum', 'a big building with a triangle front', ''],
     lmTower: ['g3_tower', 'a tall tower by the river', ''], lmLibrary: ['g3_alexlib', 'a round sloping building by the sea', ''], lmPyramids: ['g3_pyramids', 'three big stone triangles and two camels', ''],
     snBell: ['g3_bell', 'a golden bell', '#fbf3d6'], snBee: ['g3_bee', 'a flying bee', '#e1effb'], snGrass: ['g3_grass', 'green leaves on the ground', '#e8f6e2'], snWell: ['g3_well', 'a round stone wall with a bucket and a roof', '#fbeedd'],
-    snDuck: ['g3_duck', 'a yellow bird', '#e1effb'], snSock: ['g3_sock', 'a striped thing for the foot', '#fbe9ee'], snTruck: ['g3_truck', 'a big red car for carrying things', '#e8f6e2'], snLock: ['g3_lock', 'a yellow thing with a keyhole', '#f1e8fb']
+    snDuck: ['g3_duck', 'a yellow bird', '#e1effb'], snSock: ['g3_sock', 'a striped thing for the foot', '#fbe9ee'], snTruck: ['g3_truck', 'a big red car for carrying things', '#e8f6e2'], snLock: ['g3_lock', 'a yellow thing with a keyhole', '#f1e8fb'],
+    /* Unit 4 · Let’s Tell Stories! (owner's sheets, 13 Nov 2026) */
+    emHappy: ['g3_e_happy', 'a boy at his desk writing with a calm smile', '#e8f6e2'], emSad: ['g3_e_sad', 'a girl with her face on her hands and sad eyes', '#e1effb'],
+    emExcited: ['g3_e_excited', 'a girl jumping up with one arm high, laughing', '#fbf3d6'], emAngry: ['g3_e_angry', 'a boy with a red face and tight fists', '#fbe3e3'],
+    emShy: ['g3_e_shy', 'a girl with red cheeks hiding her mouth with her hands', '#f1e8fb'], emTired: ['g3_e_tired', 'a boy yawning at his desk', '#e1effb'],
+    emBored: ['g3_e_bored', 'two children leaning their heads on their hands', '#fbeedd'], emScared: ['g3_e_scared', 'a boy with wide eyes and hands on his cheeks', '#fbe9ee'],
+    emNervous: ['g3_e_nervous', 'a boy biting his nails, a drop of sweat', '#e8f6e2'],
+    csCat: ['g3_c_cat', 'an orange and white pet', '#fbf3d6'], csCoat: ['g3_c_coat', 'a purple jacket on a hanger', '#f1e8fb'], csCup: ['g3_c_cup', 'a white cup', '#e1effb'],
+    csCold: ['g3_c_cold', 'a boy in a hat and scarf in the snow', ''], csCarry: ['g3_c_carry', 'a girl walking with a big box', '#e8f6e2'], csCity: ['g3_c_city', 'tall buildings', ''],
+    csIce: ['g3_c_ice', 'three clear cubes', '#e1effb'], csFace: ['g3_c_face', 'a round smiling head', '#fbeedd'], csPencil: ['g3_c_pencil', 'a yellow thing to write with', '#fbf3d6']
   };
   /* cut-out pictures used only in single-picture questions: shown whole on a pastel tint */
   const CUT = { g3_uncle: '#e1effb', g3_aunt: '#fbe9ee', g3_cousin: '#e8f6e2', g3_heavybag: '#fbf3d6', g3_blueshirt: '#e1effb', g3_kitten: '#e8f6e2', g3_babysister: '#fbe9ee',
@@ -94,6 +103,8 @@
   const jobs5 = gridFig(['jbFarmer', 'jbDoctor', 'jbTeacher', 'jbBaker', 'jbPilot'], 340, 240, 3, 100, 'Five people at work');
   const celeb4 = gridFig(['cbEid', 'cbSham', 'cbMother', 'cbOctober'], 340, 240, 2, 106, 'Four pictures of special days');
   const sounds5 = gridFig(['sdExam', 'sdExit', 'sdPhone', 'sdPhoto', 'sdElephant'], 340, 240, 3, 100, 'Five pictures');
+  const feel9 = gridFig(['emHappy', 'emSad', 'emExcited', 'emAngry', 'emShy', 'emTired', 'emBored', 'emScared', 'emNervous'], 340, 300, 3, 92, 'Nine children with different faces');
+  const csound9 = gridFig(['csCat', 'csCoat', 'csCup', 'csCold', 'csCarry', 'csCity', 'csIce', 'csFace', 'csPencil'], 340, 300, 3, 92, 'Nine pictures');
   const town6 = gridFig(['plHouse', 'plLibrary', 'plSuper', 'plPark', 'plStation', 'plMuseum'], 340, 240, 3, 100, 'Six places in a town');
   const landmarks3 = gridFig(['lmTower', 'lmLibrary', 'lmPyramids'], 340, 130, 3, 100, 'Three famous places in Egypt');
   const sounds8 = gridFig(['snBell', 'snBee', 'snGrass', 'snWell', 'snDuck', 'snSock', 'snTruck', 'snLock'], 340, 180, 4, 76, 'Eight pictures');
@@ -148,6 +159,6 @@
     return wrap(340, 170, w === 'under' ? 'A ball and a table' : 'A ball and a box', s, pic.plain);
   }
   window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { greet6, rules6, wh3, looks5, people6, feel3, routine8, daily8, photo, clock,
-    family6, help4, jobs5, celeb4, sounds5, town6, landmarks3, sounds8, prep });
+    family6, help4, jobs5, celeb4, sounds5, town6, landmarks3, sounds8, prep, feel9, csound9 });
   window.E3ART = { PH, CUT, tintOf, tile, photoGrid, clockFace, ringEl, hot, f1, esc, INK, FONT, IMG, prep };
 })();

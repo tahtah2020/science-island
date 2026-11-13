@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Story Time · Unit 4 · Let’s Tell Stories!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261113b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Story Time!</noscript>
+<script src="firebase-config.js?v=20261113b"></script>
+<script src="chapters.js?v=20261113b"></script>
+<script src="common.js?v=20261113b"></script>
+<script src="english/g3_art.js?v=20261113b"></script>
+<script src="game_kit.js?v=20261113b"></script>
+<script>
+(() => {
+'use strict';
+/* Story Time · the game of English Grade 3, Unit 4 "Let’s Tell Stories!" (ministry book "English Primary 3", term 1, pp 67-81).
+   Built on the shared game kit (head shared with english-hello.html). Pictures: the owner's Gemini sheets (english/assets/g3_*.webp, 13 Nov 2026).
+   The scene is set before every question; a story picture is asked as "which sentence matches the picture" or shown with a question it does not answer.
+   Stage 1 (Warm Up): tap the feelings (p 68).
+   Stage 2 (Missions): 1 How do they feel? (pp 68-69) · 2 Adam and Omar save the cat (p 70) · 3 Special past verbs (p 71) · 4 Hard c (p 73)
+                       5 Sara in the park: past and then / but / and (lesson 2, pp 74-75) · 6 Soft or hard c (p 76) · 7 Omar's big win (lesson 3, pp 78-79).
+                       ?m=N opens mission N.
+   Stage 3 (Speed Round): -ed / -d or a special verb. */
+const T = SI.T, G = SI.G, E = E3ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const tintOf = E.tintOf;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += E.tile(ph[0], 170, 80, 138, tintOf(ph[0]));
+  if (ph.length === 2) s += E.tile(ph[0], 92, 80, 134, tintOf(ph[0])) + E.tile(ph[1], 248, 80, 134, tintOf(ph[1]));
+  if (sc.clock) s = bg() + E.tile(sc.clock.src, 100, 80, 134, '') + E.clockFace(250, 82, 54, sc.clock.h);
+  if (sc.prep) s = bg() + D.prep({ pic: { w: sc.prep, plain: true } });
+  const t = sc.prep ? 160 : sc.clock ? 150 : top;
+  s += `<rect x="14" y="${t + 14}" width="312" height="${VH - t - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = t + (VH - t) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'scene') return `<image href="english/assets/${sc.img}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (m === 'grid') return bg() + `<g transform="translate(0 ${sc.dy || 30})">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = (fig, dy = 30) => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + dy, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg3u4', logo: '📖', title: ['Story Time', 'وقت الحكاية'], sub: ['Unit 4 · Let’s Tell Stories!', 'الوحدة 4 · هيا نحكي القصص!'],
+  bg: 'english/assets/bg_eg3u4.svg', bgc: '#fbeedd', label: ['Feelings, stories, linking words, the past tense and hard and soft c', 'المشاعر والحكايات وكلمات الربط والماضي وحرف c بصوتيه'], render, view: [VW, VH] });
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } } });
+}
+const line = (lines, ans) => lines.join(' ').replace('___', ans);
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig, dy: /8$/.test(fig) ? 60 : /3$/.test(fig) ? 85 : 30 });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig, sc.dy), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortCards(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('scene', { img: 'bg_eg3u1_yard.jpg' });
+  g.say(T('Welcome to Story Time! Every story has feelings. Let’s find them first.', P('أهلًا في «وقت الحكاية»! كل حكاية فيها مشاعر. يلّا ندوّر عليها الأول.')), 'wave');
+  await g.next();
+  await tapIt('feel9', 'emHappy', 'Tap: <b>happy</b>.', 'اضغط على: سعيد (happy).', 'Look for a calm smile.', 'دوّر على ابتسامة هادية.', 'happy');
+  await tapIt('feel9', 'emTired', 'Tap: <b>tired</b>.', 'اضغط على: تعبان (tired).', 'He is yawning.', 'بيتاوب.', 'tired');
+  await tapIt('feel9', 'emScared', 'Tap: <b>scared</b>.', 'اضغط على: خايف (scared).', 'Very wide eyes and an open mouth.', 'عينيه مفتوحة قوي وبقه مفتوح.', 'scared');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // how do you feel? pp 68-69
+  set('card', { lines: ['How do you feel?', 'I feel so happy!'] });
+  g.say(T('Mission 1: how do they feel? Look at their faces.', 'المهمة ١: حاسّين بإيه؟ بص على وشوشهم.'), 'point'); await g.next();
+  const v = [['g3_e_sad', ['She feels ___.'], ['sad', 'excited', 'angry'], 'sad', 'Look at her eyes and mouth.', 'بص على عينيها وبقها.'],
+    ['g3_e_angry', ['He feels ___.'], ['angry', 'shy', 'happy'], 'angry', 'Look at his red face.', 'بص على وشه الأحمر.'],
+    ['g3_e_excited', ['She feels ___.'], ['excited', 'bored', 'tired'], 'excited', 'She jumps up with her arm high.', 'بتنط ورافعة إيدها.'],
+    ['g3_e_bored', ['They feel ___.'], ['bored', 'scared', 'excited'], 'bored', 'They have nothing to do.', 'مش لاقيين حاجة يعملوها.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the feeling.', 'اختار الإحساس.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission2() {   // Adam and Omar, p 70
+  set('card', { photos: ['g3_ct_play'], lines: ['Adam and Omar', 'in the Garden'] });
+  g.say(T('Mission 2: Adam and Omar were playing in the garden when they heard a cat cry. Follow the story!', 'المهمة ٢: آدم وعمر كانوا بيلعبوا في الجنينة وسمعوا قطة بتعيط. تابع الحكاية!'), 'point'); await g.next();
+  const opts = ['The cat was stuck in a fence.', 'Adam held the fence while Omar pulled the cat out.', 'The cat jumped free.'];
+  await ask('card', { photos: ['g3_ct_stuck'], lines: ['What happened?'] }, 'Which sentence matches the picture?', 'أنهي جملة بتوصف الصورة؟', opts, opts[0], 'Where is the cat?', 'القطة فين؟', kw(opts[0]), L(opts[0]));
+  await ask('card', { photos: ['g3_ct_pull'], lines: ['What happened next?'] }, 'Which sentence matches the picture?', 'أنهي جملة بتوصف الصورة؟', opts, opts[1], 'They work as a team.', 'بيشتغلوا مع بعض كفريق.', kw('Adam held the fence…'), L(opts[1]));
+  await ask('card', { photos: ['g3_ct_free'], lines: ['___, the cat jumped free.'] }, 'Choose the linking word.', 'اختار كلمة الربط.', ['Finally', 'First', 'Then'], 'Finally', 'It is the end of the story.', 'دي نهاية الحكاية.', line(['___, the cat jumped free.'], kw('Finally')), L('Finally, the cat jumped free.'));
+  await ask('card', { photos: ['g3_ct_proud'], lines: ['They felt happy', 'and ___.'] }, 'How did the boys feel?', 'الولدين حسّوا بإيه؟', ['proud', 'bored', 'scared'], 'proud', 'They saved the cat together.', 'أنقذوا القطة مع بعض.', line(['They felt happy and ___.'], kw('proud')), L('They felt happy and proud.'));
+}
+async function mission3() {   // irregular past, p 71
+  const buttons = [{ label: 'was', value: 'was', c: 0 }, { label: 'saw', value: 'saw', c: 1 }, { label: 'went', value: 'went', c: 2 }];
+  const list = [[['is → ___'], 'was', 'is → was.'], [['see → ___'], 'saw', 'see → saw.'], [['go → ___'], 'went', 'go → went.'],
+    [['The boy ___ happy.'], 'was', 'is → was.'], [['They ___ a cat in trouble.'], 'saw', 'see → saw.'], [['She ___ to the park.'], 'went', 'go → went.']].map(([lines, ans, why]) => ({ lines, ans, why }));
+  set('card', { lines: ['Special verbs: no -ed!', 'go → went · see → saw'] });
+  await sortCards(T('Mission 3: special verbs do NOT add -ed. Choose the past.', 'المهمة ٣: الأفعال الخاصة مش بنزوّد لها ed. اختار الماضي.'), buttons, list);
+}
+async function mission4() {   // hard c, p 73
+  set('card', { lines: ['c + a, o, u = /k/', 'cat · cold · cup'] });
+  g.say(T('Mission 4: c says /k/ before a, o or u, and in ck.', 'المهمة ٤: حرف c بيطلع صوت /k/ قبل a وo وu، وفي ck.'), 'point'); await g.next();
+  await tapIt('csound9', 'csCat', 'Tap: <b>cat</b>.', 'اضغط على القطة (cat).', 'A pet that says meow.', 'حيوان أليف بيقول مياو.', 'cat');
+  await tapIt('csound9', 'csCoat', 'Tap: <b>coat</b>.', 'اضغط على المعطف (coat).', 'You wear it in winter.', 'بنلبسه في الشتا.', 'coat');
+  await ask('card', { photos: ['g3_c_cup'], lines: ['___ up'] }, 'Which letter is missing?', 'أنهي حرف ناقص؟', ['c', 's', 'g'], 'c', 'c before u says /k/.', 'c قبل u بيطلع /k/.', `${kw('c')}up`, L('cup'));
+}
+async function mission5() {   // Sara, pp 74-75
+  set('scene', { img: 'bg_eg3u3_street.jpg' });
+  g.say(T('Mission 5: one sunny day, Sara went to the park. Help tell her story.', 'المهمة ٥: في يوم مشمس، سارة راحت الحديقة. ساعد في حكاية قصتها.'), 'point'); await g.next();
+  await ask('card', { photos: ['g3_sa_bored'], lines: ['Sara went to the park', 'because she was ___.'] }, 'Choose the feeling.', 'اختار الإحساس.', ['bored', 'angry', 'tired'], 'bored', 'She had nothing to do at home.', 'مكانش عندها حاجة تعملها في البيت.', line(['Sara went to the park because she was ___.'], kw('bored')), L('…because she was bored.'));
+  await ask('card', { photos: ['g3_sa_draw'], lines: ['She ___ a picture', 'with her pencil.'] }, 'Choose the past.', 'اختار الماضي.', ['drew', 'draw', 'draws'], 'drew', 'draw → drew', 'draw ماضيها drew.', line(['She ___ a picture with her pencil.'], kw('drew')), L('She drew a picture with her pencil.'));
+  await ask('card', { photos: ['g3_sa_swing'], lines: ['Sara played on the swings.', '___ she fell.'] }, 'Choose the linking word.', 'اختار كلمة الربط.', ['Then', 'But', 'And'], 'Then', 'What happens next?', 'إيه اللي حصل بعد كده؟', line(['Sara played on the swings. ___ she fell.'], kw('Then')), L('Then she fell.'));
+  await ask('card', { photos: ['g3_sa_help'], lines: ['She was hurt, ___', 'her friend helped her.'] }, 'Choose the linking word.', 'اختار كلمة الربط.', ['but', 'then', 'and'], 'but', 'Something different: hurt, then a good thing.', 'حاجة مختلفة: اتعورت، وبعدين حاجة حلوة.', line(['She was hurt, ___ her friend helped her.'], kw('but')), L('She was hurt, but her friend helped her.'));
+  await ask('card', { photos: ['g3_sa_thanks'], lines: ['Her friend helped, ___', 'Sara felt better.'] }, 'Choose the linking word.', 'اختار كلمة الربط.', ['and', 'but', 'then'], 'and', 'Join two good things.', 'بنوصّل حاجتين حلوين.', line(['Her friend helped, ___ Sara felt better.'], kw('and')), L('Her friend helped, and Sara felt better.'));
+}
+async function mission6() {   // soft or hard c, p 76
+  const buttons = [{ label: 'c = /s/', value: 's', c: 0 }, { label: 'c = /k/', value: 'k', c: 1 }];
+  const list = [['g3_c_city', 'city', 's'], ['g3_c_ice', 'ice', 's'], ['g3_c_pencil', 'pencil', 's'], ['g3_c_face', 'face', 's'],
+    ['g3_c_cat', 'cat', 'k'], ['g3_c_cup', 'cup', 'k'], ['g3_c_coat', 'coat', 'k'], ['g3_c_cold', 'cold', 'k']]
+    .map(([f, w, ans]) => ({ photos: [f], lines: [w], ans, why: ans === 's' ? `${w}: c before e, i or y says /s/.` : `${w}: c before a, o or u says /k/.` }));
+  set('card', { lines: ['c + e, i, y = /s/', 'c + a, o, u = /k/'] });
+  await sortCards(T('Mission 6: does c say /s/ or /k/? Look at the letter after c.', 'المهمة ٦: حرف c بيطلع /s/ ولا /k/؟ بص على الحرف اللي بعده.'), buttons, list);
+}
+async function mission7() {   // Omar's big win, pp 78-79
+  set('card', { photos: ['g3_om_nervous'], lines: ['Omar’s first', 'football match'] });
+  g.say(T('Mission 7: Omar’s first football match. How does he feel each time?', 'المهمة ٧: أول ماتش كورة لعمر. حاسس بإيه كل مرة؟'), 'point'); await g.next();
+  const v = [['g3_om_nervous', ['Before the match,', 'Omar was ___.'], ['nervous', 'happy', 'bored'], 'nervous', 'Look at the drop of sweat.', 'بص على نقطة العرق.'],
+    ['g3_om_worried', ['When the match started, he was', '___ about making mistakes.'], ['worried', 'excited', 'proud'], 'worried', 'Mistakes are not good.', 'الغلط مش حاجة حلوة.'],
+    ['g3_om_proud', ['After he scored a goal,', 'Omar felt ___.'], ['proud', 'scared', 'tired'], 'proud', 'His hand is on his chest and his head is up.', 'إيده على صدره ورافع راسه.'],
+    ['g3_om_win', ['He was happy when', 'his team ___ the game.'], ['won', 'win', 'wins'], 'won', 'win is a special verb: no -ed.', 'win فعل خاص: من غير ed.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+const MISSIONS = [mission1, mission2, mission3, mission4, mission5, mission6, mission7];
+async function stage2() {
+  const m = Math.max(1, Math.min(MISSIONS.length, parseInt(new URLSearchParams(location.search).get('m'), 10) || 1));
+  for (let i = m - 1; i < MISSIONS.length; i++) await MISSIONS[i]();
+}
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: [] });   // the Speed Round card draws its own word; no rule text behind it
+  const buttons = [{ label: '-ed / -d', value: 'ed', c: 0 }, { label: 'special', value: 'sp', c: 1 }];
+  const W = [['play', 'ed', 'played'], ['jump', 'ed', 'jumped'], ['help', 'ed', 'helped'], ['start', 'ed', 'started'], ['pull', 'ed', 'pulled'], ['score', 'ed', 'scored'], ['smile', 'ed', 'smiled'],
+    ['go', 'sp', 'went'], ['eat', 'sp', 'ate'], ['see', 'sp', 'saw'], ['come', 'sp', 'came'], ['draw', 'sp', 'drew'], ['fall', 'sp', 'fell'], ['feel', 'sp', 'felt'], ['win', 'sp', 'won']];
+  const items = W.map(([t, ans, p]) => ({ t, ans, why: `${t} → ${p}.` }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('How do we make the past?', 'بنعمل الماضي إزاي؟'),
+    intro: T('Speed Round! Does the verb add -ed (or -d), or is it a special verb like go → went? Be quick!', 'جولة السرعة! الفعل بنزوّد له ed (أو d)، ولا فعل خاص زي go → went؟ بسرعة!'),
+    think: T('-ed or special?', 'ed ولا خاص؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Find the feelings, follow three stories: Adam and Omar save a cat, Sara in the park, and Omar’s big win. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! دوّر على المشاعر، وتابع ٣ حكايات: آدم وعمر بينقذوا قطة، وسارة في الحديقة، وفوز عمر الكبير. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can name feelings, follow a story with linking words, use the past tense and read hard and soft c. Next, try the questions of this unit.', 'بقيت تعرف أسماء المشاعر، وتتابع حكاية بكلمات الربط، وتستخدم الماضي، وتقرا حرف c بصوتيه. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
