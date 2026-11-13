@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261112a">
+<link rel="stylesheet" href="game_kit.css?v=20261113a">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Hello, Friends!</noscript>
-<script src="firebase-config.js?v=20261112a"></script>
-<script src="chapters.js?v=20261112a"></script>
-<script src="common.js?v=20261112a"></script>
-<script src="english/g3_art.js?v=20261112a"></script>
-<script src="game_kit.js?v=20261112a"></script>
+<script src="firebase-config.js?v=20261113a"></script>
+<script src="chapters.js?v=20261113a"></script>
+<script src="common.js?v=20261113a"></script>
+<script src="english/g3_art.js?v=20261113a"></script>
+<script src="game_kit.js?v=20261113a"></script>
 <script>
 (() => {
 'use strict';
@@ -172,7 +172,7 @@ async function stage2() {
 
 /* ---------- Stage 3 · Speed Round ---------- */
 async function stage3() {
-  set('card', { lines: ['he · she · it: +s or +es', 'I · you · we · they: no -s'] });
+  set('card', { lines: [] });   // the Speed Round card draws its own word; no rule text behind it
   const buttons = [{ label: 'no -s', value: 'no', c: 0 }, { label: '+s', value: 's', c: 1 }, { label: '+es', value: 'es', c: 2 }];
   const W = [['I · play', 'no', 'I play'], ['They · go', 'no', 'They go'], ['We · brush', 'no', 'We brush'], ['You · eat', 'no', 'You eat'],
     ['He · play', 's', 'He plays'], ['She · wake up', 's', 'She wakes up'], ['It · eat', 's', 'It eats'], ['Judy · read', 's', 'Judy reads'],

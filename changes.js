@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-13', title: 'English Grade 3 · Units 2 and 3',
+    items: [
+      { text: 'Unit 2 «My Family and I»: 25 ideas, 108 questions with hints, owner\'s pictures, game My Family Album' },
+      { text: 'Unit 3 «New Adventures» with the review of Units 1-3: 25 ideas, 134 questions, ball-and-box pictures for prepositions, game Explorer Day', links: [{ label: 'My Family Album', href: 'english-family.html', ch: 'eg3u2' }, { label: 'Explorer Day', href: 'english-explore.html', ch: 'eg3u3' }] }
+    ] },
   { date: '2026-11-12', title: 'English Grade 3 · Unit 1 «Let’s Learn Together!»',
     items: [
       { text: '32 ideas, 164 questions with a hint each: greetings, classroom rules, wh, describing people, to be, daily routines and present simple' },

@@ -43,8 +43,30 @@
     tSchool: ['g3_school', 'a girl with a bag on the way to a building', ''], tHomework: ['g3_homework', 'a boy writing at his desk with a lamp', ''],
     dSleep: ['g3_sleep', 'a girl in bed with her eyes closed', ''], dPlay: ['g3_play', 'a boy on a swing', ''], dRead: ['g3_read', 'a girl with an open book on a cushion', ''],
     dSchool: ['g3_school', 'a girl with a bag on the way to a building', ''], dWake: ['g3_wakeup', 'a boy stretching in his bed', ''], dWrite: ['g3_write', 'a boy with a pencil and a notebook', ''],
-    dEat: ['g3_eat', 'a girl with a bowl of fruit', ''], dTV: ['g3_tv', 'a boy on a sofa in front of a screen', '']
+    dEat: ['g3_eat', 'a girl with a bowl of fruit', ''], dTV: ['g3_tv', 'a boy on a sofa in front of a screen', ''],
+    /* Unit 2 · My Family and I (owner's sheets, 12-13 Nov 2026) */
+    mbFather: ['g3_father', 'a man with a moustache', '#e1effb'], mbMother: ['g3_mother', 'a woman in a long dress and a scarf', '#fbe9ee'], mbSister: ['g3_sister', 'a girl in a colourful dress', '#fbf3d6'],
+    mbBrother: ['g3_brother', 'a boy in shorts', '#e8f6e2'], mbGrandma: ['g3_grandmother', 'an old woman with a walking stick', '#f1e8fb'], mbGrandpa: ['g3_grandfather', 'an old man with glasses and a cap', '#fbeedd'],
+    hpTakes: ['g3_takes', 'a man walking with a boy who carries a school bag', ''], hpCooks: ['g3_cooks', 'a woman at the cooker with a pot', ''],
+    hpHomework: ['g3_homework2', 'a boy and a girl at a desk with a notebook', ''], hpStory: ['g3_story', 'an old woman and a girl with a book on an armchair', ''],
+    jbFarmer: ['g3_farmer', 'a man in a field with white flowers', ''], jbDoctor: ['g3_doctor', 'a woman in a white coat with a stethoscope', ''], jbTeacher: ['g3_teacher', 'a man pointing at a board', ''],
+    jbBaker: ['g3_baker', 'a man in a white hat holding a big loaf', ''], jbPilot: ['g3_pilot', 'a man in a cap in front of an airplane', ''],
+    cbEid: ['g3_eid', 'a family looking at the moon at night near a mosque', ''], cbSham: ['g3_sham', 'a family having a picnic with coloured eggs', ''],
+    cbMother: ['g3_mothersday', 'two children giving a mother a card and a present', ''], cbOctober: ['g3_october', 'soldiers saluting under the Egyptian flag', ''],
+    sdExam: ['g3_exam', 'a boy writing on a paper at a desk', ''], sdExit: ['g3_exit', 'a green sign with a running man and an arrow', ''],
+    sdPhone: ['g3_phone', 'a mobile', ''], sdPhoto: ['g3_photo', 'a camera on three legs', ''], sdElephant: ['g3_elephant', 'a big grey animal with a long nose', ''],
+    /* Unit 3 · New Adventures */
+    plHouse: ['g3_house', 'a building with a garden', ''], plLibrary: ['g3_library', 'a room with tall shelves of books', ''], plSuper: ['g3_supermarket', 'shelves of food and a cart', ''],
+    plPark: ['g3_park', 'a bench under trees', ''], plStation: ['g3_station', 'a train at a platform', ''], plMuseum: ['g3_museum', 'a big building with a triangle front', ''],
+    lmTower: ['g3_tower', 'a tall tower by the river', ''], lmLibrary: ['g3_alexlib', 'a round sloping building by the sea', ''], lmPyramids: ['g3_pyramids', 'three big stone triangles and two camels', ''],
+    snBell: ['g3_bell', 'a golden bell', '#fbf3d6'], snBee: ['g3_bee', 'a flying bee', '#e1effb'], snGrass: ['g3_grass', 'green leaves on the ground', '#e8f6e2'], snWell: ['g3_well', 'a round stone wall with a bucket and a roof', '#fbeedd'],
+    snDuck: ['g3_duck', 'a yellow bird', '#e1effb'], snSock: ['g3_sock', 'a striped thing for the foot', '#fbe9ee'], snTruck: ['g3_truck', 'a big red car for carrying things', '#e8f6e2'], snLock: ['g3_lock', 'a yellow thing with a keyhole', '#f1e8fb']
   };
+  /* cut-out pictures used only in single-picture questions: shown whole on a pastel tint */
+  const CUT = { g3_uncle: '#e1effb', g3_aunt: '#fbe9ee', g3_cousin: '#e8f6e2', g3_heavybag: '#fbf3d6', g3_blueshirt: '#e1effb', g3_kitten: '#e8f6e2', g3_babysister: '#fbe9ee',
+    g3_kite: '#e1effb', g3_balloon: '#fbf3d6', g3_newbook: '#fbeedd', g3_pinkdress: '#fbe9ee', g3_rabbit: '#e8f6e2', g3_lion: '#fbf3d6', g3_monkey: '#fbeedd',
+    g3_sandwich: '#fbe9ee', g3_juice: '#e1effb', g3_giraffe: '#e8f6e2', g3_jump: '#e8f6e2', g3_dance: '#fbe9ee' };
+  const tintOf = f => { const k = Object.keys(PH).find(id => PH[id][0] === f); return k ? PH[k][2] : (CUT[f] || ''); };
   function photoGrid(q, ids, w, h, cols, s, label) {
     const pic = (q && q.pic) || {}, plain = !!pic.plain, only = pic.only || ids, n = only.length, c = pic.cols || Math.min(cols, n), rows = Math.ceil(n / c);
     const gx = w / c, gy = h / rows, pos = {};
@@ -67,11 +89,19 @@
   const feel3 = gridFig(['fHappy', 'fSad', 'fAngry'], 340, 130, 3, 100, 'Three faces');
   const routine8 = gridFig(['tWake', 'tTeeth', 'tDressed', 'tBed', 'tHair', 'tBreakfast', 'tSchool', 'tHomework'], 340, 180, 4, 76, 'Eight pictures of a child’s morning and afternoon');
   const daily8 = gridFig(['dSleep', 'dPlay', 'dRead', 'dSchool', 'dWake', 'dWrite', 'dEat', 'dTV'], 340, 180, 4, 76, 'Eight pictures of things children do every day');
+  const family6 = gridFig(['mbFather', 'mbMother', 'mbSister', 'mbBrother', 'mbGrandma', 'mbGrandpa'], 340, 240, 3, 100, 'Six people of one family');
+  const help4 = gridFig(['hpTakes', 'hpCooks', 'hpHomework', 'hpStory'], 340, 240, 2, 106, 'Four pictures of a family at home and outside');
+  const jobs5 = gridFig(['jbFarmer', 'jbDoctor', 'jbTeacher', 'jbBaker', 'jbPilot'], 340, 240, 3, 100, 'Five people at work');
+  const celeb4 = gridFig(['cbEid', 'cbSham', 'cbMother', 'cbOctober'], 340, 240, 2, 106, 'Four pictures of special days');
+  const sounds5 = gridFig(['sdExam', 'sdExit', 'sdPhone', 'sdPhoto', 'sdElephant'], 340, 240, 3, 100, 'Five pictures');
+  const town6 = gridFig(['plHouse', 'plLibrary', 'plSuper', 'plPark', 'plStation', 'plMuseum'], 340, 240, 3, 100, 'Six places in a town');
+  const landmarks3 = gridFig(['lmTower', 'lmLibrary', 'lmPyramids'], 340, 130, 3, 100, 'Three famous places in Egypt');
+  const sounds8 = gridFig(['snBell', 'snBee', 'snGrass', 'snWell', 'snDuck', 'snSock', 'snTruck', 'snLock'], 340, 180, 4, 76, 'Eight pictures');
 
   function photo(q) {   // one to three pictures side by side for a single question
     const pic = (q && q.pic) || {}, src = pic.src || [], n = src.length || 1, w = 340, h = 160, gx = w / n, s = n === 1 ? 148 : 136;
     let out = `<rect width="${w}" height="${h}" rx="14" fill="#fbf6e6"/>`;
-    src.forEach((f, i) => { const x = gx * i + gx / 2, id = Object.keys(PH).find(k => PH[k][0] === f), tint = id ? PH[id][2] : ''; out += tile(f, x, h / 2, s, tint); });
+    src.forEach((f, i) => { out += tile(f, gx * i + gx / 2, h / 2, s, tintOf(f)); });
     return wrap(w, h, pic.label || 'A picture for the question', out, pic.plain);
   }
   /* an alarm clock showing an exact hour (o’clock), drawn in code */
@@ -94,6 +124,30 @@
     else out += clockFace(170, 84, 60, pic.h || 7);
     return wrap(340, 160, 'An alarm clock', out, pic.plain);
   }
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { greet6, rules6, wh3, looks5, people6, feel3, routine8, daily8, photo, clock });
-  window.E3ART = { PH, tile, photoGrid, clockFace, ringEl, hot, f1, esc, INK, FONT, IMG };
+  /* where is the ball? a box (or a table for "under") and a red ball, drawn in code (Unit 3 lesson 3, prepositions of place) */
+  function boxAt(x, y, w, open) {
+    const h = w * .78, d = w * .26;
+    let s = `<path d="M${f1(x)} ${f1(y)}h${f1(w)}v${f1(h)}h${f1(-w)}z" fill="#d9a86c" stroke="#8a5a2b" stroke-width="2.4" stroke-linejoin="round"/>`
+      + `<path d="M${f1(x + w)} ${f1(y)}l${f1(d)} ${f1(-d * .7)}v${f1(h)}l${f1(-d)} ${f1(d * .7)}z" fill="#c4935a" stroke="#8a5a2b" stroke-width="2.4" stroke-linejoin="round"/>`;
+    s += open ? `<path d="M${f1(x)} ${f1(y)}l${f1(d)} ${f1(-d * .7)}h${f1(w)}l${f1(-d)} ${f1(d * .7)}z" fill="#6b4421" stroke="#8a5a2b" stroke-width="2.4" stroke-linejoin="round"/>`
+      : `<path d="M${f1(x)} ${f1(y)}l${f1(d)} ${f1(-d * .7)}h${f1(w)}l${f1(-d)} ${f1(d * .7)}z" fill="#e8c08a" stroke="#8a5a2b" stroke-width="2.4" stroke-linejoin="round"/><path d="M${f1(x + w * .5 + d * .5)} ${f1(y - d * .7)}l${f1(-d)} ${f1(d * .7)}" stroke="#8a5a2b" stroke-width="1.6"/>`;
+    return s;
+  }
+  const ball = (x, y, r = 17) => `<ellipse cx="${f1(x)}" cy="${f1(y + r + 2)}" rx="${f1(r * .9)}" ry="4" fill="#000" opacity=".12"/><circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="#e2603f" stroke="#8f2f17" stroke-width="2.4"/><path d="M${f1(x - r)} ${f1(y)}q${f1(r)} ${f1(r * .6)} ${f1(2 * r)} 0" fill="none" stroke="#fff" stroke-width="3" opacity=".8"/><circle cx="${f1(x - r * .4)}" cy="${f1(y - r * .45)}" r="${f1(r * .22)}" fill="#fff" opacity=".7"/>`;
+  function prep(q) {
+    const pic = (q && q.pic) || {}, w = pic.w || 'on', G = 146;
+    let s = `<rect width="340" height="170" rx="14" fill="#fbf6e6"/><path d="M14 ${G}H326" stroke="#d8c9a6" stroke-width="3" stroke-linecap="round"/>`;
+    const B = (open) => boxAt(130, G - 62, 80, open);
+    if (w === 'on') s += B() + ball(178, 62);
+    else if (w === 'behind') s += ball(228, 74, 21).replace(/<ellipse[^>]*>/, '') + B();
+    else if (w === 'in front of') s += B() + ball(166, G - 20, 21);
+    else if (w === 'in') s += `<path d="M130 84l14 -14h82v62l-16 14h-80z" fill="#8a5a2b"/><path d="M130 84l14 -14h82l-14 14z" fill="#6b4421"/>` + ball(178, 104, 18) + `<path d="M130 112h80v34h-80z" fill="#d9a86c" stroke="#8a5a2b" stroke-width="2.4" stroke-linejoin="round"/><path d="M210 112l16 -12v34l-16 12z" fill="#c4935a" stroke="#8a5a2b" stroke-width="2.4" stroke-linejoin="round"/><path d="M130 84v28M210 84v28" stroke="#8a5a2b" stroke-width="2.4"/><path d="M210 84l16 -14v30" fill="none" stroke="#8a5a2b" stroke-width="2.4"/>`;
+    else if (w === 'between') s += boxAt(40, G - 54, 70) + boxAt(220, G - 54, 70) + ball(165, G - 18);
+    else if (w === 'next to') s += B() + ball(258, G - 18);
+    else if (w === 'under') s += `<path d="M90 70h160v12H90z" fill="#c4935a" stroke="#8a5a2b" stroke-width="2.4"/><path d="M100 82v${G - 82}M240 82v${G - 82}" stroke="#8a5a2b" stroke-width="8" stroke-linecap="round"/>` + ball(170, G - 18);
+    return wrap(340, 170, w === 'under' ? 'A ball and a table' : 'A ball and a box', s, pic.plain);
+  }
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { greet6, rules6, wh3, looks5, people6, feel3, routine8, daily8, photo, clock,
+    family6, help4, jobs5, celeb4, sounds5, town6, landmarks3, sounds8, prep });
+  window.E3ART = { PH, CUT, tintOf, tile, photoGrid, clockFace, ringEl, hot, f1, esc, INK, FONT, IMG, prep };
 })();

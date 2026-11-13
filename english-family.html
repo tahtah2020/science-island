@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Family Album · Unit 2 · My Family and I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261113a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play My Family Album!</noscript>
+<script src="firebase-config.js?v=20261113a"></script>
+<script src="chapters.js?v=20261113a"></script>
+<script src="common.js?v=20261113a"></script>
+<script src="english/g3_art.js?v=20261113a"></script>
+<script src="game_kit.js?v=20261113a"></script>
+<script>
+(() => {
+'use strict';
+/* My Family Album · the game of English Grade 3, Unit 2 "My Family and I" (ministry book "English Primary 3", term 1, pp 27-42).
+   Built on the shared game kit (head shared with english-hello.html). Pictures: the owner's Gemini sheets (english/assets/g3_*.webp,
+   bg_eg3u2_home.jpg, 12-13 Nov 2026). The scene is set before every question and never shows the answer word.
+   Stage 1 (Warm Up): tap family members (p 28).
+   Stage 2 (Missions): 1 Who is in the album? (p 29) · 2 My, His or Her? (pp 30-31) · 3 Celebrations (lesson 2, pp 32-33) · 4 x = /gz/ (p 35)
+                       5 My family helps me grow (lesson 3, pp 36-37) · 6 ph = /f/ (p 38) · 7 Jobs (lesson 4, pp 39-41).  ?m=N opens mission N.
+   Stage 3 (Speed Round): x = /gz/ or ph = /f/. */
+const T = SI.T, G = SI.G, E = E3ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const tintOf = E.tintOf;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += E.tile(ph[0], 170, 80, 138, tintOf(ph[0]));
+  if (ph.length === 2) s += E.tile(ph[0], 92, 80, 134, tintOf(ph[0])) + E.tile(ph[1], 248, 80, 134, tintOf(ph[1]));
+  if (sc.clock) s = bg() + E.tile(sc.clock.src, 100, 80, 134, '') + E.clockFace(250, 82, 54, sc.clock.h);
+  if (sc.prep) s = bg() + D.prep({ pic: { w: sc.prep, plain: true } });
+  const t = sc.prep ? 160 : sc.clock ? 150 : top;
+  s += `<rect x="14" y="${t + 14}" width="312" height="${VH - t - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = t + (VH - t) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'scene') return `<image href="english/assets/${sc.img}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (m === 'grid') return bg() + `<g transform="translate(0 ${sc.dy || 30})">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = (fig, dy = 30) => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + dy, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg3u2', logo: '📸', title: ['My Family Album', 'ألبوم أسرتي'], sub: ['Unit 2 · My Family and I', 'الوحدة 2 · أسرتي وأنا'],
+  bg: 'english/assets/bg_eg3u2.svg', bgc: '#e1effb', label: ['Family members, my / his / her, celebrations, x and ph sounds, and jobs', 'أفراد الأسرة وmy وhis وher والمناسبات وصوتا x وph والوظائف'], render, view: [VW, VH] });
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } } });
+}
+const line = (lines, ans) => lines.join(' ').replace('___', ans);
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig, dy: /8$/.test(fig) ? 60 : /3$/.test(fig) ? 85 : 30 });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig, sc.dy), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortCards(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('scene', { img: 'bg_eg3u2_home.jpg' });
+  g.say(T('Welcome to My Family Album! Let’s meet the family, find out what they do and how they help us grow.', P('أهلًا في «ألبوم أسرتي»! يلّا نتعرّف على الأسرة، ونعرف شغلهم وإزاي بيساعدونا نكبر.')), 'wave');
+  await g.next();
+  await tapIt('family6', 'mbGrandma', 'Tap the <b>grandmother</b>.', 'اضغط على الجدة (grandmother).', 'She is old and has a walking stick.', 'كبيرة في السن ومعاها عصاية.', 'grandmother');
+  await tapIt('family6', 'mbSister', 'Tap the <b>sister</b>.', 'اضغط على الأخت (sister).', 'She is a girl.', 'دي بنت.', 'sister');
+  await tapIt('family6', 'mbFather', 'Tap the <b>father</b>.', 'اضغط على الأب (father).', 'He is a man, not old.', 'راجل ومش كبير في السن.', 'father');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // family members, pp 28-29
+  set('card', { photos: ['g3_grandfather'], lines: ['This is my family.'] });
+  g.say(T('Mission 1: who is in the photo album?', 'المهمة ١: مين اللي في ألبوم الصور؟'), 'point'); await g.next();
+  const v = [['g3_grandfather', ['He is my ___.'], ['grandfather', 'brother', 'sister'], 'grandfather', 'He is an old man.', 'راجل كبير في السن.'],
+    ['g3_mother', ['She is my ___.'], ['mother', 'grandmother', 'sister'], 'mother', 'She is a woman, not old.', 'ست ومش كبيرة في السن.'],
+    ['g3_brother', ['He is my ___.'], ['brother', 'father', 'grandfather'], 'brother', 'He is a boy.', 'ده ولد.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission2() {   // my / his / her, pp 30-31
+  const buttons = [{ label: 'My', value: 'My', c: 0 }, { label: 'His', value: 'His', c: 1 }, { label: 'Her', value: 'Her', c: 2 }];
+  const list = [['g3_kite', ['Amira has a kite.', '___ kite is flying high.'], 'Her', 'Amira is a girl: Her.'], ['g3_balloon', ['I have a balloon.', '___ balloon is yellow.'], 'My', 'I → My.'],
+    ['g3_newbook', ['Nader has a book.', '___ book is new.'], 'His', 'Nader is a boy: His.'], ['g3_rabbit', ['I have a pet.', '___ pet is a rabbit.'], 'My', 'I → My.'],
+    ['g3_blueshirt', ['Look at the boy.', '___ T-shirt is blue.'], 'His', 'A boy: His.'], ['g3_pinkdress', ['This is Laila.', '___ dress is pink.'], 'Her', 'Laila is a girl: Her.']]
+    .map(([f, lines, ans, why]) => ({ photos: [f], lines, ans, why }));
+  set('card', { lines: ['I → my · a boy → his', 'a girl → her'] });
+  await sortCards(T('Mission 2: My, His or Her? I → my. A boy → his. A girl → her.', 'المهمة ٢: My ولا His ولا Her؟ I معاها my، والولد his، والبنت her.'), buttons, list);
+}
+async function mission3() {   // celebrations, pp 32-34
+  set('card', { photos: ['g3_eid', 'g3_sham'], lines: ['We love our celebrations!'] });
+  g.say(T('Mission 3: our family celebrations. Find each special day.', 'المهمة ٣: مناسبات أسرتنا. دوّر على كل يوم مميز.'), 'point'); await g.next();
+  await tapIt('celeb4', 'cbMother', 'Tap <b>Mother’s Day</b>.', 'اضغط على عيد الأم (Mother’s Day).', 'The children give their mother a card.', 'الأولاد بيدّوا مامتهم كارت.', 'Mother’s Day');
+  await tapIt('celeb4', 'cbEid', 'Tap <b>Eid Al-Fitr</b>.', 'اضغط على عيد الفطر (Eid Al-Fitr).', 'Look for the moon and the mosque.', 'دوّر على الهلال والجامع.', 'Eid Al-Fitr');
+  const opts = ['Sham El-Nessim', '6th of October', 'Mother’s Day'];
+  await ask('card', { lines: ['We go to the garden all day,', 'play, and eat salted fish.'] }, 'Which celebration is it?', 'دي أنهي مناسبة؟', opts, 'Sham El-Nessim', 'Salted fish and the garden.', 'الفسيخ والجنينة.', `It is ${kw('Sham El-Nessim')}.`, L('Sham El-Nessim'));
+  await ask('card', { lines: ['It reminds us how brave', 'the Egyptian soldiers are.'] }, 'Which celebration is it?', 'دي أنهي مناسبة؟', opts, '6th of October', 'Think of the soldiers.', 'فكّر في الجنود.', `It is the ${kw('6th of October')}.`, L('6th of October'));
+}
+async function mission4() {   // x = /gz/, p 35
+  set('card', { lines: ['exam · exit · example', 'examine · exist'] });
+  g.say(T('Mission 4: in these words the letter x says /gz/.', 'المهمة ٤: في الكلمات دي حرف x بيطلع صوت /gz/.'), 'point'); await g.next();
+  await tapIt('sounds5', 'sdExam', 'Tap the <b>exam</b>.', 'اضغط على الامتحان (exam).', 'A boy writes answers on a paper.', 'ولد بيكتب إجابات على ورقة.', 'exam');
+  await tapIt('sounds5', 'sdExit', 'Tap the <b>exit</b>.', 'اضغط على المخرج (exit).', 'A sign that shows the way out.', 'لافتة بتوريك طريق الخروج.', 'exit');
+  await ask('card', { photos: ['g3_exam'], lines: ['e ___ a m'] }, 'Which letter is missing?', 'أنهي حرف ناقص؟', ['x', 's', 'k'], 'x', 'It says /gz/.', 'بيطلع صوت /gz/.', `e${kw('x')}am`, L('exam'));
+}
+async function mission5() {   // my family helps me grow, pp 36-37
+  set('card', { photos: ['g3_lovefamily'], lines: ['My family helps me grow.'] });
+  g.say(T('Mission 5: how does the family help us grow?', 'المهمة ٥: الأسرة بتساعدنا نكبر إزاي؟'), 'point'); await g.next();
+  await tapIt('help4', 'hpCooks', 'Tap: My mother <b>cooks</b> us food.', 'اضغط على: ماما بتطبخ لنا الأكل.', 'Look for a pot.', 'دوّر على الحلّة.', 'My mother cooks us food every day.');
+  const v = [['g3_takes', ['My father ___ me to school.'], ['takes', 'cooks', 'reads'], 'takes', 'They walk to school together.', 'ماشيين مع بعض للمدرسة.'],
+    ['g3_story', ['My grandmother ___ me a story.'], ['reads', 'takes', 'cooks'], 'reads', 'Look at the book.', 'بص على الكتاب.'],
+    ['g3_homework2', ['My brother ___ me do', 'my homework.'], ['helps', 'reads', 'cooks'], 'helps', 'He shows his sister what to write.', 'بيوري أخته تكتب إيه.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission6() {   // ph = /f/, p 38
+  set('card', { lines: ['phone · photo · elephant', 'graph · alphabet'] });
+  g.say(T('Mission 6: p and h together say /f/.', 'المهمة ٦: الحرفين p وh مع بعض بيطلعوا صوت /f/.'), 'point'); await g.next();
+  await tapIt('sounds5', 'sdPhone', 'Tap the <b>phone</b>.', 'اضغط على التليفون (phone).', 'You call your friends with it.', 'بتكلّم بيه أصحابك.', 'phone');
+  await tapIt('sounds5', 'sdElephant', 'Tap the <b>elephant</b>.', 'اضغط على الفيل (elephant).', 'A big grey animal.', 'حيوان كبير رمادي.', 'elephant');
+  await ask('card', { photos: ['g3_photo'], lines: ['___ oto'] }, 'Which letters are missing?', 'أنهي حروف ناقصة؟', ['ph', 'wh', 'sh'], 'ph', 'They say /f/.', 'بيطلعوا صوت /f/.', `${kw('ph')}oto`, L('photo'));
+}
+async function mission7() {   // jobs, pp 39-41
+  set('card', { photos: ['g3_doctor', 'g3_teacher'], lines: ['Jobs in my family'] });
+  g.say(T('Mission 7: what are their jobs?', 'المهمة ٧: شغلهم إيه؟'), 'point'); await g.next();
+  await tapIt('jobs5', 'jbDoctor', 'Tap the <b>doctor</b>.', 'اضغط على الدكتورة (doctor).', 'Look for a white coat and a stethoscope.', 'دوّر على البالطو الأبيض والسمّاعة.', 'doctor');
+  await tapIt('jobs5', 'jbPilot', 'Tap the <b>pilot</b>.', 'اضغط على الطيار (pilot).', 'Look for an airplane.', 'دوّر على الطيارة.', 'pilot');
+  const v = [['g3_baker', ['My uncle bakes delicious bread.', 'He is a ___.'], ['baker', 'farmer', 'pilot'], 'baker', 'He bakes.', 'بيخبز.'],
+    ['g3_farmer2', ['I grow vegetables.', 'I am a ___.'], ['farmer', 'teacher', 'doctor'], 'farmer', 'He works in a field.', 'بيشتغل في الغيط.'],
+    ['g3_pilot_w', ['My mother is a pilot.', 'She ___ around the world.'], ['travels', 'bakes', 'cooks'], 'travels', 'She flies to many countries.', 'بتطير لبلاد كتير.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+const MISSIONS = [mission1, mission2, mission3, mission4, mission5, mission6, mission7];
+async function stage2() {
+  const m = Math.max(1, Math.min(MISSIONS.length, parseInt(new URLSearchParams(location.search).get('m'), 10) || 1));
+  for (let i = m - 1; i < MISSIONS.length; i++) await MISSIONS[i]();
+}
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: [] });   // the Speed Round card draws its own word; no rule text behind it
+  const buttons = [{ label: 'x = /gz/', value: 'x', c: 0 }, { label: 'ph = /f/', value: 'ph', c: 1 }];
+  const W = [['exam', 'x'], ['exit', 'x'], ['example', 'x'], ['examine', 'x'], ['exist', 'x'], ['phone', 'ph'], ['photo', 'ph'], ['elephant', 'ph'], ['graph', 'ph'], ['alphabet', 'ph']];
+  const items = W.map(([t, ans]) => ({ t, ans, why: `${t}: ${ans === 'x' ? 'x says /gz/' : 'ph says /f/'}.` }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('Which sound is in the word?', 'أنهي صوت في الكلمة؟'),
+    intro: T('Speed Round! Is it x = /gz/ like exam, or ph = /f/ like phone? Be quick!', 'جولة السرعة! الكلمة فيها x زي exam، ولا ph زي phone؟ بسرعة!'),
+    think: T('x or ph?', 'x ولا ph؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Open the family album: meet the family, use my, his and her, find the celebrations, the x and ph sounds, and the jobs. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! افتح ألبوم الأسرة: اتعرّف على الأسرة، واستخدم my وhis وher، ودوّر على المناسبات وصوت x وph والوظائف. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can name your family, use my, his and her, talk about celebrations and jobs, and read x and ph words. Next, try the questions of this unit.', 'بقيت تعرف تسمّي أسرتك، وتستخدم my وhis وher، وتتكلم عن المناسبات والوظائف، وتقرا كلمات فيها x وph. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

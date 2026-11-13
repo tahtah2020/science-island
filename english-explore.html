@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explorer Day · Unit 3 · New Adventures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261113a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Explorer Day!</noscript>
+<script src="firebase-config.js?v=20261113a"></script>
+<script src="chapters.js?v=20261113a"></script>
+<script src="common.js?v=20261113a"></script>
+<script src="english/g3_art.js?v=20261113a"></script>
+<script src="game_kit.js?v=20261113a"></script>
+<script>
+(() => {
+'use strict';
+/* Explorer Day · the game of English Grade 3, Unit 3 "New Adventures" (ministry book "English Primary 3", term 1, pp 43-62).
+   Built on the shared game kit (head shared with english-hello.html). Pictures: the owner's Gemini sheets (english/assets/g3_*.webp,
+   bg_eg3u3_street.jpg, bg_eg3u3_zoo.jpg, 13 Nov 2026); the ball-and-box pictures are drawn in code (english/g3_art.js prep).
+   Reading questions show no picture that gives the answer away.
+   Stage 1 (Warm Up): tap places (p 44).
+   Stage 2 (Missions): 1 Where do you…? (p 46) · 2 Youssef's busy day (p 47) · 3 ff ll ss zz (p 49) · 4 Laila's landmarks (lesson 2, pp 50-51)
+                       5 ck (p 53) · 6 . or ? (p 54) · 7 Where is the ball? (lesson 3, p 55) · 8 The zoo trip (lesson 4, p 58).  ?m=N opens mission N.
+   Stage 3 (Speed Round): past simple +ed or +d (p 60). */
+const T = SI.T, G = SI.G, E = E3ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const tintOf = E.tintOf;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += E.tile(ph[0], 170, 80, 138, tintOf(ph[0]));
+  if (ph.length === 2) s += E.tile(ph[0], 92, 80, 134, tintOf(ph[0])) + E.tile(ph[1], 248, 80, 134, tintOf(ph[1]));
+  if (sc.clock) s = bg() + E.tile(sc.clock.src, 100, 80, 134, '') + E.clockFace(250, 82, 54, sc.clock.h);
+  if (sc.prep) s = bg() + D.prep({ pic: { w: sc.prep, plain: true } });
+  const t = sc.prep ? 160 : sc.clock ? 150 : top;
+  s += `<rect x="14" y="${t + 14}" width="312" height="${VH - t - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = t + (VH - t) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'scene') return `<image href="english/assets/${sc.img}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (m === 'grid') return bg() + `<g transform="translate(0 ${sc.dy || 30})">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = (fig, dy = 30) => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + dy, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg3u3', logo: '🗺️', title: ['Explorer Day', 'يوم المستكشف'], sub: ['Unit 3 · New Adventures', 'الوحدة 3 · مغامرات جديدة'],
+  bg: 'english/assets/bg_eg3u3.svg', bgc: '#e2f4dc', label: ['Places, landmarks, ff ll ss zz and ck, punctuation, prepositions and the past', 'الأماكن والمعالم وff وll وss وzz وck وعلامات الترقيم وحروف الجر والماضي'], render, view: [VW, VH] });
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } } });
+}
+const line = (lines, ans) => lines.join(' ').replace('___', ans);
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig, dy: /8$/.test(fig) ? 60 : /3$/.test(fig) ? 85 : 30 });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig, sc.dy), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortCards(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('scene', { img: 'bg_eg3u3_street.jpg' });
+  g.say(T('Welcome to Explorer Day! Let’s visit the places in our town, the landmarks of Egypt and the zoo.', P('أهلًا في «يوم المستكشف»! يلّا نزور أماكن مدينتنا، ومعالم مصر، وحديقة الحيوان.')), 'wave');
+  await g.next();
+  await tapIt('town6', 'plLibrary', 'Tap the <b>library</b>.', 'اضغط على المكتبة (library).', 'Look for shelves of books.', 'دوّر على رفوف الكتب.', 'library');
+  await tapIt('town6', 'plPark', 'Tap the <b>park</b>.', 'اضغط على الحديقة (park).', 'Look for a bench and trees.', 'دوّر على الدكّة والشجر.', 'park');
+  await tapIt('town6', 'plSuper', 'Tap the <b>supermarket</b>.', 'اضغط على السوبرماركت (supermarket).', 'Look for food and a cart.', 'دوّر على الأكل والعربية.', 'supermarket');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+const PL = ['supermarket', 'library', 'park', 'house'];
+async function mission1() {   // where do you…? p 46
+  set('scene', { img: 'bg_eg3u3_street.jpg' });
+  g.say(T('Mission 1: where do we go?', 'المهمة ١: بنروح فين؟'), 'point'); await g.next();
+  await ask('card', { lines: ['Where do you buy food?'] }, 'Choose the place.', 'اختار المكان.', PL.slice(0, 3), 'supermarket', 'Food is on its shelves.', 'الأكل على رفوفه.', `At the ${kw('supermarket')}.`, L('supermarket'));
+  await ask('card', { lines: ['Where do you read books?'] }, 'Choose the place.', 'اختار المكان.', PL.slice(0, 3), 'library', 'There are many books there.', 'فيه كتب كتير.', `At the ${kw('library')}.`, L('library'));
+  await ask('card', { lines: ['Where do you live?'] }, 'Choose the place.', 'اختار المكان.', ['house', 'park', 'library'], 'house', 'You sleep and eat there.', 'بتنام وتاكل فيه.', `In a ${kw('house')}.`, L('house'));
+}
+async function mission2() {   // Youssef's busy day, p 47
+  set('card', { lines: ['Youssef’s Busy Day'] });
+  g.say(T('Mission 2: follow Youssef’s busy day.', 'المهمة ٢: تابع يوم يوسف المشغول.'), 'point'); await g.next();
+  const v = [[['First, he went to the ___', 'to read a book.'], ['library', 'park', 'museum'], 'library', 'Where do we read books?', 'بنقرا الكتب فين؟'],
+    [['He and his mom went shopping', 'at the ___.'], ['supermarket', 'museum', 'library'], 'supermarket', 'Where do we buy food?', 'بنشتري الأكل منين؟'],
+    [['In the afternoon, they', 'played at the ___.'], ['park', 'library', 'train station'], 'park', 'Where do we play with friends?', 'بنلعب مع أصحابنا فين؟']];
+  for (const [lines, opts, ans, hEn, hAr] of v) await ask('card', { lines }, 'Choose the place.', 'اختار المكان.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission3() {   // double consonants, p 49
+  set('card', { lines: ['ff · ll · ss · zz', 'off · bell · grass · buzz'] });
+  g.say(T('Mission 3: short words often end with ff, ll, ss or zz.', 'المهمة ٣: الكلمات القصيرة كتير بتنتهي بـ ff أو ll أو ss أو zz.'), 'point'); await g.next();
+  await tapIt('sounds8', 'snBell', 'Tap the <b>bell</b>.', 'اضغط على الجرس (bell).', 'It rings.', 'بيرن.', 'bell');
+  await tapIt('sounds8', 'snBee', 'Which one says “<b>buzz</b>”? Tap it.', 'مين اللي بيقول buzz؟ اضغط عليه.', 'It flies and makes a sound.', 'بيطير ويعمل صوت.', 'buzz');
+  await ask('card', { photos: ['g3_grass'], lines: ['g r a ___'] }, 'Which letters are missing?', 'أنهي حروف ناقصة؟', ['ss', 'zz', 'll'], 'ss', 'A short word that ends with s: write two.', 'كلمة قصيرة آخرها s: نكتبها مرتين.', `gra${kw('ss')}`, L('grass'));
+}
+async function mission4() {   // landmarks, pp 50-51
+  set('card', { photos: ['g3_tower', 'g3_pyramids'], lines: ['Laila’s Holiday Adventure'] });
+  g.say(T('Mission 4: travel with Laila to Egypt’s landmarks.', 'المهمة ٤: سافر مع ليلى لمعالم مصر.'), 'point'); await g.next();
+  await tapIt('landmarks3', 'lmPyramids', 'Tap the <b>Pyramids of Giza</b>.', 'اضغط على أهرامات الجيزة.', 'Look for big stone triangles.', 'دوّر على المثلثات الحجر الكبيرة.', 'the Pyramids of Giza');
+  await tapIt('landmarks3', 'lmTower', 'Tap <b>Cairo Tower</b>.', 'اضغط على برج القاهرة.', 'It is very tall and thin.', 'طويل قوي ورفيع.', 'Cairo Tower');
+  await ask('card', { lines: ['At the Pyramids,', 'Laila loved the ___!'] }, 'Choose the word.', 'اختار الكلمة.', ['camels', 'horses', 'cars'], 'camels', 'Animals with a hump.', 'حيوانات ليها سنام.', line(['At the Pyramids, Laila loved the ___!'], kw('camels')), L('Laila loved the camels!'));
+  await ask('card', { lines: ['At the Alexandria Library,', 'she read fun ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['books', 'camels', 'cakes'], 'books', 'You read them in a library.', 'بنقراها في المكتبة.', line(['At the Alexandria Library, she read fun ___.'], kw('books')), L('she read fun books.'));
+}
+async function mission5() {   // ck, p 53
+  set('card', { lines: ['duck · sock · back', 'neck · truck'] });
+  g.say(T('Mission 5: c and k together make one /k/ sound.', 'المهمة ٥: الحرفين c وk مع بعض بيطلعوا صوت /k/ واحد.'), 'point'); await g.next();
+  await tapIt('sounds8', 'snDuck', 'Tap the <b>duck</b>.', 'اضغط على البطة (duck).', 'A yellow bird.', 'طير أصفر.', 'duck');
+  await tapIt('sounds8', 'snTruck', 'Tap the <b>truck</b>.', 'اضغط على الشاحنة (truck).', 'A big car that carries things.', 'عربية كبيرة بتشيل حاجات.', 'truck');
+  await ask('card', { photos: ['g3_sock'], lines: ['s o ___'] }, 'Which letters are missing?', 'أنهي حروف ناقصة؟', ['ck', 'ss', 'ph'], 'ck', 'They say /k/.', 'بيطلعوا صوت /k/.', `so${kw('ck')}`, L('sock'));
+}
+async function mission6() {   // punctuation, p 54
+  const buttons = [{ label: '.', value: '.', c: 0 }, { label: '?', value: '?', c: 1 }];
+  const list = [[['Do you like going to', 'the amusement park ___'], '?', 'It is a question.'], [['We went to the', 'supermarket yesterday ___'], '.', 'It is a sentence, not a question.'],
+    [['Where is the nearest', 'hospital ___'], '?', 'Where… is a question.'], [['I saw the Pyramids', 'with my family ___'], '.', 'It is a sentence, not a question.'],
+    [['Did you visit the Cairo Tower', 'last year ___'], '?', 'Did… is a question.']].map(([lines, ans, why]) => ({ lines, ans, why }));
+  set('card', { lines: ['A sentence ends with .', 'A question ends with ?'] });
+  await sortCards(T('Mission 6: a period or a question mark?', 'المهمة ٦: نقطة ولا علامة استفهام؟'), buttons, list);
+}
+async function mission7() {   // prepositions, p 55
+  set('card', { prep: 'on', lines: ['Where is the ball?'] });
+  g.say(T('Mission 7: where is the ball? Look carefully!', 'المهمة ٧: الكورة فين؟ بص كويس!'), 'point'); await g.next();
+  const v = [['on', 'box', ['on', 'in', 'under'], 'It is on top.', 'فوقها.'], ['in', 'box', ['in', 'on', 'behind'], 'Look inside the box.', 'بص جوه الكرتونة.'],
+    ['under', 'table', ['under', 'on', 'in'], 'It is below the table.', 'تحت الترابيزة.'], ['between', 'boxes', ['between', 'on', 'in front of'], 'One box on each side.', 'كرتونة على كل جنب.'],
+    ['behind', 'box', ['behind', 'in front of', 'on'], 'You can see only a part of it.', 'شايف حتة منها بس.']];
+  for (const [w, obj, opts, hEn, hAr] of v) {
+    const lines = [`The ball is ___ the ${obj}.`];
+    await ask('card', { prep: w, lines }, 'Where is the ball?', 'الكورة فين؟', opts, w, hEn, hAr, line(lines, kw(w)), L(line(lines, w)));
+  }
+}
+async function mission8() {   // the zoo trip, p 58
+  set('scene', { img: 'bg_eg3u3_zoo.jpg' });
+  g.say(T('Mission 8: a school trip to the zoo! Last Monday, Grade Three students went on a trip to the zoo.', 'المهمة ٨: رحلة مدرسية لحديقة الحيوان! يوم الاتنين اللي فات، تلاميذ تالتة راحوا رحلة لحديقة الحيوان.'), 'point'); await g.next();
+  await ask('card', { lines: ['They went to the zoo', 'by ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['bus', 'train', 'car'], 'bus', 'A big yellow one carries the class.', 'عربية كبيرة صفرا بتشيل الفصل.', line(['They went to the zoo by ___.'], kw('bus')), L('They went to the zoo by bus.'));
+  await ask('card', { lines: ['The ticket was', '___ pounds.'] }, 'Choose the number.', 'اختار الرقم.', ['20', '10', '50'], '20', 'Two tens.', 'عشرتين.', line(['The ticket was ___ pounds.'], kw('20')), L('The ticket was 20 pounds.'));
+  await ask('card', { photos: ['g3_lion', 'g3_monkey'], lines: ['They saw lions, monkeys,', 'and ___.'] }, 'Which animal is missing?', 'أنهي حيوان ناقص؟', ['elephants', 'camels', 'ducks'], 'elephants', 'A big grey animal with a long nose.', 'حيوان رمادي كبير وليه خرطوم.', line(['They saw lions, monkeys, and ___.'], kw('elephants')), L('They saw lions, monkeys, and elephants.'));
+}
+const MISSIONS = [mission1, mission2, mission3, mission4, mission5, mission6, mission7, mission8];
+async function stage2() {
+  const m = Math.max(1, Math.min(MISSIONS.length, parseInt(new URLSearchParams(location.search).get('m'), 10) || 1));
+  for (let i = m - 1; i < MISSIONS.length; i++) await MISSIONS[i]();
+}
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: [] });   // the Speed Round card draws its own word; no rule text behind it
+  const buttons = [{ label: '+ed', value: 'ed', c: 0 }, { label: '+d', value: 'd', c: 1 }];
+  const W = [['jump', 'ed', 'jumped'], ['climb', 'ed', 'climbed'], ['walk', 'ed', 'walked'], ['play', 'ed', 'played'], ['clean', 'ed', 'cleaned'],
+    ['smile', 'd', 'smiled'], ['close', 'd', 'closed'], ['dance', 'd', 'danced'], ['like', 'd', 'liked'], ['live', 'd', 'lived'], ['bake', 'd', 'baked']];
+  const items = W.map(([t, ans, p]) => ({ t, ans, why: `${t} → ${p}.` }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('How do we make the past?', 'بنعمل الماضي إزاي؟'),
+    intro: T('Speed Round! Most verbs add -ed. Verbs ending in -e add -d. Be quick!', 'جولة السرعة! أغلب الأفعال بنزوّد لها ed، والأفعال اللي آخرها e بنزوّد d بس. بسرعة!'),
+    think: T('+ed or +d?', 'ed ولا d؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Explore your town, follow Youssef and Laila, find where the ball is, and go on a school trip to the zoo. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! استكشف مدينتك، وتابع يوسف وليلى، ودوّر الكورة فين، وروح رحلة لحديقة الحيوان. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can name places and landmarks, read ff, ll, ss, zz and ck words, use . and ?, say where things are and talk about the past. Next, try the questions of this unit.', 'بقيت تعرف أسماء الأماكن والمعالم، وتقرا كلمات فيها ff وll وss وzz وck، وتستخدم النقطة وعلامة الاستفهام، وتقول الحاجة فين، وتتكلم عن الماضي. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
