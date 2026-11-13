@@ -7,20 +7,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261113b">
+<link rel="stylesheet" href="game_kit.css?v=20261113c">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Story Time!</noscript>
-<script src="firebase-config.js?v=20261113b"></script>
-<script src="chapters.js?v=20261113b"></script>
-<script src="common.js?v=20261113b"></script>
-<script src="english/g3_art.js?v=20261113b"></script>
-<script src="game_kit.js?v=20261113b"></script>
+<script src="firebase-config.js?v=20261113c"></script>
+<script src="chapters.js?v=20261113c"></script>
+<script src="common.js?v=20261113c"></script>
+<script src="english/g3_art.js?v=20261113c"></script>
+<script src="game_kit.js?v=20261113c"></script>
 <script>
 (() => {
 'use strict';
 /* Story Time · the game of English Grade 3, Unit 4 "Let’s Tell Stories!" (ministry book "English Primary 3", term 1, pp 67-81).
-   Built on the shared game kit (head shared with english-hello.html). Pictures: the owner's Gemini sheets (english/assets/g3_*.webp, 13 Nov 2026).
+   Built on the shared game kit (head shared with english-hello.html). Pictures: the owner's Gemini sheets (english/assets/g3_*.webp, bg_eg3u4_garden.jpg, bg_eg3u5_field.jpg, 13 Nov 2026).
    The scene is set before every question; a story picture is asked as "which sentence matches the picture" or shown with a question it does not answer.
    Stage 1 (Warm Up): tap the feelings (p 68).
    Stage 2 (Missions): 1 How do they feel? (pp 68-69) · 2 Adam and Omar save the cat (p 70) · 3 Special past verbs (p 71) · 4 Hard c (p 73)
@@ -88,7 +88,7 @@ async function sortCards(intro, buttons, list) {
 
 /* ---------- Stage 1 · Warm Up ---------- */
 async function stage1() {
-  set('scene', { img: 'bg_eg3u1_yard.jpg' });
+  set('scene', { img: 'bg_eg3u4_garden.jpg' });
   g.say(T('Welcome to Story Time! Every story has feelings. Let’s find them first.', P('أهلًا في «وقت الحكاية»! كل حكاية فيها مشاعر. يلّا ندوّر عليها الأول.')), 'wave');
   await g.next();
   await tapIt('feel9', 'emHappy', 'Tap: <b>happy</b>.', 'اضغط على: سعيد (happy).', 'Look for a calm smile.', 'دوّر على ابتسامة هادية.', 'happy');
@@ -130,7 +130,7 @@ async function mission4() {   // hard c, p 73
   await ask('card', { photos: ['g3_c_cup'], lines: ['___ up'] }, 'Which letter is missing?', 'أنهي حرف ناقص؟', ['c', 's', 'g'], 'c', 'c before u says /k/.', 'c قبل u بيطلع /k/.', `${kw('c')}up`, L('cup'));
 }
 async function mission5() {   // Sara, pp 74-75
-  set('scene', { img: 'bg_eg3u3_street.jpg' });
+  set('scene', { img: 'bg_eg3u4_garden.jpg' });
   g.say(T('Mission 5: one sunny day, Sara went to the park. Help tell her story.', 'المهمة ٥: في يوم مشمس، سارة راحت الحديقة. ساعد في حكاية قصتها.'), 'point'); await g.next();
   await ask('card', { photos: ['g3_sa_bored'], lines: ['Sara went to the park', 'because she was ___.'] }, 'Choose the feeling.', 'اختار الإحساس.', ['bored', 'angry', 'tired'], 'bored', 'She had nothing to do at home.', 'مكانش عندها حاجة تعملها في البيت.', line(['Sara went to the park because she was ___.'], kw('bored')), L('…because she was bored.'));
   await ask('card', { photos: ['g3_sa_draw'], lines: ['She ___ a picture', 'with her pencil.'] }, 'Choose the past.', 'اختار الماضي.', ['drew', 'draw', 'draws'], 'drew', 'draw → drew', 'draw ماضيها drew.', line(['She ___ a picture with her pencil.'], kw('drew')), L('She drew a picture with her pencil.'));
@@ -147,7 +147,7 @@ async function mission6() {   // soft or hard c, p 76
   await sortCards(T('Mission 6: does c say /s/ or /k/? Look at the letter after c.', 'المهمة ٦: حرف c بيطلع /s/ ولا /k/؟ بص على الحرف اللي بعده.'), buttons, list);
 }
 async function mission7() {   // Omar's big win, pp 78-79
-  set('card', { photos: ['g3_om_nervous'], lines: ['Omar’s first', 'football match'] });
+  set('scene', { img: 'bg_eg3u5_field.jpg' });
   g.say(T('Mission 7: Omar’s first football match. How does he feel each time?', 'المهمة ٧: أول ماتش كورة لعمر. حاسس بإيه كل مرة؟'), 'point'); await g.next();
   const v = [['g3_om_nervous', ['Before the match,', 'Omar was ___.'], ['nervous', 'happy', 'bored'], 'nervous', 'Look at the drop of sweat.', 'بص على نقطة العرق.'],
     ['g3_om_worried', ['When the match started, he was', '___ about making mistakes.'], ['worried', 'excited', 'proud'], 'worried', 'Mistakes are not good.', 'الغلط مش حاجة حلوة.'],

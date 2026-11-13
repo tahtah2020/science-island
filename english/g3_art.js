@@ -69,7 +69,17 @@
     emNervous: ['g3_e_nervous', 'a boy biting his nails, a drop of sweat', '#e8f6e2'],
     csCat: ['g3_c_cat', 'an orange and white pet', '#fbf3d6'], csCoat: ['g3_c_coat', 'a purple jacket on a hanger', '#f1e8fb'], csCup: ['g3_c_cup', 'a white cup', '#e1effb'],
     csCold: ['g3_c_cold', 'a boy in a hat and scarf in the snow', ''], csCarry: ['g3_c_carry', 'a girl walking with a big box', '#e8f6e2'], csCity: ['g3_c_city', 'tall buildings', ''],
-    csIce: ['g3_c_ice', 'three clear cubes', '#e1effb'], csFace: ['g3_c_face', 'a round smiling head', '#fbeedd'], csPencil: ['g3_c_pencil', 'a yellow thing to write with', '#fbf3d6']
+    csIce: ['g3_c_ice', 'three clear cubes', '#e1effb'], csFace: ['g3_c_face', 'a round smiling head', '#fbeedd'], csPencil: ['g3_c_pencil', 'a yellow thing to write with', '#fbf3d6'],
+    /* Unit 5 · Together Is Better (owner's sheets, 13 Nov 2026) */
+    twClean: ['g3_ch_clean', 'a father and two children with a vacuum cleaner and a rug', ''], twTidy: ['g3_ch_tidy', 'a girl smoothing a white sheet', ''],
+    twShare: ['g3_ch_share', 'a girl giving food from her plate to her sister', ''], twCare: ['g3_ch_care', 'two girls hugging', '#fbe9ee'],
+    twWin: ['g3_ch_win', 'boys holding a gold cup', '#fbf3d6'], twCheer: ['g3_ch_cheer', 'a class with arms up', ''],
+    twPlant: ['g3_ch_plant', 'two girls putting a small tree in the ground', ''], twDonate: ['g3_ch_donate', 'a boy holding a box of clothes and toys', '#e1effb'],
+    avAnswer: ['g3_av_answer', 'children at desks with hands up', ''], avHelp: ['g3_av_help', 'a boy showing his friend a book', ''], avFix: ['g3_av_fix', 'two children with a screwdriver and a chair', ''],
+    avPlan: ['g3_av_plan', 'a family looking at a map with a suitcase', ''], avFind: ['g3_av_find', 'a girl taking a book from a shelf', ''],
+    gsGum: ['g3_g_gum', 'a girl blowing a pink bubble', '#fbe9ee'], gsDog: ['g3_g_dog', 'a brown and white pet', '#fbeedd'], gsGoat: ['g3_g_goat', 'a white farm animal with horns', '#e8f6e2'],
+    gsGate: ['g3_g_gate', 'a wooden door between two stone posts', ''], gsGame: ['g3_g_game', 'two children with a board and small pieces', ''], gsGarden: ['g3_g_garden', 'grass, a tree and flowers', ''],
+    gsPage: ['g3_g_page', 'an open book', '#e1effb'], gsHuge: ['g3_g_huge', 'a very big ball and a tiny boy', '#fbf3d6'], gsMagic: ['g3_g_magic', 'a black hat and a wand with sparkles', '#f1e8fb']
   };
   /* cut-out pictures used only in single-picture questions: shown whole on a pastel tint */
   const CUT = { g3_uncle: '#e1effb', g3_aunt: '#fbe9ee', g3_cousin: '#e8f6e2', g3_heavybag: '#fbf3d6', g3_blueshirt: '#e1effb', g3_kitten: '#e8f6e2', g3_babysister: '#fbe9ee',
@@ -105,6 +115,9 @@
   const sounds5 = gridFig(['sdExam', 'sdExit', 'sdPhone', 'sdPhoto', 'sdElephant'], 340, 240, 3, 100, 'Five pictures');
   const feel9 = gridFig(['emHappy', 'emSad', 'emExcited', 'emAngry', 'emShy', 'emTired', 'emBored', 'emScared', 'emNervous'], 340, 300, 3, 92, 'Nine children with different faces');
   const csound9 = gridFig(['csCat', 'csCoat', 'csCup', 'csCold', 'csCarry', 'csCity', 'csIce', 'csFace', 'csPencil'], 340, 300, 3, 92, 'Nine pictures');
+  const team8 = gridFig(['twClean', 'twTidy', 'twShare', 'twCare', 'twWin', 'twCheer', 'twPlant', 'twDonate'], 340, 180, 4, 76, 'Eight pictures of people doing things together');
+  const verbs5 = gridFig(['avAnswer', 'avHelp', 'avFix', 'avPlan', 'avFind'], 340, 240, 3, 100, 'Five pictures of people doing things');
+  const gsound9 = gridFig(['gsGum', 'gsDog', 'gsGoat', 'gsGate', 'gsGame', 'gsGarden', 'gsPage', 'gsHuge', 'gsMagic'], 340, 300, 3, 92, 'Nine pictures');
   const town6 = gridFig(['plHouse', 'plLibrary', 'plSuper', 'plPark', 'plStation', 'plMuseum'], 340, 240, 3, 100, 'Six places in a town');
   const landmarks3 = gridFig(['lmTower', 'lmLibrary', 'lmPyramids'], 340, 130, 3, 100, 'Three famous places in Egypt');
   const sounds8 = gridFig(['snBell', 'snBee', 'snGrass', 'snWell', 'snDuck', 'snSock', 'snTruck', 'snLock'], 340, 180, 4, 76, 'Eight pictures');
@@ -159,6 +172,6 @@
     return wrap(340, 170, w === 'under' ? 'A ball and a table' : 'A ball and a box', s, pic.plain);
   }
   window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { greet6, rules6, wh3, looks5, people6, feel3, routine8, daily8, photo, clock,
-    family6, help4, jobs5, celeb4, sounds5, town6, landmarks3, sounds8, prep, feel9, csound9 });
+    family6, help4, jobs5, celeb4, sounds5, town6, landmarks3, sounds8, prep, feel9, csound9, team8, verbs5, gsound9 });
   window.E3ART = { PH, CUT, tintOf, tile, photoGrid, clockFace, ringEl, hot, f1, esc, INK, FONT, IMG, prep };
 })();

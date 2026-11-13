@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Heroes · Unit 5 · Together Is Better</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261113c">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Team Heroes!</noscript>
+<script src="firebase-config.js?v=20261113c"></script>
+<script src="chapters.js?v=20261113c"></script>
+<script src="common.js?v=20261113c"></script>
+<script src="english/g3_art.js?v=20261113c"></script>
+<script src="game_kit.js?v=20261113c"></script>
+<script>
+(() => {
+'use strict';
+/* Team Heroes · the game of English Grade 3, Unit 5 "Together Is Better" (ministry book "English Primary 3", term 1, pp 82-98).
+   Built on the shared game kit (head shared with english-hello.html). Pictures: the owner's Gemini sheets (english/assets/g3_*.webp,
+   bg_eg3u5_field.jpg, 13 Nov 2026). The scene is set before every question; a story picture is asked as "which sentence matches the picture"
+   or shown with a question it does not answer.
+   Stage 1 (Warm Up): tap teamwork words (p 83).
+   Stage 2 (Missions): 1 Mona and Karim's chores (lesson 1, p 85) · 2 The bridge and hard g (lesson 2, p 87) · 3 Salma and Youssef, action verbs (pp 88-89)
+                       4 We win together! (lesson 3, pp 91-92) · 5 Hard or soft g (pp 87, 93) · 6 We help our neighborhood (lesson 4, pp 94-96).  ?m=N opens mission N.
+   Stage 3 (Speed Round): action verb or not. */
+const T = SI.T, G = SI.G, E = E3ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const tintOf = E.tintOf;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += E.tile(ph[0], 170, 80, 138, tintOf(ph[0]));
+  if (ph.length === 2) s += E.tile(ph[0], 92, 80, 134, tintOf(ph[0])) + E.tile(ph[1], 248, 80, 134, tintOf(ph[1]));
+  if (sc.clock) s = bg() + E.tile(sc.clock.src, 100, 80, 134, '') + E.clockFace(250, 82, 54, sc.clock.h);
+  if (sc.prep) s = bg() + D.prep({ pic: { w: sc.prep, plain: true } });
+  const t = sc.prep ? 160 : sc.clock ? 150 : top;
+  s += `<rect x="14" y="${t + 14}" width="312" height="${VH - t - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = t + (VH - t) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'scene') return `<image href="english/assets/${sc.img}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (m === 'grid') return bg() + `<g transform="translate(0 ${sc.dy || 30})">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = (fig, dy = 30) => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + dy, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg3u5', logo: '🤝', title: ['Team Heroes', 'أبطال الفريق'], sub: ['Unit 5 · Together Is Better', 'الوحدة 5 · معًا أفضل'],
+  bg: 'english/assets/bg_eg3u5.svg', bgc: '#fbe9ee', label: ['Chores, teamwork, action verbs, hard and soft g and helping the community', 'الأعمال المنزلية والتعاون وأفعال الحركة وحرف g بصوتيه ومساعدة المجتمع'], render, view: [VW, VH] });
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } } });
+}
+const line = (lines, ans) => lines.join(' ').replace('___', ans);
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig, dy: /8$/.test(fig) ? 60 : /3$/.test(fig) ? 85 : 30 });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig, sc.dy), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortCards(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('scene', { img: 'bg_eg3u2_home.jpg' });
+  g.say(T('Welcome to Team Heroes! Together is better. Let’s find what teams do.', P('أهلًا في «أبطال الفريق»! مع بعض أحسن. يلّا ندوّر الفريق بيعمل إيه.')), 'wave');
+  await g.next();
+  await tapIt('team8', 'twClean', 'Tap: <b>clean</b>.', 'اضغط على: ينظّف (clean).', 'Look for a vacuum cleaner.', 'دوّر على المكنسة الكهربا.', 'clean');
+  await tapIt('team8', 'twShare', 'Tap: <b>share</b>.', 'اضغط على: يشارك (share).', 'She gives some of her food.', 'بتدّي حتة من أكلها.', 'share');
+  await tapIt('team8', 'twDonate', 'Tap: <b>donate</b>.', 'اضغط على: يتبرّع (donate).', 'A box of clothes and toys to give away.', 'كرتونة هدوم ولعب هيدّيها لغيره.', 'donate');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // Having Fun, p 85
+  set('scene', { img: 'bg_eg3u2_home.jpg' });
+  g.say(T('Mission 1: Mona and Karim are at home. Their mother asks them to do some chores.', 'المهمة ١: منى وكريم في البيت. مامتهم طلبت منهم يساعدوا في شغل البيت.'), 'point'); await g.next();
+  const opts = ['They tidy up the living room.', 'They clean the table.', 'They clean the floor.'];
+  await ask('card', { photos: ['g3_mk_tidy'], lines: ['First, …'] }, 'Which sentence matches the picture?', 'أنهي جملة بتوصف الصورة؟', opts, opts[0], 'They put the cushions on the sofa.', 'بيرتّبوا المخدّات على الكنبة.', kw(opts[0]), L(opts[0]));
+  await ask('card', { photos: ['g3_mk_table'], lines: ['Then, …'] }, 'Which sentence matches the picture?', 'أنهي جملة بتوصف الصورة؟', opts, opts[1], 'Look at the cloth and the spray.', 'بص على الفوطة والبخّاخة.', kw(opts[1]), L(opts[1]));
+  await ask('card', { photos: ['g3_mk_done'], lines: ['Their mother says,', '“Good job, ___!”'] }, 'Choose the word.', 'اختار الكلمة.', ['team', 'Karim', 'house'], 'team', 'They worked together.', 'اشتغلوا مع بعض.', line(['Their mother says, “Good job, ___!”'], kw('team')), L('Good job, team!'));
+}
+async function mission2() {   // the bridge + hard g, p 87
+  set('scene', { img: 'bg_eg3u4_garden.jpg' });
+  g.say(T('Mission 2: Omar, Youssef, and Ziad went to the park. They saw a big puddle!', 'المهمة ٢: عمر ويوسف وزياد راحوا الحديقة. شافوا بركة مية كبيرة!'), 'point'); await g.next();
+  await ask('card', { photos: ['g3_br_puddle'], lines: ['It was too ___', 'to jump over.'] }, 'Choose the word.', 'اختار الكلمة.', ['big', 'good', 'green'], 'big', 'They could not jump over it.', 'مقدروش ينطّوا فوقها.', line(['It was too ___ to jump over.'], kw('big')), L('It was too big to jump over.'));
+  await ask('card', { photos: ['g3_br_wood'], lines: ['Omar found a piece of ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['wood', 'paper', 'cake'], 'wood', 'It is long and brown.', 'طويلة ولونها بنّي.', line(['Omar found a piece of ___.'], kw('wood')), L('Omar found a piece of wood.'));
+  await ask('card', { photos: ['g3_br_make'], lines: ['They made a ___ bridge.'] }, 'Choose the word.', 'اختار الكلمة.', ['good', 'big', 'green'], 'good', 'The bridge works well.', 'الكوبري شغال كويس.', line(['They made a ___ bridge.'], kw('good')), L('They made a good bridge.'));
+  await ask('card', { photos: ['g3_br_dog'], lines: ['A ___ came by', 'and wagged its tail.'] }, 'Choose the word.', 'اختار الكلمة.', ['dog', 'goat', 'cat'], 'dog', 'Look at the picture.', 'بص على الصورة.', line(['A ___ came by and wagged its tail.'], kw('dog')), L('A dog came by and wagged its tail.'));
+}
+async function mission3() {   // We Share, We Care + action verbs, pp 88-89
+  set('scene', { img: 'bg_eg3u1_class.jpg' });
+  g.say(T('Mission 3: Salma and Youssef had a project at school. At first, they couldn’t agree.', 'المهمة ٣: سلمى ويوسف كان عندهم مشروع في المدرسة. في الأول مكانوش متفقين.'), 'point'); await g.next();
+  await ask('card', { photos: ['g3_sy_ideas'], lines: ['Then, they started', 'to share ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['ideas', 'food', 'toys'], 'ideas', 'They talk about what to do.', 'بيتكلموا يعملوا إيه.', line(['Then, they started to share ___.'], kw('ideas')), L('Then, they started to share ideas.'));
+  await ask('card', { photos: ['g3_sy_work'], lines: ['Salma wrote,', 'and Youssef ___.'] }, 'Choose the past.', 'اختار الماضي.', ['drew', 'draw', 'draws'], 'drew', 'draw → drew', 'draw ماضيها drew.', line(['Salma wrote, and Youssef ___.'], kw('drew')), L('Salma wrote, and Youssef drew.'));
+  await tapIt('verbs5', 'avFix', 'They <b>fix</b> the broken chair. Tap it.', 'بيصلّحوا الكرسي المكسور (fix). اضغط عليه.', 'Look for a screwdriver.', 'دوّر على المفك.', 'They fix the broken chair.');
+  await tapIt('verbs5', 'avFind', 'Mariam <b>finds</b> a book in the library. Tap it.', 'مريم بتلاقي كتاب في المكتبة (find). اضغط عليه.', 'She takes a book from the shelf.', 'بتاخد كتاب من الرف.', 'Mariam finds a book in the library.');
+}
+async function mission4() {   // We win together! pp 91-92
+  set('scene', { img: 'bg_eg3u5_field.jpg' });
+  g.say(T('Mission 4: Omar and his friends played football at school. At first, they all wanted to score.', 'المهمة ٤: عمر وأصحابه لعبوا كورة في المدرسة. في الأول كلهم كانوا عايزين يجيبوا جون.'), 'point'); await g.next();
+  await ask('card', { photos: ['g3_fb_coach'], lines: ['Their coach said,', '“Work as a ___!”'] }, 'Choose the word.', 'اختار الكلمة.', ['team', 'goal', 'ball'], 'team', 'Play together, not alone.', 'العبوا مع بعض مش لوحدكم.', line(['Their coach said, “Work as a ___!”'], kw('team')), L('Work as a team!'));
+  await ask('card', { photos: ['g3_fb_pass'], lines: ['They started to ___ the ball', 'and help each other.'] }, 'Choose the word.', 'اختار الكلمة.', ['pass', 'plant', 'donate'], 'pass', 'Kick it to your friend.', 'شوطها لصاحبك.', line(['They started to ___ the ball and help each other.'], kw('pass')), L('They started to pass the ball.'));
+  await ask('card', { photos: ['g3_fb_cheer'], lines: ['Karim scored.', 'Everyone ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['cheered', 'cried', 'slept'], 'cheered', 'Arms up, shouting happily.', 'رافعين إيديهم وبيهتفوا.', line(['Karim scored. Everyone ___.'], kw('cheered')), L('Everyone cheered.'));
+}
+async function mission5() {   // soft or hard g, pp 87, 93
+  const buttons = [{ label: 'g = /g/', value: 'g', c: 0 }, { label: 'g = /dʒ/', value: 'j', c: 1 }];
+  const list = [['g3_g_dog', 'dog', 'g'], ['g3_g_goat', 'goat', 'g'], ['g3_g_gum', 'gum', 'g'], ['g3_g_game', 'game', 'g'], ['g3_g_garden', 'garden', 'g'],
+    ['g3_giraffe', 'giraffe', 'j'], ['g3_g_huge', 'huge', 'j'], ['g3_g_magic', 'magic', 'j'], ['g3_g_page', 'page', 'j']]
+    .map(([f, w, ans]) => ({ photos: [f], lines: [w], ans, why: ans === 'g' ? `${w}: hard g /g/.` : `${w}: g before e, i or y says /dʒ/.` }));
+  set('card', { lines: ['g + a, o, u = /g/', 'g + e, i, y = /dʒ/'] });
+  await sortCards(T('Mission 5: is g hard /g/ like dog, or soft /dʒ/ like giraffe?', 'المهمة ٥: حرف g تقيل /g/ زي dog، ولا خفيف /dʒ/ زي giraffe؟'), buttons, list);
+}
+async function mission6() {   // I help my community, pp 94-96
+  set('scene', { img: 'bg_eg3u3_street.jpg' });
+  g.say(T('Mission 6: Hady and Salma want to help their neighborhood. They work as a team.', 'المهمة ٦: هادي وسلمى عايزين يساعدوا الحي بتاعهم. بيشتغلوا كفريق.'), 'point'); await g.next();
+  const v = [['g3_cm_sweep', ['First, they ___ the street.'], ['clean', 'plant', 'donate'], 'clean', 'Look at the broom.', 'بص على المقشّة.'],
+    ['g3_cm_plant', ['Then, they ___ trees', 'near the school.'], ['plant', 'clean', 'donate'], 'plant', 'Put a tree in the ground.', 'بيحطوا شجرة في الأرض.'],
+    ['g3_cm_donate', ['After that, they ___ clothes', 'and toys to children.'], ['donate', 'plant', 'clean'], 'donate', 'Give things to help people.', 'بيدّوا حاجات تساعد الناس.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the action verb.', 'اختار فعل الحركة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+  await ask('card', { lines: ['Teamwork makes', 'the community ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['better', 'worse', 'smaller'], 'better', 'Helping is good for everyone.', 'المساعدة حلوة للكل.', line(['Teamwork makes the community ___.'], kw('better')), L('Teamwork makes the community better.'));
+}
+const MISSIONS = [mission1, mission2, mission3, mission4, mission5, mission6];
+async function stage2() {
+  const m = Math.max(1, Math.min(MISSIONS.length, parseInt(new URLSearchParams(location.search).get('m'), 10) || 1));
+  for (let i = m - 1; i < MISSIONS.length; i++) await MISSIONS[i]();
+}
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: [] });   // the Speed Round card draws its own word; no rule text behind it
+  const buttons = [{ label: 'action verb', value: 'v', c: 0 }, { label: 'not a verb', value: 'n', c: 1 }];
+  const W = [['help', 'v'], ['plan', 'v'], ['fix', 'v'], ['find', 'v'], ['agree', 'v'], ['solve', 'v'], ['plant', 'v'], ['donate', 'v'], ['cheer', 'v'],
+    ['project', 'n'], ['poster', 'n'], ['library', 'n'], ['team', 'n'], ['bridge', 'n'], ['happy', 'n']];
+  const items = W.map(([t, ans]) => ({ t, ans, why: ans === 'v' ? `${t} is something you do.` : `${t} is not something you do.` }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('Is it an action verb?', 'ده فعل حركة؟'),
+    intro: T('Speed Round! An action verb shows what someone does. Is the word an action verb? Be quick!', 'جولة السرعة! فعل الحركة بيقول الشخص بيعمل إيه. الكلمة دي فعل حركة؟ بسرعة!'),
+    think: T('verb or not?', 'فعل ولا لأ؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Help Mona and Karim at home, build a bridge in the park, work on a school project, win a match and help the neighborhood. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! ساعد منى وكريم في البيت، وابني كوبري في الحديقة، واشتغل في مشروع المدرسة، واكسب ماتش، وساعد الحي. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can talk about chores and teamwork, use action verbs, read hard and soft g, and tell how we help our community. Next, try the questions of this unit.', 'بقيت تعرف تتكلم عن شغل البيت والتعاون، وتستخدم أفعال الحركة، وتقرا حرف g بصوتيه، وتحكي إزاي بنساعد مجتمعنا. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

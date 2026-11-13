@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-13', title: 'English Grade 3 · Unit 5 «Together Is Better»',
+    items: [
+      { text: '23 ideas, 103 questions with hints: chores and teamwork, four stories, action verbs, hard and soft g, helping the community' },
+      { text: 'Owner\'s pictures in every lesson; new game Team Heroes; new garden and football scenes in Story Time', links: [{ label: 'Team Heroes', href: 'english-team.html', ch: 'eg3u5' }] }
+    ] },
   { date: '2026-11-13', title: 'English Grade 3 · Unit 4 «Let’s Tell Stories!»',
     items: [
       { text: '22 ideas, 111 questions with hints: feelings, three stories, linking words, the past tense, hard and soft c' },
