@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dream Big · Unit 6 · Dare to Dream</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261113d">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Dream Big!</noscript>
+<script src="firebase-config.js?v=20261113d"></script>
+<script src="chapters.js?v=20261113d"></script>
+<script src="common.js?v=20261113d"></script>
+<script src="english/g3_art.js?v=20261113d"></script>
+<script src="game_kit.js?v=20261113d"></script>
+<script>
+(() => {
+'use strict';
+/* Dream Big · the game of English Grade 3, Unit 6 "Dare to Dream" (ministry book "English Primary 3", term 1, pp 99-113).
+   Built on the shared game kit (head shared with english-hello.html). Pictures: the owner's Gemini sheets (english/assets/g3_*.webp,
+   bg_eg3u6_track.jpg, 13 Nov 2026). The scene is set before every question; a story picture is asked as "which sentence matches the picture"
+   or shown with a question it does not answer.
+   Stage 1 (Warm Up): tap goal words (pp 100-101).
+   Stage 2 (Missions): 1 Samer's goal (lesson 1, p 102) · 2 am / is / are + -ing (p 103) · 3 Laila and spr spl str scr (lesson 2, pp 104-105)
+                       4 Mona's bike (pp 106-107) · 5 Tamer's exam (lesson 3, p 108) · 6 Yara helps her friend (lesson 4, p 110).  ?m=N opens mission N.
+   Stage 3 (Speed Round): past or happening now (review p 117). */
+const T = SI.T, G = SI.G, E = E3ART, D = window.CH_DIAGRAMS;
+const P = (m, f) => G(m, f || m);
+const L = s => `<span dir="ltr">${s}</span>`;
+const kw = s => `<b class="kw">${s}</b>`;
+const VW = 340, VH = 300, INK = '#1f3d57', FONT = 'Nunito, Cairo, sans-serif';
+const sc = {};
+const set = (mode, o) => { for (const k in sc) delete sc[k]; Object.assign(sc, { mode, lines: [], photos: [], fill: '' }, o || {}); g.paint(); };
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${o.fs || 22}" font-weight="${o.w || 800}" fill="${o.fill || INK}">${s}</text>`;
+const bg = (c = '#fbf6e6') => `<rect width="${VW}" height="${VH}" rx="14" fill="${c}"/>`;
+const tintOf = E.tintOf;
+function cardSvg() {
+  const ph = sc.photos || [], top = ph.length ? 150 : 0;
+  let s = bg();
+  if (ph.length === 1) s += E.tile(ph[0], 170, 80, 138, tintOf(ph[0]));
+  if (ph.length === 2) s += E.tile(ph[0], 92, 80, 134, tintOf(ph[0])) + E.tile(ph[1], 248, 80, 134, tintOf(ph[1]));
+  if (sc.clock) s = bg() + E.tile(sc.clock.src, 100, 80, 134, '') + E.clockFace(250, 82, 54, sc.clock.h);
+  if (sc.prep) s = bg() + D.prep({ pic: { w: sc.prep, plain: true } });
+  const t = sc.prep ? 160 : sc.clock ? 150 : top;
+  s += `<rect x="14" y="${t + 14}" width="312" height="${VH - t - 28}" rx="18" fill="#fffaf0" stroke="#d8c9a6" stroke-width="3"/>`;
+  const n = sc.lines.length, mid = t + (VH - t) / 2 + 8, y0 = mid - (n - 1) * 16;
+  sc.lines.forEach((line, i) => {
+    const parts = String(line).split('___'), y = y0 + i * 32, len = parts.join(sc.fill || '_____').length, fs = Math.min(22, Math.floor(290 / (len * .56)));
+    if (parts.length === 1) { s += txt(170, y, line, { fs }); return; }
+    const gap = sc.fill ? `<tspan fill="#2e9e6b">${sc.fill}</tspan>` : '<tspan fill="#e2603f">_____</tspan>';
+    s += `<text x="170" y="${y}" text-anchor="middle" direction="ltr" font-family="${FONT}" font-size="${fs}" font-weight="800" fill="${INK}">${parts[0]}${gap}${parts[1]}</text>`;
+  });
+  return s;
+}
+function render() {
+  const m = sc.mode;
+  if (m === 'scene') return `<image href="english/assets/${sc.img}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (m === 'grid') return bg() + `<g transform="translate(0 ${sc.dy || 30})">${D[sc.fig]({ pic: { plain: true } })}</g>`;
+  if (m === 'card') return cardSvg();
+  return bg();
+}
+const ringsOf = (fig, dy = 30) => { const r = D[fig].rings({}); return Object.keys(r).map(id => { const [x, y, w, h] = r[id]; return { id, name: E.PH[id][1], ring: E.ringEl(x + w / 2, y + h / 2 + dy, w / 2, h / 2) }; }); };
+
+const g = G4Game({ ch: 'eg3u6', logo: '🌟', title: ['Dream Big', 'احلم بكبير'], sub: ['Unit 6 · Dare to Dream', 'الوحدة 6 · تجرّأ وأحلم'],
+  bg: 'english/assets/bg_eg3u6.svg', bgc: '#fbf3d6', label: ['Goals and dreams, the present continuous, spr spl str scr and stories of success', 'الأهداف والأحلام والمضارع المستمر وspr وspl وstr وscr وقصص النجاح'], render, view: [VW, VH] });
+async function ask(mode, o, sayEn, sayAr, options, correct, hintEn, hintAr, okEn, okAr) {
+  set(mode, o);
+  g.say(T(sayEn, sayAr), 'think');
+  await g.choice({ options, correct, hint: T(hintEn, hintAr), ok: T(okEn, okAr), reveal: () => { if (sc.lines.some(l => String(l).includes('___'))) { sc.fill = correct; g.paint(); } } });
+}
+const line = (lines, ans) => lines.join(' ').replace('___', ans);
+async function tapIt(fig, id, en, ar, hEn, hAr, ok) {
+  set('grid', { fig, dy: /8$/.test(fig) ? 60 : /3$/.test(fig) ? 85 : 30 });
+  g.say(T(en, ar), 'think');
+  await g.spot(ringsOf(fig, sc.dy), id, { hint: T(hEn, hAr), ok: T(ok, L(ok)) });
+}
+async function sortCards(intro, buttons, list) {
+  g.say(intro, 'point');
+  for (const it of g.shuffle(list)) {
+    set('card', { photos: it.photos || [], lines: it.lines });
+    await g.pick({ buttons, correct: it.ans, ok: T(`Yes! ${it.why}`, `صح! ${L(it.why)}`), no: T(`Not quite. ${it.why}`, `قرّبت. ${L(it.why)}`) });
+  }
+  g.setTray(null);
+}
+
+/* ---------- Stage 1 · Warm Up ---------- */
+async function stage1() {
+  set('scene', { img: 'bg_eg3u6_track.jpg' });
+  g.say(T('Welcome to Dream Big! Every dream needs a goal, a plan and lots of practice.', P('أهلًا في «احلم بكبير»! كل حلم محتاج هدف وخطة وتمرين كتير.')), 'wave');
+  await g.next();
+  await tapIt('dream8', 'glGoal', 'Tap: <b>goal</b>.', 'اضغط على: الهدف (goal).', 'He dreams of being a doctor.', 'بيحلم يبقى دكتور.', 'goal');
+  await tapIt('dream8', 'glPractice', 'Tap: <b>practice</b>.', 'اضغط على: يتمرّن (practice).', 'Look for a ball and cones.', 'دوّر على الكورة والأقماع.', 'practice');
+  await tapIt('dream8', 'glCelebrate', 'Tap: <b>celebrate</b>.', 'اضغط على: يحتفل (celebrate).', 'Both fists up, very happy.', 'رافعة إيديها وفرحانة قوي.', 'celebrate');
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {   // Samer's goal, pp 102-103
+  set('scene', { img: 'bg_eg3u5_field.jpg' });
+  g.say(T('Mission 1: Samer is trying to get better at football. What is he doing now?', 'المهمة ١: سامر بيحاول يتحسّن في الكورة. بيعمل إيه دلوقتي؟'), 'point'); await g.next();
+  const v = [['g3_sm_kick', ['He is ___ the ball.'], ['kicking', 'kick', 'kicked'], 'kicking', 'After is: verb + ing.', 'بعد is: الفعل + ing.'],
+    ['g3_sm_match', ['Now, he ___ playing', 'a match with his friends.'], ['is', 'am', 'are'], 'is', 'He goes with is.', 'He معاها is.'],
+    ['g3_sm_goal', ['He is scoring a goal and', 'is feeling very ___.'], ['proud', 'scared', 'bored'], 'proud', 'He did it!', 'نجح!']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission2() {   // am / is / are, p 103
+  const buttons = [{ label: 'am', value: 'am', c: 0 }, { label: 'is', value: 'is', c: 1 }, { label: 'are', value: 'are', c: 2 }];
+  const list = [[['I ___ practicing.'], 'am', 'I am practicing.'], [['Samer ___ scoring a goal.'], 'is', 'Samer is scoring a goal.'], [['The boys ___ celebrating.'], 'are', 'The boys are celebrating.'],
+    [['She ___ trying hard.'], 'is', 'She is trying hard.'], [['We ___ planning a trip.'], 'are', 'We are planning a trip.'], [['I ___ trying to be', 'a better student.'], 'am', 'I am trying to be a better student.']]
+    .map(([lines, ans, why]) => ({ lines, ans, why }));
+  set('card', { lines: ['am / is / are + verb-ing', 'Samer is scoring a goal.'] });
+  await sortCards(T('Mission 2: things happening now: am, is or are + verb-ing.', 'المهمة ٢: حاجات بتحصل دلوقتي: am أو is أو are + الفعل بـ ing.'), buttons, list);
+}
+async function mission3() {   // Laila's spring day + clusters, pp 104-105
+  set('scene', { img: 'bg_eg3u4_garden.jpg' });
+  g.say(T('Mission 3: it is spring, and Laila is playing outside. Words like spring and splash start with three consonants.', 'المهمة ٣: الربيع، وليلى بتلعب برّه. كلمات زي spring وsplash بتبدأ بـ ٣ حروف ساكنة.'), 'point'); await g.next();
+  await ask('card', { photos: ['g3_la_spray'], lines: ['It makes a big ___ ash!'] }, 'Which letters are missing?', 'أنهي حروف ناقصة؟', ['spl', 'spr', 'str'], 'spl', 'Water makes a big splash.', 'المية بتعمل splash.', `${kw('spl')}ash`, L('splash'));
+  await tapIt('cluster6', 'clStreet', 'Tap: <b>street</b>.', 'اضغط على الشارع (street).', 'Cars drive on it.', 'العربيات بتمشي فيه.', 'street');
+  await tapIt('cluster6', 'clString', 'Tap: <b>string</b>.', 'اضغط على الخيط (string).', 'A red ball of thin thread.', 'كورة خيط حمرا.', 'string');
+  await ask('card', { photos: ['g3_la_screen'], lines: ['She watches a funny cartoon', 'on the ___ een.'] }, 'Which letters are missing?', 'أنهي حروف ناقصة؟', ['scr', 'str', 'spl'], 'scr', 'A TV or a tablet has one.', 'التليفزيون والتابلت فيهم واحدة.', `${kw('scr')}een`, L('screen'));
+}
+async function mission4() {   // Mona's bike, pp 106-107
+  set('scene', { img: 'bg_eg3u4_garden.jpg' });
+  g.say(T('Mission 4: Mona is learning how to ride her red bike. She is practicing every day.', 'المهمة ٤: منى بتتعلم تركب عجلتها الحمرا. بتتمرّن كل يوم.'), 'point'); await g.next();
+  const opts = ['She is holding the bike and walking with it.', 'She is pushing her feet on the pedals.', 'She is riding around the garden path.'];
+  await ask('card', { photos: ['g3_mb_hold'], lines: ['First, …'] }, 'Which sentence matches the picture?', 'أنهي جملة بتوصف الصورة؟', opts, opts[0], 'Is she on the bike?', 'هي راكبة العجلة؟', kw(opts[0]), L(opts[0]));
+  await ask('card', { photos: ['g3_mb_pedal'], lines: ['Then, …'] }, 'Which sentence matches the picture?', 'أنهي جملة بتوصف الصورة؟', opts, opts[1], 'She is on the bike, but not sure yet.', 'راكبة بس لسه مش واثقة.', kw(opts[1]), L(opts[1]));
+  await ask('card', { photos: ['g3_mb_ride'], lines: ['Now, …'] }, 'Which sentence matches the picture?', 'أنهي جملة بتوصف الصورة؟', opts, opts[2], 'She rides happily.', 'بتركب وهي فرحانة.', kw(opts[2]), L(opts[2]));
+  await ask('card', { photos: ['g3_mb_proud'], lines: ['Practice brings ___.'] }, 'Choose the word.', 'اختار الكلمة.', ['success', 'rain', 'sleep'], 'success', 'She did it!', 'نجحت!', line(['Practice brings ___.'], kw('success')), L('Practice brings success.'));
+}
+async function mission5() {   // Tamer, p 108
+  set('scene', { img: 'bg_eg3u1_class.jpg' });
+  g.say(T('Mission 5: Tamer studied hard every day for his math exam.', 'المهمة ٥: تامر ذاكر كويس كل يوم لامتحان الرياضيات.'), 'point'); await g.next();
+  const v = [['g3_tm_nervous', ['On the exam day,', 'he felt ___.'], ['nervous', 'bored', 'excited'], 'nervous', 'Look at his face.', 'بص على وشه.'],
+    ['g3_tm_answer', ['Then, he ___', 'all the questions.'], ['answered', 'answer', 'answers'], 'answered', 'It happened in the past: -ed.', 'حصلت في الماضي: ed.'],
+    ['g3_tm_family', ['He celebrated with', 'his ___ at home.'], ['family', 'coach', 'teacher'], 'family', 'Who is at home with him?', 'مين معاه في البيت؟']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+async function mission6() {   // Yara, p 110
+  set('scene', { img: 'bg_eg3u6_track.jpg' });
+  g.say(T('Mission 6: Yara is a fast runner. One day, her friend needed help getting ready for a race.', 'المهمة ٦: يارا بتجري بسرعة. في يوم صاحبتها احتاجت مساعدة تستعد لسباق.'), 'point'); await g.next();
+  const v = [['g3_ya_show', ['Yara ___ her how to run', 'and practice.'], ['showed', 'shows', 'show'], 'showed', 'It happened in the past: -ed.', 'حصلت في الماضي: ed.'],
+    ['g3_ya_together', ['They ___ together', 'every day.'], ['ran', 'run', 'runs'], 'ran', 'run is a special verb: run → ran.', 'run فعل خاص: ماضيه ran.'],
+    ['g3_ya_cheer', ['They both celebrated', 'their ___ with big cheers.'], ['success', 'problem', 'exam'], 'success', 'Her friend ran well.', 'صاحبتها جريت كويس.']];
+  for (const [f, lines, opts, ans, hEn, hAr] of v) await ask('card', { photos: [f], lines }, 'Choose the word.', 'اختار الكلمة.', opts, ans, hEn, hAr, line(lines, kw(ans)), L(line(lines, ans)));
+}
+const MISSIONS = [mission1, mission2, mission3, mission4, mission5, mission6];
+async function stage2() {
+  const m = Math.max(1, Math.min(MISSIONS.length, parseInt(new URLSearchParams(location.search).get('m'), 10) || 1));
+  for (let i = m - 1; i < MISSIONS.length; i++) await MISSIONS[i]();
+}
+
+/* ---------- Stage 3 · Speed Round ---------- */
+async function stage3() {
+  set('card', { lines: [] });   // the Speed Round card draws its own word; no rule text behind it
+  const buttons = [{ label: 'past', value: 'p', c: 0 }, { label: 'now', value: 'n', c: 1 }];
+  const W = [['Yesterday, I watched a cartoon.', 'p'], ['Last week, we visited the zoo.', 'p'], ['Last night, my dad cooked dinner.', 'p'], ['Tamer answered all the questions.', 'p'], ['Yara showed her friend how to run.', 'p'],
+    ['Look! The cat is jumping.', 'n'], ['Hani is reading a book right now.', 'n'], ['Samer is scoring a goal.', 'n'], ['Now, she is eating her lunch.', 'n'], ['The boys are celebrating.', 'n']];
+  const items = W.map(([t, ans]) => ({ t, ans, why: ans === 'p' ? 'Past: -ed or a special verb.' : 'Now: am / is / are + verb-ing.' }));
+  await g.speedRound({ items, buttons, rounds: 8, ask: T('Past or now?', 'ماضي ولا دلوقتي؟'),
+    intro: T('Speed Round! Is it the past (played, ran) or happening now (is playing)? Be quick!', 'جولة السرعة! الجملة في الماضي (played وran) ولا بتحصل دلوقتي (is playing)؟ بسرعة!'),
+    think: T('past or now?', 'ماضي ولا دلوقتي؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Follow Samer, Laila, Mona, Tamer and Yara as they reach their goals. Three stages: Warm Up, Missions and a Speed Round.`,
+    `أهلًا يا <b>${g.name()}</b>! تابع سامر وليلى ومنى وتامر ويارا وهم بيحققوا أهدافهم. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You can talk about goals and dreams, use the present continuous, read spr, spl, str and scr words, and tell stories of success. Next, try the questions of this unit.', 'بقيت تعرف تتكلم عن الأهداف والأحلام، وتستخدم المضارع المستمر، وتقرا كلمات فيها spr وspl وstr وscr، وتحكي قصص النجاح. جرّب بعد كده أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>

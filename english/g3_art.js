@@ -79,7 +79,15 @@
     avPlan: ['g3_av_plan', 'a family looking at a map with a suitcase', ''], avFind: ['g3_av_find', 'a girl taking a book from a shelf', ''],
     gsGum: ['g3_g_gum', 'a girl blowing a pink bubble', '#fbe9ee'], gsDog: ['g3_g_dog', 'a brown and white pet', '#fbeedd'], gsGoat: ['g3_g_goat', 'a white farm animal with horns', '#e8f6e2'],
     gsGate: ['g3_g_gate', 'a wooden door between two stone posts', ''], gsGame: ['g3_g_game', 'two children with a board and small pieces', ''], gsGarden: ['g3_g_garden', 'grass, a tree and flowers', ''],
-    gsPage: ['g3_g_page', 'an open book', '#e1effb'], gsHuge: ['g3_g_huge', 'a very big ball and a tiny boy', '#fbf3d6'], gsMagic: ['g3_g_magic', 'a black hat and a wand with sparkles', '#f1e8fb']
+    gsPage: ['g3_g_page', 'an open book', '#e1effb'], gsHuge: ['g3_g_huge', 'a very big ball and a tiny boy', '#fbf3d6'], gsMagic: ['g3_g_magic', 'a black hat and a wand with sparkles', '#f1e8fb'],
+    /* Unit 6 · Dare to Dream (owner's sheets, 13 Nov 2026) */
+    glGoal: ['g3_gl_goal', 'a boy in a white coat dreaming of being grown up', ''], glTry: ['g3_gl_try', 'a girl swimming hard in a pool', ''],
+    glStep: ['g3_gl_step', 'a boy climbing up big books like stairs', ''], glPlan: ['g3_gl_plan', 'a girl in a helmet with a clipboard pointing at a drawing of a building', ''],
+    glPractice: ['g3_gl_practice', 'a boy with a ball and orange cones', ''], glCelebrate: ['g3_gl_celebrate', 'a girl at her desk with both fists up', ''],
+    glSuccess: ['g3_gl_success', 'three children with hands together high in the air', ''], glReach: ['g3_gl_reach', 'a boy making a circle with his fingers', ''],
+    clSpring: ['g3_cl_spring', 'a tree with pink flowers', ''], clString: ['g3_cl_string', 'a red ball of thin thread', '#fbe9ee'],
+    clStreet: ['g3_cl_street', 'a road with houses and white stripes', ''], clScratch: ['g3_cl_scratch', 'a cat with its paws on a post', '#fbf3d6'],
+    clScreen: ['g3_la_screen', 'a girl holding a tablet with a smiling face', ''], clSplash: ['g3_la_spray', 'a girl with a hose and lots of water', '']
   };
   /* cut-out pictures used only in single-picture questions: shown whole on a pastel tint */
   const CUT = { g3_uncle: '#e1effb', g3_aunt: '#fbe9ee', g3_cousin: '#e8f6e2', g3_heavybag: '#fbf3d6', g3_blueshirt: '#e1effb', g3_kitten: '#e8f6e2', g3_babysister: '#fbe9ee',
@@ -118,6 +126,8 @@
   const team8 = gridFig(['twClean', 'twTidy', 'twShare', 'twCare', 'twWin', 'twCheer', 'twPlant', 'twDonate'], 340, 180, 4, 76, 'Eight pictures of people doing things together');
   const verbs5 = gridFig(['avAnswer', 'avHelp', 'avFix', 'avPlan', 'avFind'], 340, 240, 3, 100, 'Five pictures of people doing things');
   const gsound9 = gridFig(['gsGum', 'gsDog', 'gsGoat', 'gsGate', 'gsGame', 'gsGarden', 'gsPage', 'gsHuge', 'gsMagic'], 340, 300, 3, 92, 'Nine pictures');
+  const dream8 = gridFig(['glGoal', 'glTry', 'glStep', 'glPlan', 'glPractice', 'glCelebrate', 'glSuccess', 'glReach'], 340, 180, 4, 76, 'Eight pictures of children with dreams');
+  const cluster6 = gridFig(['clSpring', 'clString', 'clStreet', 'clScratch', 'clScreen', 'clSplash'], 340, 240, 3, 100, 'Six pictures');
   const town6 = gridFig(['plHouse', 'plLibrary', 'plSuper', 'plPark', 'plStation', 'plMuseum'], 340, 240, 3, 100, 'Six places in a town');
   const landmarks3 = gridFig(['lmTower', 'lmLibrary', 'lmPyramids'], 340, 130, 3, 100, 'Three famous places in Egypt');
   const sounds8 = gridFig(['snBell', 'snBee', 'snGrass', 'snWell', 'snDuck', 'snSock', 'snTruck', 'snLock'], 340, 180, 4, 76, 'Eight pictures');
@@ -172,6 +182,6 @@
     return wrap(340, 170, w === 'under' ? 'A ball and a table' : 'A ball and a box', s, pic.plain);
   }
   window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { greet6, rules6, wh3, looks5, people6, feel3, routine8, daily8, photo, clock,
-    family6, help4, jobs5, celeb4, sounds5, town6, landmarks3, sounds8, prep, feel9, csound9, team8, verbs5, gsound9 });
+    family6, help4, jobs5, celeb4, sounds5, town6, landmarks3, sounds8, prep, feel9, csound9, team8, verbs5, gsound9, dream8, cluster6 });
   window.E3ART = { PH, CUT, tintOf, tile, photoGrid, clockFace, ringEl, hot, f1, esc, INK, FONT, IMG, prep };
 })();

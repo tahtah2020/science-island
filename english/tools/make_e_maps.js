@@ -150,3 +150,6 @@ build('eg3u4', badge3(120, 880, 1.4, 'g3_ct_pull') + badge3(1010, 250, 1.4, 'g3_
 const TEAM3 = { blobs: ['#fbe9ee', '#e8f6e2', '#fbf3d6', '#e1effb'], land: [[0, '#fbe9ee'], [.5, '#e3efc4'], [1, '#e8f6e2']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#f8dfe6', '#fdf3dc', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#f0c3cf'] };
 build('eg3u5', badge3(120, 880, 1.4, 'g3_mk_done') + badge3(1010, 250, 1.4, 'g3_fb_cheer') + badge3(190, 330, 1.4, 'g3_g_dog', '#fbeedd') + badge3(640, 1150, 1.3, 'g3_g_magic', '#f1e8fb') + badge3(1060, 640, 1.4, 'g3_cm_plant') + badge3(150, 600, 1.2, 'g3_ch_win', '#fbf3d6'),
   `${badge3(300, 760, 1.9, 'g3_br_cross')}${badge3(760, 770, 1.7, 'g3_sy_work')}${badge3(1180, 770, 1.8, 'g3_cm_sweep')}`, TEAM3);
+const DREAM3 = { blobs: ['#fbf3d6', '#fbe7d0', '#e8f6e2', '#e1effb'], land: [[0, '#fbf3d6'], [.5, '#e3efc4'], [1, '#fbe7d0']], sand: ['#f3e6b8', '#f6efd2'], sky: ['#fbd9b0', '#fdf3dc', '#e4f1c8'], hill: ['#bfe3a0', '#a9d68a', '#f6c98f'] };
+build('eg3u6', badge3(120, 880, 1.4, 'g3_gl_success') + badge3(1010, 250, 1.4, 'g3_sm_goal') + badge3(190, 330, 1.4, 'g3_gl_goal') + badge3(640, 1150, 1.3, 'g3_cl_string', '#fbe9ee') + badge3(1060, 640, 1.4, 'g3_mb_ride') + badge3(150, 600, 1.2, 'g3_gl_reach'),
+  `${badge3(300, 760, 1.9, 'g3_ya_finish')}${badge3(760, 770, 1.7, 'g3_tm_marks')}${badge3(1180, 770, 1.8, 'g3_la_spray')}`, DREAM3);

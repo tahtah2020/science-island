@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-13', title: 'English Grade 3 · Unit 6 «Dare to Dream» — the whole term-1 book is on the site',
+    items: [
+      { text: '26 ideas, 124 questions with hints: goals and dreams, five stories, present continuous, spr spl str scr, and the review of Units 4-6' },
+      { text: 'Owner\'s pictures in every lesson; new game Dream Big', links: [{ label: 'Dream Big', href: 'english-dream.html', ch: 'eg3u6' }] }
+    ] },
   { date: '2026-11-13', title: 'English Grade 3 · Unit 5 «Together Is Better»',
     items: [
       { text: '23 ideas, 103 questions with hints: chores and teamwork, four stories, action verbs, hard and soft g, helping the community' },
