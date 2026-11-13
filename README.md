@@ -483,3 +483,6 @@ From the English school book, pages 80-91 (three lessons with Try and Exercise, 
 
 ## Subjects per grade (10 Nov 2026)
 `grades: [...]` on a subject in `window.SUBJECTS` limits its tab to those grades (`SI.subjects()` filters by the player's grade; a stored subject the grade does not study falls back). Grade 3: Math, English, Discover «اكتشف» (`discover`, grades g1-g3, no units yet, folder `discover/` when the first unit is built). Science and Social Studies: g4 and up. progress.html shows «—» for a subject not studied in a grade.
+
+### Share your result «شارك نتيجتك» (13 Nov 2026)
+Every results panel (kit games `game_kit.js` `results()`, `quiz.html` `results()` for Quest/Daily/Review) shows a green button from `SI.shareBtn()`, wired by `SI.wireShare(panel, { stars, score, ch })`. `SI.share()` draws a 1080×1080 card (`SI.shareCard`: Reesho, child's first name, unit, subject · grade, stars, points, motafawek.com) and opens the phone's share sheet with the picture + text; without `navigator.share` it opens a `wa.me` link with the text. Link: `https://motafawek.com/?utm_source=share&utm_medium=result&utm_campaign=share_result`. GA event `share_result` (`method`: native_image / native_text / whatsapp_link, `stars`). Not yet on adventures (`math-cage.html`) or the Exam Hall.

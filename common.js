@@ -1517,11 +1517,62 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const fishState = () => { const p = prof(); return (p.xp || 0) < NET_MIN_XP ? 'egg' : inNet(p) ? 'net' : (p.lx || '') === today() ? 'fed' : 'hungry'; };
   const fishLine = () => ({ egg: T('Your egg is waiting 🥚', 'بيضتك مستنياك 🥚'), net: T('Your fish is in a net! 🕸', 'سمكتك في الشبكة! 🕸'),
     fed: T('Your fish ate today 🍤', 'سمكتك أكلت النهارده 🍤'), hungry: T('Your fish is hungry 😋', 'سمكتك جعانة 😋') })[fishState()];
+
+  /* «شارك نتيجتك» (13 Nov 2026): a result card (picture) the child sends on WhatsApp. Each share brings a new visitor.
+     Phones: the system share sheet with the picture + text; others: a wa.me link with the text. GA event share_result. */
+  const SHARE_URL = 'https://motafawek.com/?utm_source=share&utm_medium=result&utm_campaign=share_result';
+  function shareText({ stars = 0, score = 0, ch }) {
+    const p = player() || {}, name = (p.name || '').trim(), t = chTitle(ch || chapterById(prof().cur)), st = '⭐'.repeat(stars);
+    return T(`I${name ? ' (' + name + ')' : ''} finished “${t}” on Motafawek${st ? ' and got ' + st : ''} with ${score} points! Play and learn free with Reesho:`,
+      `أنا${name ? ' ' + name : ''} خلّصت «${t}» في متفوّق${st ? ' وأخدت ' + st : ''} و${score} نقطة! العب وذاكر مجانًا مع ريشو:`);
+  }
+  async function shareCard({ stars = 0, score = 0, ch }) {
+    const W = 1080, cv = document.createElement('canvas'); cv.width = cv.height = W;
+    const x = cv.getContext('2d'), p = player() || {}, c = ch || chapterById(prof().cur), AR = isAr();
+    try { await Promise.race([document.fonts.load('900 60px Cairo'), new Promise(r => setTimeout(r, 1500))]); } catch (e) {}
+    const F = (w, n) => `${w} ${n}px Cairo, Nunito, sans-serif`;
+    const bg = x.createLinearGradient(0, 0, 0, W); bg.addColorStop(0, '#bfe8d6'); bg.addColorStop(1, '#fff6e3');
+    x.fillStyle = bg; x.fillRect(0, 0, W, W);
+    x.fillStyle = 'rgba(255,250,240,.95)'; x.beginPath(); x.roundRect ? x.roundRect(60, 330, W - 120, 560, 48) : x.rect(60, 330, W - 120, 560); x.fill();
+    x.direction = AR ? 'rtl' : 'ltr'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillStyle = '#1f3d57'; x.font = F(900, 64); x.fillText(T('Motafawek', 'متفوّق'), W / 2, 80);
+    try {
+      const img = new Image(); img.src = 'assets/parrot_celebrate.png';
+      await new Promise((ok, no) => { img.onload = ok; img.onerror = no; setTimeout(no, 2500); });
+      const h = 210, w = h * img.naturalWidth / img.naturalHeight; x.drawImage(img, W / 2 - w / 2, 120, w, h);
+    } catch (e) {}
+    const fit = (txt, size, y, col, wt = 900) => { let n = size; do { x.font = F(wt, n); n -= 2; } while (x.measureText(txt).width > W - 200 && n > 24); x.fillStyle = col; x.fillText(txt, W / 2, y); };
+    fit(p.name ? T(`${p.name} did it!`, G(`${p.name} خلّص`, `${p.name} خلّصت`)) : T('Done!', 'خلّصت!'), 72, 420, '#1f3d57');
+    fit(`«${chTitle(c)}»`, 56, 520, '#23799f');
+    fit(`${subjectName ? subjectName() : ''} · ${gradeName(p.grade)}`, 38, 595, '#3a5c75', 700);
+    x.font = F(400, 110); x.fillStyle = '#f2b134'; x.direction = 'ltr';
+    x.fillText('★'.repeat(stars) + '☆'.repeat(Math.max(0, 3 - stars)), W / 2, 705);
+    x.direction = AR ? 'rtl' : 'ltr';
+    fit(T(`${score} points`, `${score} نقطة`), 50, 820, '#2e9e6b');
+    fit(T('Play free: motafawek.com', 'العب مجانًا: motafawek.com'), 46, 970, '#e2603f');
+    return new Promise(r => cv.toBlob(r, 'image/png'));
+  }
+  async function share(opts = {}) {
+    const text = shareText(opts); let method = 'whatsapp_link';
+    try {
+      if (navigator.share) {
+        let file = null;
+        try { const b = await shareCard(opts); if (b) file = new File([b], 'motafawek.png', { type: 'image/png' }); } catch (e) {}
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) { method = 'native_image'; await navigator.share({ files: [file], text: text + ' ' + SHARE_URL }); }
+        else { method = 'native_text'; await navigator.share({ text, url: SHARE_URL }); }
+      } else window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + SHARE_URL), '_blank', 'noopener');
+      ga('share_result', { method, stars: opts.stars || 0 });
+      return method;
+    } catch (e) { return e && e.name === 'AbortError' ? 'cancelled' : 'failed'; }
+  }
+  /* the button for a results panel: wireShare(panel, { stars, score }) after the panel is in the page */
+  const shareBtn = () => `<button class="btn share" type="button" data-share style="background:#2e9e6b;color:#fff;box-shadow:0 4px 0 #1f7a50;margin:6px auto 2px">📤 ${T('Share your result', G('شارك نتيجتك', 'شاركي نتيجتك'))}</button>`;
+  function wireShare(root, opts) { const b = root && root.querySelector('[data-share]'); if (b) b.onclick = () => share(opts); }
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, bankXP, repeatRate, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, weekXP, countBoss, badges, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
-    gender, G, setGender, visit, greet, bye, VOICE_TEXT, navMenu, NET_DAYS, NET_STRINGS, inNet, checkNet, freeNet, fishState, fishLine };
+    gender, G, setGender, share, shareText, shareCard, shareBtn, wireShare, visit, greet, bye, VOICE_TEXT, navMenu, NET_DAYS, NET_STRINGS, inNet, checkNet, freeNet, fishState, fishLine };
   try { checkNet(); } catch (e) {}
   applyLang();
   sync.auto();

@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-13', title: 'زر «شارك نتيجتك»',
+    items: [
+      { text: 'بعد كل لعبة أو تحدٍّ أو مراجعة يظهر زر أخضر يصنع بطاقة نتيجة فيها ريشو واسم الطفل والنجوم والنقاط ورابط الموقع، ويفتح المشاركة على واتساب' }
+    ] },
   { date: '2026-11-13', title: 'صفحات الدروس: أسئلة يبحث عنها الطلاب',
     items: [
       { text: 'أربع صفحات دروس تبدأ الآن بالسؤال الذي يكتبه الطلاب في جوجل وإجابته من الكتاب: تجميع الضوء (علوم ٤)، الشمس والاتجاهات (دراسات ٤)، العضلات (علوم ٥)، وظيفة اللعاب (علوم ٦)' }

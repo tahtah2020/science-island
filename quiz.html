@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261113e{{{"></script>
-<script src="chapters.js?v=20261113e{{{"></script>
-<script src="common.js?v=20261113e{{{"></script>
+<script src="firebase-config.js?v=20261113f{{{"></script>
+<script src="chapters.js?v=20261113f{{{"></script>
+<script src="common.js?v=20261113f{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -1421,6 +1421,7 @@ async function results(kind, res, total, extraXP = 0) {
     ${kind === 'quest' ? `<div class="stars" aria-label="${T(`${stars} of 3 stars`, `${stars} من ٣ نجوم`)}">${'★'.repeat(stars)}<span class="off">${'★'.repeat(3 - stars)}</span></div>` : ''}
     <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Right first time', 'صح من أول مرة')}: ${res.firstRight} / ${total}</span>${kind === 'quest' ? `<span>${T('Best', 'أعلى نتيجة')}: ${bestScore}</span>` : ''}${extraXP ? `<span>🔥 ${T('Daily bonus', 'مكافأة اليوم')} +${extraXP}</span>` : ''}</div>
     ${levelBlock(gain)}
+    ${SI.shareBtn()}
     <p class="rank" id="rank">${T('Saving your points…', 'بنحفظ نقاطك…')}</p>
     <p>${res.missed.length ? T(`Reesho saved <b>${res.missed.length}</b> tricky question${res.missed.length > 1 ? 's' : ''} for your review.`, `ريشو حفظ لك <b>${res.missed.length}</b> سؤال صعب علشان تراجعه.`) : T('Perfect! Come back tomorrow for your Daily 5.', G('ممتاز! ارجع بكرة لخماسية اليوم.', 'ممتاز! ارجعي بكرة لخماسية اليوم.'))}</p>
     <div class="row acts">
@@ -1430,6 +1431,7 @@ async function results(kind, res, total, extraXP = 0) {
       <button class="btn" type="button" id="again">${T('Play again', 'العب تاني')}</button>
     </div></div>`);
   document.body.appendChild(o);
+  SI.wireShare(o, { stars, score, ch: CH });
   SI.rate.guard(o, 'a[href="map.html"], a[href="champions.html"]', 'results');   // Reesho asks for a rating before the player leaves (once per chapter)
   $('#again', o).onclick = () => location.reload();
   if (levelUp) { setTimeout(() => { sfx.level(); SI.voice('level'); banner(T('Level up!', 'مستوى جديد!'), `${T('Level', 'المستوى')} ${gain.after.n} · ${gain.after.title}`); }, 900); }
