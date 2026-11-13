@@ -147,6 +147,45 @@ fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
 
 const FULL = [];             // every page's Q&A, written to llms-full.txt
+
+/* ---------- questions students actually type (Search Console, 13 Nov 2026) ----------
+   slug -> { title, faq: [[question as searched, answer from the book's own text]] }.
+   The searched question goes first in the title and at the top of the page; answers are the book's words only. */
+const SEARCHED = {
+  'science-g4-g4c4-l2': {
+    title: 'ماذا يحدث عند تجميع ضوء الشمس بعدسة مكبرة؟ أسئلة درس تجميع الضوء علوم الصف الرابع الابتدائي | متفوّق',
+    faq: [
+      ['ماذا يحدث عند تجميع ضوء الشمس بعدسة مكبرة في نقطة صغيرة على ورقة سوداء؟', 'تصبح نقطة الضوء أكثر سطوعًا وأكثر حرارة، وبعد فترة يخرج دخان من المكان الذي يسقط عليه الضوء، وقد تبدأ الورقة في الاحتراق.'],
+      ['ماذا يحدث لشدة الإضاءة والحرارة عند تجميع ضوء الشمس بعدسة مكبرة؟', 'تزداد شدة الإضاءة (السطوع) وتزداد الحرارة؛ وكلما صغرت نقطة الضوء المجمَّعة ارتفعت درجة الحرارة أكثر.'],
+      ['ماذا يحدث إذا صغرت نقطة ضوء الشمس المجمعة بالعدسة المكبرة؟', 'كلما صغرت النقطة أصبحت أكثر سطوعًا وأكثر حرارة.'],
+      ['ما المقصود بتجميع الضوء؟', 'باستخدام العدسة المكبرة يمكن تجميع ضوء الشمس القادم من مساحة واسعة في نقطة واحدة.'],
+      ['اذكر شيئين يجب عدم القيام بهما عند أداء تجربة تجميع الضوء.', 'لا تنظر مباشرة إلى الشمس باستخدام عدسة مكبرة لأن ذلك سيؤذي عينيك، ولا تركز ضوء الشمس على أجسام الناس أو ملابسهم أو الكائنات الحية فقد يسبب ذلك حروقًا أو حريقًا. ولا تنظر إلى نقطة الضوء المجمَّعة لفترة طويلة.']
+    ]
+  },
+  'studies-g4-sg4u1-l1': {
+    title: 'ما العلاقة بين الشمس والاتجاهات؟ أسئلة درس الأماكن والاتجاهات دراسات الصف الرابع الابتدائي | متفوّق',
+    faq: [
+      ['ما العلاقة بين الشمس والاتجاهات؟', 'تشرق الشمس كل صباح من الشرق؛ فعندما نقف مواجهين للشمس عند شروقها نكون متجهين نحو الشرق، ويكون الغرب خلفنا، والجنوب على يميننا، والشمال على يسارنا.'],
+      ['كيف نحدد الاتجاهات الأصلية باستخدام الشمس؟', 'نقف مواجهين للشمس عند شروقها: أمامنا الشرق، وخلفنا الغرب، وعلى يميننا الجنوب، وعلى يسارنا الشمال.'],
+      ['ما الاتجاهات الأصلية؟', 'أربعة اتجاهات: الشمال والجنوب والشرق والغرب.']
+    ]
+  },
+  'science-g5-ch1-l1': {
+    title: 'ماذا تفعل العضلة بالعظم عندما تنقبض؟ أسئلة درس العظام والعضلات علوم الصف الخامس الابتدائي | متفوّق',
+    faq: [
+      ['ماذا تفعل العضلة بالعظم المرتبط بها عندما تنقبض؟', 'العضلة المنقبضة تشد (تسحب) العظمة فتتحرك.'],
+      ['لماذا يستطيع جسم الإنسان أن يتحرك؟', 'لأن العضلات تنقبض وتنبسط، والعضلة المنقبضة تشد العظمة.']
+    ]
+  },
+  'science-g6-g6c3-l2': {
+    title: 'ما وظيفة اللعاب في الفم؟ أسئلة درس وظيفة اللعاب علوم الصف السادس الابتدائي | متفوّق',
+    faq: [
+      ['ما وظيفة اللعاب في الفم؟', 'يكسِّر اللعاب النشا الموجود في بعض أنواع الطعام (كالأرز أو الخبز)، ويحوِّله إلى مادة أخرى يسهل على الجسم هضمها.']
+    ]
+  }
+};
+const searchedHtml = f => `<h2>أسئلة يبحث عنها الطلاب عن هذا الدرس</h2>\n` + f.map(([q, a]) => `<section class="q">\n<h3>${esc(q)}</h3>\n<div class="ans">الإجابة: ${esc(a)}</div>\n</section>`).join('\n');
+
 const pages = [];            // { url, priority }
 const hubs = {};             // 'subject-grade' -> { subject, grade, units: [...] }
 let skipped = [];
@@ -180,11 +219,13 @@ for (const c of CHAPTERS) {
     unit.lessons.push({ n, name: lessonName, url });
 
     const gradeAr = GRADES[g], subAr = subjAr(s), uw = unitWord(c);
-    const title = `أسئلة على درس ${lessonName} ${subAr} ${gradeAr} ترم أول 2027 بالإجابات | متفوّق`;
+    const S = SEARCHED[slug];
+    const title = S ? S.title : `أسئلة على درس ${lessonName} ${subAr} ${gradeAr} ترم أول 2027 بالإجابات | متفوّق`;
     /* lead the description with a real question + its answer: people search the question text, and the snippet can answer it */
     const quick = items[0] ? (items[0].filled || (items[0].q + ' الإجابة: ' + items[0].a)).replace(/\s+/g, ' ').replace(/[.。\s]+$/, '').trim() : '';
     const quickShort = quick.length > 110 ? '' : quick;
-    const desc = `${quickShort ? quickShort + '. ' : ''}أسئلة تدريبية بالإجابات على درس ${lessonName} من ${uw} ${c.titleAr} في ${subAr} ${gradeAr} (المنهج المصري، الترم الأول)، ثم العب واختبر نفسك مع ريشو.`;
+    const lead1 = S ? (S.faq[0][0] + ' الإجابة: ' + S.faq[0][1]) : '';
+    const desc = S ? `${lead1} أسئلة بالإجابات على درس ${lessonName} في ${subAr} ${gradeAr}، الترم الأول.` : `${quickShort ? quickShort + '. ' : ''}أسئلة تدريبية بالإجابات على درس ${lessonName} من ${uw} ${c.titleAr} في ${subAr} ${gradeAr} (المنهج المصري، الترم الأول)، ثم العب واختبر نفسك مع ريشو.`;
     const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [lessonName, null]];
 
     const qHtml = items.map((it, i) => `<section class="q">
@@ -199,7 +240,8 @@ ${it.why ? `<p class="why">${esc(it.why)}</p>` : ''}
 <h1>أسئلة على درس ${esc(lessonName)} ${esc(subAr)} ${esc(gradeAr)} – ترم أول</h1>
 <p class="lead">هذه الصفحة للطالب وولي الأمر: أسئلة تدريبية بإجاباتها على درس <strong>${esc(lessonName)}</strong> من ${uw} «${esc(c.titleAr)}» في ${esc(subAr)} ${esc(gradeAr)}، للمنهج المصري. جرّب أن تجيب أولًا ثم اقرأ الإجابة.</p>
 <a class="cta" href="/index.html">العب هذا الدرس مع ريشو</a>
-${items.length ? `<p class="lead"><strong>الخلاصة:</strong> ${esc(items[0].filled || (items[0].q + ' الإجابة: ' + items[0].a))}.</p>` : ''}
+${S ? searchedHtml(S.faq) : ''}
+${!S && items.length ? `<p class="lead"><strong>الخلاصة:</strong> ${esc(items[0].filled || (items[0].q + ' الإجابة: ' + items[0].a))}.</p>` : ''}
 ${concepts.length ? `<h2>أهم ما يغطيه الدرس</h2>\n<ul class="links">${concepts.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
 <h2>أسئلة تدريبية بالإجابات</h2>
 ${qHtml}
@@ -210,7 +252,7 @@ ${qHtml}
       { '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG,
       breadcrumbSchema(bc),
       { '@type': 'WebPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY, about: `${lessonName} - ${subAr} - ${gradeAr}`, ...EDU, educationalLevel: gradeAr, teaches: concepts },
-      { '@type': 'FAQPage', mainEntity: items.map(it => ({ '@type': 'Question', name: it.q, acceptedAnswer: { '@type': 'Answer', text: it.a + (it.why ? ' — ' + it.why : '') } })) }
+      { '@type': 'FAQPage', mainEntity: (S ? S.faq.map(([q, a]) => ({ q, a })) : []).concat(items).map(it => ({ '@type': 'Question', name: it.q, acceptedAnswer: { '@type': 'Answer', text: it.a + (it.why ? ' — ' + it.why : '') } })) }
     ];
     fs.writeFileSync(path.join(out, slug + '.html'), shell({ title, desc, url, body, schema }));
     pages.push({ url, priority: '0.7' });
