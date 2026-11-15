@@ -354,6 +354,13 @@ Story games where the maths IS the move (no multiple choice), beside the units; 
 - Quest resume (all subjects, `quiz.html`): the Quest saves its place after every question in the chapter profile (`p.run`: question list with phrasing numbers, position, results, score, streak). Coming back within 3 days shows «كمّل من السؤال N» / «ابدأ من الأول»; finishing or starting again clears it. Daily 5, Review and the monthly test are not resumed.
 - Game resume (all kit games, `game_kit.js`): after every answered step the game saves `gameRun` (stage, steps done, score, mistakes) in the chapter profile. Coming back within 3 days shows «كمّل من حيث وقفت» / «ابدأ من الأول»; resuming skips finished stages and steps and restores the score. Cleared on the results panel.
 
+## Arabic (arabic/) · Grade 3 (15 Nov 2026)
+- Subject `arabic` is now visible for Grade 3 only (`grades: ['g3']`). One Arabic book for both tracks, so each unit has only an Arabic questions file (`questionsAr`), like Social Studies.
+- Unit 1 «العمل والأمل» (`ag3u1`, book pages 7-43): `arabic/questions_ag3u1_ar.js`, 23 ideas (22 core + 1 bonus), 141 phrasings. Letters: A lesson 1, B lesson 2, C lesson 3, D lesson 4, E lesson 5, F lesson 6 (bonus). Boss ideas: A2, B8, C5, D5, E2.
+- Game `arabic-hope.html` «رحلة الأمل» (kit game: question words, a mission per lesson 1-4, a near/far speed round). Scenes are drawn in code; no photos were supplied.
+- Map and background: `node arabic/tools/make_a_maps.js` → `arabic/assets/map_ag3u1.svg`, `bg_ag3u1.svg`.
+- Answers come from printed text or printed rules (the book prints no answer key). Left out: lesson 1 listening text (printed on p.122), open speaking/writing/drawing activities, dictation, naskh handwriting.
+
 ## English (english/)
 - One English book per grade (Primary 4 and Primary 5, Term 1) for both tracks: `lang: { lang: 'en', ar: 'en' }`, so every unit has one questions file with no `_ar` file. English chapters are called units (`SI.isUnits`). In quiz.html the `term` type reads "Write the word" for English.
 - Grade 4 Unit 1 `eg4u1` «The Five Senses» (ready): 5 lessons (senses pp 8-10, Healthy Habits and present simple pp 11-13, Goha story and short/long vowels pp 14-17, sequence words pp 18-19, presentation and feedback p 20), ids A-E, 29 ideas / 156 phrasings, Boss ideas A5, B6, C10, D5, E3. Game `english-senses.html` (Senses Explorer). Exam `eg4oct` (October Monthly Test).

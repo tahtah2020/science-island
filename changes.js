@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-15', title: 'Arabic Grade 3 · Unit 1 «العمل والأمل» + game «رحلة الأمل»',
+    items: [
+      { text: 'First Arabic unit on the site: 23 ideas, 141 phrasings, one Arabic book for both tracks' },
+      { text: 'New game Hope Trail (رحلة الأمل), island map and background', links: [{ label: 'رحلة الأمل', href: 'arabic-hope.html', ch: 'ag3u1' }] }
+    ] },
   { date: '2026-11-13', title: 'زر «شارك نتيجتك»',
     items: [
       { text: 'بعد كل لعبة أو تحدٍّ أو مراجعة يظهر زر أخضر يصنع بطاقة نتيجة فيها ريشو واسم الطفل والنجوم والنقاط ورابط الموقع، ويفتح المشاركة على واتساب' }

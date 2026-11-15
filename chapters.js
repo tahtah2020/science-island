@@ -29,7 +29,7 @@ window.SUBJECTS = [
   { id: 'science', title: 'Science', titleAr: 'العلوم', icon: '🔬', tint: '#dcefff', dir: 'science', grades: ['g4', 'g5', 'g6', 'p1', 'p2', 'p3'] },
   { id: 'math', title: 'Math', titleAr: 'الرياضيات', icon: '🔢', tint: '#ffe6cc', dir: 'math' },
   { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' }, grades: ['g4', 'g5', 'g6', 'p1', 'p2', 'p3'] },
-  { id: 'arabic', title: 'Arabic', titleAr: 'اللغة العربية', icon: '📖', tint: '#fbe3e3', dir: 'arabic', lang: { lang: 'ar', ar: 'ar' }, hidden: true },
+  { id: 'arabic', title: 'Arabic', titleAr: 'اللغة العربية', icon: '📖', tint: '#fbe3e3', dir: 'arabic', lang: { lang: 'ar', ar: 'ar' }, grades: ['g3'] },
   { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' } },
   { id: 'discover', title: 'Discover', titleAr: 'اكتشف', icon: '🧭', tint: '#fff3c4', dir: 'discover', grades: ['g1', 'g2', 'g3'] }
 ];
@@ -449,6 +449,16 @@ window.CHAPTERS = [
 
   /* Grade 6 Math, first term 2026/2027. Source: the English school book (Primary 6, Math Term 1), Units 1 and 2 (the official October scope). Only the English file exists so far;
      the Arabic titles and lesson names below are ours until the Arabic book is added. */
+  /* ---- Arabic · Grade 3 (one Arabic book for both tracks, so each unit has an Arabic questions file only). Unit 1 «العمل والأمل», book pages 7-43, 15 Nov 2026. ---- */
+  { id: 'ag3u1', subject: 'arabic', grade: 'g3', n: 1, title: 'Work and Hope', titleAr: 'العمل والأمل', icon: '🌱', tint: '#fbe3e3', ready: true, bookOrder: true, questMax: 15,
+    lessons: ['Plant a Seedling', 'Please, Try Again', 'The Hidden Hero', 'Secrets of Success', 'Awareness Story: An Embarrassing Moment', 'Read with the Family: The Plane That Finally Flew'],
+    lessonsAr: ['ازرع نبتة', 'من فضلك كرر المحاولة', 'البطل الخفي', 'أسرار النجاح', 'قصة للتوعية: موقف محرج', 'اقرأ مع الأسرة: الطائرة التي حلقت أخيرًا'],
+    questionsAr: 'arabic/questions_ag3u1_ar.js',
+    map: { img: 'arabic/assets/map_ag3u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    game: { href: 'arabic-hope.html', name: "Hope Trail", nameAr: "رحلة الأمل", icon: '🌱', hint: '…', hintAr: '…' },
+    map: { img: 'arabic/assets/map_ag3u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
+    cover: 'arabic/assets/map_ag3u1.svg', quizBg: 'arabic/assets/bg_ag3u1.svg',
+    cover: 'arabic/assets/map_ag3u1.svg', quizBg: 'arabic/assets/bg_ag3u1.svg' },
   { id: 'mg6u1', subject: 'math', grade: 'g6', n: 1, title: 'Divisibility, Factors, and Multiples', titleAr: 'قابلية القسمة والعوامل والمضاعفات', icon: '🧮', tint: '#ffe6cc', ready: true,
     lessons: ['Divisibility', 'Factorizing a Number to Its Prime Factors', 'Writing Expressions Using the G.C.F.', 'Analyzing Least Common Multiples'],
     questions: 'math/questions_mg6u1.js', questionsAr: 'math/questions_mg6u1_ar.js', art: 'math/g6_art.js', questMax: 24,
