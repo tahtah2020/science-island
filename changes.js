@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-16', title: 'Arabic G3 Unit 1: 13 pictures',
+    items: [
+      { text: 'الوحدة الأولى في العربي للصف الثالث: 13 صورة جديدة على 11 سؤالاً (النبتة، قصة هبة، البطل الخفي، صفات الناجح)' }
+    ] },
   { date: '2026-11-15', title: 'Arabic Grade 3 · Unit 1 «العمل والأمل» + game «رحلة الأمل»',
     items: [
       { text: 'First Arabic unit on the site: 23 ideas, 141 phrasings, one Arabic book for both tracks' },

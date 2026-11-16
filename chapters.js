@@ -453,7 +453,7 @@ window.CHAPTERS = [
   { id: 'ag3u1', subject: 'arabic', grade: 'g3', n: 1, title: 'Work and Hope', titleAr: 'العمل والأمل', icon: '🌱', tint: '#fbe3e3', ready: true, bookOrder: true, questMax: 15,
     lessons: ['Plant a Seedling', 'Please, Try Again', 'The Hidden Hero', 'Secrets of Success', 'Awareness Story: An Embarrassing Moment', 'Read with the Family: The Plane That Finally Flew'],
     lessonsAr: ['ازرع نبتة', 'من فضلك كرر المحاولة', 'البطل الخفي', 'أسرار النجاح', 'قصة للتوعية: موقف محرج', 'اقرأ مع الأسرة: الطائرة التي حلقت أخيرًا'],
-    questionsAr: 'arabic/questions_ag3u1_ar.js',
+    questionsAr: 'arabic/questions_ag3u1_ar.js', art: 'arabic/a3_art.js',
     map: { img: 'arabic/assets/map_ag3u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     game: { href: 'arabic-hope.html', name: "Hope Trail", nameAr: "رحلة الأمل", icon: '🌱', hint: '…', hintAr: '…' },
     map: { img: 'arabic/assets/map_ag3u1.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
