@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261116b">
+<link rel="stylesheet" href="game_kit.css?v=20261116c">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Hope Trail.</noscript>
-<script src="firebase-config.js?v=20261116b"></script>
-<script src="chapters.js?v=20261116b"></script>
-<script src="common.js?v=20261116b"></script>
-<script src="game_kit.js?v=20261116b"></script>
+<script src="firebase-config.js?v=20261116c"></script>
+<script src="chapters.js?v=20261116c"></script>
+<script src="common.js?v=20261116c"></script>
+<script src="game_kit.js?v=20261116c"></script>
 <script>
 (() => {
 'use strict';
@@ -56,6 +56,10 @@ function render() {
     s += ground + sun(60, 48)
       + person(90, 214, '#7e57c2') + person(140, 214, '#ee7a57')
       + `<path d="M250 214l60 -90l60 90z" fill="#c9d3dc" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M290 150l20 -26l20 26z" fill="#fff" stroke="${K}" stroke-width="2"/>`;
+  } else if (m === 'photo') {
+    s += `<defs><clipPath id="phc"><rect x="70" y="0" width="280" height="280" rx="18"/></clipPath></defs><image href="arabic/assets/${sc.img}.webp" x="70" y="0" width="280" height="280" preserveAspectRatio="xMidYMid slice" clip-path="url(#phc)"/><rect x="70" y="0" width="280" height="280" rx="18" fill="none" stroke="${K}" stroke-width="3"/>`;
+  } else if (m === 'ask') {
+    s += ground + sun(350, 54) + `<g transform="translate(210 150)"><ellipse rx="86" ry="62" fill="#fffaf0" stroke="${K}" stroke-width="4"/><text y="38" text-anchor="middle" font-family="Cairo, sans-serif" font-size="110" font-weight="900" fill="#e2603f">؟</text></g>`;
   } else if (m === 'blank') {
     s += ground + sun(350, 54);
   }
@@ -67,7 +71,7 @@ const set = (mode, o) => { Object.assign(sc, { mode, who: false, note: '' }, o |
 const kw = w => `<b>${w}</b>`;
 
 async function stage1() {
-  set('start');
+  set('ask');
   g.say(T('Welcome to the Hope Trail! First, question words. Which word asks about a <b>person</b>?', P('أهلًا في رحلة الأمل! نبدأ بأدوات الاستفهام. أي أداة نسأل بها عن <b>إنسان</b>؟')), 'point');
   await g.choice({ options: ['من', 'ما', 'هل', 'لماذا'], correct: 'من', hint: T('Think of "Who won the contest?"', 'فكّر في سؤال: ... فاز في المسابقة؟'),
     ok: T('Right! We ask about a person with من.', `صح! نسأل عن الإنسان بـ ${kw('من')}.`) });
@@ -78,40 +82,41 @@ async function stage1() {
   await g.choice({ options: ['هل', 'ما', 'من', 'لماذا'], correct: 'هل', hint: T('"___ you like stories? Yes."', '... تحب القصص؟ – نعم.'),
     ok: T('Right!', `صح! جواب ${kw('هل')} يكون نعم أو لا.`) });
   g.say(T('Which word asks about the <b>reason</b>?', 'وأي أداة نسأل بها عن <b>السبب</b>؟'), 'think');
-  await g.choice({ options: ['لماذا', 'هل', 'من', 'ما'], correct: 'لماذا', hint: T('The answer starts with "because".', 'الجواب بيبدأ بـ (لأن).'),
+  await g.choice({ options: ['لماذا', 'هل', 'من', 'ما'], correct: 'لماذا', hint: T('The answer starts with "because".', 'الجواب يبدأ بـ (لأن).'),
     ok: T('Right!', `برافو! نسأل عن السبب بـ ${kw('لماذا')}.`) });
 }
 async function stage2() {
   /* Mission 1 · plant */
   set('plant');
-  g.say(T('Mission 1: you have a plant. Where is the best place for it?', P('المهمة ١: معاك نبتة. أنسب مكان ليها فين؟')), 'point');
-  await g.choice({ options: ['مكان مشمس حسب حاجتها', 'تحت السرير دائمًا', 'في غرفة مظلمة'], correct: 'مكان مشمس حسب حاجتها', hint: T('Plants need light.', 'النبتة محتاجة ضوء.'),
+  g.say(T('Mission 1: you have a plant. Where is the best place for it?', P('المهمة ١: معك نبتة. ما أنسب مكان لها؟')), 'point');
+  await g.choice({ options: ['مكان مشمس حسب حاجتها', 'تحت السرير دائمًا', 'في غرفة مظلمة'], correct: 'مكان مشمس حسب حاجتها', hint: T('Plants need light.', 'النبتة تحتاج إلى ضوء.'),
     ok: T('Right.', 'صح! النبتة تحتاج إلى ضوء، فنضعها في مكان مشمس حسب حاجتها.') });
-  g.say(T('How do we water the plant?', 'وإزاي نسقي النبتة؟'), 'think');
-  await g.choice({ options: ['بانتظام وبقدر حاجتها', 'مرة في الشهر', 'بكمية كبيرة أكثر من حاجتها'], correct: 'بانتظام وبقدر حاجتها', hint: T('Not too little, not too much.', 'لا قليل أوي ولا كتير أوي.'),
+  g.say(T('How do we water the plant?', 'وكيف نسقي النبتة؟'), 'think');
+  await g.choice({ options: ['بانتظام وبقدر حاجتها', 'مرة في الشهر', 'بكمية كبيرة أكثر من حاجتها'], correct: 'بانتظام وبقدر حاجتها', hint: T('Not too little, not too much.', 'لا قليلًا جدًّا ولا كثيرًا جدًّا.'),
     ok: T('Right.', 'برافو! نسقيها بانتظام وبقدر حاجتها.') });
-  g.say(T('And the pot?', 'والإناء اللي زرعناها فيه؟'), 'think');
-  await g.choice({ options: ['ننظفه', 'نتركه متسخًا'], correct: 'ننظفه', hint: T('We care for everything around the plant.', 'بنهتم بكل حاجة حوالين النبتة.'),
+  g.say(T('And the pot?', 'والإناء الذي زرعناها فيه؟'), 'think');
+  await g.choice({ options: ['ننظفه', 'نتركه متسخًا'], correct: 'ننظفه', hint: T('We care for everything around the plant.', 'نهتم بكل ما حول النبتة.'),
     ok: T('Right.', 'صح! ننظف الإناء.') });
 
   /* Mission 2 · Heba */
-  set('paper');
-  g.say(T('Mission 2: Heba loves drawing. Her first painting did not please her, and she tore it up. How does she feel?', P('المهمة ٢: هبة بتحب الرسم. لوحتها الأولى ما عجبتهاش فقطّعتها. بتشعر بإيه؟')), 'point');
-  await g.choice({ options: ['إحباط', 'سعادة', 'أمل'], correct: 'إحباط', hint: T('She wants to give up.', 'هي عايزة تبطّل.'),
+  set('photo', { img: 'a3_heba_tear' });
+  g.say(T('Mission 2: Heba loves drawing. Her first painting did not please her, and she tore it up. How does she feel?', P('المهمة ٢: تحب هبة الرسم. لم تُعجبها لوحتها الأولى فمزّقتها. بماذا تشعر؟')), 'point');
+  await g.choice({ options: ['إحباط', 'سعادة', 'أمل'], correct: 'إحباط', hint: T('She wants to give up.', 'تريد أن تتوقف عن الرسم.'),
     ok: T('Right.', 'صح! تشعر بالإحباط.') });
-  g.say(T('Her father gave her a new notebook and wrote on it: "Please, try again." What did he want her to do?', 'أبوها أعطاها كراسة جديدة وكتب عليها: «من فضلك كرري محاولتك». عايزها تعمل إيه؟'), 'think');
+  set('photo', { img: 'a3_heba_father' });
+  g.say(T('Her father gave her a new notebook and wrote on it: "Please, try again." What did he want her to do?', 'أبوها أعطاها كراسة جديدة وكتب عليها: «من فضلك كرري محاولاتك». ماذا يريد منها؟'), 'think');
   await g.choice({ options: ['تكرر المحاولة وتتعلم من أخطائها', 'تترك الرسم', 'تمزق كل لوحاتها'], correct: 'تكرر المحاولة وتتعلم من أخطائها', hint: T('The lesson title says it.', 'عنوان الدرس بيقول.'),
     ok: T('Right.', 'برافو! كرّرت المحاولة وتعلّمت من أخطائها.') });
-  set('paper');
-  g.say(T('She drew every evening and got better. What happened at the end?', 'رسمت كل مساء وتحسنت. إيه اللي حصل في الآخر؟'), 'think');
+  set('photo', { img: 'a3_heba_paint' });
+  g.say(T('She drew every evening and got better. What happened at the end?', 'رسمت كل مساء فتحسّنت. ماذا حدث في النهاية؟'), 'think');
   await g.choice({ options: ['فازت لوحتها وعُلّقت على جدار المدرسة', 'تركت المسابقة', 'مزّقت اللوحة'], correct: 'فازت لوحتها وعُلّقت على جدار المدرسة', hint: T('Hope and practice work.', 'الأمل والتدريب بيجيبوا نتيجة.'),
-    ok: T('Right.', 'صح! فازت لوحتها.') });
+    ok: T('Right.', 'صح! فازت لوحتها.'), reveal: () => set('photo', { img: 'a3_heba_win' }) });
 
   /* Mission 3 · hidden hero */
-  set('school', { note: '؟' });
+  set('photo', { img: 'a3_riddle_class' });
   g.say(T('Mission 3: a riddle! He is the first to arrive at school and the last to leave. Who is the hidden hero?', 'المهمة ٣: لغز! هو أول من يصل إلى المدرسة وآخر من يغادرها. من هو البطل الخفي؟'), 'point');
   await g.choice({ options: ['العم أمين، حارس المدرسة', 'الأستاذ أحمد', 'مدير المدرسة'], correct: 'العم أمين، حارس المدرسة', hint: T('He guards the school.', 'هو بيحرس المدرسة.'),
-    ok: T('Right.', 'برافو! هو حارس المدرسة، العم أمين.'), reveal: () => set('school', { who: true }) });
+    ok: T('Right.', 'برافو! هو حارس المدرسة، العم أمين.'), reveal: () => set('photo', { img: 'a3_guard_gate' }) });
   g.say(T('According to Mr. Ahmed, who is a hero?', 'حسب الأستاذ أحمد، من هو البطل؟'), 'think');
   await g.choice({ options: ['من يساعد الآخرين ويكون له دور في حياتهم', 'الأقوى في المدرسة', 'من يحصل على أعلى الدرجات'], correct: 'من يساعد الآخرين ويكون له دور في حياتهم', hint: T('Remember what the teacher said at the end.', 'افتكر كلام المعلم في الآخر.'),
     ok: T('Right.', 'صح! كل من يساعد الآخرين بطل.') });
@@ -126,13 +131,13 @@ async function stage2() {
   /* Mission 4 · poem */
   set('bee');
   g.say(T('Mission 4: the poem says the successful person lives the day like a honey bee. What does that show?', 'المهمة ٤: النشيد يقول إن الناجح يعيش يومه كنحلة العسل. ماذا يدل ذلك؟'), 'point');
-  await g.choice({ options: ['النشاط', 'الراحة', 'النوم'], correct: 'النشاط', hint: T('What does a bee do all day?', 'النحلة بتعمل إيه طول اليوم؟'),
+  await g.choice({ options: ['النشاط', 'الراحة', 'النوم'], correct: 'النشاط', hint: T('What does a bee do all day?', 'ماذا تفعل النحلة طوال اليوم؟'),
     ok: T('Right.', 'صح! يدل على النشاط.') });
   g.say(T('What is the first reason for success in the poem?', 'ما أول سبب للنجاح في النشيد؟'), 'think');
   await g.choice({ options: ['الشعور الدائم بالأمل', 'الحظ', 'كثرة النوم'], correct: 'الشعور الدائم بالأمل', hint: T('His companion is hope.', 'رفيقه الأمل.'),
     ok: T('Right.', 'برافو! أول سبب هو الأمل.') });
   g.say(T('Which trait does <b>not</b> suit a successful person?', 'أي صفة <b>لا</b> تناسب الناجح؟'), 'think');
-  await g.choice({ options: ['كسول', 'متفائل', 'حريص على وقته'], correct: 'كسول', hint: T('A successful person works hard.', 'الناجح بيشتغل بجد.'),
+  await g.choice({ options: ['كسول', 'متفائل', 'حريص على وقته'], correct: 'كسول', hint: T('A successful person works hard.', 'الناجح يعمل بجد.'),
     ok: T('Right.', 'صح! الكسول لا يتقن عمله.') });
 }
 const DM = [['هذا', 'n'], ['هذه', 'n'], ['ذلك', 'f'], ['تلك', 'f'], ['هؤلاء', 'n'], ['أولئك', 'f'], ['ذلك', 'f'], ['هذا', 'n'], ['تلك', 'f'], ['هؤلاء', 'n']];
@@ -141,15 +146,15 @@ async function stage3() {
   await g.speedRound({ items: DM.map(([w, r]) => ({ t: `<span dir="rtl" lang="ar">${w}</span>`, ans: r,
       why: r === 'n' ? T('For things that are near.', 'للقريب.') : T('For things that are far.', 'للبعيد.') })), rounds: 10,
     buttons: [{ label: T('Near', 'للقريب'), value: 'n', c: 0 }, { label: T('Far', 'للبعيد'), value: 'f', c: 2 }],
-    ask: T('Near or far?', 'للقريب ولا للبعيد؟'),
-    intro: T('Speed Round! A demonstrative word comes in. Press Near or Far.', 'جولة السرعة! هتظهر كلمة إشارة. اضغط للقريب أو للبعيد.'),
-    think: T('Near or far?', 'قريب ولا بعيد؟') });
+    ask: T('Near or far?', 'للقريب أم للبعيد؟'),
+    intro: T('Speed Round! A demonstrative word comes in. Press Near or Far.', 'جولة السرعة! ستظهر كلمة إشارة. اضغط للقريب أو للبعيد.'),
+    think: T('Near or far?', 'قريب أم بعيد؟') });
 }
 
 g.run({
-  intro: T(`Hi, <b>${g.name()}</b>! Follow the Hope Trail: question words, caring for a plant, Heba who never gives up, the hidden hero and the secrets of success.`, `أهلًا يا <b>${g.name()}</b>! امشي في رحلة الأمل: أدوات الاستفهام، ورعاية النبتة، وهبة التي لا تيأس، والبطل الخفي، وأسرار النجاح. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  intro: T(`Hi, <b>${g.name()}</b>! Follow the Hope Trail: question words, caring for a plant, Heba who never gives up, the hidden hero and the secrets of success.`, `أهلًا يا <b>${g.name()}</b>! سِر في رحلة الأمل: أدوات الاستفهام، ورعاية النبتة، وهبة التي لا تيأس، والبطل الخفي، وأسرار النجاح. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
   stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
-  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know the question words, how to care for a plant, who a hero is, and the secrets of success. Next, try the questions of this unit.', 'بقيت تعرف أدوات الاستفهام، وكيف ترعى نبتة، ومن البطل، وأسرار النجاح. جرّب الآن أسئلة الوحدة.') }
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know the question words, how to care for a plant, who a hero is, and the secrets of success. Next, try the questions of this unit.', 'أصبحت تعرف أدوات الاستفهام، وكيف ترعى نبتة، ومن البطل، وأسرار النجاح. جرّب الآن أسئلة الوحدة.') }
 }).catch(err => console.error(err));
 })();
 </script>

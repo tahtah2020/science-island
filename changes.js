@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-16', title: 'مراجعة وحدة العمل والأمل',
+    items: [
+      { text: 'تصحيح نص «محاولاتك» وتلميح صورة الطفل في أسئلة الوحدة' },
+      { text: 'لعبة رحلة الأمل: فصحى بدل العامية، ومشاهد من صور الوحدة تطابق القصة' }
+    ] },
   { date: '2026-11-16', title: 'Arabic G3 Unit 1: 4 more pictures (lessons 5-6)',
     items: [
       { text: 'الدرسان الخامس والسادس في العربي للصف الثالث: 4 صور جديدة (التنمر، تشجيع الزميل، الطائرة الورقية) على 4 أسئلة' }
