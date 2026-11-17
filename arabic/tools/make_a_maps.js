@@ -76,3 +76,7 @@ ${at(1300, 150, 2.4, A.sun(26))}</svg>`;
 /* Grade 3 · Unit 1 «العمل والأمل»: a plant, a book, the school gate, a trophy, a hive */
 build('ag3u1', pot(190, 1000, 1.8) + book(1000, 280, 1.7) + gate(250, 330, 1.6) + trophy(660, 1140, 1.6) + hive(1060, 480, 1.5) + pencil(130, 560, 1.4),
   `${pot(300, 760, 2.4)}${hive(1180, 770, 2.2)}${book(760, 770, 2)}`);
+
+/* Grade 3 · Unit 2 «صفاتي الجميلة»: flowers, a book, a trophy, a heart-like tree, a pencil, a gate */
+build('ag3u2', flower(190, 1000, 2.2) + flower(260, 1040, 1.6) + book(1000, 280, 1.7) + tree(250, 330, 1.5) + trophy(660, 1140, 1.6) + pencil(1060, 500, 1.5) + gate(130, 560, 1.3),
+  `${flower(300, 780, 3)}${flower(420, 800, 2.4)}${book(760, 770, 2)}${trophy(1180, 770, 2)}`);

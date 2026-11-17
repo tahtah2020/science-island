@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garden of Qualities · My Beautiful Qualities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261117a">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Garden of Qualities.</noscript>
+<script src="firebase-config.js?v=20261117a"></script>
+<script src="chapters.js?v=20261117a"></script>
+<script src="common.js?v=20261117a"></script>
+<script src="game_kit.js?v=20261117a"></script>
+<script>
+(() => {
+'use strict';
+/* Garden of Qualities · the game of My Beautiful Qualities (Arabic g3, book pages 44-82). Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up): singular, dual or plural (lesson 2, pp. 53-54), flowers drawn one by one
+   Stage 2 (Missions): 1 the flower and the cactus (lesson 1) · 2 happiness in helping (lesson 2) · 3 the first to raise a hand (lesson 3) · 4 our morals (lesson 4) · 5 express your feelings (lesson 5)
+   Stage 3 (Speed Round): لم or لن (lesson 3, pp. 66-67)
+   Every T('English', 'عربي') has both languages. The Arabic sentences follow the Arabic school book. No picture ever shows the answer. */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const sc = { mode: 'blank' };       // what the scene shows
+const VW = 420, VH = 280;
+const K = '#1f3d57';
+const ground = `<rect y="214" width="${VW}" height="66" fill="#bfe3a0"/>`;
+const sand = `<rect y="200" width="${VW}" height="80" fill="#f0d79a"/><path d="M0 232q70 -10 140 0t140 0t140 0" fill="none" stroke="#d9b866" stroke-width="3"/>`;
+const sun = (x, y) => `<circle cx="${x}" cy="${y}" r="26" fill="#f6c453" stroke="#d99a12" stroke-width="3"/>`;
+const person = (x, y, c, arm) => `<g transform="translate(${x} ${y})"><circle cy="-30" r="14" fill="#e7b98f" stroke="${K}" stroke-width="2"/><path d="M-14 -34q14 -24 28 0q-4 -9 -14 -9t-14 9Z" fill="#3a5c75"/><path d="M-18 14q0 -42 18 -42t18 42Z" fill="${c}" stroke="${K}" stroke-width="2"/>${arm ? `<path d="M12 -14l16 -26" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="29" cy="-42" r="5" fill="#e7b98f" stroke="${K}" stroke-width="2"/>` : ''}</g>`;
+const flower = (x, y, k, c = '#ff9fb2') => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0v34" stroke="#3f8f4c" stroke-width="4" stroke-linecap="round"/><path d="M0 24q-16 -2 -18 -14q14 0 18 14z" fill="#8dcf7a" stroke="#3f8f4c" stroke-width="2"/>${[0, 72, 144, 216, 288].map(a => `<ellipse cy="-14" rx="8" ry="12" transform="rotate(${a})" fill="${c}" stroke="#d96a82" stroke-width="2"/>`).join('')}<circle r="8" fill="#f6c453" stroke="#d99a12" stroke-width="2"/></g>`;
+const cactus = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-18 40v-70q0 -22 18 -22t18 22v70z" fill="#6fbf73" stroke="#2f7d3a" stroke-width="3" stroke-linejoin="round"/><path d="M-18 6h-12q-8 0 -8 -10v-22" fill="none" stroke="#2f7d3a" stroke-width="9" stroke-linecap="round"/><path d="M18 -4h12q8 0 8 -10v-22" fill="none" stroke="#2f7d3a" stroke-width="9" stroke-linecap="round"/><path d="M-18 6h-12q-8 0 -8 -10v-22M18 -4h12q8 0 8 -10v-22" fill="none" stroke="#6fbf73" stroke-width="5" stroke-linecap="round"/><circle cx="-6" cy="-24" r="2" fill="${K}"/><circle cx="6" cy="-24" r="2" fill="${K}"/><path d="M-6 -14q6 6 12 0" fill="none" stroke="${K}" stroke-width="2.4" stroke-linecap="round"/></g>`;
+const bag = (x, y) => `<g transform="translate(${x} ${y})"><path d="M-14 0l4 -22h20l4 22z" fill="#e2603f" stroke="${K}" stroke-width="2.5" stroke-linejoin="round"/><path d="M-6 -22q0 -12 6 -12t6 12" fill="none" stroke="${K}" stroke-width="2.5"/></g>`;
+const face = (m, cx, cy, r) => {
+  const k = r / 66; let s = `<g transform="translate(${cx} ${cy}) scale(${k})"><circle r="66" fill="#ffd966" stroke="${K}" stroke-width="4"/>`;
+  const eye = x => `<circle cx="${x}" cy="-10" r="6" fill="${K}"/>`;
+  if (m === 'happy') s += `<path d="M-38 -16q10 -14 24 0M14 -16q10 -14 24 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M-34 14q34 44 68 0z" fill="#fff" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`;
+  else if (m === 'sad') s += eye(-26) + eye(26) + `<path d="M-40 -28l24 8M40 -28l-24 8" stroke="${K}" stroke-width="4.5" stroke-linecap="round"/><path d="M-26 36q26 -26 52 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/>`;
+  else if (m === 'angry') s += `<path d="M-42 -30l28 12M42 -30l-28 12" stroke="${K}" stroke-width="6" stroke-linecap="round"/>` + eye(-24) + eye(24) + `<path d="M-28 38q28 -22 56 0" fill="none" stroke="${K}" stroke-width="5.5" stroke-linecap="round"/>`;
+  else s += `<path d="M-40 -34q14 -12 28 0M12 -34q14 -12 28 0" fill="none" stroke="${K}" stroke-width="4.5" stroke-linecap="round"/><circle cx="-24" cy="-10" r="11" fill="#fff" stroke="${K}" stroke-width="3.5"/><circle cx="24" cy="-10" r="11" fill="#fff" stroke="${K}" stroke-width="3.5"/><circle cx="-24" cy="-10" r="4.5" fill="${K}"/><circle cx="24" cy="-10" r="4.5" fill="${K}"/><ellipse cy="32" rx="13" ry="17" fill="#8a3b2e" stroke="${K}" stroke-width="4"/>`;
+  return s + '</g>';
+};
+function render() {
+  const m = sc.mode;
+  let s = `<rect width="${VW}" height="${VH}" fill="#eef6fb"/>`;
+  if (m === 'garden') {
+    s += ground + sun(350, 52);
+    const n = sc.n || 1, gap = Math.min(70, 300 / n);
+    for (let i = 0; i < n; i++) s += flower(VW / 2 + (i - (n - 1) / 2) * gap, 150, 1.5, ['#ff9fb2', '#f6c453', '#c9a0ff'][i % 3]);
+  } else if (m === 'duo') {
+    s += sand + sun(350, 52) + flower(130, 170, 2.4) + cactus(290, 190, 1.9);
+  } else if (m === 'help') {
+    s += ground + sun(60, 50) + person(150, 214, '#ee7a57') + person(270, 214, '#7e57c2') + bag(304, 188) + bag(236, 204);
+  } else if (m === 'class') {
+    s += `<rect width="${VW}" height="${VH}" fill="#f4ead2"/><rect x="40" y="30" width="200" height="110" rx="6" fill="#3d6b5a" stroke="#8a6a3a" stroke-width="5"/><rect y="214" width="${VW}" height="66" fill="#d9b88a"/>`
+      + person(300, 214, '#7e57c2') + person(90, 214, '#ee7a57') + person(150, 214, '#23799f') + person(340, 214, '#e2603f', sc.hand);
+  } else if (m === 'tree') {
+    s += ground + sun(60, 50) + `<rect x="196" y="120" width="28" height="94" rx="6" fill="#a8834f" stroke="${K}" stroke-width="3"/><circle cx="210" cy="96" r="70" fill="#8dcf7a" stroke="#3f8f4c" stroke-width="3.5"/>`
+      + [[170, 80], [240, 70], [210, 120], [160, 120], [250, 118]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="#e2603f" stroke="${K}" stroke-width="2"/>`).join('');
+  } else if (m === 'face') {
+    s += ground + sun(360, 50) + face(sc.mood || 'happy', 210, 130, 78);
+  } else if (m === 'kids') {
+    s += ground + sun(350, 50) + person(110, 214, '#ee7a57') + person(170, 214, '#23799f') + person(230, 214, '#e2603f') + `<g transform="translate(330 214)"><circle cy="-30" r="14" fill="#e7b98f" stroke="${K}" stroke-width="2"/><path d="M-14 -34q14 -24 28 0q-4 -9 -14 -9t-14 9Z" fill="#3a5c75"/><path d="M-18 14q0 -42 18 -42t18 42Z" fill="#7e57c2" stroke="${K}" stroke-width="2"/></g>`;
+  } else if (m === 'blank') {
+    s += ground + (sc.nosun ? '' : sun(350, 54));
+  }
+  return s;
+}
+const g = G4Game({ ch: 'ag3u2', logo: '🌼', title: ["Garden of Qualities", "حديقة الصفات"], sub: ['Unit 2 · My Beautiful Qualities', 'الوحدة 2 · صفاتي الجميلة'],
+  bg: 'arabic/assets/bg_ag3u2.svg', bgc: '#fdebd0', label: ["Garden of Qualities", "حديقة الصفات"], render });
+const set = (mode, o) => { Object.assign(sc, { mode, n: 1, mood: 'happy', hand: false, nosun: false }, o || {}); g.paint(); };
+const kw = w => `<b>${w}</b>`;
+
+async function stage1() {
+  set('garden', { n: 1 });
+  g.say(T('Welcome to the Garden of Qualities! Look at the flowers. Which word fits what you see?', P('أهلًا في حديقة الصفات! انظر إلى الزهور. أي اسم يناسب ما تراه؟', 'أهلًا في حديقة الصفات! انظري إلى الزهور. أي اسم يناسب ما تريه؟')), 'point');
+  await g.choice({ options: ['زهرةٌ', 'زهرتان', 'زهورٌ'], correct: 'زهرةٌ', hint: T('How many flowers are there?', 'ما نوع الاسم الذي يدل على واحدة؟'),
+    ok: T('Right! One flower is singular.', `صح! ${kw('زهرةٌ')} اسم مفرد يدل على واحدة.`) });
+  set('garden', { n: 2 });
+  g.say(T('And now?', 'والآن، أي اسم يناسب ما في الحديقة؟'), 'think');
+  await g.choice({ options: ['زهرتان', 'زهرةٌ', 'زهورٌ'], correct: 'زهرتان', hint: T('The dual ends with ان.', 'المثنى يدل على اثنتين وينتهي بـ (ان).'),
+    ok: T('Right!', `برافو! ${kw('زهرتان')} مثنى يدل على اثنتين.`) });
+  set('garden', { n: 4 });
+  g.say(T('And now?', 'وهنا؟'), 'think');
+  await g.choice({ options: ['زهورٌ', 'زهرتان', 'زهرةٌ'], correct: 'زهورٌ', hint: T('More than two.', 'الجمع يدل على أكثر من اثنتين.'),
+    ok: T('Right!', `صح! ${kw('زهورٌ')} جمع يدل على أكثر من اثنتين.`) });
+  set('garden', { n: 2 });
+  g.say(T('Which sentence is correct?', 'أي جملة صحيحة؟'), 'think');
+  await g.choice({ options: ['الزهرتان جميلتان', 'الزهرتان جميلةٌ', 'الزهرتان جميلاتٌ'], correct: 'الزهرتان جميلتان', hint: T('The adjective agrees with the noun.', 'الوصف يتفق مع الاسم في العدد.'),
+    ok: T('Right!', 'برافو! اتفق المثنى (الزهرتان) مع الوصف (جميلتان).') });
+}
+async function stage2() {
+  /* Mission 1 · the flower and the cactus */
+  set('duo');
+  g.say(T('Mission 1: the flower says "I am the most important plant because I am beautiful." How does she feel?', 'المهمة ١: تقول الزهرة: «أنا أهم نبات؛ لأنني زهرة جميلة». بماذا تشعر؟'), 'point');
+  await g.choice({ options: ['الغرور', 'الندم', 'الدهشة'], correct: 'الغرور', hint: T('She thinks she is better than the rest.', 'هي تظن أنها أفضل من غيرها.'),
+    ok: T('Right.', 'صح! تشعر بالغرور.') });
+  set('duo');
+  g.say(T('She looks at the cactus and finds its shape did not change. How does she feel?', 'نظرت إلى الصبار فوجدت شكله لم يتغير. بماذا شعرت؟'), 'think');
+  await g.choice({ options: ['الدهشة', 'الغرور', 'الندم'], correct: 'الدهشة', hint: T('She is amazed.', 'هي تتعجب مما رأته.'),
+    ok: T('Right.', 'برافو! شعرت بالدهشة.') });
+  set('duo');
+  g.say(T('Then she says "I was wrong and conceited, I am sorry." How does she feel?', 'ثم قالت: «لقد كنت مخطئة ومغرورة، أنا آسفة». بماذا تشعر؟'), 'think');
+  await g.choice({ options: ['الندم', 'الدهشة', 'الغرور'], correct: 'الندم', hint: T('She apologizes for her mistake.', 'هي تعتذر عن خطئها.'),
+    ok: T('Right.', 'صح! شعرت بالندم.') });
+
+  /* Mission 2 · happiness in helping */
+  set('help');
+  g.say(T('Mission 2: Amira sees an old neighbour who cannot carry her heavy bags. What does Amira do?', 'المهمة ٢: رأت أميرة جارتها العجوز لا تقدر على حمل أكياسها الثقيلة. ماذا فعلت أميرة؟'), 'point');
+  await g.choice({ options: ['بادرت إلى مساعدتها', 'مرّت دون أن تنظر', 'طلبت منها أن تبتعد'], correct: 'بادرت إلى مساعدتها', hint: T('Think of a kind girl.', 'بادرت: أي أسرعت.'),
+    ok: T('Right.', 'برافو! بادرت إلى مساعدتها.') });
+  set('help');
+  g.say(T('How do we feel when we help others?', 'بماذا نشعر حين نساعد الآخرين؟'), 'think');
+  await g.choice({ options: ['السعادة', 'الغضب', 'الملل'], correct: 'السعادة', hint: T('The three children answered together.', 'ردّ التلاميذ الثلاثة معًا بكلمة واحدة.'),
+    ok: T('Right.', 'صح! نشعر بالسعادة.') });
+  set('help');
+  g.say(T('The teacher said: "Time is not an obstacle." Which word is the missing one? The time is not ___.', 'قالت المعلمة: لا تقولوا ليس لدينا وقت؛ فالوقت ليس ___.'), 'think');
+  await g.choice({ options: ['عائقًا', 'مفيدًا', 'سعيدًا'], correct: 'عائقًا', hint: T('It means a barrier.', 'معناها: مانعًا أو حاجزًا.'),
+    ok: T('Right.', 'برافو! الوقت ليس عائقًا.') });
+
+  /* Mission 3 · the first to raise a hand */
+  set('class');
+  g.say(T('Mission 3: the teacher asks who is brave enough to solve the first problem. Everyone is silent. Why?', 'المهمة ٣: سأل المعلم من عنده الشجاعة ليحل أول مسألة، فصمت الجميع. لماذا؟'), 'point');
+  await g.choice({ options: ['خاف بعضهم أن يخطئ وخجل بعضهم', 'لم يسمعوا السؤال', 'كانوا يعرفون الإجابة'], correct: 'خاف بعضهم أن يخطئ وخجل بعضهم', hint: T('Two reasons in the text.', 'في النص سببان.'),
+    ok: T('Right.', 'صح! خاف بعضهم أن يخطئ وخجل بعضهم أن يرفع يده.') });
+  set('class', { hand: true });
+  g.say(T('Iman raises her hand and solves the problem step by step. What does the teacher say about a small mistake?', 'رفعت إيمان يدها وحلّت المسألة خطوة خطوة. ماذا قال المعلم عن الخطأ البسيط؟'), 'think');
+  await g.choice({ options: ['المهم أنها كانت شجاعة وحاولت', 'يجب أن نعاقب من يخطئ', 'الخطأ يعني الرسوب'], correct: 'المهم أنها كانت شجاعة وحاولت', hint: T('He was pleased with her courage.', 'كان سعيدًا بشجاعتها.'),
+    ok: T('Right.', 'برافو!') });
+  set('class', { hand: true });
+  g.say(T('What did Iman teach her classmates?', 'ماذا علّمت إيمان زملاءها؟'), 'think');
+  await g.choice({ options: ['أن نتحلى بالشجاعة ونحاول', 'أن نصمت دائمًا', 'أن نخاف من الخطأ'], correct: 'أن نتحلى بالشجاعة ونحاول', hint: T('Trying is more important than fear.', 'المحاولة أهم من الخوف.'),
+    ok: T('Right.', 'صح! الشجاعة والمحاولة.') });
+
+  /* Mission 4 · our morals */
+  set('blank', { nosun: true });
+  g.say(T('Mission 4: the poem compares good morals to something that lights up the world. What is it?', 'المهمة ٤: النشيد يشبّه الأخلاق بشيء ينير الكون. ما هو؟'), 'point');
+  await g.choice({ options: ['الشمس', 'القمر', 'البحر'], correct: 'الشمس', hint: T('It shines in the sky by day.', 'تضيء في السماء نهارًا.'),
+    ok: T('Right.', 'برافو! شبّه الشاعر الأخلاق بالشمس.') });
+  set('tree');
+  g.say(T('Which of these is NOT a beautiful moral?', 'أي هذه ليس من الأخلاق الجميلة؟'), 'think');
+  await g.choice({ options: ['الكذب', 'الصدق', 'الوفاء'], correct: 'الكذب', hint: T('Which one hurts others?', 'أيها يؤذي الآخرين؟'),
+    ok: T('Right.', 'صح! الكذب ليس خلقًا جميلًا.') });
+  set('tree');
+  g.say(T('Which two words end with the same sound?', 'أي كلمتين نهايتهما متماثلة؟'), 'think');
+  await g.choice({ options: ['الوفاء – العطاء', 'جميلة – السماء', 'دومًا – الإخاء'], correct: 'الوفاء – العطاء', hint: T('Look at how each word ends.', 'انظر إلى نهاية كل كلمة.'),
+    ok: T('Right.', 'برافو! الوفاء والعطاء تنتهيان بالصوت نفسه.') });
+
+  /* Mission 5 · express your feelings */
+  set('kids');
+  g.say(T('Mission 5: Amir asked to play, and they said the number was full. He sat alone. How does he feel?', 'المهمة ٥: طلب أمير أن يلعب مع زملائه، فقالوا إن العدد مكتمل، فجلس وحده. بماذا يشعر؟'), 'point');
+  await g.choice({ options: ['بالحزن', 'بالحماس', 'بالسرور'], correct: 'بالحزن', hint: T('He feels unwelcome.', 'شعر أنه غير مرحب به.'),
+    ok: T('Right.', 'صح! شعر أمير بالحزن.') });
+  set('face', { mood: 'angry' });
+  g.say(T('Look at this face. What does it feel?', 'انظر إلى هذا الوجه. بماذا يشعر؟'), 'think');
+  await g.choice({ options: ['بالغضب', 'بالسعادة', 'بالدهشة'], correct: 'بالغضب', hint: T('Look at the eyebrows.', 'انظر إلى الحاجبين.'),
+    ok: T('Right.', 'برافو! الوجه غاضب.') });
+  set('kids');
+  g.say(T('What is the best way to share a feeling?', 'ما أنسب طريقة للتعبير عن الشعور؟'), 'think');
+  await g.choice({ options: ['بهدوء وبطريقة لا تؤذي الآخرين', 'بالصراخ في وجوههم', 'بكسر الأشياء'], correct: 'بهدوء وبطريقة لا تؤذي الآخرين', hint: T('Do not hurt anyone.', 'لا نؤذي أحدًا بمشاعرنا.'),
+    ok: T('Right.', 'صح! مشاعرنا مهمة، ونعبّر عنها دون أن نؤذي أحدًا.') });
+}
+const DM = [['___ أذهب إلى المدرسة أمس.', 'm'], ['___ أزور جدتي غدًا.', 'n'], ['___ ألعب مع زملائي الأسبوع الماضي.', 'm'], ['___ نسافر الصيف القادم.', 'n'],
+  ['___ يقرأ أحمد القصة قبل ذلك.', 'm'], ['___ تشارك هالة في المسابقة بعد غد.', 'n'], ['___ نلقي القمامة في الشارع مجددًا.', 'n'], ['___ أحضر الألوان معي أمس.', 'm'],
+  ['___ أقطع الأشجار بعد اليوم.', 'n'], ['___ أستطع حل المسألة أمس.', 'm']];
+async function stage3() {
+  set('class');
+  await g.speedRound({ items: DM.map(([w, r]) => ({ t: `<span dir="rtl" lang="ar">${w}</span>`, ans: r,
+      why: r === 'm' ? T('The sentence is in the past, so we use لم.', 'الجملة في الماضي، فنستعمل (لم).') : T('The sentence is in the future, so we use لن.', 'الجملة في المستقبل، فنستعمل (لن).') })), rounds: 10,
+    buttons: [{ label: T('لم', 'لم'), value: 'm', c: 0 }, { label: T('لن', 'لن'), value: 'n', c: 2 }],
+    ask: T('Which word fits?', 'أي أداة تناسب الجملة؟'),
+    intro: T('Speed Round! A sentence comes in. Choose لم for the past or لن for the future.', 'جولة السرعة! ستظهر جملة. اختر (لم) للماضي أو (لن) للمستقبل.'),
+    think: T('Past or future?', 'ماضٍ أم مستقبل؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Walk through the Garden of Qualities: singular, dual and plural, the flower and the cactus, helping others, brave Iman, our morals and our feelings.`, `أهلًا يا <b>${g.name()}</b>! تجوّل في حديقة الصفات: المفرد والمثنى والجمع، والزهرة والصبار، ومساعدة الآخرين، وإيمان الشجاعة، وأخلاقنا، ومشاعرنا. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know singular, dual and plural, how helping others and courage make us beautiful, our morals, and when to use لم and لن. Next, try the questions of this unit.', 'أصبحت تعرف المفرد والمثنى والجمع، وكيف تجعلنا المساعدة والشجاعة والأخلاق أجمل، ومتى نستعمل (لم) و(لن). جرّب الآن أسئلة الوحدة.') }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
