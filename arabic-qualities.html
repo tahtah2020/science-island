@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261117a">
+<link rel="stylesheet" href="game_kit.css?v=20261117b">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Garden of Qualities.</noscript>
-<script src="firebase-config.js?v=20261117a"></script>
-<script src="chapters.js?v=20261117a"></script>
-<script src="common.js?v=20261117a"></script>
-<script src="game_kit.js?v=20261117a"></script>
+<script src="firebase-config.js?v=20261117b"></script>
+<script src="chapters.js?v=20261117b"></script>
+<script src="common.js?v=20261117b"></script>
+<script src="game_kit.js?v=20261117b"></script>
 <script>
 (() => {
 'use strict';
@@ -45,7 +45,8 @@ const face = (m, cx, cy, r) => {
   return s + '</g>';
 };
 function render() {
-  const m = sc.mode;
+  /* the drawn people scenes (help, class, kids) were not good enough (owner, 17 Nov 2026): plain ground until the owner's pictures arrive */
+  const m = ['help', 'class', 'kids'].includes(sc.mode) ? 'blank' : sc.mode;
   let s = `<rect width="${VW}" height="${VH}" fill="#eef6fb"/>`;
   if (m === 'garden') {
     s += ground + sun(350, 52);
