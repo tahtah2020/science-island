@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261119k">
+<link rel="stylesheet" href="game_kit.css?v=20261119l">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Garden of Qualities.</noscript>
-<script src="firebase-config.js?v=20261119k"></script>
-<script src="chapters.js?v=20261119k"></script>
-<script src="common.js?v=20261119k"></script>
-<script src="game_kit.js?v=20261119k"></script>
+<script src="firebase-config.js?v=20261119l"></script>
+<script src="chapters.js?v=20261119l"></script>
+<script src="common.js?v=20261119l"></script>
+<script src="game_kit.js?v=20261119l"></script>
 <script>
 (() => {
 'use strict';
@@ -156,7 +156,8 @@ async function stage2() {
     ok: T('Right.', 'صح! الشجاعة والمحاولة.') });
 
   /* Mission 4 · our morals */
-  set('blank', { nosun: true });
+  /* kindness picture with no sun or moon in it (the sun is the answer) */
+  set('photo', { img: 'a3_adam_invites' });
   g.say(T('Mission 4: the poem compares good morals to something that lights up the world. What is it?', 'المهمة ٤: النشيد يشبّه الأخلاق بشيء ينير الكون. ما هو؟'), 'point');
   await g.choice({ options: ['الشمس', 'القمر', 'البحر'], correct: 'الشمس', hint: T('It shines in the sky by day.', 'تضيء في السماء نهارًا.'),
     ok: T('Right.', 'برافو! شبّه الشاعر الأخلاق بالشمس.') });
@@ -164,11 +165,11 @@ async function stage2() {
   g.say(T('Look at the picture. Which beautiful moral does the boy show?', P('انظر إلى الصورة. أي خلق جميل يظهر في تصرف الولد؟', 'انظري إلى الصورة. أي خلق جميل يظهر في تصرف الولد؟')), 'point');
   await g.choice({ options: ['العطاء', 'الكذب', 'الغرور'], correct: 'العطاء', hint: T('He gives food to a man who needs it.', 'هو يقدم الطعام لرجل يحتاج إليه.'),
     ok: T('Right.', 'برافو! العطاء من الأخلاق الجميلة.') });
-  set('tree');
+  set('photo', { img: 'a3_khaled_time' });
   g.say(T('Which of these is NOT a beautiful moral?', 'أي هذه ليس من الأخلاق الجميلة؟'), 'think');
   await g.choice({ options: ['الكذب', 'الصدق', 'الوفاء'], correct: 'الكذب', hint: T('Which one hurts others?', 'أيها يؤذي الآخرين؟'),
     ok: T('Right.', 'صح! الكذب ليس خلقًا جميلًا.') });
-  set('tree');
+  set('photo', { img: 'a3_sami_support' });
   g.say(T('Which two words end with the same sound?', 'أي كلمتين نهايتهما متماثلة؟'), 'think');
   await g.choice({ options: ['الوفاء – العطاء', 'جميلة – السماء', 'دومًا – الإخاء'], correct: 'الوفاء – العطاء', hint: T('Look at how each word ends.', P('انظر إلى نهاية كل كلمة.', 'انظري إلى نهاية كل كلمة.')),
     ok: T('Right.', 'برافو! الوفاء والعطاء تنتهيان بالصوت نفسه.') });
