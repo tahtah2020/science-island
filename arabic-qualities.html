@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261119j">
+<link rel="stylesheet" href="game_kit.css?v=20261119k">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Garden of Qualities.</noscript>
-<script src="firebase-config.js?v=20261119j"></script>
-<script src="chapters.js?v=20261119j"></script>
-<script src="common.js?v=20261119j"></script>
-<script src="game_kit.js?v=20261119j"></script>
+<script src="firebase-config.js?v=20261119k"></script>
+<script src="chapters.js?v=20261119k"></script>
+<script src="common.js?v=20261119k"></script>
+<script src="game_kit.js?v=20261119k"></script>
 <script>
 (() => {
 'use strict';
@@ -22,7 +22,7 @@
    Stage 1 (Warm Up): singular, dual or plural (lesson 2, pp. 53-54), flowers drawn one by one
    Stage 2 (Missions): 1 the flower and the cactus (lesson 1) · 2 happiness in helping (lesson 2) · 3 the first to raise a hand (lesson 3) · 4 our morals (lesson 4) · 5 express your feelings (lesson 5)
    Stage 3 (Speed Round): لم or لن (lesson 3, pp. 66-67)
-   Every T('English', 'عربي') has both languages. The Arabic sentences follow the Arabic school book. No picture ever shows the answer. */
+   Every T('English', 'عربي') has both languages. The Arabic sentences follow the Arabic school book. Mission 1 shows the flower picture that matches what she says (owner, 19 Nov 2026). */
 const T = SI.T, G = SI.G;
 const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
 const sc = { mode: 'blank' };       // what the scene shows
@@ -99,15 +99,15 @@ async function stage1() {
 }
 async function stage2() {
   /* Mission 1 · the flower and the cactus */
-  set('photo', { img: 'a3_three_characters' });
+  set('photo', { img: 'a3_flower_proud' });
   g.say(T('Mission 1: the flower says "I am the most important plant because I am beautiful." How does she feel?', 'المهمة ١: تقول الزهرة: «أنا أهم نبات؛ لأنني زهرة جميلة». بماذا تشعر الزهرة؟'), 'point');
   await g.choice({ options: ['الغرور', 'الندم', 'الدهشة'], correct: 'الغرور', hint: T('She thinks she is better than the rest.', 'هي تظن أنها أفضل من غيرها.'),
     ok: T('Right.', 'صح! تشعر بالغرور.') });
-  set('photo', { img: 'a3_three_characters' });
+  set('photo', { img: 'a3_flower_surprised' });
   g.say(T('She looks at the cactus and finds its shape did not change. How does she feel?', 'نظرت إلى الصبار فوجدت شكله لم يتغير. بماذا شعرت الزهرة؟'), 'think');
   await g.choice({ options: ['الدهشة', 'الغرور', 'الندم'], correct: 'الدهشة', hint: T('She is amazed.', 'هي تتعجب مما رأته.'),
     ok: T('Right.', 'برافو! شعرت بالدهشة.') });
-  set('photo', { img: 'a3_three_characters' });
+  set('photo', { img: 'a3_flower_sorry' });
   g.say(T('Then she says "I was wrong and conceited, I am sorry." How does she feel?', 'ثم قالت: «لقد كنت مخطئة ومغرورة، أنا آسفة». بماذا تشعر الزهرة الآن؟'), 'think');
   await g.choice({ options: ['الندم', 'الدهشة', 'الغرور'], correct: 'الندم', hint: T('She apologizes for her mistake.', 'هي تعتذر عن خطئها.'),
     ok: T('Right.', 'صح! شعرت بالندم.') });
