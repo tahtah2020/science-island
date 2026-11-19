@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261117b">
+<link rel="stylesheet" href="game_kit.css?v=20261119a">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Garden of Qualities.</noscript>
-<script src="firebase-config.js?v=20261117b"></script>
-<script src="chapters.js?v=20261117b"></script>
-<script src="common.js?v=20261117b"></script>
-<script src="game_kit.js?v=20261117b"></script>
+<script src="firebase-config.js?v=20261119a"></script>
+<script src="chapters.js?v=20261119a"></script>
+<script src="common.js?v=20261119a"></script>
+<script src="game_kit.js?v=20261119a"></script>
 <script>
 (() => {
 'use strict';
@@ -66,6 +66,9 @@ function render() {
     s += ground + sun(360, 50) + face(sc.mood || 'happy', 210, 130, 78);
   } else if (m === 'kids') {
     s += ground + sun(350, 50) + person(110, 214, '#ee7a57') + person(170, 214, '#23799f') + person(230, 214, '#e2603f') + `<g transform="translate(330 214)"><circle cy="-30" r="14" fill="#e7b98f" stroke="${K}" stroke-width="2"/><path d="M-14 -34q14 -24 28 0q-4 -9 -14 -9t-14 9Z" fill="#3a5c75"/><path d="M-18 14q0 -42 18 -42t18 42Z" fill="#7e57c2" stroke="${K}" stroke-width="2"/></g>`;
+  } else if (m === 'photo') {
+    /* the owner's pictures (Gemini): a rounded square in the middle of the scene; the picture is chosen so it never shows the answer */
+    s += ground + `<clipPath id="ph"><rect x="130" y="10" width="260" height="260" rx="22"/></clipPath><image href="arabic/assets/${sc.img}.webp" x="130" y="10" width="260" height="260" preserveAspectRatio="xMidYMid slice" clip-path="url(#ph)"/><rect x="130" y="10" width="260" height="260" rx="22" fill="none" stroke="#d8c9a6" stroke-width="4"/>`;
   } else if (m === 'blank') {
     s += ground + (sc.nosun ? '' : sun(350, 54));
   }
@@ -73,7 +76,7 @@ function render() {
 }
 const g = G4Game({ ch: 'ag3u2', logo: '🌼', title: ["Garden of Qualities", "حديقة الصفات"], sub: ['Unit 2 · My Beautiful Qualities', 'الوحدة 2 · صفاتي الجميلة'],
   bg: 'arabic/assets/bg_ag3u2.svg', bgc: '#fdebd0', label: ["Garden of Qualities", "حديقة الصفات"], render });
-const set = (mode, o) => { Object.assign(sc, { mode, n: 1, mood: 'happy', hand: false, nosun: false }, o || {}); g.paint(); };
+const set = (mode, o) => { Object.assign(sc, { mode, n: 1, mood: 'happy', hand: false, nosun: false, img: '' }, o || {}); g.paint(); };
 const kw = w => `<b>${w}</b>`;
 
 async function stage1() {
@@ -96,15 +99,15 @@ async function stage1() {
 }
 async function stage2() {
   /* Mission 1 · the flower and the cactus */
-  set('duo');
+  set('photo', { img: 'a3_three_characters' });
   g.say(T('Mission 1: the flower says "I am the most important plant because I am beautiful." How does she feel?', 'المهمة ١: تقول الزهرة: «أنا أهم نبات؛ لأنني زهرة جميلة». بماذا تشعر؟'), 'point');
   await g.choice({ options: ['الغرور', 'الندم', 'الدهشة'], correct: 'الغرور', hint: T('She thinks she is better than the rest.', 'هي تظن أنها أفضل من غيرها.'),
     ok: T('Right.', 'صح! تشعر بالغرور.') });
-  set('duo');
+  set('photo', { img: 'a3_three_characters' });
   g.say(T('She looks at the cactus and finds its shape did not change. How does she feel?', 'نظرت إلى الصبار فوجدت شكله لم يتغير. بماذا شعرت؟'), 'think');
   await g.choice({ options: ['الدهشة', 'الغرور', 'الندم'], correct: 'الدهشة', hint: T('She is amazed.', 'هي تتعجب مما رأته.'),
     ok: T('Right.', 'برافو! شعرت بالدهشة.') });
-  set('duo');
+  set('photo', { img: 'a3_three_characters' });
   g.say(T('Then she says "I was wrong and conceited, I am sorry." How does she feel?', 'ثم قالت: «لقد كنت مخطئة ومغرورة، أنا آسفة». بماذا تشعر؟'), 'think');
   await g.choice({ options: ['الندم', 'الدهشة', 'الغرور'], correct: 'الندم', hint: T('She apologizes for her mistake.', 'هي تعتذر عن خطئها.'),
     ok: T('Right.', 'صح! شعرت بالندم.') });
@@ -122,6 +125,20 @@ async function stage2() {
   g.say(T('The teacher said: "Time is not an obstacle." Which word is the missing one? The time is not ___.', 'قالت المعلمة: لا تقولوا ليس لدينا وقت؛ فالوقت ليس ___.'), 'think');
   await g.choice({ options: ['عائقًا', 'مفيدًا', 'سعيدًا'], correct: 'عائقًا', hint: T('It means a barrier.', 'معناها: مانعًا أو حاجزًا.'),
     ok: T('Right.', 'برافو! الوقت ليس عائقًا.') });
+
+  /* picture questions: the situation is shown, the answer is what we should do */
+  set('photo', { img: 'a3_tv_loud' });
+  g.say(T('The neighbour is disturbed by the loud TV. What do I do?', 'جاري يزعجه صوت التلفاز. ماذا أفعل؟'), 'think');
+  await g.choice({ options: ['أخفض الصوت دون أن يطلب مني', 'لا أهتم وأفعل ما أريد', 'أرفع الصوت أكثر'], correct: 'أخفض الصوت دون أن يطلب مني', hint: T('Think about your neighbour.', 'أفكر في راحة جاري.'),
+    ok: T('Right.', 'برافو! أراعي راحة جيراني.') });
+  set('photo', { img: 'a3_neighbourhood_charity' });
+  g.say(T('Look at the picture. What kind of activity is the neighbourhood holding?', 'انظر إلى الصورة. ما نوع النشاط الذي ينظمه الحي؟'), 'point');
+  await g.choice({ options: ['نشاط خيري يجمع الطعام والملابس', 'سباق في الجري', 'حفل غنائي'], correct: 'نشاط خيري يجمع الطعام والملابس', hint: T('Look at the boxes and bags on the tables.', 'انظر إلى الصناديق والأكياس على الطاولات.'),
+    ok: T('Right.', 'صح! نشاط خيري، ونشارك فيه بقدر استطاعتنا.') });
+  set('photo', { img: 'a3_leen_medicine' });
+  g.say(T('Look at the picture. What does the girl give the sick neighbour?', 'انظر إلى الصورة. ماذا تعطي الطفلة للسيدة المريضة؟'), 'point');
+  await g.choice({ options: ['الماء والدواء', 'الحلوى واللعبة', 'الكتاب والقلم'], correct: 'الماء والدواء', hint: T('The lady is sitting under a blanket.', 'السيدة جالسة تحت بطانية.'),
+    ok: T('Right.', 'برافو! تساعدها في تناول الدواء.') });
 
   /* Mission 3 · the first to raise a hand */
   set('class');
