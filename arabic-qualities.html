@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261119h">
+<link rel="stylesheet" href="game_kit.css?v=20261119i">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Garden of Qualities.</noscript>
-<script src="firebase-config.js?v=20261119h"></script>
-<script src="chapters.js?v=20261119h"></script>
-<script src="common.js?v=20261119h"></script>
-<script src="game_kit.js?v=20261119h"></script>
+<script src="firebase-config.js?v=20261119i"></script>
+<script src="chapters.js?v=20261119i"></script>
+<script src="common.js?v=20261119i"></script>
+<script src="game_kit.js?v=20261119i"></script>
 <script>
 (() => {
 'use strict';
@@ -81,7 +81,7 @@ const kw = w => `<b>${w}</b>`;
 
 async function stage1() {
   set('garden', { n: 1 });
-  g.say(T('Welcome to the Garden of Qualities! Look at the flowers. Which word fits what you see?', P('أهلًا في حديقة الصفات! انظر إلى الزهور. أي اسم يناسب ما تراه؟', 'أهلًا في حديقة الصفات! انظري إلى الزهور. أي اسم يناسب ما تريه؟')), 'point');
+  g.say(T('Welcome to the Garden of Qualities! Look at the flowers. Which word fits what you see?', P('أهلًا في حديقة الصفات! انظر إلى الزهور. أي اسم يناسب ما تراه؟', 'أهلًا في حديقة الصفات! انظري إلى الزهور. أي اسم يناسب ما ترينه؟')), 'point');
   await g.choice({ options: ['زهرةٌ', 'زهرتان', 'زهورٌ'], correct: 'زهرةٌ', hint: T('How many flowers are there?', 'ما نوع الاسم الذي يدل على واحدة؟'),
     ok: T('Right! One flower is singular.', `صح! ${kw('زهرةٌ')} اسم مفرد يدل على واحدة.`) });
   set('garden', { n: 2 });
@@ -100,28 +100,29 @@ async function stage1() {
 async function stage2() {
   /* Mission 1 · the flower and the cactus */
   set('photo', { img: 'a3_three_characters' });
-  g.say(T('Mission 1: the flower says "I am the most important plant because I am beautiful." How does she feel?', 'المهمة ١: تقول الزهرة: «أنا أهم نبات؛ لأنني زهرة جميلة». بماذا تشعر؟'), 'point');
+  g.say(T('Mission 1: the flower says "I am the most important plant because I am beautiful." How does she feel?', 'المهمة ١: تقول الزهرة: «أنا أهم نبات؛ لأنني زهرة جميلة». بماذا تشعر الزهرة؟'), 'point');
   await g.choice({ options: ['الغرور', 'الندم', 'الدهشة'], correct: 'الغرور', hint: T('She thinks she is better than the rest.', 'هي تظن أنها أفضل من غيرها.'),
     ok: T('Right.', 'صح! تشعر بالغرور.') });
   set('photo', { img: 'a3_three_characters' });
-  g.say(T('She looks at the cactus and finds its shape did not change. How does she feel?', 'نظرت إلى الصبار فوجدت شكله لم يتغير. بماذا شعرت؟'), 'think');
+  g.say(T('She looks at the cactus and finds its shape did not change. How does she feel?', 'نظرت إلى الصبار فوجدت شكله لم يتغير. بماذا شعرت الزهرة؟'), 'think');
   await g.choice({ options: ['الدهشة', 'الغرور', 'الندم'], correct: 'الدهشة', hint: T('She is amazed.', 'هي تتعجب مما رأته.'),
     ok: T('Right.', 'برافو! شعرت بالدهشة.') });
   set('photo', { img: 'a3_three_characters' });
-  g.say(T('Then she says "I was wrong and conceited, I am sorry." How does she feel?', 'ثم قالت: «لقد كنت مخطئة ومغرورة، أنا آسفة». بماذا تشعر؟'), 'think');
+  g.say(T('Then she says "I was wrong and conceited, I am sorry." How does she feel?', 'ثم قالت: «لقد كنت مخطئة ومغرورة، أنا آسفة». بماذا تشعر الزهرة الآن؟'), 'think');
   await g.choice({ options: ['الندم', 'الدهشة', 'الغرور'], correct: 'الندم', hint: T('She apologizes for her mistake.', 'هي تعتذر عن خطئها.'),
     ok: T('Right.', 'صح! شعرت بالندم.') });
 
-  /* Mission 2 · happiness in helping */
-  set('help');
-  g.say(T('Mission 2: Amira sees an old neighbour who cannot carry her heavy bags. What does Amira do?', 'المهمة ٢: رأت أميرة جارتها العجوز لا تقدر على حمل أكياسها الثقيلة. ماذا فعلت أميرة؟'), 'point');
-  await g.choice({ options: ['بادرت إلى مساعدتها', 'مرّت دون أن تنظر', 'طلبت منها أن تبتعد'], correct: 'بادرت إلى مساعدتها', hint: T('Think of a kind girl.', 'بادرت: أي أسرعت.'),
-    ok: T('Right.', 'برافو! بادرت إلى مساعدتها.') });
-  set('help');
+  /* Mission 2 · happiness in helping (picture-reading question: the photo shows what Amira did) */
+  set('photo', { img: 'a3_amira_bags' });
+  g.say(T('Mission 2: look at the picture. Amira saw her old neighbour trying to carry heavy bags. What did Amira do?', P('المهمة ٢: انظر إلى الصورة. رأت أميرة جارتها العجوز تحاول حمل أكياس ثقيلة. ماذا فعلت أميرة؟', 'المهمة ٢: انظري إلى الصورة. رأت أميرة جارتها العجوز تحاول حمل أكياس ثقيلة. ماذا فعلت أميرة؟')), 'point');
+  await g.choice({ options: ['بادرت إلى مساعدتها', 'مرّت دون أن تنظر', 'طلبت منها أن تبتعد'], correct: 'بادرت إلى مساعدتها', hint: T('Look at who is carrying the bags.', P('انظر: من يحمل الأكياس في الصورة؟', 'انظري: من يحمل الأكياس في الصورة؟')),
+    ok: T('Right.', 'برافو! بادرت أميرة إلى مساعدة جارتها العجوز.') });
+  /* no helping photo here: the smiling faces would show the answer (happiness) */
+  set('garden', { n: 3 });
   g.say(T('How do we feel when we help others?', 'بماذا نشعر حين نساعد الآخرين؟'), 'think');
   await g.choice({ options: ['السعادة', 'الغضب', 'الملل'], correct: 'السعادة', hint: T('The three children answered together.', 'ردّ التلاميذ الثلاثة معًا بكلمة واحدة.'),
     ok: T('Right.', 'صح! نشعر بالسعادة.') });
-  set('help');
+  set('photo', { img: 'a3_basim_grandma' });
   g.say(T('The teacher said: "Time is not an obstacle." Which word is the missing one? The time is not ___.', 'قالت المعلمة: لا تقولوا ليس لدينا وقت؛ فالوقت ليس ___.'), 'think');
   await g.choice({ options: ['عائقًا', 'مفيدًا', 'سعيدًا'], correct: 'عائقًا', hint: T('It means a barrier.', 'معناها: مانعًا أو حاجزًا.'),
     ok: T('Right.', 'برافو! الوقت ليس عائقًا.') });
@@ -132,16 +133,16 @@ async function stage2() {
   await g.choice({ options: ['أخفض الصوت دون أن يطلب مني', 'لا أهتم وأفعل ما أريد', 'أرفع الصوت أكثر'], correct: 'أخفض الصوت دون أن يطلب مني', hint: T('Think about your neighbour.', 'أفكر في راحة جاري.'),
     ok: T('Right.', 'برافو! أراعي راحة جيراني.') });
   set('photo', { img: 'a3_neighbourhood_charity' });
-  g.say(T('Look at the picture. What kind of activity is the neighbourhood holding?', 'انظر إلى الصورة. ما نوع النشاط الذي ينظمه الحي؟'), 'point');
-  await g.choice({ options: ['نشاط خيري يجمع الطعام والملابس', 'سباق في الجري', 'حفل غنائي'], correct: 'نشاط خيري يجمع الطعام والملابس', hint: T('Look at the boxes and bags on the tables.', 'انظر إلى الصناديق والأكياس على الطاولات.'),
+  g.say(T('Look at the picture. What kind of activity is the neighbourhood holding?', P('انظر إلى الصورة. ما نوع النشاط الذي ينظمه الحي؟', 'انظري إلى الصورة. ما نوع النشاط الذي ينظمه الحي؟')), 'point');
+  await g.choice({ options: ['نشاط خيري يجمع الطعام والملابس', 'سباق في الجري', 'حفل غنائي'], correct: 'نشاط خيري يجمع الطعام والملابس', hint: T('Look at the boxes and bags on the tables.', P('انظر إلى الصناديق والأكياس على الطاولات.', 'انظري إلى الصناديق والأكياس على الطاولات.')),
     ok: T('Right.', 'صح! نشاط خيري، ونشارك فيه بقدر استطاعتنا.') });
   set('photo', { img: 'a3_leen_medicine' });
-  g.say(T('Look at the picture. What does the girl give the sick neighbour?', 'انظر إلى الصورة. ماذا تعطي الطفلة للسيدة المريضة؟'), 'point');
+  g.say(T('Look at the picture. What does the girl give the sick neighbour?', P('انظر إلى الصورة. ماذا تعطي الطفلة للسيدة المريضة؟', 'انظري إلى الصورة. ماذا تعطي الطفلة للسيدة المريضة؟')), 'point');
   await g.choice({ options: ['الماء والدواء', 'الحلوى واللعبة', 'الكتاب والقلم'], correct: 'الماء والدواء', hint: T('The lady is sitting under a blanket.', 'السيدة جالسة تحت بطانية.'),
     ok: T('Right.', 'برافو! تساعدها في تناول الدواء.') });
 
   /* Mission 3 · the first to raise a hand */
-  set('class');
+  set('photo', { img: 'a3_iman_silent' });
   g.say(T('Mission 3: the teacher asks who is brave enough to solve the first problem. Everyone is silent. Why?', 'المهمة ٣: سأل المعلم من عنده الشجاعة ليحل أول مسألة، فصمت الجميع. لماذا؟'), 'point');
   await g.choice({ options: ['خاف بعضهم أن يخطئ وخجل بعضهم', 'لم يسمعوا السؤال', 'كانوا يعرفون الإجابة'], correct: 'خاف بعضهم أن يخطئ وخجل بعضهم', hint: T('Two reasons in the text.', 'في النص سببان.'),
     ok: T('Right.', 'صح! خاف بعضهم أن يخطئ وخجل بعضهم أن يرفع يده.') });
@@ -160,7 +161,7 @@ async function stage2() {
   await g.choice({ options: ['الشمس', 'القمر', 'البحر'], correct: 'الشمس', hint: T('It shines in the sky by day.', 'تضيء في السماء نهارًا.'),
     ok: T('Right.', 'برافو! شبّه الشاعر الأخلاق بالشمس.') });
   set('photo', { img: 'a3_ahmed_poor' });
-  g.say(T('Look at the picture. Which beautiful moral does the boy show?', 'انظر إلى الصورة. أي خلق جميل يظهر في تصرف الولد؟'), 'point');
+  g.say(T('Look at the picture. Which beautiful moral does the boy show?', P('انظر إلى الصورة. أي خلق جميل يظهر في تصرف الولد؟', 'انظري إلى الصورة. أي خلق جميل يظهر في تصرف الولد؟')), 'point');
   await g.choice({ options: ['العطاء', 'الكذب', 'الغرور'], correct: 'العطاء', hint: T('He gives food to a man who needs it.', 'هو يقدم الطعام لرجل يحتاج إليه.'),
     ok: T('Right.', 'برافو! العطاء من الأخلاق الجميلة.') });
   set('tree');
@@ -169,17 +170,17 @@ async function stage2() {
     ok: T('Right.', 'صح! الكذب ليس خلقًا جميلًا.') });
   set('tree');
   g.say(T('Which two words end with the same sound?', 'أي كلمتين نهايتهما متماثلة؟'), 'think');
-  await g.choice({ options: ['الوفاء – العطاء', 'جميلة – السماء', 'دومًا – الإخاء'], correct: 'الوفاء – العطاء', hint: T('Look at how each word ends.', 'انظر إلى نهاية كل كلمة.'),
+  await g.choice({ options: ['الوفاء – العطاء', 'جميلة – السماء', 'دومًا – الإخاء'], correct: 'الوفاء – العطاء', hint: T('Look at how each word ends.', P('انظر إلى نهاية كل كلمة.', 'انظري إلى نهاية كل كلمة.')),
     ok: T('Right.', 'برافو! الوفاء والعطاء تنتهيان بالصوت نفسه.') });
 
   /* Mission 5 · express your feelings */
-  set('kids');
+  set('photo', { img: 'a3_amir_asks' });
   g.say(T('Mission 5: Amir asked to play, and they said the number was full. He sat alone. How does he feel?', 'المهمة ٥: طلب أمير أن يلعب مع زملائه، فقالوا إن العدد مكتمل، فجلس وحده. بماذا يشعر؟'), 'point');
   await g.choice({ options: ['بالحزن', 'بالحماس', 'بالسرور'], correct: 'بالحزن', hint: T('He feels unwelcome.', 'شعر أنه غير مرحب به.'),
     ok: T('Right.', 'صح! شعر أمير بالحزن.') });
   set('photo', { img: 'a3_face_angry' });
-  g.say(T('Look at this face. What does it feel?', 'انظر إلى هذا الوجه. بماذا يشعر؟'), 'think');
-  await g.choice({ options: ['بالغضب', 'بالسعادة', 'بالدهشة'], correct: 'بالغضب', hint: T('Look at the eyebrows.', 'انظر إلى الحاجبين.'),
+  g.say(T('Look at this face. What does it feel?', P('انظر إلى هذا الوجه. بماذا يشعر؟', 'انظري إلى هذا الوجه. بماذا يشعر؟')), 'think');
+  await g.choice({ options: ['بالغضب', 'بالسعادة', 'بالدهشة'], correct: 'بالغضب', hint: T('Look at the eyebrows.', P('انظر إلى الحاجبين.', 'انظري إلى الحاجبين.')),
     ok: T('Right.', 'برافو! الوجه غاضب.') });
   set('photo', { img: 'a3_amir_teacher' });
   g.say(T('What is the best way to share a feeling?', 'ما أنسب طريقة للتعبير عن الشعور؟'), 'think');
@@ -190,19 +191,19 @@ const DM = [['___ أذهب إلى المدرسة أمس.', 'm'], ['___ أزور 
   ['___ يقرأ أحمد القصة قبل ذلك.', 'm'], ['___ تشارك هالة في المسابقة بعد غد.', 'n'], ['___ نلقي القمامة في الشارع مجددًا.', 'n'], ['___ أحضر الألوان معي أمس.', 'm'],
   ['___ أقطع الأشجار بعد اليوم.', 'n'], ['___ أستطع حل المسألة أمس.', 'm']];
 async function stage3() {
-  set('class');
+  set('garden', { n: 3 });
   await g.speedRound({ items: DM.map(([w, r]) => ({ t: `<span dir="rtl" lang="ar">${w}</span>`, ans: r,
       why: r === 'm' ? T('The sentence is in the past, so we use لم.', 'الجملة في الماضي، فنستعمل (لم).') : T('The sentence is in the future, so we use لن.', 'الجملة في المستقبل، فنستعمل (لن).') })), rounds: 10,
     buttons: [{ label: T('لم', 'لم'), value: 'm', c: 0 }, { label: T('لن', 'لن'), value: 'n', c: 2 }],
     ask: T('Which word fits?', 'أي أداة تناسب الجملة؟'),
-    intro: T('Speed Round! A sentence comes in. Choose لم for the past or لن for the future.', 'جولة السرعة! ستظهر جملة. اختر (لم) للماضي أو (لن) للمستقبل.'),
+    intro: T('Speed Round! A sentence comes in. Choose لم for the past or لن for the future.', P('جولة السرعة! ستظهر جملة. اختر (لم) للماضي أو (لن) للمستقبل.', 'جولة السرعة! ستظهر جملة. اختاري (لم) للماضي أو (لن) للمستقبل.')),
     think: T('Past or future?', 'ماضٍ أم مستقبل؟') });
 }
 
 g.run({
-  intro: T(`Hi, <b>${g.name()}</b>! Walk through the Garden of Qualities: singular, dual and plural, the flower and the cactus, helping others, brave Iman, our morals and our feelings.`, `أهلًا يا <b>${g.name()}</b>! تجوّل في حديقة الصفات: المفرد والمثنى والجمع، والزهرة والصبار، ومساعدة الآخرين، وإيمان الشجاعة، وأخلاقنا، ومشاعرنا. ٣ مراحل: التسخين والمهمات وجولة السرعة.`),
+  intro: T(`Hi, <b>${g.name()}</b>! Walk through the Garden of Qualities: singular, dual and plural, the flower and the cactus, helping others, brave Iman, our morals and our feelings.`, P(`أهلًا يا <b>${g.name()}</b>! تجوّل في حديقة الصفات: المفرد والمثنى والجمع، والزهرة والصبار، ومساعدة الآخرين، وإيمان الشجاعة، وأخلاقنا، ومشاعرنا. ٣ مراحل: التسخين والمهمات وجولة السرعة.`, `أهلًا يا <b>${g.name()}</b>! تجوّلي في حديقة الصفات: المفرد والمثنى والجمع، والزهرة والصبار، ومساعدة الآخرين، وإيمان الشجاعة، وأخلاقنا، ومشاعرنا. ٣ مراحل: التسخين والمهمات وجولة السرعة.`)),
   stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
-  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know singular, dual and plural, how helping others and courage make us beautiful, our morals, and when to use لم and لن. Next, try the questions of this unit.', 'أصبحت تعرف المفرد والمثنى والجمع، وكيف تجعلنا المساعدة والشجاعة والأخلاق أجمل، ومتى نستعمل (لم) و(لن). جرّب الآن أسئلة الوحدة.') }
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')), text: T('You know singular, dual and plural, how helping others and courage make us beautiful, our morals, and when to use لم and لن. Next, try the questions of this unit.', P('أصبحت تعرف المفرد والمثنى والجمع، وكيف تجعلنا المساعدة والشجاعة والأخلاق أجمل، ومتى نستعمل (لم) و(لن). جرّب الآن أسئلة الوحدة.', 'أصبحتِ تعرفين المفرد والمثنى والجمع، وكيف تجعلنا المساعدة والشجاعة والأخلاق أجمل، ومتى نستعمل (لم) و(لن). جرّبي الآن أسئلة الوحدة.')) }
 }).catch(err => console.error(err));
 })();
 </script>
