@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-19', title: 'Arabic G3 Unit 2: more pictures',
+    items: [
+      { text: '30 سؤالًا من أسئلة القصص صارت لها صورة لا تكشف الإجابة' },
+      { text: 'المهمة ٣ في حديقة الصفات: سؤال جديد لا تكشفه الصورة', links: [{ label: 'صفاتي الجميلة', href: 'map.html', ch: 'ag3u2' }] }
+    ] },
   { date: '2026-11-19', title: 'Garden of Qualities fixes',
     items: [
       { text: 'صور بدل المشهد الفارغ في المهمات ٢ و٣ و٥ وجولة السرعة' },

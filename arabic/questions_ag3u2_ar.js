@@ -451,4 +451,31 @@ window.IDEAS = [
         answer: [0, 1, 2, 3], hint: 'ابدأ بما وجده حين فتح كتابه.' }
     ] }
 ];
+
+/* صور لأسئلة النص (19 نوفمبر 2026): صورة تمثل الموقف ولا تكشف الإجابة. لم تُضف صورة لسؤال تكشف الصورة إجابته
+   (مثل: من الشخصيات؟ ماذا فعل باسم؟ ماذا وجد آدم؟) ولا لأسئلة اللغة (المعنى، المقاطع، التنوين، لم ولن). */
+const SCENE = {
+  three: ['زهرة وصبار وطائر صغير في الصحراء قرب الأهرامات', 'a3_three_characters'],
+  amira: ['طفلة وسيدة عجوز تمشيان في شارع ومعهما أكياس', 'a3_amira_bags'],
+  leen: ['طفلة تجلس مع سيدة عجوز على أريكة في غرفة', 'a3_leen_medicine'],
+  charity: ['أهل الحي حول طاولات عليها صناديق وأكياس', 'a3_neighbourhood_charity'],
+  silent: ['تلاميذ في الفصل والمعلم يقف عند السبورة', 'a3_iman_silent'],
+  hand: ['معلم يشير إلى السبورة وتلميذة ترفع يدها', 'a3_iman_hand'],
+  board: ['تلميذة تقف عند السبورة والمعلم بجانبها', 'a3_iman_board'],
+  hands: ['تلاميذ في الفصل ومعلم يقف أمام السبورة', 'a3_class_hands'],
+  planeFail: ['صبي يجلس على مقعد تحت شجرة وطائرة ورقية على الأرض', 'a3_marwan_plane_fail'],
+  planeFly: ['صبي وفتاة في الفناء وطائرة ورقية في السماء', 'a3_marwan_plane_fly'],
+  amirAlone: ['صبي يجلس وحده على جدار منخفض في فناء المدرسة', 'a3_amir_alone'],
+  amirTeacher: ['معلم يجلس بجانب صبي في فناء المدرسة', 'a3_amir_teacher'],
+  teacher: ['معلمة تقف أمام الفصل وفي يدها أوراق', 'a3_teacher_smiles']
+};
+const ADD = { G2: { 1: 'three', 2: 'three', 3: 'three', 4: 'three' }, G4: { 1: 'three', 2: 'three' },
+  H2: { 1: 'amira', 3: 'leen', 5: 'amira' }, H3: { 2: 'charity', 3: 'charity', 6: 'leen', 8: 'leen' },
+  I2: { 1: 'hand', 2: 'hand', 3: 'silent', 6: 'hand', 8: 'board' }, I3: { 2: 'silent', 4: 'board', 5: 'hands', 6: 'hands', 7: 'board' },
+  I8: { 2: 'planeFly', 3: 'planeFail', 6: 'planeFly' }, I9: { 1: 'hand' },
+  K1: { 9: 'amirAlone', 10: 'amirTeacher' }, K3: { 3: 'amirAlone' }, L1: { 5: 'teacher' } };
+window.IDEAS.forEach(idea => Object.entries(ADD[idea.id] || {}).forEach(([n, k]) => {
+  const v = idea.variants[n - 1];
+  if (v && !v.fig) Object.assign(v, ph(...SCENE[k]));
+}));
 })();
