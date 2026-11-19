@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261119c">
+<link rel="stylesheet" href="game_kit.css?v=20261119d">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Garden of Qualities.</noscript>
-<script src="firebase-config.js?v=20261119c"></script>
-<script src="chapters.js?v=20261119c"></script>
-<script src="common.js?v=20261119c"></script>
-<script src="game_kit.js?v=20261119c"></script>
+<script src="firebase-config.js?v=20261119d"></script>
+<script src="chapters.js?v=20261119d"></script>
+<script src="common.js?v=20261119d"></script>
+<script src="game_kit.js?v=20261119d"></script>
 <script>
 (() => {
 'use strict';
@@ -149,7 +149,7 @@ async function stage2() {
   g.say(T('Iman raises her hand and solves the problem step by step. What does the teacher say about a small mistake?', 'رفعت إيمان يدها وحلّت المسألة خطوة خطوة. ماذا قال المعلم عن الخطأ البسيط؟'), 'think');
   await g.choice({ options: ['المهم أنها كانت شجاعة وحاولت', 'يجب أن نعاقب من يخطئ', 'الخطأ يعني الرسوب'], correct: 'المهم أنها كانت شجاعة وحاولت', hint: T('He was pleased with her courage.', 'كان سعيدًا بشجاعتها.'),
     ok: T('Right.', 'برافو!') });
-  set('photo', { img: 'a3_iman_board' });
+  set('photo', { img: 'a3_class_hands' });
   g.say(T('What did Iman teach her classmates?', 'ماذا علّمت إيمان زملاءها؟'), 'think');
   await g.choice({ options: ['أن نتحلى بالشجاعة ونحاول', 'أن نصمت دائمًا', 'أن نخاف من الخطأ'], correct: 'أن نتحلى بالشجاعة ونحاول', hint: T('Trying is more important than fear.', 'المحاولة أهم من الخوف.'),
     ok: T('Right.', 'صح! الشجاعة والمحاولة.') });
