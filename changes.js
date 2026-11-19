@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-19', title: 'Arabic G3 Unit 2: Adam\'s letter pictures',
+    items: [
+      { text: 'Two pictures for the bonus lesson: Adam finds the note and invites his classmate' }
+    ] },
   { date: '2026-11-19', title: 'Arabic G3 Unit 2: more pictures',
     items: [
       { text: 'Twelve new pictures: Marwan\'s plane, four good and bad morals, Amir at play and with his teacher, four feeling faces' },
