@@ -1,0 +1,186 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": "arabic/assets/a3_adam_invites.webp",
+ "size": [
+  768,
+  768
+ ],
+ "style": "Style: flat cartoon children's-book illustration exactly like the drawing style of image 0: thick dark outlines, soft warm colours, big friendly eyes, simple clean shapes, bright daylight. Square picture. Egyptian setting. Absolutely no text, no letters, no numbers, no writing anywhere in the picture.",
+ "images": [
+  {
+   "file": "g_tree",
+   "seed": 401,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New picture, no people: one big beautiful green tree with a thick brown trunk standing alone on green grass, blue sky. Simple and clear, the tree fills the picture."
+  },
+  {
+   "file": "g_house",
+   "seed": 402,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New picture, no people: one small pretty Egyptian village house with beige walls, a wooden door, two windows with green shutters and a palm tree beside it, blue sky. The house fills the picture."
+  },
+  {
+   "file": "g_fruit",
+   "seed": 403,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New picture, no people: a woven basket full of fresh fruits: oranges, red apples, a bunch of bananas, grapes and mangoes, on a wooden table. The basket fills the picture."
+  },
+  {
+   "file": "g_water",
+   "seed": 404,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New picture, no people: a clear glass jug full of fresh water and a full glass of water beside it on a table, small water drops, light blue background."
+  },
+  {
+   "file": "g_clock",
+   "seed": 405,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New picture, no people: a round red alarm clock with two bells on top and two little legs, a plain white face with only two hands and NO numbers and no marks on the face. The clock fills the picture on a plain light background."
+  },
+  {
+   "file": "g_balcony",
+   "seed": 406,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: early morning sunrise. A 9-year-old Egyptian boy (short brown hair, striped pyjamas) stands on the small balcony of a plain beige flat-roofed Cairo apartment building with a wooden mashrabiya railing, leaning on the railing and looking out calmly. In front of the balcony a big green leafy tree. No birds, no cars, no other people. Soft orange morning sky."
+  },
+  {
+   "file": "g_flag_cairo",
+   "seed": 407,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene, no people: the real flag of Egypt: three equal horizontal stripes, red on top, white in the middle, black at the bottom, and in the centre of the white stripe a small golden eagle with spread wings (the Eagle of Saladin) waves high on a tall white flagpole in the wind, filling most of the picture. Behind it a blue sky and the Cairo skyline far below with the Nile and a minaret. The eagle in the centre of the white stripe is golden and clear."
+  },
+  {
+   "file": "a3_adam_flag_r",
+   "seed": 408,
+   "n": 2,
+   "prompt": "Use image 0 ONLY as a reference for the drawing style and for the boy on the left (brown hair, his face). Do NOT copy the school yard, the second boy or the pose. New scene: the same boy in a white t-shirt stands on a balcony of a plain beige Cairo apartment and holds up high the real flag of Egypt: three equal horizontal stripes, red on top, white in the middle, black at the bottom, and in the centre of the white stripe a small golden eagle with spread wings (the Eagle of Saladin) on a short stick, smiling proudly. Plain flat-roofed Cairo buildings and a minaret behind, blue sky. The golden eagle must be clearly visible in the middle of the white stripe.",
+   "ref": "arabic/assets/a3_adam_invites.webp"
+  },
+  {
+   "file": "g_salma_school",
+   "seed": 409,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: morning at the gate of an Egyptian primary school with beige walls and trees. A happy 9-year-old Egyptian girl (two dark-brown braids with red hair ties, white school shirt with navy collar, navy skirt) walks in with a pink school bag on her back, smiling and waving. Other pupils far behind. Nothing in her hands."
+  },
+  {
+   "file": "g_bird_branch",
+   "seed": 410,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New picture, no people: one small brown sparrow standing on top of a green tree branch with leaves, close-up, soft blue sky behind. The bird stands clearly ON the branch."
+  },
+  {
+   "file": "g_shaimaa_bees",
+   "seed": 411,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: in a sunny Egyptian garden a 9-year-old girl (black ponytail, yellow dress) sits on a bench and writes in an open notebook with a pencil, smiling and looking at a few cute honey bees flying around a wooden beehive and flowers near her. The notebook pages show only wavy lines, no letters."
+  },
+  {
+   "file": "g_scribe",
+   "seed": 412,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene in ancient Egypt: an ancient Egyptian scribe, a grown-up man with a short black beard, white linen kilt and white head cloth, sits cross-legged and writes with a thin reed pen on a light beige sheet resting on his knees, a small palette of black and red ink beside him. Simple pictures of a bird and a wavy line on the sheet, no real writing. Temple columns behind him."
+  },
+  {
+   "file": "g_fields",
+   "seed": 413,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene, no people: wide green farm fields in the Egyptian countryside beside the blue Nile, rows of crops, palm trees, a wooden water wheel, a mud-brick village far away, bright blue sky."
+  },
+  {
+   "file": "g_recite",
+   "seed": 414,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene in an Egyptian primary-school classroom seen from behind the pupils in the back-left corner: the pupils (boys and girls, white school shirts with navy collars) stand at their desks, all facing the front, singing together happily with open mouths. A young female teacher (pink headscarf) stands beside the completely EMPTY blackboard on the far wall, facing the class and moving her hand like a conductor. Nobody looks at the camera."
+  },
+  {
+   "file": "g_building",
+   "seed": 415,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: two Egyptian builders in work clothes and yellow helmets build the brick walls of a new house, one lays red bricks with a trowel, the other carries bricks. Scaffolding, a pile of bricks and cement, blue sky."
+  },
+  {
+   "file": "g_mona_walk",
+   "seed": 416,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: afternoon in a quiet Cairo street of plain beige flat-roofed apartment buildings. A 9-year-old Egyptian girl (shoulder-length black hair with a blue hairband, white school shirt, navy skirt, blue school bag on her back) walks home slowly with her head down, looking sad and thinking. Nobody else near her."
+  },
+  {
+   "file": "g_mona_window",
+   "seed": 417,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene in a girl's bedroom: a 9-year-old Egyptian girl (shoulder-length black hair with a blue hairband, light blue t-shirt) sits alone on her bed hugging her knees and looks out of the window, worried and confused, thinking. Soft afternoon light."
+  },
+  {
+   "file": "s_seeds",
+   "seed": 418,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: a 9-year-old Egyptian boy (curly black hair, green t-shirt) kneels in a garden and puts small seeds into a hole in the dark soil, a small watering can beside him. No flowers yet, only soil."
+  },
+  {
+   "file": "s_cup",
+   "seed": 419,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New picture, no people: a white cup falling off the edge of a wooden kitchen table, in the air, small motion lines, a few drops of tea flying. The floor below."
+  },
+  {
+   "file": "s_greet",
+   "seed": 420,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: two 9-year-old Egyptian boys meet in a street in Cairo and smile and wave to each other; one boy has a red t-shirt, the other a blue t-shirt with a school bag."
+  },
+  {
+   "file": "s_exam",
+   "seed": 421,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene in an Egyptian primary-school classroom seen from the side: pupils (boys and girls, white school shirts with navy collars) sit at separate desks quietly answering an exam on sheets of paper with pencils, concentrating. The sheets show only grey lines. The blackboard is empty."
+  },
+  {
+   "file": "s_search",
+   "seed": 422,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene in a child's bedroom: a 9-year-old Egyptian boy (short black hair, orange t-shirt) kneels on the floor and looks under his bed, searching for something, toys and a school bag around him."
+  },
+  {
+   "file": "s_hind",
+   "seed": 423,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene in an Egyptian living room: a 9-year-old girl (long black hair, purple dress) sitting at a table with crayons turns her head toward her mother (light green headscarf, long modest dress) who stands in the kitchen doorway calling her with one raised hand."
+  },
+  {
+   "file": "s_khaled",
+   "seed": 424,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: a 9-year-old Egyptian boy (short brown hair, yellow t-shirt) waters a tiny green seedling in a clay pot on a balcony with a small watering can, smiling."
+  },
+  {
+   "file": "s_kick",
+   "seed": 425,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: a 9-year-old Egyptian boy (red football shirt, white shorts) kicks a football toward a small white goal in a sandy neighbourhood playground; the ball is in the air between him and the goal. A goalkeeper boy in green."
+  },
+  {
+   "file": "s_grad",
+   "seed": 426,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: a happy young Egyptian man (about 22, short black hair) in a black graduation gown and square cap holds a rolled diploma tied with a red ribbon, standing in front of a university building with columns."
+  },
+  {
+   "file": "s_door",
+   "seed": 427,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: inside an Egyptian apartment, a 9-year-old girl (two pigtails, green dress) opens the wooden front door of the flat; a doorbell button on the wall beside the door. The doorway shows only the stairway landing, nobody visible outside."
+  },
+  {
+   "file": "s_wheat",
+   "seed": 428,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: an Egyptian farmer (galabeya, white turban, kind face, short grey beard) stands in a field of tall golden wheat holding a sickle, under a sunny sky, palm trees far away."
+  },
+  {
+   "file": "s_thief",
+   "seed": 429,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene, friendly cartoon for children, not scary: in a Cairo street, a funny cartoon thief (striped shirt, black eye mask, small sack) runs away fast with motion lines, and behind him an Egyptian policeman in a white summer uniform and cap walks toward him pointing. Nobody is hurt."
+  }
+ ]
+}
