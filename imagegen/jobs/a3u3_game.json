@@ -181,6 +181,34 @@
    "seed": 429,
    "n": 2,
    "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene, friendly cartoon for children, not scary: in a Cairo street, a funny cartoon thief (striped shirt, black eye mask, small sack) runs away fast with motion lines, and behind him an Egyptian policeman in a white summer uniform and cap walks toward him pointing. Nobody is hurt."
+  },
+  {
+   "file": "g_building_r",
+   "seed": 501,
+   "n": 2,
+   "ref": null,
+   "prompt": "Flat cartoon children's-book illustration, thick dark outlines, soft warm colours, friendly faces, simple clean shapes, bright daylight. Two grown-up Egyptian construction workers, adult men about forty with black moustaches, in dusty work clothes and yellow helmets, build the red brick walls of a new house: one lays bricks with a trowel, the other carries a stack of bricks. Scaffolding, cement, blue sky. No children."
+  },
+  {
+   "file": "s_cup_r",
+   "seed": 502,
+   "n": 2,
+   "ref": null,
+   "prompt": "Flat cartoon children's-book illustration, thick dark outlines, soft warm colours, friendly faces, simple clean shapes, bright daylight. No people at all. Close-up of a wooden kitchen table edge: a white tea cup is falling off the edge through the air, tilted, a few tea drops flying, motion lines, the tiled floor below. Only the table and the cup."
+  },
+  {
+   "file": "s_grad_r",
+   "seed": 503,
+   "n": 2,
+   "ref": null,
+   "prompt": "Flat cartoon children's-book illustration, thick dark outlines, soft warm colours, friendly faces, simple clean shapes, bright daylight. A grown-up young Egyptian man about 23 years old, tall, short black hair and a small moustache, in a black graduation gown and square cap, smiling and holding a rolled diploma tied with a red ribbon, in front of a university building with columns and palm trees."
+  },
+  {
+   "file": "s_thief_r",
+   "seed": 504,
+   "n": 2,
+   "ref": null,
+   "prompt": "Flat cartoon children's-book illustration, thick dark outlines, soft warm colours, friendly faces, simple clean shapes, bright daylight. Friendly comic scene for children, not scary: in a Cairo street, a grown-up cartoon thief, a tall thin adult man with a black eye mask and striped shirt, carrying a small sack, runs away fast with motion lines; behind him a grown-up Egyptian policeman in a white uniform and cap points at him. Nobody is hurt."
   }
  ]
 }
