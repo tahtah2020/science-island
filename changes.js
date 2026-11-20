@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-20', title: 'Arabic G3 Unit 3: a picture for every game question',
+    items: [
+      { text: '«حراس الوطن»: every question now shows a picture (warm-up words, all missions, each speed-round sentence)' },
+      { text: 'Egypt\'s flag fixed: the golden eagle is back in the picture, the game drawing and the unit map', links: [{ label: 'حراس الوطن', href: 'arabic-homeland.html', ch: 'ag3u3' }] }
+    ] },
   { date: '2026-11-20', title: 'Arabic G3 Unit 3: pictures',
     items: [
       { text: '18 new pictures for «أحب بلدي»: 29 story questions and 7 game questions now show a picture that fits the question without showing its answer', links: [{ label: 'أسئلة الوحدة', href: 'quiz.html#quest', ch: 'ag3u3' }, { label: 'حراس الوطن', href: 'arabic-homeland.html', ch: 'ag3u3' }] }

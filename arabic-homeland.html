@@ -7,14 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261120c">
+<link rel="stylesheet" href="game_kit.css?v=20261120d">
+<style>/* speed round: a small picture so the sentence stays visible */ .veilCard{gap:4px} .veilCard svg{width:auto;height:min(118px,15vh);max-height:none} .veilCard strong{font-size:clamp(17px,3.6vw,24px)} @media (max-height:520px) and (orientation:landscape){.veilCard svg{height:22vh}}</style>
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Guardians of the Homeland.</noscript>
-<script src="firebase-config.js?v=20261120c"></script>
-<script src="chapters.js?v=20261120c"></script>
-<script src="common.js?v=20261120c"></script>
-<script src="game_kit.js?v=20261120c"></script>
+<script src="firebase-config.js?v=20261120d"></script>
+<script src="chapters.js?v=20261120d"></script>
+<script src="common.js?v=20261120d"></script>
+<script src="game_kit.js?v=20261120d"></script>
 <script>
 (() => {
 'use strict';
@@ -24,7 +25,8 @@
    Stage 3 (Speed Round): ثمّ or فـ (lesson 3)
    No people or animals are drawn in code (owner, 17 Nov 2026): the scenes are things (tree and nest, box, scroll, pyramids, flag, garden) chosen so they never show the answer.
    Generated pictures (20 Nov 2026, arabic/assets/a3_*.webp) are shown with set('photo', { img }) where they fit the question without showing its answer;
-   the other questions keep the drawn things (e.g. no sparrow photo for «why does the boy stand on the balcony?», no papyrus photo for «from which plant?»). */
+   since 20 Nov 2026 (owner) EVERY question has a picture: warm-up words a3_g_<thing>, missions a3_g_* / a3_*, speed sentences a3_s_<n> (veil picture).
+   No picture shows its answer (no sparrow for «why does the boy stand on the balcony?», no papyrus for «from which plant?», no trusted person for Mona). The drawn flag has the golden eagle. */
 const T = SI.T, G = SI.G;
 const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
 const sc = { mode: 'garden' };
@@ -45,7 +47,9 @@ const box = (x, y) => `<g transform="translate(${x} ${y})"><path d="M-80 -70h130
 const scroll = (x, y) => `<g transform="translate(${x} ${y})"><rect x="-90" y="-70" width="180" height="110" fill="#f6e3b4" stroke="${K}" stroke-width="3.5"/><ellipse cx="-90" cy="-15" rx="12" ry="57" fill="#e9cf8e" stroke="${K}" stroke-width="3.5"/><ellipse cx="90" cy="-15" rx="12" ry="57" fill="#e9cf8e" stroke="${K}" stroke-width="3.5"/><path d="M-60 -40h110M-60 -16h120M-60 8h90" stroke="#d6bd84" stroke-width="3" stroke-linecap="round"/><path d="M70 30l70 -70" stroke="#8a6a3a" stroke-width="6" stroke-linecap="round"/><path d="M70 30l-6 10l12 -4z" fill="${K}"/></g>`;
 const pyramid = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-70 0l70 -96l70 96z" fill="#f2c96b" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/><path d="M0 -96l24 96h46z" fill="#d9a441" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M-48 -30h56M-30 -58h36" stroke="#c99a3c" stroke-width="2.5"/></g>`;
 const palm = (x, y) => `<g transform="translate(${x} ${y})"><path d="M0 0q6 -50 -4 -96" stroke="#a8834f" stroke-width="10" fill="none" stroke-linecap="round"/>${[-150, -120, -60, -30, -95].map(a => `<path d="M-4 -96q${(Math.cos(a * Math.PI / 180) * 30).toFixed(1)} ${(Math.sin(a * Math.PI / 180) * 30).toFixed(1)} ${(Math.cos(a * Math.PI / 180) * 56).toFixed(1)} ${(Math.sin(a * Math.PI / 180) * 30 + 26).toFixed(1)}" stroke="#3f8f4c" stroke-width="8" fill="none" stroke-linecap="round"/>`).join('')}</g>`;
-const flag = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0v-150" stroke="${K}" stroke-width="6" stroke-linecap="round"/><rect x="2" y="-148" width="100" height="22" fill="#e2603f" stroke="${K}" stroke-width="2.5"/><rect x="2" y="-126" width="100" height="22" fill="#fff" stroke="${K}" stroke-width="2.5"/><rect x="2" y="-104" width="100" height="22" fill="#2a2a2a" stroke="${K}" stroke-width="2.5"/><circle cx="52" cy="-115" r="6" fill="#f2b134" stroke="#c48a1a" stroke-width="1.5"/></g>`;
+/* the golden eagle of the Egyptian flag, simplified */
+const eagle = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})" fill="#d4a72c" stroke="#8a6a1a" stroke-width=".8" stroke-linejoin="round"><path d="M-1.5 -3q-6 -5 -10 -3q2 4 4 5q-3 1 -5 0q2 4 7 4z"/><path d="M1.5 -3q6 -5 10 -3q-2 4 -4 5q3 1 5 0q-2 4 -7 4z"/><path d="M-3 -3h6v6l-3 3l-3 -3z"/><circle cy="-6" r="2.4"/><path d="M-4 6l4 3l4 -3z"/></g>`;
+const flag = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0v-150" stroke="${K}" stroke-width="6" stroke-linecap="round"/><rect x="2" y="-148" width="100" height="22" fill="#e2603f" stroke="${K}" stroke-width="2.5"/><rect x="2" y="-126" width="100" height="22" fill="#fff" stroke="${K}" stroke-width="2.5"/><rect x="2" y="-104" width="100" height="22" fill="#2a2a2a" stroke="${K}" stroke-width="2.5"/>${eagle(52, -115, .9)}</g>`;
 const nile = `<path d="M0 238q100 -14 210 0t210 0v20q-100 14 -210 0t-210 0z" fill="#8fd3ee" stroke="#5fb4d6" stroke-width="2"/>`;
 const THING = { tree: x => tree(x, 190, 1), house: x => house(x, 214, 1.2), fruit: x => fruit(x, 200, 1.3), water: x => water(x, 214, 1.1), clock: x => clock(x, 190, 1) };
 function render() {
@@ -87,7 +91,7 @@ const ENDS = [['tree', 'شجر_', 'ة', T('We say it with ت when we join it and
 async function stage1() {
   for (let i = 0; i < ENDS.length; i++) {
     const [thing, w, right, hint] = ENDS[i];
-    set('thing', { thing });
+    set('photo', { img: 'a3_g_' + thing });
     g.say(i === 0 ? T(`Welcome, guardian! Look at the picture. Which letter ends the word ${w}?`, P(`أهلًا يا حارس الوطن! انظر إلى الصورة. ما الحرف الأخير في كلمة ${kw(w)}؟`, `أهلًا يا حارسة الوطن! انظري إلى الصورة. ما الحرف الأخير في كلمة ${kw(w)}؟`))
       : T(`And this one: ${w}?`, `والآن: ما الحرف الأخير في كلمة ${kw(w)}؟`), i === 0 ? 'point' : 'think');
     await g.choice({ options: ['ة', 'ت', 'ه'], correct: right, hint, ok: T('Right!', `صح! نكتبها ${kw(w.replace('_', right).replace('ـ' + right, right))}.`) });
@@ -95,7 +99,7 @@ async function stage1() {
 }
 async function stage2() {
   /* Mission 1 · the brave sparrow (listening text, book p. 124) */
-  set('nest');
+  set('photo', { img: 'a3_g_balcony' });
   g.say(T('Mission 1: every morning the boy stands on his balcony. Why?', 'المهمة ١: كل صباح يقف الطفل في شرفته. لماذا؟'), 'point');
   await g.choice({ options: ['ليستمتع بصوت غناء العصفور', 'ليرى السيارات', 'لينتظر صديقه'], correct: 'ليستمتع بصوت غناء العصفور', hint: T('Someone sings in the tree every morning.', 'هناك من يغني فوق الشجرة كل صباح.'),
     ok: T('Right.', 'صح! يستمتع بغناء العصفور.') });
@@ -107,13 +111,13 @@ async function stage2() {
   g.say(T('The mother said all creatures defend their homes. How do elephants defend their young?', 'قالت الأم: كل الكائنات تدافع عن بيوتها. كيف تدافع الفيلة عن صغارها؟'), 'think');
   await g.choice({ options: ['تقف في شكل دائرة حولها', 'تتركها وتبتعد', 'تخفيها في الماء'], correct: 'تقف في شكل دائرة حولها', hint: T('They surround them.', 'تحيط بها من كل جانب.'),
     ok: T('Right.', 'صح! تقف في دائرة حول صغارها.') });
-  set('flag');
+  set('photo', { img: 'a3_g_flag_cairo' });
   g.say(T('Every country has an army. Why?', 'لكل بلد جيش. لماذا؟'), 'think');
   await g.choice({ options: ['ليدافع عنه ضد أي عدو', 'ليلعب في الحدائق', 'ليبني البيوت فقط'], correct: 'ليدافع عنه ضد أي عدو', hint: T('The army protects the country.', 'الجيش يحمي البلاد.'),
     ok: T('Right.', 'برافو! الجيش يحمي الوطن.') });
 
   /* Mission 2 · the innovation box */
-  set('box');
+  set('photo', { img: 'a3_g_salma_school' });
   g.say(T('Mission 2: Salma made a beautiful pencil case. What did she make it from?', 'المهمة ٢: صنعت سلمى مقلمة جميلة وملونة. ممّ صنعتها؟'), 'point');
   await g.choice({ options: ['من أشياء قديمة', 'من ذهب', 'اشترتها من المكتبة'], correct: 'من أشياء قديمة', hint: T('Her mother helped her reuse things.', 'ساعدتها أمها في إعادة استخدام أشياء.'),
     ok: T('Right.', 'صح! من أشياء قديمة بمعاونة أمها.') });
@@ -125,11 +129,11 @@ async function stage2() {
   g.say(T('Each pupil wrote something and put it in the innovation box. What?', 'كتب كل تلميذ شيئًا ووضعه في صندوق الابتكار. ما هو؟'), 'think');
   await g.choice({ options: ['فكرة لإعادة استخدام الأشياء المستعملة', 'اسم لعبته المفضلة', 'سؤالًا عن الدرس'], correct: 'فكرة لإعادة استخدام الأشياء المستعملة', hint: T('They wanted to reuse old things.', 'أرادوا أن يقتدوا بسلمى.'),
     ok: T('Right.', 'صح! فكرة لإعادة الاستخدام.') });
-  set('garden', { n: 3 });
+  set('photo', { img: 'a3_g_bird_branch' });
   g.say(T('Which word fits? The bird stood ___ the branch.', 'أي حرف جر يناسب؟ وقف الطائر ___ الغصن.'), 'think');
   await g.choice({ options: ['على', 'عن'], correct: 'على', hint: T('It is on top of the branch.', 'هو فوق الغصن.'),
     ok: T('Right.', `برافو! وقف الطائر ${kw('على')} الغصن.`) });
-  set('garden', { n: 3 });
+  set('photo', { img: 'a3_g_shaimaa_bees' });
   g.say(T('And here? Shaimaa wrote a story ___ bees.', 'وهنا؟ كتبت شيماء قصة ___ النحل.'), 'think');
   await g.choice({ options: ['عن', 'على'], correct: 'عن', hint: T('The story is about bees.', 'النحل موضوع القصة.'),
     ok: T('Right.', `صح! قصة ${kw('عن')} النحل.`) });
@@ -139,7 +143,7 @@ async function stage2() {
   g.say(T('Mission 3: Adam read about the history of writing. How did people write before paper?', 'المهمة ٣: قرأ آدم عن تاريخ الكتابة. كيف كان الناس يكتبون قبل اختراع الورق؟'), 'point');
   await g.choice({ options: ['بالنقش على الحجارة', 'بالقلم على الكراسة', 'على الحاسوب'], correct: 'بالنقش على الحجارة', hint: T('It took a long time.', 'كان ذلك يأخذ وقتًا طويلًا.'),
     ok: T('Right.', 'صح! بالنقش على الحجارة.') });
-  set('photo', { img: 'a3_stone_carving' });
+  set('photo', { img: 'a3_g_scribe' });
   g.say(T('Our ancestors invented a paper. From which plant?', 'اخترع أجدادنا المصريون القدماء ورقًا. من أي نبات صنعوه؟'), 'think');
   await g.choice({ options: ['البردي', 'القمح', 'النخيل'], correct: 'البردي', hint: T('It grew beside the Nile.', 'كان ينمو بجانب نهر النيل.'),
     ok: T('Right.', 'برافو! ورق البردي.') });
@@ -147,41 +151,43 @@ async function stage2() {
   g.say(T('Adam loves Egypt in deeds, not words only. Which deed shows it?', 'آدم يعبّر عن حبه لمصر بالفعل لا بالكلام فقط. أي تصرف يعبّر عن حب مصر؟'), 'think');
   await g.choice({ options: ['أحافظ على نظافة الشارع', 'أرسم على الجدران', 'أكسر مقاعد الحديقة'], correct: 'أحافظ على نظافة الشارع', hint: T('Choose what helps our country.', 'نختار ما يفيد وطننا.'),
     ok: T('Right.', 'صح! نحافظ على نظافة الشارع ونقابل الزوار باحترام.') });
-  set('scroll');
+  set('photo', { img: 'a3_g_fields' });
   g.say(T('Who taught the world farming and used the plough?', 'من علّم العالم الزراعة واستخدم المحراث؟'), 'think');
   await g.choice({ options: ['الفلاح المصري', 'الطبيب المصري', 'المهندس المصري'], correct: 'الفلاح المصري', hint: T('He works in the field.', 'يعمل في الحقل.'),
     ok: T('Right.', 'برافو! الفلاح المصري.') });
 
   /* Mission 4 · my homeland (poem) */
-  set('flag');
+  set('photo', { img: 'a3_g_recite' });
   g.say(T('Mission 4: in the poem, what does أهواه mean?', 'المهمة ٤: في نشيد «وطني»، ما معنى كلمة (أهواه)؟'), 'point');
   await g.choice({ options: ['أحبه', 'أكرهه', 'أهدمه'], correct: 'أحبه', hint: T('The poet loves his homeland.', 'الشاعر يحب وطنه.'),
     ok: T('Right.', 'صح! أهواه: أحبه.') });
-  set('pyramids');
+  set('photo', { img: 'a3_g_building' });
   g.say(T('What is the opposite of أبنيه?', 'ما ضد كلمة (أبنيه)؟'), 'think');
   await g.choice({ options: ['أهدمه', 'أرعاه', 'أحفظه'], correct: 'أهدمه', hint: T('Building is the opposite of…', 'البناء ضده ...'),
     ok: T('Right.', 'برافو! ضد أبنيه: أهدمه.') });
-  set('flag');
+  set('photo', { img: 'a3_papyrus_nile' });
   g.say(T('Which two words end with the same sound?', 'أي كلمتين نهايتهما متماثلة؟'), 'think');
   await g.choice({ options: ['أغلاه - أرعاه', 'وطني - أهواه', 'أنا - قلبي'], correct: 'أغلاه - أرعاه', hint: T('Look at the end of each word.', P('انظر إلى آخر كل كلمة.', 'انظري إلى آخر كل كلمة.')),
     ok: T('Right.', 'صح! أغلاه وأرعاه تنتهيان بـ (اه).') });
 
   /* Mission 5 · I am confused */
-  set('garden', { n: 5 });
+  set('photo', { img: 'a3_g_mona_walk' });
   g.say(T('Mission 5: Mona came home silent and sad, confused. Who can she trust?', 'المهمة ٥: عادت منى إلى المنزل صامتة حزينة، وهي حائرة. من الأشخاص الذين يمكن أن تثق بهم؟'), 'point');
   await g.choice({ options: ['أمها وأبوها ومعلمتها', 'شخص لا تعرفه', 'لا أحد'], correct: 'أمها وأبوها ومعلمتها', hint: T('They listen, help and keep her safe.', 'يستمعون إليها ويساعدونها ويحافظون على سلامتها.'),
     ok: T('Right.', 'صح! نتحدث مع من نثق بهم.') });
-  set('garden', { n: 5 });
+  set('photo', { img: 'a3_g_mona_window' });
   g.say(T('What should we do when we feel confused or worried?', 'ماذا نفعل عندما نشعر بالحيرة أو القلق؟'), 'think');
   await g.choice({ options: ['نتحدث مع من نثق بهم', 'نحتفظ بالأمر لأنفسنا دائمًا', 'نحكي لشخص لا نعرفه'], correct: 'نتحدث مع من نثق بهم', hint: T('This is the message of the story.', 'هذه رسالة القصة.'),
     ok: T('Right.', 'برافو! نتحدث مع من نثق بهم.') });
 }
-const DM = [['زرعتُ البذور ___ نبتت الزهور.', 't'], ['وقع الكوب ___انكسر.', 'f'], ['رأيت صديقي ___سلّمت عليه.', 'f'], ['انتهت الامتحانات ___ ظهرت النتيجة.', 't'],
-  ['ضاع الكتاب ___ وجدته بعد ساعة.', 't'], ['سمعت هند صوت أمها ___نظرت إليها.', 'f'], ['زرع خالد بذرة ___ كبرت.', 't'], ['ركلت الكرة ___دخلت المرمى.', 'f'],
-  ['التحق أخي بالجامعة ___ حصل على شهادة النجاح.', 't'], ['دقّ جرس الباب ___فتحت.', 'f'], ['زرع الفلاح القمح ___ حصده.', 't'], ['رأى اللص الشرطة ___هرب مسرعًا.', 'f']];
+/* each sentence has its picture (the event, never the joining word) */
+const DM = [['زرعتُ البذور ___ نبتت الزهور.', 't', 'seeds'], ['وقع الكوب ___انكسر.', 'f', 'cup'], ['رأيت صديقي ___سلّمت عليه.', 'f', 'greet'], ['انتهت الامتحانات ___ ظهرت النتيجة.', 't', 'exam'],
+  ['ضاع الكتاب ___ وجدته بعد ساعة.', 't', 'search'], ['سمعت هند صوت أمها ___نظرت إليها.', 'f', 'hind'], ['زرع خالد بذرة ___ كبرت.', 't', 'khaled'], ['ركلت الكرة ___دخلت المرمى.', 'f', 'kick'],
+  ['التحق أخي بالجامعة ___ حصل على شهادة النجاح.', 't', 'grad'], ['دقّ جرس الباب ___فتحت.', 'f', 'door'], ['زرع الفلاح القمح ___ حصده.', 't', 'wheat'], ['رأى اللص الشرطة ___هرب مسرعًا.', 'f', 'thief']];
+const spic = n => `<clipPath id="sp"><rect width="100" height="100" rx="12"/></clipPath><image href="arabic/assets/a3_s_${n}.webp" width="100" height="100" clip-path="url(#sp)"/>`;
 async function stage3() {
   set('garden', { n: 5 });
-  await g.speedRound({ items: DM.map(([w, r]) => ({ t: `<span dir="rtl" lang="ar">${w}</span>`, ans: r,
+  await g.speedRound({ items: DM.map(([w, r, n]) => ({ t: `<span dir="rtl" lang="ar">${w}</span>`, ans: r, pic: spic(n), box: '0 0 100 100',
       why: r === 't' ? T('Some time passed, so we use ثمّ.', 'مرّ وقت بين الحدثين، فنستعمل (ثمّ).') : T('It happened at once, so we use فـ.', 'حدث في الحال، فنستعمل (فـ).') })), rounds: 10,
     buttons: [{ label: T('ثمّ', 'ثمّ'), value: 't', c: 0 }, { label: T('فـ', 'فـ'), value: 'f', c: 2 }],
     ask: T('Which word fits?', 'أي حرف عطف يناسب الجملة؟'),
