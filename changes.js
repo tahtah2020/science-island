@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-20', title: 'Hope Trail: demonstrative pictures',
+    items: [
+      { text: 'صورتا هؤلاء وأولئك من صاحب الموقع بدل الرسم (طفلان فقط كانا مثنى لا جمعًا)', links: [{ label: 'رحلة الأمل', href: 'arabic-hope.html', ch: 'ag3u1' }] }
+    ] },
   { date: '2026-11-19', title: 'Garden of Qualities: mission 4 pictures',
     items: [
       { text: 'المهمة ٤: صور بدل المشهد الفارغ والشجرة المرسومة (صورة بلا شمس لأن الشمس هي الإجابة)', links: [{ label: 'حديقة الصفات', href: 'arabic-qualities.html', ch: 'ag3u2' }] }
