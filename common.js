@@ -210,21 +210,21 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   /* 20 Nov 2026 (owner): a child may change the name later (e.g. a nickname → the real name). Points, levels and progress stay:
      everything is keyed by the player id / recovery code, never by the name, so two children called «خالد» never mix.
      The new name and its time go into the profile (nm: { n, at }) so the newest name wins on every device of the same code. */
-  function renamePlayer(raw) {
+  function renamePlayer(raw, pid) {   // pid: another player of this device (home page list); default the current one
     const r = checkName(raw); if (!r.ok) return r;
-    const me = player(); if (!me) return { ok: false, msg: '' };
+    const st0 = store.load(), id0 = pid || st0.current, me = (st0.players || {})[id0] ? Object.assign({ id: id0 }, st0.players[id0]) : null; if (!me) return { ok: false, msg: '' };
     if (r.name === me.name) return { ok: true, name: r.name, same: true };
     const clash = Object.entries(players()).some(([id, q]) => id !== me.id && String(q.name || '').trim() === r.name);
     if (clash) return { ok: false, msg: 'Another player on this device already has this name. Add a letter or your family name.\nفيه لاعب تاني على الجهاز ده بنفس الاسم. زوّد حرف أو اسم العيلة' };
     const old = me.name;
     store.update(s => {
-      const q = (s.players || {})[s.current]; if (!q) return;
-      q.name = r.name;
-      s.profiles = s.profiles || {}; const pr = s.profiles[s.current] = s.profiles[s.current] || {};
+      const q = (s.players || {})[id0]; if (!q) return;
+      q.name = r.name; q.dirty = 1; q.dv = (q.dv || 0) + 1;
+      s.profiles = s.profiles || {}; const pr = s.profiles[id0] = s.profiles[id0] || {};
       pr.nm = { n: r.name, at: Date.now() };
       Object.values(s.board || {}).forEach(b => Object.values(b || {}).forEach(e => { if (e && e.name === old) e.name = r.name; }));   // this device's copy of the stars list
     });
-    try { sync.dirty(); } catch (e) {}
+    try { if (id0 === st0.current) sync.dirty(); } catch (e) {}   // another player's new name is sent when that player plays next
     try { ga('name_change', {}); } catch (e) {}
     return { ok: true, name: r.name };
   }
@@ -1028,13 +1028,14 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     b.onclick = () => { sfx.tick(); nameDialog(); };
     box.appendChild(b);
   }
-  function nameDialog(done) {
+  function nameDialog(done, pid) {
     codeCss();
-    const me = player(); if (!me) return;
+    const st0 = store.load(), id0 = pid || st0.current, me = (st0.players || {})[id0]; if (!me) return;
+    const Gp = (m, f) => (me.g === 'f' ? f : m);
     const o = document.createElement('div');
     o.className = 'rt-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true');
     if (isAr()) o.dir = 'rtl';
-    o.innerHTML = `<div class="rt-p"><h2 style="margin:4px 0 6px;font-size:20px">✏️ ${T('Change my name', G('غيّر اسمك', 'غيّري اسمك'))}</h2>
+    o.innerHTML = `<div class="rt-p"><h2 style="margin:4px 0 6px;font-size:20px">✏️ ${T('Change my name', Gp('غيّر اسمك', 'غيّري اسمك'))}</h2>
       <p style="margin:6px 0 10px;line-height:1.6">${T('Your points, level and progress stay exactly the same. Only the name changes.', 'نقاطك ومستواك وكل تقدّمك هيفضلوا زي ما هم. الاسم بس هو اللي هيتغيّر.')}</p>
       <input class="rt-in" type="text" dir="auto" maxlength="14" autocomplete="given-name" value="${esc(me.name)}" aria-label="${T('New name', 'الاسم الجديد')}">
       <p class="si-nmsg" role="alert" style="min-height:1.4em;margin:8px 0;color:#c2410c;font-weight:800;white-space:pre-line"></p>
@@ -1042,7 +1043,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     document.body.appendChild(o);
     const inp = o.querySelector('input'), msg = o.querySelector('.si-nmsg'), close = () => o.remove();
     const save = () => {
-      const r = renamePlayer(inp.value);
+      const r = renamePlayer(inp.value, id0);
       if (!r.ok) { msg.textContent = isAr() ? (r.msg.split('\n')[1] || r.msg) : r.msg.split('\n')[0]; sfx.tick(); return; }
       close(); if (done) done(r); else if (!r.same) location.reload();
     };

@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-20', title: 'Change my name on the home page',
+    items: [
+      { text: '«✏️ تعديل الاسم» now sits beside each name in «مين بيلعب؟» on the home page (moved from the chapters page)' }
+    ] },
   { date: '2026-11-20', title: 'Change my name',
     items: [
       { text: '«✏️ غيّر اسمي» on the chapters page: a child can change the name, points and progress stay; the newest name wins on every device of the same recovery code' }

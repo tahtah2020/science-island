@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261120e{{{">
+<link rel="stylesheet" href="common.css?v=20261120f{{{">
 <style>
 body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url(assets/map_island.jpg) center/cover #8fd3ee}
 @media (hover:none){body{background-attachment:scroll}}
@@ -79,6 +79,9 @@ body{background:linear-gradient(rgba(255,255,255,.25),rgba(255,255,255,.25)),url
 .who{display:inline-flex;align-items:center;gap:8px;border:3px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px 6px 6px;font:inherit;font-weight:900;font-size:17px;cursor:pointer;color:var(--navy)}
 .who:hover{border-color:var(--primary)}
 .who:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
+.pw{display:inline-flex;align-items:center;gap:4px}
+.edit{border:2px solid var(--line);background:#fdf0dc;border-radius:999px;padding:6px 10px;font:inherit;font-weight:800;font-size:13px;color:var(--navy);cursor:pointer;white-space:nowrap}
+.edit:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .who .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e3f1f7;font-size:16px}
 /* "Players say": answers the owner chose on reviews.html (hidden until there is at least one) */
 .says{background:var(--card);border-radius:24px;padding:14px 16px;box-shadow:0 8px 28px rgba(31,61,87,.16)}
@@ -185,8 +188,8 @@ details.about>*:not(summary){margin-inline:18px}
 <main class="home">
   <header class="banner">
     <picture>
-      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261120e{{{">
-      <img src="assets/banner.jpg?v=20261120e{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
+      <source media="(max-width:600px)" srcset="assets/banner_sm.jpg?v=20261120f{{{">
+      <img src="assets/banner.jpg?v=20261120f{{{" width="1400" height="700" alt="متفوّق · Motafawek · يلا نكتشفها سوا! Let’s find out together! · ريشو البغبغان">
     </picture>
     <h1 class="sr">متفوّق · Motafawek</h1>
   </header>
@@ -327,9 +330,9 @@ details.about>*:not(summary){margin-inline:18px}
   </details>
   <p class="foot"><a href="contact.html">✉️ تواصل معنا</a></p>
 </main>
-<script src="firebase-config.js?v=20261120e{{{"></script>
-<script src="common.js?v=20261120e{{{"></script>
-<script src="chapters.js?v=20261120e{{{"></script>
+<script src="firebase-config.js?v=20261120f{{{"></script>
+<script src="common.js?v=20261120f{{{"></script>
+<script src="chapters.js?v=20261120f{{{"></script>
 <script>
 (() => {
   'use strict';
@@ -372,7 +375,12 @@ details.about>*:not(summary){margin-inline:18px}
       const tag = [p.grade && p.grade !== 'g5' || manyGrades ? (GRADE_TAG[p.grade || 'g5'] || '')[p.track === 'ar' ? 1 : 0] : '', p.track === 'ar' ? 'عربي' : ''].filter(Boolean).join(' · ');   // the grade shows when the device has players of different grades
       b.innerHTML = `<span class="av">${SI.esc(p.name.charAt(0).toUpperCase())}</span>${SI.esc(p.name)}${tag ? ` <small>(${tag})</small>` : ''}`;
       b.onclick = () => { SI.usePlayer(id); SI.sfx.tick(); if (!p.g) { fixId = id; $('#genderBack').hidden = true; show('stepGender'); } else enter(); };
-      box.appendChild(b);
+      /* ✏️ change the name (owner, 20 Nov 2026: on the home page, beside each name); points and progress stay */
+      const w = document.createElement('span'); w.className = 'pw';
+      const e = document.createElement('button'); e.type = 'button'; e.className = 'edit';
+      e.textContent = '✏️ تعديل الاسم'; e.setAttribute('aria-label', 'تعديل اسم ' + p.name);
+      e.onclick = () => { SI.sfx.tick(); SI.nameDialog(r => { if (!r.same) location.reload(); }, id); };
+      w.append(b, e); box.appendChild(w);
     });
     show('stepWho');
     /* a returning player: one tap goes back to the chapter they played last */
