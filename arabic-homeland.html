@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="game_kit.css?v=20261120b">
+<link rel="stylesheet" href="game_kit.css?v=20261120c">
 </head>
 <body>
 <noscript>Please turn on JavaScript to play Guardians of the Homeland.</noscript>
-<script src="firebase-config.js?v=20261120b"></script>
-<script src="chapters.js?v=20261120b"></script>
-<script src="common.js?v=20261120b"></script>
-<script src="game_kit.js?v=20261120b"></script>
+<script src="firebase-config.js?v=20261120c"></script>
+<script src="chapters.js?v=20261120c"></script>
+<script src="common.js?v=20261120c"></script>
+<script src="game_kit.js?v=20261120c"></script>
 <script>
 (() => {
 'use strict';
@@ -23,7 +23,8 @@
    Stage 2 (Missions): 1 the brave sparrow (lesson 1) · 2 the innovation box (lesson 2) · 3 a page from history (lesson 3) · 4 my homeland poem (lesson 4) · 5 I am confused (lesson 5)
    Stage 3 (Speed Round): ثمّ or فـ (lesson 3)
    No people or animals are drawn in code (owner, 17 Nov 2026): the scenes are things (tree and nest, box, scroll, pyramids, flag, garden) chosen so they never show the answer.
-   The owner's Gemini pictures replace them when they arrive: set('photo', { img: 'a3_…' }). */
+   Generated pictures (20 Nov 2026, arabic/assets/a3_*.webp) are shown with set('photo', { img }) where they fit the question without showing its answer;
+   the other questions keep the drawn things (e.g. no sparrow photo for «why does the boy stand on the balcony?», no papyrus photo for «from which plant?»). */
 const T = SI.T, G = SI.G;
 const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
 const sc = { mode: 'garden' };
@@ -98,11 +99,11 @@ async function stage2() {
   g.say(T('Mission 1: every morning the boy stands on his balcony. Why?', 'المهمة ١: كل صباح يقف الطفل في شرفته. لماذا؟'), 'point');
   await g.choice({ options: ['ليستمتع بصوت غناء العصفور', 'ليرى السيارات', 'لينتظر صديقه'], correct: 'ليستمتع بصوت غناء العصفور', hint: T('Someone sings in the tree every morning.', 'هناك من يغني فوق الشجرة كل صباح.'),
     ok: T('Right.', 'صح! يستمتع بغناء العصفور.') });
-  set('nest');
+  set('photo', { img: 'a3_sparrow_morning' });
   g.say(T('One day the sparrow\'s voice rose. Why?', 'في يوم ارتفع صوت العصفور. لماذا؟'), 'think');
   await g.choice({ options: ['لهجوم طائر غريب على العش', 'لأنه جائع', 'لأنه يلعب مع الطفل'], correct: 'لهجوم طائر غريب على العش', hint: T('Another bird came to the tree.', 'جاء طائر آخر إلى الشجرة.'),
     ok: T('Right.', 'برافو! دافع العصفور عن عشه بشجاعة.') });
-  set('garden', { n: 4 });
+  set('photo', { img: 'a3_mother_son' });
   g.say(T('The mother said all creatures defend their homes. How do elephants defend their young?', 'قالت الأم: كل الكائنات تدافع عن بيوتها. كيف تدافع الفيلة عن صغارها؟'), 'think');
   await g.choice({ options: ['تقف في شكل دائرة حولها', 'تتركها وتبتعد', 'تخفيها في الماء'], correct: 'تقف في شكل دائرة حولها', hint: T('They surround them.', 'تحيط بها من كل جانب.'),
     ok: T('Right.', 'صح! تقف في دائرة حول صغارها.') });
@@ -116,11 +117,11 @@ async function stage2() {
   g.say(T('Mission 2: Salma made a beautiful pencil case. What did she make it from?', 'المهمة ٢: صنعت سلمى مقلمة جميلة وملونة. ممّ صنعتها؟'), 'point');
   await g.choice({ options: ['من أشياء قديمة', 'من ذهب', 'اشترتها من المكتبة'], correct: 'من أشياء قديمة', hint: T('Her mother helped her reuse things.', 'ساعدتها أمها في إعادة استخدام أشياء.'),
     ok: T('Right.', 'صح! من أشياء قديمة بمعاونة أمها.') });
-  set('box');
+  set('photo', { img: 'a3_salma_desk' });
   g.say(T('What does the word معاونة mean?', 'صنعتها بمعاونة أمها. ما معنى كلمة (معاونة)؟'), 'think');
   await g.choice({ options: ['مساعدة', 'مسابقة', 'معاقبة'], correct: 'مساعدة', hint: T('Her mother helped her.', 'أمها كانت معها تساعدها.'),
     ok: T('Right.', 'برافو! معاونة: مساعدة.') });
-  set('box');
+  set('photo', { img: 'a3_class_box' });
   g.say(T('Each pupil wrote something and put it in the innovation box. What?', 'كتب كل تلميذ شيئًا ووضعه في صندوق الابتكار. ما هو؟'), 'think');
   await g.choice({ options: ['فكرة لإعادة استخدام الأشياء المستعملة', 'اسم لعبته المفضلة', 'سؤالًا عن الدرس'], correct: 'فكرة لإعادة استخدام الأشياء المستعملة', hint: T('They wanted to reuse old things.', 'أرادوا أن يقتدوا بسلمى.'),
     ok: T('Right.', 'صح! فكرة لإعادة الاستخدام.') });
@@ -134,15 +135,15 @@ async function stage2() {
     ok: T('Right.', `صح! قصة ${kw('عن')} النحل.`) });
 
   /* Mission 3 · a page from history */
-  set('scroll');
+  set('photo', { img: 'a3_adam_reading' });
   g.say(T('Mission 3: Adam read about the history of writing. How did people write before paper?', 'المهمة ٣: قرأ آدم عن تاريخ الكتابة. كيف كان الناس يكتبون قبل اختراع الورق؟'), 'point');
   await g.choice({ options: ['بالنقش على الحجارة', 'بالقلم على الكراسة', 'على الحاسوب'], correct: 'بالنقش على الحجارة', hint: T('It took a long time.', 'كان ذلك يأخذ وقتًا طويلًا.'),
     ok: T('Right.', 'صح! بالنقش على الحجارة.') });
-  set('pyramids');
+  set('photo', { img: 'a3_stone_carving' });
   g.say(T('Our ancestors invented a paper. From which plant?', 'اخترع أجدادنا المصريون القدماء ورقًا. من أي نبات صنعوه؟'), 'think');
   await g.choice({ options: ['البردي', 'القمح', 'النخيل'], correct: 'البردي', hint: T('It grew beside the Nile.', 'كان ينمو بجانب نهر النيل.'),
     ok: T('Right.', 'برافو! ورق البردي.') });
-  set('flag');
+  set('photo', { img: 'a3_tourists_pyramids' });
   g.say(T('Adam loves Egypt in deeds, not words only. Which deed shows it?', 'آدم يعبّر عن حبه لمصر بالفعل لا بالكلام فقط. أي تصرف يعبّر عن حب مصر؟'), 'think');
   await g.choice({ options: ['أحافظ على نظافة الشارع', 'أرسم على الجدران', 'أكسر مقاعد الحديقة'], correct: 'أحافظ على نظافة الشارع', hint: T('Choose what helps our country.', 'نختار ما يفيد وطننا.'),
     ok: T('Right.', 'صح! نحافظ على نظافة الشارع ونقابل الزوار باحترام.') });
