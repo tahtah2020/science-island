@@ -207,6 +207,27 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     if (BLOCK.some(w => low.includes(w))) return { ok: false, msg: 'Please choose a kind name.\nاختر اسمًا لطيفًا' };
     return { ok: true, name: n };
   }
+  /* 20 Nov 2026 (owner): a child may change the name later (e.g. a nickname → the real name). Points, levels and progress stay:
+     everything is keyed by the player id / recovery code, never by the name, so two children called «خالد» never mix.
+     The new name and its time go into the profile (nm: { n, at }) so the newest name wins on every device of the same code. */
+  function renamePlayer(raw) {
+    const r = checkName(raw); if (!r.ok) return r;
+    const me = player(); if (!me) return { ok: false, msg: '' };
+    if (r.name === me.name) return { ok: true, name: r.name, same: true };
+    const clash = Object.entries(players()).some(([id, q]) => id !== me.id && String(q.name || '').trim() === r.name);
+    if (clash) return { ok: false, msg: 'Another player on this device already has this name. Add a letter or your family name.\nفيه لاعب تاني على الجهاز ده بنفس الاسم. زوّد حرف أو اسم العيلة' };
+    const old = me.name;
+    store.update(s => {
+      const q = (s.players || {})[s.current]; if (!q) return;
+      q.name = r.name;
+      s.profiles = s.profiles || {}; const pr = s.profiles[s.current] = s.profiles[s.current] || {};
+      pr.nm = { n: r.name, at: Date.now() };
+      Object.values(s.board || {}).forEach(b => Object.values(b || {}).forEach(e => { if (e && e.name === old) e.name = r.name; }));   // this device's copy of the stars list
+    });
+    try { sync.dirty(); } catch (e) {}
+    try { ga('name_change', {}); } catch (e) {}
+    return { ok: true, name: r.name };
+  }
 
   /* ---------- XP and levels ---------- */
   /* level names are general on purpose: XP is shared by every chapter (and later every subject), so a name must fit them all.
@@ -837,7 +858,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       pickWhere(out, L, S);
       return out;
     },
-    pack(p, profile) { return { v: 1, name: p.name, grade: p.grade || 'g5', track: p.track || 'lang', g: p.g || '', data: JSON.stringify(profile || {}) }; },
+    pack(p, profile) { return { v: 1, name: (profile && profile.nm && profile.nm.n) || p.name, grade: p.grade || 'g5', track: p.track || 'lang', g: p.g || '', data: JSON.stringify(profile || {}) }; },
     unpack(d) { let prof = {}; try { prof = JSON.parse(d.data || '{}') || {}; } catch (e) {} return { name: d.name || '', grade: d.grade || 'g5', track: d.track || 'lang', g: d.g || '', prof }; },
     dirty() { store.update(s => { const p = (s.players || {})[s.current]; if (p) { p.dirty = 1; p.dv = (p.dv || 0) + 1; } }); this.soon(); },
     soon() { if (!this.enabled()) return; clearTimeout(this._t); this._t = setTimeout(() => this.run(), 400); },
@@ -866,7 +887,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
             const snap = await tx.get(r);
             const server = snap.exists() ? this.unpack(snap.data()).prof : null;
             merged = server ? this.merge(local, server, p.sb) : local;
-            const same = server && JSON.stringify(merged) === JSON.stringify(server) && snap.data().name === p.name && snap.data().grade === (p.grade || 'g5') && snap.data().track === (p.track || 'lang') && (snap.data().g || '') === (p.g || '');
+            const same = server && JSON.stringify(merged) === JSON.stringify(server) && snap.data().name === ((merged && merged.nm && merged.nm.n) || p.name) && snap.data().grade === (p.grade || 'g5') && snap.data().track === (p.track || 'lang') && (snap.data().g || '') === (p.g || '');
             wrote = !same;
             if (wrote) tx.set(r, Object.assign(this.pack(p, merged), { at: fs.serverTimestamp() }));
           });
@@ -881,6 +902,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
           pickWhere(next, now, merged);
           s.profiles[id] = next;
           q.code = code; q.sb = merged.xp || 0; if ((q.dv || 0) === dv0) delete q.dirty;
+          if (next.nm && next.nm.n && next.nm.n !== q.name) q.name = next.nm.n;   // renamed on another device
         });
         try { sessionStorage.setItem('si.synced.' + id, '1'); } catch (e) {}
         document.dispatchEvent(new CustomEvent('si-sync', { detail: { code, wrote } }));
@@ -930,7 +952,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       return Object.assign({ ok: true }, player());
     }
   };
-  const SYNC_NEWER = new Set(['run', 'gameRun']);                     // unfinished runs: the newer one
+  const SYNC_NEWER = new Set(['run', 'gameRun', 'nm']);   // nm = the child's chosen name { n, at }: the newest wins                     // unfinished runs: the newer one
   const SYNC_LOCAL = new Set(['cur', 'subj', 'worn', 'lastVar']);    // this device's choices
   const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
   /* where the child stopped (chapter + subject): the side that changed it last */
@@ -963,6 +985,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const SYNC_CSS = `
 .si-code{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 12px;border:0;border-radius:999px;background:#e3f1f7;color:#1f3d57;font:800 13px "Nunito","Cairo",system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 6px rgba(31,61,87,.12)}
 .si-code b{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:1px;font-size:14px;direction:ltr;unicode-bidi:isolate}
+.si-name{background:#fdf0dc;margin-inline-end:6px}
 .si-code:focus-visible{outline:3px solid #f7b267;outline-offset:2px}
 .si-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .si-codebig{font:900 30px ui-monospace,Menlo,Consolas,monospace;letter-spacing:3px;direction:ltr;margin:10px 0;color:#23799f;user-select:all}`;
@@ -970,7 +993,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   function codeChip(box) {
     if (!box) return;
     const paint = () => {
-      const c = sync.code(); let b = box.querySelector('.si-code');
+      const c = sync.code(); let b = box.querySelector('.si-code:not(.si-name)');
       if (!c) { if (b) b.remove(); return; }
       codeCss();
       if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'si-code'; box.appendChild(b); b.onclick = () => { sfx.tick(); codeInfo(); }; }
@@ -995,6 +1018,39 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     o.addEventListener('click', e => { if (e.target === o) close(); });
     o.querySelector('[data-k="copy"]').onclick = e => { try { navigator.clipboard.writeText(c); e.currentTarget.textContent = '✓ ' + T('Copied', 'اتنسخ'); } catch (er) {} };
     o.querySelector('[data-k="ok"]').focus({ preventScroll: true });
+  }
+  /* «✏️ غيّر اسمي»: a small chip beside the recovery code; the dialog keeps the points and says so */
+  function nameChip(box) {
+    if (!box || !player()) return;
+    codeCss();
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'si-code si-name';
+    b.innerHTML = '✏️ ' + T('Change my name', G('غيّر اسمي', 'غيّري اسمي'));
+    b.onclick = () => { sfx.tick(); nameDialog(); };
+    box.appendChild(b);
+  }
+  function nameDialog(done) {
+    codeCss();
+    const me = player(); if (!me) return;
+    const o = document.createElement('div');
+    o.className = 'rt-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true');
+    if (isAr()) o.dir = 'rtl';
+    o.innerHTML = `<div class="rt-p"><h2 style="margin:4px 0 6px;font-size:20px">✏️ ${T('Change my name', G('غيّر اسمك', 'غيّري اسمك'))}</h2>
+      <p style="margin:6px 0 10px;line-height:1.6">${T('Your points, level and progress stay exactly the same. Only the name changes.', 'نقاطك ومستواك وكل تقدّمك هيفضلوا زي ما هم. الاسم بس هو اللي هيتغيّر.')}</p>
+      <input class="rt-in" type="text" dir="auto" maxlength="14" autocomplete="given-name" value="${esc(me.name)}" aria-label="${T('New name', 'الاسم الجديد')}">
+      <p class="si-nmsg" role="alert" style="min-height:1.4em;margin:8px 0;color:#c2410c;font-weight:800;white-space:pre-line"></p>
+      <div class="si-acts"><button class="btn" type="button" data-k="no">${T('Cancel', 'إلغاء')}</button><button class="btn primary" type="button" data-k="ok">${T('Save', 'حفظ')}</button></div></div>`;
+    document.body.appendChild(o);
+    const inp = o.querySelector('input'), msg = o.querySelector('.si-nmsg'), close = () => o.remove();
+    const save = () => {
+      const r = renamePlayer(inp.value);
+      if (!r.ok) { msg.textContent = isAr() ? (r.msg.split('\n')[1] || r.msg) : r.msg.split('\n')[0]; sfx.tick(); return; }
+      close(); if (done) done(r); else if (!r.same) location.reload();
+    };
+    o.querySelector('[data-k="ok"]').onclick = save;
+    o.querySelector('[data-k="no"]').onclick = close;
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') save(); });
+    o.addEventListener('click', e => { if (e.target === o) close(); });
+    inp.focus(); inp.select();
   }
   sync.chip = codeChip; sync.info = codeInfo;
 
@@ -1570,7 +1626,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   function wireShare(root, opts) { const b = root && root.querySelector('[data-share]'); if (b) b.onclick = () => share(opts); }
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
-    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, LEVELS, levelInfo, xp, addXP, bankXP, repeatRate, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
+    grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, renamePlayer, nameChip, nameDialog, LEVELS, levelInfo, xp, addXP, bankXP, repeatRate, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, weekXP, countBoss, badges, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
     gender, G, setGender, share, shareText, shareCard, shareBtn, wireShare, visit, greet, bye, VOICE_TEXT, navMenu, NET_DAYS, NET_STRINGS, inNet, checkNet, freeNet, fishState, fishLine };
   try { checkNet(); } catch (e) {}

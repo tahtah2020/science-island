@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-20', title: 'Change my name',
+    items: [
+      { text: '«✏️ غيّر اسمي» on the chapters page: a child can change the name, points and progress stay; the newest name wins on every device of the same recovery code' }
+    ] },
   { date: '2026-11-20', title: 'Arabic G3 Unit 3: a picture for every game question',
     items: [
       { text: '«حراس الوطن»: every question now shows a picture (warm-up words, all missions, each speed-round sentence)' },
