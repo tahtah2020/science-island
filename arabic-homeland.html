@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guardians of the Homeland · I Love My Country</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261120b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Guardians of the Homeland.</noscript>
+<script src="firebase-config.js?v=20261120b"></script>
+<script src="chapters.js?v=20261120b"></script>
+<script src="common.js?v=20261120b"></script>
+<script src="game_kit.js?v=20261120b"></script>
+<script>
+(() => {
+'use strict';
+/* Guardians of the Homeland · the game of I Love My Country (Arabic g3, book pages 83-121). Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up): ت or ة or ه at the end of a word (lessons 2-3), the thing drawn in code
+   Stage 2 (Missions): 1 the brave sparrow (lesson 1) · 2 the innovation box (lesson 2) · 3 a page from history (lesson 3) · 4 my homeland poem (lesson 4) · 5 I am confused (lesson 5)
+   Stage 3 (Speed Round): ثمّ or فـ (lesson 3)
+   No people or animals are drawn in code (owner, 17 Nov 2026): the scenes are things (tree and nest, box, scroll, pyramids, flag, garden) chosen so they never show the answer.
+   The owner's Gemini pictures replace them when they arrive: set('photo', { img: 'a3_…' }). */
+const T = SI.T, G = SI.G;
+const P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+const sc = { mode: 'garden' };
+const VW = 420, VH = 280;
+const K = '#1f3d57';
+const ground = `<rect y="214" width="${VW}" height="66" fill="#bfe3a0"/>`;
+const sand = `<rect y="200" width="${VW}" height="80" fill="#f0d79a"/><path d="M0 232q70 -10 140 0t140 0t140 0" fill="none" stroke="#d9b866" stroke-width="3"/>`;
+const sun = (x, y) => `<circle cx="${x}" cy="${y}" r="26" fill="#f6c453" stroke="#d99a12" stroke-width="3"/>`;
+const flower = (x, y, k, c = '#ff9fb2') => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0v34" stroke="#3f8f4c" stroke-width="4" stroke-linecap="round"/><path d="M0 24q-16 -2 -18 -14q14 0 18 14z" fill="#8dcf7a" stroke="#3f8f4c" stroke-width="2"/>${[0, 72, 144, 216, 288].map(a => `<ellipse cy="-14" rx="8" ry="12" transform="rotate(${a})" fill="${c}" stroke="#d96a82" stroke-width="2"/>`).join('')}<circle r="8" fill="#f6c453" stroke="#d99a12" stroke-width="2"/></g>`;
+const tree = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-10" y="-20" width="20" height="70" rx="5" fill="#a8834f" stroke="${K}" stroke-width="3"/><circle cy="-56" r="54" fill="#8dcf7a" stroke="#3f8f4c" stroke-width="3.5"/><circle cx="-30" cy="-36" r="30" fill="#9edb88" stroke="#3f8f4c" stroke-width="3"/><circle cx="32" cy="-40" r="30" fill="#9edb88" stroke="#3f8f4c" stroke-width="3"/></g>`;
+const nest = (x, y) => `<g transform="translate(${x} ${y})"><ellipse cy="6" rx="34" ry="15" fill="#c99a5b" stroke="${K}" stroke-width="3"/><path d="M-30 2q30 14 60 0M-26 10q26 10 52 0" fill="none" stroke="#8a6a3a" stroke-width="2.4"/><ellipse cx="-10" cy="-5" rx="9" ry="11" fill="#fffaf0" stroke="${K}" stroke-width="2.4"/><ellipse cx="9" cy="-5" rx="9" ry="11" fill="#e8f6fc" stroke="${K}" stroke-width="2.4"/></g>`;
+const house = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-50" y="-60" width="100" height="74" fill="#fde0bd" stroke="${K}" stroke-width="3.5"/><path d="M-62 -58l62 -46l62 46z" fill="#e2603f" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/><rect x="-14" y="-24" width="28" height="38" rx="3" fill="#a8834f" stroke="${K}" stroke-width="3"/><rect x="-42" y="-48" width="22" height="20" fill="#bfe8f6" stroke="${K}" stroke-width="3"/><rect x="20" y="-48" width="22" height="20" fill="#bfe8f6" stroke="${K}" stroke-width="3"/></g>`;
+const fruit = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><circle cx="-26" cy="-22" r="18" fill="#e2603f" stroke="${K}" stroke-width="3"/><circle cx="4" cy="-30" r="18" fill="#f2b134" stroke="${K}" stroke-width="3"/><circle cx="30" cy="-20" r="16" fill="#8dcf7a" stroke="${K}" stroke-width="3"/><path d="M4 -48q4 -10 12 -12" stroke="#3f8f4c" stroke-width="3" fill="none"/><path d="M-56 -14h112q-6 34 -56 34t-56 -34z" fill="#c99a5b" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/></g>`;
+const water = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-26" y="-90" width="52" height="96" rx="12" fill="#e8f6fc" stroke="${K}" stroke-width="3.5"/><rect x="-14" y="-108" width="28" height="20" rx="5" fill="#23799f" stroke="${K}" stroke-width="3"/><rect x="-24" y="-50" width="48" height="54" rx="10" fill="#8fd3ee" opacity=".8"/><path d="M50 -40q-12 22 0 30q12 -8 0 -30z" fill="#8fd3ee" stroke="${K}" stroke-width="2.5"/><path d="M70 -14q-9 16 0 22q9 -6 0 -22z" fill="#8fd3ee" stroke="${K}" stroke-width="2.5"/></g>`;
+const clock = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><circle cx="-40" cy="-78" r="16" fill="#f2b134" stroke="${K}" stroke-width="3"/><circle cx="40" cy="-78" r="16" fill="#f2b134" stroke="${K}" stroke-width="3"/><circle cy="-30" r="58" fill="#e2603f" stroke="${K}" stroke-width="4"/><circle cy="-30" r="46" fill="#fffaf0" stroke="${K}" stroke-width="3"/><path d="M0 -30v-30M0 -30l20 12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M-30 30l-10 14M30 30l10 14" stroke="${K}" stroke-width="5" stroke-linecap="round"/></g>`;
+const box = (x, y) => `<g transform="translate(${x} ${y})"><path d="M-80 -70h130l30 -24h-130z" fill="#f6d27a" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/><path d="M50 -70l30 -24v104l-30 24z" fill="#e0b35a" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/><rect x="-80" y="-70" width="130" height="104" fill="#f2c96b" stroke="${K}" stroke-width="3.5"/>`
+  + [[-66, -58, '#ff9fb2'], [-28, -46, '#9edb88'], [14, -60, '#c9a0ff'], [-56, -12, '#8fd3ee'], [-10, 0, '#ff9fb2'], [24, -18, '#f6c453']].map(([a, b, c]) => `<rect x="${a}" y="${b}" width="22" height="22" fill="${c}" stroke="${K}" stroke-width="2" transform="rotate(${(a % 7) - 3} ${a + 11} ${b + 11})"/>`).join('') + '</g>';
+const scroll = (x, y) => `<g transform="translate(${x} ${y})"><rect x="-90" y="-70" width="180" height="110" fill="#f6e3b4" stroke="${K}" stroke-width="3.5"/><ellipse cx="-90" cy="-15" rx="12" ry="57" fill="#e9cf8e" stroke="${K}" stroke-width="3.5"/><ellipse cx="90" cy="-15" rx="12" ry="57" fill="#e9cf8e" stroke="${K}" stroke-width="3.5"/><path d="M-60 -40h110M-60 -16h120M-60 8h90" stroke="#d6bd84" stroke-width="3" stroke-linecap="round"/><path d="M70 30l70 -70" stroke="#8a6a3a" stroke-width="6" stroke-linecap="round"/><path d="M70 30l-6 10l12 -4z" fill="${K}"/></g>`;
+const pyramid = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-70 0l70 -96l70 96z" fill="#f2c96b" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/><path d="M0 -96l24 96h46z" fill="#d9a441" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M-48 -30h56M-30 -58h36" stroke="#c99a3c" stroke-width="2.5"/></g>`;
+const palm = (x, y) => `<g transform="translate(${x} ${y})"><path d="M0 0q6 -50 -4 -96" stroke="#a8834f" stroke-width="10" fill="none" stroke-linecap="round"/>${[-150, -120, -60, -30, -95].map(a => `<path d="M-4 -96q${(Math.cos(a * Math.PI / 180) * 30).toFixed(1)} ${(Math.sin(a * Math.PI / 180) * 30).toFixed(1)} ${(Math.cos(a * Math.PI / 180) * 56).toFixed(1)} ${(Math.sin(a * Math.PI / 180) * 30 + 26).toFixed(1)}" stroke="#3f8f4c" stroke-width="8" fill="none" stroke-linecap="round"/>`).join('')}</g>`;
+const flag = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 0v-150" stroke="${K}" stroke-width="6" stroke-linecap="round"/><rect x="2" y="-148" width="100" height="22" fill="#e2603f" stroke="${K}" stroke-width="2.5"/><rect x="2" y="-126" width="100" height="22" fill="#fff" stroke="${K}" stroke-width="2.5"/><rect x="2" y="-104" width="100" height="22" fill="#2a2a2a" stroke="${K}" stroke-width="2.5"/><circle cx="52" cy="-115" r="6" fill="#f2b134" stroke="#c48a1a" stroke-width="1.5"/></g>`;
+const nile = `<path d="M0 238q100 -14 210 0t210 0v20q-100 14 -210 0t-210 0z" fill="#8fd3ee" stroke="#5fb4d6" stroke-width="2"/>`;
+const THING = { tree: x => tree(x, 190, 1), house: x => house(x, 214, 1.2), fruit: x => fruit(x, 200, 1.3), water: x => water(x, 214, 1.1), clock: x => clock(x, 190, 1) };
+function render() {
+  let s = `<rect width="${VW}" height="${VH}" fill="#eef6fb"/>`;
+  const m = sc.mode;
+  if (m === 'thing') {
+    s += ground + sun(360, 52) + (THING[sc.thing] || THING.tree)(210);
+  } else if (m === 'nest') {
+    s += ground + sun(360, 52) + house(80, 214, 1) + tree(260, 190, 1.3) + nest(270, 104);
+  } else if (m === 'box') {
+    s += `<rect width="${VW}" height="${VH}" fill="#f4ead2"/><rect y="200" width="${VW}" height="80" fill="#d9b88a"/><rect x="40" y="30" width="150" height="90" rx="6" fill="#3d6b5a" stroke="#8a6a3a" stroke-width="5"/>` + box(250, 190);
+  } else if (m === 'scroll') {
+    s += sand + sun(360, 52) + scroll(200, 160);
+  } else if (m === 'pyramids') {
+    s += sand + sun(360, 52) + pyramid(120, 214, 1.4) + pyramid(250, 214, 1) + nile + palm(370, 236) + palm(40, 240);
+  } else if (m === 'flag') {
+    s += sand + sun(70, 52) + pyramid(120, 214, 1.2) + pyramid(220, 214, .8) + flag(300, 214, 1.1);
+  } else if (m === 'photo') {
+    /* the owner's pictures (Gemini): a rounded square in the middle of the scene; the picture is chosen so it never shows the answer */
+    s += ground + `<clipPath id="ph"><rect x="80" y="10" width="260" height="260" rx="22"/></clipPath><image href="arabic/assets/${sc.img}.webp" x="80" y="10" width="260" height="260" preserveAspectRatio="xMidYMid slice" clip-path="url(#ph)"/><rect x="80" y="10" width="260" height="260" rx="22" fill="none" stroke="#d8c9a6" stroke-width="4"/>`;
+  } else {
+    s += ground + sun(350, 54);
+    const n = sc.n || 5;
+    for (let i = 0; i < n; i++) s += flower(VW / 2 + (i - (n - 1) / 2) * 62, 168 + (i % 2) * 16, 1.4, ['#ff9fb2', '#f6c453', '#c9a0ff'][i % 3]);
+  }
+  return s;
+}
+const g = G4Game({ ch: 'ag3u3', logo: '🏛️', title: ['Guardians of the Homeland', 'حراس الوطن'], sub: ['Unit 3 · I Love My Country', 'الوحدة 3 · أحب بلدي'],
+  bg: 'arabic/assets/bg_ag3u3.svg', bgc: '#fde7c2', label: ['Guardians of the Homeland', 'حراس الوطن'], render });
+const set = (mode, o) => { Object.assign(sc, { mode, n: 5, thing: 'tree', img: '' }, o || {}); g.paint(); };
+const kw = w => `<b>${w}</b>`;
+
+/* Warm Up: the last letter of a word; the drawn thing is the word, the answer is the letter */
+const ENDS = [['tree', 'شجر_', 'ة', T('We say it with ت when we join it and with ه when we stop.', 'نصلها بالتاء ونقف عليها بالهاء.')],
+  ['house', 'بيـ_', 'ت', T('We always hear ت.', 'نسمع التاء دائمًا.')],
+  ['fruit', 'فواكـ_', 'ه', T('We always hear ه.', 'نسمع الهاء دائمًا، حتى عند الوصل.')],
+  ['water', 'ميا_', 'ه', T('We always hear ه.', 'نسمع الهاء دائمًا.')],
+  ['clock', 'ساعـ_', 'ة', T('We join it with ت and stop on it with ه.', 'نصلها بالتاء ونقف عليها بالهاء.')]];
+async function stage1() {
+  for (let i = 0; i < ENDS.length; i++) {
+    const [thing, w, right, hint] = ENDS[i];
+    set('thing', { thing });
+    g.say(i === 0 ? T(`Welcome, guardian! Look at the picture. Which letter ends the word ${w}?`, P(`أهلًا يا حارس الوطن! انظر إلى الصورة. ما الحرف الأخير في كلمة ${kw(w)}؟`, `أهلًا يا حارسة الوطن! انظري إلى الصورة. ما الحرف الأخير في كلمة ${kw(w)}؟`))
+      : T(`And this one: ${w}?`, `والآن: ما الحرف الأخير في كلمة ${kw(w)}؟`), i === 0 ? 'point' : 'think');
+    await g.choice({ options: ['ة', 'ت', 'ه'], correct: right, hint, ok: T('Right!', `صح! نكتبها ${kw(w.replace('_', right).replace('ـ' + right, right))}.`) });
+  }
+}
+async function stage2() {
+  /* Mission 1 · the brave sparrow (listening text, book p. 124) */
+  set('nest');
+  g.say(T('Mission 1: every morning the boy stands on his balcony. Why?', 'المهمة ١: كل صباح يقف الطفل في شرفته. لماذا؟'), 'point');
+  await g.choice({ options: ['ليستمتع بصوت غناء العصفور', 'ليرى السيارات', 'لينتظر صديقه'], correct: 'ليستمتع بصوت غناء العصفور', hint: T('Someone sings in the tree every morning.', 'هناك من يغني فوق الشجرة كل صباح.'),
+    ok: T('Right.', 'صح! يستمتع بغناء العصفور.') });
+  set('nest');
+  g.say(T('One day the sparrow\'s voice rose. Why?', 'في يوم ارتفع صوت العصفور. لماذا؟'), 'think');
+  await g.choice({ options: ['لهجوم طائر غريب على العش', 'لأنه جائع', 'لأنه يلعب مع الطفل'], correct: 'لهجوم طائر غريب على العش', hint: T('Another bird came to the tree.', 'جاء طائر آخر إلى الشجرة.'),
+    ok: T('Right.', 'برافو! دافع العصفور عن عشه بشجاعة.') });
+  set('garden', { n: 4 });
+  g.say(T('The mother said all creatures defend their homes. How do elephants defend their young?', 'قالت الأم: كل الكائنات تدافع عن بيوتها. كيف تدافع الفيلة عن صغارها؟'), 'think');
+  await g.choice({ options: ['تقف في شكل دائرة حولها', 'تتركها وتبتعد', 'تخفيها في الماء'], correct: 'تقف في شكل دائرة حولها', hint: T('They surround them.', 'تحيط بها من كل جانب.'),
+    ok: T('Right.', 'صح! تقف في دائرة حول صغارها.') });
+  set('flag');
+  g.say(T('Every country has an army. Why?', 'لكل بلد جيش. لماذا؟'), 'think');
+  await g.choice({ options: ['ليدافع عنه ضد أي عدو', 'ليلعب في الحدائق', 'ليبني البيوت فقط'], correct: 'ليدافع عنه ضد أي عدو', hint: T('The army protects the country.', 'الجيش يحمي البلاد.'),
+    ok: T('Right.', 'برافو! الجيش يحمي الوطن.') });
+
+  /* Mission 2 · the innovation box */
+  set('box');
+  g.say(T('Mission 2: Salma made a beautiful pencil case. What did she make it from?', 'المهمة ٢: صنعت سلمى مقلمة جميلة وملونة. ممّ صنعتها؟'), 'point');
+  await g.choice({ options: ['من أشياء قديمة', 'من ذهب', 'اشترتها من المكتبة'], correct: 'من أشياء قديمة', hint: T('Her mother helped her reuse things.', 'ساعدتها أمها في إعادة استخدام أشياء.'),
+    ok: T('Right.', 'صح! من أشياء قديمة بمعاونة أمها.') });
+  set('box');
+  g.say(T('What does the word معاونة mean?', 'صنعتها بمعاونة أمها. ما معنى كلمة (معاونة)؟'), 'think');
+  await g.choice({ options: ['مساعدة', 'مسابقة', 'معاقبة'], correct: 'مساعدة', hint: T('Her mother helped her.', 'أمها كانت معها تساعدها.'),
+    ok: T('Right.', 'برافو! معاونة: مساعدة.') });
+  set('box');
+  g.say(T('Each pupil wrote something and put it in the innovation box. What?', 'كتب كل تلميذ شيئًا ووضعه في صندوق الابتكار. ما هو؟'), 'think');
+  await g.choice({ options: ['فكرة لإعادة استخدام الأشياء المستعملة', 'اسم لعبته المفضلة', 'سؤالًا عن الدرس'], correct: 'فكرة لإعادة استخدام الأشياء المستعملة', hint: T('They wanted to reuse old things.', 'أرادوا أن يقتدوا بسلمى.'),
+    ok: T('Right.', 'صح! فكرة لإعادة الاستخدام.') });
+  set('garden', { n: 3 });
+  g.say(T('Which word fits? The bird stood ___ the branch.', 'أي حرف جر يناسب؟ وقف الطائر ___ الغصن.'), 'think');
+  await g.choice({ options: ['على', 'عن'], correct: 'على', hint: T('It is on top of the branch.', 'هو فوق الغصن.'),
+    ok: T('Right.', `برافو! وقف الطائر ${kw('على')} الغصن.`) });
+  set('garden', { n: 3 });
+  g.say(T('And here? Shaimaa wrote a story ___ bees.', 'وهنا؟ كتبت شيماء قصة ___ النحل.'), 'think');
+  await g.choice({ options: ['عن', 'على'], correct: 'عن', hint: T('The story is about bees.', 'النحل موضوع القصة.'),
+    ok: T('Right.', `صح! قصة ${kw('عن')} النحل.`) });
+
+  /* Mission 3 · a page from history */
+  set('scroll');
+  g.say(T('Mission 3: Adam read about the history of writing. How did people write before paper?', 'المهمة ٣: قرأ آدم عن تاريخ الكتابة. كيف كان الناس يكتبون قبل اختراع الورق؟'), 'point');
+  await g.choice({ options: ['بالنقش على الحجارة', 'بالقلم على الكراسة', 'على الحاسوب'], correct: 'بالنقش على الحجارة', hint: T('It took a long time.', 'كان ذلك يأخذ وقتًا طويلًا.'),
+    ok: T('Right.', 'صح! بالنقش على الحجارة.') });
+  set('pyramids');
+  g.say(T('Our ancestors invented a paper. From which plant?', 'اخترع أجدادنا المصريون القدماء ورقًا. من أي نبات صنعوه؟'), 'think');
+  await g.choice({ options: ['البردي', 'القمح', 'النخيل'], correct: 'البردي', hint: T('It grew beside the Nile.', 'كان ينمو بجانب نهر النيل.'),
+    ok: T('Right.', 'برافو! ورق البردي.') });
+  set('flag');
+  g.say(T('Adam loves Egypt in deeds, not words only. Which deed shows it?', 'آدم يعبّر عن حبه لمصر بالفعل لا بالكلام فقط. أي تصرف يعبّر عن حب مصر؟'), 'think');
+  await g.choice({ options: ['أحافظ على نظافة الشارع', 'أرسم على الجدران', 'أكسر مقاعد الحديقة'], correct: 'أحافظ على نظافة الشارع', hint: T('Choose what helps our country.', 'نختار ما يفيد وطننا.'),
+    ok: T('Right.', 'صح! نحافظ على نظافة الشارع ونقابل الزوار باحترام.') });
+  set('scroll');
+  g.say(T('Who taught the world farming and used the plough?', 'من علّم العالم الزراعة واستخدم المحراث؟'), 'think');
+  await g.choice({ options: ['الفلاح المصري', 'الطبيب المصري', 'المهندس المصري'], correct: 'الفلاح المصري', hint: T('He works in the field.', 'يعمل في الحقل.'),
+    ok: T('Right.', 'برافو! الفلاح المصري.') });
+
+  /* Mission 4 · my homeland (poem) */
+  set('flag');
+  g.say(T('Mission 4: in the poem, what does أهواه mean?', 'المهمة ٤: في نشيد «وطني»، ما معنى كلمة (أهواه)؟'), 'point');
+  await g.choice({ options: ['أحبه', 'أكرهه', 'أهدمه'], correct: 'أحبه', hint: T('The poet loves his homeland.', 'الشاعر يحب وطنه.'),
+    ok: T('Right.', 'صح! أهواه: أحبه.') });
+  set('pyramids');
+  g.say(T('What is the opposite of أبنيه?', 'ما ضد كلمة (أبنيه)؟'), 'think');
+  await g.choice({ options: ['أهدمه', 'أرعاه', 'أحفظه'], correct: 'أهدمه', hint: T('Building is the opposite of…', 'البناء ضده ...'),
+    ok: T('Right.', 'برافو! ضد أبنيه: أهدمه.') });
+  set('flag');
+  g.say(T('Which two words end with the same sound?', 'أي كلمتين نهايتهما متماثلة؟'), 'think');
+  await g.choice({ options: ['أغلاه - أرعاه', 'وطني - أهواه', 'أنا - قلبي'], correct: 'أغلاه - أرعاه', hint: T('Look at the end of each word.', P('انظر إلى آخر كل كلمة.', 'انظري إلى آخر كل كلمة.')),
+    ok: T('Right.', 'صح! أغلاه وأرعاه تنتهيان بـ (اه).') });
+
+  /* Mission 5 · I am confused */
+  set('garden', { n: 5 });
+  g.say(T('Mission 5: Mona came home silent and sad, confused. Who can she trust?', 'المهمة ٥: عادت منى إلى المنزل صامتة حزينة، وهي حائرة. من الأشخاص الذين يمكن أن تثق بهم؟'), 'point');
+  await g.choice({ options: ['أمها وأبوها ومعلمتها', 'شخص لا تعرفه', 'لا أحد'], correct: 'أمها وأبوها ومعلمتها', hint: T('They listen, help and keep her safe.', 'يستمعون إليها ويساعدونها ويحافظون على سلامتها.'),
+    ok: T('Right.', 'صح! نتحدث مع من نثق بهم.') });
+  set('garden', { n: 5 });
+  g.say(T('What should we do when we feel confused or worried?', 'ماذا نفعل عندما نشعر بالحيرة أو القلق؟'), 'think');
+  await g.choice({ options: ['نتحدث مع من نثق بهم', 'نحتفظ بالأمر لأنفسنا دائمًا', 'نحكي لشخص لا نعرفه'], correct: 'نتحدث مع من نثق بهم', hint: T('This is the message of the story.', 'هذه رسالة القصة.'),
+    ok: T('Right.', 'برافو! نتحدث مع من نثق بهم.') });
+}
+const DM = [['زرعتُ البذور ___ نبتت الزهور.', 't'], ['وقع الكوب ___انكسر.', 'f'], ['رأيت صديقي ___سلّمت عليه.', 'f'], ['انتهت الامتحانات ___ ظهرت النتيجة.', 't'],
+  ['ضاع الكتاب ___ وجدته بعد ساعة.', 't'], ['سمعت هند صوت أمها ___نظرت إليها.', 'f'], ['زرع خالد بذرة ___ كبرت.', 't'], ['ركلت الكرة ___دخلت المرمى.', 'f'],
+  ['التحق أخي بالجامعة ___ حصل على شهادة النجاح.', 't'], ['دقّ جرس الباب ___فتحت.', 'f'], ['زرع الفلاح القمح ___ حصده.', 't'], ['رأى اللص الشرطة ___هرب مسرعًا.', 'f']];
+async function stage3() {
+  set('garden', { n: 5 });
+  await g.speedRound({ items: DM.map(([w, r]) => ({ t: `<span dir="rtl" lang="ar">${w}</span>`, ans: r,
+      why: r === 't' ? T('Some time passed, so we use ثمّ.', 'مرّ وقت بين الحدثين، فنستعمل (ثمّ).') : T('It happened at once, so we use فـ.', 'حدث في الحال، فنستعمل (فـ).') })), rounds: 10,
+    buttons: [{ label: T('ثمّ', 'ثمّ'), value: 't', c: 0 }, { label: T('فـ', 'فـ'), value: 'f', c: 2 }],
+    ask: T('Which word fits?', 'أي حرف عطف يناسب الجملة؟'),
+    intro: T('Speed Round! A sentence comes in. Choose ثمّ when time passed, or فـ when it happened at once.', P('جولة السرعة! ستظهر جملة. اختر (ثمّ) إذا مرّ وقت، أو (فـ) إذا حدث في الحال.', 'جولة السرعة! ستظهر جملة. اختاري (ثمّ) إذا مرّ وقت، أو (فـ) إذا حدث في الحال.')),
+    think: T('Time passed, or at once?', 'بعد وقت أم في الحال؟') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Become a guardian of the homeland: ت, ة and ه, the brave sparrow, the innovation box, a page from history, the poem «My Homeland» and the people we trust.`,
+    P(`أهلًا يا <b>${g.name()}</b>! كن حارسًا للوطن: التاء والهاء، والعصفور الجريء، وصندوق الابتكار، وورقة من التاريخ، ونشيد «وطني»، ومن نثق بهم.`,
+      `أهلًا يا <b>${g.name()}</b>! كوني حارسة للوطن: التاء والهاء، والعصفور الجريء، وصندوق الابتكار، وورقة من التاريخ، ونشيد «وطني»، ومن نثق بهم.`)),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Well done!', P('برافو عليك!', 'برافو عليكي!')),
+    text: T('You know when to write ت, ة or ه, how all creatures defend their homes, how we reuse old things, the history of writing, the poem «My Homeland», and when to use ثمّ and فـ. Next, try the questions of this unit.',
+      P('أصبحت تعرف متى تكتب التاء المفتوحة والمربوطة والهاء، وكيف تدافع الكائنات عن أوطانها، وكيف نعيد استخدام الأشياء القديمة، وتاريخ الكتابة، ونشيد «وطني»، ومتى نستعمل (ثمّ) و(فـ). جرّب الآن أسئلة هذه الوحدة.',
+        'أصبحتِ تعرفين متى تكتبين التاء المفتوحة والمربوطة والهاء، وكيف تدافع الكائنات عن أوطانها، وكيف نعيد استخدام الأشياء القديمة، وتاريخ الكتابة، ونشيد «وطني»، ومتى نستعمل (ثمّ) و(فـ). جرّبي الآن أسئلة هذه الوحدة.')) }
+}).catch(err => console.error(err));
+})();
+</script>
+</body>
+</html>
