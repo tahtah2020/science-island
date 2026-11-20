@@ -1,26 +1,139 @@
 {
-  "model": "flux-2-klein-4b",
-  "ref": "arabic/assets/a3_adam_invites.webp",
-  "size": [1024, 1024],
-  "style": "Style: flat cartoon children's-book illustration exactly like the drawing style of image 0: thick dark outlines, soft warm colours, big friendly eyes, simple clean shapes, bright daylight. Square picture. Egyptian setting. Absolutely no text, no letters, no numbers, no writing, no symbols anywhere in the picture.",
-  "images": [
-    {"file": "a3_sparrow_morning", "seed": 101, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: early morning. A 9-year-old Egyptian boy with short brown hair in pyjamas stands on the small balcony of a plain beige Cairo apartment building (wooden mashrabiya railing, a potted plant), smiling and listening. In front of the building is one big green tree; on a branch sits a small brown sparrow on its round twig nest, beak open, singing, two little musical notes floating in the air. Only one bird. Soft morning sky."},
-    {"file": "a3_sparrow_defend", "seed": 111, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: a big green tree branch with a round twig nest holding two small eggs. A small brown sparrow stands bravely on the edge of its nest, wings spread wide, chest out, facing a bigger black crow that flies toward the nest. The sparrow looks brave and determined, not scared. Plain beige Cairo apartment buildings far in the background, blue sky. Friendly, not violent, no blood."},
-    {"file": "a3_mother_son", "seed": 121, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene: on the small balcony of a Cairo apartment with a wooden mashrabiya railing, an Egyptian mother (light green headscarf, long modest beige dress) sits beside her 9-year-old son (short brown hair, blue t-shirt). She points gently toward a big green tree in front of the building while talking kindly; the boy listens, looking at her. Warm morning light, potted plants."},
-    {"file": "a3_rabbit_friends", "seed": 131, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: a cute white rabbit stands on its hind legs in a green forest clearing among tall trees, talking with a squirrel, a hedgehog and a small turtle who stand around it. Flat ground, grass and flowers, sunny day. Friendly cartoon animals."},
-    {"file": "a3_salma_desk", "seed": 141, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in an Egyptian primary-school classroom: a 9-year-old Egyptian girl named Salma (two dark-brown braids with red hair ties, white school shirt with navy collar) sits at her wooden desk; on the desk is a pretty pencil case made from a round tin can decorated with coloured paper stripes and flowers, with pencils standing in it. A kind young female teacher (pink headscarf, long grey skirt) bends over the desk looking at the pencil case with interest. Classmates in the background. The blackboard behind is completely empty and clean."},
-    {"file": "a3_class_box", "seed": 151, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in an Egyptian primary-school classroom, seen from behind the pupils in the back-left corner: on a table at the front stands a big plain brown cardboard box with a slot in its lid, nothing written on it. Several pupils (boys and girls, white school shirts with navy collars) queue toward it, each holding a small folded piece of paper, one child drops a folded paper into the slot. A young female teacher (pink headscarf) stands beside the box facing the class. The blackboard on the far wall is completely empty. All the pupils face the front."},
-    {"file": "a3_amir_bottle", "seed": 161, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in a cosy Egyptian home kitchen: a 9-year-old Egyptian boy (curly black hair, orange t-shirt) sits at a wooden table and looks thoughtfully at one empty clear plastic water bottle standing in front of him, his chin on his hand, thinking. Nothing else on the table. Window with a palm tree outside."},
-    {"file": "a3_salem_wallet", "seed": 171, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in an Egyptian school yard with beige school buildings and a few trees: a 9-year-old Egyptian boy (short black hair, white school shirt with navy collar, navy trousers, school bag on his back) bends down and looks with surprise at a small brown leather wallet lying on the ground in front of his feet. Other children play far away."},
-    {"file": "a3_adam_reading", "ref": "arabic/assets/a3_adam_invites.webp", "seed": 181, "n": 2, "prompt": "Use image 0 ONLY as a reference for the drawing style and for the boy on the left (brown hair, his face). Do NOT copy the school yard, the second boy or the pose. New scene: the same boy, now in a light blue t-shirt at home, sits on a cushion in his bedroom by a bookshelf and reads a big open book with great interest. The open pages show only soft coloured pictures of old stones and plants, no writing. Warm lamp light."},
-    {"file": "a3_stone_carving", "seed": 191, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in ancient Egypt: an ancient Egyptian man (white linen kilt, short black hair, bare chest, gold collar) kneels in front of a big flat sandstone wall and slowly carves simple pictures (a bird, an eye, a wavy line) into the stone with a copper chisel and a wooden mallet. Small stone chips on the ground, desert sun, a pyramid far away. Not real hieroglyph writing, only three simple pictures."},
-    {"file": "a3_papyrus_nile", "seed": 201, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: tall green papyrus plants with round feathery tops grow thickly on the bank of the blue Nile river. A white felucca sailboat on the river, palm trees and green fields on the far bank, bright sunny sky."},
-    {"file": "a3_museum_boy", "seed": 211, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene inside the Egyptian Museum: a 9-year-old Egyptian boy (short brown hair, green t-shirt, small backpack) stands in a big hall and looks up in wonder at a tall golden statue of an ancient pharaoh and a painted wooden coffin in glass cases. His father (short beard, white shirt) stands behind him. No labels, no signs."},
-    {"file": "a3_adam_flag", "ref": "arabic/assets/a3_adam_invites.webp", "seed": 221, "n": 2, "prompt": "Use image 0 ONLY as a reference for the drawing style and for the boy on the left (brown hair, his face). Do NOT copy the school yard, the second boy or the pose. New scene: the same boy in a white t-shirt stands on a balcony of a Cairo apartment and holds a small flag with three horizontal stripes red, white and black up high, smiling. Cairo apartment buildings and a minaret behind, blue sky. The flag has only the three plain stripes."},
-    {"file": "a3_sameh_ball", "seed": 231, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in a green public garden in Egypt: a red-and-white football is stuck high up between the leafy branches of a big tree. Under the tree a 9-year-old Egyptian boy (short black hair, yellow t-shirt, blue shorts) stands on tiptoe reaching up with both arms, but the ball is far too high. Another boy watches from the side. No ladder, no stick."},
-    {"file": "a3_dirty_garden", "seed": 241, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene: a small Egyptian public garden with green grass, benches and palm trees, but the grass is full of litter: plastic bottles, paper bags, cans, wrappers. At the gate stand three children (a girl with a ponytail and pink dress, two boys) looking at the mess, surprised and sad. They are not cleaning, they only look."},
-    {"file": "a3_mona_mother", "seed": 251, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in a cosy Egyptian living room: a 9-year-old Egyptian girl (shoulder-length black hair with a blue hairband, white school shirt, her school bag on the floor) sits on a sofa next to her mother (light purple headscarf, long modest dress). The mother sits close, one arm gently around the girl's shoulders, and looks at her kindly, asking. The girl looks down, thinking. Calm warm afternoon light."},
-    {"file": "a3_lion_tortoise", "seed": 261, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: in a green forest, a young cartoon lion with a fluffy mane sits under a big tree; one of his front legs is wrapped in a white bandage. A friendly old tortoise stands in front of him and talks to him kindly. Flowers and grass, sunny day. Cute friendly animals."},
-    {"file": "a3_tourists_pyramids", "seed": 271, "n": 2, "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene at the Giza pyramids: many happy tourists from different countries (sun hats, backpacks, cameras) walk and take photos in front of the three great pyramids and the Sphinx, a camel with an Egyptian guide in a galabeya, golden sand, bright blue sky. No signs, no text."}
-  ]
+ "model": "flux-2-klein-4b",
+ "ref": "arabic/assets/a3_adam_invites.webp",
+ "size": [
+  1024,
+  1024
+ ],
+ "style": "Style: flat cartoon children's-book illustration exactly like the drawing style of image 0: thick dark outlines, soft warm colours, big friendly eyes, simple clean shapes, bright daylight. Square picture. Egyptian setting. Absolutely no text, no letters, no numbers, no writing, no symbols anywhere in the picture.",
+ "images": [
+  {
+   "file": "a3_sparrow_morning",
+   "seed": 101,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, school yard or composition. New scene: early morning. A 9-year-old Egyptian boy with short brown hair in pyjamas stands on the small balcony of a plain beige Cairo apartment building (wooden mashrabiya railing, a potted plant), smiling and listening. In front of the building is one big green tree; on a branch sits a small brown sparrow on its round twig nest, beak open, singing, two little musical notes floating in the air. Only one bird. Soft morning sky."
+  },
+  {
+   "file": "a3_sparrow_defend",
+   "seed": 111,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: a big green tree branch with a round twig nest holding two small eggs. A small brown sparrow stands bravely on the edge of its nest, wings spread wide, chest out, facing a bigger black crow that flies toward the nest. The sparrow looks brave and determined, not scared. Plain beige Cairo apartment buildings far in the background, blue sky. Friendly, not violent, no blood."
+  },
+  {
+   "file": "a3_mother_son",
+   "seed": 121,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene: on the small balcony of a Cairo apartment with a wooden mashrabiya railing, an Egyptian mother (light green headscarf, long modest beige dress) sits beside her 9-year-old son (short brown hair, blue t-shirt). She points gently toward a big green tree in front of the building while talking kindly; the boy listens, looking at her. Warm morning light, potted plants."
+  },
+  {
+   "file": "a3_rabbit_friends",
+   "seed": 131,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: a cute white rabbit stands on its hind legs in a green forest clearing among tall trees, talking with a squirrel, a hedgehog and a small turtle who stand around it. Flat ground, grass and flowers, sunny day. Friendly cartoon animals."
+  },
+  {
+   "file": "a3_salma_desk",
+   "seed": 141,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in an Egyptian primary-school classroom: a 9-year-old Egyptian girl named Salma (two dark-brown braids with red hair ties, white school shirt with navy collar) sits at her wooden desk; on the desk is a pretty pencil case made from a round tin can decorated with coloured paper stripes and flowers, with pencils standing in it. A kind young female teacher (pink headscarf, long grey skirt) bends over the desk looking at the pencil case with interest. Classmates in the background. The blackboard behind is completely empty and clean."
+  },
+  {
+   "file": "a3_class_box",
+   "seed": 151,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in an Egyptian primary-school classroom, seen from behind the pupils in the back-left corner: on a table at the front stands a big plain brown cardboard box with a slot in its lid, nothing written on it. Several pupils (boys and girls, white school shirts with navy collars) queue toward it, each holding a small folded piece of paper, one child drops a folded paper into the slot. A young female teacher (pink headscarf) stands beside the box facing the class. The blackboard on the far wall is completely empty. All the pupils face the front."
+  },
+  {
+   "file": "a3_amir_bottle",
+   "seed": 161,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in a cosy Egyptian home kitchen: a 9-year-old Egyptian boy (curly black hair, orange t-shirt) sits at a wooden table and looks thoughtfully at one empty clear plastic water bottle standing in front of him, his chin on his hand, thinking. Nothing else on the table. Window with a palm tree outside."
+  },
+  {
+   "file": "a3_salem_wallet",
+   "seed": 171,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in an Egyptian school yard with beige school buildings and a few trees: a 9-year-old Egyptian boy (short black hair, white school shirt with navy collar, navy trousers, school bag on his back) bends down and looks with surprise at a small brown leather wallet lying on the ground in front of his feet. Other children play far away."
+  },
+  {
+   "file": "a3_adam_reading",
+   "ref": "arabic/assets/a3_adam_invites.webp",
+   "seed": 181,
+   "n": 2,
+   "prompt": "Use image 0 ONLY as a reference for the drawing style and for the boy on the left (brown hair, his face). Do NOT copy the school yard, the second boy or the pose. New scene: the same boy, now in a light blue t-shirt at home, sits on a cushion in his bedroom by a bookshelf and reads a big open book with great interest. The open pages show only soft coloured pictures of old stones and plants, no writing. Warm lamp light."
+  },
+  {
+   "file": "a3_stone_carving",
+   "seed": 191,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in ancient Egypt: an ancient Egyptian man (white linen kilt, short black hair, bare chest, gold collar) kneels in front of a big flat sandstone wall and slowly carves simple pictures (a bird, an eye, a wavy line) into the stone with a copper chisel and a wooden mallet. Small stone chips on the ground, desert sun, a pyramid far away. Not real hieroglyph writing, only three simple pictures."
+  },
+  {
+   "file": "a3_papyrus_nile",
+   "seed": 201,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: tall green papyrus plants with round feathery tops grow thickly on the bank of the blue Nile river. A white felucca sailboat on the river, palm trees and green fields on the far bank, bright sunny sky."
+  },
+  {
+   "file": "a3_museum_boy",
+   "seed": 211,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene inside the Egyptian Museum: a 9-year-old Egyptian boy (short brown hair, green t-shirt, small backpack) stands in a big hall and looks up in wonder at a tall golden statue of an ancient pharaoh and a painted wooden coffin in glass cases. His father (short beard, white shirt) stands behind him. No labels, no signs."
+  },
+  {
+   "file": "a3_adam_flag",
+   "ref": "arabic/assets/a3_adam_invites.webp",
+   "seed": 221,
+   "n": 2,
+   "prompt": "Use image 0 ONLY as a reference for the drawing style and for the boy on the left (brown hair, his face). Do NOT copy the school yard, the second boy or the pose. New scene: the same boy in a white t-shirt stands on a balcony of a Cairo apartment and holds a small flag with three horizontal stripes red, white and black up high, smiling. Cairo apartment buildings and a minaret behind, blue sky. The flag has only the three plain stripes."
+  },
+  {
+   "file": "a3_sameh_ball",
+   "seed": 231,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in a green public garden in Egypt: a red-and-white football is stuck high up between the leafy branches of a big tree. Under the tree a 9-year-old Egyptian boy (short black hair, yellow t-shirt, blue shorts) stands on tiptoe reaching up with both arms, but the ball is far too high. Another boy watches from the side. No ladder, no stick."
+  },
+  {
+   "file": "a3_dirty_garden",
+   "seed": 241,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene: a small Egyptian public garden with green grass, benches and palm trees, but the grass is full of litter: plastic bottles, paper bags, cans, wrappers. At the gate stand three children (a girl with a ponytail and pink dress, two boys) looking at the mess, surprised and sad. They are not cleaning, they only look."
+  },
+  {
+   "file": "a3_mona_mother",
+   "seed": 251,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in a cosy Egyptian living room: a 9-year-old Egyptian girl (shoulder-length black hair with a blue hairband, white school shirt, her school bag on the floor) sits on a sofa next to her mother (light purple headscarf, long modest dress). The mother sits close, one arm gently around the girl's shoulders, and looks at her kindly, asking. The girl looks down, thinking. Calm warm afternoon light."
+  },
+  {
+   "file": "a3_lion_tortoise",
+   "seed": 261,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: in a green forest, a young cartoon lion with a fluffy mane sits under a big tree; one of his front legs is wrapped in a white bandage. A friendly old tortoise stands in front of him and talks to him kindly. Flowers and grass, sunny day. Cute friendly animals."
+  },
+  {
+   "file": "a3_tourists_pyramids",
+   "seed": 271,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene at the Giza pyramids: many happy tourists from different countries (sun hats, backpacks, cameras) walk and take photos in front of the three great pyramids and the Sphinx, a camel with an Egyptian guide in a galabeya, golden sand, bright blue sky. No signs, no text."
+  },
+  {
+   "file": "a3_papyrus_r",
+   "seed": 301,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene, no people: a thick clump of real papyrus plants on the muddy bank of the blue Nile river. Each papyrus plant is a tall smooth green triangular stem, and at the very top it bursts into a big round umbrella of many very thin green thread-like strands spreading out like a firework. The plants are taller than a man. A white felucca sailboat on the river, palm trees on the far bank, sunny sky."
+  },
+  {
+   "file": "a3_carving_r",
+   "seed": 311,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in ancient Egypt: a grown-up ancient Egyptian craftsman, an adult man about thirty years old with a short black beard, muscular arms, white linen kilt and a white head cloth, kneels in front of a big sandstone wall and carves a simple picture of a bird into the stone with a copper chisel held in one hand and a wooden mallet in the other. Small stone chips fly. Desert sun, one pyramid far away. Only one simple bird picture on the wall, no writing."
+  },
+  {
+   "file": "a3_ball_r",
+   "seed": 321,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children or scene. New scene in a green public garden in Egypt: a red-and-white football is stuck tightly in the fork of two thick branches high up inside a big leafy tree, leaves around it. Under the tree a 9-year-old Egyptian boy (short black hair, yellow t-shirt, blue shorts) stands on tiptoe stretching both arms up toward the ball, looking worried because it is far too high. A second boy in a white t-shirt stands beside him looking up. No ladder, no stick."
+  }
+ ]
 }
