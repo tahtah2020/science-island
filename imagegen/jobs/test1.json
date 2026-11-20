@@ -1,20 +1,24 @@
 {
   "model": "flux-2-klein-4b",
   "ref": "arabic/assets/a3_heba_paint.webp",
-  "size": [1024, 1024],
+  "size": [
+    1024,
+    1024
+  ],
   "style": "Style: same flat cartoon children's-book style as image 0, thick dark outlines, soft warm colours, simple shapes, friendly. Square picture. Absolutely no text, no letters, no numbers, no symbols anywhere.",
   "images": [
     {
       "file": "t_street",
       "seed": 11,
       "n": 2,
-      "prompt": "A quiet sunny street in an Egyptian city: plain beige Cairo apartment buildings with wooden mashrabiya balconies, two palm trees, a minaret in the distance, potted plants on balconies. No people."
+      "prompt": "A quiet sunny street in an Egyptian city: plain beige Cairo apartment buildings with wooden mashrabiya balconies, two palm trees, a minaret in the distance, potted plants on balconies. No people. Flat cartoon children's-book style, thick dark outlines, soft warm colours.",
+      "ref": null
     },
     {
       "file": "t_heba_water",
       "seed": 21,
       "n": 2,
-      "prompt": "The same girl as in image 0 (long wavy dark-brown hair, yellow headband with a bow, white dress with a blue-and-gold collar) stands on a small apartment balcony with a wooden mashrabiya and waters red and yellow flowers in clay pots with a green watering can. She smiles. Egyptian city buildings behind her."
+      "prompt": "Use image 0 ONLY as a reference for the girl's face, hair and clothes and for the drawing style. Do NOT copy its scene, pose, easel, palette, brush or paint jars. New scene: the same girl (long wavy dark-brown hair, yellow headband with a bow, white dress with a blue-and-gold collar) stands on a small apartment balcony with a wooden mashrabiya and waters red and yellow flowers in clay pots with a green watering can held in both hands. She smiles. Egyptian city buildings behind her."
     }
   ]
 }
