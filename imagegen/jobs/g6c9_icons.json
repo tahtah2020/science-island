@@ -1,0 +1,67 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  512,
+  512
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, simple friendly shapes, one single subject only, centred, square picture. The subject is isolated on a plain pure white background with no ground, no shadow and no other objects. Absolutely no text, no letters, no numbers, no arrows, no symbols anywhere.",
+ "images": [
+  {
+   "file": "g6_i_lemon",
+   "prompt": "A glass of fresh yellow lemon juice with half a lemon beside it, simple.",
+   "seed": 1000,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_vinegar",
+   "prompt": "A glass bottle of clear vinegar with a cork stopper, no label.",
+   "seed": 1010,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_saltwater",
+   "prompt": "A clear glass of water with a small heap of white salt crystals next to it.",
+   "seed": 1020,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_sugarwater",
+   "prompt": "A clear glass of water with three white sugar cubes next to it.",
+   "seed": 1030,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_soapwater",
+   "prompt": "A white bowl full of soapy water with lots of white foam bubbles, and a small bar of soap beside it.",
+   "seed": 1040,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_sparkling",
+   "prompt": "A bottle of sparkling water with small bubbles rising inside it, no label.",
+   "seed": 1050,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_beaker",
+   "prompt": "A laboratory glass beaker with a clear colourless liquid inside, simple measuring lines.",
+   "seed": 1060,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_natron",
+   "prompt": "A wooden bowl full of white powder, with a small pile of the powder beside it.",
+   "seed": 1070,
+   "n": 2,
+   "ref": null
+  }
+ ]
+}

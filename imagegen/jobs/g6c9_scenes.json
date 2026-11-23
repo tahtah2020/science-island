@@ -1,0 +1,25 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  768,
+  768
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, bright friendly look, square picture, no text, no letters, no numbers, no writing, no labels, no arrows, no symbols anywhere in the picture.",
+ "images": [
+  {
+   "file": "g6_litmus_lab",
+   "prompt": "A school science table seen from above: a white plate with a piece of filter paper on it, a blue strip of paper and a red strip of paper lying side by side on the filter paper, a glass stirring rod, a small beaker of clear liquid and safety goggles on the table, no people.",
+   "seed": 1101,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_heat_lab",
+   "prompt": "A school science experiment: a small white evaporating dish with a little clear liquid sitting on a wire gauze on a tripod above a small portable gas stove with a small low blue flame, safety goggles on the table beside it, no people.",
+   "seed": 1111,
+   "n": 2,
+   "ref": null
+  }
+ ]
+}
