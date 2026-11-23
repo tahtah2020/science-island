@@ -224,7 +224,7 @@ window.CHAPTERS = [
     cover: 'science/assets/map_g6c7.svg', quizBg: 'science/assets/bg_g6c7.svg',
     lessons: ['Food Chain', 'Living Organisms, Air, and Water'] },
 
-  { id: 'g6c8', grade: 'g6', n: 8, title: 'Egypt Special Part 1', titleAr: 'السلاسل الغذائية في مصر', icon: '🏜️', tint: '#f3e3c8', ready: false,
+  { id: 'g6c8', grade: 'g6', n: 8, title: 'Egypt Special Part 1', titleAr: 'السلاسل الغذائية في مصر', icon: '🏜️', tint: '#f3e3c8', ready: true,
     questions: 'science/questions_g6c8.js', art: 'science/g6_egypt.js',
     game: { href: 'egyptchain.html', name: "Egypt Food Trail", nameAr: "درب السلاسل الغذائية في مصر", icon: '🐊', hint: 'Follow the Nile and desert food chains and find the king of each one', hintAr: 'اتبع السلاسل الغذائية في النيل والصحراء وابحث عن ملك كل سلسلة' },
     map: { img: 'science/assets/map_g6c8.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
