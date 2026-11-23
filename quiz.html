@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261123l{{{"></script>
-<script src="chapters.js?v=20261123l{{{"></script>
-<script src="common.js?v=20261123l{{{"></script>
+<script src="firebase-config.js?v=20261123m{{{"></script>
+<script src="chapters.js?v=20261123m{{{"></script>
+<script src="common.js?v=20261123m{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -1512,25 +1512,33 @@ const answerText = q => {
   if (q.type === 'build') return q.parts.join(' ');
   return q.explain || '';
 };
-const EXAM_A = v => (['tf', 'fill', 'fix', 'term', 'multi', 'order', 'num'].includes(v.type) || (v.type === 'mc' && v.style !== 'story')) ? v.type : null;
+const EXAM_A = v => (['tf', 'fill', 'term', 'multi', 'order', 'num'].includes(v.type) || (v.type === 'mc' && v.style !== 'story')) ? v.type : null;
 const EXAM_B = v => v.type === 'build' ? (v.style === 'why' ? 'why' : v.style === 'whatif' ? 'whatif' : 'say') : (v.type === 'table' || v.type === 'match') ? 'compare' : v.type === 'tap' ? 'figure' : (v.type === 'mc' && v.style === 'story') ? 'story' : null;
 function buildPaper(pool, caps, last) {
   const cands = [], used = new Set(), perCh = {};
   pool.forEach(I => I.variants.forEach((v, vi) => { const a = EXAM_A(v), b = EXAM_B(v); if (a || b) cands.push({ I, v, vi, a, b }); }));
-  const take = test => {
+  /* difficulty goes up slowly (owner, 23 Nov 2026): question 1 is easy, the last one is the hardest and has the only hard item. want = the level
+     (0 easy, 1 medium, 2 hard) each slot aims for: [part A, part B first, part B second] of questions 1 to 4. An item harder than the slot is
+     penalised 3 times more than an easier one, so a hard item never lands early while easy and medium ones exist. */
+  const LV = { easy: 0, medium: 1, hard: 2 }, WANT = [[0, 0, 0], [0, 1, 1], [1, 1, 1], [1, 1, 2]];
+  const lvOf = c => (LV[c.v.level] == null ? 1 : LV[c.v.level]) + (c.v.mode === 'boss' ? .5 : 0);
+  const gap = (c, want) => { const d = lvOf(c) - want; return d > 0 ? d * 3 : -d; };
+  const take = (test, want = 1, limit = 99) => {
     const list = shuffle(cands.filter(c => !used.has(c.I.id) && test(c) && (perCh[c.I.ch] || 0) < (caps[c.I.ch] == null ? 99 : caps[c.I.ch])));
     if (!list.length) return null;
-    list.sort((x, y) => ((perCh[x.I.ch] || 0) - (perCh[y.I.ch] || 0)) || ((last[x.I.id] === x.vi) - (last[y.I.id] === y.vi)));   // spread over the chapters, new phrasings first
+    list.sort((x, y) => (gap(x, want) - gap(y, want)) || ((perCh[x.I.ch] || 0) - (perCh[y.I.ch] || 0)) || ((last[x.I.id] === x.vi) - (last[y.I.id] === y.vi)));   // the right level first, then spread over the chapters, new phrasings first
+    if (gap(list[0], want) > limit) return null;   // a kind or family whose items are all too hard for this slot: try another kind
     const c = list[0]; used.add(c.I.id); perCh[c.I.ch] = (perCh[c.I.ch] || 0) + 1; return c;
   };
-  const kinds = shuffle(['tf', 'mc', 'fill', 'fix', 'term', 'multi', 'order', 'num']), fams = shuffle(['say', 'why', 'whatif', 'compare', 'figure', 'story']);
+  const kinds = shuffle(['tf', 'mc', 'fill', 'term', 'multi', 'order', 'num']), fams = shuffle(['say', 'why', 'whatif', 'compare', 'figure', 'story']);
   const make = (c, n, part, marks) => c && Object.assign({ id: c.I.id, ch: c.I.ch, lesson: c.I.lesson, concept: c.I.concept, explain: c.I.explain, vi: c.vi }, c.v, c.v.explain ? { explain: c.v.explain } : {},
     { mode: 'normal', oneTry: true, exam: { q: n, part, marks } });
   const paper = [];
   for (let n = 1; n <= 4; n++) {
-    const A = take(c => c.a === kinds[n - 1]) || take(c => c.a);
-    const pickB = () => take(c => c.b === fams[n - 1]) || take(c => c.b) || take(c => c.a === 'num') || take(c => c.a === 'mc');   // a chapter with no written-answer items (Grade 5 Math) fills part (B) with word problems
-    const B1 = pickB(), B2 = pickB();
+    const W = WANT[n - 1];
+    const A = take(c => c.a === kinds[n - 1], W[0], 1) || take(c => c.a, W[0]);
+    const pickB = want => take(c => c.b === fams[n - 1], want, 1) || take(c => c.b, want, 1) || take(c => c.a === 'num', want) || take(c => c.a === 'mc', want);   // a chapter with no written-answer items (Grade 5 Math) fills part (B) with word problems
+    const B1 = pickB(W[1]), B2 = pickB(W[2]);
     paper.push([make(A, n, 'A', 1), make(B1, n, 'B', 2), make(B2, n, 'B', 2)].filter(Boolean));
   }
   return paper;

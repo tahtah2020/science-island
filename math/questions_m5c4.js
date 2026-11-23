@@ -71,7 +71,7 @@ window.IDEAS = [
     ] },
   {"id":"Y22","lesson":2,"concept":"Estimating with compatible numbers","explain":"Change the numbers to close numbers that divide easily: 5,814 ÷ 47 is about 6,000 ÷ 50 = 120. The exact answer, 123 with 33 left, is close to the estimate, so it is reasonable.",
     "variants": [
-      {"type":"mc","mode":"normal","level":"medium","q":"Estimate 5,814 ÷ 47 with compatible numbers.","options":["6,000 ÷ 50 = 120","5,814 ÷ 50 = 116.28","6,000 ÷ 47 = 127","5,000 ÷ 7 = 714"],"answer":0},
+      {"type":"mc","mode":"normal","level":"medium","q":"Estimate 5,814 ÷ 47 with compatible numbers.","options":["6,000 ÷ 50 = 120","5,814 ÷ 50 = 116.28","6,000 ÷ 47 ≈ 128","5,000 ÷ 7 ≈ 714"],"answer":0},
       {"type":"num","mode":"normal","level":"hard","q":"5,814 ÷ 47 = ? (quotient without the remainder)","answer":"123","calc":"(5814-33)/47"},
       {"type":"num","mode":"normal","level":"hard","q":"What is the remainder of 5,814 ÷ 47?","answer":"33","calc":"5814-47*123"},
       {"type":"term","mode":"normal","level":"medium","q":"Numbers close to the real ones that are easy to divide in your head, like 6,000 and 50 for 5,814 ÷ 47.","answer":"Compatible numbers","choices":["Prime numbers","Multiples","Remainders"]},

@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-23', title: 'Exam papers now rise in difficulty',
+    items: [
+      { text: 'Every monthly test starts with easy questions, goes to medium, and has only one hard question, at the end' },
+      { text: 'Letter-tile fix questions are no longer used in tests' }
+    ] },
   { date: '2026-11-23', title: 'الصف السادس علوم: السلاسل الغذائية في مصر',
     items: [
       { text: 'وحدة جديدة: السلاسل الغذائية في مصر (لغات) مع لعبة درب السلاسل الغذائية في مصر', links: [{ label: 'افتح الوحدة', href: 'chapter.html?c=g6c8', ch: 'g6c8' }] }

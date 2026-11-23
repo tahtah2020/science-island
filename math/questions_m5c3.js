@@ -206,7 +206,7 @@ window.IDEAS = [
     ] },
   {"id":"W5","lesson":4,"boss":true,"concept":"Challenge: is the answer reasonable?","explain":"6,209 × 33 is about 180,000, so 37,254 (18,627 + 18,627) is not reasonable; the right product is 204,897. Model C, 215 × 22 = (5 × 2) + (5 × 20) + (10 × 2) + (10 × 20) + (200 × 2) + (200 × 20) = 4,730.",
     "variants": [
-      {"type":"mc","mode":"boss","level":"hard","q":"A student says 6,209 × 33 = 37,254. Is it reasonable?","options":["No: the estimate is about 180,000","Yes: it is close to 6,000 × 3","Yes: every product of a 4-digit number has 5 digits","No: the estimate is about 1,800"],"answer":0},
+      {"type":"mc","mode":"boss","level":"hard","q":"A student says 6,209 × 33 = 37,254. Is it reasonable?","options":["No: the estimate is about 180,000 (6,000 × 30)","Yes: it is close to 6,000 × 3","Yes: every product of a 4-digit number has 5 digits","No: the estimate is about 1,800"],"answer":0},
       {"type":"num","mode":"boss","level":"hard","q":"215 × 22 = (5 × 2) + (5 × 20) + (10 × 2) + (10 × 20) + (200 × 2) + (200 × 20) = ?","answer":"4730","calc":"215*22"},
       {"type":"num","mode":"boss","level":"hard","q":"8,222 × 53 = ?","answer":"435766","calc":"8222*53","fig":"areaModel","pic":{"top":["8,000","200","20","2"],"left":["50","3"],"cells":[["400,000","10,000","1,000","100"],["24,000","600","60","6"]]}},
       {"type":"multi","mode":"boss","level":"hard","q":"Which products are reasonable? Choose all the correct answers.","options":["3,567 × 24 = 85,608","2,521 × 74 = 186,554","8,222 × 53 = 43,576","6,209 × 33 = 20,489"],"answer":[0,1]}
