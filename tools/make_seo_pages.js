@@ -75,7 +75,7 @@ function qa(v, seed) {
 }
 
 /* ---------- page shell ---------- */
-const CSS = `:root{--navy:#17364f;--ink:#33566e;--primary:#1f7aa3;--mint:#bfe8d6;--coral:#e2603f;--gold:#f2b134;--bg:#f3faf7;--card:#fff;--line:#d6e9e2;--head:"Reem Kufi","Cairo",Tahoma,sans-serif}
+const CSS = `:root{--navy:#17364f;--ink:#33566e;--primary:#1f7aa3;--mint:#bfe8d6;--coral:#e2603f;--gold:#f2b134;--bg:#f3faf7;--card:#fff;--line:#d6e9e2;--head:"El Messiri","Cairo",Tahoma,sans-serif}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{margin:0;background:linear-gradient(180deg,#e6f5ee 0,var(--bg) 260px);color:var(--ink);font:500 18px/1.95 Cairo,Tahoma,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:var(--primary);font-weight:700}
@@ -123,7 +123,7 @@ function shell({ title, desc, url, body, schema }) {
 <script type="application/ld+json">${jsonLd({ '@context': 'https://schema.org', '@graph': schema })}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&family=El+Messiri:wght@600;700&display=swap" rel="stylesheet">
 <style>${CSS}</style>
 </head>
 <body>
