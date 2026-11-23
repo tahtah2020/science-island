@@ -156,9 +156,9 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     return Array.isArray(window.IDEAS) ? window.IDEAS : null;
   }
   /* monthly tests (chapters.js: window.EXAMS). examParts: the chapters of a test that this player can be asked about */
-  const exams = () => (window.EXAMS || []).filter(e => (e.grade || 'g5') === grade() && chSubject(e) === subjectId());   // this grade's tests in the chosen subject
+  const exams = () => (window.EXAMS || []).filter(e => !e.off && (e.grade || 'g5') === grade() && chSubject(e) === subjectId());   // this grade's tests in the chosen subject
   /* a test opens for its own grade only (the owner may open every grade's test) */
-  const examById = id => { const e = id ? (window.EXAMS || []).find(x => x.id === id) : exams()[0]; return e && ((e.grade || 'g5') === grade() || isOwner()) ? e : null; };
+  const examById = id => { const e = id ? (window.EXAMS || []).find(x => x.id === id && !x.off) : exams()[0]; return e && ((e.grade || 'g5') === grade() || isOwner()) ? e : null; };
   const examParts = ex => ((ex && ex.parts) || []).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && qFile(p.c));
   /* what a test covers, for its card and its first page: "Chapters 1, 2, 3", or "Unit 1 · Lessons 1 to 3" for a test on part of one unit.
      Chapters the test only touches (max) are not named. */

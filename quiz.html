@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261123j{{{"></script>
-<script src="chapters.js?v=20261123j{{{"></script>
-<script src="common.js?v=20261123j{{{"></script>
+<script src="firebase-config.js?v=20261123k{{{"></script>
+<script src="chapters.js?v=20261123k{{{"></script>
+<script src="common.js?v=20261123k{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -1529,7 +1529,8 @@ function buildPaper(pool, caps, last) {
   const paper = [];
   for (let n = 1; n <= 4; n++) {
     const A = take(c => c.a === kinds[n - 1]) || take(c => c.a);
-    const B1 = take(c => c.b === fams[n - 1]) || take(c => c.b), B2 = take(c => c.b === fams[n - 1]) || take(c => c.b);
+    const pickB = () => take(c => c.b === fams[n - 1]) || take(c => c.b) || take(c => c.a === 'num') || take(c => c.a === 'mc');   // a chapter with no written-answer items (Grade 5 Math) fills part (B) with word problems
+    const B1 = pickB(), B2 = pickB();
     paper.push([make(A, n, 'A', 1), make(B1, n, 'B', 2), make(B2, n, 'B', 2)].filter(Boolean));
   }
   return paper;

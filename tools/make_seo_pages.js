@@ -363,7 +363,7 @@ for (const hub of Object.values(hubs)) {
 }
 
 /* one monthly-review page per monthly test */
-for (const e of (W.EXAMS || [])) {
+for (const e of (W.EXAMS || []).filter(x => !x.off)) {
   const s = e.subject || 'science', g = e.grade || 'g5';
   if (s === 'english') continue;
   const hub = hubs[s + '-' + g]; if (!hub) continue;
