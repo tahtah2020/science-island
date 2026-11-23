@@ -1,0 +1,53 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  768,
+  768
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, simple shapes, bright friendly look, square picture, no people, no animals. Absolutely no text, no letters, no numbers, no writing, no labels, no arrows, no symbols anywhere in the picture.",
+ "images": [
+  {
+   "file": "g6_plant_sun",
+   "prompt": "A single green potted plant with round green leaves standing on a garden table, bright sunshine from a big yellow sun in a blue sky, warm light on the leaves, a few small green hills in the background.",
+   "seed": 201,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_leaves_foil",
+   "prompt": "A potted green plant with exactly three big round leaves. Two of the leaves are completely wrapped in shiny crumpled silver aluminum foil, the middle leaf is bare and green with the sun shining on it. Garden table, blue sky with a yellow sun.",
+   "seed": 211,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_leaf_iodine",
+   "prompt": "Top view of a round glass petri dish on a white table holding orange-brown liquid, with one leaf-shaped leaf lying in it that is dark navy blue, almost black-blue. Next to the dish a small brown glass bottle with a dropper. Plain pale background.",
+   "seed": 221,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_bag_sun",
+   "prompt": "A potted green plant completely covered by a large clear transparent plastic bag, the bag is tied tightly at the bottom of the pot with a red twist tie. The plant stands outside in bright sunshine with a big yellow sun in a blue sky.",
+   "seed": 231,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_plant_night",
+   "prompt": "A potted green plant standing outside in the garden at night, dark blue sky with a bright crescent moon and a few stars, soft moonlight on the leaves.",
+   "seed": 241,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_hot_water",
+   "prompt": "A clear glass beaker filled with hot water with white steam rising from it, one soft green leaf inside the water, on a lab table, plain pale background.",
+   "seed": 251,
+   "n": 2,
+   "ref": null
+  }
+ ]
+}
