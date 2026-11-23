@@ -1651,9 +1651,10 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     x.drawImage(img, 0, 0, W, H);
     x.direction = AR ? 'rtl' : 'ltr'; x.textAlign = 'center'; x.textBaseline = 'middle';
     /* display (900): Lalezar / Fredoka; body (700, 800): El Messiri / Nunito */
-    const F = (w, n) => w >= 900 ? (AR ? `400 ${n}px CertDisplayAr, Cairo, sans-serif` : `600 ${n}px CertDisplayEn, Nunito, sans-serif`) : (AR ? `700 ${n}px CertBodyAr, Cairo, sans-serif` : `800 ${n}px CertBodyEn, Nunito, sans-serif`);
+    const F = (w, n, ar = AR) => w >= 900 ? (ar ? `400 ${n}px CertDisplayAr, Cairo, sans-serif` : `600 ${n}px CertDisplayEn, Nunito, sans-serif`) : (ar ? `700 ${n}px CertBodyAr, Cairo, sans-serif` : `800 ${n}px CertBodyEn, Nunito, sans-serif`);
     const accent = lvl === 'gold' ? '#b4690e' : '#23799f';
-    const fit = (txt, size, cx, y, maxw, col, wt = 900) => { let n = size; do { x.font = F(wt, n); n -= 2; } while (x.measureText(txt).width > maxw * W && n > 18); x.fillStyle = col; x.fillText(txt, cx * W, y * H); };
+    const hasAr = t => /[\u0600-\u06FF]/.test(t);
+    const fit = (txt, size, cx, y, maxw, col, wt = 900) => { const ar = AR || hasAr(txt); let n = size; do { x.direction = ar ? 'rtl' : 'ltr'; x.font = F(wt, n, ar); n -= 2; } while (x.measureText(txt).width > maxw * W && n > 18); x.fillStyle = col; x.fillText(txt, cx * W, y * H); };
     const name = (p.name || '').trim(), pc = AR ? arDig(pct) + '٪' : pct + '%';
     const word = lvl === 'gold' ? T('Excellent', 'ممتاز') : T('Very good', 'جيد جدًّا');
     const sub = `${subjectName ? subjectName() : ''} · ${gradeName(p.grade)}`;
