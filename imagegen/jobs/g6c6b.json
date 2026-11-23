@@ -1,0 +1,32 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  768,
+  768
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, simple shapes, bright friendly look, square picture, no people, no animals. Absolutely no text, no letters, no numbers, no writing, no labels, no arrows, no symbols anywhere in the picture.",
+ "images": [
+  {
+   "file": "g6_bag_leaves_r",
+   "prompt": "A green leafy plant growing in a garden. A big clear see-through plastic bag is pulled over the top of the plant so that ALL the green leaves are completely inside the bag; the bag is full of leaves, and its bottom opening is tied tightly around the stem with brown string. Tiny round water droplets cover the inside surface of the bag. Bright sunny day, blue sky.",
+   "seed": 401,
+   "n": 3,
+   "ref": null
+  },
+  {
+   "file": "g6_two_pots_r",
+   "prompt": "Two flower pots standing side by side on a wooden garden table in bright sunshine. The left pot holds a plant with many green leaves, and the whole plant is completely covered by a big clear see-through plastic bag that reaches down to the pot and is tied with string. The right pot holds a plant that has only a bare stem with no leaves, and it is also completely covered by a big clear see-through plastic bag tied with string. Blue sky with a yellow sun.",
+   "seed": 411,
+   "n": 3,
+   "ref": null
+  },
+  {
+   "file": "g6_watering_r",
+   "prompt": "A green watering can held above a white flower pot containing a drooping wilted plant. The water stream falls straight down from the spout onto the dark soil at the base of the plant, inside the pot, near the stem. Wooden window sill, bright window behind.",
+   "seed": 431,
+   "n": 3,
+   "ref": null
+  }
+ ]
+}
