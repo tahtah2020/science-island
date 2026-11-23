@@ -1625,11 +1625,86 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   /* the button for a results panel: wireShare(panel, { stars, score }) after the panel is in the page */
   const shareBtn = () => `<button class="btn share" type="button" data-share style="background:#2e9e6b;color:#fff;box-shadow:0 4px 0 #1f7a50;margin:6px auto 2px">📤 ${T('Share your result', G('شارك نتيجتك', 'شاركي نتيجتك'))}</button>`;
   function wireShare(root, opts) { const b = root && root.querySelector('[data-share]'); if (b) b.onclick = () => share(opts); }
+
+  /* «شهادة تقدير» (23 Nov 2026): a certificate the child shares after finishing a chapter's questions with 75% or more
+     (right first time). 90% and above = gold «ممتاز», 75-89% = silver «جيد جدًّا». The templates (assets/cert/cert_<gold|silver>_<land|sq>.webp,
+     made with ChatGPT, no text in them) get the text drawn on by canvas: landscape (A4, for printing) and square (for sharing). */
+  const CERT_MIN = 75, CERT_GOLD = 90;
+  const certLevel = pct => pct >= CERT_GOLD ? 'gold' : pct >= CERT_MIN ? 'silver' : null;
+  const arDig = v => String(v).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  /* fractions of the picture: ribbon centre, rows (y), the stamp circle, the date and the site name; below row .6 the text moves right of Reesho */
+  const CERT_LAY = {
+    land: { w: 1492, h: 1054, ribbon: [.5, .178, .44], rows: [.345, .445, .53, .6, .765], cxLow: .56, wLow: .5, wTop: .62, stamp: [.498, .9, .042], date: [.66, .835], url: [.36, .835] },
+    sq: { w: 1254, h: 1254, ribbon: [.5, .185, .5], rows: [.375, .465, .55, .62, .785], cxLow: .57, wLow: .5, wTop: .66, stamp: [.5, .92, .042], date: [.66, .855], url: [.36, .855] }
+  };
+  async function certCanvas({ ch, pct, kind = 'land' }) {
+    const L = CERT_LAY[kind], lvl = certLevel(pct) || 'silver', AR = isAr(), p = player() || {}, c = ch || chapterById(prof().cur);
+    const cv = document.createElement('canvas'); cv.width = L.w; cv.height = L.h; const x = cv.getContext('2d'), W = L.w, H = L.h;
+    try { await Promise.race([document.fonts.load('900 60px Cairo'), new Promise(r => setTimeout(r, 1500))]); } catch (e) {}
+    const img = new Image(); img.src = `assets/cert/cert_${lvl}_${kind}.webp`;
+    await new Promise((ok, no) => { img.onload = ok; img.onerror = no; setTimeout(no, 4000); });
+    x.drawImage(img, 0, 0, W, H);
+    x.direction = AR ? 'rtl' : 'ltr'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    const F = (w, n) => `${w} ${n}px Cairo, Nunito, sans-serif`;
+    const accent = lvl === 'gold' ? '#b4690e' : '#23799f';
+    const fit = (txt, size, cx, y, maxw, col, wt = 900) => { let n = size; do { x.font = F(wt, n); n -= 2; } while (x.measureText(txt).width > maxw * W && n > 18); x.fillStyle = col; x.fillText(txt, cx * W, y * H); };
+    const name = (p.name || '').trim(), pc = AR ? arDig(pct) + '٪' : pct + '%';
+    const word = lvl === 'gold' ? T('Excellent', 'ممتاز') : T('Very good', 'جيد جدًّا');
+    const sub = `${subjectName ? subjectName() : ''} · ${gradeName(p.grade)}`;
+    const [rx, ry, rw] = L.ribbon;
+    fit(T('Certificate of Achievement', 'شهادة تقدير'), W * .062, rx, ry, rw, '#1f3d57');
+    fit(T('This certificate is awarded to', 'تُمنح هذه الشهادة إلى'), W * .03, .5, L.rows[0], L.wTop, '#3a5c75', 700);
+    fit(name || T('Our champion', 'بطلنا'), W * .075, .5, L.rows[1], L.wTop, '#1f3d57');
+    fit(T('for completing the questions of', G('لإتمامه أسئلة', 'لإتمامها أسئلة')), W * .03, L.cxLow, L.rows[2], L.wLow, '#3a5c75', 700);
+    fit(`«${chTitle(c)}»`, W * .048, L.cxLow, L.rows[3], L.wLow, accent);
+    fit(sub, W * .028, L.cxLow, L.rows[3] + .068, L.wLow, '#3a5c75', 700);
+    fit(T(`with a grade of ${word} (${pc})`, `${G('وحصوله', 'وحصولها')} على تقدير ${word} (${pc})`), W * .034, L.cxLow, L.rows[4], L.wLow, '#1f3d57');
+    const [sx, sy, sr] = L.stamp; x.direction = 'ltr';
+    fit(pc, W * .03, sx, sy, sr * 1.7, accent);
+    x.direction = AR ? 'rtl' : 'ltr';
+    const d = new Date(), ds = AR ? d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) : d.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+    fit(ds, W * .024, L.date[0], L.date[1], .22, '#3a5c75', 700);
+    x.direction = 'ltr'; fit('motafawek.com', W * .024, L.url[0], L.url[1], .2, '#3a5c75', 800);
+    return new Promise(r => cv.toBlob(r, 'image/png'));
+  }
+  function certDialog({ ch, pct }) {
+    if (!certLevel(pct)) return;
+    const o = document.createElement('div'); o.setAttribute('role', 'dialog');
+    o.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(31,61,87,.6);display:grid;place-items:center;padding:12px;overflow:auto';
+    o.innerHTML = `<div style="background:#fff8ea;border-radius:22px;padding:14px;max-width:560px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.35);text-align:center;font-family:Cairo,Nunito,sans-serif">
+      <div id="si-cert-pic" style="min-height:120px;display:grid;place-items:center;color:#3a5c75;font-weight:800">${T('Preparing your certificate…', 'بنجهّز شهادتك…')}</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+        <button class="btn" type="button" data-cs style="background:#2e9e6b;color:#fff;box-shadow:0 4px 0 #1f7a50" disabled>📤 ${T('Share', 'شارك الشهادة')}</button>
+        <button class="btn" type="button" data-cd disabled>⬇️ ${T('Download to print', 'حمّلها للطباعة')}</button>
+        <button class="btn" type="button" data-cx>${T('Close', 'إغلاق')}</button></div></div>`;
+    document.body.appendChild(o);
+    const close = () => o.remove(); o.querySelector('[data-cx]').onclick = close; o.addEventListener('click', e => { if (e.target === o) close(); });
+    const nm = k => `motafawek-certificate-${k}.png`, download = (b, f) => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = f; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800); };
+    (async () => {
+      try {
+        const land = await certCanvas({ ch, pct, kind: 'land' }), sq = await certCanvas({ ch, pct, kind: 'sq' });
+        const pic = o.querySelector('#si-cert-pic'); pic.innerHTML = ''; const im = new Image(); im.src = URL.createObjectURL(land); im.alt = T('Your certificate', 'شهادتك'); im.style.cssText = 'width:100%;border-radius:12px;display:block'; pic.appendChild(im);
+        const bs = o.querySelector('[data-cs]'), bd = o.querySelector('[data-cd]'); bs.disabled = bd.disabled = false;
+        bd.onclick = () => { download(land, nm('print')); ga('certificate', { method: 'download', level: certLevel(pct), pct }); };
+        bs.onclick = async () => {
+          const file = new File([sq], nm('share'), { type: 'image/png' }); let method = 'download';
+          try {
+            if (navigator.canShare && navigator.canShare({ files: [file] })) { method = 'native_image'; await navigator.share({ files: [file], text: shareText({ ch }) + ' ' + SHARE_URL }); }
+            else download(sq, nm('share'));
+            ga('certificate', { method, level: certLevel(pct), pct });
+          } catch (e) { if (!e || e.name !== 'AbortError') download(sq, nm('share')); }
+        };
+      } catch (e) { o.querySelector('#si-cert-pic').textContent = T('Sorry, the certificate could not be made. Try again.', 'معلش، مقدرناش نجهّز الشهادة. حاول تاني.'); }
+    })();
+  }
+  /* the button for a results panel (empty under 75%): certBtn(pct) in the panel, then wireCert(panel, { ch, pct }) */
+  const certBtn = pct => certLevel(pct) ? `<button class="btn cert" type="button" data-cert style="background:#f2b134;color:#1f3d57;box-shadow:0 4px 0 #c88a14;margin:6px auto 2px">🎓 ${T('Get your certificate', G('احصل على شهادتك', 'احصلي على شهادتك'))}</button>` : '';
+  function wireCert(root, opts) { const b = root && root.querySelector('[data-cert]'); if (b) b.onclick = () => certDialog(opts); }
   window.SI = { HOME, CHAPTERS_PAGE, store, players, player, addPlayer, usePlayer, requirePlayer, prof, updateProf,
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, renamePlayer, nameChip, nameDialog, LEVELS, levelInfo, xp, addXP, bankXP, repeatRate, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, weekXP, countBoss, badges, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
-    gender, G, setGender, share, shareText, shareCard, shareBtn, wireShare, visit, greet, bye, VOICE_TEXT, navMenu, NET_DAYS, NET_STRINGS, inNet, checkNet, freeNet, fishState, fishLine };
+    gender, G, setGender, share, shareText, shareCard, shareBtn, wireShare, certLevel, certCanvas, certDialog, certBtn, wireCert, visit, greet, bye, VOICE_TEXT, navMenu, NET_DAYS, NET_STRINGS, inNet, checkNet, freeNet, fishState, fishLine };
   try { checkNet(); } catch (e) {}
   applyLang();
   sync.auto();

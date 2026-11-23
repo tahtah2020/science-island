@@ -297,6 +297,9 @@ The Arabic track has its own Champions board (the board key includes the track).
 - 6 generated pictures (job `imagegen/jobs/g6c5.json` on branch `images`, FLUX klein 4b) as `science/assets/g6_{plant_sun,bag_sun,hot_water,leaf_iodine,leaves_foil,plant_night}.webp`; five are used on quiz questions. The owner approved them: pending (sent 23 Nov 2026).
 - Still to do: owner review, Arabic file from the Arabic book, `ready: true` + `release.js`, coverage report, monthly test scope.
 
+## Certificate of achievement (23 Nov 2026)
+- `SI.certBtn(pct)` / `SI.wireCert(panel, { ch, pct })` in the Quest results of `quiz.html`: shown only when the share of questions right first time is 75% or more (`certLevel`: gold from 90, silver 75-89). `SI.certCanvas({ ch, pct, kind: 'land' | 'sq' })` draws the text (name, chapter, subject and grade, grade word, percentage in the stamp, date, site) on the templates `assets/cert/cert_<gold|silver>_<land|sq>.webp` (made with ChatGPT, no text in them; text positions are fractions in `CERT_LAY` in `common.js`). The dialog shows the landscape picture; «شارك الشهادة» sends the square one (system share sheet, else a download) and «حمّلها للطباعة» downloads the landscape one. GA event `certificate` (method, level, pct). Not yet on the kit games' results panels.
+
 ## Math (math/)
 - Grade 5, Unit 1 `m5c1` «Place Value of Decimals and Operations» (11 lessons: decimals to thousandths, ×10 and ÷10, expanded form, comparing, rounding, estimating and modelling sums and differences, story problems). Game: `math-decimals.html` (Decimal Dock). Math chapters are called units («الوحدة») everywhere.
 - The school books print no answers, so every number answer is computed and checked by `tools/check_questions.js`.
