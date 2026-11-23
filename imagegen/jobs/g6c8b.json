@@ -1,0 +1,25 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  512,
+  512
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, simple friendly shapes, one single subject only, centred, square picture. The subject is isolated on a plain pure white background with no ground, no shadow and no other objects. Absolutely no text, no letters, no numbers, no arrows, no symbols anywhere.",
+ "images": [
+  {
+   "file": "g6_i_crocodile",
+   "prompt": "A green-grey Nile crocodile sitting upright in a compact pose, seen from a three-quarter front view, head raised, big friendly face with mouth closed, short curled tail, bumpy skin.",
+   "seed": 901,
+   "n": 3,
+   "ref": null
+  },
+  {
+   "file": "g6_i_algae",
+   "prompt": "A tuft of green pond algae, thin soft green hair-like strands floating together in a rounded bundle.",
+   "seed": 911,
+   "n": 3,
+   "ref": null
+  }
+ ]
+}
