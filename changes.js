@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-23', title: 'Certificate fonts',
+    items: [
+      { text: 'Certificate text now uses Lalezar and El Messiri (Arabic) and Fredoka and Nunito (English), self-hosted in assets/fonts' }
+    ] },
   { date: '2026-11-23', title: 'Certificate of achievement',
     items: [
       { text: 'After a chapter\'s Quest with 75% or more right first time, the results panel offers a certificate: silver for 75-89% («جيد جدًّا»), gold for 90% and above («ممتاز»). Share it (square) or download it to print (landscape)' }

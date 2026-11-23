@@ -1637,24 +1637,30 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     land: { w: 1492, h: 1054, ribbon: [.5, .178, .44], rows: [.345, .445, .53, .6, .765], cxLow: .56, wLow: .5, wTop: .62, stamp: [.498, .9, .042], date: [.66, .835], url: [.36, .835] },
     sq: { w: 1254, h: 1254, ribbon: [.5, .185, .5], rows: [.375, .465, .55, .62, .785], cxLow: .57, wLow: .5, wTop: .66, stamp: [.5, .92, .042], date: [.66, .855], url: [.36, .855] }
   };
+  let certFontsP;
+  function certFonts() {
+    if (!certFontsP) certFontsP = Promise.race([Promise.all([['CertDisplayAr', 'lalezar-ar.woff2', '400'], ['CertBodyAr', 'elmessiri-ar-700.woff2', '700'], ['CertDisplayEn', 'fredoka-600.woff2', '600'], ['CertBodyEn', 'nunito-800.woff2', '800']].map(([n, f, w]) => new FontFace(n, `url(assets/fonts/${f})`, { weight: w }).load().then(ff => document.fonts.add(ff)))), new Promise(r => setTimeout(r, 4000))]).catch(() => {});
+    return certFontsP;
+  }
   async function certCanvas({ ch, pct, kind = 'land' }) {
     const L = CERT_LAY[kind], lvl = certLevel(pct) || 'silver', AR = isAr(), p = player() || {}, c = ch || chapterById(prof().cur);
     const cv = document.createElement('canvas'); cv.width = L.w; cv.height = L.h; const x = cv.getContext('2d'), W = L.w, H = L.h;
-    try { await Promise.race([document.fonts.load('900 60px Cairo'), new Promise(r => setTimeout(r, 1500))]); } catch (e) {}
+    await certFonts();
     const img = new Image(); img.src = `assets/cert/cert_${lvl}_${kind}.webp`;
     await new Promise((ok, no) => { img.onload = ok; img.onerror = no; setTimeout(no, 4000); });
     x.drawImage(img, 0, 0, W, H);
     x.direction = AR ? 'rtl' : 'ltr'; x.textAlign = 'center'; x.textBaseline = 'middle';
-    const F = (w, n) => `${w} ${n}px Cairo, Nunito, sans-serif`;
+    /* display (900): Lalezar / Fredoka; body (700, 800): El Messiri / Nunito */
+    const F = (w, n) => w >= 900 ? (AR ? `400 ${n}px CertDisplayAr, Cairo, sans-serif` : `600 ${n}px CertDisplayEn, Nunito, sans-serif`) : (AR ? `700 ${n}px CertBodyAr, Cairo, sans-serif` : `800 ${n}px CertBodyEn, Nunito, sans-serif`);
     const accent = lvl === 'gold' ? '#b4690e' : '#23799f';
     const fit = (txt, size, cx, y, maxw, col, wt = 900) => { let n = size; do { x.font = F(wt, n); n -= 2; } while (x.measureText(txt).width > maxw * W && n > 18); x.fillStyle = col; x.fillText(txt, cx * W, y * H); };
     const name = (p.name || '').trim(), pc = AR ? arDig(pct) + '٪' : pct + '%';
     const word = lvl === 'gold' ? T('Excellent', 'ممتاز') : T('Very good', 'جيد جدًّا');
     const sub = `${subjectName ? subjectName() : ''} · ${gradeName(p.grade)}`;
     const [rx, ry, rw] = L.ribbon;
-    fit(T('Certificate of Achievement', 'شهادة تقدير'), W * .062, rx, ry, rw, '#1f3d57');
+    fit(T('Certificate of Achievement', 'شهادة تقدير'), W * (AR ? .08 : .062), rx, ry, rw, '#1f3d57');
     fit(T('This certificate is awarded to', 'تُمنح هذه الشهادة إلى'), W * .03, .5, L.rows[0], L.wTop, '#3a5c75', 700);
-    fit(name || T('Our champion', 'بطلنا'), W * .075, .5, L.rows[1], L.wTop, '#1f3d57');
+    fit(name || T('Our champion', 'بطلنا'), W * (AR ? .09 : .075), .5, L.rows[1], L.wTop, '#1f3d57');
     fit(T('for completing the questions of', G('لإتمامه أسئلة', 'لإتمامها أسئلة')), W * .03, L.cxLow, L.rows[2], L.wLow, '#3a5c75', 700);
     fit(`«${chTitle(c)}»`, W * .048, L.cxLow, L.rows[3], L.wLow, accent);
     fit(sub, W * .028, L.cxLow, L.rows[3] + .068, L.wLow, '#3a5c75', 700);
