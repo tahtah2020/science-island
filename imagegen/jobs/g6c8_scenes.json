@@ -1,0 +1,32 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  768,
+  768
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, bright friendly look, square picture, no text, no letters, no numbers, no writing, no labels, no arrows, no symbols anywhere in the picture.",
+ "images": [
+  {
+   "file": "g6_nile_scene",
+   "prompt": "A wide sunny scene of the Nile River in Egypt: calm blue-green river with green papyrus plants and reeds on the banks, palm trees, a big crocodile resting on the sandy bank, a grey heron standing in the shallow water, small fish swimming just under the water surface, golden desert hills far behind, no people, no boats.",
+   "seed": 801,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_desert_scene",
+   "prompt": "A wide sunny scene of the Egyptian desert: golden sand dunes and rocky hills, a few small green desert shrubs and dry grass, a small jerboa hopping near a shrub, a fennec fox with big ears standing on the sand, and a large white vulture flying high in the pale blue sky, no people.",
+   "seed": 811,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_whale_valley",
+   "prompt": "A desert valley in Egypt with a long fossil skeleton of an ancient whale lying on the yellow sand, long curved ribs and a backbone, strange wind-carved sand rocks around it, clear blue sky, no people, no animals alive.",
+   "seed": 821,
+   "n": 2,
+   "ref": null
+  }
+ ]
+}

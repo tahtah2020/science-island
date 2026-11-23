@@ -1,0 +1,102 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  512,
+  512
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, simple friendly shapes, one single subject only, centred, square picture. The subject is isolated on a plain pure white background with no ground, no shadow and no other objects. Absolutely no text, no letters, no numbers, no arrows, no symbols anywhere.",
+ "images": [
+  {
+   "file": "g6_i_algae",
+   "prompt": "A small cluster of green microscopic algae cells, round and star-shaped green cells joined together, like seen through a microscope, simple.",
+   "seed": 700,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_shrimp",
+   "prompt": "A small pink freshwater shrimp seen from the side, curved body, long antennae.",
+   "seed": 710,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_tilapia",
+   "prompt": "A Nile tilapia fish seen from the side, silvery grey-green oval body with a long back fin, friendly look.",
+   "seed": 720,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_perch",
+   "prompt": "A large Nile perch fish seen from the side, long silvery-grey body with a big mouth and two back fins, calm look.",
+   "seed": 730,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_crocodile",
+   "prompt": "A green-grey Nile crocodile seen from the side, long body with a bumpy back and a long tail, mouth closed, calm look.",
+   "seed": 740,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_seeds",
+   "prompt": "A small pile of brown shrub seeds, oval seeds with a pointed tip.",
+   "seed": 750,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_jerboa",
+   "prompt": "A small sandy-coloured desert jerboa, a hopping rodent with very long back legs, a long tail with a tuft, big eyes and big ears, seen from the side.",
+   "seed": 760,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_viper",
+   "prompt": "A sandy-brown desert horned viper snake coiled in a loose S shape, with two small horns above the eyes, mouth closed, calm look.",
+   "seed": 770,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_fennec",
+   "prompt": "A cream-coloured fennec fox sitting, with very big pointed ears and a small face, seen from the side, friendly look.",
+   "seed": 780,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_papyrus",
+   "prompt": "A tall green papyrus plant with a long triangular stem and a round umbrella-like top of thin green stalks, growing from a small patch of mud.",
+   "seed": 790,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_heron",
+   "prompt": "A grey heron standing upright on long thin legs, with a long neck and a long pointed yellow beak, seen from the side.",
+   "seed": 800,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_vulture",
+   "prompt": "An Egyptian vulture standing, white and cream feathers, a bare yellow face and a thin curved beak, seen from the side.",
+   "seed": 810,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_shrub",
+   "prompt": "A small green desert shrub with thin woody stems and small leaves, growing from a patch of sand.",
+   "seed": 820,
+   "n": 2,
+   "ref": null
+  }
+ ]
+}
