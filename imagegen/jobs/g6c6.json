@@ -1,0 +1,15 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [768, 768],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, simple shapes, bright friendly look, square picture, no people, no animals. Absolutely no text, no letters, no numbers, no writing, no labels, no arrows, no symbols anywhere in the picture.",
+ "images": [
+  { "file": "g6_bag_leaves", "prompt": "A leafy green branch of a plant growing outdoors in a garden, with a big clear plastic bag tied around the leaves with brown string at the bottom. Tiny round water droplets cover the inside surface of the clear bag. Bright sunny day, blue sky.", "seed": 301, "n": 2, "ref": null },
+  { "file": "g6_two_pots", "prompt": "Two identical small flower pots standing side by side on a garden table in bright sunshine, each covered with a clear plastic bag tied at the bottom with string. The left pot has a green plant with many round green leaves. The right pot has a plant with a single bare green stem and no leaves at all. Blue sky with a yellow sun.", "seed": 311, "n": 2, "ref": null },
+  { "file": "g6_wilted", "prompt": "A wilted house plant with long green leaves drooping down sadly, in a white pot with dry cracked soil, standing on a wooden window sill with a bright window behind it.", "seed": 321, "n": 2, "ref": null },
+  { "file": "g6_watering", "prompt": "A small green watering can pouring water onto the soil at the base of a drooping wilted plant in a white pot, on a wooden window sill, bright window behind it. The water goes onto the soil, not onto the leaves.", "seed": 331, "n": 2, "ref": null },
+  { "file": "g6_red_flask", "prompt": "A small green plant with its roots soaking in a glass laboratory flask filled with bright red coloured water, standing on a classroom table. The leaves and stem are still fully green. Plain pale background.", "seed": 341, "n": 2, "ref": null },
+  { "file": "g6_papyrus", "prompt": "Tall papyrus plants growing beside calm Nile river water in Egypt. Each papyrus has a smooth straight green triangular stem that ends at the top in an umbrella of thin thread-like green strands. Palm trees and a small distant pyramid in the background, desert sand, blue sky.", "seed": 351, "n": 2, "ref": null },
+  { "file": "g6_lotus", "prompt": "Big flat round green water-lily leaves floating on the calm water of the Nile river in Egypt, with one white lotus flower with a yellow centre in the middle. Sunny blue sky, bright light on the flat leaves.", "seed": 361, "n": 2, "ref": null }
+ ]
+}
