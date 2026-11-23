@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Water Trek · Transportation of Water in Plants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261123g">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Water Trek.</noscript>
+<script src="firebase-config.js?v=20261123g"></script>
+<script src="chapters.js?v=20261123g"></script>
+<script src="common.js?v=20261123g"></script>
+<script src="science/g6_water.js?v=20261123g"></script>
+<script src="game_kit.js?v=20261123g"></script>
+<script>
+(() => {
+'use strict';
+/* Water Trek · the game of Grade 6, Chapter 6 "Transportation of Water in Plants". Built on the shared game kit (game_kit.js).
+   Story: Drip the water drop travels through a plant.
+   Stage 1 (Warm Up): where Drip enters and where it goes: roots, stems, leaves (book pages 56-57).
+   Stage 2 (Missions): 1) the path of water (page 57); 2) colored water shows the path (page 57); 3) the wilted plant (pages 56-57);
+                       4) leaving through the leaf: transpiration and stomata (page 54); 5) the bags over plants A and B (page 55).
+   Stage 3 (Speed Round): on the path inside the plant, or leaving into the air?
+   English first (Languages track). T(en) with no Arabic falls back to English; the Arabic book is added after the owner's review. */
+const A = window.G6WATER, at = A.at;
+const T = (en, ar) => SI.T(en, ar || en);
+const G = SI.G, P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'plant', drop: null, red: null, wilt: false, pour: false, vapor: false, stomata: false, drops: false, stage: 0 };
+const VW = 420, VH = 280;
+const sky = c => `<rect width="${VW}" height="${VH}" fill="${c || '#d9eefb'}"/>${at(60, 46, 1.2, A.sun(18))}`;
+const lab = (x, y, s, c = '#1f3d57', size = 14) => A.text(x, y, s, size, c);
+const DROP = { roots: [196, 186], stems: [228, 96], leaves: [236, 40], air: [330, 30] };
+
+function plantScene() {
+  let s = `${sky()}${at(210, 130, 1.02, A.rootedPlant({ wilt: sc.wilt, red: sc.red || undefined }))}`;
+  if (sc.pour) s += [-26, 0, 26].map((dx, i) => at(210 + dx, 52 + i * 9, .45, A.drop(1))).join('') + lab(210, 20, '', '#fff', 1);
+  if (sc.vapor) s += at(150, 30, 1.2, A.vapor(3)) + at(290, 34, 1.2, A.vapor(3));
+  if (sc.drop && DROP[sc.drop]) { const [x, y] = DROP[sc.drop]; s += at(x, y, .9, A.drop(1)); }
+  return s;
+}
+function leafScene() {
+  let s = `${sky()}${A.ground(VW, 240, 40)}${at(222, 150, 1.1, A.leafSlab({ stomata: sc.stomata }))}`;
+  if (sc.vapor) s += [-70, 0, 70].map(dx => at(222 + dx, 190, 1.1, A.vapor(2), 180)).join('');
+  if (sc.drop) s += at(70, 150, .9, A.drop(1));
+  return s;
+}
+function bagsScene() {
+  const bare = `<path d="M0 0V-92" stroke="${A.GREEN_D}" stroke-width="5" stroke-linecap="round"/>${A.pot({ w: 54 })}`;
+  const dots = (n, cx) => Array.from({ length: n }, (_, i) => `<circle cx="${cx + ((i * 37) % 70) - 35}" cy="${-30 - ((i * 53) % 90)}" r="3.4" fill="#59b7ea" stroke="#2f86bd" stroke-width="1"/>`).join('');
+  return `${sky()}${A.ground(VW, 244, 36)}${at(110, 236, 1.25, A.bush() + A.bagOver() + (sc.drops ? dots(18, 0) : ''))}${at(310, 236, 1.25, bare + A.bagOver() + (sc.drops ? dots(2, 0) : ''))}${lab(110, 272, 'A', '#1f3d57', 20)}${lab(310, 272, 'B', '#1f3d57', 20)}`;
+}
+function flaskScene() {
+  const st = sc.stage, LF = st >= 1 ? '#e07a5f' : A.GREEN, ST = st >= 1 ? '#d6453d' : A.GREEN_D;
+  const leaves = [[-62, 0.9], [-30, 1], [0, 1.05], [30, 1], [62, 0.9]].map(([r, k]) => at(0, -100, k, A.leaf({ w: 22, h: 30, stalk: 6, color: LF, vein: st >= 1 ? '#a8362f' : undefined }), r)).join('');
+  return `<rect width="${VW}" height="${VH}" fill="#eef6fb"/><rect y="236" width="${VW}" height="44" fill="#e6d3b0"/>${at(210, 246, 1.5, `<path d="M0 -30V-100" stroke="${ST}" stroke-width="6" stroke-linecap="round"/>${leaves}${A.flask({ liquid: '#d6453d' })}`)}`;
+}
+const render = () => ({ plant: plantScene, leaf: leafScene, bags: bagsScene, flask: flaskScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c6', logo: '💧', title: ['Water Trek', 'رحلة الماء'], sub: ['Chapter 6 · Transportation of Water in Plants', 'الفصل ٦ · انتقال الماء في النبات'],
+  bg: 'science/assets/bg_g6c6.svg', bgc: '#dff1f8', label: ['A plant and its water', 'نبات وماؤه'], render });
+const kw = g.kw;
+const show = (o) => { Object.assign(sc, o); g.paint(); };
+
+/* ---------- Stage 1 · Warm Up: where does Drip go? ---------- */
+async function stage1() {
+  show({ mode: 'plant', drop: null, red: null, wilt: false, pour: false, vapor: false });
+  g.say(T('Meet Drip, a drop of water! Drip is in the soil and wants to travel through this plant. Which part of the plant absorbs the water first?', ''), 'point');
+  await g.choice({
+    options: [T('The roots', ''), T('The leaves', ''), T('The flowers', '')], correct: T('The roots', ''),
+    hint: T('It is the part in the soil.', ''),
+    ok: T(`Plants absorb water from the ${kw('roots')}.`, ''),
+    reveal: () => { sc.drop = 'roots'; g.paint(); } });
+  g.say(T('Drip goes up from the roots. Through which part does Drip travel next?', ''), 'think');
+  await g.choice({
+    options: [T('The stems', ''), T('The seeds', ''), T('The petals', '')], correct: T('The stems', ''),
+    hint: T('It connects the roots with the leaves.', ''),
+    ok: T(`The water passes through the ${kw('stems')}.`, ''),
+    reveal: () => { sc.drop = 'stems'; g.paint(); } });
+  g.say(T('And where does Drip arrive at the end of the path?', ''), 'think');
+  await g.choice({
+    options: [T('The leaves', ''), T('The soil', ''), T('The pot', '')], correct: T('The leaves', ''),
+    hint: T('It is the last part in the order.', ''),
+    ok: T(`Water is transported in the order of ${kw('roots, stems, leaves')}.`, ''),
+    reveal: () => { sc.drop = 'leaves'; g.paint(); } });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('The path of water', ''));
+  show({ mode: 'plant', drop: null });
+  g.say(T('How does the water get from the roots to the tips of the leaves? Which statement is correct?', ''), 'think');
+  await g.choice({
+    options: [T('Tubes are connected from the roots to the tips of the leaves', ''), T('Water flows freely everywhere inside the stem', ''), T('The water passes through the stems but does not reach the leaves', '')], correct: T('Tubes are connected from the roots to the tips of the leaves', ''),
+    hint: T('The water goes along special paths.', ''),
+    ok: T(`There are ${kw('paths')} in the roots, stems and leaves of plants to carry water.`, ''),
+    reveal: () => { sc.drop = 'stems'; g.paint(); } });
+  show({ drop: null });
+  g.say(T('Put the journey in order. Which one is right?', ''), 'think');
+  await g.choice({
+    options: [T('Roots, stems, leaves', ''), T('Leaves, stems, roots', ''), T('Stems, roots, leaves', '')], correct: T('Roots, stems, leaves', ''),
+    hint: T('It starts where the plant absorbs the water.', ''),
+    ok: T(`Water is transported in the order of ${kw('roots, stems, leaves')}.`, ''),
+    reveal: () => { sc.drop = 'leaves'; g.paint(); } });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Seeing the path', ''));
+  show({ mode: 'flask', stage: 0 });
+  g.say(T('Water is invisible inside a plant. So we soak the roots in coloured water. Why?', ''), 'think');
+  await g.choice({
+    options: [T('To see where the water passes through', ''), T('To make the leaves bigger', ''), T('To remove the green colour', '')], correct: T('To see where the water passes through', ''),
+    hint: T('Colour makes the path visible.', ''),
+    ok: T('The coloured water helps us see where the water passes through.', '') });
+  g.say(T('After a few hours, how do we know which parts are the paths of the water?', ''), 'think');
+  await g.choice({
+    options: [T('The parts that turned red', ''), T('The parts that became softer', ''), T('The parts that fell off', '')], correct: T('The parts that turned red', ''),
+    hint: T('The water in the flask is red.', ''),
+    ok: T(`The parts that turned ${kw('red')} are the paths for the coloured water.`, ''),
+    reveal: () => { sc.stage = 1; g.paint(); } });
+  g.say(T('Now we cut the roots, stems and leaves to see the cut surfaces. Who uses the cutter knife?', ''), 'think');
+  await g.choice({
+    options: [T('Only the teacher', ''), T('Every student', ''), T('Nobody', '')], correct: T('Only the teacher', ''),
+    hint: T('It is sharp.', ''),
+    ok: T('The cutter knife is used only by the teacher.', '') });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('The wilted plant', ''));
+  show({ mode: 'plant', drop: null, wilt: true, pour: false, red: null });
+  g.say(T('Oh no! This plant is wilted. What should you do to recover it?', ''), 'think');
+  await g.choice({
+    options: [T('Water the base of the plant', ''), T('Cover it with a plastic bag', ''), T('Put it in a dark place', '')], correct: T('Water the base of the plant', ''),
+    hint: T('The plant is missing something.', ''),
+    ok: T(`Water the ${kw('base')} of a wilted plant and it recovers.`, ''),
+    reveal: () => { sc.pour = true; g.paint(); } });
+  g.say(T('A while later... the plant came back to life! Why does it recover?', ''), 'think');
+  show({ wilt: false });
+  await g.choice({
+    options: [T('Water spreads to the whole body of the plant', ''), T('The leaves drink the water from the air', ''), T('The pot stores the water for the leaves', '')], correct: T('Water spreads to the whole body of the plant', ''),
+    hint: T('Think of the paths from the roots to the leaves.', ''),
+    ok: T(`The ${kw('water spreads')} to the whole body of the plant.`, '') });
+}
+async function mission4() {
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('Leaving through the leaf', ''));
+  show({ mode: 'leaf', stomata: false, vapor: false, drop: null });
+  g.say(T('Drip has reached the leaf! Some of the water now goes out into the air from the leaves. What is this process called?', ''), 'think');
+  await g.choice({
+    options: [T('Transpiration', ''), T('Photosynthesis', ''), T('Digestion', '')], correct: T('Transpiration', ''),
+    hint: T('Water vapor is released into the air.', ''),
+    ok: T(`The process of water inside the plant changing into water vapor and being released into the air is called ${kw('transpiration')}.`, ''),
+    reveal: () => { sc.vapor = true; g.paint(); } });
+  g.say(T('In what form does the water leave the leaf?', ''), 'think');
+  await g.choice({
+    options: [T('Water vapor', ''), T('Ice', ''), T('Starch', '')], correct: T('Water vapor', ''),
+    hint: T('It is a gas, like steam.', ''),
+    ok: T(`The water changes into ${kw('water vapor')}.`, '') });
+  g.say(T('The water vapor goes out through small pores. Where are these pores mostly found, and what are they called?', ''), 'think');
+  await g.choice({
+    options: [T('Stomata, on the lower surface of the leaves', ''), T('Stomata, on the roots', ''), T('Starch, on the lower surface of the leaves', '')], correct: T('Stomata, on the lower surface of the leaves', ''),
+    hint: T('Look at the side of the leaf that faces the ground.', ''),
+    ok: T(`${kw('Stomata')} are small pores mostly found on the lower surface of the leaves. They act as exits for water vapor.`, ''),
+    reveal: () => { sc.stomata = true; g.paint(); } });
+}
+async function mission5() {
+  await g.banner(T('Mission 5', 'المهمة ٥'), T('The bag experiment', ''));
+  show({ mode: 'bags', drops: false });
+  g.say(T('Plant A has leaves. Plant B has all its leaves taken off. Both have bags tied at the bottom and stand in the sun. Why do we use both plants?', ''), 'think');
+  await g.choice({
+    options: [T('To compare what happens with leaves and without leaves', ''), T('To see which plant grows faster', ''), T('To find out which plant has more starch', '')], correct: T('To compare what happens with leaves and without leaves', ''),
+    hint: T('They are the same except for one thing.', ''),
+    ok: T('We compare a plant with leaves and a plant without leaves.', '') });
+  g.say(T('After a while in the sun, which bag gets many more water drops inside?', ''), 'think');
+  await g.choice({
+    options: [T('The bag over plant A', ''), T('The bag over plant B', ''), T('Both get the same', '')], correct: T('The bag over plant A', ''),
+    hint: T('Where are the exits for water vapor?', ''),
+    ok: T('Plant A has leaves with stomata, so a lot of water vapor comes out.', ''),
+    reveal: () => { sc.drops = true; g.paint(); } });
+  g.say(T('Why did water drops form inside the bag of plant A?', ''), 'think');
+  await g.choice({
+    options: [T('Water vapor came out of the leaves and changed into water', ''), T('It rained from outside', ''), T('The plant breathed and released carbon dioxide', '')], correct: T('Water vapor came out of the leaves and changed into water', ''),
+    hint: T('The bag is closed.', ''),
+    ok: T(`${kw('Water vapor came out of the leaves')} and changed into water.`, '') });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
+
+/* ---------- Stage 3 · Speed Round: inside the plant, or out into the air? ---------- */
+const SPEED = [
+  { t: T('Water goes up through the stems', ''), ans: 'path' },
+  { t: T('Tubes carry water from the roots to the tips of the leaves', ''), ans: 'path' },
+  { t: T('The roots absorb water from the soil', ''), ans: 'path' },
+  { t: T('Coloured water turns the paths red', ''), ans: 'path' },
+  { t: T('A wilted plant recovers when its base is watered', ''), ans: 'path' },
+  { t: T('Water vapor goes out through the stomata', ''), ans: 'air' },
+  { t: T('Water drops form inside the bag over the leaves', ''), ans: 'air' },
+  { t: T('Water changes into water vapor and is released', ''), ans: 'air' },
+  { t: T('Plants cool the air around them', ''), ans: 'air' }
+];
+async function stage3() {
+  const some = (k, n) => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, n);
+  show({ mode: 'plant', drop: null, vapor: false, wilt: false, pour: false, red: null });
+  await g.speedRound({
+    items: some('path', 4).concat(some('air', 4)), rounds: 8,
+    buttons: [{ label: T('Path inside', ''), value: 'path', c: 0 }, { label: T('Out into the air', ''), value: 'air', c: 2 }],
+    ask: T('On the path inside the plant, or out into the air?', ''),
+    intro: T('Speed Round! I will say something about water in plants. Is it about the <b>path inside</b> the plant, or about water going <b>out into the air</b>? 8 rounds!', ''),
+    think: T('Path inside or out into the air?', ''),
+    show: it => { show({ mode: 'plant', drop: it ? (it.ans === 'path' ? 'stems' : null) : null, vapor: false }); },
+    reveal: it => { show({ mode: 'plant', drop: it.ans === 'path' ? 'stems' : 'leaves', vapor: it.ans === 'air' }); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Today we follow <b>Drip</b>, a drop of water, on its trek through a plant: up from the roots, through the stems, and out of the leaves.`, ''),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Water expert!', ''),
+    text: T('Water goes up from the <b>roots</b> through the <b>stems</b> to the <b>leaves</b>, along paths that reach every part of the plant. Some of it leaves the leaves as <b>water vapor</b> through the <b>stomata</b>: this is <b>transpiration</b>.', '') }
+}).catch(err => console.error(err));
+window.__watertrek = { sc, render };
+})();
+</script>
+</body>
+</html>

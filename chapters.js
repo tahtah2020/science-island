@@ -211,7 +211,11 @@ window.CHAPTERS = [
     lessonsAr: ['ضوء الشمس والنشا', 'تبادل الغازات'] },
 
   { id: 'g6c6', grade: 'g6', n: 6, title: 'Transportation of Water in Plants', titleAr: 'انتقال الماء في النبات', icon: '💧', tint: '#dff1f8', ready: false,
-    lessons: ['Transpiration', 'The Path of Water'] },
+    questions: 'science/questions_g6c6.js', art: 'science/g6_water.js',
+    game: { href: 'watertrek.html', name: 'Water Trek', nameAr: 'رحلة الماء', icon: '💧', hint: 'Ride with Drip the water drop from the roots to the leaves, and find out how plants let water out into the air!', hintAr: 'سافر مع القطرة من الجذور إلى الأوراق، واكتشف كيف تُخرج النباتات الماء إلى الهواء!' },
+    map: { img: 'science/assets/map_g6c6.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g6c6.svg', quizBg: 'science/assets/bg_g6c6.svg',
+    lessons: ['Transpiration', 'The Path of Water'], lessonsAr: ['النتح', 'مسار الماء'] },
 
   { id: 'g6c7', grade: 'g6', n: 7, title: 'Food Chain', titleAr: 'السلسلة الغذائية', icon: '🦅', tint: '#f6e7c4', ready: false,
     lessons: ['Food Chain', 'Living Organisms, Air, and Water'] },

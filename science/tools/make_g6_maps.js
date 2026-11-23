@@ -4,8 +4,8 @@
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ctx = { window: {} }; vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'g4_art.js'), 'utf8'), ctx); vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'g6_art.js'), 'utf8'), ctx);
-vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'g6_body.js'), 'utf8'), ctx); vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'g6_plant.js'), 'utf8'), ctx);
-const A = ctx.window.G4ART, F = ctx.window.G6ART, B = ctx.window.G6BODY, L = ctx.window.G6PLANT, at = A.at;   // A: shared shapes (blob, sun…), F: the Chapter 1 drawings, B: the body drawings of Chapters 2 and 3
+vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'g6_body.js'), 'utf8'), ctx); vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'g6_plant.js'), 'utf8'), ctx); vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'g6_water.js'), 'utf8'), ctx);
+const A = ctx.window.G4ART, F = ctx.window.G6ART, B = ctx.window.G6BODY, L = ctx.window.G6PLANT, W6 = ctx.window.G6WATER, at = A.at;   // A: shared shapes (blob, sun…), F: the Chapter 1 drawings, B: the body drawings of Chapters 2 and 3
 let seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 const f = n => (Math.round(n * 10) / 10);
 function curve(pts) { let d = `M${pts[0][0]} ${pts[0][1]}`; for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
@@ -208,4 +208,30 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
   b += at(300, 880, 2.2, L.bush()) + at(700, 880, 2, L.leaf({ w: 40, h: 48 })) + at(1180, 880, 2.1, L.bush())
     + tree(120, 640, 1.5, ['#8fd36e', '#4f9f52']) + tree(560, 620, 1.1) + tree(1500, 650, 1.3, ['#8fd36e', '#4f9f52']) + '</svg>';
   save('bg_g6c5.svg', b);
+})();
+
+/* ---------- Chapter 6 · Transportation of Water in Plants: a river island with plants, water drops and signs ---------- */
+(function () {
+  seed = 113;
+  let inside = `<ellipse cx="300" cy="1010" rx="260" ry="150" fill="#9fdcc8" opacity=".6"/><ellipse cx="930" cy="1010" rx="250" ry="150" fill="#c9ebd0" opacity=".6"/><ellipse cx="930" cy="330" rx="280" ry="170" fill="#bfe6f4" opacity=".55"/>`;
+  for (let i = 0; i < 46; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040), '#5fb08a');
+  let s = island([[0, '#a6e3cf'], [.5, '#c9ecd6'], [1, '#e8f4d2']], ['#f6e3ae', '#ece7d8'], inside);
+  const sign = (x, y, inner) => board(x, y, 200, 220, inner);
+  s += sign(1000, 760, at(0, 70, .9, W6.rootedPlant({})));                                  // a plant with its roots
+  s += sign(905, 292, at(-8, 70, .8, W6.bush() + W6.bagOver()));                            // the bag
+  s += sign(232, 610, at(0, 0, 1.1, W6.leafSlab()) + at(0, -60, 1, W6.vapor(3)));           // a leaf letting vapor out
+  s += tree(150, 1150, .9, ['#8fd3b0', '#4f9f86']) + tree(420, 1195, .8) + tree(770, 1190, .85, ['#8fd3b0', '#4f9f86']) + tree(1060, 1090, .9) + tree(1040, 560, .95) + tree(400, 250, .7, ['#8fd3b0', '#4f9f86']);
+  s += at(640, 1176, 1.5, W6.drop(1)) + at(1090, 420, 1.2, W6.drop(1)) + at(560, 480, 1.1, W6.drop(1));
+  s += sunAt(1090, 140, 2.2) + cloud(140, 110, .8, .85) + cloud(930, 70, .7, .85) + '</svg>';
+  save('map_g6c6.svg', s);
+
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".5" stop-color="#dff1f8"/><stop offset=".56" stop-color="#cfeadb"/><stop offset="1" stop-color="#a9dcc0"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/><circle cx="1330" cy="190" r="92" fill="#ffd98a"/><circle cx="1330" cy="190" r="130" fill="#ffd98a" opacity=".3"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
+<path d="M0 560C200 510 420 536 640 524C900 510 1200 480 1600 534V1000H0Z" fill="#bfe6cf"/><path d="M0 680C260 642 520 698 820 670C1100 644 1360 660 1600 640V1000H0Z" fill="#a9dcc0"/>`;
+  for (let i = 0; i < 22; i++) b += tuft(f(40 + rnd() * 1520), f(620 + rnd() * 180), '#5fb08a');
+  b += at(300, 880, 2.2, W6.drop(1)) + at(700, 880, 2, W6.bush()) + at(1180, 880, 2.1, W6.drop(1))
+    + tree(120, 640, 1.5, ['#8fd3b0', '#4f9f86']) + tree(560, 620, 1.1) + tree(1500, 650, 1.3, ['#8fd3b0', '#4f9f86']) + '</svg>';
+  save('bg_g6c6.svg', b);
 })();
