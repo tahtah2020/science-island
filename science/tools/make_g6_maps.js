@@ -261,3 +261,33 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
   b += tree(120, 640, 1.5) + tree(560, 620, 1.1, ['#a5d96e', '#6fa84a']) + tree(1500, 650, 1.3) + '</svg>';
   save('bg_g6c7.svg', b);
 })();
+
+/* ---------- Chapter 8 · Food Chains in Egypt: a sandy island with the Nile running across it, a food pyramid, a chain of arrows and a wave sign ---------- */
+(function () {
+  seed = 131;
+  const arrow = (x, y, k) => at(x, y, k, `<path d="M-16 0H12" stroke="#d6453d" stroke-width="5" stroke-linecap="round"/><path d="M6 -9L18 0L6 9Z" fill="#d6453d"/>`);
+  const dot = (x, y, c) => `<circle cx="${x}" cy="${y}" r="17" fill="${c}" stroke="#fff" stroke-width="3"/>`;
+  const chain = at(0, 10, 1, dot(-60, 0, '#6fb9e0') + arrow(-30, 0, .7) + dot(0, 0, '#8cc9ea') + arrow(30, 0, .7) + dot(60, 0, '#e6c07a'));
+  const pyramid = at(0, 20, 1, `<path d="M-62 40L0 -50L62 40Z" fill="#f0cf86" stroke="#c99a45" stroke-width="5" stroke-linejoin="round"/><path d="M-41 8H41M-22 -22H22" stroke="#c99a45" stroke-width="4"/>`);
+  const wave = at(0, 10, 1, `<path d="M-58 -14q14 -18 29 0t29 0t29 0t29 0M-58 12q14 -18 29 0t29 0t29 0t29 0" fill="none" stroke="#3a8fd6" stroke-width="8" stroke-linecap="round"/>`);
+  const palm = (x, y, k) => at(x, y, k, `<path d="M0 0Q8 -50 -4 -92" fill="none" stroke="#9a6b3e" stroke-width="9" stroke-linecap="round"/>` + [[-50, -92, -20], [-30, -112, -50], [0, -118, -90], [30, -110, -130], [52, -90, -160]].map(([x2, y2]) => `<path d="M-4 -92Q${x2 / 2 - 4} ${y2 - 18} ${x2} ${y2 + 6}" fill="none" stroke="#3f9a52" stroke-width="9" stroke-linecap="round"/>`).join(''));
+  let inside = `<ellipse cx="300" cy="1010" rx="260" ry="150" fill="#f3dca2" opacity=".7"/><ellipse cx="930" cy="330" rx="280" ry="170" fill="#efd491" opacity=".6"/>`;
+  inside += `<path d="M-20 760C260 700 420 840 640 800C860 760 980 600 1260 660" fill="none" stroke="#8cc9ea" stroke-width="86" stroke-linecap="round" opacity=".95"/><path d="M-20 760C260 700 420 840 640 800C860 760 980 600 1260 660" fill="none" stroke="#bfe3f4" stroke-width="40" stroke-linecap="round" opacity=".8"/>`;
+  for (let i = 0; i < 38; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040), '#c9a85a');
+  let s = island([[0, '#f1dca0'], [.5, '#f5e6b4'], [1, '#f9efcf']], ['#f6e3ae', '#ece7d8'], inside);
+  const sign = (x, y, inner) => board(x, y, 200, 220, inner);
+  s += sign(1000, 1020, wave) + sign(905, 292, chain) + sign(232, 560, pyramid);
+  s += palm(150, 1150, 1) + palm(1040, 560, 1.1) + palm(420, 250, .9) + palm(800, 1190, 1) + palm(1090, 880, .9);
+  s += sunAt(1090, 140, 2.2) + cloud(140, 110, .8, .85) + cloud(930, 70, .7, .85) + '</svg>';
+  save('map_g6c8.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe7f5"/><stop offset=".5" stop-color="#f6ecd2"/><stop offset=".56" stop-color="#f0dba5"/><stop offset="1" stop-color="#e6c883"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/><circle cx="1330" cy="190" r="92" fill="#ffd98a"/><circle cx="1330" cy="190" r="130" fill="#ffd98a" opacity=".3"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
+<path d="M0 560C200 510 420 536 640 524C900 510 1200 480 1600 534V1000H0Z" fill="#ecd49a"/><path d="M0 680C260 642 520 698 820 670C1100 644 1360 660 1600 640V1000H0Z" fill="#e3c585"/>
+<path d="M0 800C300 770 600 840 900 810C1200 780 1400 800 1600 790V860C1400 870 1200 850 900 880C600 910 300 850 0 880Z" fill="#8cc9ea" opacity=".85"/>`;
+  for (let i = 0; i < 22; i++) b += tuft(f(40 + rnd() * 1520), f(620 + rnd() * 140), '#b99a4e');
+  b += palm(120, 700, 1.3) + palm(560, 690, 1) + palm(1500, 710, 1.2) + '</svg>';
+  save('bg_g6c8.svg', b);
+})();
+

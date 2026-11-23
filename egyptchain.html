@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Egypt Food Trail · Food Chains in Egypt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261123k">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Egypt Food Trail.</noscript>
+<script src="firebase-config.js?v=20261123k"></script>
+<script src="chapters.js?v=20261123k"></script>
+<script src="common.js?v=20261123k"></script>
+<script src="science/g6_egypt.js?v=20261123k"></script>
+<script src="game_kit.js?v=20261123k"></script>
+<script>
+(() => {
+'use strict';
+/* Egypt Food Trail · the game of Grade 6, Chapter 8 "Food Chains in Egypt" (lesson 8-1). Built on the shared game kit (game_kit.js).
+   Concepts: Egypt has completely different food chains in aquatic environments (the Nile River) and arid areas (the deserts);
+   Nile: algae and water plants, herbivorous fish (Nile tilapia), carnivorous fish (Nile perch), top carnivore (Nile crocodile);
+   desert: shrubs and grass, herbivores (grasshoppers, jerboas), top carnivores (fennec foxes, Egyptian vultures); every chain starts with plants and ends with large carnivores (pages 69-71).
+   Stage 1 (Warm Up): build the Nile chain, one link at a time, and find its king.
+   Stage 2 (Missions): 1) two environments; 2) the desert chain; 3) the top carnivores; 4) the papyrus chain; 5) what if the desert plants died out?
+   Stage 3 (Speed Round): Nile or desert? (a picture of each animal)
+   English first (Languages track); the Arabic book is added after the owner's review. Pictures: the generated organism icons (science/assets/g6_i_*.webp). */
+const A = window.G6EGYPT, at = A.at;
+const T = (en, ar) => SI.T(en, ar || en);
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'chain', place: 'nile', chain: [], hl: null, who: null, food: null, bare: false };
+const VW = 420, VH = 280;
+const sky = c => `<rect width="${VW}" height="${VH}" fill="${c}"/>${at(54, 44, 1.1, A.sun(18))}`;
+const nileBg = `${sky('#dff1f8')}<path d="M0 150Q80 130 160 146T320 140T420 130V280H0Z" fill="#f0dca5"/><rect y="160" width="${VW}" height="120" fill="#7ec3e6"/><path d="M0 160Q70 150 140 160T280 158T420 156V166H0Z" fill="#a9d9f0"/><rect y="236" width="${VW}" height="44" fill="#f0dca5"/>`;
+const desertBg = `${sky('#fbeed2')}<path d="M0 170Q90 130 190 168T420 150V280H0Z" fill="#f3d58f"/><path d="M0 210Q120 180 240 214T420 200V280H0Z" fill="#ecc679"/>`;
+const lab = (x, y, s, c = '#1f3d57', size = 15) => A.text(x, y, s, size, c);
+
+function chainScene() {
+  const ch = sc.chain, step = (VW - 40) / 4, size = 66;
+  let s = sc.place === 'nile' ? nileBg : desertBg;
+  ch.forEach((nm, i) => {
+    const cx = 20 + step * (i + .5), cy = 150;
+    if (sc.hl === nm) s += `<ellipse cx="${cx}" cy="${cy + 4}" rx="${size / 2 + 6}" ry="${size / 2 + 6}" fill="#fff6c2" stroke="#f2b134" stroke-width="3"/>`;
+    s += at(cx, cy, 1, A.icon(nm, size));
+    if (i < ch.length - 1) s += at(cx + step / 2, cy, 1, A.arrow(Math.max(14, step - size + 8)));
+  });
+  return s;
+}
+function whoScene() {
+  let s = (sc.place === 'nile' ? nileBg : desertBg) + at(250, 150, 1.9, A.icon(sc.who, 62));
+  if (sc.food) s += at(110, 152, 1.3, A.icon(sc.food, 62)) + at(172, 154, 1, A.arrow(28));
+  return s;
+}
+function bareScene() {
+  let s = desertBg;
+  const plants = sc.bare ? [] : [70, 180, 300, 370];
+  plants.forEach(x => { s += at(x, 214, 1, A.icon('shrub', 46)); });
+  s += at(120, 176, 1.3, A.icon('jerboa', 54)) + at(300, 176, 1.3, A.icon('fennec', 60));
+  return s;
+}
+const render = () => ({ chain: chainScene, who: whoScene, bare: bareScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c8', logo: '🐊', title: ['Egypt Food Trail', 'درب السلاسل الغذائية في مصر'], sub: ['Chapter 8 · Food Chains in Egypt', 'الفصل ٨ · السلاسل الغذائية في مصر'],
+  bg: 'science/assets/bg_g6c8.svg', bgc: '#f3e3c8', label: ['Nile and desert', 'النيل والصحراء'], render });
+const kw = g.kw;
+const show = (o) => { Object.assign(sc, o); g.paint(); };
+const link = nm => () => { sc.chain = sc.chain.concat(nm); g.paint(); };
+const NILE = ['algae', 'tilapia', 'perch', 'crocodile'], DESERT = ['seeds', 'jerboa', 'viper', 'fennec'], PAPYRUS = ['papyrus', 'grasshopper', 'frog', 'heron'];
+
+/* ---------- Stage 1 · Warm Up: build the Nile chain ---------- */
+async function stage1() {
+  show({ mode: 'chain', place: 'nile', chain: [], hl: null });
+  g.say(T('Welcome to the trail! Egypt has two very different places: the Nile River and the desert. Let us build the food chain of the Nile, one link at a time. Which living organism is at the beginning?', ''), 'point');
+  await g.choice({ options: [T('Algae', ''), T('Nile perch', ''), T('Nile crocodile', '')], correct: T('Algae', ''),
+    hint: T('Every food chain starts with plants.', ''), ok: T(`${kw('Algae')} and water plants are the beginning of the food chain in the Nile River.`, ''), reveal: link('algae') });
+  g.say(T('Which fish eats the algae and water plants?', ''), 'think');
+  await g.choice({ options: [T('Nile tilapia', ''), T('Nile perch', ''), T('Nile crocodile', '')], correct: T('Nile tilapia', ''),
+    hint: T('It is a herbivorous fish.', ''), ok: T(`The ${kw('Nile tilapia')} is a herbivorous fish: it eats plants.`, ''), reveal: link('tilapia') });
+  g.say(T('And which carnivorous fish eats the Nile tilapia?', ''), 'think');
+  await g.choice({ options: [T('Nile perch', ''), T('Algae', ''), T('Jerboa', '')], correct: T('Nile perch', ''),
+    hint: T('It is a carnivorous fish of the Nile.', ''), ok: T(`The ${kw('Nile perch')} is a carnivorous fish: it eats other fish.`, ''), reveal: link('perch') });
+  g.say(T('Last link! Who is the king at the top of the Nile food chain?', ''), 'think');
+  await g.choice({ options: [T('Nile crocodile', ''), T('Nile tilapia', ''), T('Algae', '')], correct: T('Nile crocodile', ''),
+    hint: T('It is the biggest carnivore of the river.', ''), ok: T(`The ${kw('Nile crocodile')} is the top carnivore of the Nile.`, ''), reveal: () => { sc.chain = sc.chain.concat('crocodile'); sc.hl = 'crocodile'; g.paint(); } });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Two environments', ''));
+  show({ mode: 'chain', place: 'nile', chain: NILE, hl: null });
+  g.say(T('The Nile River is full of water. What kind of environment is it?', ''), 'think');
+  await g.choice({ options: [T('An aquatic environment', ''), T('An arid area', ''), T('A frozen area', '')], correct: T('An aquatic environment', ''),
+    hint: T('Aquatic is about water.', ''), ok: T(`The Nile River is an ${kw('aquatic environment')}.`, '') });
+  show({ place: 'desert', chain: DESERT, hl: null });
+  g.say(T('Now look at the desert, where there is very little water. What kind of area is it?', ''), 'think');
+  await g.choice({ options: [T('An arid area', ''), T('An aquatic environment', ''), T('A rainforest', '')], correct: T('An arid area', ''),
+    hint: T('Arid means dry.', ''), ok: T(`The deserts are ${kw('arid areas')}. Egypt has completely different food chains in the Nile River and in the deserts.`, '') });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('The desert chain', ''));
+  show({ mode: 'chain', place: 'desert', chain: DESERT, hl: null });
+  g.say(T('Here is a food chain of the desert. Which living organism is at the beginning?', ''), 'think');
+  await g.choice({ options: [T('Shrub seeds', ''), T('Jerboa', ''), T('Fennec fox', '')], correct: T('Shrub seeds', ''),
+    hint: T('It is part of a plant.', ''), ok: T('Desert shrubs and grass are the beginning of the food chain in the desert.', ''), reveal: () => { sc.hl = 'seeds'; g.paint(); } });
+  g.say(T('Which animal in this chain is a herbivore?', ''), 'think');
+  await g.choice({ options: [T('Jerboa', ''), T('Viper', ''), T('Fennec fox', '')], correct: T('Jerboa', ''),
+    hint: T('It eats the shrub seeds.', ''), ok: T(`The ${kw('jerboa')} eats plants, so it is a herbivore. Grasshoppers are herbivores too.`, ''), reveal: () => { sc.hl = 'jerboa'; g.paint(); } });
+  g.say(T('Which animal eats the viper?', ''), 'think');
+  await g.choice({ options: [T('Fennec fox', ''), T('Shrub seeds', ''), T('Jerboa', '')], correct: T('Fennec fox', ''),
+    hint: T('Follow the arrow that comes out of the viper.', ''), ok: T('The fennec fox eats the viper. It also eats small animals like jerboas.', ''), reveal: () => { sc.hl = 'fennec'; g.paint(); } });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('The top carnivores', ''));
+  show({ mode: 'who', place: 'desert', who: 'vulture', food: null });
+  g.say(T('Meet the Egyptian vulture, a big bird of prey flying in the sky. In the desert food chain, what is it?', ''), 'think');
+  await g.choice({ options: [T('A top carnivore', ''), T('A herbivore', ''), T('A plant', '')], correct: T('A top carnivore', ''),
+    hint: T('It is at the top of the food chain.', ''), ok: T(`Fennec foxes and Egyptian vultures are ${kw('top carnivores')} in the desert.`, ''), reveal: () => { sc.food = 'jerboa'; g.paint(); } });
+  show({ mode: 'chain', place: 'nile', chain: NILE, hl: null });
+  g.say(T('Who is the top carnivore at the top of the food chain in the Nile River?', ''), 'think');
+  await g.choice({ options: [T('Nile crocodile', ''), T('Nile tilapia', ''), T('Algae', '')], correct: T('Nile crocodile', ''),
+    hint: T('It is the last link in the chain.', ''), ok: T('The Nile crocodile is the top carnivore of the Nile.', ''), reveal: () => { sc.hl = 'crocodile'; g.paint(); } });
+}
+async function mission4() {
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('The papyrus chain', ''));
+  show({ mode: 'chain', place: 'nile', chain: PAPYRUS, hl: null });
+  g.say(T('Here is another food chain beside the water: Papyrus, Grasshopper, Frog, Heron bird. Which one is the herbivore?', ''), 'think');
+  await g.choice({ options: [T('Grasshopper', ''), T('Frog', ''), T('Heron bird', '')], correct: T('Grasshopper', ''),
+    hint: T('It eats the papyrus plant.', ''), ok: T('The grasshopper eats the papyrus, so it is a herbivore.', ''), reveal: () => { sc.hl = 'grasshopper'; g.paint(); } });
+  g.say(T('Which animal eats the frog?', ''), 'think');
+  await g.choice({ options: [T('Heron bird', ''), T('Grasshopper', ''), T('Papyrus', '')], correct: T('Heron bird', ''),
+    hint: T('Follow the arrow that comes out of the frog.', ''), ok: T('The heron bird eats the frog. It is a large carnivore at the end of the chain.', ''), reveal: () => { sc.hl = 'heron'; g.paint(); } });
+}
+async function mission5() {
+  await g.banner(T('Mission 5', 'المهمة ٥'), T('What if there were no plants?', ''));
+  show({ mode: 'bare', place: 'desert', bare: false });
+  g.say(T('In the desert there are few plants, but the herbivores need them. What if all the plants in the desert died out? What would happen to the carnivores?', ''), 'think');
+  await g.choice({ options: [T('They would lose their food and decrease', ''), T('They would eat more plants', ''), T('Nothing would change', '')], correct: T('They would lose their food and decrease', ''),
+    hint: T('The herbivores eat plants, and the carnivores eat the herbivores.', ''), ok: T('Without plants the herbivores would lose their food, and then the carnivores would lose theirs.', ''), reveal: () => { sc.bare = true; g.paint(); } });
+  g.say(T('So every food chain, even if the animals are different, always starts with ___ and ends with large carnivores.', ''), 'think');
+  await g.choice({ options: [T('plants', ''), T('crocodiles', ''), T('sand', '')], correct: T('plants', ''),
+    hint: T('They make their own food using sunlight.', ''), ok: T('Even if the types of animals are different, the chain always starts with plants and ends with large carnivores.', '') });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
+
+/* ---------- Stage 3 · Speed Round: Nile or desert? ---------- */
+const SPEED = [['tilapia', 'nile'], ['fennec', 'desert'], ['crocodile', 'nile'], ['jerboa', 'desert'], ['perch', 'nile'], ['viper', 'desert'], ['vulture', 'desert'], ['algae', 'nile']];
+const NAME = { tilapia: 'Nile tilapia', fennec: 'Fennec fox', crocodile: 'Nile crocodile', jerboa: 'Jerboa', perch: 'Nile perch', viper: 'Viper', vulture: 'Egyptian vulture', algae: 'Algae' };
+const spic = nm => `<image href="science/assets/g6_i_${nm}.webp" width="100" height="100"/>`;
+async function stage3() {
+  show({ mode: 'chain', place: 'nile', chain: NILE, hl: null });
+  await g.speedRound({
+    items: g.shuffle(SPEED).map(([nm, ans]) => ({ t: T(NAME[nm], ''), ans, pic: spic(nm), box: '0 0 100 100' })), rounds: 8,
+    buttons: [{ label: T('Nile River', ''), value: 'nile', c: 2 }, { label: T('Desert', ''), value: 'desert', c: 0 }],
+    ask: T('Which food chain is it in?', ''),
+    intro: T('Speed Round! I will show a living organism from a food chain of Egypt. Is it in the <b>Nile River</b> or in the <b>desert</b>? 8 rounds!', ''),
+    think: T('Nile or desert?', '') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Today we walk the <b>Egypt Food Trail</b>: the food chains of the Nile River and the desert, and who is their king.`, ''),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Egypt food chain expert!', ''),
+    text: T('The Nile River and the desert have completely different food chains, but every chain starts with <b>plants</b> and ends with a large <b>top carnivore</b>: the Nile crocodile in the river, the fennec fox and the Egyptian vulture in the desert.', '') }
+}).catch(err => console.error(err));
+window.__egyptchain = { sc, render };
+})();
+</script>
+</body>
+</html>
