@@ -202,7 +202,7 @@ window.CHAPTERS = [
     lessons: ['Heart and Blood', 'How the Kidneys Work', 'Various Organs'],
     lessonsAr: ['القلب والدم', 'كيف تعمل الكليتان؟', 'أعضاء مختلفة'] },
 
-  { id: 'g6c5', grade: 'g6', n: 5, title: 'Photosynthesis', titleAr: 'البناء الضوئي', icon: '🌿', tint: '#e3f3d0', ready: false,
+  { id: 'g6c5', grade: 'g6', n: 5, title: 'Photosynthesis', titleAr: 'البناء الضوئي', icon: '🌿', tint: '#e3f3d0', ready: true,
     questions: 'science/questions_g6c5.js', art: 'science/g6_plant.js',
     game: { href: 'photolab.html', name: "Leaf Lab", nameAr: "معمل الورقة", icon: '🌿', hint: 'Test leaves for starch, follow the gases by day and by night, and find out what happens to a plant in a bag!', hintAr: 'اختبر الأوراق بحثًا عن النشا، وتتبَّع الغازات في النهار والليل، واكتشف ماذا يحدث لنبات داخل كيس!' },
     map: { img: 'science/assets/map_g6c5.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
