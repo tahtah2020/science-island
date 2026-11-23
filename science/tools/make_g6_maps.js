@@ -235,3 +235,29 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
     + tree(120, 640, 1.5, ['#8fd3b0', '#4f9f86']) + tree(560, 620, 1.1) + tree(1500, 650, 1.3, ['#8fd3b0', '#4f9f86']) + '</svg>';
   save('bg_g6c6.svg', b);
 })();
+
+/* ---------- Chapter 7 · Food Chain: a meadow trail with signs of grass, a chain of arrows and a tree with air bubbles ---------- */
+(function () {
+  seed = 127;
+  const arrow = (x, y, k) => at(x, y, k, `<path d="M-16 0H12" stroke="#d6453d" stroke-width="5" stroke-linecap="round"/><path d="M6 -9L18 0L6 9Z" fill="#d6453d"/>`);
+  const dot = (x, y, c) => `<circle cx="${x}" cy="${y}" r="17" fill="${c}" stroke="#fff" stroke-width="3"/>`;
+  const grass = k => at(0, 0, k, [-24, -8, 8, 24].map((x, i) => `<path d="M${x} 46Q${x + (i % 2 ? 10 : -10)} 0 ${x + (i % 2 ? 4 : -4)} -${34 + i * 6}" fill="none" stroke="#4f9f52" stroke-width="8" stroke-linecap="round"/>`).join(''));
+  const chain = at(0, 10, 1, dot(-60, 0, '#7cc86e') + arrow(-30, 0, .7) + dot(0, 0, '#c9d65e') + arrow(30, 0, .7) + dot(60, 0, '#6fa86f'));
+  const airTree = at(0, 40, 1, `<rect x="-6" y="-30" width="12" height="40" rx="4" fill="#9a6b3e"/><circle cx="0" cy="-52" r="32" fill="#7cc86e" stroke="#4f9f52" stroke-width="3"/>` + dot(52, -50, '#3a8fd6') + dot(-52, -20, '#7a7f8c'));
+  let inside = `<ellipse cx="300" cy="1010" rx="260" ry="150" fill="#bfe3a2" opacity=".6"/><ellipse cx="930" cy="1010" rx="250" ry="150" fill="#d8ecb0" opacity=".6"/><ellipse cx="930" cy="330" rx="280" ry="170" fill="#c9e8ad" opacity=".55"/>`;
+  for (let i = 0; i < 46; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040), '#6dae5a');
+  let s = island([[0, '#b9e6a4'], [.5, '#d4efb4'], [1, '#f1f4cf']], ['#f6e3ae', '#ece7d8'], inside);
+  const sign = (x, y, inner) => board(x, y, 200, 220, inner);
+  s += sign(1000, 760, grass(1)) + sign(905, 292, chain) + sign(232, 610, airTree);
+  s += tree(150, 1150, .9) + tree(420, 1195, .8, ['#a5d96e', '#6fa84a']) + tree(770, 1190, .85) + tree(1060, 1090, .9, ['#a5d96e', '#6fa84a']) + tree(1040, 560, .95) + tree(400, 250, .7);
+  s += sunAt(1090, 140, 2.2) + cloud(140, 110, .8, .85) + cloud(930, 70, .7, .85) + '</svg>';
+  save('map_g6c7.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6ecf8"/><stop offset=".5" stop-color="#e6f3e4"/><stop offset=".56" stop-color="#d4ecb8"/><stop offset="1" stop-color="#b6df94"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/><circle cx="1330" cy="190" r="92" fill="#ffd98a"/><circle cx="1330" cy="190" r="130" fill="#ffd98a" opacity=".3"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
+<path d="M0 560C200 510 420 536 640 524C900 510 1200 480 1600 534V1000H0Z" fill="#c6e7a4"/><path d="M0 680C260 642 520 698 820 670C1100 644 1360 660 1600 640V1000H0Z" fill="#b6df94"/>`;
+  for (let i = 0; i < 22; i++) b += tuft(f(40 + rnd() * 1520), f(620 + rnd() * 180), '#6dae5a');
+  b += tree(120, 640, 1.5) + tree(560, 620, 1.1, ['#a5d96e', '#6fa84a']) + tree(1500, 650, 1.3) + '</svg>';
+  save('bg_g6c7.svg', b);
+})();

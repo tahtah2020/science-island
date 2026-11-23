@@ -173,7 +173,7 @@ window.CHAPTERS = [
   { id: 'g6c1', grade: 'g6', n: 1, title: 'Conditions for Burning', titleAr: 'شروط الاحتراق', icon: '🕯️', tint: '#ffe9c9', ready: true,
     lessons: ['How Things Burn and Air', 'The Role of Oxygen', 'Air After Burning'],
     lessonsAr: ['الهواء واحتراق الأشياء', 'دور الأكسجين', 'الهواء بعد الاحتراق'],
-    questions: 'science/questions_g6c1.js', questionsAr: 'science/questions_g6c1_ar.js', art: 'science/g6_art.js',
+    questions: 'science/questions_g6c1.js', questionsAr: 'science/questions_g6c1_ar.js', art: 'science/g6_food.js',
     game: { href: 'flame.html', name: 'Flame Lab', nameAr: 'معمل اللهب', icon: '🕯️', hint: 'Keep the candle burning, then find the gas that helps things burn!', hintAr: 'خلّي الشمعة تستمر في الاحتراق، واكتشف الغاز اللي بيساعد على الاحتراق!' },
     map: { img: 'science/assets/map_g6c1.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
     cover: 'science/assets/map_g6c1.svg', quizBg: 'science/assets/bg_g6c1.svg' },
@@ -218,6 +218,10 @@ window.CHAPTERS = [
     lessons: ['Transpiration', 'The Path of Water'], lessonsAr: ['النتح', 'مسار الماء'] },
 
   { id: 'g6c7', grade: 'g6', n: 7, title: 'Food Chain', titleAr: 'السلسلة الغذائية', icon: '🦅', tint: '#f6e7c4', ready: false,
+    questions: 'science/questions_g6c7.js', art: 'science/g6_food.js',
+    game: { href: 'foodchain.html', name: 'Food Chain Trail', nameAr: 'درب السلسلة الغذائية', icon: '🦅', hint: 'Build food chains, sort herbivores and carnivores, and follow oxygen and water around living organisms!', hintAr: 'ابنِ سلاسل غذائية، وميّز بين آكلات الأعشاب وآكلات اللحوم، وتتبّع الأكسجين والماء بين الكائنات الحية!' },
+    map: { img: 'science/assets/map_g6c7.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g6c7.svg', quizBg: 'science/assets/bg_g6c7.svg',
     lessons: ['Food Chain', 'Living Organisms, Air, and Water'] },
 
   { id: 'g6c8', grade: 'g6', n: 8, title: 'Egypt Special Part 1', titleAr: 'السلاسل الغذائية في مصر', icon: '🏜️', tint: '#f3e3c8', ready: false,

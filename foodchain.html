@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food Chain Trail · Food Chain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261123h">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Food Chain Trail.</noscript>
+<script src="firebase-config.js?v=20261123h"></script>
+<script src="chapters.js?v=20261123h"></script>
+<script src="common.js?v=20261123h"></script>
+<script src="science/g6_food.js?v=20261123h"></script>
+<script src="game_kit.js?v=20261123h"></script>
+<script>
+(() => {
+'use strict';
+/* Food Chain Trail · the game of Grade 6, Chapter 7 "Food Chain". Built on the shared game kit (game_kit.js).
+   Concepts: a food chain starts with plants, herbivores eat plants, carnivores eat other animals, arrows point from the eaten to the eater (energy moves that way) (7-1, page 63);
+   living organisms are connected through air (oxygen, carbon dioxide) and water (transpiration, the water cycle) (7-2, page 65).
+   Stage 1 (Warm Up): build the chain Grass, Grasshopper, Frog, one link at a time.
+   Stage 2 (Missions): 1) the arrows; 2) herbivores; 3) carnivores; 4) air; 5) water.
+   Stage 3 (Speed Round): herbivore or carnivore? (a picture of each animal)
+   English first (Languages track); the Arabic book is added after the owner's review. Pictures: the generated organism icons (science/assets/g6_i_*.webp) and the drawn tree. */
+const A = window.G6FOOD, at = A.at;
+const T = (en, ar) => SI.T(en, ar || en);
+const G = SI.G, P = (m, f) => G(m, f || m);
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'chain', chain: [], hl: null, who: null, food: null, gas: null, step: 0 };
+const VW = 420, VH = 280;
+const sky = c => `<rect width="${VW}" height="${VH}" fill="${c || '#dff1f8'}"/>${at(54, 44, 1.1, A.sun(18))}`;
+const meadow = `<rect y="214" width="${VW}" height="66" fill="#9fd98b"/><rect y="210" width="${VW}" height="8" fill="#7bbf5e"/>`;
+const lab = (x, y, s, c = '#1f3d57', size = 15) => A.text(x, y, s, size, c);
+
+function chainScene() {
+  const ch = sc.chain, n = Math.max(3, ch.length), step = (VW - 40) / 5, size = 62;
+  let s = `${sky()}${meadow}`;
+  ch.forEach((nm, i) => {
+    const cx = 20 + step * (i + .5), cy = 176;
+    if (sc.hl === nm) s += `<ellipse cx="${cx}" cy="${cy + 6}" rx="${size / 2 + 6}" ry="${size / 2 + 6}" fill="#fff6c2" stroke="#f2b134" stroke-width="3"/>`;
+    s += at(cx, cy, 1, A.icon(nm, size));
+    if (i < ch.length - 1) s += at(cx + step / 2, cy, 1, A.arrow(Math.max(14, step - size + 6)));
+  });
+  return s;
+}
+function sortScene() {
+  let s = `${sky()}${meadow}${at(210, 168, 1.9, A.icon(sc.who, 62))}`;
+  if (sc.food) s += at(96, 170, 1.3, A.icon(sc.food, 62)) + at(150, 172, 1, A.arrow(26)) + at(300, 90, 1, '');
+  return s;
+}
+function airScene() {
+  const tree = `<rect x="-8" y="-60" width="16" height="64" rx="5" fill="#9a6b3e" stroke="#6b4626" stroke-width="2.5"/><circle cx="0" cy="-88" r="46" fill="${A.GREEN}" stroke="${A.GREEN_D}" stroke-width="3"/><circle cx="-34" cy="-66" r="30" fill="#7fc474" stroke="${A.GREEN_D}" stroke-width="3"/><circle cx="34" cy="-66" r="30" fill="#7fc474" stroke="${A.GREEN_D}" stroke-width="3"/>`;
+  const bub = (x, y, t, c) => `<circle cx="${x}" cy="${y}" r="17" fill="${c}" stroke="#fff" stroke-width="2.5" opacity=".95"/>${A.text(x, y + 5, t, 13, '#fff')}`;
+  let s = `${sky()}${meadow}${at(96, 214, 1.15, tree)}${at(330, 178, 1, A.icon('rabbit', 70))}`;
+  if (sc.gas === 'o2' || sc.gas === 'both') s += bub(170, 90, 'O₂', '#3a8fd6') + bub(220, 126, 'O₂', '#3a8fd6') + at(250, 160, 1, A.arrow(34, '#3a8fd6'));
+  if (sc.gas === 'co2' || sc.gas === 'both') s += bub(300, 80, 'CO₂', '#7a7f8c') + bub(230, 62, 'CO₂', '#7a7f8c') + at(240, 108, 1, A.arrow(34, '#7a7f8c'), 180);
+  return s;
+}
+function waterScene() {
+  const wave = (x, y) => `<path d="M${x} ${y}c-7 -9 7 -16 0 -27M${x + 12} ${y}c-7 -9 7 -16 0 -27" fill="none" stroke="#6aa9cc" stroke-width="3" stroke-linecap="round"/>`;
+  const cloud = `<ellipse cx="0" cy="0" rx="62" ry="26" fill="#fff" stroke="#b9d3e6" stroke-width="3"/><ellipse cx="-30" cy="-10" rx="30" ry="22" fill="#fff" stroke="#b9d3e6" stroke-width="3"/><ellipse cx="22" cy="-16" rx="34" ry="26" fill="#fff" stroke="#b9d3e6" stroke-width="3"/>`;
+  const tree = `<rect x="-6" y="-44" width="12" height="46" rx="4" fill="#9a6b3e"/><circle cx="0" cy="-66" r="32" fill="${A.GREEN}" stroke="${A.GREEN_D}" stroke-width="3"/>`;
+  let s = `${sky()}<rect y="208" width="${VW}" height="72" fill="#5db4e6"/><rect x="250" y="190" width="170" height="30" fill="#9fd98b"/>${at(340, 192, 1, tree)}`;
+  if (sc.step >= 1) s += wave(80, 200) + wave(130, 200) + wave(335, 108);
+  if (sc.step >= 2) s += at(150, 66, 1.1, cloud);
+  if (sc.step >= 3) s += [110, 140, 170, 195].map((x, i) => `<path d="M${x} ${96 + (i % 2) * 14}l-4 12" stroke="#2f86bd" stroke-width="3.5" stroke-linecap="round"/>`).join('');
+  return s;
+}
+const render = () => ({ chain: chainScene, sort: sortScene, air: airScene, water: waterScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c7', logo: '🦅', title: ['Food Chain Trail', 'درب السلسلة الغذائية'], sub: ['Chapter 7 · Food Chain', 'الفصل ٧ · السلسلة الغذائية'],
+  bg: 'science/assets/bg_g6c7.svg', bgc: '#f6e7c4', label: ['Who eats whom', 'من يأكل من'], render });
+const kw = g.kw;
+const show = (o) => { Object.assign(sc, o); g.paint(); };
+const link = nm => () => { sc.chain = sc.chain.concat(nm); g.paint(); };
+
+/* ---------- Stage 1 · Warm Up: build the chain ---------- */
+async function stage1() {
+  show({ mode: 'chain', chain: [], hl: null });
+  g.say(T('Welcome to the trail! Let us build a food chain, one link at a time. Every food chain starts with a living organism that makes its own food using sunlight. Which one is it?', ''), 'point');
+  await g.choice({ options: [T('Grass', ''), T('Grasshopper', ''), T('Frog', '')], correct: T('Grass', ''),
+    hint: T('It is a plant.', ''), ok: T(`${kw('Plants')} use sunlight to produce nutrients. This is the beginning of the food chain.`, ''), reveal: link('grass') });
+  g.say(T('Now, which animal eats the grass?', ''), 'think');
+  await g.choice({ options: [T('Grasshopper', ''), T('Snake', ''), T('Owl', '')], correct: T('Grasshopper', ''),
+    hint: T('It is a small insect that eats leaves.', ''), ok: T('The grasshopper eats the grass.', ''), reveal: link('grasshopper') });
+  g.say(T('And which animal eats the grasshopper?', ''), 'think');
+  await g.choice({ options: [T('Frog', ''), T('Grass', ''), T('Owl', '')], correct: T('Frog', ''),
+    hint: T('It has a long sticky tongue.', ''), ok: T('The frog eats the grasshopper.', ''), reveal: link('frog') });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('The arrows', ''));
+  show({ mode: 'chain', chain: ['grass', 'grasshopper', 'frog'], hl: null });
+  g.say(T('Look at the arrows in this chain. What does an arrow show in a food chain?', ''), 'think');
+  await g.choice({ options: [T('The direction in which energy is moved', ''), T('How big each animal is', ''), T('Where each animal lives', '')], correct: T('The direction in which energy is moved', ''),
+    hint: T('The grass gives the grasshopper what it needs.', ''), ok: T(`The arrow points to the direction in which ${kw('energy')} is moved.`, '') });
+  g.say(T('So in Grass → Grasshopper, from which one does the arrow start?', ''), 'think');
+  await g.choice({ options: [T('From the one that is eaten', ''), T('From the one that eats', ''), T('From the biggest one', '')], correct: T('From the one that is eaten', ''),
+    hint: T('The grasshopper eats the grass.', ''), ok: T('Arrows go from the one that is eaten to the one that eats it.', ''), reveal: () => { sc.hl = 'grass'; g.paint(); } });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Herbivores', ''));
+  show({ mode: 'sort', who: 'rabbit', food: null });
+  g.say(T('Meet the rabbit! It eats plants. What do we call animals that eat plants?', ''), 'think');
+  await g.choice({ options: [T('Herbivores', ''), T('Carnivores', ''), T('Plants', '')], correct: T('Herbivores', ''),
+    hint: T('Herb is like herbs and plants.', ''), ok: T(`${kw('Herbivores')} are animals that eat plants, like grasshoppers and rabbits.`, ''), reveal: () => { sc.food = 'grass'; g.paint(); } });
+  show({ who: 'grasshopper', food: null });
+  g.say(T('Which of these animals is also a herbivore?', ''), 'think');
+  await g.choice({ options: [T('Grasshopper', ''), T('Snake', ''), T('Eagle', '')], correct: T('Grasshopper', ''),
+    hint: T('It eats grass.', ''), ok: T('The grasshopper eats plants, so it is a herbivore.', ''), reveal: () => { sc.food = 'grass'; g.paint(); } });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Carnivores', ''));
+  show({ mode: 'sort', who: 'snake', food: null });
+  g.say(T('Here comes the snake! It eats frogs. What is the snake?', ''), 'think');
+  await g.choice({ options: [T('A carnivore', ''), T('A herbivore', ''), T('A plant', '')], correct: T('A carnivore', ''),
+    hint: T('A frog is an animal.', ''), ok: T(`${kw('Carnivores')} are animals that eat other animals, like snakes, falcons, eagles and lions.`, ''), reveal: () => { sc.food = 'frog'; g.paint(); } });
+  show({ who: 'lion', food: null });
+  g.say(T('Which of these animals is a carnivore?', ''), 'think');
+  await g.choice({ options: [T('Lion', ''), T('Rabbit', ''), T('Grasshopper', '')], correct: T('Lion', ''),
+    hint: T('It eats other animals.', ''), ok: T('The lion eats other animals, so it is a carnivore.', '') });
+  show({ mode: 'chain', chain: ['grass', 'grasshopper', 'frog', 'snake', 'owl'], hl: null });
+  g.say(T('Look at the whole chain. Which organism eats the snake?', ''), 'think');
+  await g.choice({ options: [T('The owl', ''), T('The frog', ''), T('The grasshopper', '')], correct: T('The owl', ''),
+    hint: T('Follow the arrow that comes out of the snake.', ''), ok: T('The owl eats the snake. The chain is: Grass → Grasshopper → Frog → Snake → Owl.', ''), reveal: () => { sc.hl = 'owl'; g.paint(); } });
+}
+async function mission4() {
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('Air', ''));
+  show({ mode: 'air', gas: null });
+  g.say(T('Animals and plants are also connected through the air. Which gas do animals use to breathe that plants release?', ''), 'think');
+  await g.choice({ options: [T('Oxygen', ''), T('Carbon dioxide', ''), T('Water vapor', '')], correct: T('Oxygen', ''),
+    hint: T('It is the gas we need to breathe.', ''), ok: T(`Animals use the ${kw('oxygen')} released by plants to breathe.`, ''), reveal: () => { sc.gas = 'o2'; g.paint(); } });
+  g.say(T('And which gas do animals breathe out that plants take in for photosynthesis?', ''), 'think');
+  await g.choice({ options: [T('Carbon dioxide', ''), T('Oxygen', ''), T('Starch', '')], correct: T('Carbon dioxide', ''),
+    hint: T('Plants use it to make their food.', ''), ok: T(`Plants use the ${kw('carbon dioxide')} breathed out by animals for photosynthesis.`, ''), reveal: () => { sc.gas = 'both'; g.paint(); } });
+  g.say(T('If all the plants disappeared completely, what would happen to the oxygen in the air?', ''), 'think');
+  await g.choice({ options: [T('It would decrease', ''), T('It would increase', ''), T('It would not change', '')], correct: T('It would decrease', ''),
+    hint: T('Plants are the ones that release oxygen.', ''), ok: T('Plants maintain the air suitable for animals to breathe, because they release oxygen.', '') });
+}
+async function mission5() {
+  await g.banner(T('Mission 5', 'المهمة ٥'), T('Water', ''));
+  show({ mode: 'water', step: 0 });
+  g.say(T('Plants release part of their water into the air as water vapor. What is this process called?', ''), 'think');
+  await g.choice({ options: [T('Transpiration', ''), T('Photosynthesis', ''), T('Digestion', '')], correct: T('Transpiration', ''),
+    hint: T('You learnt it in chapter 6.', ''), ok: T(`Plants release part of their water into the air through ${kw('transpiration')}.`, ''), reveal: () => { sc.step = 1; g.paint(); } });
+  g.say(T('Water also evaporates from rivers and seas, rises and forms what in the sky?', ''), 'think');
+  await g.choice({ options: [T('Clouds', ''), T('Rocks', ''), T('Starch', '')], correct: T('Clouds', ''),
+    hint: T('They are white and soft.', ''), ok: T('Water vapor rises into the atmosphere to form clouds.', ''), reveal: () => { sc.step = 2; g.paint(); } });
+  g.say(T('And what happens to the water in the clouds?', ''), 'think');
+  await g.choice({ options: [T('It falls as rain', ''), T('It goes back into the roots only', ''), T('It disappears forever', '')], correct: T('It falls as rain', ''),
+    hint: T('Think of a rainy day.', ''), ok: T(`The water keeps ${kw('circulating')} and is used repeatedly by many living organisms.`, ''), reveal: () => { sc.step = 3; g.paint(); } });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
+
+/* ---------- Stage 3 · Speed Round: herbivore or carnivore? ---------- */
+const SPEED = [['grasshopper', 'herb'], ['frog', 'carn'], ['rabbit', 'herb'], ['snake', 'carn'], ['eagle', 'carn'], ['lion', 'carn'], ['owl', 'carn']];
+const NAME = { grasshopper: 'Grasshopper', frog: 'Frog', rabbit: 'Rabbit', snake: 'Snake', eagle: 'Eagle', lion: 'Lion', owl: 'Owl' };
+const spic = nm => `<image href="science/assets/g6_i_${nm}.webp" width="100" height="100"/>`;
+async function stage3() {
+  show({ mode: 'chain', chain: ['grass', 'grasshopper', 'frog', 'snake', 'owl'], hl: null });
+  await g.speedRound({
+    items: g.shuffle(SPEED).map(([nm, ans]) => ({ t: T(NAME[nm], ''), ans, pic: spic(nm), box: '0 0 100 100' })), rounds: 7,
+    buttons: [{ label: T('Herbivore', ''), value: 'herb', c: 2 }, { label: T('Carnivore', ''), value: 'carn', c: 0 }],
+    ask: T('Does it eat plants, or other animals?', ''),
+    intro: T('Speed Round! I will show an animal. Is it a <b>herbivore</b> (eats plants) or a <b>carnivore</b> (eats other animals)? 7 rounds!', ''),
+    think: T('Herbivore or carnivore?', '') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Today we walk the <b>Food Chain Trail</b>: who eats whom, and how air and water connect all living organisms.`, ''),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Food chain expert!', ''),
+    text: T('A food chain starts with <b>plants</b>; <b>herbivores</b> eat plants and <b>carnivores</b> eat other animals. The arrows point from the eaten to the eater. Living organisms are also connected through <b>air</b> and <b>water</b>.', '') }
+}).catch(err => console.error(err));
+window.__foodchain = { sc, render };
+})();
+</script>
+</body>
+</html>
