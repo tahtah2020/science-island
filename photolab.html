@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaf Lab · Photosynthesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261120f">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Leaf Lab.</noscript>
+<script src="firebase-config.js?v=20261120f"></script>
+<script src="chapters.js?v=20261120f"></script>
+<script src="common.js?v=20261120f"></script>
+<script src="science/g6_plant.js?v=20261120f"></script>
+<script src="game_kit.js?v=20261120f"></script>
+<script>
+(() => {
+'use strict';
+/* Leaf Lab · the game of Grade 6, Chapter 5 "Photosynthesis". Built on the shared game kit (game_kit.js).
+   Stage 1 (Warm Up): what a plant needs and makes in sunlight (book pages 46-47).
+   Stage 2 (Missions): 1) leaves A, B and C: does a leaf need sunlight to make starch? (pages 47-49);
+                       2) the starch test step by step: hot water, ethanol, iodine (page 47);
+                       3) day, night and the gases (pages 50-52);
+                       4) the plant in the bag (page 51).
+   Stage 3 (Speed Round): day or night?
+   English first (Languages track). T(en) with no Arabic falls back to English; the Arabic book is added after the owner's review. */
+const A = window.G6PLANT, at = A.at;
+const T = (en, ar) => SI.T(en, ar || en);
+const G = SI.G, P = (m, f) => G(m, f || m);   // Arabic for a boy / for a girl
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'leaf', names: [], night: false, state: null, sun: true, step: 1, leaf: A.GREEN, arrows: null, gauge: null, bag: false };
+const VW = 420, VH = 280;
+const arrow = (x1, y1, x2, y2, c) => { const a = Math.atan2(y2 - y1, x2 - x1), h = 9;
+  return `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${c}" stroke-width="4" stroke-linecap="round"/><path d="M${x2} ${y2}l${(-h * Math.cos(a - .5)).toFixed(1)} ${(-h * Math.sin(a - .5)).toFixed(1)}M${x2} ${y2}l${(-h * Math.cos(a + .5)).toFixed(1)} ${(-h * Math.sin(a + .5)).toFixed(1)}" stroke="${c}" stroke-width="4" stroke-linecap="round"/>`; };
+const sky = night => `<rect width="${VW}" height="${VH}" fill="${night ? '#26325c' : '#d9eefb'}"/>${night ? at(350, 46, 1.2, A.moon(17)) : at(66, 54, 1.4, A.sun(20))}`;
+const lab = (x, y, s, c = '#1f3d57', size = 14) => A.text(x, y, s, size, c);
+
+function leafScene() {
+  const n = sc.names, hi = sc.hi;
+  let s = `${sky(false)}${A.ground(VW, 262, 18)}${at(210, 232, 1.45, A.bush())}`;
+  if (n.includes('co2')) s += arrow(46, 126, 140, 112, '#6b7f8f') + lab(66, 110, T('Carbon dioxide', 'ثاني أكسيد الكربون'), '#3d5060', 15);
+  if (n.includes('water')) s += arrow(330, 268, 262, 236, '#2f8fc4') + lab(356, 270, T('Water', 'الماء'), '#1f6f9f', 16);
+  if (n.includes('sugar')) s += lab(346, 84, T('Sugar (food)', 'السكر (الغذاء)'), '#a85a10', 16) + arrow(330, 94, 262, 130, '#c26f1d');
+  if (n.includes('starch')) s += lab(346, 156, T('Starch (stored)', 'النشا (مخزَّن)'), '#5a3a8a', 16) + arrow(330, 164, 262, 170, '#6a4a9a');
+  return s;
+}
+function abcScene() {
+  return `${sky(!sc.sun)}${A.ground(VW, 262, 18)}${at(210, 224, 1.5, A.plantABC({ state: sc.state }))}`;
+}
+function testScene() {
+  const st = sc.step; let s = `<rect width="${VW}" height="${VH}" fill="#eef6fb"/><rect y="236" width="${VW}" height="44" fill="#e6d3b0"/>`;
+  if (st === 1) s += at(210, 236, 2, A.beaker({ w: 76, h: 84, liquid: '#bfe3f2' })) + at(210, 98, 2, A.steam(3)) + at(210, 180, 2, A.leafIn(A.GREEN, 0, 0)) + lab(210, 262, T('Hot water (about 80 °C)', 'ماء ساخن (حوالي ٨٠°م)'), '#2a7fb0', 14);
+  if (st === 2) s += at(210, 236, 2, A.beaker({ w: 120, h: 96, liquid: '#bfe3f2' })) + at(210, 232, 1.8, A.beaker({ w: 44, h: 76, level: .7, liquid: '#f3e6a6' })) + at(210, 170, 2, A.leafIn('#b9d79a', 0, 0)) + lab(210, 262, T('Ethanol in hot water', 'الإيثانول في ماء ساخن'), '#8a7a1d', 14);
+  if (st === 3) s += at(210, 232, 2.1, A.dish({ color: sc.leaf })) + lab(210, 262, T('Dilute iodine solution', 'محلول اليود المخفَّف'), '#b87414', 14);
+  if (st === 4) s += at(210, 232, 2.1, A.dish({ color: sc.leaf })) + lab(210, 262, T('Dilute iodine solution', 'محلول اليود المخفَّف'), '#b87414', 14);
+  return s;
+}
+function dayNightScene() {
+  const n = sc.night; let s = `${sky(n)}${A.ground(VW, 262, 18).replace('#d9b27c', n ? '#6b5636' : '#d9b27c')}${at(210, 228, 1.5, A.bush({ color: n ? '#3f7a4a' : undefined }))}`;
+  const col = n ? '#e8eef6' : '#51606d';
+  if (sc.arrows === 'day') s += arrow(60, 150, 140, 140, col) + lab(60, 134, 'CO₂', col, 21) + arrow(280, 120, 360, 100, '#2e9e6b') + lab(366, 90, 'O₂', '#1f7a52', 21);
+  if (sc.arrows === 'night') s += arrow(60, 150, 140, 140, '#8fe0b4') + lab(60, 134, 'O₂', '#8fe0b4', 21) + arrow(280, 120, 360, 100, '#f0d56c') + lab(366, 90, 'CO₂', '#f0d56c', 21);
+  return s;
+}
+function bagScene() {
+  let s = `${sky(false)}${A.ground(VW, 262, 18)}${at(170, 232, 1.5, A.bush() + A.bagOver())}`;
+  if (sc.gauge) {
+    const g = sc.gauge, bar = (x, label, v0, v1, c) => `<rect x="${x}" y="70" width="34" height="130" rx="8" fill="#fff" stroke="#9fb7c6" stroke-width="2"/><rect x="${x}" y="${200 - 130 * v1}" width="34" height="${130 * v1}" rx="8" fill="${c}"/><path d="M${x - 6} ${200 - 130 * v0}h46" stroke="#1f3d57" stroke-width="2.4" stroke-dasharray="4 3"/>${lab(x + 17, 222, label, '#1f3d57', 14)}`;
+    s += `<rect x="296" y="44" width="116" height="196" rx="14" fill="rgba(255,255,255,.82)"/>${bar(306, 'CO₂', g.co2[0], g.co2[1], '#8d98a3')}${bar(360, 'O₂', g.o2[0], g.o2[1], '#2e9e6b')}${lab(354, 60, T('After 1 day', 'بعد يوم'), '#1f3d57', 13)}`;
+  }
+  return s;
+}
+const render = () => ({ leaf: leafScene, abc: abcScene, test: testScene, daynight: dayNightScene, bag: bagScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c5', logo: '🌿', title: ['Leaf Lab', 'معمل الورقة'], sub: ['Chapter 5 · Photosynthesis', 'الفصل ٥ · البناء الضوئي'],
+  bg: 'science/assets/bg_g6c5.svg', bgc: '#e3f3d0', label: ['A leaf in the sun', 'ورقة في الشمس'], render });
+const kw = g.kw;
+const show = (o) => { Object.assign(sc, o); g.paint(); };
+
+/* ---------- Stage 1 · Warm Up: what a plant does in sunlight ---------- */
+async function stage1() {
+  show({ mode: 'leaf', names: [] });
+  g.say(T('Look at this plant in the sunlight. When sunlight falls on its leaves, the plant makes its own food. What is this process called?', 'انظر إلى هذا النبات في ضوء الشمس.'), 'point');
+  await g.choice({
+    options: [T('Photosynthesis', 'البناء الضوئي'), T('Digestion', 'الهضم'), T('Circulation', 'الدورة الدموية')], correct: T('Photosynthesis', 'البناء الضوئي'),
+    hint: T('Photo means light.', 'photo تعني ضوء.'),
+    ok: T(`When sunlight falls on the leaves, the plant performs ${kw('photosynthesis')}.`, 'photosynthesis'),
+    reveal: () => { sc.names.push('sugar'); g.paint(); } });
+  g.say(T('To make its food, the plant uses sunlight, water and a gas from the air. Which gas?', ''), 'think');
+  await g.choice({
+    options: [T('Carbon dioxide', ''), T('Oxygen', ''), T('Nitrogen', '')], correct: T('Carbon dioxide', ''),
+    hint: T('It is the gas we breathe out.', ''),
+    ok: T(`The plant uses water and ${kw('carbon dioxide')} gas to make its food (sugar).`, ''),
+    reveal: () => { sc.names.push('co2', 'water'); g.paint(); } });
+  g.say(T('The plant stores part of its food so that it can grow. In what form?', ''), 'think');
+  await g.choice({
+    options: [T('Starch', ''), T('Ethanol', ''), T('Iodine', '')], correct: T('Starch', ''),
+    hint: T('The lesson is called Sunlight and ...', ''),
+    ok: T(`The plant stores part of its food in the form of ${kw('starch')}, which it needs for growth.`, ''),
+    reveal: () => { sc.names.push('starch'); g.paint(); } });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Does a leaf need sunlight?', ''));
+  show({ mode: 'abc', sun: true, state: { A: 'green', B: 'green', C: 'green' } });
+  g.say(T('We want to find out if sunlight is needed to make starch. The day before, we cover the leaves A, B and C with aluminum foil. Why do we cover them from the day before?', ''), 'think');
+  show({ state: { A: 'foil', B: 'foil', C: 'foil' }, sun: false });
+  await g.choice({
+    options: [T('There might already be starch in the leaves', ''), T('To make the leaves soft', ''), T('To make the leaves green', '')], correct: T('There might already be starch in the leaves', ''),
+    hint: T('Starch made earlier would spoil the result.', ''),
+    ok: T(`There might already be ${kw('starch')} in the leaves, so we keep them away from sunlight from the day before.`, '') });
+  show({ state: { A: 'foil', B: 'green', C: 'foil' }, sun: true });
+  g.say(T('In the morning we take the foil off leaf B only, and we test leaf A at once. Then we leave the plant in the sunlight for 5 hours. What is the condition we change in this experiment?', ''), 'think');
+  await g.choice({
+    options: [T('Whether the leaf gets sunlight or not', ''), T('The kind of plant', ''), T('The size of the pot', '')], correct: T('Whether the leaf gets sunlight or not', ''),
+    hint: T('It is the thing we are asking about.', ''),
+    ok: T(`The condition we change is whether the leaf gets ${kw('sunlight')} or not.`, '') });
+  g.say(T('After 5 hours we test leaves B and C with iodine solution. Which leaf will turn dark blue?', ''), 'think');
+  await g.choice({
+    options: [T('Leaf B', ''), T('Leaf C', ''), T('Leaf A', '')], correct: T('Leaf B', ''),
+    hint: T('Only one leaf got sunlight after the foil was removed.', ''),
+    ok: T(`Leaf B got sunlight, made starch and turns ${kw('dark blue')}. Leaf C stayed covered, so it does not.`, ''),
+    reveal: () => { sc.state = { A: 'foil', B: 'green', C: 'foil' }; g.paint(); } });
+  g.say(T('So what does the experiment show?', ''), 'think');
+  await g.choice({
+    options: [T('Plants produce starch by receiving sunlight', ''), T('Plants produce starch by blocking sunlight', ''), T('Plants produce starch from foil', '')], correct: T('Plants produce starch by receiving sunlight', ''),
+    hint: T('Compare B with C.', ''),
+    ok: T(`${kw('Plants produce starch by receiving sunlight')}.`, '') });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('The starch test', ''));
+  show({ mode: 'test', step: 1, leaf: A.GREEN });
+  g.say(T('Now we test a leaf for starch. Step 1: we put the leaf in hot water. Why?', ''), 'think');
+  await g.choice({
+    options: [T('To make it soft', ''), T('To make it dark blue', ''), T('To make starch', '')], correct: T('To make it soft', ''),
+    hint: T('The hot water changes how the leaf feels.', ''),
+    ok: T(`The hot water makes the leaf ${kw('soft')}.`, '') });
+  g.say(T('Careful! What must we not do with the hot water?', ''), 'think');
+  await g.choice({
+    options: [T('Touch it directly, or we will get burned', ''), T('Pour it on the leaf', ''), T('Let it cool down', '')], correct: T('Touch it directly, or we will get burned', ''),
+    hint: T('It is about 80 degrees Celsius.', ''),
+    ok: T('Do not touch the hot water directly, or you will get burned.', '') });
+  show({ step: 2, leaf: '#b9d79a' });
+  g.say(T('Step 2: we put the leaf into ethanol that is warmed in hot water. Why do we use ethanol?', ''), 'think');
+  await g.choice({
+    options: [T('To remove the green color from the leaf', ''), T('To give the leaf more starch', ''), T('To cover the leaf from sunlight', '')], correct: T('To remove the green color from the leaf', ''),
+    hint: T('The green colour would hide the colour we look for.', ''),
+    ok: T(`${kw('Ethanol')} removes the green colour from the leaf.`, ''),
+    reveal: () => { sc.leaf = '#f1f3dc'; g.paint(); } });
+  g.say(T('Why is the ethanol warmed in hot water, and not directly over a flame?', ''), 'think');
+  await g.choice({
+    options: [T('Ethanol is highly flammable', ''), T('Ethanol turns blue in a flame', ''), T('The leaf would melt', '')], correct: T('Ethanol is highly flammable', ''),
+    hint: T('It catches fire very easily.', ''),
+    ok: T(`${kw('Ethanol is highly flammable')}, so we do not heat it directly over a flame.`, '') });
+  show({ step: 3, leaf: '#f1f3dc' });
+  g.say(T('Step 3: we wash the leaf with hot water and dip it in dilute iodine solution. A leaf with starch will turn...', ''), 'think');
+  await g.choice({
+    options: [T('Dark blue', ''), T('Red', ''), T('Yellow', '')], correct: T('Dark blue', ''),
+    hint: T('Think of a deep, dark colour.', ''),
+    ok: T(`When you add iodine solution to starch, the colour changes to ${kw('dark blue')}.`, ''),
+    reveal: () => { sc.leaf = A.BLUE_D; g.paint(); } });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Day, night and the air', ''));
+  show({ mode: 'daynight', night: false, arrows: null });
+  g.say(T('It is daytime. Sunlight is hitting the leaves. What gas do plants release into the air now?', ''), 'think');
+  await g.choice({
+    options: [T('Oxygen', ''), T('Carbon dioxide', ''), T('Nitrogen', '')], correct: T('Oxygen', ''),
+    hint: T('It is the gas we need to breathe in.', ''),
+    ok: T(`In the sunlight, plants take in ${kw('carbon dioxide')} and release ${kw('oxygen')}.`, ''),
+    reveal: () => { sc.arrows = 'day'; g.paint(); } });
+  g.say(T('Plants also breathe to live and grow. What gas do they take in when they breathe?', ''), 'think');
+  await g.choice({
+    options: [T('Oxygen', ''), T('Carbon dioxide', ''), T('Nitrogen', '')], correct: T('Oxygen', ''),
+    hint: T('The same gas that we take in when we breathe.', ''),
+    ok: T(`When they breathe, plants take in ${kw('oxygen')} and release ${kw('carbon dioxide')}.`, '') });
+  g.say(T('In the daytime both things happen. Which statement is correct?', ''), 'think');
+  await g.choice({
+    options: [T('Plants take in more carbon dioxide than they release by breathing', ''), T('Plants do not breathe in the sunlight', ''), T('Plants release only oxygen all day', '')], correct: T('Plants take in more carbon dioxide than they release by breathing', ''),
+    hint: T('Photosynthesis is very active in the light, but breathing never stops.', ''),
+    ok: T(`In the daytime, plants take in ${kw('more carbon dioxide')} than the carbon dioxide they release by breathing.`, '') });
+  show({ night: true, arrows: null });
+  g.say(T('Now it is night and there is no light. What kind of gas exchange do plants do?', ''), 'think');
+  await g.choice({
+    options: [T('They only breathe: they take in oxygen and release carbon dioxide', ''), T('They take in carbon dioxide and release oxygen', ''), T('They stop all gas exchange', '')], correct: T('They only breathe: they take in oxygen and release carbon dioxide', ''),
+    hint: T('Photosynthesis needs light.', ''),
+    ok: T(`At night there is no light, so plants ${kw('only breathe')}: they take in oxygen and release carbon dioxide.`, ''),
+    reveal: () => { sc.arrows = 'night'; g.paint(); } });
+}
+async function mission4() {
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('The plant in the bag', ''));
+  show({ mode: 'bag', gauge: null });
+  g.say(T('We wrap a plant in a bag and leave it in the sunlight for about 1 day. What will happen to the carbon dioxide inside the bag?', ''), 'think');
+  await g.choice({
+    options: [T('It decreases', ''), T('It increases', ''), T('It does not change', '')], correct: T('It decreases', ''),
+    hint: T('The plant uses it to make food.', ''),
+    ok: T(`In sunlight the amount of carbon dioxide inside the bag ${kw('decreases')}.`, ''),
+    reveal: () => { sc.gauge = { co2: [.55, .3], o2: [.55, .55] }; g.paint(); } });
+  g.say(T('And the oxygen inside the bag?', ''), 'think');
+  await g.choice({
+    options: [T('It increases', ''), T('It decreases', ''), T('It does not change', '')], correct: T('It increases',''),
+    hint: T('The plant releases it.', ''),
+    ok: T(`The amount of oxygen inside the bag ${kw('increases')}.`, ''),
+    reveal: () => { sc.gauge = { co2: [.55, .3], o2: [.55, .8] }; g.paint(); } });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); }
+
+/* ---------- Stage 3 · Speed Round: day or night? ---------- */
+const SPEED = [
+  { t: T('Sunlight is hitting the leaves', ''), ans: 'day' },
+  { t: T('Photosynthesis is very active', ''), ans: 'day' },
+  { t: T('Plants take in more carbon dioxide than they release by breathing', ''), ans: 'day' },
+  { t: T('Plants release a lot of oxygen', ''), ans: 'day' },
+  { t: T('There is no light', ''), ans: 'night' },
+  { t: T('Plants only breathe', ''), ans: 'night' },
+  { t: T('Plants take in oxygen and release carbon dioxide only', ''), ans: 'night' },
+  { t: T('Plants do not make food in the dark', ''), ans: 'night' }
+];
+async function stage3() {
+  const some = (k, n) => g.shuffle(SPEED.filter(s => s.ans === k)).slice(0, n);
+  show({ mode: 'daynight', night: false, arrows: null });
+  await g.speedRound({
+    items: some('day', 4).concat(some('night', 4)), rounds: 8,
+    buttons: [{ label: T('Daytime', ''), value: 'day', c: 0 }, { label: T('Nighttime', ''), value: 'night', c: 2 }],
+    ask: T('Daytime or nighttime?', ''),
+    intro: T('Speed Round! I will say something about plants and air. Is it true in the <b>daytime</b> or at <b>night</b>? 8 rounds!', ''),
+    think: T('Daytime or nighttime?', ''),
+    show: it => { show({ mode: 'daynight', night: it ? it.ans === 'night' : false, arrows: null }); },
+    reveal: it => { show({ mode: 'daynight', night: it.ans === 'night', arrows: it.ans }); }
+  });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Today we visit the <b>Leaf Lab</b>: we test leaves for starch, follow the gases of the air by day and by night, and see what happens to a plant in a bag.`, ''),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Leaf expert!', ''),
+    text: T('In sunlight a plant uses <b>water</b> and <b>carbon dioxide</b> to make its food, and stores part of it as <b>starch</b>. Iodine turns starch <b>dark blue</b>. By day plants take in carbon dioxide and release oxygen, and they breathe too. At night they only breathe.', '') }
+}).catch(err => console.error(err));
+window.__leaflab = { sc, render };
+})();
+</script>
+</body>
+</html>
