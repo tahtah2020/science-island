@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-23', title: 'Grade 6 Science: Chapter 6 Transportation of Water in Plants',
+    items: [
+      { text: 'New unit with 68 questions, the Water Trek game and 7 pictures (English, Languages track)', links: [{ label: 'Open the unit', href: 'chapters.html', ch: 'g6c6' }] }
+    ] },
   { date: '2026-11-23', title: 'Certificate: language choice and cleaner layout',
     items: [
       { text: 'The certificate can be made in Arabic or English (buttons above the picture), and the text is laid out on one centre axis with a divider under the name and a clear size order' }
