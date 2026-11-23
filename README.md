@@ -455,6 +455,8 @@ All files of a chapter except its game page go in its subject's folder (`science
 - Run it after every new chapter or unit goes `ready: true` (or after changing questions), commit `lessons/`, `sitemap.xml`, `llms.txt`, then ask Search Console to re-read the sitemap. English-track and English-subject pages are not generated yet.
 - 20 Nov 2026 (Search Console export, 14-17 Nov): `SEARCHED` in `tools/make_seo_pages.js` gained `math-g6-mg6u1-l2` (factor trees: 40, 12, 18), `studies-g5-sg5u1-l1` (astronomical location of Egypt) and two more questions on `studies-g4-sg4u1-l1` (sub-direction between north and east; plan vs. description). Answers are the book's own text. The `.html` and extensionless URLs both answer 200 with the same canonical, so no redirect is needed.
 
+- 23 Nov 2026: the search pages now load the fonts Cairo (text) and Reem Kufi (headings and brand) from Google Fonts (the old CSS named Cairo but never loaded it, so phones showed Tahoma); bigger line height, numbered-card look, gold heading underline, coral button. The CSS is the `CSS` constant in `tools/make_seo_pages.js`; the same run also built the Arabic Grade 3 pages.
+
 ## Favicon (25 Oct 2026)
 Reesho's head (from `assets/parrot_wave.png`) on a mint rounded square: `favicon.ico` (16/32/48), `favicon-32.png`, `apple-touch-icon.png` (180), `icon-192.png`, `icon-512.png` at the repo root. Every page links the first three in its `<head>`; a new page needs the same three `<link>` lines. Rebuild: crop 300×300 around (212,150) of `parrot_wave.png`, mint #bfe8d6 background, rounded corners 22%.
 
