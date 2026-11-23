@@ -1,0 +1,39 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  768,
+  768
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, bright friendly look, square picture, no text, no letters, no numbers, no writing, no labels, no arrows, no symbols anywhere in the picture.",
+ "images": [
+  {
+   "file": "g6_child_tree",
+   "prompt": "An Egyptian boy about eleven years old with short black hair, wearing a yellow t-shirt, standing and breathing calmly next to a big leafy green tree in a sunny park in Cairo, blue sky, green grass, plain flat-roofed beige apartment buildings far behind, no domes.",
+   "seed": 601,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_water_cycle",
+   "prompt": "A landscape scene of the water on Earth: a blue sea on the left, a river running through green land in the middle, a green tree, and above them in the sky a big white cloud with blue rain falling from it, and a bright sun. Flat-roofed plain houses are not needed.",
+   "seed": 611,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_no_plants",
+   "prompt": "A dry empty brown desert-like land with cracked bare soil and no plants, no trees and no grass at all, under a hot yellow sun and a pale sky, a few dry rocks.",
+   "seed": 621,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_nile_life",
+   "prompt": "A calm bend of the Nile river in Egypt with green papyrus reeds and palm trees on the bank, a Nile crocodile resting on the sand, white ibis birds and a white egret standing at the water edge, two ducks swimming, a small gazelle drinking, desert mountains in the distance, blue sky.",
+   "seed": 631,
+   "n": 2,
+   "ref": null
+  }
+ ]
+}

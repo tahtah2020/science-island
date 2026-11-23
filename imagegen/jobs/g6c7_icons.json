@@ -1,0 +1,67 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [
+  512,
+  512
+ ],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, simple friendly shapes, one single subject only, centred, square picture. The subject is isolated on a plain pure white background with no ground, no shadow and no other objects. Absolutely no text, no letters, no numbers, no arrows, no symbols anywhere.",
+ "images": [
+  {
+   "file": "g6_i_grass",
+   "prompt": "A clump of fresh green grass blades growing from a small patch of soil.",
+   "seed": 501,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_grasshopper",
+   "prompt": "A green grasshopper seen from the side, with long back legs and two thin antennae.",
+   "seed": 511,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_frog",
+   "prompt": "A green frog sitting seen from the side, with big eyes and a pale belly, friendly look.",
+   "seed": 521,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_snake",
+   "prompt": "A brown snake with a dark pattern of bands, coiled in a loose S shape with its head raised, calm friendly look, mouth closed.",
+   "seed": 531,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_owl",
+   "prompt": "A brown owl with big round eyes and a pale face disc, perched upright, seen from the front.",
+   "seed": 541,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_eagle",
+   "prompt": "A brown eagle with a pale head and a strong curved beak, perched upright, wings folded, seen from the side.",
+   "seed": 551,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_rabbit",
+   "prompt": "A grey-brown rabbit sitting, with long upright ears and a white fluffy tail, seen from the side.",
+   "seed": 561,
+   "n": 2,
+   "ref": null
+  },
+  {
+   "file": "g6_i_lion",
+   "prompt": "An adult male lion with a big golden mane, standing and seen from the side, calm friendly look, mouth closed.",
+   "seed": 571,
+   "n": 2,
+   "ref": null
+  }
+ ]
+}
