@@ -1634,44 +1634,44 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const arDig = v => String(v).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   /* fractions of the picture: ribbon centre, rows (y), the stamp circle, the date and the site name; below row .6 the text moves right of Reesho */
   const CERT_LAY = {
-    land: { w: 1492, h: 1054, ribbon: [.5, .178, .44], rows: [.345, .445, .53, .6, .765], cxLow: .56, wLow: .5, wTop: .62, stamp: [.498, .9, .042], date: [.66, .835], url: [.36, .835] },
-    sq: { w: 1254, h: 1254, ribbon: [.5, .185, .5], rows: [.375, .465, .55, .62, .785], cxLow: .57, wLow: .5, wTop: .66, stamp: [.5, .92, .042], date: [.66, .855], url: [.36, .855] }
+    land: { w: 1492, h: 1054, ribbon: [.5, .178, .44], y: { to: .335, name: .43, rule: .492, for: .552, ch: .62, sub: .68, grade: .765, foot: .838 }, wide: .6, wlow: .5, stamp: [.498, .9, .042] },
+    sq: { w: 1254, h: 1254, ribbon: [.5, .185, .5], y: { to: .365, name: .455, rule: .52, for: .575, ch: .64, sub: .698, grade: .785, foot: .858 }, wide: .64, wlow: .5, stamp: [.5, .92, .042] }
   };
   let certFontsP;
   function certFonts() {
     if (!certFontsP) certFontsP = Promise.race([Promise.all([['CertDisplayAr', 'lalezar-ar.woff2', '400'], ['CertBodyAr', 'elmessiri-ar-700.woff2', '700'], ['CertDisplayEn', 'fredoka-600.woff2', '600'], ['CertBodyEn', 'nunito-800.woff2', '800']].map(([n, f, w]) => new FontFace(n, `url(assets/fonts/${f})`, { weight: w }).load().then(ff => document.fonts.add(ff)))), new Promise(r => setTimeout(r, 4000))]).catch(() => {});
     return certFontsP;
   }
-  async function certCanvas({ ch, pct, kind = 'land' }) {
-    const L = CERT_LAY[kind], lvl = certLevel(pct) || 'silver', AR = isAr(), p = player() || {}, c = ch || chapterById(prof().cur);
-    const cv = document.createElement('canvas'); cv.width = L.w; cv.height = L.h; const x = cv.getContext('2d'), W = L.w, H = L.h;
+  async function certCanvas({ ch, pct, kind = 'land', lang }) {
+    const L = CERT_LAY[kind], lvl = certLevel(pct) || 'silver', AR = (lang || (isAr() ? 'ar' : 'en')) === 'ar', t = (en, ar) => (AR ? ar : en), p = player() || {}, c = ch || chapterById(prof().cur);
+    const cv = document.createElement('canvas'); cv.width = L.w; cv.height = L.h; const x = cv.getContext('2d'), W = L.w, H = L.h, Y = L.y;
     await certFonts();
     const img = new Image(); img.src = `assets/cert/cert_${lvl}_${kind}.webp`;
     await new Promise((ok, no) => { img.onload = ok; img.onerror = no; setTimeout(no, 4000); });
-    x.drawImage(img, 0, 0, W, H);
-    x.direction = AR ? 'rtl' : 'ltr'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.drawImage(img, 0, 0, W, H); x.textAlign = 'center'; x.textBaseline = 'middle';
     /* display (900): Lalezar / Fredoka; body (700, 800): El Messiri / Nunito */
-    const F = (w, n, ar = AR) => w >= 900 ? (ar ? `400 ${n}px CertDisplayAr, Cairo, sans-serif` : `600 ${n}px CertDisplayEn, Nunito, sans-serif`) : (ar ? `700 ${n}px CertBodyAr, Cairo, sans-serif` : `800 ${n}px CertBodyEn, Nunito, sans-serif`);
-    const accent = lvl === 'gold' ? '#b4690e' : '#23799f';
-    const hasAr = t => /[\u0600-\u06FF]/.test(t);
-    const fit = (txt, size, cx, y, maxw, col, wt = 900) => { const ar = AR || hasAr(txt); let n = size; do { x.direction = ar ? 'rtl' : 'ltr'; x.font = F(wt, n, ar); n -= 2; } while (x.measureText(txt).width > maxw * W && n > 18); x.fillStyle = col; x.fillText(txt, cx * W, y * H); };
-    const name = (p.name || '').trim(), pc = AR ? arDig(pct) + '٪' : pct + '%';
-    const word = lvl === 'gold' ? T('Excellent', 'ممتاز') : T('Very good', 'جيد جدًّا');
-    const sub = `${subjectName ? subjectName() : ''} · ${gradeName(p.grade)}`;
+    const F = (w, n, ar) => w >= 900 ? (ar ? `400 ${n}px CertDisplayAr, Cairo, sans-serif` : `600 ${n}px CertDisplayEn, Nunito, sans-serif`) : (ar ? `700 ${n}px CertBodyAr, Cairo, sans-serif` : `800 ${n}px CertBodyEn, Nunito, sans-serif`);
+    const navy = '#1f3d57', soft = '#4a6b84', accent = lvl === 'gold' ? '#b4690e' : '#23799f', hasAr = v => /[\u0600-\u06FF]/.test(v);
+    /* one centre axis (.5) for every line, so the block reads as a column; fit() shrinks long text to maxw of the width */
+    const fit = (txt, size, y, maxw, col, wt = 900, cx = .5) => { const ar = AR || hasAr(txt); let n = size; do { x.direction = ar ? 'rtl' : 'ltr'; x.font = F(wt, n, ar); n -= 2; } while (x.measureText(txt).width > maxw * W && n > 18); x.fillStyle = col; x.fillText(txt, cx * W, y * H); return x.measureText(txt).width; };
+    const rule = (y, wd) => { const g = x.createLinearGradient((.5 - wd / 2) * W, 0, (.5 + wd / 2) * W, 0); g.addColorStop(0, accent + '00'); g.addColorStop(.5, accent); g.addColorStop(1, accent + '00'); x.fillStyle = g; x.fillRect((.5 - wd / 2) * W, y * H - 2, wd * W, 4); x.fillStyle = accent; x.save(); x.translate(W / 2, y * H); x.rotate(Math.PI / 4); x.fillRect(-8, -8, 16, 16); x.restore(); };
+    const g = (m, f) => (gender() === 'f' ? f : m), pc = AR ? arDig(pct) + '٪' : pct + '%';
+    const word = lvl === 'gold' ? t('Excellent', 'ممتاز') : t('Very good', 'جيد جدًّا');
+    const GR = GRADES[p.grade || grade()] || GRADES.g5, sj = subject(), sjn = sj ? t(sj.title, sj.titleAr || sj.title) : '';
+    const chTxt = AR ? (c.titleAr || c.title) : c.title, name = (p.name || '').trim();
     const [rx, ry, rw] = L.ribbon;
-    fit(T('Certificate of Achievement', 'شهادة تقدير'), W * (AR ? .08 : .062), rx, ry, rw, '#1f3d57');
-    fit(T('This certificate is awarded to', 'تُمنح هذه الشهادة إلى'), W * .03, .5, L.rows[0], L.wTop, '#3a5c75', 700);
-    fit(name || T('Our champion', 'بطلنا'), W * (AR ? .09 : .075), .5, L.rows[1], L.wTop, '#1f3d57');
-    fit(T('for completing the questions of', G('لإتمامه أسئلة', 'لإتمامها أسئلة')), W * .03, L.cxLow, L.rows[2], L.wLow, '#3a5c75', 700);
-    fit(`«${chTitle(c)}»`, W * .048, L.cxLow, L.rows[3], L.wLow, accent);
-    fit(sub, W * .028, L.cxLow, L.rows[3] + .068, L.wLow, '#3a5c75', 700);
-    fit(T(`with a grade of ${word} (${pc})`, `${G('وحصوله', 'وحصولها')} على تقدير ${word} (${pc})`), W * .034, L.cxLow, L.rows[4], L.wLow, '#1f3d57');
-    const [sx, sy, sr] = L.stamp; x.direction = 'ltr';
-    fit(pc, W * .03, sx, sy, sr * 1.7, accent);
-    x.direction = AR ? 'rtl' : 'ltr';
-    const d = new Date(), ds = AR ? d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) : d.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
-    fit(ds, W * .024, L.date[0], L.date[1], .22, '#3a5c75', 700);
-    x.direction = 'ltr'; fit('motafawek.com', W * .024, L.url[0], L.url[1], .2, '#3a5c75', 800);
+    fit(t('Certificate of Achievement', 'شهادة تقدير'), W * (AR ? .07 : .062), ry - .004, rw, navy, 900, rx);
+    fit(t('This certificate is proudly awarded to', 'تُمنح هذه الشهادة بكل فخر إلى'), W * .028, Y.to, L.wide, soft, 700);
+    fit(name || t('Our champion', 'بطلنا'), W * (AR ? .09 : .078), Y.name, L.wide, navy);
+    rule(Y.rule, L.wlow * .8);
+    fit(t('for successfully completing the questions of', g('لإتمامه أسئلة', 'لإتمامها أسئلة')), W * .028, Y.for, L.wlow, soft, 700);
+    fit(`«${chTxt}»`, W * .05, Y.ch, L.wlow, accent);
+    fit(`${sjn}  ·  ${t(GR[0], GR[1])}`, W * .027, Y.sub, L.wlow, soft, 700);
+    fit(t(`with a grade of ${word} (${pc})`, `${g('وحصل', 'وحصلت')} على تقدير ${word} بنسبة ${pc}`), W * .036, Y.grade, L.wlow, navy);
+    const [sx, sy, sr] = L.stamp; x.direction = 'ltr'; fit(pc, W * .03, sy, sr * 1.7, accent, 900, sx);
+    const d = new Date(), ds = d.toLocaleDateString(AR ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+    fit(ds, W * .024, Y.foot, .2, soft, 700, .665);
+    fit('motafawek.com', W * .024, Y.foot, .2, soft, 800, .335);
     return new Promise(r => cv.toBlob(r, 'image/png'));
   }
   function certDialog({ ch, pct }) {
@@ -1679,6 +1679,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     const o = document.createElement('div'); o.setAttribute('role', 'dialog');
     o.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(31,61,87,.6);display:grid;place-items:center;padding:12px;overflow:auto';
     o.innerHTML = `<div style="background:#fff8ea;border-radius:22px;padding:14px;max-width:560px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.35);text-align:center;font-family:Cairo,Nunito,sans-serif">
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px"><button class="btn" type="button" data-l="ar" style="padding:6px 16px">عربي</button><button class="btn" type="button" data-l="en" style="padding:6px 16px">English</button></div>
       <div id="si-cert-pic" style="min-height:120px;display:grid;place-items:center;color:#3a5c75;font-weight:800">${T('Preparing your certificate…', 'بنجهّز شهادتك…')}</div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px">
         <button class="btn" type="button" data-cs style="background:#2e9e6b;color:#fff;box-shadow:0 4px 0 #1f7a50" disabled>📤 ${T('Share', 'شارك الشهادة')}</button>
@@ -1687,22 +1688,28 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     document.body.appendChild(o);
     const close = () => o.remove(); o.querySelector('[data-cx]').onclick = close; o.addEventListener('click', e => { if (e.target === o) close(); });
     const nm = k => `motafawek-certificate-${k}.png`, download = (b, f) => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = f; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800); };
-    (async () => {
+    let lang = isAr() ? 'ar' : 'en', land, sq, seq = 0;
+    const bs = o.querySelector('[data-cs]'), bd = o.querySelector('[data-cd]'), pic = o.querySelector('#si-cert-pic');
+    const mark = () => o.querySelectorAll('[data-l]').forEach(b => { const on = b.dataset.l === lang; b.style.background = on ? '#2e9e6b' : ''; b.style.color = on ? '#fff' : ''; });
+    async function make() {
+      const my = ++seq; mark(); bs.disabled = bd.disabled = true;
       try {
-        const land = await certCanvas({ ch, pct, kind: 'land' }), sq = await certCanvas({ ch, pct, kind: 'sq' });
-        const pic = o.querySelector('#si-cert-pic'); pic.innerHTML = ''; const im = new Image(); im.src = URL.createObjectURL(land); im.alt = T('Your certificate', 'شهادتك'); im.style.cssText = 'width:100%;border-radius:12px;display:block'; pic.appendChild(im);
-        const bs = o.querySelector('[data-cs]'), bd = o.querySelector('[data-cd]'); bs.disabled = bd.disabled = false;
-        bd.onclick = () => { download(land, nm('print')); ga('certificate', { method: 'download', level: certLevel(pct), pct }); };
-        bs.onclick = async () => {
-          const file = new File([sq], nm('share'), { type: 'image/png' }); let method = 'download';
-          try {
-            if (navigator.canShare && navigator.canShare({ files: [file] })) { method = 'native_image'; await navigator.share({ files: [file], text: shareText({ ch }) + ' ' + SHARE_URL }); }
-            else download(sq, nm('share'));
-            ga('certificate', { method, level: certLevel(pct), pct });
-          } catch (e) { if (!e || e.name !== 'AbortError') download(sq, nm('share')); }
-        };
-      } catch (e) { o.querySelector('#si-cert-pic').textContent = T('Sorry, the certificate could not be made. Try again.', 'معلش، مقدرناش نجهّز الشهادة. حاول تاني.'); }
-    })();
+        const [l, q] = await Promise.all([certCanvas({ ch, pct, kind: 'land', lang }), certCanvas({ ch, pct, kind: 'sq', lang })]);
+        if (my !== seq) return; land = l; sq = q;
+        pic.innerHTML = ''; const im = new Image(); im.src = URL.createObjectURL(land); im.alt = T('Your certificate', 'شهادتك'); im.style.cssText = 'width:100%;border-radius:12px;display:block'; pic.appendChild(im); bs.disabled = bd.disabled = false;
+      } catch (e) { pic.textContent = T('Sorry, the certificate could not be made. Try again.', 'معلش، مقدرناش نجهّز الشهادة. حاول تاني.'); }
+    }
+    o.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { if (lang !== b.dataset.l) { lang = b.dataset.l; make(); } });
+    bd.onclick = () => { if (land) { download(land, nm('print-' + lang)); ga('certificate', { method: 'download', level: certLevel(pct), pct, lang }); } };
+    bs.onclick = async () => {
+      if (!sq) return; const file = new File([sq], nm('share-' + lang), { type: 'image/png' }); let method = 'download';
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) { method = 'native_image'; await navigator.share({ files: [file], text: shareText({ ch }) + ' ' + SHARE_URL }); }
+        else download(sq, nm('share-' + lang));
+        ga('certificate', { method, level: certLevel(pct), pct, lang });
+      } catch (e) { if (!e || e.name !== 'AbortError') download(sq, nm('share-' + lang)); }
+    };
+    make();
   }
   /* the button for a results panel (empty under 75%): certBtn(pct) in the panel, then wireCert(panel, { ch, pct }) */
   const certBtn = pct => certLevel(pct) ? `<button class="btn cert" type="button" data-cert style="background:#f2b134;color:#1f3d57;box-shadow:0 4px 0 #c88a14;margin:6px auto 2px">🎓 ${T('Get your certificate', G('احصل على شهادتك', 'احصلي على شهادتك'))}</button>` : '';
