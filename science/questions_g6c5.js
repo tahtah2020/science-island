@@ -61,7 +61,7 @@ window.IDEAS = [
       mc('What nutrient is produced when sunlight falls on the leaves of plants?', ['Starch', 'Ethanol', 'Aluminum'], { hint: 'The iodine test is for this nutrient.' }),
       mc('Which of the following explanations is correct?', ['Plants produce starch by receiving sunlight', 'Plants produce starch by blocking sunlight'], { hint: 'Think of which leaf of the plant makes food: the one in the light or the one in the dark.' }),
       tf('Plants produce starch by blocking sunlight.', false, { ...QUICK, hint: 'They need light to make food.', explain: 'Plants produce starch by receiving sunlight.' }),
-      fix('Plants produce starch by blocking sunlight.', 'blocking', 'receiving', { hint: 'Which word fits with light and photosynthesis?' }),
+      fill('Plants produce starch by ___ sunlight.', ['receiving', 'blocking', 'avoiding'], { hint: 'Which word fits with light and photosynthesis?' }),
       build('why', 'How do plants produce starch?', ['Plants produce starch', 'by receiving', 'sunlight'], ['by blocking', 'in the dark'], { hint: 'Think of the leaf in the sun.' })
     ] },
   { id: 'C4', lesson: 1, concept: 'Iodine solution turns starch dark blue',

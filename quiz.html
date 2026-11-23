@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261123b{{{"></script>
-<script src="chapters.js?v=20261123b{{{"></script>
-<script src="common.js?v=20261123b{{{"></script>
+<script src="firebase-config.js?v=20261123c{{{"></script>
+<script src="chapters.js?v=20261123c{{{"></script>
+<script src="common.js?v=20261123c{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -1012,21 +1012,22 @@ function ask(q) {
       const ans = String(q.answer), maxTries = 2;
       const isLetter = ch => /[\p{L}\p{N}]/u.test(ch), same = (a, b) => a.toLocaleLowerCase() === b.toLocaleLowerCase();
       const slotsEl = mk('div', 'slots'), tilesEl = mk('div', 'tiles'), slots = [];
-      let word = mk('div', 'word'); slotsEl.appendChild(word);
+      let word = mk('div', 'word'); slotsEl.appendChild(word); let wi = 0;
+      const WCOL = ['#bfe8d6', '#fde3b0', '#cfe3fb', '#f8d3e0'];   // one colour for the letters of each word (owner, 23 Nov 2026)
       [...ans].forEach(ch => {
-        if (ch === ' ') { word = mk('div', 'word'); slotsEl.appendChild(word); return; }
+        if (ch === ' ') { word = mk('div', 'word'); slotsEl.appendChild(word); wi++; return; }
         if (!isLetter(ch)) { word.appendChild(mk('span', 'slot fixed', esc(ch))); return; }
         const b = mk('button', 'slot'); b.type = 'button'; b.setAttribute('aria-label', T('Letter box', 'خانة حرف'));
-        const S = { el: b, ch, tile: null, lock: false };
+        const S = { el: b, ch, tile: null, lock: false, w: wi }; b.style.borderBottomColor = WCOL[wi % 4];
         b.onclick = () => { if (finished || S.lock || !S.tile) return; S.tile.el.classList.remove('used'); S.tile = null; sfx.tick(); paint(); };
         word.appendChild(b); slots.push(S);
       });
       /* a long single word (12+ letters, e.g. "Compressibility") gets narrower boxes so it fits a phone screen */
       slotsEl.querySelectorAll('.word').forEach(w => { if (w.querySelectorAll('.slot:not(.fixed)').length >= 12) w.classList.add('long'); });
       const letters = slots.map(S => S.ch);
-      const spare = shuffle([...(AR ? 'بتجحدرسشصعفقكلمنهوي' : 'aeiourstlnmcdph')].filter(c => !letters.some(l => same(l, c)))).slice(0, letters.length >= 5 ? 2 : 1);
-      const tiles = shuffle(letters.concat(spare)).map(ch => {
-        const b = mk('button', 'tile', esc(ch)); b.type = 'button'; const t = { el: b, ch };
+      /* no spare letters: the tiles are exactly the letters of the answer (owner, 23 Nov 2026) */
+      const tiles = shuffle(slots.map(S => ({ ch: S.ch, w: S.w }))).map(({ ch, w }) => {
+        const b = mk('button', 'tile', esc(ch)); b.type = 'button'; b.style.background = WCOL[w % 4]; const t = { el: b, ch };
         b.onclick = () => { if (finished) return; const S = slots.find(x => !x.tile); if (!S) return; S.tile = t; b.classList.add('used'); sfx.tick(); paint(); };
         tilesEl.appendChild(b); return t;
       });

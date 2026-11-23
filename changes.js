@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-23', title: 'Easier letter-tile questions; Chapter 5 fix question changed',
+    items: [
+      { text: 'Correct-the-word questions: the letters of each word share one colour and there are no spare letters; Grade 6 Chapter 5 no longer uses this type' }
+    ] },
   { date: '2026-11-23', title: 'Grade 6 Science: Chapter 5 Photosynthesis (Languages)',
     items: [
       { text: 'New chapter: Photosynthesis, 15 ideas / 77 questions with hints (Sunlight and Starch, Gas Exchange)', links: [{ label: 'Leaf Lab', href: 'photolab.html', ch: 'g6c5' }] },
