@@ -217,7 +217,7 @@ window.CHAPTERS = [
     cover: 'science/assets/map_g6c6.svg', quizBg: 'science/assets/bg_g6c6.svg',
     lessons: ['Transpiration', 'The Path of Water'], lessonsAr: ['النتح', 'مسار الماء'] },
 
-  { id: 'g6c7', grade: 'g6', n: 7, title: 'Food Chain', titleAr: 'السلسلة الغذائية', icon: '🦅', tint: '#f6e7c4', ready: false,
+  { id: 'g6c7', grade: 'g6', n: 7, title: 'Food Chain', titleAr: 'السلسلة الغذائية', icon: '🦅', tint: '#f6e7c4', ready: true,
     questions: 'science/questions_g6c7.js', art: 'science/g6_food.js',
     game: { href: 'foodchain.html', name: 'Food Chain Trail', nameAr: 'درب السلسلة الغذائية', icon: '🦅', hint: 'Build food chains, sort herbivores and carnivores, and follow oxygen and water around living organisms!', hintAr: 'ابنِ سلاسل غذائية، وميّز بين آكلات الأعشاب وآكلات اللحوم، وتتبّع الأكسجين والماء بين الكائنات الحية!' },
     map: { img: 'science/assets/map_g6c7.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
