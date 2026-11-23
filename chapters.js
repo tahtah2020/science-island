@@ -232,6 +232,10 @@ window.CHAPTERS = [
     lessons: ['Desert and Nile Food Chains'] },
 
   { id: 'g6c9', grade: 'g6', n: 9, title: 'Properties of Solutions', titleAr: 'خصائص المحاليل', icon: '🧪', tint: '#e6e3fb', ready: false,
+    questions: 'science/questions_g6c9.js', art: 'science/g6_solutions.js',
+    game: { href: 'litmuslab.html', name: "Litmus Lab", nameAr: "معمل ورقة عباد الشمس", icon: '🧪', hint: 'Test the solutions with litmus paper and see what is left in the dish', hintAr: 'اختبر المحاليل بورقة عباد الشمس وشوف إيه اللي بيفضل في الطبق' },
+    map: { img: 'science/assets/map_g6c9.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g6c9.svg', quizBg: 'science/assets/bg_g6c9.svg',
     lessons: ['Grouping Solutions', 'What Is Dissolved in Solutions'] },
 
   { id: 'g6c10', grade: 'g6', n: 10, title: 'Reaction between Solutions and Metals', titleAr: 'تفاعل المحاليل مع الفلزات', icon: '⚗️', tint: '#e9eef2', ready: false,

@@ -291,3 +291,28 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
   save('bg_g6c8.svg', b);
 })();
 
+/* ---------- Chapter 9 · Properties of Solutions: a lilac lab island with litmus strips, an evaporating dish and a beaker on signs ---------- */
+(function () {
+  seed = 137;
+  const strips = at(0, 10, 1, `<rect x="-26" y="-34" width="20" height="70" rx="3" fill="#efb1b5"/><rect x="-26" y="12" width="20" height="24" rx="3" fill="#b53a3f"/><rect x="6" y="-34" width="20" height="70" rx="3" fill="#a9c3e8"/><rect x="6" y="12" width="20" height="24" rx="3" fill="#3a62b5"/>`);
+  const beaker = at(0, 10, 1, `<path d="M-34 -48H34V-40H26V30Q26 46 10 46H-10Q-26 46 -26 30V-40H-34Z" fill="#f4fbff" stroke="#2b3a4a" stroke-width="5" stroke-linejoin="round"/><path d="M-24 -6H24V30Q24 42 10 42H-10Q-24 42 -24 30Z" fill="#cdeaf8"/><path d="M-26 -20H-12M-26 -4H-8M-26 12H-12" stroke="#5b7a92" stroke-width="4" stroke-linecap="round"/>`);
+  const dish = at(0, 10, 1, `<path d="M-52 -4H52Q50 34 0 38Q-50 34 -52 -4Z" fill="#fbfbfd" stroke="#8aa0b4" stroke-width="5" stroke-linejoin="round"/><path d="M-36 24Q0 36 36 24Q22 18 0 20Q-22 18 -36 24Z" fill="#fff" stroke="#d3dbe3" stroke-width="3"/>`);
+  const flask = (x, y, k, c) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-8 -34H8V-14L26 22Q30 34 18 34H-18Q-30 34 -26 22L-8 -14Z" fill="#f4fbff" stroke="#2b3a4a" stroke-width="3" stroke-linejoin="round"/><path d="M-16 10H16L24 24Q26 31 18 31H-18Q-26 31 -24 24Z" fill="${c}"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="260" ry="150" fill="#d9d2f5" opacity=".6"/><ellipse cx="930" cy="330" rx="280" ry="170" fill="#e3ddf8" opacity=".55"/>`;
+  for (let i = 0; i < 40; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040), '#9a8fd0');
+  let s = island([[0, '#ddd6f6'], [.5, '#ebe6fa'], [1, '#f6f2fd']], ['#f6e3ae', '#ece7d8'], inside);
+  const sign = (x, y, inner) => board(x, y, 200, 220, inner);
+  s += sign(1000, 1020, beaker) + sign(905, 292, dish) + sign(232, 600, strips);
+  s += flask(150, 1150, 1.6, '#f2a5b3') + flask(420, 1190, 1.4, '#9fd0f2') + flask(800, 1190, 1.5, '#ffe55c') + flask(1060, 600, 1.5, '#b9e6a8') + flask(430, 270, 1.3, '#d6b8f2') + flask(1090, 900, 1.4, '#f2a5b3');
+  s += sunAt(1090, 140, 2.2) + cloud(140, 110, .8, .85) + cloud(930, 70, .7, .85) + '</svg>';
+  save('map_g6c9.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9e8f8"/><stop offset=".5" stop-color="#ece8fb"/><stop offset=".56" stop-color="#ded6f4"/><stop offset="1" stop-color="#cfc5ee"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/><circle cx="1330" cy="190" r="92" fill="#ffd98a"/><circle cx="1330" cy="190" r="130" fill="#ffd98a" opacity=".3"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
+<path d="M0 560C200 510 420 536 640 524C900 510 1200 480 1600 534V1000H0Z" fill="#e4dcf7"/><path d="M0 680C260 642 520 698 820 670C1100 644 1360 660 1600 640V1000H0Z" fill="#d6ccf0"/>`;
+  for (let i = 0; i < 22; i++) b += tuft(f(40 + rnd() * 1520), f(620 + rnd() * 180), '#9a8fd0');
+  b += flask(160, 760, 3, '#f2a5b3') + flask(700, 740, 2.6, '#9fd0f2') + flask(1380, 770, 3, '#ffe55c') + '</svg>';
+  save('bg_g6c9.svg', b);
+})();
+

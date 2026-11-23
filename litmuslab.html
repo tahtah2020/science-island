@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Litmus Lab · Properties of Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261123l">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Litmus Lab.</noscript>
+<script src="firebase-config.js?v=20261123l"></script>
+<script src="chapters.js?v=20261123l"></script>
+<script src="common.js?v=20261123l"></script>
+<script src="science/g6_solutions.js?v=20261123l"></script>
+<script src="game_kit.js?v=20261123l"></script>
+<script>
+(() => {
+'use strict';
+/* Litmus Lab · the game of Grade 6, Chapter 9 "Properties of Solutions". Built on the shared game kit (game_kit.js).
+   Concepts: solutions look alike but are grouped by how they change litmus paper: acidic (blue turns red: lemon juice, vinegar, hydrochloric acid), neutral (no change: salt water, sugar water, distilled water),
+   alkaline (red turns blue: soapy solution, limewater, ammonia solution) (9-1, page 75); evaporating a solution shows what was dissolved: solids stay in the dish, gases escape and nothing remains (9-2, page 77).
+   Stage 1 (Warm Up): test lemon juice with one drop on a blue and a red strip.
+   Stage 2 (Missions): 1) acidic; 2) alkaline; 3) neutral; 4) a solid stays in the dish; 5) a gas escapes.
+   Stage 3 (Speed Round): acidic, neutral or alkaline? (a picture of each solution)
+   English first (Languages track); the Arabic book is added after the owner's review. The household items are the pictures science/assets/g6_i_*.webp; the strips and the dish are drawn here. */
+const A = window.G6SOL, at = A.at;
+const T = (en, ar) => SI.T(en, ar || en);
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'test', item: 'lemon', res: null, dish: 'liquid', heat: false };
+const VW = 420, VH = 280;
+const bench = `<rect width="${VW}" height="${VH}" fill="#ece8fb"/><rect y="196" width="${VW}" height="84" fill="#d9c7a0"/><rect y="192" width="${VW}" height="8" fill="#bfa97c"/>`;
+const RED = ['#efb1b5', '#b53a3f'], BLUE = ['#a9c3e8', '#3a62b5'];
+function testScene() {
+  const tipR = sc.res === 'alkaline' ? BLUE[1] : RED[1], tipB = sc.res === 'acid' ? RED[1] : BLUE[1];
+  const strip = (y, base, tip, t) => `<rect x="226" y="${y}" width="116" height="15" rx="2" fill="${base}"/><rect x="226" y="${y}" width="${t ? 44 : 0}" height="15" rx="2" fill="${tip}"/>`;
+  let s = bench + `<ellipse cx="290" cy="196" rx="110" ry="30" fill="#fff" stroke="#cdd6e0" stroke-width="3"/>`;
+  s += strip(172, RED[0], tipR, !!sc.res) + strip(194, BLUE[0], tipB, !!sc.res);
+  s += at(100, 142, 1, A.icon(sc.item, 118));
+  s += `<path d="M168 150Q200 130 226 168" fill="none" stroke="#d6453d" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 9"/>`;
+  return s;
+}
+function dishScene() {
+  let s = bench;
+  s += `<rect x="150" y="196" width="120" height="8" rx="3" fill="#8f9aa5"/><path d="M164 204L150 262M256 204L270 262" stroke="#6c7782" stroke-width="6" stroke-linecap="round"/>`;
+  if (sc.heat) s += `<path d="M210 262Q190 244 206 226Q210 238 216 232Q224 246 210 262Z" fill="#6fb3ee" stroke="#2f7fc4" stroke-width="2"/><rect x="190" y="262" width="40" height="10" rx="3" fill="#7a8794"/>`;
+  else s += `<rect x="190" y="262" width="40" height="10" rx="3" fill="#7a8794"/>`;
+  s += at(210, 160, 2, A.dish(sc.dish === 'solid' ? 'solid' : 'none'));
+  if (sc.dish === 'liquid') s += at(210, 160, 2, `<path d="M-38 0H38Q36 22 0 24Q-36 22 -38 0Z" fill="#c7e6f7" opacity=".95"/>`);
+  if (sc.item) s += at(84, 142, 1, A.icon(sc.item, 100));
+  if (sc.dish === 'gas') s += [[196, 104], [214, 84], [232, 100], [206, 66]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${9 - i}" fill="#fff" stroke="#9db4c8" stroke-width="2.5" opacity=".9"/>`).join('');
+  return s;
+}
+const render = () => (sc.mode === 'test' ? testScene : dishScene)();
+
+const g = G4Game({ ch: 'g6c9', logo: '🧪', title: ['Litmus Lab', 'معمل ورقة عباد الشمس'], sub: ['Chapter 9 · Properties of Solutions', 'الفصل ٩ · خصائص المحاليل'],
+  bg: 'science/assets/bg_g6c9.svg', bgc: '#ece8fb', label: ['Acidic, neutral, alkaline', 'حمضي ومتعادل وقاعدي'], render });
+const kw = g.kw;
+const show = (o) => { Object.assign(sc, o); g.paint(); };
+const set = o => () => { Object.assign(sc, o); g.paint(); };
+
+/* ---------- Stage 1 · Warm Up: test lemon juice ---------- */
+async function stage1() {
+  show({ mode: 'test', item: 'lemon', res: null });
+  g.say(T('Welcome to the lab! Many solutions look clear and alike. What do we use to group them by how they change colour?', ''), 'point');
+  await g.choice({ options: [T('Litmus paper', ''), T('A ruler', ''), T('A filter only', '')], correct: T('Litmus paper', ''),
+    hint: T('It comes in two colours: blue and red.', ''), ok: T(`Solutions are divided into 3 groups by how they change the colour of ${kw('litmus paper')}.`, '') });
+  g.say(T('We put a blue strip and a red strip on the filter paper. How many drops of lemon juice do we add to both strips?', ''), 'think');
+  await g.choice({ options: [T('One drop', ''), T('A whole glass', ''), T('Ten drops', '')], correct: T('One drop', ''),
+    hint: T('We use a glass rod, and a little is enough.', ''), ok: T('We use a glass rod to add one drop of the solution to both litmus strips.', '') });
+  g.say(T('Look at the strips after the drop of lemon juice. What happened to the blue strip?', ''), 'think');
+  await g.choice({ options: [T('It turned red', ''), T('It stayed blue', ''), T('It turned green', '')], correct: T('It turned red', ''),
+    hint: T('Look at the end of the blue strip.', ''), ok: T('Lemon juice turned blue litmus paper red. It is an acidic solution.', ''), reveal: set({ res: 'acid' }) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Acidic solutions', ''));
+  show({ mode: 'test', item: 'vinegar', res: null });
+  g.say(T('Now we test vinegar. It turns blue litmus paper red. What kind of solution is it?', ''), 'think');
+  await g.choice({ options: [T('Acidic', ''), T('Neutral', ''), T('Alkaline', '')], correct: T('Acidic', ''),
+    hint: T('An acidic solution turns blue litmus paper red.', ''), ok: T(`An ${kw('acidic')} solution turns blue litmus paper red. Examples: lemon juice, vinegar, hydrochloric acid.`, ''), reveal: set({ res: 'acid' }) });
+  g.say(T('Which of these solutions is also acidic?', ''), 'think');
+  await g.choice({ options: [T('Lemon juice', ''), T('Sugar water', ''), T('Soapy water', '')], correct: T('Lemon juice', ''),
+    hint: T('It is sour.', ''), ok: T('Lemon juice is acidic.', ''), reveal: set({ item: 'lemon', res: 'acid' }) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Alkaline solutions', ''));
+  show({ mode: 'test', item: 'soapwater', res: null });
+  g.say(T('Soapy water turned the red strip blue. What kind of solution is it?', ''), 'think');
+  await g.choice({ options: [T('Alkaline', ''), T('Acidic', ''), T('Neutral', '')], correct: T('Alkaline', ''),
+    hint: T('An alkaline solution turns red litmus paper blue.', ''), ok: T(`An ${kw('alkaline')} solution turns red litmus paper blue. Examples: soapy solution, limewater, ammonia solution.`, ''), reveal: set({ res: 'alkaline' }) });
+  g.say(T('What does an alkaline solution do to red litmus paper?', ''), 'think');
+  await g.choice({ options: [T('Turns it blue', ''), T('Turns it red', ''), T('Does not change it', '')], correct: T('Turns it blue', ''),
+    hint: T('It is the opposite of an acidic solution.', ''), ok: T('An alkaline solution turns red litmus paper blue.', '') });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Neutral solutions', ''));
+  show({ mode: 'test', item: 'saltwater', res: null });
+  g.say(T('We add a drop of salt water. Nothing changes: the red strip stays red and the blue strip stays blue. What kind of solution is it?', ''), 'think');
+  await g.choice({ options: [T('Neutral', ''), T('Acidic', ''), T('Alkaline', '')], correct: T('Neutral', ''),
+    hint: T('It does not change the colour of either paper.', ''), ok: T(`A ${kw('neutral')} solution does not change the colour of either litmus paper. Examples: salt water, sugar water, distilled water.`, '') });
+  show({ item: 'sugarwater' });
+  g.say(T('Which of these solutions is neutral, just like salt water?', ''), 'think');
+  await g.choice({ options: [T('Sugar water', ''), T('Vinegar', ''), T('Soapy water', '')], correct: T('Sugar water', ''),
+    hint: T('It does not change either paper.', ''), ok: T('Sugar water is neutral.', '') });
+}
+async function mission4() {
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('What is dissolved?', ''));
+  show({ mode: 'dish', item: 'saltwater', dish: 'liquid', heat: true });
+  g.say(T('We heat salt water gently in the evaporating dish, until the water evaporates. What is left at the bottom of the dish?', ''), 'think');
+  await g.choice({ options: [T('A white solid, the salt', ''), T('Nothing', ''), T('A gas', '')], correct: T('A white solid, the salt', ''),
+    hint: T('The water goes away, but the salt was dissolved in it.', ''), ok: T('When you evaporate the water, the dissolved solids, such as salt or baking soda, remain at the bottom of the dish.', ''), reveal: set({ dish: 'solid', heat: false }) });
+  g.say(T('Which tool do we use to transfer the solution into the evaporating dish?', ''), 'think');
+  await g.choice({ options: [T('A pipette', ''), T('A ruler', ''), T('Tweezers', '')], correct: T('A pipette', ''),
+    hint: T('It takes a little liquid and drops it.', ''), ok: T('We use a pipette to transfer the solution from the test tube into the evaporating dish.', '') });
+}
+async function mission5() {
+  await g.banner(T('Mission 5', 'المهمة ٥'), T('A gas that escapes', ''));
+  show({ mode: 'dish', item: 'sparkling', dish: 'liquid', heat: true });
+  g.say(T('Now we evaporate sparkling water. What is dissolved in it?', ''), 'think');
+  await g.choice({ options: [T('Carbon dioxide gas', ''), T('Salt', ''), T('Sugar', '')], correct: T('Carbon dioxide gas', ''),
+    hint: T('It makes the bubbles.', ''), ok: T(`Sparkling water has ${kw('carbon dioxide')} gas dissolved in it.`, '') });
+  g.say(T('After the water evaporates, what is left in the dish?', ''), 'think');
+  await g.choice({ options: [T('Nothing', ''), T('A white solid', ''), T('Salt crystals', '')], correct: T('Nothing', ''),
+    hint: T('A dissolved gas escapes into the air.', ''), ok: T('Even if you evaporate the water, nothing will remain, because the dissolved substance escapes into the air.', ''), reveal: set({ dish: 'gas', heat: false }) });
+  g.say(T('One safety rule: when should you turn off the heat?', ''), 'think');
+  await g.choice({ options: [T('When only a little solution is left', ''), T('Never, keep heating on high heat', ''), T('Before you start', '')], correct: T('When only a little solution is left', ''),
+    hint: T('The remaining heat dries it completely.', ''), ok: T('Turn off the heat while a little liquid is still left, and let the remaining heat dry it. Do not touch heated objects until they cool down.', '') });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
+
+/* ---------- Stage 3 · Speed Round: acidic, neutral or alkaline? ---------- */
+const SPEED = [['lemon', 'Lemon juice', 'acid'], ['saltwater', 'Salt water', 'neutral'], ['soapwater', 'Soapy water', 'alkaline'], ['vinegar', 'Vinegar', 'acid'], ['sugarwater', 'Sugar water', 'neutral'],
+  ['beaker', 'Limewater', 'alkaline'], ['beaker', 'Hydrochloric acid', 'acid'], ['beaker', 'Distilled water', 'neutral'], ['beaker', 'Ammonia solution', 'alkaline']];
+const spic = nm => `<image href="science/assets/g6_i_${nm}.webp" width="100" height="100"/>`;
+async function stage3() {
+  show({ mode: 'test', item: 'beaker', res: null });
+  await g.speedRound({
+    items: g.shuffle(SPEED).slice(0, 8).map(([nm, label, ans]) => ({ t: T(label, ''), ans, pic: spic(nm), box: '0 0 100 100' })), rounds: 8,
+    buttons: [{ label: T('Acidic', ''), value: 'acid', c: 0 }, { label: T('Neutral', ''), value: 'neutral', c: 1 }, { label: T('Alkaline', ''), value: 'alkaline', c: 2 }],
+    ask: T('How does it change litmus paper?', ''),
+    intro: T('Speed Round! I will name a solution. Is it <b>acidic</b> (blue turns red), <b>neutral</b> (no change) or <b>alkaline</b> (red turns blue)? 8 rounds!', ''),
+    think: T('Acidic, neutral or alkaline?', '') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Today we work in the <b>Litmus Lab</b>: we group solutions with litmus paper and find out what is dissolved in them.`, ''),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Litmus Lab expert!', ''),
+    text: T('<b>Acidic</b> solutions turn blue litmus paper red, <b>alkaline</b> solutions turn red litmus paper blue, and <b>neutral</b> solutions change neither. By evaporating a solution we find what was dissolved: a <b>solid</b> stays in the dish, a <b>gas</b> escapes and nothing remains.', '') }
+}).catch(err => console.error(err));
+window.__litmuslab = { sc, render };
+})();
+</script>
+</body>
+</html>
