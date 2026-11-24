@@ -765,7 +765,7 @@ window.EXAMS = [
   { id: 'nov', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
     parts: [{ ch: 'ch4' }, { ch: 'ch5' }, { ch: 'ch6' }] },
   { id: 'mg5nov', subject: 'math', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
-    parts: [{ ch: 'm5c3' }, { ch: 'm5c4' }, { ch: 'm5c5', lessons: [1, 2, 3, 4, 5, 6] }] },
+    parts: [{ ch: 'm5c2' }, { ch: 'm5c3' }, { ch: 'm5c4' }, { ch: 'm5c5', lessons: [1, 2, 3, 4, 5, 6] }] },
   { id: 'sg5nov', subject: 'studies', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
     parts: [{ ch: 'sg5u2' }] },
   { id: 'eg5nov', subject: 'english', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',

@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-24', title: 'Grade 5 Math November test now includes unit 2',
+    items: [
+      { text: 'Math November test (units 2 to 5, unit 5 up to lesson 6) now draws questions from unit 2 as well' }
+    ] },
   { date: '2026-11-24', title: 'مراجعة امتحان رياضيات نوفمبر (الصف الخامس)',
     items: [
       { text: 'تصحيح صياغة أسئلة وصور في الوحدات 3 و4 و5 (عربي وإنجليزي) بعد مراجعة كل الأسئلة' }
