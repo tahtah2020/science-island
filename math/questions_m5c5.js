@@ -123,10 +123,10 @@ window.IDEAS = [
     ] },
   {"id":"Z42","lesson":4,"concept":"Area model puzzles","explain":"In the first puzzle, 50 × 8 = 400 and the missing side is 4 (4 × 20 = 80, 4 × 8 = 32): 28 × 54 = 1,512. In the second, 30 × 400 = 12,000, 30 × 20 = 600, and the missing side is 4 (4 × 400 = 1,600): 425 × 34 = 14,450, and the last cell is 4 × 5 = 20.",
     "variants": [
-      {"type":"num","mode":"normal","level":"easy","q":"What goes in the ? cell (50 × 8)?","answer":"400","calc":"50*8","fig":"areaModel","pic":{"top":["20","8"],"left":["50","?"],"cells":[["1,000","?"],["80","32"]],"hi":[0,1]}},
+      {"type":"num","mode":"normal","level":"easy","q":"What goes in the ? cell (50 × 8)?","answer":"400","calc":"50*8","fig":"areaModel","pic":{"top":["20","8"],"left":["50","4"],"cells":[["1,000","?"],["80","32"]],"hi":[0,1]}},
       {"type":"num","mode":"normal","level":"medium","q":"What is the missing number on the side? (? × 20 = 80)","answer":"4","calc":"80/20","fig":"areaModel","pic":{"top":["20","8"],"left":["50","?"],"cells":[["1,000","400"],["80","32"]]}},
       {"type":"num","mode":"normal","level":"medium","q":"Write the problem and find the product: 28 × 54 = ?","answer":"1512","calc":"28*54","fig":"areaModel","pic":{"top":["20","8"],"left":["50","4"],"cells":[["1,000","400"],["80","32"]]}},
-      {"type":"num","mode":"normal","level":"medium","q":"Second puzzle: 30 × ? = 12,000. What is the missing number on top?","answer":"400","calc":"12000/30","fig":"areaModel","pic":{"top":["?","?","5"],"left":["30","?"],"cells":[["12,000","600","150"],["1,600","80","?"]]}},
+      {"type":"num","mode":"normal","level":"medium","q":"Second puzzle: 30 × ? = 12,000. What is the missing number on top?","answer":"400","calc":"12000/30","fig":"areaModel","pic":{"top":["?","20","5"],"left":["30","4"],"cells":[["12,000","600","150"],["1,600","80","20"]]}},
       {"type":"num","mode":"normal","level":"hard","q":"Second puzzle: the problem is 425 × 34. What is the product?","answer":"14450","calc":"425*34","fig":"areaModel","pic":{"top":["400","20","5"],"left":["30","4"],"cells":[["12,000","600","150"],["1,600","80","20"]]}}
     ] },
   {"id":"Z43","lesson":4,"concept":"Decimal area models","explain":"1.3 × 6.8: split into 1 + 0.3 and 6 + 0.8: 6 + 0.8 + 1.8 + 0.24 = 8.84. Also 29.3 × 0.34 = 9.962, 4.2 × 5.6 = 23.52, 7.3 × 0.49 = 3.577, 5.7 × 9.1 = 51.87, 18.2 × 2.8 = 50.96, 3.55 × 0.75 = 2.6625, 70.9 × 4.6 = 326.14.",
@@ -141,7 +141,7 @@ window.IDEAS = [
     ] },
   {"id":"Z44","lesson":4,"boss":true,"concept":"Challenge: Malak’s cinder blocks","explain":"12 pallets of 1.36 t: the area model 1 + 0.3 + 0.06 by 10 + 2 needs decimal points in the partial products: 10, 3, 0.6, 2, 0.6, 0.12. Total 16.32 t, close to the estimate 12 × 1.4 ≈ 17.",
     "variants": [
-      {"type":"num","mode":"boss","level":"hard","q":"Malak wrote 30 in the cell 10 × 0.3. What should it be?","answer":"3","calc":"10*0.3","fig":"areaModel","pic":{"top":["1","0.3","0.06"],"left":["10","2"],"cells":[["10","30","6"],["2","6","12"]],"hi":[0,1]}},
+      {"type":"num","mode":"boss","level":"hard","q":"Malak wrote 30 in the cell 10 × 0.3. What should it be?","answer":"3","calc":"10*0.3","fig":"areaModel","pic":{"top":["1","0.3","0.06"],"left":["10","2"],"cells":[["10","30","0.6"],["2","0.6","0.12"]],"hi":[0,1]}},
       {"type":"num","mode":"boss","level":"hard","q":"The cell 2 × 0.06 says 12. What should it be?","answer":"0.12","calc":"2*0.06"},
       {"type":"num","mode":"boss","level":"hard","q":"12 pallets of 1.36 t each. How much do they weigh all together?","answer":"16.32","calc":"12*1.36","unit":"t"},
       {"type":"num","mode":"boss","level":"hard","q":"3.55 × 0.75 = ?","answer":"2.6625","calc":"3.55*0.75"},
@@ -176,10 +176,10 @@ window.IDEAS = [
   /* ---------- Lesson 6 · Multiplying Decimals through the Thousandths Place (pages 103-104) ---------- */
   {"id":"Z61","lesson":6,"concept":"Place the decimal points in the factors","explain":"38 × 64 = 2,432, and 24.32 has 2 decimal places, so the factors share 2 places: 3.8 × 6.4 or 0.38 × 64. 532 × 17 = 9,044 → 9.044 needs 3 places: 5.32 × 1.7. 18 × 145 = 2,610 → 261 needs 1 place: 1.8 × 145. 826 × 43 → 3,551.8 needs 1 place: 82.6 × 43.",
     "variants": [
-      {"type":"multi","mode":"normal","level":"hard","q":"Which give 38 × 64 = 24.32 after placing decimal points? Choose all the correct answers.","options":["3.8 × 6.4","0.38 × 64","3.8 × 64","38 × 0.064"],"answer":[0,1]},
-      {"type":"mc","mode":"normal","level":"medium","q":"532 × 17 = 9.044. Which factors?","options":["5.32 × 1.7","53.2 × 1.7","5.32 × 17","0.532 × 1.7"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"18 × 145 = 261. Which factors?","options":["1.8 × 145","18 × 1.45","1.8 × 14.5","0.18 × 145"],"answer":0},
-      {"type":"mc","mode":"normal","level":"medium","q":"826 × 43 = 3,551.8. Which factors?","options":["82.6 × 43","8.26 × 43","82.6 × 4.3","826 × 0.43"],"answer":0}
+      {"type":"multi","mode":"normal","level":"hard","q":"38 × 64 = 2,432. Which give a product of 24.32 after placing the decimal points? Choose all the correct answers.","options":["3.8 × 6.4","0.38 × 64","3.8 × 64","38 × 0.064"],"answer":[0,1]},
+      {"type":"mc","mode":"normal","level":"medium","q":"532 × 17 = 9,044. Which factors give a product of 9.044?","options":["5.32 × 1.7","53.2 × 1.7","5.32 × 17","0.532 × 1.7"],"answer":0},
+      {"type":"mc","mode":"normal","level":"medium","q":"18 × 145 = 2,610. Which factors give a product of 261?","options":["1.8 × 145","18 × 1.45","1.8 × 14.5","0.18 × 145"],"answer":0},
+      {"type":"mc","mode":"normal","level":"medium","q":"826 × 43 = 35,518. Which factors give a product of 3,551.8?","options":["82.6 × 43","8.26 × 43","82.6 × 4.3","826 × 0.43"],"answer":0}
     ] },
   {"id":"Z62","lesson":6,"concept":"The algorithm through the thousandths","explain":"7.184 × 6.3 = 45.2592 (3 + 1 = 4 decimal places) · 2.607 × 41 = 106.887 · 5.328 × 7.9 = 42.0912 · 8.108 × 0.45 = 3.6486 · 6.429 × 1.9 = 12.2151 · 8.375 × 20 = 167.5.",
     "variants": [

@@ -88,7 +88,7 @@ window.IDEAS = [
     "variants": [
       {"type":"mc","mode":"boss","level":"hard","q":"Someone says 5,814 ÷ 47 = 12. Is it reasonable?","options":["No: the estimate is about 120","Yes: 12 is close to 47","No: the estimate is about 1,200"],"answer":0},
       {"type":"multi","mode":"boss","level":"hard","q":"Which quotients are reasonable? Choose all the correct answers.","options":["3,622 ÷ 31 = 116 R 26","1,625 ÷ 13 = 125","9,234 ÷ 81 = 14","2,207 ÷ 7 = 3,152"],"answer":[0,1]},
-      {"type":"num","mode":"boss","level":"hard","q":"Estimate 8,100 ÷ 90 exactly in your head: ?","answer":"90","calc":"8100/90"}
+      {"type":"num","mode":"boss","level":"medium","q":"To check 3,622 ÷ 31 = 116, estimate with compatible numbers: 3,000 ÷ 30 = ?","answer":"100","calc":"3000/30"}
     ] },
   /* ---------- Lesson 3 · Using the division algorithm (pages 85-86) ---------- */
   {"id":"Y31","lesson":3,"concept":"The words of division","explain":"In 200 ÷ 17 = 11 R 13: 200 is the dividend, 17 is the divisor, 11 is the quotient and 13 is the remainder.",

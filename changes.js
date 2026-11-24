@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-24', title: 'مراجعة امتحان رياضيات نوفمبر (الصف الخامس)',
+    items: [
+      { text: 'تصحيح صياغة أسئلة وصور في الوحدات 3 و4 و5 (عربي وإنجليزي) بعد مراجعة كل الأسئلة' }
+    ] },
   { date: '2026-11-24', title: 'الصف السادس علوم: خصائص المحاليل',
     items: [
       { text: 'وحدة جديدة: خصائص المحاليل (لغات) مع لعبة معمل ورقة عباد الشمس', links: [{ label: 'افتح الوحدة', href: 'chapter.html?c=g6c9', ch: 'g6c9' }] }

@@ -159,7 +159,7 @@ window.IDEAS = [
     ] },
   {"id":"V5","lesson":3,"concept":"Using the standard algorithm","explain":"67 × 76: 67 × 6 = 402, 67 × 70 = 4,690, total 5,092. 76 × 82 = 6,232. 234 × 53 = 12,402.",
     "variants": [
-      {"type":"num","mode":"normal","level":"medium","q":"67 × 76: what is the second row (67 × 70)?","answer":"4690","calc":"67*70","fig":"longMult","pic":{"a":"67","b":"76","parts":["402","?,69?"],"carry":"4"}},
+      {"type":"num","mode":"normal","level":"medium","q":"67 × 76: what is the second row (67 × 70)?","answer":"4690","calc":"67*70","fig":"longMult","pic":{"a":"67","b":"76","parts":["402","?,???"],"carry":"4"}},
       {"type":"num","mode":"normal","level":"medium","q":"Find the final product of 67 × 76.","answer":"5092","calc":"67*76","fig":"longMult","pic":{"a":"67","b":"76","parts":["402","4,690"],"carry":"4"}},
       {"type":"num","mode":"normal","level":"hard","q":"76 × 82 = ?","answer":"6232","calc":"76*82"},
       {"type":"num","mode":"normal","level":"hard","q":"234 × 53 = ?","answer":"12402","calc":"234*53"},
@@ -199,7 +199,7 @@ window.IDEAS = [
   {"id":"W4","lesson":4,"concept":"Match the model","explain":"3,567 × 24 matches the model 3,000 + 500 + 60 + 7 by 20 + 4. 8,222 × 53 matches 8,000 + 200 + 20 + 2 by 50 + 3, not by 5 + 4. 2,521 × 74 matches 2,000 + 500 + 20 + 1 by 70 + 4. The model 6,209 × 33 with 18,627 written twice is wrong: the second row is 6,209 × 30 = 186,270.",
     "variants": [
       {"type":"match","mode":"normal","level":"medium","q":"Match each problem with its area model.","left":["3,567 × 24","8,222 × 53","2,521 × 74"],"right":["2,000 + 500 + 20 + 1 by 70 + 4","3,000 + 500 + 60 + 7 by 20 + 4","8,000 + 200 + 20 + 2 by 50 + 3"],"answer":[1,2,0]},
-      {"type":"tf","mode":"normal","level":"medium","q":"This model shows 8,222 × 53.","answer":1,"fig":"areaModel","pic":{"top":["8,000","200","20","2"],"left":["5","4"],"cells":[["400,000","1,000","100","10"],["24,000","600","60","6"]]}},
+      {"type":"tf","mode":"normal","level":"medium","q":"This model shows 8,222 × 53.","answer":1,"fig":"areaModel","pic":{"top":["8,000","200","20","2"],"left":["5","4"],"cells":[["40,000","1,000","100","10"],["32,000","800","80","8"]]}},
       {"type":"tf","mode":"normal","level":"medium","q":"This model shows 3,567 × 24.","answer":0,"fig":"areaModel","pic":{"top":["3,000","500","60","7"],"left":["20","4"],"cells":[["60,000","10,000","1,200","140"],["12,000","2,000","240","28"]]}},
       {"type":"num","mode":"normal","level":"medium","q":"In the model of 2,521 × 74, what goes in the cell 70 × 500?","answer":"35000","calc":"70*500","fig":"areaModel","pic":{"top":["2,000","500","20","1"],"left":["70","4"],"cells":[["140,000","?","1,400","70"],["8,000","2,000","80","4"]],"hi":[0,1]}},
       {"type":"mc","mode":"normal","level":"hard","q":"6,209 × 33 was written with 18,627 in both rows. What should the second row be?","options":["186,270","18,627","1,862,700","18,270"],"answer":0,"fig":"longMult","pic":{"a":"6,209","b":"33","parts":["18,627","18,627"]}}
