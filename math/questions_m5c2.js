@@ -219,7 +219,7 @@ window.IDEAS = [
       {"type":"mc","mode":"boss","level":"medium","q":"Taha dives to 15 m. What are his options of intervals?","options":["3 m, 5 m","2 m, 3 m, 5 m","2 m, 3 m, 5 m, 6 m","2 m, 3 m, 5 m, 6 m, 10 m"],"answer":0},
       {"type":"mc","mode":"boss","level":"hard","q":"Both divers stop at the same equal intervals. What is the greatest distance they can both dive before stopping?","options":["5 m","2 m","3 m","10 m"],"answer":0},
       {"type":"tf","mode":"boss","level":"medium","q":"12 m is a possible interval for Shadi, because 12 is a factor of 30.","answer":1},
-      {"type":"num","mode":"boss","level":"medium","q":"The steamship sank in 1876. How many years later is 2026?","answer":"150","calc":"2026-1876"}
+      {"type":"num","mode":"boss","level":"medium","q":"A famous Red Sea dive site is a steamship that sank in 1876. How many years had passed by 2026?","answer":"150","calc":"2026-1876"}
     ] },
 
   /* ---------- Lesson 6 · Identifying Multiples (pages 56-58) ---------- */
@@ -249,7 +249,7 @@ window.IDEAS = [
       {"type":"tap","mode":"normal","level":"medium","q":"Where does 24 go in the Venn diagram of the first 12 multiples of 3 and 4?","diagram":"multVenn","pic":{"a":3,"b":4,"upTo":12,"blank":true},"answer":"mvM"},
       {"type":"tap","mode":"normal","level":"medium","q":"Where does 16 go in the Venn diagram of the first 12 multiples of 3 and 4?","diagram":"multVenn","pic":{"a":3,"b":4,"upTo":12,"blank":true},"answer":"mvR"},
       {"type":"tap","mode":"normal","level":"medium","q":"Where does 21 go in the Venn diagram of the first 12 multiples of 3 and 4?","diagram":"multVenn","pic":{"a":3,"b":4,"upTo":12,"blank":true},"answer":"mvL"},
-      {"type":"mc","mode":"normal","level":"medium","q":"Look at the Venn diagram. Which numbers are in the shared center?","options":["12, 24, 36","3, 4","6, 8, 9","24, 48"],"answer":0,"fig":"multVenn","pic":{"a":3,"b":4,"upTo":12,"show":[3,6,9,15,4,8,16,20]}}
+      {"type":"mc","mode":"normal","level":"medium","q":"In the Venn diagram of the first 12 multiples of 3 and 4, the shared center is still empty. Which numbers go in it?","options":["12, 24, 36","3, 4","6, 8, 9","24, 48"],"answer":0,"fig":"multVenn","pic":{"a":3,"b":4,"upTo":12,"show":[3,6,9,15,4,8,16,20]}}
     ] },
   {"id":"Q4","lesson":6,"concept":"Is it a common multiple?","explain":"A common multiple of 5 and 7 must be a multiple of both: 35, 70, 105 are; 14 and 21 are multiples of 7 only, 55 of 5 only. 24 and 32 are common multiples of 2, 4 and 8 (both can be divided by them), but not of 3, 6 or 7.",
     "variants": [
@@ -333,7 +333,7 @@ window.IDEAS = [
       {"type":"num","mode":"normal","level":"medium","q":"Omar exercises every 12 days, Rana every 8 days. Together today. In how many days together again?","answer":"24","calc":"12*2"},
       {"type":"num","mode":"normal","level":"medium","q":"Pencils come in boxes of 8, erasers in boxes of 10. Menna wants the same number of each. What is the minimum number of pencils?","answer":"40","calc":"8*5"},
       {"type":"num","mode":"normal","level":"medium","q":"Nour has 6 oranges and 12 pieces of dried fruit for identical snack bags with nothing left. What is the greatest number of bags?","answer":"6","calc":"6"},
-      {"type":"num","mode":"normal","level":"hard","q":"Malak baked 30 servings of cakes and 48 of baklava, shared so each container has the same. How many containers?","answer":"6","calc":"6"},
+      {"type":"num","mode":"normal","level":"hard","q":"Malak baked 30 servings of cakes and 48 of baklava, shared so each container has the same number of cakes and the same number of baklava. What is the greatest number of containers?","answer":"6","calc":"6"},
       {"type":"num","mode":"normal","level":"medium","q":"Ola sells baskets of 9 figs and bags of 7 pomegranates, the same number of each. What is the smallest quantity of each?","answer":"63","calc":"9*7"}
     ] },
   {"id":"S4","lesson":8,"boss":true,"concept":"The Sinai Trail","explain":"The Sinai Trail winds from the Gulf of Aqaba to the top of Mount Saint Catherine. Mohamed hikes every 7 days and lifts weights every 4 days. He did both today, so he does both again after the LCM of 7 and 4: 28 days.",

@@ -112,7 +112,7 @@ window.IDEAS = [
       {"type":"num","mode":"normal","level":"medium","q":"Lamiaa: (80 × 7) + (80 × 7) + (3 × 7) + (3 × 7) = ?","answer":"1162","calc":"80*7+80*7+3*7+3*7","fig":"areaModel","pic":{"top":["80","3"],"left":["7","7"],"cells":[["",""],["",""]]}},
       {"type":"num","mode":"normal","level":"medium","q":"Reeda: (80 × 10) + (80 × 4) + (3 × 10) + (3 × 4) = ?","answer":"1162","calc":"80*10+80*4+3*10+3*4","fig":"areaModel","pic":{"top":["80","3"],"left":["10","4"],"cells":[["",""],["",""]]}},
       {"type":"multi","mode":"normal","level":"hard","q":"Which ways of splitting work for 14 × 83? Choose all the correct answers.","options":["40 + 40 + 3 by 10 + 4","80 + 3 by 7 + 7","40 + 40 + 4 by 10 + 4","80 + 30 by 10 + 4"],"answer":[0,1]},
-      {"type":"tf","mode":"normal","level":"medium","q":"Mazen, Lamiaa and Reeda split 14 × 83 in different ways, so they get different products.","answer":1},
+      {"type":"tf","mode":"normal","level":"medium","q":"Three pupils, Mazen, Lamiaa and Reeda, split 14 × 83 in different ways, so they get different products.","answer":1},
       {"type":"num","mode":"normal","level":"medium","q":"26 × 33 = ? (the model 30 + 3 by 20 + 6)","answer":"858","calc":"26*33","fig":"areaModel","pic":{"top":["30","3"],"left":["20","6"],"cells":[["",""],["",""]]}},
       {"type":"num","mode":"normal","level":"hard","q":"42 × 34 = ?","answer":"1428","calc":"42*34"}
     ] },
@@ -121,7 +121,7 @@ window.IDEAS = [
       {"type":"num","mode":"boss","level":"hard","q":"A fennec fox den can have up to 15 entrances. How many entrances could 32 dens have?","answer":"480","calc":"15*32"},
       {"type":"num","mode":"boss","level":"hard","q":"Use this model of 26 × 33: what is the product?","answer":"858","calc":"26*33","fig":"areaModel","pic":{"top":["11","11","11"],"left":["10","10","6"],"cells":[["110","110","110"],["110","110","110"],["66","66","66"]]}},
       {"type":"mc","mode":"boss","level":"hard","q":"Which expression matches the model 20 + 10 + 3 by 20 + 6?","options":["(20 × 20) + (20 × 10) + (20 × 3) + (6 × 20) + (6 × 10) + (6 × 3)","(20 × 20) + (10 × 6) + (3 × 6)","(20 + 10 + 3) + (20 + 6)","(20 × 20) + (20 × 10) + (20 × 3)"],"answer":0},
-      {"type":"num","mode":"boss","level":"hard","q":"Mazen: (40 × 10) + (40 × 10) + (40 × 4) + (40 × 4) + (3 × 10) + (3 × 4) = ?","answer":"1162","calc":"40*10+40*10+40*4+40*4+3*10+3*4"}
+      {"type":"num","mode":"boss","level":"hard","q":"Mazen wrote this expression. What is its value? (40 × 10) + (40 × 10) + (40 × 4) + (40 × 4) + (3 × 10) + (3 × 4) = ?","answer":"1162","calc":"40*10+40*10+40*4+40*4+3*10+3*4"}
     ] },
   /* ---------- Lesson 3 · Multiplying by a 2-digit number using the algorithm (pages 72-74) ---------- */
   {"id":"V1","lesson":3,"concept":"Mental math with 10, 100 and 1,000","explain":"35 × 10 = 350, 25 × 100 = 2,500, 75 × 1,000 = 75,000. Then 35 × 9 is one 35 less than 35 × 10: 350 − 35 = 315, and 25 × 99 = 2,500 − 25 = 2,475.",

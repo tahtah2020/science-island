@@ -79,10 +79,10 @@ window.IDEAS = [
     ] },
   {"id":"Y23","lesson":2,"concept":"Which estimated quotient is greater?","explain":"In the card game «Winner Takes All» each player estimates the quotient with compatible numbers; the greater estimate wins. 2,207 ÷ 7 is about 2,100 ÷ 7 = 300, 8,014 ÷ 46 is about 8,000 ÷ 40 = 200, 756 ÷ 22 is about 800 ÷ 20 = 40.",
     "variants": [
-      {"type":"mc","mode":"normal","level":"medium","q":"Which card has the greater estimated quotient?","options":["2,207 ÷ 7 (about 300)","8,014 ÷ 46 (about 200)"],"answer":0},
+      {"type":"mc","mode":"normal","level":"medium","q":"Which division has the greater estimated quotient?","options":["2,207 ÷ 7 (about 300)","8,014 ÷ 46 (about 200)"],"answer":0},
       {"type":"mc","mode":"normal","level":"medium","q":"Estimate 756 ÷ 22.","options":["about 40","about 4","about 400"],"answer":0},
       {"type":"mc","mode":"normal","level":"medium","q":"Estimate 8,014 ÷ 46.","options":["about 200","about 20","about 2,000"],"answer":0},
-      {"type":"tf","mode":"timed","level":"easy","q":"In «Winner Takes All», the player with the smaller estimated quotient takes both cards.","answer":1,"seconds":15}
+      {"type":"tf","mode":"timed","level":"easy","q":"The estimated quotient of 8,014 ÷ 46 is greater than the estimated quotient of 2,207 ÷ 7.","answer":1,"seconds":15}
     ] },
   {"id":"Y24","lesson":2,"boss":true,"concept":"Challenge: is the quotient reasonable?","explain":"Compare the answer with an estimate. 5,814 ÷ 47 ≈ 120, so 12 is not reasonable. 3,622 ÷ 31 ≈ 3,000 ÷ 30 = 100, so 116 is reasonable.",
     "variants": [
@@ -148,7 +148,7 @@ window.IDEAS = [
     "variants": [
       {"type":"num","mode":"timed","level":"easy","q":"200 ÷ 17 = 11 R 13. What is the new dividend (200 − 13)?","answer":"187","calc":"200-13","seconds":15},
       {"type":"num","mode":"normal","level":"medium","q":"200 ÷ 17 = ? (quotient without the remainder)","answer":"11","calc":"(200-13)/17"},
-      {"type":"tf","mode":"normal","level":"medium","q":"In «Keep the Leftovers», the player with the greatest sum of remainders wins.","answer":0}
+      {"type":"tf","mode":"normal","level":"medium","q":"The remainder of 200 ÷ 17 is 13.","answer":0}
     ] },
   {"id":"Y44","lesson":4,"boss":true,"concept":"Challenge: Ziad’s buttons","explain":"Ziad has 100 buttons and needs 16 for each shirt: 100 ÷ 16 = 6 R 4. Check: 16 × 6 = 96, 96 + 4 = 100. Ziad is right: 6 shirts and 4 buttons left.",
     "variants": [

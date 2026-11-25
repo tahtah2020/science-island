@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-25', title: 'Grade 5 Math November test: owner review fixes',
+    items: [
+      { text: 'Clearer wording: greatest ticket price, greatest number of plates, choose two common factors/multiples, empty shared part of the Venn diagram' },
+      { text: 'Removed references to games and cards that are not in the test; introduced the steamship and Mazen before using them' },
+      { text: 'Arabic: no English words left (m, and, only, a.m./p.m.); «جزءان من ألف»' }
+    ] },
   { date: '2026-11-24', title: 'Grade 5 Math November test now includes unit 2',
     items: [
       { text: 'Math November test (units 2 to 5, unit 5 up to lesson 6) now draws questions from unit 2 as well' }
