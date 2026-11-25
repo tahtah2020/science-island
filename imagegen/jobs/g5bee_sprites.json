@@ -1,0 +1,23 @@
+{
+ "model": "flux-2-klein-4b",
+ "exact_size": true,
+ "size": [
+  768,
+  768
+ ],
+ "style": "High quality children's game art, flat cartoon with thick clean dark outlines, soft shading, bright warm colours, friendly. Absolutely no text, no letters, no numbers, no watermark.",
+ "images": [
+  {
+   "file": "bee",
+   "n": 2,
+   "seed": 21,
+   "prompt": "A cute honey bee flying, side view facing RIGHT, round yellow body with dark brown stripes, two pale blue translucent wings, big happy eye, two antennae, six small legs. One single object only, centered, fully inside the frame, on a plain pure white background, no shadow, no ground, no other objects."
+  },
+  {
+   "file": "loofah",
+   "n": 2,
+   "seed": 31,
+   "prompt": "One single ripe young sponge gourd (Luffa aegyptiaca fruit), a long slender cylindrical green gourd with thin darker green lengthwise lines, hanging vertically from a short curly vine stem with one leaf. Not a cucumber with bumps: smooth skin. One single object only, centered, fully inside the frame, on a plain pure white background, no shadow, no ground, no other objects."
+  }
+ ]
+}

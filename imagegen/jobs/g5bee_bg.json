@@ -1,0 +1,17 @@
+{
+ "model": "flux-2-klein-4b",
+ "exact_size": true,
+ "size": [
+  1024,
+  576
+ ],
+ "style": "High quality children's game art, flat cartoon with thick clean dark outlines, soft shading, bright warm colours, friendly. Absolutely no text, no letters, no numbers, no watermark.",
+ "images": [
+  {
+   "file": "garden",
+   "n": 2,
+   "seed": 41,
+   "prompt": "Wide 16:9 background scene of a sunny Egyptian countryside vegetable garden: a wooden trellis covered with big green lobed loofah vine leaves and curly tendrils along the top and both sides, the middle area is open soft sky and distant fields with date palms and a low plain beige mud-brick wall, a strip of brown soil at the bottom. NO flowers anywhere, NO fruits, no insects, no people, no animals."
+  }
+ ]
+}
