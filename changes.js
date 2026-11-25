@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-25', title: 'Grade 6 Science: Transportation of Water in Plants in Arabic',
+    items: [
+      { text: 'Arabic track: Transportation of Water in Plants unit (2 lessons + Nile enrichment corner, 68 questions with hints) from the Arabic book, same pictures and Water Trek game' }
+    ] },
   { date: '2026-11-25', title: 'Cleaner chapter map + Start here',
     items: [
       { text: 'Map: a «Start here / ابدأ من هنا» tag points at the first stop (then «Next / التالي»)' },
