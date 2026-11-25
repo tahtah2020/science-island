@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-25', title: 'Map icons redrawn',
+    items: [
+      { text: 'Map stops: drawn icons instead of emoji, a different icon for Quest and Stars, clearer stop numbers and star labels' }
+    ] },
   { date: '2026-11-25', title: 'Grade 6 Science: Food Chain in Arabic',
     items: [
       { text: 'Arabic track: Food Chain unit (2 lessons, 60 questions with hints) from the Arabic book, same pictures and Food Chain Trail game' }
