@@ -316,3 +316,28 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
   save('bg_g6c9.svg', b);
 })();
 
+
+/* ---------- Chapter 10 · Reaction between Solutions and Metals: a silver-blue lab island with a bubbling tube, a dish of white powder and shiny metal on signs ---------- */
+(function () {
+  seed = 151;
+  const tubeB = at(0, 10, 1, `<path d="M-18 -60V30Q-18 48 0 48Q18 48 18 30V-60" fill="#e7f3d8" stroke="#2b3a4a" stroke-width="5" stroke-linejoin="round"/><path d="M-24 -60H24" stroke="#2b3a4a" stroke-width="6" stroke-linecap="round"/><path d="M-12 34l9 -11l10 4l-4 10z" fill="#dfe5ea" stroke="#5b6772" stroke-width="3" stroke-linejoin="round"/>` + [[-6, 10, 5], [7, -4, 6], [-4, -20, 4], [6, -34, 5], [-6, -46, 3.6]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="#5b7a92" stroke-width="2.4"/>`).join(''));
+  const dishP = at(0, 10, 1, `<path d="M-52 -4H52Q50 34 0 38Q-50 34 -52 -4Z" fill="#fbfbfd" stroke="#8aa0b4" stroke-width="5" stroke-linejoin="round"/><path d="M-36 24Q-10 6 0 10Q12 4 36 24Q0 34 -36 24Z" fill="#fff" stroke="#9aa6b2" stroke-width="3"/>`);
+  const metal = at(0, 10, 1, `<path d="M-44 10l18 -26l26 8l-8 26z" fill="#e4e9ee" stroke="#5b6772" stroke-width="4" stroke-linejoin="round"/><path d="M0 14l24 -24l20 16l-18 20z" fill="#f2f5f8" stroke="#5b6772" stroke-width="4" stroke-linejoin="round"/><path d="M-30 -8l8 -6M10 -2l8 -6" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M30 -40l5 -11l5 11l11 5l-11 5l-5 11l-5 -11l-11 -5z" fill="#fff6c8" stroke="#e2c14d" stroke-width="2.4"/>`);
+  const bottle = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-8" y="-40" width="16" height="10" rx="3" fill="#8a5a33"/><path d="M-8 -30H8V-22Q22 -14 22 2V28Q22 34 16 34H-16Q-22 34 -22 28V2Q-22 -14 -8 -22Z" fill="#b97a45" stroke="#2b3a4a" stroke-width="3" stroke-linejoin="round"/><path d="M-14 0V22" stroke="#e8c49a" stroke-width="4" stroke-linecap="round"/></g>`;
+  let inside = `<ellipse cx="300" cy="1010" rx="260" ry="150" fill="#cfdde9" opacity=".6"/><ellipse cx="930" cy="330" rx="280" ry="170" fill="#dbe6ef" opacity=".55"/>`;
+  for (let i = 0; i < 40; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040), '#7f9db5');
+  let s = island([[0, '#cfdeea'], [.5, '#e1eaf2'], [1, '#f1f5f9']], ['#f6e3ae', '#e4e7ea'], inside);
+  const sign = (x, y, inner) => board(x, y, 200, 220, inner);
+  s += sign(1000, 1020, tubeB) + sign(905, 292, dishP) + sign(232, 600, metal);
+  s += bottle(150, 1150, 1.6) + bottle(420, 1190, 1.4) + bottle(800, 1190, 1.5) + bottle(1060, 600, 1.5) + bottle(430, 270, 1.3) + bottle(1090, 900, 1.4);
+  s += sunAt(1090, 140, 2.2) + cloud(140, 110, .8, .85) + cloud(930, 70, .7, .85) + '</svg>';
+  save('map_g6c10.svg', s);
+  let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9e8f8"/><stop offset=".5" stop-color="#e9eef2"/><stop offset=".56" stop-color="#d7e2ec"/><stop offset="1" stop-color="#c5d5e3"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/><circle cx="1330" cy="190" r="92" fill="#ffd98a"/><circle cx="1330" cy="190" r="130" fill="#ffd98a" opacity=".3"/>
+${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
+<path d="M0 560C200 510 420 536 640 524C900 510 1200 480 1600 534V1000H0Z" fill="#dce6ef"/><path d="M0 680C260 642 520 698 820 670C1100 644 1360 660 1600 640V1000H0Z" fill="#ccdae6"/>`;
+  for (let i = 0; i < 22; i++) b += tuft(f(40 + rnd() * 1520), f(620 + rnd() * 180), '#7f9db5');
+  b += bottle(160, 760, 3) + bottle(700, 740, 2.6) + bottle(1380, 770, 3) + '</svg>';
+  save('bg_g6c10.svg', b);
+})();

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metal Lab · Reaction between Solutions and Metals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game_kit.css?v=20261125b">
+</head>
+<body>
+<noscript>Please turn on JavaScript to play Metal Lab.</noscript>
+<script src="firebase-config.js?v=20261125b"></script>
+<script src="chapters.js?v=20261125b"></script>
+<script src="common.js?v=20261125b"></script>
+<script src="science/g6_solutions.js?v=20261125b"></script>
+<script src="game_kit.js?v=20261125b"></script>
+<script>
+(() => {
+'use strict';
+/* Metal Lab · the game of Grade 6, Chapter 10 "Reaction between Solutions and Metals". Built on the shared game kit (game_kit.js).
+   Concepts: metals are shiny, mostly solid, used daily (iron, aluminum, gold); dilute hydrochloric acid reacts with aluminum and iron and produces bubbles; safety (goggles, ventilate, wash acid off the skin
+   with running water) (10-1, pages 82-83); evaporating the liquid leaves a white solid that is not shiny and makes no bubbles in dilute hydrochloric acid: the metal changed into a substance with completely
+   different properties; heat gently, turn off the heat while a little liquid is left, keep your face away, use a laboratory spoon (10-2, pages 84-87).
+   Stage 1 (Warm Up): meet the metals and the acid. Stage 2 (Missions): 1) aluminum + acid; 2) iron + acid; 3) safety; 4) evaporating; 5) the new substance.
+   Stage 3 (Speed Round): bubbles or no bubbles in dilute hydrochloric acid? (aluminum, iron, the white solid; gold from the Enrichment Corner).
+   English first (Languages track). The items are generated pictures science/assets/g6_i_*.webp; the tubes, the dish and the stove are drawn here (g6_solutions.js).
+   Picture rule: the scene is set before EVERY question and never shows its answer (a tube is shown BEFORE the drop, the bubbles come with the reveal). */
+const A = window.G6SOL, at = A.at;
+const T = (en, ar) => SI.T(en, ar || en);
+
+/* ---------- the scene: everything is drawn from this one state ---------- */
+const sc = { mode: 'item', item: 'aluminum', item2: null, tubes: [], dish: 'liquid', heat: false, fumes: false };
+const VW = 420, VH = 280;
+const bench = `<rect width="${VW}" height="${VH}" fill="#e9eef2"/><rect y="226" width="${VW}" height="54" fill="#d9c7a0"/><rect y="222" width="${VW}" height="8" fill="#bfa97c"/>`;
+const card = (x, y, w) => `<rect x="${x - w / 2}" y="${y - w / 2}" width="${w}" height="${w}" rx="18" fill="#fff" stroke="#cfdbe6" stroke-width="3"/>`;
+function itemScene() {
+  if (!sc.item2) return bench + card(210, 124, 190) + at(210, 124, 1, A.icon(sc.item, 176));
+  return bench + card(120, 124, 170) + at(120, 124, 1, A.icon(sc.item, 156)) + card(300, 124, 170) + at(300, 124, 1, A.icon(sc.item2, 156));
+}
+function tubesScene() {
+  const n = sc.tubes.length, x0 = n === 1 ? 250 : 190, step = 110;
+  let s = bench;
+  if (sc.item) s += card(84, 130, 120) + at(84, 130, 1, A.icon(sc.item, 108));
+  s += `<rect x="${x0 - 60}" y="176" width="${(n - 1) * step + 120}" height="14" rx="5" fill="#c99a62" stroke="#9c7442" stroke-width="2"/><rect x="${x0 - 52}" y="190" width="10" height="34" fill="#b88a55"/><rect x="${x0 + (n - 1) * step + 42}" y="190" width="10" height="34" fill="#b88a55"/>`;
+  sc.tubes.forEach((c, i) => { s += at(x0 + i * step, 214, 1.25, A.tube(c)); });
+  return s;
+}
+function heatScene() {
+  let s = bench;
+  s += `<path d="M150 172L130 222M270 172L290 222M210 172V222" stroke="#5f6b76" stroke-width="7" stroke-linecap="round"/>`;
+  s += `<rect x="132" y="164" width="156" height="10" rx="3" fill="#9aa5ae"/><path d="M140 169H280" stroke="#d2d8dd" stroke-width="2" stroke-dasharray="3 4"/>`;
+  if (sc.heat) s += `<path d="M210 204Q192 186 206 166Q210 178 216 172Q226 188 210 204Z" fill="#6fb3ee" stroke="#2f7fc4" stroke-width="2"/>`;
+  s += `<rect x="184" y="204" width="52" height="18" rx="5" fill="#d8d2c2" stroke="#8d8676" stroke-width="2"/>`;
+  s += at(210, 134, 2, A.dish(sc.dish === 'powder' ? 'solid' : 'none'));
+  if (sc.dish === 'liquid') s += at(210, 134, 2, `<path d="M-38 0H38Q36 22 0 24Q-36 22 -38 0Z" fill="#e7f3d8" opacity=".95"/>`);
+  if (sc.dish === 'little') s += at(210, 134, 2, `<path d="M-24 14H24Q20 24 0 25Q-20 24 -24 14Z" fill="#e7f3d8" opacity=".95"/>`);
+  if (sc.fumes) s += [[190, 92], [214, 74], [236, 90], [204, 58]].map(([x, y], i) => `<path d="M${x} ${y + 16}q-8 -8 0 -16t0 -16" fill="none" stroke="#b9c6d2" stroke-width="${4 - i * .5}" stroke-linecap="round" opacity=".85"/>`).join('');
+  if (sc.item) s += card(70, 120, 100) + at(70, 120, 1, A.icon(sc.item, 90));
+  return s;
+}
+const render = () => ({ item: itemScene, tubes: tubesScene, heat: heatScene })[sc.mode]();
+
+const g = G4Game({ ch: 'g6c10', logo: '⚗️', title: ['Metal Lab', 'معمل الفلزات'], sub: ['Chapter 10 · Reaction between Solutions and Metals', 'الفصل ١٠ · تفاعل المحاليل مع الفلزات'],
+  bg: 'science/assets/bg_g6c10.svg', bgc: '#e9eef2', label: ['Metals and acid', 'الفلزات والحمض'], render });
+const kw = g.kw;
+const show = (o) => { Object.assign(sc, { item: null, item2: null, fumes: false }, o); g.paint(); };
+const set = o => () => { Object.assign(sc, o); g.paint(); };
+const AL = (o = {}) => ({ m: 'al', l: 'acid', ...o }), FE = (o = {}) => ({ m: 'fe', l: 'acid', ...o }), PW = (o = {}) => ({ m: 'powder', l: 'acid', ...o });
+
+/* ---------- Stage 1 · Warm Up: meet the metals ---------- */
+async function stage1() {
+  show({ mode: 'item', item: 'aluminum' });
+  g.say(T('Welcome to the Metal Lab! Look at these small pieces of aluminum. They are shiny, with a luster. What kind of material are they?', ''), 'point');
+  await g.choice({ options: [T('A metal', ''), T('A powder', ''), T('A liquid', '')], correct: T('A metal', ''),
+    hint: T('Shiny, solid, and we use it every day.', ''), ok: T(`${kw('Metals')} are shiny materials with a luster, and most of them are solid. We use them a lot: iron, aluminum and gold.`, '') });
+  show({ mode: 'item', item: 'steelwool' });
+  g.say(T('This is steel wool. Which metal is it in our experiment?', ''), 'think');
+  await g.choice({ options: [T('Iron', ''), T('Gold', ''), T('Aluminum', '')], correct: T('Iron', ''),
+    hint: T('The book writes: Iron (Steel wool).', ''), ok: T('The steel wool is our iron.', '') });
+  show({ mode: 'item', item: 'acid' });
+  g.say(T('Today we work with dilute hydrochloric acid. What do we put on to protect our eyes?', ''), 'think');
+  await g.choice({ options: [T('Safety goggles', ''), T('Sunglasses', ''), T('Nothing', '')], correct: T('Safety goggles', ''),
+    hint: T('They are clear and fit around your eyes.', ''), ok: T(`Always wear ${kw('safety goggles')} when you work with an acid.`, ''), reveal: set({ item: 'goggles' }) });
+}
+
+/* ---------- Stage 2 · Missions ---------- */
+async function mission1() {
+  await g.banner(T('Mission 1', 'المهمة ١'), T('Aluminum and the acid', ''));
+  show({ mode: 'tubes', item: 'aluminum', tubes: [AL({ drop: true })] });
+  g.say(T('The aluminum pieces are in the test tube. We add dilute hydrochloric acid. What will happen?', ''), 'think');
+  await g.choice({ options: [T('The aluminum reacts and produces bubbles', ''), T('Nothing happens', ''), T('The aluminum turns blue', '')], correct: T('The aluminum reacts and produces bubbles', ''),
+    hint: T('Hydrochloric acid has properties that enable it to react with some metals.', ''), ok: T(`Dilute ${kw('hydrochloric acid')} reacts with aluminum and produces ${kw('bubbles')}.`, ''), reveal: set({ tubes: [AL({ b: true })] }) });
+  show({ mode: 'tubes', item: 'acid', tubes: [AL({ l: 'none' })] });
+  g.say(T('Which tool do we use to add a little dilute hydrochloric acid to the test tube?', ''), 'think');
+  await g.choice({ options: [T('A pipette', ''), T('A rag', ''), T('A wire gauze', '')], correct: T('A pipette', ''),
+    hint: T('It takes up a little liquid and drops it.', ''), ok: T(`We use a ${kw('pipette')} to add the dilute hydrochloric acid.`, ''), reveal: set({ item: 'pipette' }) });
+}
+async function mission2() {
+  await g.banner(T('Mission 2', 'المهمة ٢'), T('Iron and the acid', ''));
+  show({ mode: 'tubes', item: 'steelwool', tubes: [FE({ drop: true })] });
+  g.say(T('Now a ball of steel wool (iron). We add dilute hydrochloric acid. What do we see?', ''), 'think');
+  await g.choice({ options: [T('Bubbles', ''), T('A blue colour', ''), T('Ice', '')], correct: T('Bubbles', ''),
+    hint: T('It is the same as with aluminum.', ''), ok: T('Iron reacts with dilute hydrochloric acid and produces bubbles too.', ''), reveal: set({ tubes: [FE({ b: true })] }) });
+  show({ mode: 'tubes', item: 'acid', tubes: [AL({ drop: true }), FE({ drop: true })] });
+  g.say(T('Which sentence is correct?', ''), 'think');
+  await g.choice({ options: [T('Hydrochloric acid can react with aluminum and iron', ''), T('Hydrochloric acid reacts with iron only', ''), T('Hydrochloric acid reacts with no metal', '')], correct: T('Hydrochloric acid can react with aluminum and iron', ''),
+    hint: T('Think of Mission 1 and Mission 2.', ''), ok: T('Some aqueous solutions can react with metals: hydrochloric acid reacts with aluminum AND iron.', ''), reveal: set({ tubes: [AL({ b: true }), FE({ b: true })] }) });
+  show({ mode: 'item', item: 'aluminum', item2: 'steelwool' });
+  g.say(T('In the experiment we also prepared a second set of these tubes. What did we add to the second set?', ''), 'think');
+  await g.choice({ options: [T('Water', ''), T('More acid', ''), T('Salt', '')], correct: T('Water', ''),
+    hint: T('The first set got the acid. The second set got something else.', ''), ok: T('A pipette adds dilute hydrochloric acid to the first set, and another pipette adds water to the second set.', '') });
+}
+async function mission3() {
+  await g.banner(T('Mission 3', 'المهمة ٣'), T('Safety first', ''));
+  show({ mode: 'item', item: 'acid' });
+  g.say(T('Oops! A little of the acid touches your skin. What do you do?', ''), 'think');
+  await g.choice({ options: [T('Wash it off right away with running water', ''), T('Leave it to dry', ''), T('Rub it in', '')], correct: T('Wash it off right away with running water', ''),
+    hint: T('Do it at once, with plenty of water.', ''), ok: T('Be careful not to let the liquid touch your skin. If it does, wash it off right away with running water.', '') });
+  show({ mode: 'item', item: 'acid', item2: 'pipette' });
+  g.say(T('What must we do to the room during the experiment?', ''), 'think');
+  await g.choice({ options: [T('Ventilate it', ''), T('Close every window', ''), T('Turn off the lights', '')], correct: T('Ventilate it', ''),
+    hint: T('Fresh air must come in.', ''), ok: T(`Make sure to ${kw('ventilate')} the room, and wear safety goggles.`, '') });
+}
+async function mission4() {
+  await g.banner(T('Mission 4', 'المهمة ٤'), T('Evaporate the liquid', ''));
+  show({ mode: 'heat', dish: 'liquid', heat: false, item: 'stove' });
+  g.say(T('We put the liquid in which the aluminum reacted into an evaporating dish. How do we heat it?', ''), 'think');
+  await g.choice({ options: [T('Gently, on low heat', ''), T('On very high heat', ''), T('We do not heat it', '')], correct: T('Gently, on low heat', ''),
+    hint: T('Step 2 says gently.', ''), ok: T('We heat it gently on low heat with a portable gas stove.', ''), reveal: set({ heat: true }) });
+  show({ mode: 'heat', dish: 'little', heat: true });
+  g.say(T('Only a little liquid is left in the dish. What do we do now?', ''), 'think');
+  await g.choice({ options: [T('Turn off the heat and let the remaining heat dry it', ''), T('Turn the flame up high', ''), T('Add more acid', '')], correct: T('Turn off the heat and let the remaining heat dry it', ''),
+    hint: T('The dish is still hot.', ''), ok: T('Turn off the heat while there is still a little liquid left, and let the remaining heat dry it.', ''), reveal: set({ heat: false }) });
+  show({ mode: 'heat', dish: 'little', heat: false, fumes: true });
+  g.say(T('Fumes rise from the dish. Where should your face be?', ''), 'think');
+  await g.choice({ options: [T('Away from the dish', ''), T('Close to the dish, to smell it', ''), T('Right above the dish', '')], correct: T('Away from the dish', ''),
+    hint: T('Do not breathe in the fumes directly.', ''), ok: T('Do not bring your face close to the evaporating dish, so you do not breathe in the fumes.', '') });
+  show({ mode: 'heat', dish: 'little', heat: false });
+  g.say(T('We wait while the remaining heat dries the last of the liquid. What will appear in the dish?', ''), 'think');
+  await g.choice({ options: [T('A white solid', ''), T('Shiny aluminum again', ''), T('Nothing at all', '')], correct: T('A white solid', ''),
+    hint: T('It is a dry powder.', ''), ok: T(`A ${kw('white solid')} appears. It is not shiny metal, but a dry powder.`, ''), reveal: set({ dish: 'powder' }) });
+}
+async function mission5() {
+  await g.banner(T('Mission 5', 'المهمة ٥'), T('A new substance', ''));
+  show({ mode: 'heat', dish: 'powder', heat: false });
+  g.say(T('The dish has cooled down. How do we take out the white solid?', ''), 'think');
+  await g.choice({ options: [T('With a laboratory spoon', ''), T('With our fingers', ''), T('By blowing on it', '')], correct: T('With a laboratory spoon', ''),
+    hint: T('Do not touch it directly with your hands.', ''), ok: T('Do not touch the remaining solid with your hands: use a laboratory spoon or a suitable tool.', ''), reveal: set({ item: 'spoon' }) });
+  show({ mode: 'tubes', item: 'powder', tubes: [PW({ drop: true })] });
+  g.say(T('We put the white solid in a test tube and add dilute hydrochloric acid. What happens?', ''), 'think');
+  await g.choice({ options: [T('No bubbles are produced', ''), T('It reacts with bubbles like the metal', ''), T('It explodes', '')], correct: T('No bubbles are produced', ''),
+    hint: T('Is it still the same metal?', ''), ok: T('The white solid does not react or produce bubbles like the original metal.', ''), reveal: set({ tubes: [PW()] }) });
+  show({ mode: 'item', item: 'aluminum', item2: 'powder' });
+  g.say(T('Compare the shiny aluminum with the white solid. What happened to the metal?', ''), 'think');
+  await g.choice({ options: [T('It changed into a new substance with different properties', ''), T('It is hiding and is still aluminum', ''), T('It turned into water', '')], correct: T('It changed into a new substance with different properties', ''),
+    hint: T('Look at the shine, and think of the bubbles.', ''), ok: T(`By reacting with the aqueous solution, the metal changed into a ${kw('substance with completely different properties')}.`, '') });
+}
+async function stage2() { await mission1(); await mission2(); await mission3(); await mission4(); await mission5(); }
+
+/* ---------- Stage 3 · Speed Round: bubbles or no bubbles in dilute hydrochloric acid? ---------- */
+const SPEED = [['aluminum', 'Aluminum pieces', 'yes'], ['steelwool', 'Steel wool (iron)', 'yes'], ['powder', 'The white solid left after evaporating', 'no'], ['gold', 'Gold', 'no'],
+  ['aluminum', 'Aluminum foil', 'yes'], ['steelwool', 'Iron', 'yes'], ['powder', 'The dry powder from the dish', 'no'], ['gold', 'Gold, like the mask of Tutankhamun', 'no']];
+const spic = nm => `<image href="science/assets/g6_i_${nm}.webp" width="100" height="100"/>`;
+async function stage3() {
+  show({ mode: 'tubes', item: 'acid', tubes: [{ m: null, l: 'acid', drop: true }] });
+  await g.speedRound({
+    items: g.shuffle(SPEED).map(([nm, label, ans]) => ({ t: T(label, ''), ans, pic: spic(nm), box: '0 0 100 100' })), rounds: 8,
+    buttons: [{ label: T('Bubbles', ''), value: 'yes', c: 0 }, { label: T('No bubbles', ''), value: 'no', c: 1 }],
+    ask: T('In dilute hydrochloric acid?', ''),
+    intro: T('Speed Round! I will show you a material. We pour dilute hydrochloric acid on it: does it react with <b>bubbles</b>, or are there <b>no bubbles</b>? (Gold is in the Enrichment Corner: it is a highly stable metal.) 8 rounds!', ''),
+    think: T('Bubbles or no bubbles?', '') });
+}
+
+g.run({
+  intro: T(`Hi, <b>${g.name()}</b>! Today we work in the <b>Metal Lab</b>: we pour dilute hydrochloric acid on metals and find out what is left after evaporating.`, ''),
+  stages: [{ name: T('Warm Up', 'التسخين'), fn: stage1 }, { name: T('Missions', 'المهمات'), fn: stage2 }, { name: T('Speed Round', 'جولة السرعة'), fn: stage3 }],
+  done: { title: T('Metal Lab expert!', ''),
+    text: T('Dilute <b>hydrochloric acid</b> reacts with <b>aluminum</b> and <b>iron</b> and produces <b>bubbles</b>. When the liquid is evaporated, a <b>white solid</b> is left: it is not shiny and makes no bubbles, so the metal changed into a <b>new substance with different properties</b>.', '') }
+}).catch(err => console.error(err));
+window.__metallab = { sc, render };
+})();
+</script>
+</body>
+</html>

@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-25', title: 'Grade 6 Science: Reaction between Solutions and Metals',
+    items: [
+      { text: 'New unit (Languages): Reaction between Solutions and Metals, 2 lessons, 75 questions with drawings of test tubes and metals' },
+      { text: 'New game: Metal Lab (dilute hydrochloric acid on aluminum and iron, evaporating, the white solid)', links: [{ label: 'Open the game', href: 'metallab.html', ch: 'g6c10' }] }
+    ] },
   { date: '2026-11-25', title: 'Grade 5 Math November test: owner review fixes',
     items: [
       { text: 'Clearer wording: greatest ticket price, greatest number of plates, choose two common factors/multiples, empty shared part of the Venn diagram' },

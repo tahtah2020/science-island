@@ -1,8 +1,9 @@
-/* Science Island · Grade 6 · drawings made in code (SVG) for Chapter 9 "Properties of Solutions".
-   Shared by the chapter's game (litmuslab.html) and the pictures of the question pages (quiz.html). Self-contained: common.js loads only this one art file.
+/* Science Island · Grade 6 · drawings made in code (SVG) for Chapter 9 "Properties of Solutions" and Chapter 10 "Reaction between Solutions and Metals".
+   Shared by the chapters' games (litmuslab.html, metallab.html) and the pictures of the question pages (quiz.html). Self-contained: common.js loads only this one art file.
    The household items are generated pictures (science/assets/g6_i_<name>.webp, transparent); the litmus strips, the dishes, the arrows and the tap targets are drawn here.
    window.G6SOL = the helpers; window.CH_DIAGRAMS gets: litmus (tap: lmA | lmB | lmC; pic.cols = the results of the columns: 'acid' | 'neutral' | 'alkaline'),
-   dishes (tap: dsA | dsB; pic.cols = 'solid' | 'none' for each dish) and photo. */
+   dishes (tap: dsA | dsB; pic.cols = 'solid' | 'none' for each dish) and photo.
+   Chapter 10: tubes (tap: tbA | tbB | tbC; pic.cols = [{ m: 'al' | 'fe' | 'powder', l: 'acid' | 'water', b: bubbles, drop: pipette }]) and metalPowder (tap: mpA | mpB; pic.cols = 'metal' | 'powder'). */
 (function () {
   'use strict';
   const T = (en, ar) => (window.SI ? window.SI.T(en, ar == null ? en : ar) : en);
@@ -133,6 +134,57 @@
     return `${svgOpen(300, E(pc.label || 'A picture'))}<defs><clipPath id="g6phClip"><rect width="340" height="300" rx="14"/></clipPath></defs><g clip-path="url(#g6phClip)"><rect width="340" height="300" fill="#eef6fb"/><image href="science/assets/${pc.img}.webp" x="20" y="0" width="300" height="300" preserveAspectRatio="xMidYMid slice"/></g></svg>`;
   }
 
-  window.G6SOL = { at, text, sun, leaf, ground, icon, arrow, strips, dish, GREEN, GREEN_D };
-  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { litmus, dishes, photo });
+  /* ---------- Chapter 10 · Reaction between Solutions and Metals ---------- */
+  /* what sits at the bottom of a test tube. m: 'al' (pieces of aluminum), 'fe' (a ball of steel wool), 'powder' (the white solid left after evaporating). Origin: the bottom of the tube */
+  function metalBit(m) {
+    if (m === 'al') return `<path d="M-11 -4l7 -9l8 3l-3 8z" fill="#dfe5ea" stroke="#7d8a96" stroke-width="1.6" stroke-linejoin="round"/><path d="M1 -3l8 -8l6 5l-6 6z" fill="#eef2f5" stroke="#7d8a96" stroke-width="1.6" stroke-linejoin="round"/><path d="M-8 -9l3 -2M4 -8l3 -2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>`;
+    if (m === 'fe') return `<circle cy="-9" r="10" fill="#8f979e" stroke="#555e66" stroke-width="1.6"/>` + [[-6, -12, 5, -6], [-7, -6, 6, -14], [-3, -16, 4, -3], [-8, -10, 7, -9]].map(([a, b, c, d]) => `<path d="M${a} ${b}Q0 ${(b + d) / 2 - 4} ${c} ${d}" fill="none" stroke="#c9ced3" stroke-width="1.3" stroke-linecap="round"/>`).join('');
+    if (m === 'powder') return `<path d="M-13 -1Q-6 -14 0 -12Q7 -15 13 -1Z" fill="#fbfbf6" stroke="#8d99a5" stroke-width="1.8" stroke-linejoin="round"/>` + [[-6, -5], [0, -8], [5, -4], [-2, -3]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="#d7dde3"/>`).join('');
+    return '';
+  }
+  /* one test tube. o = { m, l: 'acid' | 'water' | 'none', b: bubbles true/false, drop: a pipette above it (the liquid is not in the tube yet, so the picture never shows the result) }. Origin: the bottom of the tube. About 110 tall */
+  function tube(o = {}) {
+    const liquid = o.l === 'acid' ? '#e7f3d8' : o.l === 'water' ? '#d6ecfa' : null;
+    let s = '';
+    if (o.drop) s += `<rect x="-5" y="-140" width="10" height="20" rx="4" fill="#f2b6b0" stroke="#c05a4f" stroke-width="1.6"/><path d="M-3 -120h6l-2 16h-2z" fill="#eef6fb" stroke="#8aa0b4" stroke-width="1.4"/><circle cy="-97" r="2.6" fill="${o.l === 'water' ? '#8cc6ec' : '#b6d98d'}"/>`;
+    if (liquid && !o.drop) s += `<path d="M-14 -58V-8Q-14 6 0 6Q14 6 14 -8V-58Z" fill="${liquid}"/>`;
+    s += at(0, 4, o.m === 'powder' ? 1 : 1.25, metalBit(o.m));
+    if (o.b) s += [[-6, -18, 2.6], [5, -26, 3], [-3, -34, 2.2], [7, -42, 2.8], [-7, -48, 2], [2, -54, 2.4], [-1, -22, 1.8], [8, -16, 2]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="#7fa7c2" stroke-width="1.2"/>`).join('');
+    s += `<path d="M-15 -104V-8Q-15 7 0 7Q15 7 15 -8V-104" fill="rgba(235,246,252,.25)" stroke="#6f8ba3" stroke-width="2.6" stroke-linejoin="round"/><path d="M-18 -104H18" stroke="#6f8ba3" stroke-width="3" stroke-linecap="round"/><path d="M-9 -90V-20" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".8"/>`;
+    return s;
+  }
+  const LIQ = { acid: ['Dilute', 'hydrochloric acid'], water: ['Water', ''], none: ['', ''] };
+  const MET = { al: 'pieces of aluminum', fe: 'a ball of steel wool (iron)', powder: 'the white powder left after evaporating' };
+  /* one to three test tubes in a rack. q.pic.cols = [{ m, l, b, drop }]. Tap: a tube (tbA, tbB, tbC). The label says what is inside, never what happens */
+  function tubes(q) {
+    const isTap = !!(q && q.type === 'tap'), cols = (q && q.pic && q.pic.cols) || [{ m: 'al', l: 'acid', b: true }], n = cols.length;
+    const names = ['A', 'B', 'C'], step = 340 / n, H = 226;
+    const say = c => MET[c.m] + (c.l === 'none' ? ' in an empty tube' : ' in ' + (c.l === 'acid' ? 'dilute hydrochloric acid' : 'water')) + (c.drop ? ', a pipette above it' : '') + (c.b ? ', with bubbles' : ', no bubbles');
+    let s = `${svgOpen(H, 'Test tubes: ' + cols.map((c, i) => (n > 1 ? 'tube ' + names[i] + ': ' : '') + say(c)).join('; '))}${frame(H, '#eef6fb')}`;
+    s += `<rect x="10" y="150" width="320" height="12" rx="4" fill="#c99a62" stroke="#9c7442" stroke-width="2"/><rect x="18" y="162" width="8" height="26" fill="#b88a55"/><rect x="314" y="162" width="8" height="26" fill="#b88a55"/>`;
+    cols.forEach((c, i) => {
+      const cx = step * (i + .5);
+      s += at(cx, 172, 1, tube(c));
+      if (n > 1) s += text(cx, 24, 'Tube ' + names[i], 13, '#1f3d57');
+      const [l1, l2] = LIQ[c.l || 'none'];
+      s += text(cx, 200, l1, 11, '#3a5c75') + (l2 ? text(cx, 212, l2, 10, '#3a5c75') : '');
+      if (isTap) s += hot(['tbA', 'tbB', 'tbC'][i], 'Tube ' + names[i], ringRect(cx - step / 2 + 6, 8, step - 12, H - 14));
+    });
+    return s + '</svg>';
+  }
+  /* the original metal beside the white powder. pic.cols = ['metal', 'powder'] (any order). Tap: mpA | mpB */
+  function metalPowder(q) {
+    const isTap = !!(q && q.type === 'tap'), cols = (q && q.pic && q.pic.cols) || ['metal', 'powder'], names = ['A', 'B'];
+    let s = `${svgOpen(150, 'Two samples: ' + cols.map((c, i) => 'sample ' + names[i] + (c === 'metal' ? ' is a few shiny pieces of aluminum' : ' is a dull white powder in a dish')).join('; '))}${frame(150, '#eef6fb')}`;
+    cols.forEach((c, i) => {
+      const cx = 85 + i * 170;
+      s += `<rect x="${cx - 70}" y="14" width="140" height="122" rx="10" fill="#fff" stroke="#cfe0ec" stroke-width="2"/>` + text(cx, 36, 'Sample ' + names[i], 13, '#1f3d57');
+      s += c === 'metal' ? at(cx, 96, 2.4, metalBit('al')) + `<path d="M${cx + 24} 58l4 -8l4 8l8 4l-8 4l-4 8l-4 -8l-8 -4z" fill="#fff6c8" stroke="#e2c14d" stroke-width="1.4"/>` : at(cx, 78, 1.25, dish('solid'));
+      if (isTap) s += hot(['mpA', 'mpB'][i], 'Sample ' + names[i], ringRect(cx - 74, 10, 148, 130));
+    });
+    return s + '</svg>';
+  }
+
+  window.G6SOL = { at, text, sun, leaf, ground, icon, arrow, strips, dish, tube, metalBit, GREEN, GREEN_D };
+  window.CH_DIAGRAMS = Object.assign(window.CH_DIAGRAMS || {}, { litmus, dishes, photo, tubes, metalPowder });
 })();

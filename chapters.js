@@ -238,7 +238,11 @@ window.CHAPTERS = [
     cover: 'science/assets/map_g6c9.svg', quizBg: 'science/assets/bg_g6c9.svg',
     lessons: ['Grouping Solutions', 'What Is Dissolved in Solutions'] },
 
-  { id: 'g6c10', grade: 'g6', n: 10, title: 'Reaction between Solutions and Metals', titleAr: 'تفاعل المحاليل مع الفلزات', icon: '⚗️', tint: '#e9eef2', ready: false,
+  { id: 'g6c10', grade: 'g6', n: 10, title: 'Reaction between Solutions and Metals', titleAr: 'تفاعل المحاليل مع الفلزات', icon: '⚗️', tint: '#e9eef2', ready: true,
+    questions: 'science/questions_g6c10.js', art: 'science/g6_solutions.js',
+    game: { href: 'metallab.html', name: "Metal Lab", nameAr: "معمل الفلزات", icon: '⚗️', hint: 'Pour dilute hydrochloric acid on metals and see what is left in the dish', hintAr: 'صبّ حمض الهيدروكلوريك المخفف على الفلزات وشوف إيه اللي بيفضل في الطبق' },
+    map: { img: 'science/assets/map_g6c10.svg', stops: [[24.5, 82.5, 'right'], [62.1, 70, 'left'], [34.3, 52.9, 'right'], [65.4, 36.6, 'left'], [45.8, 15.6, 'below']] },
+    cover: 'science/assets/map_g6c10.svg', quizBg: 'science/assets/bg_g6c10.svg',
     lessons: ['Aqueous Solutions and Metals', 'What Is Left After Evaporation'] },
 
   /* ---------- Prep 1 (first preparatory, school book "Discover and Learn", 4 units in the first term) ----------
