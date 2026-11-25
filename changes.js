@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-25', title: 'Grade 6 Science: Food Chains in Egypt in Arabic',
+    items: [
+      { text: 'Arabic track: Food Chains in Egypt unit (Nile and desert chains + enrichment corner, 58 questions with hints) from the Arabic book, same pictures and game' }
+    ] },
   { date: '2026-11-25', title: 'Map icons redrawn',
     items: [
       { text: 'Map stops: drawn icons instead of emoji, a different icon for Quest and Stars, clearer stop numbers and star labels' }
