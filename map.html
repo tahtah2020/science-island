@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261125c{{{">
+<link rel="stylesheet" href="common.css?v=20261125d{{{">
 <style>
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}
 .mapWrap{position:relative;width:100%;max-width:min(680px, calc((100vh - 120px) * 1224 / 1285));margin:0 auto;aspect-ratio:1224/1285;border-radius:26px;
@@ -30,6 +30,12 @@
 .stop.left .lab{right:calc(100% + 6px);top:50%;transform:translateY(-50%)}
 .stop .lab small{display:block;color:#b7791f;font-size:12.5px;letter-spacing:1px}
 .stop .lab small .off{color:#d8cdb5}
+.stop .go{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--coral);color:#fff;border-radius:99px;padding:4px 12px;font-weight:900;font-size:clamp(12px,2.8cqw,15px);box-shadow:0 4px 10px rgba(31,61,87,.3);pointer-events:none;animation:goBob 1.2s ease-in-out infinite;z-index:2}
+.stop .go::after{content:"";position:absolute;top:100%;left:50%;margin-left:-7px;border:7px solid transparent;border-top-color:var(--coral);border-bottom:0}
+.stop .go.dn{bottom:auto;top:calc(100% + 10px)}
+.stop .go.dn::after{top:auto;bottom:100%;border:7px solid transparent;border-top:0;border-bottom-color:var(--coral)}
+@keyframes goBob{50%{transform:translateX(-50%) translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.stop .go{animation:none}}
 .side{display:flex;flex-direction:column;gap:12px}
 .coachCard{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .coachCard img{height:160px}
@@ -120,9 +126,9 @@
     </aside>
   </main>
 </div>
-<script src="firebase-config.js?v=20261125c{{{"></script>
-<script src="chapters.js?v=20261125c{{{"></script>
-<script src="common.js?v=20261125c{{{"></script>
+<script src="firebase-config.js?v=20261125d{{{"></script>
+<script src="chapters.js?v=20261125d{{{"></script>
+<script src="common.js?v=20261125d{{{"></script>
 <script>
 (async () => {
   'use strict';
@@ -195,7 +201,9 @@
     a.className = `stop ${s.side}` + (s.done ? ' done' : '') + (i === next ? ' next' : '');
     a.href = s.href; a.setAttribute('role', 'listitem'); a.style.left = s.x + '%'; a.style.top = s.y + '%';
     a.setAttribute('aria-label', `${T('Stop', 'محطة')} ${i + 1}: ${s.name}`);
-    a.innerHTML = `<span class="dot"><span class="n">${i + 1}</span>${s.icon}${s.badge ? `<span class="badge">${s.badge}</span>` : ''}</span>
+    const first = !st.got && !arm.stars && !quest.stars;   // nothing played yet in this chapter: point at the beginning
+    const goTag = i === next ? `<span class="go${s.side === 'below' ? '' : ' dn'}" aria-hidden="true">${first ? T('Start here', 'ابدأ من هنا') : T('Next', 'التالي')}</span>` : '';
+    a.innerHTML = `${goTag}<span class="dot"><span class="n">${i + 1}</span>${s.icon}${s.badge ? `<span class="badge">${s.badge}</span>` : ''}</span>
       <span class="lab">${s.name}<small id="sub-${s.key}">${s.sub}</small></span>`;
     map.appendChild(a);
   });

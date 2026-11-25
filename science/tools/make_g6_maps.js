@@ -326,10 +326,9 @@ ${cloud(260, 170, 1.5, .9)}${cloud(820, 110, 1.1, .8)}
   const bottle = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-8" y="-40" width="16" height="10" rx="3" fill="#8a5a33"/><path d="M-8 -30H8V-22Q22 -14 22 2V28Q22 34 16 34H-16Q-22 34 -22 28V2Q-22 -14 -8 -22Z" fill="#b97a45" stroke="#2b3a4a" stroke-width="3" stroke-linejoin="round"/><path d="M-14 0V22" stroke="#e8c49a" stroke-width="4" stroke-linecap="round"/></g>`;
   let inside = `<ellipse cx="300" cy="1010" rx="260" ry="150" fill="#cfdde9" opacity=".6"/><ellipse cx="930" cy="330" rx="280" ry="170" fill="#dbe6ef" opacity=".55"/>`;
   for (let i = 0; i < 40; i++) inside += tuft(f(90 + rnd() * 1040), f(140 + rnd() * 1040), '#7f9db5');
-  let s = island([[0, '#cfdeea'], [.5, '#e1eaf2'], [1, '#f1f5f9']], ['#f6e3ae', '#e4e7ea'], inside);
+  let s = island([[0, '#cfdeea'], [.5, '#e1eaf2'], [1, '#f1f5f9']], ['#eef4f8', '#d9e5ee'], inside, ['#b98f4e', '#f8e8b8', '#d9b46a']);   // pale beach + a darker warm trail: the beach must not look like a second road
   const sign = (x, y, inner) => board(x, y, 200, 220, inner);
   s += sign(1000, 1020, tubeB) + sign(905, 292, dishP) + sign(232, 600, metal);
-  s += bottle(150, 1150, 1.6) + bottle(420, 1190, 1.4) + bottle(800, 1190, 1.5) + bottle(1060, 600, 1.5) + bottle(430, 270, 1.3) + bottle(1090, 900, 1.4);
   s += sunAt(1090, 140, 2.2) + cloud(140, 110, .8, .85) + cloud(930, 70, .7, .85) + '</svg>';
   save('map_g6c10.svg', s);
   let b = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
