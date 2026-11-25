@@ -1,0 +1,18 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": null,
+ "size": [512, 512],
+ "style": "Style: flat cartoon children's-book science illustration, thick dark outlines, soft clean colours, simple friendly shapes, one single subject only, centred, square picture. The subject is isolated on a plain pure white background with no ground, no shadow and no other objects. Absolutely no text, no letters, no numbers, no arrows, no symbols anywhere.",
+ "images": [
+  {"file": "g6_i_aluminum", "prompt": "Four small crumpled pieces of shiny silver aluminum foil, cut into little squares, with bright highlights showing a metallic luster.", "seed": 2000, "n": 2},
+  {"file": "g6_i_steelwool", "prompt": "A small round ball of grey steel wool made of fine tangled metal threads, shiny grey.", "seed": 2010, "n": 2},
+  {"file": "g6_i_powder", "prompt": "A small round white porcelain evaporating dish seen from slightly above, with a thin layer of dry dull white powder at its bottom, no liquid.", "seed": 2020, "n": 2},
+  {"file": "g6_i_goggles", "prompt": "A pair of clear plastic school laboratory safety goggles with a blue elastic strap.", "seed": 2030, "n": 2},
+  {"file": "g6_i_stove", "prompt": "A small portable camping gas stove, cream and grey colour, with a small low blue flame on its burner.", "seed": 2040, "n": 2},
+  {"file": "g6_i_acid", "prompt": "A small brown glass laboratory reagent bottle with a glass stopper, a plain bottle with no label.", "seed": 2050, "n": 2},
+  {"file": "g6_i_pipette", "prompt": "A simple clear plastic dropper pipette with a squeeze bulb, lying diagonally.", "seed": 2060, "n": 2},
+  {"file": "g6_i_tools", "prompt": "A small heap of old rusty metal things: an old key, a few bolts and nuts, a bent spoon and a small old wrench.", "seed": 2070, "n": 2},
+  {"file": "g6_i_spoon", "prompt": "A small stainless steel laboratory spatula spoon, long thin handle with a small scoop at one end, lying diagonally.", "seed": 2080, "n": 2},
+  {"file": "g6_i_gold", "prompt": "A shiny gold bar ingot with bright yellow highlights, sitting next to two small gold coins without any pictures on them.", "seed": 2090, "n": 2}
+ ]
+}
