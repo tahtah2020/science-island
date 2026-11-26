@@ -1232,7 +1232,7 @@ async function playList(list, label, resume) {
     window.__cur = q;
     const r = await ask(q);
     hideTimer();
-    if (label !== 'retry') { recordCard(q.id, r.firstTry); trackAnswer(q, r, label); if (q.mode === 'boss' && r.correct && SI.countBoss) SI.countBoss(); }
+    if (label !== 'retry') { recordCard(q.id, r.firstTry, q.ch); trackAnswer(q, r, label); SI.noteAnswer({ ch: q.ch || CH.id, id: q.id, vi: q.vi, ok: r.firstTry, src: label }); if (q.mode === 'boss' && r.correct && SI.countBoss) SI.countBoss(); }
     results[i] = r.firstTry;
     const ex = $('#explain');
     if (r.correct) {
@@ -1411,7 +1411,7 @@ async function results(kind, res, total, extraXP = 0) {
   if (kind === 'quest') {
     SI.updateChProf(p => { const Q = p.quest = p.quest || {}; Q.best = Math.max(Q.best || 0, score); Q.stars = Math.max(Q.stars || 0, stars); Q.plays = (Q.plays || 0) + 1; bestScore = Q.best; });
   }
-  const gain = SI.addXP(score + extraXP, banked); banked = 0;
+  const gain = SI.addXP(score + extraXP, banked, { k: kind, ch: CH.id, m: score, of: total, ok: res.firstRight, st: kind === 'quest' ? stars : undefined }); banked = 0;
   const levelUp = gain.after.n > gain.before.n;
   sfx.win(); confetti(60); SI.voice('finish');
   const me = SI.player();
@@ -1424,6 +1424,7 @@ async function results(kind, res, total, extraXP = 0) {
     <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Right first time', 'صح من أول مرة')}: ${res.firstRight} / ${total}</span>${kind === 'quest' ? `<span>${T('Best', 'أعلى نتيجة')}: ${bestScore}</span>` : ''}${extraXP ? `<span>🔥 ${T('Daily bonus', 'مكافأة اليوم')} +${extraXP}</span>` : ''}</div>
     ${levelBlock(gain)}
     ${kind === 'quest' ? SI.certBtn(Math.round(acc * 100)) : ''}
+    ${kind === 'quest' ? SI.parentBtn(`⭐ تحدي ${CH.titleAr || CH.title}: ${'★'.repeat(stars)} (${res.firstRight} من ${total} صح من أول مرة)`) : ''}
     ${SI.shareBtn()}
     <p class="rank" id="rank">${T('Saving your points…', 'بنحفظ نقاطك…')}</p>
     <p>${res.missed.length ? T(`Reesho saved <b>${res.missed.length}</b> tricky question${res.missed.length > 1 ? 's' : ''} for your review.`, `ريشو حفظ لك <b>${res.missed.length}</b> سؤال صعب علشان تراجعه.`) : T('Perfect! Come back tomorrow for your Daily 5.', G('ممتاز! ارجع بكرة لخماسية اليوم.', 'ممتاز! ارجعي بكرة لخماسية اليوم.'))}</p>
@@ -1436,6 +1437,7 @@ async function results(kind, res, total, extraXP = 0) {
   document.body.appendChild(o);
   SI.wireShare(o, { stars, score, ch: CH });
   SI.wireCert(o, { ch: CH, pct: Math.round(acc * 100) });
+  SI.wireParent(o);
   SI.rate.guard(o, 'a[href="map.html"], a[href="champions.html"]', 'results');   // Reesho asks for a rating before the player leaves (once per chapter)
   $('#again', o).onclick = () => location.reload();
   if (levelUp) { setTimeout(() => { sfx.level(); SI.voice('level'); banner(T('Level up!', 'مستوى جديد!'), `${T('Level', 'المستوى')} ${gain.after.n} · ${gain.after.title}`); }, 900); }
@@ -1620,7 +1622,7 @@ async function playExam(paper) {
     header(q, i, flat.length, dots); window.__cur = q;
     const r = await ask(q);
     hideTimer();
-    recordCard(q.id, r.firstTry, q.ch); trackAnswer(q, r, 'exam');
+    recordCard(q.id, r.firstTry, q.ch); trackAnswer(q, r, 'exam'); SI.noteAnswer({ ch: q.ch, id: q.id, vi: q.vi, ok: r.firstTry, src: 'exam', ex: EXAM_ID });
     const got = r.firstTry ? full : (r.correct && full > 1 ? 1 : 0);
     marks += got; perQ[q.exam.q - 1] += got; dots[i] = got === full;
     const pc = perCh[q.ch] = perCh[q.ch] || { got: 0, of: 0 }; pc.got += got; pc.of += full;
@@ -1650,7 +1652,7 @@ function examResults(EX, res, total) {
     E.best = best = Math.max(E.best || 0, res.marks); E.last = res.marks; E.of = total; E.plays = (E.plays || 0) + 1;
     E.lastVar = E.lastVar || {}; res.flat.forEach(q => { E.lastVar[q.id] = q.vi; });
   });
-  const gain = SI.addXP(res.marks * 15, banked); banked = 0;
+  const gain = SI.addXP(res.marks * 15, banked, { k: 'exam', ch: null, ex: EX.id, m: res.marks, of: total, w: res.wrong.map(q => `${q.ch}:${q.id}.${q.vi}`) }); banked = 0;
   sfx.win(); SI.voice('finish'); if (pct >= .5) confetti(60);
   const me = SI.player();
   say(pct >= .9 ? T(`Wonderful, ${esc(me.name)}! You are ready for the test!`, G(`هايل يا ${esc(me.name)}! إنت جاهز للامتحان!`, `هايل يا ${esc(me.name)}! إنتي جاهزة للامتحان!`))
@@ -1668,21 +1670,26 @@ function examResults(EX, res, total) {
     ${levelBlock(gain)}
     <h3>${SI.isUnits() ? T('Marks by unit', 'الدرجات حسب الوحدة') : T('Marks by chapter', 'الدرجات حسب الفصل')}</h3><ul class="byc">${byCh}</ul>
     ${miss ? `<h3>${T('Look again at these', 'راجع دول تاني')}</h3><ul class="miss">${miss}</ul>` : `<p style="text-align:center">${T('A perfect paper! 🎉', 'ورقة من غير ولا غلطة! 🎉')}</p>`}
+    ${SI.parentBtn(`📝 ${EX.titleAr} (${(SI.subjectById(SI.chSubject(EX)) || {}).titleAr || ''}): ${res.marks} من ${total}`)}
     <div class="row acts">
-      <button class="btn primary" type="button" id="again">${T('New paper', 'ورقة جديدة')}</button>
+      ${res.wrong.length ? `<a class="btn primary" href="quiz.html#mistakes">${T('Practise my mistakes', G('راجع أخطائي', 'راجعي أخطائي'))} (${res.wrong.length})</a>` : ''}
+      <button class="btn${res.wrong.length ? '' : ' primary'}" type="button" id="again">${T('New paper', 'ورقة جديدة')}</button>
       <a class="btn" href="chapters.html">${SI.chWords()}</a>
     </div></div>`);
   document.body.appendChild(o);
   o.querySelectorAll('a[data-ch]').forEach(a => { a.onclick = () => { SI.setChapter(a.dataset.ch); }; });
   $('#again', o).onclick = () => location.reload();
+  SI.wireParent(o);
   if (gain.after.n > gain.before.n) setTimeout(() => { sfx.level(); SI.voice('level'); banner(T('Level up!', 'مستوى جديد!'), `${T('Level', 'المستوى')} ${gain.after.n} · ${gain.after.title}`); }, 900);
   return best;
 }
+let EXAM_ID = '';
 async function examMain() {
   bankRate = 15;
   const me = SI.player();
   const EX = SI.examById((/^#exam=([\w-]+)/.exec(location.hash) || [])[1]);
   if (!EX) { location.href = SI.CHAPTERS_PAGE; return; }
+  EXAM_ID = EX.id;
   document.querySelectorAll('a[href="map.html"]').forEach(a => { a.href = SI.CHAPTERS_PAGE; const l = SI.isUnits() ? T('Back to the units', 'رجوع للوحدات') : T('Back to the chapters', 'رجوع للفصول'); a.title = l; if (a.hasAttribute('aria-label')) a.setAttribute('aria-label', l); });
   $('.logo').textContent = EX.icon || '📝';
   $('#scorePill').firstElementChild.textContent = T('Marks', 'الدرجات');
@@ -1801,13 +1808,64 @@ async function main() {
     await results('review', res, list.length);
   }
 }
+/* ---------- «راجع أخطائي» (quiz.html#mistakes, optional &s=<subject>) ----------
+   The questions this player answered wrong (SI.openMisses: quizzes, Daily 5, reviews and monthly tests), up to 10, newest first,
+   each in ANOTHER phrasing of the same idea so the child does not just remember the answer. Two right answers in a row close a mistake. */
+async function mistakesMain() {
+  const me = SI.player(), sj = (/[#&]s=(\w+)/.exec(location.hash) || [])[1];
+  const set = (a, b) => { $('#title').textContent = a; $('#subtitle').textContent = b; document.title = a + T(' · Motafawek', ' · متفوّق'); };
+  set(T('My mistakes', G('راجع أخطائي', 'راجعي أخطائي')), T('The questions you got wrong', G('الأسئلة اللي غلطت فيها', 'الأسئلة اللي غلطتي فيها')));
+  $('.logo').textContent = '📝';
+  document.querySelectorAll('a[href="map.html"]').forEach(a => { a.href = SI.CHAPTERS_PAGE; });
+  const open = SI.openMisses(null, c => SI.chGrade(c) === SI.grade() && (!sj || SI.chSubject(c) === sj) && SI.qFile(c));
+  if (!open.length) {
+    say(T('No mistakes to practise. Well done!', G('مفيش أخطاء تراجعها. برافو عليك!', 'مفيش أخطاء تراجعيها. برافو عليكي!')), 'celebrate');
+    notice(T('All clear! 🎉', 'كله تمام! 🎉'), T('Every question you got wrong is now right. Play a Quest or a monthly test to keep going.', G('كل الأسئلة اللي غلطت فيها بقت صح. العب تحدي أو امتحان شهر وكمّل.', 'كل الأسئلة اللي غلطتي فيها بقت صح. العبي تحدي أو امتحان شهر وكمّلي.')),
+      `<a class="btn primary" href="${SI.CHAPTERS_PAGE}">${SI.chWords()}</a>`);
+    return;
+  }
+  const pick = open.slice(0, 10), byCh = {}, list = [];
+  pick.forEach(m => { (byCh[m.ch] = byCh[m.ch] || []).push(m); });
+  for (const id of Object.keys(byCh)) {
+    const ideas = await SI.loadIdeas(SI.chapterById(id)); if (!ideas) continue;
+    byCh[id].forEach(m => {
+      const I = ideas.find(x => x.id === m.id); if (!I || !I.variants.length) return;
+      let vis = I.variants.map((_, i) => i); if (vis.length > 1) vis = vis.filter(i => i !== m.vi);
+      const vi = vis[Math.floor(Math.random() * vis.length)], v = I.variants[vi];
+      list.push(Object.assign({ id: I.id, ch: id, lesson: I.lesson, concept: I.concept, explain: I.explain, vi }, v, v.explain ? { explain: v.explain } : {}, { mode: 'normal', at: m.at }));
+    });
+  }
+  list.sort((a, b) => b.at - a.at);
+  window.IDEAS = list.map(q => ({ id: q.id, lesson: q.lesson, variants: [q] }));
+  await intro(T('Practise my mistakes', G('راجع أخطائي', 'راجعي أخطائي')), T(`${list.length} question${list.length > 1 ? 's' : ''} · ${open.length} still open`, `${list.length} سؤال · لسه ${open.length} محتاجين مراجعة`),
+    T('These are questions you got wrong before, written in a new way. Get one right twice and it leaves the list!', G('دي أسئلة غلطت فيها قبل كده، مكتوبة بطريقة جديدة. جاوب السؤال صح مرتين ويخرج من القائمة!', 'دي أسئلة غلطتي فيها قبل كده، مكتوبة بطريقة جديدة. جاوبي السؤال صح مرتين ويخرج من القائمة!')), T('Go!', 'يلّا!'));
+  track('quiz_start', { mode: 'mistakes' });
+  const res = await playList(list, 'mistakes');
+  const left = SI.openMisses(null, c => SI.chGrade(c) === SI.grade() && (!sj || SI.chSubject(c) === sj) && SI.qFile(c)).length;
+  track('quiz_complete', { mode: 'mistakes', accuracy: Math.round(res.firstRight / list.length * 100) });
+  const gain = SI.addXP(score, banked, { k: 'mistakes', ch: null, m: res.firstRight, of: list.length, sj: sj || undefined }); banked = 0;
+  sfx.win(); SI.voice('finish'); confetti(40);
+  say(T(`Well done, ${esc(me.name)}!`, `برافو يا ${esc(me.name)}!`), 'celebrate');
+  const o = mk('div', 'overlay', `<div class="panel">
+    <img class="hero" src="assets/parrot_thumbs.png" alt="">
+    <h2>${T('Mistakes practised!', G('راجعت أخطاءك!', 'راجعتي أخطاءك!'))}</h2>
+    <div class="stats"><span>${T('Right first time', 'صح من أول مرة')}: ${res.firstRight} / ${list.length}</span><span>${T('Still open', 'لسه محتاجة مراجعة')}: ${left}</span></div>
+    ${levelBlock(gain)}
+    ${SI.parentBtn(`🔁 راجع أخطاءه: ${res.firstRight} من ${list.length} صح، ولسه ${left} سؤال محتاج مراجعة`)}
+    <div class="row acts">${left ? `<button class="btn primary" type="button" id="again">${T('More mistakes ▸', G('كمّل الأخطاء ◂', 'كمّلي الأخطاء ◂'))}</button>` : ''}<a class="btn" href="${SI.CHAPTERS_PAGE}">${SI.chWords()}</a></div></div>`);
+  document.body.appendChild(o);
+  const ag = $('#again', o); if (ag) ag.onclick = () => location.reload();
+  SI.wireParent(o);
+}
 window.addEventListener('hashchange', () => location.reload());
 const EXAM = /^#exam\b/.test(location.hash);
 const notReady = e => {
   console.error(e);
   notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل الأسئلة. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${SI.chWords()}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
 };
+const MISTAKES = /^#mistakes\b/.test(location.hash);
 if (EXAM) { if (SI.requirePlayer()) examMain().catch(notReady); }
+else if (MISTAKES) { if (SI.requirePlayer()) mistakesMain().catch(notReady); }
 else if (SI.requirePlayer() && ((/^#preview/.test(location.hash) && SI.isOwner() && (SI.chapter() || {}).questions) || SI.requireChapter())) {   // the owner can preview a chapter before it opens
   SI.applyTheme();
   if (CH.quizBg) document.body.style.backgroundImage = `linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)),url(${CH.quizBg})`;

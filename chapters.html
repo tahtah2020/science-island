@@ -17,6 +17,7 @@
 .lvl{display:flex;flex-direction:column;gap:5px}
 .lvl .t{display:flex;justify-content:space-between;gap:8px;font-weight:900;font-size:14.5px}
 .lvl .t span:last-child{flex:none;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.pbox{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.pbox:empty{display:none}.pbox a,.pbox button{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border:0;border-radius:999px;font:800 13.5px "Nunito","Cairo",system-ui,sans-serif;text-decoration:none;cursor:pointer;box-shadow:0 2px 6px rgba(31,61,87,.14)}.pbox .mis{background:#fde3dc;color:#9a3412}.pbox .wa{background:#25d366;color:#fff}
 .lvl small{font-weight:800;color:var(--ink);font-size:12.5px}
 .sect{margin:4px 2px 0;font-size:15px;font-weight:900;color:var(--ink);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
 .sect .ar{direction:rtl;unicode-bidi:isolate;font-size:14px}
@@ -140,6 +141,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
           <small id="lvlNext"></small>
         </div>
         <div id="codeBox"></div>
+        <div id="parentBox" class="pbox"></div>
       </div>
     </div>
     <div class="subj" id="subj" role="group" aria-label="Subject" data-ar-label="المادة"></div>
@@ -183,6 +185,14 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   }
 
   SI.sync.chip($('#codeBox'));   // the child's recovery code (appears once the progress is saved online)
+  /* parent follow-up (26 Nov 2026): «راجع أخطائي» with the number of open mistakes in this subject, and the WhatsApp report for the parent */
+  function parentBox() {
+    const box = $('#parentBox'); if (!box) return; box.innerHTML = '';
+    const sj = SI.subjectId(), n = SI.openMisses(null, c => SI.chGrade(c) === SI.grade() && SI.chSubject(c) === sj && SI.qFile(c)).length;
+    if (n) { const a = document.createElement('a'); a.className = 'mis'; a.href = `quiz.html#mistakes&s=${sj}`; a.innerHTML = `📝 ${SI.T('Practise my mistakes', SI.G('راجع أخطائي', 'راجعي أخطائي'))} <b>${n}</b>`; box.appendChild(a); }
+    if (SI.sync.code()) { const b = document.createElement('button'); b.type = 'button'; b.className = 'wa'; b.innerHTML = `🟢 ${SI.T('Send my report to my parent', SI.G('ابعت تقريري لبابا أو ماما', 'ابعتي تقريري لبابا أو ماما'))}`; b.onclick = () => { SI.sfx.tick(); SI.parentReport(); }; box.appendChild(b); }
+  }
+  parentBox(); document.addEventListener('si-sync', parentBox);
   const lv = SI.levelInfo(SI.xp());
   $('#lvlTitle').textContent = `${T('Level', 'المستوى')} ${lv.n} · ${lv.title}`;
   $('#lvlXp').textContent = `${lv.xp} XP`;
@@ -198,6 +208,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
 
   let started = false;
   function render() {
+  if (typeof parentBox === 'function') parentBox();
   const list = SI.chapters(); let total = 0;
   $('#sect').innerHTML = SI.subjectId() === 'english' ? 'Choose a unit' : SI.isUnits() ? T('Choose a unit <span class="ar">اختر الوحدة</span>', 'اختر الوحدة') : T('Choose a chapter <span class="ar">اختر الفصل</span>', 'اختر الفصل');
   $('#sub').textContent = T(`${SI.gradeName()} · ${SI.subjectName()} · Languages · First term`, `${SI.gradeName()} · ${SI.subjectName()} · عربي · الفصل الدراسي الأول`);

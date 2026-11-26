@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-26', title: 'Parent follow-up page · متابعة ولي الأمر',
+    items: [
+      { text: 'parent.html: the parent types the child\'s recovery code (or opens the WhatsApp link) and sees activity days, monthly tests, every quest, review and game, the questions the child got wrong with the right answer, and the stars of each chapter' },
+      { text: '«راجع أخطائي» (quiz.html#mistakes): the questions the child got wrong in another phrasing; two right answers close a mistake' },
+      { text: 'WhatsApp button «ابعت نتيجتك لبابا أو ماما» after monthly tests, quests and mistakes practice, and on the chapters page; «تابع ابنك» on the home page', links: [{ label: 'Parent page', href: 'parent.html' }] }
+    ] },
   { date: '2026-11-26', title: 'English November tests like the school paper',
     items: [
       { text: 'Grades 3, 4 and 5 English November tests now follow the directorate\'s paper: choose, correct form, complete from the box, word order, punctuate' },

@@ -281,7 +281,7 @@
       runStore.clear();
       const stars = mistakes <= 1 ? 3 : mistakes <= 4 ? 2 : 1, prev = store.load(), best = Math.max(prev.best || 0, score);
       store.save(Object.assign({}, prev, { best, stars: Math.max(prev.stars || 0, stars), plays: (prev.plays || 0) + 1 }));
-      const gain = SI.addXP(score, banked); banked = 0;
+      const gain = SI.addXP(score, banked, { k: 'game', ch: cfg.ch, m: score, st: stars, mis: mistakes }); banked = 0;
       sfx.win(); SI.voice('finish'); confetti(60);
       const o = mk('div', 'overlay');
       o.innerHTML = `<div class="panel" id="resultsPanel">

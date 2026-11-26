@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>متفوّق · متابعة ولي الأمر</title>
+<script>
+/* the parent link carries the child's recovery code in the hash (parent.html#c=XXXXXXXX): keep it in this tab only and take it out of
+   the address before anything else loads, so it is never sent to the statistics or left in the browser history */
+(function () { var m = /[#&]c=([A-Za-z0-9٠-٩-]{6,12})/.exec(location.hash); if (m) { try { sessionStorage.setItem('si.pcode', m[1]); } catch (e) {} history.replaceState(null, '', location.pathname); } })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css?v=20261126c">
+<style>
+/* Parent page «متابعة ولي الأمر» (26 Nov 2026): the parent types the child's recovery code (or opens the WhatsApp link the child sent)
+   and sees, read only: activity of the last 14 days, monthly tests, every quiz and game, the questions the child got wrong with the
+   right answer, and the chapters' stars. Data: SI.sync.fetch(code) = the child's online progress file (profile.log, profile.miss). */
+body{font-family:"Cairo","Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding:14px 12px 40px}
+.box{background:rgba(255,250,240,.97);border:2px solid var(--line,#d9e4ea);border-radius:20px;padding:14px 16px;box-shadow:0 6px 20px rgba(31,61,87,.10)}
+h1{margin:0;font-size:24px;font-weight:900;color:#1f3d57}
+h2{margin:0 0 10px;font-size:19px;font-weight:900;color:#1f3d57;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+h2 small{font-size:13px;color:#3a5c75;font-weight:800}
+.lead{margin:4px 0 0;font-weight:700;color:#3a5c75;font-size:14.5px;line-height:1.8}
+.top{display:flex;align-items:center;gap:12px}
+.top img{width:64px;height:64px;flex:none}
+form{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+input{flex:1;min-width:180px;font:900 22px ui-monospace,Menlo,Consolas,monospace;letter-spacing:3px;text-align:center;direction:ltr;padding:10px;border:3px solid #bcd3de;border-radius:14px;text-transform:uppercase}
+input:focus{outline:none;border-color:#23799f}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:14px;padding:10px 16px;font:900 15px "Cairo","Nunito",sans-serif;cursor:pointer;text-decoration:none;background:#e3f1f7;color:#1f3d57;box-shadow:0 3px 0 #bcd3de}
+.btn.primary{background:#23799f;color:#fff;box-shadow:0 3px 0 #185a77}
+.btn.wa{background:#25d366;color:#fff;box-shadow:0 3px 0 #1a9e4b}
+.btn.small{padding:6px 12px;font-size:13.5px}
+.err{color:#c0392b;font-weight:800;margin:8px 0 0}
+.kid{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.kid b{font-size:22px;color:#1f3d57}
+.kid .meta{font-weight:800;color:#3a5c75;font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+@media (max-width:560px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{background:#fff;border:2px solid #e3ecf1;border-radius:14px;padding:8px 10px;text-align:center}
+.tile .v{font-size:26px;font-weight:900;color:#23799f;line-height:1.2}
+.tile .k{font-size:12.5px;font-weight:800;color:#3a5c75}
+.tile.warn .v{color:#e2603f}
+.days{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:12px}
+.day{aspect-ratio:1;border-radius:7px;background:#eef3f7;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#8aa0b0}
+.day.on{background:#2e9e6b;color:#fff}
+.days-cap{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#3a5c75;margin-top:4px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.list li{background:#fff;border:2px solid #e3ecf1;border-radius:14px;padding:9px 12px}
+.row{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.row .t{font-weight:900;color:#1f3d57}
+.row .d{font-size:12.5px;font-weight:800;color:#6b8394}
+.mark{font-weight:900;font-size:18px;color:#23799f;direction:ltr;unicode-bidi:isolate}
+.mark.low{color:#e2603f}
+.tag{display:inline-block;font-size:12px;font-weight:900;padding:2px 9px;border-radius:99px;background:#e3f1f7;color:#1f3d57}
+.tag.exam{background:#fff1cc;color:#8a5a00}
+.tag.n{background:#fde3dc;color:#9a3412}
+.q{font-weight:800;color:#1f3d57;line-height:1.7;margin:6px 0 4px;unicode-bidi:plaintext;text-align:start}
+.a{font-weight:800;color:#1e7a50;line-height:1.7;unicode-bidi:plaintext}
+.a::before{content:"✓ الإجابة الصحيحة: ";color:#2e9e6b}
+.ex{font-size:13.5px;font-weight:700;color:#3a5c75;line-height:1.7;margin-top:4px;unicode-bidi:plaintext}
+details summary{cursor:pointer;font-weight:900;color:#23799f;margin-top:4px}
+.grp{font-weight:900;color:#3a5c75;margin:12px 0 6px;font-size:15px}
+.empty{font-weight:800;color:#6b8394;text-align:center;padding:10px}
+.note{font-size:13px;font-weight:700;color:#6b8394;line-height:1.7;margin:8px 0 0}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.stars{color:#f2b134;letter-spacing:1px}
+.stars .off{color:#d5dde3}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="box">
+    <div class="top"><img src="assets/parrot_wave.png" alt=""><div>
+      <h1>متابعة ولي الأمر</h1>
+      <p class="lead">تابع نشاط ابنك أو بنتك على متفوّق: الامتحانات الشهرية، والتحديات، والألعاب، والأسئلة اللي محتاجة مراجعة.</p>
+    </div></div>
+    <form id="form" autocomplete="off">
+      <input id="code" inputmode="text" maxlength="10" placeholder="XXXX-XXXX" aria-label="رمز الاستعادة">
+      <button class="btn primary" type="submit">اعرض التقرير</button>
+    </form>
+    <p class="note">اكتب «رمز الاستعادة» اللي بيظهر لابنك في صفحة الفصول تحت شريط المستوى (🔑)، أو افتح الرابط اللي ابنك بعته لك على واتساب.</p>
+    <p class="err" id="err" hidden></p>
+    <div id="saved" class="acts"></div>
+  </section>
+  <div id="report" hidden></div>
+</main>
+<script src="firebase-config.js?v=20261126c"></script>
+<script src="chapters.js?v=20261126c"></script>
+<script src="common.js?v=20261126c"></script>
+<script>
+(() => {
+const $ = s => document.querySelector(s), esc = SI.esc;
+const AR_DIG = n => String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const DAY = 864e5;
+const KIND = { quest: 'تحدي', daily: 'خماسية اليوم', review: 'مراجعة', mistakes: 'مراجعة الأخطاء', exam: 'امتحان الشهر', game: 'لعبة', play: 'نشاط' };
+const SAVED_KEY = 'si.parent';                                   // codes this parent chose to keep on this device: [{ code, name }]
+const saved = () => { try { return JSON.parse(localStorage.getItem(SAVED_KEY) || '[]') || []; } catch (e) { return []; } };
+const keep = list => { try { localStorage.setItem(SAVED_KEY, JSON.stringify(list.slice(0, 6))); } catch (e) {} };
+const subjAr = id => ((SI.subjectById(id) || {}).titleAr || '');
+const chAr = c => c ? (c.titleAr || c.title) : '';
+const chWordAr = c => (SI.isUnits(c) ? 'الوحدة' : 'الفصل');
+const fmtDate = t => { const d = new Date(t); return d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }) + ' · ' + d.toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' }); };
+const dayKey = t => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; };
+
+function showSaved() {
+  const box = $('#saved'); box.innerHTML = '';
+  saved().forEach(s => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn small'; b.textContent = `👦 ${s.name}`;
+    b.onclick = () => { $('#code').value = SI.sync.show(s.code); open(s.code); };
+    box.appendChild(b);
+  });
+}
+
+/* the child's question files, in the child's language (the same rule as SI.qFile, with the child's track instead of this device's player) */
+function fileFor(c, track) {
+  const L = (SI.subjectById(SI.chSubject(c)) || {}).lang, ar = track === 'ar';
+  const useAr = L ? L[ar ? 'ar' : 'lang'] === 'ar' : ar;
+  return (useAr ? c.questionsAr : c.questions) || c.questions || c.questionsAr || null;
+}
+const ideaCache = {};
+function loadFile(src) {
+  if (ideaCache[src]) return ideaCache[src];
+  return (ideaCache[src] = new Promise(res => {
+    window.IDEAS = undefined;
+    const el = document.createElement('script'); el.src = src;
+    el.onload = () => { const I = window.IDEAS; window.IDEAS = undefined; res(Array.isArray(I) ? I : []); };
+    el.onerror = () => res([]);
+    document.head.appendChild(el);
+  }));
+}
+async function loadSeq(files) { const out = {}; for (const f of files) out[f] = await loadFile(f); return out; }   // one at a time: every file writes window.IDEAS
+
+/* the right answer of one phrasing, written out (like quiz.html answerText) */
+function answer(v, I) {
+  const isAr = /[؀-ۿ]/.test(v.q || '');
+  const tf = a => (a === 0 ? (isAr ? 'صح' : 'True') : (isAr ? 'خطأ' : 'False'));
+  try {
+    if (v.type === 'tf') return tf(v.answer);
+    if (v.type === 'mc' || v.type === 'fill') return v.options[v.answer];
+    if (v.type === 'multi') return v.answer.map(i => v.options[i]).join(' + ');
+    if (v.type === 'order') return v.answer.map(i => v.items[i]).join(isAr ? ' ← ' : ' → ');
+    if (v.type === 'match') return v.left.map((l, i) => `${l}: ${v.right[v.answer[i]]}`).join(' · ');
+    if (v.type === 'table') return v.cols.map((c, ci) => `${c}: ${v.items.filter((_, i) => v.answer[i] === ci).join(', ')}`).join(' · ');
+    if (v.type === 'term' || v.type === 'fix' || v.type === 'num') return String(v.answer) + (v.unit ? ' ' + v.unit : '');
+    if (v.type === 'build') return v.parts.join(' ');
+  } catch (e) {}
+  return (I && I.explain) || '';
+}
+function activityTitle(e) {
+  if (e.k === 'exam') { const X = (window.EXAMS || []).find(x => x.id === e.ex); return `${X ? X.titleAr : 'امتحان الشهر'} · ${subjAr(e.sj)}`; }
+  if (e.k === 'mistakes') return 'مراجعة الأسئلة اللي غلط فيها' + (e.sj ? ` · ${subjAr(e.sj)}` : '');
+  const c = e.ch ? SI.chapterById(e.ch) : null;
+  if (e.k === 'game' || e.k === 'play') {
+    const byPage = (window.CHAPTERS || []).find(x => x.game && x.game.href === e.p), adv = (window.ADVENTURES || []).find(x => x.href === e.p);
+    const g = (byPage && byPage.game) ? byPage.game.nameAr : adv ? adv.titleAr : '';
+    if (g) return `لعبة «${g}» · ${subjAr(e.sj)}`;
+  }
+  return `${KIND[e.k] || 'نشاط'}${c ? ` · ${chWordAr(c)} «${chAr(c)}»` : ''}${e.sj ? ` · ${subjAr(e.sj)}` : ''}`;
+}
+function activityResult(e) {
+  if (e.k === 'exam' || e.k === 'mistakes') { const low = e.of && e.m / e.of < .6; return `<span class="mark${low ? ' low' : ''}">${AR_DIG(e.m)} / ${AR_DIG(e.of)}</span>`; }
+  if (e.k === 'quest' && e.st != null) return `<span class="stars">${'★'.repeat(e.st)}<span class="off">${'★'.repeat(3 - e.st)}</span></span>`;
+  if ((e.k === 'daily' || e.k === 'review' || e.k === 'quest') && e.of) return `<span class="d">صح من أول مرة: ${AR_DIG(e.ok || 0)} من ${AR_DIG(e.of)}</span>`;
+  if (e.k === 'game' && e.st != null) return `<span class="stars">${'★'.repeat(e.st)}<span class="off">${'★'.repeat(3 - e.st)}</span></span>`;
+  return e.x ? `<span class="d">+${AR_DIG(e.x)} نقطة</span>` : '';
+}
+
+async function open(raw) {
+  const err = $('#err'); err.hidden = true;
+  const code = SI.sync.clean(raw);
+  if (!SI.sync.valid(code)) { err.textContent = 'الرمز ٨ حروف وأرقام، زي ABCD-2345. اتأكد منه وجرّب تاني.'; err.hidden = false; return; }
+  $('#report').hidden = false; $('#report').innerHTML = '<section class="box"><p class="empty">⏳ بنجيب التقرير…</p></section>';
+  const f = await SI.sync.fetch(code);
+  if (!f.ok) {
+    $('#report').hidden = true;
+    err.textContent = f.why === 'unknown' ? 'مفيش ملف بالرمز ده. اتأكد من الرمز من صفحة الفصول عند ابنك.' : 'مقدرناش نوصل للتقرير دلوقتي. اتأكد من النت وجرّب تاني.';
+    err.hidden = false; return;
+  }
+  SI.ga('parent_view', { grade: f.grade, track: f.track });
+  render(f, code).catch(e => { console.error(e); err.textContent = 'حصلت مشكلة في عرض التقرير. جرّب تاني.'; err.hidden = false; });
+}
+
+async function render(f, code) {
+  const P = f.prof || {}, girl = f.g === 'f', log = (P.log || []).slice().sort((a, b) => b.t - a.t), now = Date.now();
+  const he = girl ? 'ها' : 'ه', name = esc((P.nm && P.nm.n) || f.name);
+  const openM = Object.keys(P.miss || {}).filter(k => !(P.miss[k].done > P.miss[k].at)).map(k => Object.assign({ ch: k.split(':')[0], id: k.split(':')[1] }, P.miss[k])).filter(m => SI.chapterById(m.ch)).sort((a, b) => b.at - a.at);
+  const fixed = Object.keys(P.miss || {}).filter(k => P.miss[k].done > P.miss[k].at).length;
+  const days = new Set(log.filter(e => now - e.t < 14 * DAY).map(e => dayKey(e.t)));
+  const week = log.filter(e => now - e.t < 7 * DAY).length;
+  const lv = SI.levelInfo(P.xp || 0);
+
+  /* 14 days, oldest on the right (RTL) */
+  let strip = '';
+  for (let i = 13; i >= 0; i--) { const t = now - i * DAY, d = new Date(t); strip += `<span class="day${days.has(dayKey(t)) ? ' on' : ''}" title="${d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' })}">${AR_DIG(d.getDate())}</span>`; }
+
+  /* monthly tests: every attempt in the log, plus the best mark of tests played before the log existed */
+  const exLog = log.filter(e => e.k === 'exam');
+  const exOld = Object.keys(P.exams || {}).filter(id => !exLog.some(e => e.ex === id)).map(id => { const X = (window.EXAMS || []).find(x => x.id === id) || {}; const E = P.exams[id]; return `<li><div class="row"><span class="t">${esc(X.titleAr || 'امتحان شهر')} · ${esc(subjAr(SI.chSubject(X)))}</span><span class="mark">${AR_DIG(E.best || 0)} / ${AR_DIG(E.of || 20)}</span></div><div class="d">أعلى درجة من ${AR_DIG(E.plays || 1)} محاولة (قبل بدء التقرير المفصّل)</div></li>`; });
+  const exItems = exLog.map(e => `<li><div class="row"><span class="t">${esc(activityTitle(e))}</span>${activityResult(e)}</div><div class="row"><span class="d">${fmtDate(e.t)}</span>${(e.w || []).length ? `<span class="tag n">${AR_DIG(e.w.length)} سؤال غلط</span>` : `<span class="tag">من غير أخطاء 🎉</span>`}</div></li>`).concat(exOld);
+
+  /* the wrong questions, with their text and right answer from the child's own question files */
+  const files = {}; openM.forEach(m => { const c = SI.chapterById(m.ch), src = fileFor(c, f.track); if (src) files[m.ch] = src; });
+  const loaded = await loadSeq([...new Set(Object.values(files))]);
+  const bySubj = {};
+  openM.forEach(m => {
+    const I = (loaded[files[m.ch]] || []).find(x => x.id === m.id); if (!I) return;
+    const v = I.variants[m.vi] || I.variants[0], c = SI.chapterById(m.ch), sj = SI.chSubject(c);
+    const lead = v.type === 'build' && v.style === 'why' ? (/[؀-ۿ]/.test(v.q) ? 'علّل: ' : 'Give a reason: ') : '';
+    ((bySubj[sj] = bySubj[sj] || {})[m.ch] = bySubj[sj][m.ch] || []).push(`<li>
+      <div class="row"><span>${m.src === 'exam' ? '<span class="tag exam">من امتحان الشهر</span> ' : ''}<span class="tag n">غلط ${m.n > 1 ? AR_DIG(m.n) + ' مرات' : 'مرة'}</span>${m.ok ? ` <span class="tag">صح مرة بعدها</span>` : ''}</span><span class="d">${new Date(m.at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' })}</span></div>
+      <div class="q" dir="auto">${esc(lead + (v.q || I.concept || ''))}</div>
+      <div class="a" dir="auto">${esc(answer(v, I))}</div>
+      ${I.explain ? `<details><summary>الشرح</summary><div class="ex" dir="auto">${esc(I.explain)}</div></details>` : ''}</li>`);
+  });
+  const missHTML = Object.keys(bySubj).map(sj => Object.keys(bySubj[sj]).map(ch => { const c = SI.chapterById(ch); return `<div class="grp">${esc(subjAr(sj))} · ${chWordAr(c)} ${AR_DIG(c.n || '')} «${esc(chAr(c))}»</div><ul class="list">${bySubj[sj][ch].join('')}</ul>`; }).join('')).join('');
+
+  /* chapters played: quest stars and best, the chapter game */
+  const chRows = Object.keys(P.ch || {}).map(id => ({ c: SI.chapterById(id), d: P.ch[id] })).filter(x => x.c && ((x.d.quest && x.d.quest.plays) || x.d.game))
+    .sort((a, b) => (SI.chSubject(a.c) + a.c.n).localeCompare(SI.chSubject(b.c) + b.c.n, 'en', { numeric: true }))
+    .map(({ c, d }) => { const st = (d.quest && d.quest.stars) || 0, gm = d.game || {}; return `<li><div class="row"><span class="t">${esc(subjAr(SI.chSubject(c)))} · ${chWordAr(c)} ${AR_DIG(c.n || '')} «${esc(chAr(c))}»</span><span class="stars">${'★'.repeat(st)}<span class="off">${'★'.repeat(3 - st)}</span></span></div><div class="d">${d.quest && d.quest.plays ? `التحدي: ${AR_DIG(d.quest.plays)} مرة` : 'لسه ما لعبش التحدي'}${gm.plays ? ` · اللعبة: ${AR_DIG(gm.plays)} مرة` : ''}</div></li>`; });
+
+  const kidLink = 'https://motafawek.com/quiz.html#mistakes';
+  $('#report').innerHTML = `
+  <section class="box">
+    <div class="kid"><div><b>${name}</b><div class="meta">${esc(({ g3: 'الصف الثالث', g4: 'الصف الرابع', g5: 'الصف الخامس', g6: 'الصف السادس', p1: 'الصف الأول الإعدادي', p2: 'الصف الثاني الإعدادي' })[f.grade] || '')} · ${f.track === 'ar' ? 'مسار عربي' : 'مسار لغات'} · المستوى ${AR_DIG(lv.n)}</div></div>
+      <button class="btn small" type="button" id="keep">⭐ احفظ الرمز على الجهاز ده</button></div>
+    <div class="tiles">
+      <div class="tile"><div class="v">${AR_DIG(days.size)}</div><div class="k">أيام نشاط من آخر ١٤ يوم</div></div>
+      <div class="tile"><div class="v">${AR_DIG(week)}</div><div class="k">نشاط في آخر ٧ أيام</div></div>
+      <div class="tile"><div class="v">${AR_DIG(P.xp || 0)}</div><div class="k">مجموع النقاط</div></div>
+      <div class="tile${openM.length ? ' warn' : ''}"><div class="v">${AR_DIG(openM.length)}</div><div class="k">أسئلة محتاجة مراجعة</div></div>
+    </div>
+    <div class="days" aria-label="أيام النشاط">${strip}</div>
+    <div class="days-cap"><span>من أسبوعين</span><span>النهارده</span></div>
+  </section>
+
+  <section class="box"><h2>📝 امتحانات الشهر</h2>
+    ${exItems.length ? `<ul class="list">${exItems.join('')}</ul>` : `<p class="empty">لسه ما امتحنش امتحان شهر على الموقع.</p>`}</section>
+
+  <section class="box"><h2>🔁 أسئلة محتاجة مراجعة <small>${AR_DIG(openM.length)} سؤال${fixed ? ` · اتصلح منها ${AR_DIG(fixed)} 👏` : ''}</small></h2>
+    ${openM.length ? `<p class="note">دي الأسئلة اللي غلط${girl ? 'ت' : ''} في${he} من التحديات والمراجعات وامتحانات الشهر. السؤال بيخرج من القائمة لما ${girl ? 'تجاوب' : 'يجاوب'} عليه صح مرتين.</p>
+      <div class="acts"><button class="btn wa" type="button" id="sendKid">🟢 ابعت ل${girl ? 'بنتك' : 'ابنك'} رابط مراجعة الأخطاء</button></div>${missHTML}`
+      : `<p class="empty">مفيش أسئلة مفتوحة دلوقتي 🎉</p>`}</section>
+
+  <section class="box"><h2>📋 آخر الأنشطة <small>التحديات والألعاب والمراجعات</small></h2>
+    ${log.length ? `<ul class="list">${log.slice(0, 30).map(e => `<li><div class="row"><span class="t">${esc(activityTitle(e))}</span>${activityResult(e)}</div><div class="d">${fmtDate(e.t)}</div></li>`).join('')}</ul>` : `<p class="empty">لسه مفيش أنشطة مسجّلة.</p>`}
+    <p class="note">الأنشطة بتتسجل بالتفصيل من ٢٦ نوفمبر ٢٠٢٦. التقرير بيتحدّث لما ${girl ? 'بنتك' : 'ابنك'} ${girl ? 'تخلّص' : 'يخلّص'} أي نشاط وهو متصل بالنت.</p></section>
+
+  <section class="box"><h2>⭐ الفصول والوحدات</h2>
+    ${chRows.length ? `<ul class="list">${chRows.join('')}</ul>` : `<p class="empty">لسه ما لعبش تحديات.</p>`}</section>
+
+  <section class="box"><h2>💬 تواصل معانا</h2>
+    <p class="lead">عندك سؤال أو اقتراح أو لاحظت غلطة؟ ابعت لفريق متفوّق.</p>
+    <div class="acts"><a class="btn" href="contact.html">✉️ راسل فريق متفوّق</a><button class="btn" type="button" id="reload">🔄 تحديث التقرير</button></div>
+    <p class="note">🔒 الرمز ده بيفتح ملف ${girl ? 'بنتك' : 'ابنك'} على متفوّق. متشاركهوش غير مع حد بتثق فيه.</p></section>`;
+
+  $('#keep').onclick = () => { const L = saved().filter(s => s.code !== code); L.unshift({ code, name: (P.nm && P.nm.n) || f.name }); keep(L); showSaved(); $('#keep').textContent = '✓ اتحفظ'; };
+  $('#reload').onclick = () => open(code);
+  const sk = $('#sendKid'); if (sk) sk.onclick = () => { SI.whatsapp(`يلّا نراجع الأسئلة اللي غلط${girl ? 'تي' : 'ت'} فيها على متفوّق 💪\n${kidLink}`); SI.ga('parent_send_kid', {}); };
+  $('#report').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+$('#form').onsubmit = e => { e.preventDefault(); open($('#code').value); };
+showSaved();
+let first = ''; try { first = sessionStorage.getItem('si.pcode') || ''; } catch (e) {}
+if (first) { $('#code').value = SI.sync.show(SI.sync.clean(first)); open(first); }
+window.__parent = { open, render, answer };
+})();
+</script>
+</body>
+</html>

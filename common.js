@@ -283,11 +283,71 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') lbFlush(); });
   window.addEventListener('pagehide', lbFlush);
-  function addXP(n, banked = 0) {
+  /* ---------- for the parent page «متابعة ولي الأمر» (26 Nov 2026) ----------
+     profile.log: the finished activities, newest last (at most LOG_MAX): { t, k, p, ch, sj, ex, m, of, ok, st, mis, x, w }
+       k = quest | daily | review | mistakes | exam | game | play; p = page file; ch = chapter (null for a test); ex = test id;
+       m/of = score or marks out of; ok = right first time; st = stars; mis = game mistakes; x = points; w = wrong items of a test ["ch:id.vi"].
+     profile.miss: the questions answered wrong, { "ch:ideaId": { vi, n, ok, at, done, src, ex } }. A question is open while it has no
+       `done` later than its last mistake (`at`); two right answers in a row (in any quiz, test or «راجع أخطائي») close it.
+     Both travel inside the online progress file, so the parent page reads them with the recovery code. */
+  const LOG_MAX = 150, MISS_MAX = 300;
+  const pageFile = () => location.pathname.split('/').pop() || 'index.html';
+  function logInto(p, e) {
+    const c = e.ch ? chapterById(e.ch) : null;
+    const out = Object.assign({ t: Date.now(), p: pageFile() }, e);
+    if (!out.sj) out.sj = c ? chSubject(c) : e.ex ? chSubject((window.EXAMS || []).find(x => x.id === e.ex) || {}) : subjectId();
+    Object.keys(out).forEach(k => { if (out[k] == null || out[k] === '') delete out[k]; });
+    p.log = (p.log || []).concat(out).slice(-LOG_MAX);
+  }
+  function noteAnswer(o) {
+    if (!o || !o.ch || !o.id) return;
+    const key = `${o.ch}:${String(o.id).split('.')[0]}`;
+    updateProf(p => {
+      const M = p.miss = p.miss || {}, m = M[key];
+      if (!o.ok) {
+        const x = M[key] = Object.assign({}, m || {}, { vi: o.vi || 0, n: ((m && m.n) || 0) + 1, ok: 0, at: Date.now(), src: o.src || 'quiz' });
+        if (o.ex) x.ex = o.ex; else delete x.ex;
+        const keys = Object.keys(M);
+        if (keys.length > MISS_MAX) keys.sort((a, b) => (M[a].done ? 0 : 1) - (M[b].done ? 0 : 1) || (M[a].at || 0) - (M[b].at || 0)).slice(0, keys.length - MISS_MAX).forEach(k => delete M[k]);
+      } else if (m && !(m.done > m.at)) {
+        m.ok = (m.ok || 0) + 1;
+        if (m.ok >= 2) m.done = Date.now();
+      }
+    });
+  }
+  /* the open mistakes of a profile (this player by default), newest first; filter(chapter, item) to narrow */
+  function openMisses(pr, filter) {
+    const M = (pr || prof()).miss || {};
+    return Object.keys(M).filter(k => !(M[k].done > M[k].at)).map(k => Object.assign({ key: k, ch: k.split(':')[0], id: k.split(':')[1] }, M[k]))
+      .filter(m => { const c = chapterById(m.ch); return c && (!filter || filter(c, m)); }).sort((a, b) => b.at - a.at);
+  }
+  const SITE = 'https://motafawek.com/';
+  const parentLink = code => `${SITE}parent.html#c=${code}`;
+  function whatsapp(text) { const u = 'https://wa.me/?text=' + encodeURIComponent(text); try { window.open(u, '_blank', 'noopener'); } catch (e) { location.href = u; } }
+  /* «أرسل تقريري لولي الأمر»: a ready WhatsApp message with the child's latest results and the parent page link (needs the recovery code) */
+  function parentReport(extra) {
+    const p = player() || {}, code = sync.code(); if (!code) return false;
+    const girl = gender() === 'f', nm = (prof().nm && prof().nm.n) || p.name || '';
+    const lines = [`📊 ${girl ? 'تقرير بنتك' : 'تقرير ابنك'} ${nm} على متفوّق`];
+    if (extra) lines.push(extra);
+    const open = openMisses(null, c => chGrade(c) === grade()).length;
+    if (open) lines.push(`📝 أسئلة ${girl ? 'غلطت' : 'غلط'} فيها ومحتاجة مراجعة: ${open}`);
+    lines.push(girl ? 'تابع نشاطها ونتائجها والأسئلة اللي غلطت فيها من هنا:' : 'تابع نشاطه ونتائجه والأسئلة اللي غلط فيها من هنا:', parentLink(code));
+    whatsapp(lines.join('\n'));
+    ga('parent_share', { from: pageFile() });
+    return true;
+  }
+  /* the button for a results panel: parentBtn(extraLine) in the panel, then wireParent(panel) */
+  const parentBtn = extra => sync.code() ? `<button class="btn" type="button" data-parent="${esc(extra || '')}" style="background:#25d366;color:#fff;box-shadow:0 4px 0 #1a9e4b;margin:6px auto 2px">🟢 ${T('Send my results to my parent (WhatsApp)', G('ابعت نتيجتك لبابا أو ماما (واتساب)', 'ابعتي نتيجتك لبابا أو ماما (واتساب)'))}</button>` : '';
+  function wireParent(root) { root && root.querySelectorAll('[data-parent]').forEach(b => { b.onclick = () => { sfx.tick(); parentReport(b.dataset.parent || ''); }; }); }
+
+  /* addXP(n, banked, info): info describes the finished activity for the parent page (log below); pages that pass none are logged as 'play' with the page name */
+  function addXP(n, banked = 0, info) {
     banked = Math.max(0, Math.round(banked || 0));
     const rate = repeatRate(); n = Math.max(0, Math.round((n || 0) * rate));
     let b = 0, a = 0; updateProf(p => {
-      const r = p.rp && p.rp.d === today() ? p.rp : (p.rp = { d: today(), k: {} }); r.k[actKey()] = (r.k[actKey()] || 0) + 1; a = p.xp || 0; const g = Math.max(0, n - banked); p.xp = a + g; noteGain(p, g, a); a = p.xp; b = Math.max(0, a - n); });
+      const r = p.rp && p.rp.d === today() ? p.rp : (p.rp = { d: today(), k: {} }); r.k[actKey()] = (r.k[actKey()] || 0) + 1; a = p.xp || 0; const g = Math.max(0, n - banked); p.xp = a + g; noteGain(p, g, a); a = p.xp; b = Math.max(0, a - n);
+      logInto(p, Object.assign({ k: 'play', ch: p.cur || null }, info || {}, { x: n })); });
     clearTimeout(lbTimer); lbTimer = null;
     sync.dirty(); LB.submitWeek().catch(() => {}).then(() => setTimeout(rankToast, 1200));
     if (rate < 1) setTimeout(() => repeatToast(rate), 300);
@@ -822,7 +882,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      Any profile change marks the save to send: at once after a finished activity, otherwise on the next page
      opened or when the tab is hidden (so «Continue» on another device starts where the child stopped). */
   const CODE_ABC = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';               // no 0/O, 1/I/L: easy to read aloud and copy
-  const SYNC_SKIP_PAGES = /(^|\/)(admin|reviews|progress)\.html$/;
+  const SYNC_SKIP_PAGES = /(^|\/)(admin|reviews|progress|parent)\.html$/;
   const sync = {
     _busy: null, _t: 0,
     enabled() {
@@ -971,6 +1031,10 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       return la > lb ? a : lb > la ? b : Object.assign({}, a, { streak: Math.max(a.streak || 0, b.streak || 0) });
     }
     if (parent === 'cards' && typeof a === 'object') return (b.box || 0) > (a.box || 0) ? b : a;   // Review: the higher box
+    if (key === 'log' && Array.isArray(a) && Array.isArray(b)) {   // activities of both devices, once each, oldest first
+      const seen = new Set(), all = a.concat(b).filter(e => e && !seen.has(e.t + (e.k || '') + (e.p || '')) && seen.add(e.t + (e.k || '') + (e.p || '')));
+      return JSON.parse(JSON.stringify(all.sort((x, y) => x.t - y.t).slice(-LOG_MAX)));
+    }
     if (Array.isArray(a) && Array.isArray(b)) return Array.from(new Set(a.concat(b)));
     if (typeof a === 'number' && typeof b === 'number') return Math.max(a, b);
     if (typeof a === 'string' && typeof b === 'string') return DATE_RE.test(a) && DATE_RE.test(b) ? (a > b ? a : b) : a;
@@ -1071,7 +1135,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const GA_ID = 'G-XP595P45PX';
   const NOTRACK_KEY = 'si.notrack';
   const OWNER_PAGES = /^(admin|reviews|progress)\.html$/;
-  const PAGE_NAMES = { 'metallab.html': "Metal Lab", 'litmuslab.html': "Litmus Lab", 'egyptchain.html': "Egypt Food Trail", 'foodchain.html': "Food Chain Trail", 'watertrek.html': "Water Trek", 'photolab.html': "Leaf Lab", 'arabic-hope.html': "Hope Trail", 'arabic-qualities.html': "Garden of Qualities", 'arabic-homeland.html': "Guardians of the Homeland", 'english-dream.html': "Dream Big", 'english-team.html': "Team Heroes", 'english-stories.html': "Story Time", 'english-explore.html': "Explorer Day", 'english-family.html': "My Family Album", 'english-hello.html': "Hello, Friends!", 'english-dresses.html': "Wanda's Hundred Dresses", 'english-jobs.html': "Job Helpers", 'english-egypt.html': "Egypt Tour Guide", 'english-animals.html': "Forest Park Guide", 'english-community.html': "Community Helpers", 'studies-egyptland.html': "Journey Across Egypt", 'soilstone.html': "Soil and Stone", 'rubber.html': "Rubber Band Racer", 'windcar.html': "Wind Car Race", 'sound.html': "Sound Workshop", 'light.html': "Light and Shadow Lab", 'math-bridge.html': "The Ants’ Bridge", 'math-hill.html': "Rounding Hill", 'math-ferry.html': "The Tilting Ferry", 'math-duel.html': "Fox Duel", 'math-train.html': "The Crate Train", 'math-anthill.html': "Save the Ant Colony", 'math-ladder.html': "The Kitten’s Ladder", 'math-cage.html': "Reesho’s Cage", 'math-bus.html': "Ali’s Bus Stops", 'math-reesho-bakery.html': "Reesho’s Bakery", 'math-reesho-train.html': "Reesho’s Train", 'math-reesho-rocket.html': "Number Line Rocket", 'math-reesho-ladder.html': "Rescue Ladder", 'math-city.html': "Reesho’s City", 'math-treasure.html': "Treasure Underground", 'math-adventure.html': "Decimal Adventure", 'math-bakery.html': "Market Bakery Packers", 'math-corniche.html': "Corniche Tilers", 'math-sinai.html': "Sinai Number Trail", 'studies-treasures.html': "Egypt’s Treasure Hunt", 'studies-civ.html': "Time Trip to Ancient Egypt", 'english-everglades.html': "Everglades Journey", 'english-resources.html': "Resource Rangers", 'english-town.html': "Town and Village Tour", 'waterlab.html': "Water Journey", 'weatherlab.html': "Weather Station", 'nursery.html': "Animal Nursery", 'english-weather.html': "Weather Watch", 'english-body.html': "Healthy Body Hero", 'english-nile.html': "Nile Explorer", 'growthpath.html': "Growth Path", 'flowerlab.html': "Flower Lab", 'growlab.html': "Growth Lab", 'bloodtrip.html': "Blood Express", 'math-climb.html': "Climb the Line", 'math-boxes.html': "Food Bank Packers", 'studies-arab.html': "Arab Homeland Explorer", 'english-senses.html': "Senses Explorer", 'studies-city.html': "City Planner", 'studies-compass.html': 'Compass Trail', 'studies-egypt.html': 'Egypt Explorer', 'math-addsub.html': "Ant Colony Count", 'math-placevalue.html': "Place Value Nest", 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'heatlab.html': 'Heat Lab', 'math-decimals.html': 'Decimal Dock', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'wardrobe.html': 'Reesho wardrobe', 'aquarium.html': 'Motafawek aquarium', 'champions.html': 'Champions', 'contact.html': 'Contact', 'reviews.html': 'Owner page',
+  const PAGE_NAMES = { 'metallab.html': "Metal Lab", 'litmuslab.html': "Litmus Lab", 'egyptchain.html': "Egypt Food Trail", 'foodchain.html': "Food Chain Trail", 'watertrek.html': "Water Trek", 'photolab.html': "Leaf Lab", 'arabic-hope.html': "Hope Trail", 'arabic-qualities.html': "Garden of Qualities", 'arabic-homeland.html': "Guardians of the Homeland", 'english-dream.html': "Dream Big", 'english-team.html': "Team Heroes", 'english-stories.html': "Story Time", 'english-explore.html': "Explorer Day", 'english-family.html': "My Family Album", 'english-hello.html': "Hello, Friends!", 'english-dresses.html': "Wanda's Hundred Dresses", 'english-jobs.html': "Job Helpers", 'english-egypt.html': "Egypt Tour Guide", 'english-animals.html': "Forest Park Guide", 'english-community.html': "Community Helpers", 'studies-egyptland.html': "Journey Across Egypt", 'soilstone.html': "Soil and Stone", 'rubber.html': "Rubber Band Racer", 'windcar.html': "Wind Car Race", 'sound.html': "Sound Workshop", 'light.html': "Light and Shadow Lab", 'math-bridge.html': "The Ants’ Bridge", 'math-hill.html': "Rounding Hill", 'math-ferry.html': "The Tilting Ferry", 'math-duel.html': "Fox Duel", 'math-train.html': "The Crate Train", 'math-anthill.html': "Save the Ant Colony", 'math-ladder.html': "The Kitten’s Ladder", 'math-cage.html': "Reesho’s Cage", 'math-bus.html': "Ali’s Bus Stops", 'math-reesho-bakery.html': "Reesho’s Bakery", 'math-reesho-train.html': "Reesho’s Train", 'math-reesho-rocket.html': "Number Line Rocket", 'math-reesho-ladder.html': "Rescue Ladder", 'math-city.html': "Reesho’s City", 'math-treasure.html': "Treasure Underground", 'math-adventure.html': "Decimal Adventure", 'math-bakery.html': "Market Bakery Packers", 'math-corniche.html': "Corniche Tilers", 'math-sinai.html': "Sinai Number Trail", 'studies-treasures.html': "Egypt’s Treasure Hunt", 'studies-civ.html': "Time Trip to Ancient Egypt", 'english-everglades.html': "Everglades Journey", 'english-resources.html': "Resource Rangers", 'english-town.html': "Town and Village Tour", 'waterlab.html': "Water Journey", 'weatherlab.html': "Weather Station", 'nursery.html': "Animal Nursery", 'english-weather.html': "Weather Watch", 'english-body.html': "Healthy Body Hero", 'english-nile.html': "Nile Explorer", 'growthpath.html': "Growth Path", 'flowerlab.html': "Flower Lab", 'growlab.html': "Growth Lab", 'bloodtrip.html': "Blood Express", 'math-climb.html': "Climb the Line", 'math-boxes.html': "Food Bank Packers", 'studies-arab.html': "Arab Homeland Explorer", 'english-senses.html': "Senses Explorer", 'studies-city.html': "City Planner", 'studies-compass.html': 'Compass Trail', 'studies-egypt.html': 'Egypt Explorer', 'math-addsub.html': "Ant Colony Count", 'math-placevalue.html': "Place Value Nest", 'index.html': 'Home', 'chapters.html': 'Chapters', 'map.html': 'Island map', 'arm.html': 'Arm Mechanic', 'seasons.html': 'Season Explorer', 'seedlab.html': 'Seed Lab', 'flame.html': 'Flame Lab', 'breath.html': 'Breath Lab', 'foodtrip.html': 'Food Journey', 'habitat.html': 'Habitat Explorer', 'butterfly.html': 'Butterfly Garden', 'garden.html': 'My Little Garden', 'atomlab.html': 'Atom Lab', 'heatlab.html': 'Heat Lab', 'math-decimals.html': 'Decimal Dock', 'forcelab.html': 'Force Lab', 'celllab.html': 'Cell Lab', 'skywatch.html': 'Sky Watch', 'wardrobe.html': 'Reesho wardrobe', 'aquarium.html': 'Motafawek aquarium', 'champions.html': 'Champions', 'contact.html': 'Contact', 'parent.html': 'Parent page', 'reviews.html': 'Owner page',
     'quiz.html': 'Chapter Quest', 'quiz.html#quest': 'Chapter Quest', 'quiz.html#daily': 'Daily 5', 'quiz.html#review': 'Review', 'quiz.html#exam=oct': 'Exam Hall', 'quiz.html#exam=eg4oct': 'Exam Hall', 'quiz.html#exam=eg5oct': 'Exam Hall', 'quiz.html#exam=eg3nov': 'Exam Hall', 'quiz.html#exam=eg4nov': 'Exam Hall', 'quiz.html#exam=eg5nov': 'Exam Hall', 'quiz.html#exam=g4m1': 'Exam Hall', 'quiz.html#exam=sg4oct': 'Exam Hall', 'quiz.html#exam=sg5oct': 'Exam Hall', 'quiz.html#exam=sg6oct': 'Exam Hall', 'quiz.html#exam=mg6oct': 'Exam Hall', 'quiz.html#exam=g6oct': 'Exam Hall', 'quiz.html#exam=g6m1': 'Exam Hall', 'quiz.html#exam=p1oct': 'Exam Hall', 'quiz.html#exam=p2oct': 'Exam Hall' };
   function pageName() {
     const file = location.pathname.split('/').pop() || 'index.html';
@@ -1490,7 +1554,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
      home page, all units, this unit's map, adventures, Motafawek Stars. Not on the home page or the owner's pages. */
   function navMenu() {
     const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-    if (/^(index|admin|reviews|progress|contact)\.html$/.test(page) || page === '' || !player() || document.getElementById('si-nav')) return;
+    if (/^(index|admin|reviews|progress|contact|parent)\.html$/.test(page) || page === '' || !player() || document.getElementById('si-nav')) return;
     const css = document.createElement('style');
     css.textContent = `#si-nav{display:inline-flex;align-items:center;gap:6px;flex:none;background:#f2b134;color:#1f3d57;border:3px solid #fff;border-radius:999px;padding:7px 16px;
       font:900 17px Cairo,Nunito,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(31,61,87,.35);white-space:nowrap;animation:siNavHi 1.2s ease 2}
@@ -1718,6 +1782,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, renamePlayer, nameChip, nameDialog, LEVELS, levelInfo, xp, addXP, bankXP, repeatRate, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, weekXP, countBoss, badges, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
+    noteAnswer, openMisses, parentLink, parentReport, parentBtn, wireParent, whatsapp,
     gender, G, setGender, share, shareText, shareCard, shareBtn, wireShare, certLevel, certCanvas, certDialog, certBtn, wireCert, visit, greet, bye, VOICE_TEXT, navMenu, NET_DAYS, NET_STRINGS, inNet, checkNet, freeNet, fishState, fishLine };
   try { checkNet(); } catch (e) {}
   applyLang();
