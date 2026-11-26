@@ -783,6 +783,10 @@ window.EXAMS = [
     parts: [{ ch: 'eg4u3' }, { ch: 'eg4u4' }, { ch: 'eg4u5' }],
     layouts: [[{ sec: 'choose', n: 4 }, { sec: 'form', n: 3 }, { sec: 'punct', n: 2 }],
               [{ sec: 'choose', n: 4 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] },
+  /* mg3nov (owner, 26 Nov 2026): Grade 3 Math November test, scope «من الفصل ٤ الدرس ١ إلى الفصل ٨ الدرس ٤» (the «المعاصر» November models the owner sent);
+     layout 'g3math' = the models' paper: Q1 choose (3 × 1.5), Q2 answer (3 + 2.5 + 2.5 + 2.5) = 15 marks */
+  { id: 'mg3nov', subject: 'math', grade: 'g3', minParts: 1, layout: 'g3math', of: 15, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'mg3u4' }, { ch: 'mg3u5' }, { ch: 'mg3u6' }, { ch: 'mg3u7' }, { ch: 'mg3u8', lessons: [1, 2, 3, 4] }] },
   { id: 'eg3nov', subject: 'english', grade: 'g3', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
     parts: [{ ch: 'eg3u4' }, { ch: 'eg3u5' }],
     layouts: [[{ sec: 'choose', n: 5 }, { sec: 'order', n: 3 }, { sec: 'punct', n: 2 }],
