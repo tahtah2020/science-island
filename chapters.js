@@ -783,6 +783,10 @@ window.EXAMS = [
     parts: [{ ch: 'eg4u3' }, { ch: 'eg4u4' }, { ch: 'eg4u5' }],
     layouts: [[{ sec: 'choose', n: 4 }, { sec: 'form', n: 3 }, { sec: 'punct', n: 2 }],
               [{ sec: 'choose', n: 4 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] },
+  /* g4nov (owner, 26 Nov 2026): Grade 4 Science November test from the «سندباد» November review tests: chapter 4 (light) and chapter 5 (sound),
+     and once in about half the papers the plant parts (chapter 3 lesson 4); layout 'g4sci' = 3 questions × (A) 2 + (B) 3 items = 15 marks */
+  { id: 'g4nov', grade: 'g4', minParts: 1, layout: 'g4sci', of: 15, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'g4c4' }, { ch: 'g4c5' }, { ch: 'g4c3', lessons: [4], max: 1, chance: 0.5 }] },
   /* mg3nov (owner, 26 Nov 2026): Grade 3 Math November test, scope «من الفصل ٤ الدرس ١ إلى الفصل ٨ الدرس ٤» (the «المعاصر» November models the owner sent);
      layout 'g3math' = the models' paper: Q1 choose (3 × 1.5), Q2 answer (3 + 2.5 + 2.5 + 2.5) = 15 marks */
   { id: 'mg3nov', subject: 'math', grade: 'g3', minParts: 1, layout: 'g3math', of: 15, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',

@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-26', title: 'Grade 4 Science November test',
+    items: [
+      { text: 'New test g4nov «امتحان شهر نوفمبر» for Grade 4 Science (both tracks): chapter 4 Light and chapter 5 Sound (+ plant parts in about half the papers), shaped like the «سندباد» November review tests: 3 questions, each (A) 2 short items and (B) 3 longer items (what happens, give reasons, answer) = 15 marks' },
+      { text: '40 new guide phrasings in 10 ideas from the review tests (reflection kinds, burning paper, lens safety, shadows at noon and morning, sunny and shady ground, infrared thermometer, sound and vibration, string telephone), English and Arabic, each with a hint', links: [{ label: 'Grade 4 Science November test', href: 'quiz.html#exam=g4nov', ch: 'g4c4' }] }
+    ] },
   { date: '2026-11-26', title: 'Cache stamp fixed',
     items: [
       { text: 'Every page now loads files with a unique stamp per release (date + time); the old one-letter stamp had run past «z» and left «{» characters in the links' }

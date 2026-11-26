@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261126t132616"></script>
-<script src="chapters.js?v=20261126t132616"></script>
-<script src="common.js?v=20261126t132616"></script>
+<script src="firebase-config.js?v=20261126t133320"></script>
+<script src="chapters.js?v=20261126t133320"></script>
+<script src="common.js?v=20261126t133320"></script>
 <script>
 (() => {
 'use strict';
@@ -630,7 +630,7 @@ function header(q, idx, total, results) {
   const SC = (q.ch && SI.chapterById(q.ch)) || CH;
   if (q.lesson && SC && SC.id && SI.isUnits(SC) && (SC.lessons || []).length > 1) { const nm = (AR ? SC.lessonsAr : SC.lessons) || SC.lessons || [], lb = mk('span', 'badge lesson', `${T('Lesson', 'الدرس')} ${q.lesson}${nm[q.lesson - 1] ? ' · ' + nm[q.lesson - 1] : ''}`); b.appendChild(lb); }
   if (q.exam && q.exam.sec) b.appendChild(mk('span', 'badge exam', `${q.exam.q}. ${q.exam.part} · ${T('1 mark', 'درجة واحدة')}`));
-  else if (q.exam) b.appendChild(mk('span', 'badge exam', `${T('Q', 'س')}${q.exam.q}${q.exam.plain ? '' : ` (${q.exam.part})`} · ${q.exam.marks === 1 ? T('1 mark', 'درجة واحدة') : q.exam.marks === 2 ? T('2 marks', 'درجتان') : T(`${q.exam.marks} marks`, `${arMarks(q.exam.marks)} درجة`)}`));
+  else if (q.exam) b.appendChild(mk('span', 'badge exam', `${T('Q', 'س')}${q.exam.q}${q.exam.plain ? '' : ` (${AR && !q.exam.sec ? (q.exam.part === 'A' ? 'أ' : 'ب') : q.exam.part})`} · ${q.exam.marks === 1 ? T('1 mark', 'درجة واحدة') : q.exam.marks === 2 ? T('2 marks', 'درجتان') : T(`${q.exam.marks} marks`, `${arMarks(q.exam.marks)} درجة`)}`));
   const p = $('#progress'); p.innerHTML = '';
   for (let i = 0; i < total; i++) p.appendChild(mk('i', results[i] === true ? 'ok' : results[i] === false ? 'no' : i === idx ? 'now' : ''));
   $('#countPill').textContent = `${idx + 1} / ${total}`;
@@ -1543,7 +1543,21 @@ const G3_MATH_LAYOUT = [
    { part: 'B', m: 2.5, want: 1, t: c => c.I.ch === 'mg3u7' && c.v.type === 'num', l: ['Find the result mentally:', 'أوجد الناتج ذهنيًا:'] },
    { part: 'B', m: 2.5, want: 2, t: c => c.I.ch === 'mg3u8' && c.v.type === 'num' && (g3fig(c) === 'g3Story' || /باق|يتبقى|يتبقّى/.test(c.v.q || '')), l: ['Solve:', 'حل المسألة:'] }]
 ];
-const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT };
+/* layout 'g4sci' (owner, 26 Nov 2026, from the «سندباد» November review tests for Grade 4 Science, chapters 4 Light and 5 Sound):
+   Q1 (A) choose ×2 · (B) what happens? ×3   Q2 (A) complete ×2 · (B) give reasons ×3   Q3 (A) ✓ or ✗ ×2 · (B) answer ×3 (mention, compare, explain).
+   The papers' «صوّب ما تحته خط» is asked as ✓ / ✗ (owner: no correct-the-underlined-word items). Every item 1 mark: 15 marks. */
+const G4_SCI_LAYOUT = [
+  [{ part: 'A', m: 1, want: 0, t: c => c.v.type === 'mc' && c.a, l: ['Choose the correct answer:', 'اختر الإجابة الصحيحة:'] }, { part: 'A', m: 1, want: 1, t: c => c.v.type === 'mc' && c.a, l: ['Choose the correct answer:', 'اختر الإجابة الصحيحة:'] },
+   { part: 'B', m: 1, want: 1, t: c => c.b === 'whatif', l: ['What happens in these cases?', 'ماذا يحدث في الحالات التالية؟'] }, { part: 'B', m: 1, want: 1, t: c => c.b === 'whatif', l: ['What happens in these cases?', 'ماذا يحدث في الحالات التالية؟'] },
+   { part: 'B', m: 1, want: 2, t: c => c.b === 'whatif' || c.b === 'story', l: ['What happens in these cases?', 'ماذا يحدث في الحالات التالية؟'] }],
+  [{ part: 'A', m: 1, want: 0, t: c => c.v.type === 'fill', l: ['Complete:', 'أكمل ما يأتي:'] }, { part: 'A', m: 1, want: 0, t: c => c.v.type === 'fill', l: ['Complete:', 'أكمل ما يأتي:'] },
+   { part: 'B', m: 1, want: 0, t: c => c.b === 'why', l: ['Give reasons:', 'علّل لما يأتي:'] }, { part: 'B', m: 1, want: 1, t: c => c.b === 'why', l: ['Give reasons:', 'علّل لما يأتي:'] },
+   { part: 'B', m: 1, want: 1, t: c => c.b === 'why', l: ['Give reasons:', 'علّل لما يأتي:'] }],
+  [{ part: 'A', m: 1, want: 0, t: c => c.v.type === 'tf', l: ['Put ✓ or ✗:', 'ضع علامة (✓) أو (✗):'] }, { part: 'A', m: 1, want: 1, t: c => c.v.type === 'tf', l: ['Put ✓ or ✗:', 'ضع علامة (✓) أو (✗):'] },
+   { part: 'B', m: 1, want: 1, t: c => ['multi', 'order'].includes(c.v.type) || c.b === 'compare', l: ['Answer:', 'أجب عما يأتي:'] }, { part: 'B', m: 1, want: 1, t: c => c.b === 'say' || c.b === 'compare' || c.v.type === 'multi', l: ['Answer:', 'أجب عما يأتي:'] },
+   { part: 'B', m: 1, want: 2, t: c => c.b === 'say' || c.b === 'story' || c.v.type === 'multi', l: ['Answer:', 'أجب عما يأتي:'] }]
+];
+const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT };
 function buildPaper(pool, caps, last, layout) {
   const cands = [], used = new Set(), perCh = {};
   pool.forEach(I => I.variants.forEach((v, vi) => { const a = EXAM_A(v), b = EXAM_B(v); if (a || b) cands.push({ I, v, vi, a, b }); }));
@@ -1731,7 +1745,9 @@ async function examMain() {
       G(`زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!`, `زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!`))
     + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || total}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
   else await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
-    (EX.layout === 'g3math' ? G('زي نماذج امتحان نوفمبر: سؤالين، <b>١٥ درجة</b>. السؤال الأول «اختر» (٣ بنود، كل بند درجة ونص)، والسؤال الثاني «أجب» (٤ مسائل). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي نماذج امتحان نوفمبر: سؤالين، <b>١٥ درجة</b>. السؤال الأول «اختاري» (٣ بنود، كل بند درجة ونص)، والسؤال الثاني «أجيبي» (٤ مسائل). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!') :
+    (EX.layout === 'g4sci' ? T('Like the November review papers: 3 questions, <b>15 marks</b>, each with part (A) and part (B). Every item is 1 mark and you get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
+      G('زي نماذج مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليك <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', 'زي نماذج مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليكي <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')) :
+    EX.layout === 'g3math' ? G('زي نماذج امتحان نوفمبر: سؤالين، <b>١٥ درجة</b>. السؤال الأول «اختر» (٣ بنود، كل بند درجة ونص)، والسؤال الثاني «أجب» (٤ مسائل). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي نماذج امتحان نوفمبر: سؤالين، <b>١٥ درجة</b>. السؤال الأول «اختاري» (٣ بنود، كل بند درجة ونص)، والسؤال الثاني «أجيبي» (٤ مسائل). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!') :
     EX.layout === 'school' ? T('Like the school’s model papers: 3 questions, <b>17 marks</b>. Part (A) is short (1 mark) and part (B) is worth 2 marks. You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
       G('زي نماذج امتحان المدرسة: ٣ أسئلة، <b>١٧ درجة</b>. الجزء (أ) قصير بدرجة، والجزء (ب) بدرجتين، وليك <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', 'زي نماذج امتحان المدرسة: ٣ أسئلة، <b>١٧ درجة</b>. الجزء (أ) قصير بدرجة، والجزء (ب) بدرجتين، وليكي <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')) :
     T('4 questions, 5 marks each: <b>20 marks</b>. Part (A) is short and gets <b>one try</b>. Part (B) is worth 2 marks. Every time you come back, Reesho writes a new paper!',

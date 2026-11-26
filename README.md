@@ -551,3 +551,8 @@ Every results panel (kit games `game_kit.js` `results()`, `quiz.html` `results()
 ## Grade 3 Math November test `mg3nov` (26 Nov 2026)
 - Scope from the «المعاصر» November models the owner sent: «من الفصل ٤ الدرس ١ إلى الفصل ٨ الدرس ٤» = `mg3u4`–`mg3u8` (lessons 1-4 of unit 8). Arabic track only (the units have only Arabic files).
 - `layout: 'g3math'`, `of: 15` (quiz.html `G3_MATH_LAYOUT` in `PAPER_LAYOUTS`): Q1 «اختر الإجابة الصحيحة من بين الإجابات المعطاة» 3 mc × 1.5 (units 4-5, 5-7, 8); Q2 «أجب عن الأسئلة التالية»: column sum/difference or unit 4 word problem (3), tally/table/bars/scale/map number item (2.5), unit 7 mental maths (2.5), unit 8 division word problem with a remainder (2.5). Items of this layout are `exam.plain` (no (A)/(B) in the badge; a banner at the first item of each question). Fractional marks show as ١٫٥ (`arMarks`). `EX.of` = the paper's total, used by quiz.html and chapters.html.
+
+## Grade 4 Science November test `g4nov` (26 Nov 2026)
+- From the owner's «سندباد» November review (6 tests): parts `g4c4` (light), `g4c5` (sound), `g4c3` lesson 4 (plant parts: max 1, chance .5). Both tracks.
+- `layout: 'g4sci'`, `of: 15` (quiz.html `G4_SCI_LAYOUT`): Q1 (A) choose ×2 · (B) what happens ×3; Q2 (A) complete ×2 · (B) give reasons ×3; Q3 (A) ✓/✗ ×2 (the papers' «صوّب ما تحته خط», owner rule: no fix items) · (B) answer ×3; every item 1 mark. Arabic badge shows (أ)/(ب).
+- New guide ideas (EN + AR, hints): ch4 `I30 I31 J30 J31 K30 M30 M31 N30`, ch5 `Q30 U30 V30 V31`. Answers follow the review's model answers (e.g. moving an object from the torch towards the wall makes its shadow smaller; white paper warms more slowly than black).

@@ -237,6 +237,76 @@ window.IDEAS = [
     variants: [
       { type: 'mc', mode: 'normal', level: 'medium', q: 'How are the speakers of the show placed?', options: ['By calculating how sound bounces off the stones', 'Anywhere, it does not matter', 'Only inside the Sphinx'], answer: 0 },
       { type: 'tf', mode: 'normal', level: 'easy', q: 'Stones are really good at bouncing sound.', answer: 0 }
+    ] },
+  /* ---------- November 2026 review models («سندباد» مراجعة شهر نوفمبر, owner 26 Nov 2026): items the bank lacked; guide: true ---------- */
+  { id: 'I30', lesson: 1, bonus: true, guide: true, concept: "Two kinds of reflection",
+    explain: "Reflection depends on the surface the light falls on. A smooth surface (a mirror) reflects light regularly in one direction; a rough surface (a wall, a piece of cloth, a wooden board) scatters it in different directions. Mirrors help us direct light into dark places.",
+    variants: [
+      { type: "fill", mode: "normal", level: "easy", q: "Reflection of light is divided into two kinds according to the kind of ___ the light falls on.", options: ["surface", "colour", "sun"], answer: 0, hint: "Is the mirror smooth or rough?" },
+      { type: "fill", mode: "normal", level: "easy", q: "Mirrors help us ___ light into dark places.", options: ["direct", "gather", "stop"], answer: 0, hint: "Think of the light relay with mirrors." },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if light falls on a wooden board?", parts: ["The light is reflected", "in a scattered way", "in different directions"], extra: ["in one direction", "like a mirror"], hint: "Is the wooden board smooth like a mirror?" },
+      { type: "mc", mode: "normal", level: "easy", q: "Give an example of a rough surface that reflects light in a scattered way.", options: ["A wall or a piece of cloth", "A mirror", "A still, clear pool of water"], answer: 0, hint: "Rough = not shiny." },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "Rough surfaces reflect light regularly in one direction.", answer: 1, hint: "Which surface reflects in one direction?" }
+    ] },
+  { id: 'I31', lesson: 1, bonus: true, guide: true, concept: "Seeing the path of light; light sources",
+    explain: "Sunlight travels in straight lines unless an object blocks it. If we sprinkle a little powder or spray water where the reflected light passes, we see the light rays clearly as straight lines. The Sun and lamps are light sources because they give out their own light.",
+    variants: [
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if we sprinkle a little powder or spray water where the reflected light passes?", parts: ["The paths of the light rays", "appear clearly", "as straight lines"], extra: ["disappear", "as curved lines"], hint: "Powder in the air shows where the light goes." },
+      { type: "build", style: "why", mode: "normal", level: "easy", q: "The Sun and lamps are light sources.", parts: ["Because they give out", "their own", "light"], extra: ["reflect", "the light of the moon"], hint: "What is a light source?" },
+      { type: "mc", mode: "normal", level: "medium", q: "All the following are true about how sunlight travels, EXCEPT:", options: ["After it is reflected by a mirror, it moves in a curved line", "It travels in a straight line", "After it is reflected by a mirror, it keeps travelling in straight lines", "We can see its path by sprinkling a little powder"], answer: 0, hint: "Look for the sentence that is wrong." },
+      { type: "fill", mode: "normal", level: "easy", q: "Sunlight travels in a straight line unless its path is blocked by an ___ object.", options: ["opaque", "transparent", "moving"], answer: 0, hint: "Which object makes a shadow?" }
+    ] },
+  { id: 'J30', lesson: 2, bonus: true, guide: true, concept: "Why the black paper burns",
+    explain: "A magnifying glass gathers sunlight into one small point (the focus). That point becomes very bright and very hot; the black paper absorbs the heat and burns. If the spot of light gets bigger, the heat spreads over a larger area, the temperature drops and the paper does not burn. White paper warms up more slowly than black paper.",
+    variants: [
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "The black paper burns when sunlight is gathered on it with a magnifying glass.", parts: ["Because the lens gathers sunlight", "in one point, so it becomes very hot", "and the black paper absorbs the heat"], extra: ["Because the lens", "cools the paper"], hint: "What does the lens do to the sunlight?" },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if we use a magnifying glass to gather sunlight into a small point on black paper?", parts: ["The point gets very hot", "and the black paper", "burns"], extra: ["gets colder", "turns white"], hint: "Small point = hotter." },
+      { type: "build", style: "whatif", mode: "normal", level: "hard", q: "What happens if the spot of gathered light gets bigger?", parts: ["The heat spreads over a larger area,", "so the temperature drops", "and the paper does not burn"], extra: ["the paper burns", "faster"], hint: "Is the heat in one point or spread out?" },
+      { type: "mc", mode: "normal", level: "easy", q: "The smaller the point of gathered light, the more it becomes:", options: ["brighter and hotter", "less bright and less hot", "brighter and less hot", "less bright and hotter"], answer: 0, hint: "Think of the burning paper." },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "White paper warms up faster than black paper when sunlight is gathered on it.", answer: 1, hint: "Which colour did we use to burn the paper?" },
+      { type: "fill", mode: "normal", level: "easy", q: "When sunlight is gathered in one point with a magnifying glass, the place becomes brighter and its ___ rises.", options: ["temperature", "dampness", "shadow"], answer: 0, hint: "What did the paper feel?" }
+    ] },
+  { id: 'J31', lesson: 2, bonus: true, guide: true, concept: "Safety with a magnifying glass",
+    explain: "Never look directly at the Sun through a magnifying glass: it harms the eyes. Do not point the gathered light at eyes or people, and do not look at the bright point for a long time.",
+    variants: [
+      { type: "build", style: "why", mode: "normal", level: "easy", q: "We must not look directly at the Sun through a magnifying glass.", parts: ["So that", "it does not harm", "the eyes"], extra: ["makes the Sun", "smaller"], hint: "What could happen to your eyes?" },
+      { type: "multi", mode: "normal", level: "medium", q: "Mention safety rules for gathering sunlight with a magnifying glass. Choose all correct answers.", options: ["Do not look directly at the Sun through the lens", "Do not point the gathered light at eyes or people", "Do not look at the bright point for a long time", "Point the bright spot at a friend’s clothes", "Look at the Sun through the lens to see it clearly"], answer: [0, 1, 2], hint: "A safe rule protects eyes and people." },
+      { type: "mc", mode: "normal", level: "easy", q: "What is the name of the tool that gathers light?", options: ["A magnifying glass", "A mirror", "A compass"], answer: 0, hint: "We used it to burn black paper." }
+    ] },
+  { id: 'K30', lesson: 3, bonus: true, guide: true, concept: "How shadows form and move",
+    explain: "A shadow forms when an opaque object blocks sunlight: the light travels in straight lines, so a dark place forms behind the object, always on the side opposite the Sun. When the Sun moves from east to west, the shadow moves the opposite way, from west to east. Moving an object away from the torch towards the wall makes its shadow smaller.",
+    variants: [
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens to the direction of a shadow when the Sun moves from east to west?", parts: ["The shadow moves", "in the opposite direction,", "from west to east"], extra: ["in the same direction", "from east to west"], hint: "A shadow is always opposite the Sun." },
+      { type: "build", style: "say", mode: "normal", level: "medium", q: "Explain how shadows form.", parts: ["When light falls on an object, the object blocks it", "and a dark place forms behind it called a shadow,", "opposite the light source"], extra: ["on the same side", "as the light source"], hint: "Which side of the object is dark?" },
+      { type: "fill", mode: "normal", level: "easy", q: "The light source, the object and the shadow are always in one ___ line.", options: ["straight", "curved", "broken"], answer: 0, hint: "Light travels straight." },
+      { type: "mc", mode: "normal", level: "hard", q: "When you move an opaque object slowly away from a torch towards the wall, its shadow:", options: ["gets smaller", "gets bigger", "doubles", "stays the same"], answer: 0, hint: "Close to the torch it blocks more light." },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "Shadows always form on the side opposite the light source.", answer: 0, hint: "Where is your shadow when the Sun is in front of you?" }
+    ] },
+  { id: 'M30', lesson: 4, bonus: true, guide: true, concept: "Long and short shadows",
+    explain: "At noon the Sun is high in the sky, so shadows are very short, right around the base of objects. In the early morning and in the evening the Sun is low, so shadows are long.",
+    variants: [
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "A stick’s shadow is short at noon and long in the morning and evening.", parts: ["Because the Sun is high at noon", "and low in the morning", "and evening"], extra: ["Because the Sun", "is closer at noon"], hint: "Where is the Sun at noon?" },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if the Sun’s rays fall on a pole in the school yard at noon?", parts: ["A very short shadow", "forms around", "its base"], extra: ["a very long shadow", "to the east"], hint: "The Sun is highest at noon." },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if the Sun’s rays fall on a pole in the school yard early in the morning?", parts: ["The pole", "has a long", "shadow"], extra: ["no", "short"], hint: "The Sun is low in the morning." },
+      { type: "mc", mode: "normal", level: "easy", q: "Objects have very long shadows on the ground:", options: ["early in the morning", "at noon", "early at night", "at midnight"], answer: 0, hint: "When is the Sun low and still shining?" },
+      { type: "mc", mode: "normal", level: "medium", q: "When the Sun is at its highest point at noon, the shadows of objects are:", options: ["very short and right under the object", "very long towards the west", "very long towards the east", "very short towards the north"], answer: 0, hint: "High Sun = short shadow." },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "The direction and position of a shadow change during the day because the Sun moves in the sky.", answer: 0, hint: "Does the Sun stay in one place?" }
+    ] },
+  { id: 'M31', lesson: 4, bonus: true, guide: true, concept: "The sundial and the compass",
+    explain: "A sundial tells the approximate time from the position of a shadow, because the Sun moves regularly and so does the shadow. A compass shows directions: its marked needle always points north, so we can use it to know where the Sun sets (west).",
+    variants: [
+      { type: "mc", mode: "normal", level: "easy", q: "What is the importance of the sundial?", options: ["Knowing the time from the movement of the shadow", "Measuring the temperature of the ground", "Gathering sunlight"], answer: 0, hint: "It is a kind of clock." },
+      { type: "mc", mode: "normal", level: "easy", q: "Which tool can we use to know where the Sun sets and to find directions?", options: ["A compass", "A magnifying glass", "An infrared thermometer"], answer: 0, hint: "Its needle points north." },
+      { type: "fill", mode: "normal", level: "easy", q: "The marked needle of a compass always points ___.", options: ["north", "south", "east"], answer: 0, hint: "N on the compass." }
+    ] },
+  { id: 'N30', lesson: 5, bonus: true, guide: true, concept: "Sunny and shady ground; the infrared thermometer",
+    explain: "Sunny ground receives direct sunlight, so it is warmer and drier. Shady ground is blocked from direct sunlight, so it is cooler and damper. If a shady place becomes sunny, its ground gets warmer and less damp. An infrared thermometer measures the temperature of the ground accurately: point it at the place from a suitable distance without touching the ground.",
+    variants: [
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens to the temperature and dampness of the ground when a shady place becomes sunny?", parts: ["The temperature of the ground rises", "and its dampness", "decreases"], extra: ["falls", "increases"], hint: "Sunlight warms and dries." },
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "The ground in sunny places is warmer than the ground in shady places.", parts: ["Because direct sunlight reaches it", "and the ground absorbs", "its heat"], extra: ["Because the shade", "makes heat"], hint: "Which ground gets direct sunlight?" },
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "Shady places stay cooler than sunny places.", parts: ["Because they are blocked", "from direct", "sunlight"], extra: ["Because they get", "more sunlight"], hint: "What blocks the sunlight there?" },
+      { type: "build", style: "why", mode: "normal", level: "easy", q: "We use an infrared thermometer.", parts: ["To measure", "the temperature of the ground", "accurately"], extra: ["To find", "the length of a shadow"], hint: "What does a thermometer measure?" },
+      { type: "mc", mode: "normal", level: "medium", q: "How do we use an infrared thermometer?", options: ["Point it at the place from a suitable distance without touching the ground", "Bury it in the ground for an hour", "Hold it tightly in your hand and touch the ground"], answer: 0, hint: "It works from a distance." }
     ] }
 ];
 })();
