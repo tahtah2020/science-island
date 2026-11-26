@@ -791,6 +791,11 @@ window.EXAMS = [
      layout 'g3math' = the models' paper: Q1 choose (3 × 1.5), Q2 answer (3 + 2.5 + 2.5 + 2.5) = 15 marks */
   { id: 'mg3nov', subject: 'math', grade: 'g3', minParts: 1, layout: 'g3math', of: 15, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
     parts: [{ ch: 'mg3u4' }, { ch: 'mg3u5' }, { ch: 'mg3u6' }, { ch: 'mg3u7' }, { ch: 'mg3u8', lessons: [1, 2, 3, 4] }] },
+  { id: 'ag3nov', subject: 'arabic', grade: 'g3', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'ag3u1' }, { ch: 'ag3u2' }],
+    /* shaped like «التقييم الأول / الثاني» of the owner's November review booklet (26 Nov 2026); writing, handwriting and dictation are not asked */
+    layouts: [[{ sec: 'listen', n: 3, same: true }, { sec: 'read', n: 5, same: true }, { sec: 'poem', n: 3, ids: ['D1', 'J1', 'J4'] }, { sec: 'style', n: 6 }, { sec: 'spell', n: 3 }],
+              [{ sec: 'listen', n: 3, same: true }, { sec: 'read', n: 5, same: true }, { sec: 'poem', n: 3, ids: ['D1', 'J1', 'J4'] }, { sec: 'style', n: 5 }, { sec: 'spell', n: 4 }]] },
   { id: 'eg3nov', subject: 'english', grade: 'g3', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
     parts: [{ ch: 'eg3u4' }, { ch: 'eg3u5' }],
     layouts: [[{ sec: 'choose', n: 5 }, { sec: 'order', n: 3 }, { sec: 'punct', n: 2 }],

@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-26', title: 'Arabic Grade 3 November test like the school assessment',
+    items: [
+      { text: 'New November test for Grade 3 Arabic (units 1-2): listening text, reading paragraph, poem, grammar, spelling; 20 marks, a new paper each visit', links: [{ label: 'Arabic test', href: 'quiz.html#exam=ag3nov', ch: 'ag3u1' }] }
+    ] },
   { date: '2026-11-26', title: 'Grade 4 Science November test',
     items: [
       { text: 'New test g4nov «امتحان شهر نوفمبر» for Grade 4 Science (both tracks): chapter 4 Light and chapter 5 Sound (+ plant parts in about half the papers), shaped like the «سندباد» November review tests: 3 questions, each (A) 2 short items and (B) 3 longer items (what happens, give reasons, answer) = 15 marks' },

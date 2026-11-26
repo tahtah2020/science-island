@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261126t133320"></script>
-<script src="chapters.js?v=20261126t133320"></script>
-<script src="common.js?v=20261126t133320"></script>
+<script src="firebase-config.js?v=20261126t133414"></script>
+<script src="chapters.js?v=20261126t133414"></script>
+<script src="common.js?v=20261126t133414"></script>
 <script>
 (() => {
 'use strict';
@@ -1605,20 +1605,33 @@ function buildPaper(pool, caps, last, layout) {
 const SEC_HEAD = {
   choose: ['Choose the correct answer', 'اختر الإجابة الصحيحة'], form: ['Read and write the correct form of the word between brackets', 'اكتب الصيغة الصحيحة للكلمة بين القوسين'],
   box: ['Read and complete the text with the words from the box', 'أكمل القطعة بكلمات من المربع'], order: ['Put the words in the correct order to make a sentence', 'رتّب الكلمات لتكوّن جملة'],
-  punct: ['Punctuate the following', 'ضع علامات الترقيم الصحيحة'] };
+  punct: ['Punctuate the following', 'ضع علامات الترقيم الصحيحة'],
+  listen: ['Listening: read the text, then answer', 'الاستماع: اقرأ النص، ثم أجب'], read: ['Reading: read the paragraph, then answer', 'القراءة: اقرأ الفقرة، ثم أجب'],
+  poem: ['The poem: choose the correct answer', 'النشيد: اختر الإجابة الصحيحة'], style: ['Grammar: choose the correct answer', 'الأساليب والتراكيب: اختر الإجابة الصحيحة'],
+  spell: ['Spelling: choose the correct answer', 'الإملاء: اختر الإجابة الصحيحة'] };
+/* a section { sec, n, same: true } takes n items from ONE idea (one reading text) in their written order; { ids: ['D1', …] } also takes the
+   mc / tf / fill phrasings of those ideas (e.g. the unit's own poem questions). */
 function buildSecPaper(pool, EX, last) {
   const LV = { easy: 0, medium: 1, hard: 2 }, lv = v => (LV[v.level] == null ? 1 : LV[v.level]) + (v.mode === 'boss' ? .5 : 0);
   const layouts = EX.layouts.filter(L => L.every(s => pool.some(I => I.variants.some(v => (v.sec || I.sec) === s.sec))));
   const L = (layouts.length ? layouts : EX.layouts)[Math.floor(Math.random() * (layouts.length || EX.layouts.length))];
   const usedIdea = {}, perCh = {}, paper = [];
   L.forEach((s, si) => {
-    const cands = shuffle(pool.flatMap(I => I.variants.map((v, vi) => ({ I, v, vi })).filter(c => (c.v.sec || I.sec) === s.sec)));
+    const inSec = c => (c.v.sec || c.I.sec) === s.sec || (s.ids && s.ids.includes(c.I.id) && ['mc', 'tf', 'fill'].includes(c.v.type) && !c.v.sec);
+    const cands = shuffle(pool.flatMap(I => I.variants.map((v, vi) => ({ I, v, vi })).filter(inSec)));
     const got = [];
+    if (s.same) {   // one reading text: all its items, in order
+      const byIdea = {}; cands.forEach(c => { (byIdea[c.I.ch + c.I.id] = byIdea[c.I.ch + c.I.id] || []).push(c); });
+      const ideas = shuffle(Object.values(byIdea).filter(l => l.length >= s.n));
+      ideas.sort((x, y) => (last[x[0].I.id] != null) - (last[y[0].I.id] != null));
+      if (ideas.length) ideas[0].sort((x, y) => x.vi - y.vi).slice(0, s.n).forEach(c => got.push(c));
+      cands.length = 0;
+    }
     while (got.length < s.n && cands.length) {
       cands.sort((x, y) => ((usedIdea[x.I.ch + x.I.id] || 0) - (usedIdea[y.I.ch + y.I.id] || 0)) || ((perCh[x.I.ch] || 0) - (perCh[y.I.ch] || 0)) || ((last[x.I.id] === x.vi) - (last[y.I.id] === y.vi)));
       const c = cands.shift(); got.push(c); usedIdea[c.I.ch + c.I.id] = (usedIdea[c.I.ch + c.I.id] || 0) + 1; perCh[c.I.ch] = (perCh[c.I.ch] || 0) + 1;
     }
-    got.sort((x, y) => lv(x.v) - lv(y.v));
+    if (!s.same) got.sort((x, y) => lv(x.v) - lv(y.v));
     const head = s.title || SEC_HEAD[s.sec] || [s.sec, s.sec], items = [];
     const base = c => ({ id: c.I.id, ch: c.I.ch, lesson: c.I.lesson, concept: c.I.concept, explain: c.v.explain || c.I.explain, vi: c.vi });
     got.forEach(c => {
