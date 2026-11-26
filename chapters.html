@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261126c{{{">
+<link rel="stylesheet" href="common.css?v=20261126x{{{">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -159,9 +159,9 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="firebase-config.js?v=20261126c{{{"></script>
-<script src="chapters.js?v=20261126c{{{"></script>
-<script src="common.js?v=20261126c{{{"></script>
+<script src="firebase-config.js?v=20261126x{{{"></script>
+<script src="chapters.js?v=20261126x{{{"></script>
+<script src="common.js?v=20261126x{{{"></script>
 <script>
 (() => {
   'use strict';
@@ -187,12 +187,12 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   SI.sync.chip($('#codeBox'));   // the child's recovery code (appears once the progress is saved online)
   /* parent follow-up (26 Nov 2026): «راجع أخطائي» with the number of open mistakes in this subject, and the WhatsApp report for the parent */
   function parentBox() {
-    const box = $('#parentBox'); if (!box) return; box.innerHTML = '';
+    const box = $('#parentBox'); if (!box || !SI.openMisses || !SI.parentReport) return; box.innerHTML = '';   // an old cached common.js has no parent functions: skip, never stop the page
     const sj = SI.subjectId(), n = SI.openMisses(null, c => SI.chGrade(c) === SI.grade() && SI.chSubject(c) === sj && SI.qFile(c)).length;
     if (n) { const a = document.createElement('a'); a.className = 'mis'; a.href = `quiz.html#mistakes&s=${sj}`; a.innerHTML = `📝 ${SI.T('Practise my mistakes', SI.G('راجع أخطائي', 'راجعي أخطائي'))} <b>${n}</b>`; box.appendChild(a); }
     if (SI.sync.code()) { const b = document.createElement('button'); b.type = 'button'; b.className = 'wa'; b.innerHTML = `🟢 ${SI.T('Send my report to my parent', SI.G('ابعت تقريري لبابا أو ماما', 'ابعتي تقريري لبابا أو ماما'))}`; b.onclick = () => { SI.sfx.tick(); SI.parentReport(); }; box.appendChild(b); }
   }
-  parentBox(); document.addEventListener('si-sync', parentBox);
+  try { parentBox(); } catch (e) { console.warn(e); } document.addEventListener('si-sync', () => { try { parentBox(); } catch (e) {} });
   const lv = SI.levelInfo(SI.xp());
   $('#lvlTitle').textContent = `${T('Level', 'المستوى')} ${lv.n} · ${lv.title}`;
   $('#lvlXp').textContent = `${lv.xp} XP`;
@@ -208,7 +208,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
 
   let started = false;
   function render() {
-  if (typeof parentBox === 'function') parentBox();
+  try { parentBox(); } catch (e) {}
   const list = SI.chapters(); let total = 0;
   $('#sect').innerHTML = SI.subjectId() === 'english' ? 'Choose a unit' : SI.isUnits() ? T('Choose a unit <span class="ar">اختر الوحدة</span>', 'اختر الوحدة') : T('Choose a chapter <span class="ar">اختر الفصل</span>', 'اختر الفصل');
   $('#sub').textContent = T(`${SI.gradeName()} · ${SI.subjectName()} · Languages · First term`, `${SI.gradeName()} · ${SI.subjectName()} · عربي · الفصل الدراسي الأول`);

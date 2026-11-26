@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261126c{{{"></script>
-<script src="chapters.js?v=20261126c{{{"></script>
-<script src="common.js?v=20261126c{{{"></script>
+<script src="firebase-config.js?v=20261126x{{{"></script>
+<script src="chapters.js?v=20261126x{{{"></script>
+<script src="common.js?v=20261126x{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -1232,7 +1232,7 @@ async function playList(list, label, resume) {
     window.__cur = q;
     const r = await ask(q);
     hideTimer();
-    if (label !== 'retry') { recordCard(q.id, r.firstTry, q.ch); trackAnswer(q, r, label); SI.noteAnswer({ ch: q.ch || CH.id, id: q.id, vi: q.vi, ok: r.firstTry, src: label }); if (q.mode === 'boss' && r.correct && SI.countBoss) SI.countBoss(); }
+    if (label !== 'retry') { recordCard(q.id, r.firstTry, q.ch); trackAnswer(q, r, label); SI.noteAnswer && SI.noteAnswer({ ch: q.ch || CH.id, id: q.id, vi: q.vi, ok: r.firstTry, src: label }); if (q.mode === 'boss' && r.correct && SI.countBoss) SI.countBoss(); }
     results[i] = r.firstTry;
     const ex = $('#explain');
     if (r.correct) {
@@ -1424,7 +1424,7 @@ async function results(kind, res, total, extraXP = 0) {
     <div class="stats"><span>${T('Score', 'النقاط')}: ${score}</span><span>${T('Right first time', 'صح من أول مرة')}: ${res.firstRight} / ${total}</span>${kind === 'quest' ? `<span>${T('Best', 'أعلى نتيجة')}: ${bestScore}</span>` : ''}${extraXP ? `<span>🔥 ${T('Daily bonus', 'مكافأة اليوم')} +${extraXP}</span>` : ''}</div>
     ${levelBlock(gain)}
     ${kind === 'quest' ? SI.certBtn(Math.round(acc * 100)) : ''}
-    ${kind === 'quest' ? SI.parentBtn(`⭐ تحدي ${CH.titleAr || CH.title}: ${'★'.repeat(stars)} (${res.firstRight} من ${total} صح من أول مرة)`) : ''}
+    ${kind === 'quest' ? (SI.parentBtn || (() => ''))(`⭐ تحدي ${CH.titleAr || CH.title}: ${'★'.repeat(stars)} (${res.firstRight} من ${total} صح من أول مرة)`) : ''}
     ${SI.shareBtn()}
     <p class="rank" id="rank">${T('Saving your points…', 'بنحفظ نقاطك…')}</p>
     <p>${res.missed.length ? T(`Reesho saved <b>${res.missed.length}</b> tricky question${res.missed.length > 1 ? 's' : ''} for your review.`, `ريشو حفظ لك <b>${res.missed.length}</b> سؤال صعب علشان تراجعه.`) : T('Perfect! Come back tomorrow for your Daily 5.', G('ممتاز! ارجع بكرة لخماسية اليوم.', 'ممتاز! ارجعي بكرة لخماسية اليوم.'))}</p>
@@ -1437,7 +1437,7 @@ async function results(kind, res, total, extraXP = 0) {
   document.body.appendChild(o);
   SI.wireShare(o, { stars, score, ch: CH });
   SI.wireCert(o, { ch: CH, pct: Math.round(acc * 100) });
-  SI.wireParent(o);
+  if (SI.wireParent) SI.wireParent(o);
   SI.rate.guard(o, 'a[href="map.html"], a[href="champions.html"]', 'results');   // Reesho asks for a rating before the player leaves (once per chapter)
   $('#again', o).onclick = () => location.reload();
   if (levelUp) { setTimeout(() => { sfx.level(); SI.voice('level'); banner(T('Level up!', 'مستوى جديد!'), `${T('Level', 'المستوى')} ${gain.after.n} · ${gain.after.title}`); }, 900); }
@@ -1622,7 +1622,7 @@ async function playExam(paper) {
     header(q, i, flat.length, dots); window.__cur = q;
     const r = await ask(q);
     hideTimer();
-    recordCard(q.id, r.firstTry, q.ch); trackAnswer(q, r, 'exam'); SI.noteAnswer({ ch: q.ch, id: q.id, vi: q.vi, ok: r.firstTry, src: 'exam', ex: EXAM_ID });
+    recordCard(q.id, r.firstTry, q.ch); trackAnswer(q, r, 'exam'); SI.noteAnswer && SI.noteAnswer({ ch: q.ch, id: q.id, vi: q.vi, ok: r.firstTry, src: 'exam', ex: EXAM_ID });
     const got = r.firstTry ? full : (r.correct && full > 1 ? 1 : 0);
     marks += got; perQ[q.exam.q - 1] += got; dots[i] = got === full;
     const pc = perCh[q.ch] = perCh[q.ch] || { got: 0, of: 0 }; pc.got += got; pc.of += full;
@@ -1670,7 +1670,7 @@ function examResults(EX, res, total) {
     ${levelBlock(gain)}
     <h3>${SI.isUnits() ? T('Marks by unit', 'الدرجات حسب الوحدة') : T('Marks by chapter', 'الدرجات حسب الفصل')}</h3><ul class="byc">${byCh}</ul>
     ${miss ? `<h3>${T('Look again at these', 'راجع دول تاني')}</h3><ul class="miss">${miss}</ul>` : `<p style="text-align:center">${T('A perfect paper! 🎉', 'ورقة من غير ولا غلطة! 🎉')}</p>`}
-    ${SI.parentBtn(`📝 ${EX.titleAr} (${(SI.subjectById(SI.chSubject(EX)) || {}).titleAr || ''}): ${res.marks} من ${total}`)}
+    ${(SI.parentBtn || (() => ''))(`📝 ${EX.titleAr} (${(SI.subjectById(SI.chSubject(EX)) || {}).titleAr || ''}): ${res.marks} من ${total}`)}
     <div class="row acts">
       ${res.wrong.length ? `<a class="btn primary" href="quiz.html#mistakes">${T('Practise my mistakes', G('راجع أخطائي', 'راجعي أخطائي'))} (${res.wrong.length})</a>` : ''}
       <button class="btn${res.wrong.length ? '' : ' primary'}" type="button" id="again">${T('New paper', 'ورقة جديدة')}</button>
@@ -1679,7 +1679,7 @@ function examResults(EX, res, total) {
   document.body.appendChild(o);
   o.querySelectorAll('a[data-ch]').forEach(a => { a.onclick = () => { SI.setChapter(a.dataset.ch); }; });
   $('#again', o).onclick = () => location.reload();
-  SI.wireParent(o);
+  if (SI.wireParent) SI.wireParent(o);
   if (gain.after.n > gain.before.n) setTimeout(() => { sfx.level(); SI.voice('level'); banner(T('Level up!', 'مستوى جديد!'), `${T('Level', 'المستوى')} ${gain.after.n} · ${gain.after.title}`); }, 900);
   return best;
 }
@@ -1851,11 +1851,11 @@ async function mistakesMain() {
     <h2>${T('Mistakes practised!', G('راجعت أخطاءك!', 'راجعتي أخطاءك!'))}</h2>
     <div class="stats"><span>${T('Right first time', 'صح من أول مرة')}: ${res.firstRight} / ${list.length}</span><span>${T('Still open', 'لسه محتاجة مراجعة')}: ${left}</span></div>
     ${levelBlock(gain)}
-    ${SI.parentBtn(`🔁 راجع أخطاءه: ${res.firstRight} من ${list.length} صح، ولسه ${left} سؤال محتاج مراجعة`)}
+    ${(SI.parentBtn || (() => ''))(`🔁 راجع أخطاءه: ${res.firstRight} من ${list.length} صح، ولسه ${left} سؤال محتاج مراجعة`)}
     <div class="row acts">${left ? `<button class="btn primary" type="button" id="again">${T('More mistakes ▸', G('كمّل الأخطاء ◂', 'كمّلي الأخطاء ◂'))}</button>` : ''}<a class="btn" href="${SI.CHAPTERS_PAGE}">${SI.chWords()}</a></div></div>`);
   document.body.appendChild(o);
   const ag = $('#again', o); if (ag) ag.onclick = () => location.reload();
-  SI.wireParent(o);
+  if (SI.wireParent) SI.wireParent(o);
 }
 window.addEventListener('hashchange', () => location.reload());
 const EXAM = /^#exam\b/.test(location.hash);
