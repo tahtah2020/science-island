@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-26', title: 'Cache stamp fixed',
+    items: [
+      { text: 'Every page now loads files with a unique stamp per release (date + time); the old one-letter stamp had run past «z» and left «{» characters in the links' }
+    ] },
   { date: '2026-11-26', title: 'Grade 3 Math November test',
     items: [
       { text: 'New test mg3nov «امتحان شهر نوفمبر» for Grade 3 Math (Arabic track): units 4 to 8 lesson 4, shaped like the «المعاصر» November models the owner sent: Q1 choose (3 × 1.5), Q2 answer (column sum or difference 3, data or map 2.5, mental maths 2.5, division word problem with a remainder 2.5) = 15 marks', links: [{ label: 'Grade 3 Math November test', href: 'quiz.html#exam=mg3nov', ch: 'mg3u4' }] }

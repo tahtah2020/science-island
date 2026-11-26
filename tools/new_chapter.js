@@ -90,7 +90,7 @@ if (lines.length) {
 
 // 3) game page on the kit
 if (game) {
-  const stamp = (rd('index.html').match(/\?v=(\d{8}[a-z]?)/) || [])[1] || '';
+  const stamp = (rd('index.html').match(/\?v=(\d{8}[a-z0-9]*)/) || [])[1] || '';
   const v = stamp ? '?v=' + stamp : '';
   const n = c.n || '', unit = units ? ['Unit', 'الوحدة'] : ['Chapter', 'الفصل'];
   write(game, `<!doctype html>
