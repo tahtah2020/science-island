@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-26', title: 'November tests board: Grade 3 added',
+    items: [
+      { text: 'progress.html: the November tests table now shows Grade 3 too (Grades 3, 4, 5, 6)', links: [{ label: 'Progress page', href: 'progress.html' }] }
+    ] },
   { date: '2026-11-26', title: 'November tests board on the progress page',
     items: [
       { text: 'progress.html: new table «امتحانات شهر نوفمبر» for Grades 4, 5, 6: each subject, Languages and Arabic tracks, ready / partly ready / missing, totals per track; a cell opens the test', links: [{ label: 'Progress page', href: 'progress.html' }] }

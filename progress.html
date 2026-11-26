@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261126y{{{">
+<link rel="stylesheet" href="common.css?v=20261126z{{{">
 <style>
 /* Owner's progress board: the whole plan (every subject, Grade 1 to Prep 3, first term) in one table.
    Each cell = one subject in one grade: units published out of the term's units, for the Languages track and the Arabic track.
@@ -96,7 +96,7 @@ button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap
     </section>
     <section class="box" id="novBox">
       <h1>امتحانات شهر نوفمبر</h1>
-      <p class="lead">الصف الرابع والخامس والسادس الابتدائي، لمسار اللغات وللمسار العربي. الخانة الخضراء تعني أن الامتحان منشور وكل وحداته جاهزة في هذا المسار. اضغط الخانة لتفتح الامتحان.</p>
+      <p class="lead">الصف الثالث والرابع والخامس والسادس الابتدائي، لمسار اللغات وللمسار العربي. الخانة الخضراء تعني أن الامتحان منشور وكل وحداته جاهزة في هذا المسار. اضغط الخانة لتفتح الامتحان.</p>
       <section class="big" id="novBig" style="margin-top:10px"></section>
       <div class="scroll" style="margin-top:10px"><table class="m" id="nov"></table></div>
       <div class="key">
@@ -111,9 +111,9 @@ button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap
 
 <dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
 
-<script src="firebase-config.js?v=20261126y{{{"></script>
-<script src="chapters.js?v=20261126y{{{"></script>
-<script src="common.js?v=20261126y{{{"></script>
+<script src="firebase-config.js?v=20261126z{{{"></script>
+<script src="chapters.js?v=20261126z{{{"></script>
+<script src="common.js?v=20261126z{{{"></script>
 <script>
 (() => {
   /* Units in the first term of a subject and grade, when chapters.js does not list all of them yet: 'grade.subject': number.
@@ -164,11 +164,11 @@ button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap
   }).join('');
   document.getElementById('m').innerHTML = head + body;
 
-  /* ---------- November monthly tests (owner, 26 Nov 2026): grades 4, 5, 6, both tracks ----------
+  /* ---------- November monthly tests (owner, 26 Nov 2026): grades 3, 4, 5, 6, both tracks ----------
      A cell = one subject in one grade. Its test is the window.EXAMS entry of that grade and subject whose id or title says November.
      Per track: ✓ when every part's unit is ready and has a questions file in that track; ! when the test exists but a part is not ready;
      ✗ when there is no test. NOV_SUBJECTS = the subjects of the school's November tests. */
-  const NOV_GRADES = [['g4', 'الرابع الابتدائي'], ['g5', 'الخامس الابتدائي'], ['g6', 'السادس الابتدائي']];
+  const NOV_GRADES = [['g3', 'الثالث الابتدائي'], ['g4', 'الرابع الابتدائي'], ['g5', 'الخامس الابتدائي'], ['g6', 'السادس الابتدائي']];
   const NOV_SUBJECTS = ['arabic', 'english', 'math', 'science', 'studies'];
   const isNov = e => !e.off && (/nov/i.test(e.id) || /November/i.test(e.title || ''));
   function novCell(g, sid) {
