@@ -126,5 +126,37 @@ window.IDEAS = [
       { type: 'table', mode: 'boss', level: 'hard', q: 'Match each action to the correct condition for healthy growth.', cols: ['Healthy diet', 'Enough sleep', 'Proper exercise'], items: ['Drinking milk and eating vegetables and fruits', 'Moving the body to make the heart and muscles stronger', 'Resting well at night to rest the brain and build the body'], answer: [0, 2, 1] },
       { type: 'match', mode: 'boss', level: 'hard', q: 'Match each condition to what it does.', left: ['Healthy diet', 'Enough sleep', 'Proper exercise'], right: ['Gives your body nutrients', 'Rests the brain and builds the body', 'Makes the heart and muscles stronger'], answer: [0, 1, 2] },
       { type: 'multi', mode: 'boss', level: 'hard', q: 'Which TWO of these are conditions for healthy growth?', options: ['Staying up late at night', 'Getting proper exercise', 'Eating only snacks', 'Getting enough sleep'], answer: [1, 3] }
+    ] },
+  /* ---------- November 2026 exam models (directorate models 1-10, sent by the owner 26 Nov 2026) ----------
+     guide: true = asked in the official models; drawn by the November test and kept out of Daily 5. */
+  { id: 'O30', lesson: 1, bonus: true, guide: true, concept: 'Growth and reproduction: the terms',
+    explain: 'Growth is the change in a living organism’s size, shape and strength over time. Reproduction is the life process in which living things produce new individuals of the same kind, so the species continues. If all members of a species stop reproducing, the species disappears.',
+    variants: [
+      { type: 'term', mode: 'normal', level: 'easy', q: 'Changes in a living organism’s size, shape and strength over time.', answer: 'Growth', choices: ['Reproduction', 'Pollination', 'Inheritance'], hint: 'A baby becomes a child, then a young person ...' },
+      { type: 'term', mode: 'normal', level: 'medium', q: 'A life process in which living organisms produce new individuals of the same species to ensure it continues.', answer: 'Reproduction', choices: ['Growth', 'Germination', 'Magnification'], hint: 'Through it, life continues across generations.' },
+      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens if all members of a species stop reproducing?', parts: ['The species', 'disappears', 'from the Earth'], extra: ['grows', 'stronger'], hint: 'Why is reproduction important?' }
+    ] },
+  { id: 'O31', lesson: 1, bonus: true, guide: true, concept: 'Features of the growth stages',
+    explain: 'Infancy begins at birth after about 9 months inside the mother’s body. In childhood children walk, talk and go to school, and their bones and muscles become stronger. Adulthood is the stage of taking responsibility for a family and the community. The order is infancy, childhood, youth, adulthood, old age.',
+    variants: [
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'Which human growth stage is associated with taking responsibility for a family and community?', options: ['Adulthood', 'Infancy', 'Early childhood', 'Before birth'], answer: 0, hint: 'Who looks after the family: a baby or a grown-up?' },
+      { type: 'term', mode: 'normal', level: 'easy', q: 'The human growth stage in which a child learns to walk and talk and goes to school.', answer: 'Childhood', choices: ['Infancy', 'Youth', 'Old age'], hint: 'It comes right after infancy.' },
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'During childhood, human bones and muscles become stronger.', answer: 0, hint: 'Children run, play and grow.' },
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'Old age comes before youth and adulthood in the human life cycle.', answer: 1, hint: 'Which stage is the last one?' },
+      { type: 'fill', mode: 'normal', level: 'easy', q: 'Infancy begins at ___ after about 9 months of development inside the mother’s body.', options: ['birth', 'school', 'youth'], answer: 0, hint: 'When does a baby come out into the world?' }
+    ] },
+  { id: 'Q30', lesson: 2, bonus: true, guide: true, concept: 'Inherited features and learned skills',
+    explain: 'Inherited features pass from parents to their children, like natural eye colour, natural hair colour and skin colour. A skill we learn, like learning a new language, is acquired, not inherited.',
+    variants: [
+      { type: 'multi', mode: 'normal', level: 'medium', q: 'Mention three examples of inherited features passed from parents to their children. Choose all correct answers.', options: ['Eye colour', 'Hair colour', 'Skin colour', 'Learning a new language', 'Riding a bike'], answer: [0, 1, 2], hint: 'Inherited = we are born with it, we do not learn it.' },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'Which of the following is an acquired (learned) skill rather than an inherited feature?', options: ['Learning a new language', 'Natural eye colour', 'Natural hair colour', 'Skin colour'], answer: 0, hint: 'Which one do we learn at school or at home?' },
+      { type: 'term', mode: 'normal', level: 'easy', q: 'Traits and characteristics passed from parents to their children.', answer: 'Inherited features', choices: ['Acquired skills', 'Nutrients', 'Pollinators'], hint: 'Children ... them from their father and mother.' }
+    ] },
+  { id: 'U30', lesson: 3, bonus: true, guide: true, concept: 'Why we need all three conditions',
+    explain: 'Healthy growth needs all three conditions together: a healthy diet, enough sleep and proper exercise. Exercise makes the heart and muscles stronger. Sleep cannot replace food. A pupil who eats only snacks and sweets, stays up late and never exercises does not grow strong and healthy.',
+    variants: [
+      { type: 'build', style: 'why', mode: 'normal', level: 'medium', q: 'Why is practising regular physical exercise necessary for healthy human growth?', parts: ['Because it makes', 'the heart and muscles', 'stronger'], extra: ['Because it makes us', 'sleep less'], hint: 'What does moving your body do to your heart?' },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'Discuss: could sleeping alone replace eating a healthy diet?', options: ['No, the body needs a healthy diet, enough sleep and exercise together', 'Yes, sleep gives the body all its nutrients', 'Yes, if we sleep for a very long time'], answer: 0, hint: 'Where do the nutrients come from: sleep or food?' },
+      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens if a pupil eats only snacks and sweets, stays up late, and never exercises?', parts: ['The pupil does not', 'grow strong', 'and healthy'], extra: ['grows faster', 'and stronger'], hint: 'Which of the three conditions does this pupil follow?' }
     ] }
 ];

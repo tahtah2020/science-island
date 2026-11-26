@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261125h{{{"></script>
-<script src="chapters.js?v=20261125h{{{"></script>
-<script src="common.js?v=20261125h{{{"></script>
+<script src="firebase-config.js?v=20261126a{{{"></script>
+<script src="chapters.js?v=20261126a{{{"></script>
+<script src="common.js?v=20261126a{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -1514,7 +1514,18 @@ const answerText = q => {
 };
 const EXAM_A = v => (['tf', 'fill', 'term', 'multi', 'order', 'num'].includes(v.type) || (v.type === 'mc' && v.style !== 'story')) ? v.type : null;
 const EXAM_B = v => v.type === 'build' ? (v.style === 'why' ? 'why' : v.style === 'whatif' ? 'whatif' : 'say') : (v.type === 'table' || v.type === 'match') ? 'compare' : v.type === 'tap' ? 'figure' : (v.type === 'mc' && v.style === 'story') ? 'story' : null;
-function buildPaper(pool, caps, last) {
+/* layout 'school' (chapters.js EXAMS: layout: 'school'): the shape of the directorate's model papers (owner's November 2026 models):
+   Q1 (A) Complete · (B) Who am I? · Give reasons · Mention   Q2 (A) Choose · (B) two scientific terms   Q3 (A) Put ✓ or ✗ · (B) Explain / Calculate · What happens if?
+   (A) items 1 mark, (B) items 2 marks: 7 + 5 + 5 = 17 marks. Each slot falls back to any item of its part when the pool has none of that kind. */
+const SCHOOL_LAYOUT = [
+  [{ part: 'A', want: 0, t: c => c.v.type === 'fill', l: ['Complete:', 'أكمل:'] }, { part: 'B', want: 0, t: c => c.v.type === 'term', l: ['Who am I?', 'من أنا؟'] },
+   { part: 'B', want: 1, t: c => c.b === 'why', l: ['Give reasons:', 'علّل:'] }, { part: 'B', want: 1, t: c => ['multi', 'order'].includes(c.v.type) || c.b === 'compare', l: ['Mention:', 'اذكر:'] }],
+  [{ part: 'A', want: 0, t: c => c.v.type === 'mc' && c.a, l: ['Choose the correct answer:', 'اختر الإجابة الصحيحة:'] }, { part: 'B', want: 1, t: c => c.v.type === 'term', l: ['Write the scientific term:', 'اكتب المصطلح العلمي:'] },
+   { part: 'B', want: 1, t: c => c.v.type === 'term', l: ['Write the scientific term:', 'اكتب المصطلح العلمي:'] }],
+  [{ part: 'A', want: 1, t: c => c.v.type === 'tf', l: ['Put ✓ or ✗:', 'ضع علامة ✓ أو ✗:'] }, { part: 'B', want: 1, t: c => c.b === 'why' || c.b === 'compare' || /calculate|احسب/i.test(c.v.q || ''), l: ['Explain / Calculate:', 'فسّر / احسب:'] },
+   { part: 'B', want: 2, t: c => c.b === 'whatif', l: ['What happens if ...?', 'ماذا يحدث لو ...؟'] }]
+];
+function buildPaper(pool, caps, last, layout) {
   const cands = [], used = new Set(), perCh = {};
   pool.forEach(I => I.variants.forEach((v, vi) => { const a = EXAM_A(v), b = EXAM_B(v); if (a || b) cands.push({ I, v, vi, a, b }); }));
   /* difficulty goes up slowly (owner, 23 Nov 2026): question 1 is easy, the last one is the hardest and has the only hard item. want = the level
@@ -1534,6 +1545,16 @@ function buildPaper(pool, caps, last) {
   const make = (c, n, part, marks) => c && Object.assign({ id: c.I.id, ch: c.I.ch, lesson: c.I.lesson, concept: c.I.concept, explain: c.I.explain, vi: c.vi }, c.v, c.v.explain ? { explain: c.v.explain } : {},
     { mode: 'normal', oneTry: true, exam: { q: n, part, marks } });
   const paper = [];
+  if (layout === 'school') {
+    SCHOOL_LAYOUT.forEach((slots, qi) => paper.push(slots.map(s => {
+      const anyOf = c => s.part === 'A' ? c.a : (c.b || c.v.type === 'term');
+      const c = take(c => s.t(c), s.want, 1) || take(c => s.t(c), s.want) || take(anyOf, s.want, 1) || take(anyOf, s.want) || take(c => c.a || c.b, s.want);
+      const q = make(c, qi + 1, s.part, s.part === 'A' ? 1 : 2);
+      if (q) q.exam.label = s.l;
+      return q;
+    }).filter(Boolean)));
+    return paper;
+  }
   for (let n = 1; n <= 4; n++) {
     const W = WANT[n - 1];
     const A = take(c => c.a === kinds[n - 1], W[0], 1) || take(c => c.a, W[0]);
@@ -1544,11 +1565,13 @@ function buildPaper(pool, caps, last) {
   return paper;
 }
 async function playExam(paper) {
-  const flat = paper.flat(), dots = [], perQ = [0, 0, 0, 0], perCh = {}, wrong = [];
+  const flat = paper.flat(), dots = [], perQ = paper.map(() => 0), perCh = {}, wrong = [];
+  const qMarks = paper.map(qs => qs.reduce((n, q) => n + q.exam.marks, 0));
   let marks = 0;
   for (let i = 0; i < flat.length; i++) {
     const q = flat[i], full = q.exam.marks;
-    if (q.exam.part === 'A') { sfx.tick(); await banner(T(`Question ${q.exam.q}`, `السؤال ${q.exam.q}`), T('5 marks', '٥ درجات')); }
+    if (q.exam.part === 'A') { sfx.tick(); const qm = qMarks[q.exam.q - 1]; await banner(T(`Question ${q.exam.q}`, `السؤال ${q.exam.q}`), T(`${qm} marks`, `${qm} درجات`)); }
+    if (q.exam.label) say(`${T(`Question ${q.exam.q} (${q.exam.part}) `, `السؤال ${q.exam.q} (${q.exam.part === 'A' ? 'أ' : 'ب'}) `)}<b>${T(q.exam.label[0], q.exam.label[1])}</b>`, i === 0 ? 'point' : 'think'); else
     say(i === 0 ? T('Read every question carefully. Good luck!', G('اقرأ كل سؤال كويس. بالتوفيق!', 'اقري كل سؤال كويس. بالتوفيق!'))
       : q.exam.part === 'A' ? T(`Question ${q.exam.q}, part (A): one mark.`, `السؤال ${q.exam.q}، الجزء (أ): درجة واحدة.`)
       : T('Part (B): two marks. Take your time.', G('الجزء (ب): درجتان. خد وقتك.', 'الجزء (ب): درجتان. خدي وقتك.')), i === 0 ? 'point' : 'think');
@@ -1573,7 +1596,7 @@ async function playExam(paper) {
     header(q, i, flat.length, dots);
     await nextBtn(i === flat.length - 1 ? T('Hand in the paper ▸', 'سلّم الورقة ◂') : T('Next ▸', 'التالي ◂'));
   }
-  return { marks, perQ, perCh, wrong, flat };
+  return { marks, perQ, qMarks, perCh, wrong, flat };
 }
 function examResults(EX, res, total) {
   const pct = total ? res.marks / total : 0;
@@ -1599,7 +1622,7 @@ function examResults(EX, res, total) {
     <h2>${esc(T(EX.title, EX.titleAr))}</h2>
     <div class="mark" aria-label="${T(`${res.marks} out of ${total}`, `${res.marks} من ${total}`)}">${res.marks}<small> / ${total}</small></div>
     <span class="grade${pct >= .75 ? ' top' : ''}">${grade}</span>
-    <div class="qm">${res.perQ.map((m, i) => `<span><small>${T('Question', 'السؤال')} ${i + 1}</small>${m} / 5</span>`).join('')}</div>
+    <div class="qm">${res.perQ.map((m, i) => `<span><small>${T('Question', 'السؤال')} ${i + 1}</small>${m} / ${(res.qMarks || [])[i] || 5}</span>`).join('')}</div>
     ${levelBlock(gain)}
     <h3>${SI.isUnits() ? T('Marks by unit', 'الدرجات حسب الوحدة') : T('Marks by chapter', 'الدرجات حسب الفصل')}</h3><ul class="byc">${byCh}</ul>
     ${miss ? `<h3>${T('Look again at these', 'راجع دول تاني')}</h3><ul class="miss">${miss}</ul>` : `<p style="text-align:center">${T('A perfect paper! 🎉', 'ورقة من غير ولا غلطة! 🎉')}</p>`}
@@ -1634,13 +1657,15 @@ async function examMain() {
   }
   window.IDEAS = pool;
   const last = ((SI.prof().exams || {})[EX.id] || {}).lastVar || {};
-  const paper = buildPaper(pool, caps, last), total = paper.flat().reduce((n, q) => n + q.exam.marks, 0);
-  if (total < 20) throw new Error('Not enough questions for a full paper.');
+  const paper = buildPaper(pool, caps, last, EX.layout), total = paper.flat().reduce((n, q) => n + q.exam.marks, 0);
+  if (total < (EX.layout === 'school' ? 17 : 20)) throw new Error('Not enough questions for a full paper.');
   const prev = (SI.prof().exams || {})[EX.id];
   await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
+    (EX.layout === 'school' ? T('Like the school’s model papers: 3 questions, <b>17 marks</b>. Part (A) is short (1 mark) and part (B) is worth 2 marks. You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
+      G('زي نماذج امتحان المدرسة: ٣ أسئلة، <b>١٧ درجة</b>. الجزء (أ) قصير بدرجة، والجزء (ب) بدرجتين، وليك <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', 'زي نماذج امتحان المدرسة: ٣ أسئلة، <b>١٧ درجة</b>. الجزء (أ) قصير بدرجة، والجزء (ب) بدرجتين، وليكي <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')) :
     T('4 questions, 5 marks each: <b>20 marks</b>. Part (A) is short and gets <b>one try</b>. Part (B) is worth 2 marks. Every time you come back, Reesho writes a new paper!',
-      G('٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', '٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!'))
-    + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || 20}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
+      G('٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', '٤ أسئلة، كل سؤال ٥ درجات: <b>٢٠ درجة</b>. الجزء (أ) قصير وليه <b>محاولة واحدة</b>، والجزء (ب) بدرجتين. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')))
+    + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || (EX.layout === 'school' ? 17 : 20)}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
   SI.voice('boss');
   track('quiz_start', { mode: 'exam', exam: EX.id });
   const res = await playExam(paper);

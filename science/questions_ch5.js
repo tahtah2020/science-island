@@ -158,5 +158,63 @@ window.IDEAS = [
       { type: 'build', style: 'whatif', mode: 'boss', level: 'hard', q: 'What happens to a female luffa flower that nobody pollinates?', parts: ['It turns yellow', 'and the fruit falls off', 'without growing'], extra: ['and the fruit', 'grows bigger'] },
       { type: 'tf', mode: 'boss', level: 'hard', q: 'A female flower can become a fruit without pollination.', answer: 1 },
       { type: 'term', mode: 'boss', level: 'hard', q: 'The yellow powder made at the tip of the stamen in a male luffa flower.', answer: 'Pollen' }
+    ] },
+  /* ---------- November 2026 exam models (directorate models 1-10, sent by the owner 26 Nov 2026) ----------
+     guide: true = asked in the official models; drawn by the November test and kept out of Daily 5. */
+  { id: 'E30', lesson: 1, bonus: true, guide: true, concept: 'Sepals and petals',
+    explain: 'Sepals are the green outer parts below the petals; they protect the flower bud. Petals are the coloured parts that attract pollinating insects. Both male and female luffa flowers have sepals and petals.',
+    variants: [
+      { type: 'term', mode: 'normal', level: 'easy', q: 'Who am I? I am the coloured flower parts that help attract pollinating insects.', answer: 'Petals', choices: ['Sepals', 'Stamen', 'Pistil'], hint: 'Insects see my bright colour from far away.' },
+      { type: 'term', mode: 'normal', level: 'easy', q: 'Who am I? I am the green outer flower parts below the petals that protect the flower bud.', answer: 'Sepals', choices: ['Petals', 'Pistil', 'Stamen'], hint: 'I am green and I am the outermost part of the flower.' },
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'Both male and female luffa flowers have sepals and petals.', answer: 0, hint: 'The two flowers differ only in the centre.' }
+    ] },
+  { id: 'E31', lesson: 1, bonus: true, guide: true, concept: 'The parts of male and female flowers',
+    explain: 'A male luffa flower has sepals, petals and a stamen that makes yellow pollen. A female flower has sepals, petals, a pistil whose tip (stigma) receives pollen, and a swelling at its base.',
+    variants: [
+      { type: 'multi', mode: 'normal', level: 'medium', q: 'Mention three basic parts of a male luffa flower. Choose all correct answers.', options: ['Sepals', 'Petals', 'Stamen', 'Pistil', 'Swelling at the base'], answer: [0, 1, 2], hint: 'The male flower has no swelling and no pistil.' },
+      { type: 'term', mode: 'normal', level: 'easy', q: 'Who am I? I am the part at the centre of a male flower that makes the yellow pollen powder.', answer: 'Stamen', choices: ['Pistil', 'Sepal', 'Petal'], hint: 'I am in the male flower, not the female one.' },
+      { type: 'term', mode: 'normal', level: 'medium', q: 'Who am I? I am the female flower structure whose tip (stigma) receives pollen grains.', answer: 'Pistil', choices: ['Stamen', 'Sepal', 'Petal'], hint: 'I am in the centre of the female flower.' },
+      { type: 'term', mode: 'normal', level: 'medium', q: 'A flower with sepals, petals and a fruit-like swelling at its base.', answer: 'Female flower', choices: ['Male flower', 'Seedling', 'Stamen'], hint: 'Which luffa flower will become a fruit?' },
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'A male luffa flower has a pistil in its centre and a swelling at its base.', answer: 1, hint: 'Which flower has the swelling?' }
+    ] },
+  { id: 'J30', lesson: 2, bonus: true, guide: true, concept: 'Who am I? Microscope parts',
+    explain: 'The tube carries the eyepiece lens. The revolving nosepiece carries the objective lenses and turns to choose one. The reflector, below the stage, directs light towards the specimen.',
+    variants: [
+      { type: 'term', mode: 'normal', level: 'medium', q: 'Who am I? I carry the eyepiece lens and form the cylinder you look through in a microscope.', answer: 'Tube', choices: ['Arm', 'Stage', 'Reflector'], hint: 'I am a long hollow cylinder.' },
+      { type: 'term', mode: 'normal', level: 'medium', q: 'Who am I? I carry the objective lenses and turn to select one.', answer: 'Nosepiece', choices: ['Stage', 'Clips', 'Cover glass'], hint: 'I am called “revolving” because I turn.' },
+      { type: 'term', mode: 'normal', level: 'medium', q: 'The microscope part below the stage that directs light towards the specimen.', answer: 'Reflector', choices: ['Eyepiece lens', 'Clips', 'Arm'], hint: 'I reflect light like a small mirror.' }
+    ] },
+  { id: 'J31', lesson: 2, bonus: true, guide: true, concept: 'Jobs of the stage, clips and knob',
+    explain: 'We put the prepared slide on the stage; the clips hold it in place; turning the adjustment knob focuses the image. If the slide is not held by the clips it can move, and the object goes out of view.',
+    variants: [
+      { type: 'match', mode: 'normal', level: 'medium', q: 'Mention the function of each microscope part.', left: ['Stage', 'Clips', 'Adjustment knob'], right: ['We put the prepared slide on it', 'Hold the slide in place', 'Focuses the image'], answer: [0, 1, 2], hint: 'Clips hold things, like a hair clip.' },
+      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens if the prepared slide is not secured with clips on the microscope stage?', parts: ['The slide can move', 'and the object goes', 'out of view'], extra: ['becomes bigger', 'and brighter'], hint: 'What is the job of the clips?' }
+    ] },
+  { id: 'J32', lesson: 2, bonus: true, guide: true, concept: 'Magnification',
+    explain: 'Magnification is the number of times larger the image looks than the real object. Different objective lenses have different magnification powers. Total magnification = eyepiece × objective: 10× × 60× = 600×.',
+    variants: [
+      { type: 'term', mode: 'normal', level: 'medium', q: 'The number of times larger the observed image appears compared with the real object.', answer: 'Magnification', choices: ['Pollination', 'Reflection', 'Germination'], hint: 'A microscope does it to tiny things.' },
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'Different objective lenses in a microscope have different magnification powers.', answer: 0, hint: 'Why do we turn the nosepiece to choose a lens?' },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'Calculate: an eyepiece lens is 10× and an objective lens is 60×. What is the total magnification?', options: ['600×', '70×', '50×', '6000×'], answer: 0, hint: 'Multiply: eyepiece × objective.' }
+    ] },
+  { id: 'N30', lesson: 3, bonus: true, guide: true, concept: 'Pollinators',
+    explain: 'Living things such as bees that carry pollen grains between flowers are called pollinators. The main natural pollinators of luffa flowers are insects. Bees are friends of farmers because they pollinate the flowers, so fruits form.',
+    variants: [
+      { type: 'term', mode: 'normal', level: 'medium', q: 'Living organisms such as bees that transfer pollen grains between flowers as they move.', answer: 'Pollinators', choices: ['Fertilizers', 'Seedlings', 'Stamens'], hint: 'They do the job called pollination.' },
+      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'The main natural pollinators of luffa flowers are ...', options: ['insects', 'winds', 'water', 'humans'], answer: 0, hint: 'Think of bees.' },
+      { type: 'build', style: 'why', mode: 'normal', level: 'medium', q: 'Why are bees considered friends of farmers and important for fruit production in luffa?', parts: ['Because they carry pollen', 'from male to female flowers,', 'so fruits form'], extra: ['Because they eat', 'the harmful leaves'], hint: 'What do bees carry from flower to flower?' }
+    ] },
+  { id: 'N31', lesson: 3, bonus: true, guide: true, concept: 'Why the flowers are covered',
+    explain: 'In the pollination experiment the female flower buds are covered with paper bags before they open, so that insects cannot bring pollen to them. Then only the pollen we put on flower A can pollinate it.',
+    variants: [
+      { type: 'build', style: 'why', mode: 'normal', level: 'medium', q: 'Why do scientists cover female luffa flower buds with paper bags before they open in the pollination experiment?', parts: ['So that insects', 'cannot bring pollen', 'to them'], extra: ['So that they get', 'more sunlight'], hint: 'Who could pollinate the flower without us?' },
+      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens if all pollinating insects disappeared from an environment with insect-pollinated plants?', parts: ['Pollination does not happen,', 'so no fruits', 'and no seeds form'], extra: ['the fruits', 'grow bigger'], hint: 'Who carries the pollen in nature?' }
+    ] },
+  { id: 'N32', lesson: 3, bonus: true, guide: true, concept: 'From pollination to a new plant',
+    explain: 'After pollination the swollen base of the female flower (the base of the pistil) grows into a fruit, and seeds form inside it. When a seed is planted it germinates and a new plant grows. The male flower does not become a fruit.',
+    variants: [
+      { type: 'order', mode: 'normal', level: 'medium', q: 'Mention the correct sequence of fruit and seed formation, from pollination until a new plant grows.', items: ['Seeds form inside the fruit', 'Pollination', 'A seed germinates into a new plant', 'The swollen base grows into a fruit'], answer: [1, 3, 0, 2], hint: 'It starts with pollen on the pistil and ends with a new plant.' },
+      { type: 'term', mode: 'normal', level: 'easy', q: 'The structure that develops from the swollen base of a pollinated flower and contains seeds.', answer: 'Fruit', choices: ['Seed', 'Petal', 'Pollen'], hint: 'The luffa we eat.' },
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'The male luffa flower develops directly into a fruit after pollination.', answer: 1, hint: 'Which flower has the swelling?' }
     ] }
 ];

@@ -766,8 +766,10 @@ window.EXAMS = [
   { id: 'p2oct', off: true, grade: 'p2', minParts: 1, title: 'October Monthly Test', titleAr: 'امتحان شهر أكتوبر', icon: '📝',
     parts: [{ ch: 'p2u1', lessons: [1, 2, 3] }] },
   /* November tests (owner, 23 Nov 2026; school scope 29 Nov - 3 Dec 2026, Grade 5). Old tests are kept with off: true (hidden). Arabic and ICT are not on the site. */
-  { id: 'nov', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
-    parts: [{ ch: 'ch4' }, { ch: 'ch5' }, { ch: 'ch6' }] },
+  /* nov: shaped like the directorate's November 2026 model papers (owner, 26 Nov 2026): layout 'school' (quiz.html SCHOOL_LAYOUT, 3 questions, 17 marks);
+     the models also ask once about the bean cotyledons (chapter 3, lesson 1): at most one item, in about half the papers */
+  { id: 'nov', grade: 'g5', minParts: 1, layout: 'school', title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'ch4' }, { ch: 'ch5' }, { ch: 'ch6' }, { ch: 'ch3', lessons: [1], max: 1, chance: 0.5 }] },
   { id: 'mg5nov', subject: 'math', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
     parts: [{ ch: 'm5c2' }, { ch: 'm5c3' }, { ch: 'm5c4' }, { ch: 'm5c5', lessons: [1, 2, 3, 4, 5, 6] }] },
   { id: 'sg5nov', subject: 'studies', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',

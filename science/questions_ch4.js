@@ -100,5 +100,40 @@ window.IDEAS = [
       { type: 'fill', mode: 'normal', level: 'medium', q: 'The Nile floods brought fine, nutrient-packed soil called ___.', options: ['silt', 'starch', 'pollen'], answer: 0 },
       { type: 'mc', mode: 'normal', level: 'medium', q: 'Why could plants grow well on the Nile farmland without artificial fertilizer?', options: ['The silt from the floods was full of nutrients', 'It never rained', 'The plants made fertilizer from stones', 'The soil was always dry'], answer: 0 },
       { type: 'tf', mode: 'normal', level: 'hard', q: 'Soft, loose soil makes it easy for plant roots to stretch out and grow.', answer: 0 }
+    ] },
+  /* ---------- November 2026 exam models (directorate models 1-10, sent by the owner 26 Nov 2026) ----------
+     guide: true = asked in the official models; drawn by the November test and kept out of Daily 5. */
+  { id: 'L30', lesson: 1, bonus: true, guide: true, concept: 'Sunlight helps the plant make its food',
+    explain: 'Sunlight is the main factor that helps a green plant make its own food. With suitable sunlight the leaves become dark green and the stems thick and strong. A young plant that has just grown from a germinating seed is called a seedling.',
+    variants: [
+      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'The main factor that helps a green plant make its own food is ...', options: ['sunlight', 'water only', 'sandy soil', 'rocks'], answer: 0, hint: 'Plants make their food using light.' },
+      { type: 'build', style: 'why', mode: 'normal', level: 'medium', q: 'Why do leaves become dark green when they get suitable sunlight?', parts: ['Because the plant', 'makes its own food', 'using sunlight'], extra: ['drinks more water', 'at night'], hint: 'What does the plant make when it gets sunlight?' },
+      { type: 'term', mode: 'normal', level: 'easy', q: 'A young plant that has recently grown from a germinating seed.', answer: 'Seedling', choices: ['Cotyledon', 'Pollen', 'Fertilizer'], hint: 'The book calls the young plants in the two pots by this name.' }
+    ] },
+  { id: 'L31', lesson: 1, bonus: true, guide: true, concept: 'A fair test',
+    explain: 'In an experiment we keep all the conditions the same except the one we test. This is a fair test. In the sunlight experiment both pots get the same amount of water, so sunlight is the only condition that changes.',
+    variants: [
+      { type: 'build', style: 'why', mode: 'normal', level: 'medium', q: 'Why must both plants get equal amounts of water in the sunlight experiment?', parts: ['So that sunlight is', 'the only condition', 'that changes'], extra: ['So that the plants', 'grow faster'], hint: 'Which condition do we want to test?' },
+      { type: 'term', mode: 'normal', level: 'medium', q: 'A scientific rule: keep all the conditions of an experiment the same, except one condition that you change.', answer: 'Fair test', choices: ['Pollination', 'Magnification', 'Germination'], hint: 'It is a test that is fair to both pots.' },
+      { type: 'mc', mode: 'normal', level: 'easy', q: 'What condition is changed between the two pots when testing the effect of sunlight on plant growth?', options: ['Sunlight', 'The amount of water', 'The temperature', 'The kind of seed'], answer: 0, hint: 'Look at the name of the experiment.' }
+    ] },
+  { id: 'F30', lesson: 2, bonus: true, guide: true, concept: 'Fertilizer cannot replace sunlight',
+    explain: 'Fertilizer gives the plant nutrients, but it cannot replace sunlight. A plant kept in complete darkness gets yellowish leaves and a thin, long stem, even with water and fertilizer.',
+    variants: [
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'Fertilizer can completely replace sunlight for a green plant.', answer: 1, hint: 'Fertilizer gives nutrients. Does it give light?' },
+      { type: 'tf', mode: 'timed', seconds: 12, level: 'easy', q: 'Water alone keeps a green plant healthy forever in complete darkness.', answer: 1, hint: 'Think of the pot under the dark box.' },
+      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens if a plant is given suitable fertilizer, but is kept in complete darkness?', parts: ['Its leaves become yellowish', 'and its stem grows', 'thin and long'], extra: ['dark green', 'thick and strong'], hint: 'Which condition is missing: fertilizer or light?' }
+    ] },
+  { id: 'F41', lesson: 2, bonus: true, guide: true, concept: 'Who am I? Fertilizer',
+    explain: 'Fertilizer gives the plant useful mineral nutrients that help it grow stronger and larger. In the experiments we measure the height of the plants with a ruler or a measuring tape.',
+    variants: [
+      { type: 'term', mode: 'timed', seconds: 15, level: 'easy', q: 'Who am I? I give the plant useful mineral nutrients that help it become stronger and larger.', answer: 'Fertilizer', choices: ['Sunlight', 'Pollen', 'Starch'], hint: 'In the experiment it is mixed with the water of pot B.' },
+      { type: 'mc', mode: 'normal', level: 'easy', q: 'Who am I? I am a ruler or measuring tape used in plant experiments. What do I measure?', options: ['The height of the plant', 'The temperature of the room', 'The amount of sunlight', 'The colour of the leaves'], answer: 0, hint: 'A ruler measures how long or tall something is.' }
+    ] },
+  { id: 'F42', lesson: 2, bonus: true, guide: true, concept: 'Too much fertilizer',
+    explain: 'We add a fixed, suitable amount of fertilizer. A very large amount added at once harms the plant: it can damage the roots, and the plant may wilt.',
+    variants: [
+      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens if a very large amount of fertilizer is added to the plant soil at once?', parts: ['It harms the roots', 'and the plant', 'may wilt'], extra: ['grows faster', 'and bigger'], hint: 'In the experiment we used a fixed amount. Is more always better?' },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'Why do we give the plant a fixed, suitable amount of fertilizer?', options: ['Because too much fertilizer can harm the plant', 'Because fertilizer replaces water', 'Because more fertilizer always makes the plant bigger'], answer: 0, hint: 'Think about what too much of anything does.' }
     ] }
 ];

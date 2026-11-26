@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-26', title: 'November test like the school models · Grade 5 Science',
+    items: [
+      { text: 'The November Science test now follows the directorate\'s model papers: 3 questions, 17 marks (Complete, Who am I, Give reasons, Mention · Choose, scientific terms · True/False, Explain or Calculate, What happens if)' },
+      { text: '30 new ideas from the 8 November models in chapters 4, 5, 6 (and the bean cotyledons in chapter 3), English and Arabic, every phrasing with a hint', links: [{ label: 'November test', href: 'quiz.html#exam=nov', ch: 'ch5' }] }
+    ] },
   { date: '2026-11-25', title: 'Grade 6 Science: Food Chains in Egypt in Arabic',
     items: [
       { text: 'Arabic track: Food Chains in Egypt unit (Nile and desert chains + enrichment corner, 58 questions with hints) from the Arabic book, same pictures and game' }

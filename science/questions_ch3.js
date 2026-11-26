@@ -245,5 +245,13 @@ window.IDEAS = [
     variants: [
       { type: 'mc', style: 'story', mode: 'normal', level: 'hard', q: 'Imagine seeds in space with water and a suitable temperature, but no air at all. Can they germinate?', options: ['No, because air is one of the three necessary conditions', 'Yes, because they have water', 'Yes, because space is dark', 'Yes, but only slowly'], answer: 0 },
       { type: 'tf', mode: 'normal', level: 'medium', q: 'Seeds with water and a suitable temperature can germinate even if there is no air.', answer: 1 }
+    ] },
+  /* ---------- November 2026 exam models (directorate models 7 and 10, sent by the owner 26 Nov 2026) ----------
+     guide: true = asked in the official models; the November test draws at most one question from lesson 1. */
+  { id: 'I30', lesson: 1, bonus: true, guide: true, concept: 'The food stored in the cotyledons',
+    explain: 'The cotyledons store starch, the food the bean seed uses before green leaves appear. If the cotyledons are removed before planting, the embryo has no stored food, so it cannot germinate and grow well.',
+    variants: [
+      { type: 'term', mode: 'normal', level: 'easy', q: 'Who am I? I am the main nutrient food stored in bean cotyledons before green leaves appear.', answer: 'Starch', choices: ['Fertilizer', 'Pollen', 'Iodine'], hint: 'Iodine turns me blue-black.' },
+      { type: 'build', style: 'whatif', mode: 'normal', level: 'hard', q: 'What happens if the cotyledons are carefully removed before a bean seed is planted?', parts: ['The embryo has', 'no stored food,', 'so it cannot grow well'], extra: ['grows faster', 'and bigger'], hint: 'What do the cotyledons store?' }
     ] }
 ];
