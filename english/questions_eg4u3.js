@@ -270,6 +270,45 @@ window.IDEAS = [
       { type: 'table', mode: 'boss', level: 'hard', q: 'Sort the words. (Review 1)', poc: 'Word', cols: ['Animals', 'Helping in the community', 'Sense verbs'], items: ['monkey', 'giraffe', 'volunteer', 'plant', 'hear', 'taste'], answer: [0, 0, 1, 1, 2, 2], hint: 'Sense verbs are about eyes, ears, nose, tongue and hands.' },
       { type: 'mc', mode: 'boss', level: 'medium', q: 'The ___ is black and white. (Review 1)', options: ['zebra', 'monkey', 'bear', 'lion'], answer: 0, hint: 'It has a striped coat.' },
       { type: 'mc', mode: 'boss', level: 'medium', q: 'I ___ animals in the zoo. (Review 1)', options: ['feed', 'sell', 'sleep', 'pay'], answer: 0, hint: 'We give them food.' }
+    ] },
+  /* ---------- November school-paper practice (26 Nov 2026): items shaped like the English directorate's November 2026/2027 papers
+     (the owner's photos). Outside guide: bonus + guide, so they do not count for the unit's stars; `sec` places them in the sections of the
+     November test (choose, form, box, order, punct). ---------- */
+  {"id": "K7", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: choose (animals)", "explain": "Each animal has its own body and actions: the giraffe has a long neck, the bear has thick fur, the monkey climbs trees.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The ___ has a long neck and eats leaves from tall trees.", "options": ["giraffe", "bear", "lion", "zebra"], "answer": 0, "hint": "Think of the animal with the longest neck."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The bear has thick ___ and sharp claws.", "options": ["fur", "wings", "leaves", "water"], "answer": 0, "hint": "It keeps the bear warm."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The monkey can ___ trees very fast.", "options": ["climb", "fly", "swim", "dig"], "answer": 0, "hint": "It goes up the tree."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The zebra is black and white. It is ___.", "options": ["striped", "heavy", "tall", "noisy"], "answer": 0, "hint": "It has lines on its body."}
+    ] },
+  {"id": "L8", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: choose (taking care of animals)", "explain": "Owners give pets daily care; a vet helps sick animals.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Pets need daily care from their ___.", "options": ["owners", "tourists", "engineers", "pilots"], "answer": 0, "hint": "The people the pets live with."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "A ___ helps sick animals.", "options": ["vet", "carpenter", "tour guide", "pilot"], "answer": 0, "hint": "An animal doctor."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Dogs need some ___ every day, so take them for a walk.", "options": ["exercise", "leaves", "glue", "gifts"], "answer": 0, "hint": "Walking and running."}
+    ] },
+  {"id": "L9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (comparatives)", "explain": "Short adjectives add -er + than to compare two things: tall → taller. Double the last letter in big → bigger; y → ier: heavy → heavier.",
+    "variants": [
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "A giraffe is ___ (tall) than a horse.", "options": ["taller", "tallest", "tall"], "answer": 0, "hint": "Compare two animals: add -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "A lion is ___ (big) than a cat.", "options": ["bigger", "biger", "biggest"], "answer": 0, "hint": "big: double the last letter, then -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Trains are faster ___ (that) bikes.", "options": ["than", "that", "then"], "answer": 0, "hint": "We compare with this word."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "An elephant is ___ (heavy) than a monkey.", "options": ["heavier", "heavyer", "heaviest"], "answer": 0, "hint": "y changes to i, then -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "My bag is ___ (small) than your bag.", "options": ["smaller", "smallest", "small"], "answer": 0, "hint": "Two bags: add -er."}
+    ] },
+  {"id": "L10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "owners, vets and exercise: how we take care of animals.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nAnimals need our help. Pet (1) give their pets food and water every day. A (2) helps sick animals. Dogs need (3) , so take them for a walk. Birds need clean (4) .", "left": ["(1)", "(2)", "(3)", "(4)"], "right": ["owners", "vet", "exercise", "cages", "claws"], "answer": [0, 1, 2, 3], "hint": "Who lives with a pet? Who is the animal doctor? Where do birds live?"}
+    ] },
+  {"id": "M9", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nthe old lion couldn’t hunt anymore", "options": ["The old lion couldn’t hunt anymore.", "the old lion couldn’t hunt anymore.", "The old lion couldn’t hunt anymore?", "The Old Lion couldn’t hunt anymore."], "answer": 0, "hint": "Look at the first word and the end."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\nwhy did the fox stay outside the cave", "options": ["Why did the fox stay outside the cave?", "Why did the fox stay outside the cave.", "why did the fox stay outside the cave?", "Why Did the fox stay outside the cave?"], "answer": 0, "hint": "It asks something."}
+    ] },
+  {"id": "N5", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: choose (endangered species)", "explain": "Endangered animals are animals with very few left. A species is a group of animals or plants of the same kind.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "There are only a few Arabian Leopards left. They are ___.", "options": ["endangered", "striped", "noisy", "tidy"], "answer": 0, "hint": "They may disappear."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "A ___ is a group of animals or plants of the same kind.", "options": ["species", "spice", "snack", "star"], "answer": 0, "hint": "Endangered …"}
     ] }
+
 ];
 })();

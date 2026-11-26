@@ -254,6 +254,52 @@ window.IDEAS = [
       { type: 'order', mode: 'boss', level: 'hard', q: 'Put the parts of the Siwa leaflet in order, from top to bottom.', items: ['call to action', 'image', 'main heading', 'detailed description', 'sub-heading'], answer: [2, 4, 1, 3, 0], hint: 'The big title is first; “Book now” is last.' },
       { type: 'match', mode: 'boss', level: 'hard', q: 'Match the part to its meaning.', left: ['main heading', 'sub-heading', 'image', 'call to action'], right: ['the big title at the top', 'the smaller title', 'a photo or drawing', 'an invitation'], answer: [0, 1, 2, 3], hint: 'main = big, sub = small.' },
       { type: 'multi', mode: 'boss', level: 'hard', q: 'Which questions help you make a leaflet about a place in Egypt? Choose all the correct answers.', options: ['What can you see in this place?', 'What should you wear in this place?', 'How can people go to this place?', 'What is your favorite color?'], answer: [0, 1, 2], hint: 'One question is not about the place.' }
+    ] },
+  /* ---------- November school-paper practice (26 Nov 2026): items shaped like the English directorate's November 2026/2027 papers
+     (the owner's photos). Outside guide: bonus + guide, so they do not count for the unit's stars; `sec` places them in the sections of the
+     November test (choose, form, box, order, punct). ---------- */
+  {"id": "P6", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: choose (places in Egypt)", "explain": "Cairo Tower is tall; the Egyptian Museum is full of history; Khan Al-Khalili Bazaar sells gifts; Siwa Oasis has water and palm trees; boats sail on the Nile.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The ___ is very tall. We can see all of Cairo from the top.", "options": ["Cairo Tower", "Siwa Oasis", "Nile River", "Bazaar"], "answer": 0, "hint": "It is tall."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "People buy gifts from Khan Al-Khalili ___.", "options": ["Bazaar", "Tower", "Oasis", "River"], "answer": 0, "hint": "A market with many small shops."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The Siwa ___ has palm trees and water in the desert.", "options": ["Oasis", "Tower", "Museum", "Bazaar"], "answer": 0, "hint": "A green place in the desert."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We can see old treasures in the Egyptian ___.", "options": ["Museum", "Oasis", "River", "Tower"], "answer": 0, "hint": "A place full of history."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Tourists can ride camels near the ___.", "options": ["Pyramids", "Nile River", "Museum", "Tower"], "answer": 0, "hint": "In the desert of Giza."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Boats sail on the ___.", "options": ["Nile River", "Pyramids", "Oasis", "Tower"], "answer": 0, "hint": "Boats need water."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "I want to ___ the Egyptian Museum next week.", "options": ["visit", "ride", "build", "wash"], "answer": 0, "hint": "Go to see a place."}
+    ] },
+  {"id": "P7", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "The places of Cairo: the Egyptian Museum, Cairo Tower, Khan Al-Khalili Bazaar and the Nile River.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nLast summer, we visited Cairo. First, we went to the Egyptian (1) . It is full of old treasures. Then, we went up Cairo (2) to see the city. After that, we bought gifts at Khan Al-Khalili (3) . Finally, we took a boat on the Nile (4) .", "left": ["(1)", "(2)", "(3)", "(4)"], "right": ["Museum", "Tower", "Bazaar", "River", "Oasis"], "answer": [0, 1, 2, 3], "hint": "Treasures, a tall building, gifts, a boat."}
+    ] },
+  {"id": "Q8", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (prepositions of place)", "explain": "in, on, under, next to, between: between = in the middle of two things.",
+    "variants": [
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The park is ___ (next) the school and the hospital.", "options": ["between", "next to", "under"], "answer": 0, "hint": "It is in the middle of two places."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The chair is ___ (next) the two beds.", "options": ["between", "next to", "on"], "answer": 0, "hint": "In the middle of two beds."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "My shoes are ___ (in) the bed. They are near it, on the floor.", "options": ["next to", "in", "between"], "answer": 0, "hint": "Near something."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The cat is sleeping ___ (on) the table. We can’t see it from the top.", "options": ["under", "on", "between"], "answer": 0, "hint": "Below the table."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The book is ___ (under) the desk. You can see it on top.", "options": ["on", "under", "between"], "answer": 0, "hint": "On top of the desk."}
+    ] },
+  {"id": "Q9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "Places in our city.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nThere are different places in my town. Young children go to (1) every morning to learn. They can (2) books from the library. When people feel (3) , they go to the hospital. People enjoy the (4) , where many shops sell different things.", "left": ["(1)", "(2)", "(3)", "(4)"], "right": ["school", "borrow", "sick", "shopping mall", "oasis"], "answer": [0, 1, 2, 3], "hint": "Where do children learn? What do sick people do?"}
+    ] },
+  {"id": "S5", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: choose (a blog)", "explain": "A blog post is a short text you write online about your trip or your ideas.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "I wrote a ___ about my trip to South Sinai.", "options": ["blog post", "prize", "rock", "dessert"], "answer": 0, "hint": "We write it online."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Many tourists come to Egypt for ___.", "options": ["adventure", "dessert", "night time", "sunset"], "answer": 0, "hint": "Exciting trips."}
+    ] },
+  {"id": "S6", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: punctuate (places and names)", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\nst. catherine mountain is in south sinai", "options": ["St. Catherine Mountain is in South Sinai.", "St. catherine Mountain is in South Sinai.", "st. Catherine Mountain is in south Sinai.", "St. Catherine Mountain is in South Sinai?"], "answer": 0, "hint": "Names of places start with capital letters."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nwe went to siwa oasis", "options": ["We went to Siwa Oasis.", "we went to Siwa Oasis.", "We went to siwa oasis.", "We went to Siwa Oasis?"], "answer": 0, "hint": "Siwa Oasis is the name of a place."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\nwhy do tourists go to khan al-khalili", "options": ["Why do tourists go to Khan Al-Khalili?", "Why do tourists go to Khan Al-Khalili.", "why do tourists go to khan al-khalili?", "Why do tourists go to khan Al-Khalili?"], "answer": 0, "hint": "A question, and the name of a place."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\ni like to visit the pyramids", "options": ["I like to visit the Pyramids.", "i like to visit the Pyramids.", "I like to visit the pyramids?", "I Like to visit the Pyramids."], "answer": 0, "hint": "I is always a capital letter."}
+    ] },
+  {"id": "T5", "lesson": 5, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "The Siwa leaflet: palm trees, lakes, camels and light clothes in the hot day.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nSiwa (1) is in the Western Desert. You can see palm (2) around the lakes. People wear light (3) during the hot day. Tourists can (4) camels.", "left": ["(1)", "(2)", "(3)", "(4)"], "right": ["Oasis", "trees", "clothes", "ride", "build"], "answer": [0, 1, 2, 3], "hint": "A green place in the desert; what we wear; what we do on a camel."}
     ] }
+
 ];
 })();

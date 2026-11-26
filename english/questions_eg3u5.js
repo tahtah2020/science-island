@@ -223,6 +223,62 @@ window.IDEAS = [
       { type: 'order', mode: 'boss', level: 'hard', q: 'Put the sentences in the correct order (p 97 ex 3).', items: ['They donate clothes and toys to children.', 'Hady and Salma want to help their neighborhood.', 'They are proud to help.', 'First, they clean the street.', 'They plant trees near the school.'], answer: [1, 3, 4, 0, 2], hint: 'First they want to help, then: clean → plant → donate.' },
       { type: 'build', style: 'sentence', mode: 'boss', level: 'hard', q: 'Put the words in order.', parts: ['Teamwork', 'makes', 'the community', 'better.'], extra: ['make'], hint: 'Teamwork is one thing: makes.' },
       { type: 'fill', mode: 'boss', level: 'hard', q: 'Hady and Salma smile. They are ___ to help.', options: ['proud', 'scared', 'bored'], answer: 0, hint: 'They did good things.' }
+    ] },
+  /* ---------- November school-paper practice (26 Nov 2026): items shaped like the English directorate's November 2026/2027 papers
+     (the owner's photos). Outside guide: bonus + guide, so they do not count for the unit's stars; `sec` places them in the sections of the
+     November test (choose, form, box, order, punct). ---------- */
+  {"id": "Q6", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: choose (chores and teamwork)", "explain": "We share the chores at home and work as a team.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "My sister always ___ the chores with me.", "options": ["shares", "wins", "cares"], "answer": 0, "hint": "She does them with me."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We tidy ___ our room every day.", "options": ["up", "on", "in"], "answer": 0, "hint": "tidy … = make it clean."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We work as a ___ to finish fast.", "options": ["team", "goal", "game"], "answer": 0, "hint": "Many people working together."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We ___ the table after dinner.", "options": ["clean", "eat", "draw"], "answer": 0, "hint": "It is a chore."}
+    ] },
+  {"id": "Q7", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
+    "variants": [
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["We", "clean", "our", "room", "together."], "hint": "Start with We."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["They", "share", "their", "toys."], "hint": "Start with They."}
+    ] },
+  {"id": "Q8", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "We share the chores and work as a team.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "easy", "q": "Complete the text with the words from the box.\nOn Friday, my family cleaned the house. My sister (1) the chores with me. We worked as a (2) and finished fast.", "left": ["(1)", "(2)"], "right": ["shared", "team", "goal"], "answer": [0, 1], "hint": "She did the chores with me. Many people working together are a …"}
+    ] },
+  {"id": "R8", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: choose (teamwork at school)", "explain": "We share ideas and solve problems together.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Then, they started to ___ ideas.", "options": ["share", "fall", "wag"], "answer": 0, "hint": "They give their ideas to the group."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Ali can ___ the problem with his friends.", "options": ["solve", "sleep", "cry"], "answer": 0, "hint": "Find the answer to a problem."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We share and we ___ about our friends.", "options": ["care", "cry", "fall"], "answer": 0, "hint": "We share, we …"}
+    ] },
+  {"id": "R9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\nthen we built a bridge", "options": ["Then, we built a bridge.", "then, we built a bridge.", "Then, we built a bridge?"], "answer": 0, "hint": "Look at the first word."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\ndo they play together", "options": ["Do they play together?", "Do they play together.", "do they play together?"], "answer": 0, "hint": "It asks something."}
+    ] },
+  {"id": "S6", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: choose (teamwork in sports)", "explain": "We win together when we play as a team.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Ahmed scored a ___ and felt proud.", "options": ["goal", "mistake", "football"], "answer": 0, "hint": "In football you score this."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "We ___ the match because we played as a team.", "options": ["won", "win", "winning"], "answer": 0, "hint": "It happened in the past."}
+    ] },
+  {"id": "S7", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
+    "variants": [
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["We", "won", "the", "match", "together."], "hint": "Start with We."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["My", "friend", "helped", "me."], "hint": "Start with My."}
+    ] },
+  {"id": "S8", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nwho played football at school", "options": ["Who played football at school?", "Who played football at school.", "who played football at school?"], "answer": 0, "hint": "It is a question."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\ni am kind and funny", "options": ["I am kind and funny.", "i am kind and funny.", "I am kind and funny?"], "answer": 0, "hint": "I is always a capital letter."}
+    ] },
+  {"id": "T7", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: choose (helping the community)", "explain": "donate = give things to people who need them; plant = put a tree or seeds in the ground.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We ___ old clothes to people who need them.", "options": ["donate", "plant", "wag"], "answer": 0, "hint": "We give them away."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Let’s ___ trees in our street.", "options": ["plant", "donate", "score"], "answer": 0, "hint": "Trees grow from the ground."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "My father ___ to Aswan last Friday.", "options": ["went", "go", "going"], "answer": 0, "hint": "Last Friday is in the past."}
+    ] },
+  {"id": "T8", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "donate = give; plant = put in the ground.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nSara and Omar want to help their community. They (1) old books to the library. They (2) trees in the park.", "left": ["(1)", "(2)"], "right": ["donate", "plant", "wag"], "answer": [0, 1], "hint": "What do we do with books we give away? And with trees?"}
     ] }
+
 ];
 })();

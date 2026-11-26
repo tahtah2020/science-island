@@ -775,7 +775,18 @@ window.EXAMS = [
   { id: 'sg5nov', subject: 'studies', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
     parts: [{ ch: 'sg5u2' }] },
   { id: 'eg5nov', subject: 'english', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
-    parts: [{ ch: 'eg5u3', lessons: [4, 5] }, { ch: 'eg5u4' }, { ch: 'eg5u5' }] }
+    parts: [{ ch: 'eg5u3', lessons: [4, 5] }, { ch: 'eg5u4' }, { ch: 'eg5u5' }],
+    /* the school-paper shape of the directorate's November papers (owner's photos, 26 Nov 2026): model A has a text with a box, model B word order */
+    layouts: [[{ sec: 'choose', n: 4 }, { sec: 'box', n: 1 }, { sec: 'form', n: 2 }, { sec: 'punct', n: 1 }],
+              [{ sec: 'choose', n: 4 }, { sec: 'form', n: 2 }, { sec: 'order', n: 2 }, { sec: 'punct', n: 1 }]] },
+  { id: 'eg4nov', subject: 'english', grade: 'g4', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'eg4u3' }, { ch: 'eg4u4' }, { ch: 'eg4u5' }],
+    layouts: [[{ sec: 'choose', n: 4 }, { sec: 'form', n: 3 }, { sec: 'punct', n: 2 }],
+              [{ sec: 'choose', n: 4 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] },
+  { id: 'eg3nov', subject: 'english', grade: 'g3', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'eg3u4' }, { ch: 'eg3u5' }],
+    layouts: [[{ sec: 'choose', n: 5 }, { sec: 'order', n: 3 }, { sec: 'punct', n: 2 }],
+              [{ sec: 'choose', n: 5 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] }
 ];
 
 /* Adventures: story games beside the units (owner, Oct 2026). Each one shows as a big card on chapters.html (for its subject and grade,

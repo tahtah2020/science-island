@@ -288,6 +288,19 @@ window.IDEAS = [
       { type: 'tap', diagram: 'weatherSix', mode: 'boss', level: 'medium', q: 'Tap the picture of too much water covering dry land.', answer: 'flood' },
       { type: 'mc', mode: 'boss', level: 'medium', q: 'To make a collage, you glue photos ___.', options: ['together, and they may overlap', 'in a straight line only', 'on a menu', 'on a flyer'], answer: 0 },
       { type: 'tf', mode: 'boss', level: 'medium', q: 'A collage about weather can show many different weather conditions.', answer: 0 }
+    ] },
+  /* ---------- November school-paper practice (26 Nov 2026): items shaped like the English directorate's November 2026/2027 papers
+     (the owner's photos). Outside guide: bonus + guide, so they do not count for the unit's stars; `sec` places them in the sections of the
+     November test (choose, form, box, order, punct). ---------- */
+  {"id": "N5", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: choose (fiction)", "explain": "A fiction story comes from the writer’s imagination. The plot is what happens: beginning, middle and end.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "The ___ of a story is what happens in it.", "options": ["plot", "title", "page", "picture"], "answer": 0, "hint": "Beginning, middle and end."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Lily’s flowers needed ___ to grow.", "options": ["sunshine", "sand", "fire", "smoke"], "answer": 0, "hint": "Plants need light."}
+    ] },
+  {"id": "N6", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nin august, the weather is very hot", "options": ["In August, the weather is very hot.", "in August, the weather is very hot.", "In august, the weather is very hot.", "In August, the weather is very hot?"], "answer": 0, "hint": "Months start with a capital letter."}
     ] }
+
 ];
 })();

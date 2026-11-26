@@ -279,6 +279,61 @@ window.IDEAS = [
       { type: 'order', mode: 'boss', level: 'hard', q: 'Put the steps in order.', items: ['Add details using markers.', 'Choose a job.', 'Follow the folding instructions.', 'Pick colored paper that matches the uniform.'], answer: [1, 3, 2, 0], hint: 'Choose first; add details last.' },
       { type: 'multi', mode: 'boss', level: 'hard', q: 'What do you check when you give feedback? Choose all the correct answers.', options: ['Good folds', 'Correct uniform colors', 'Nice decoration', 'The price of the paper'], answer: [0, 1, 2], hint: 'Look at p 92 ex 2.' },
       { type: 'mc', fig: 'photo', pic: ph('o5_coat'), mode: 'boss', level: 'hard', q: 'This origami shows the uniform of which job?', options: ['doctor', 'firefighter', 'engineer', 'police officer'], answer: 0, hint: 'A white coat and a stethoscope.' }
+    ] },
+  /* ---------- November school-paper practice (26 Nov 2026): items shaped like the English directorate's November 2026/2027 papers
+     (the owner's photos). Outside guide: bonus + guide, so they do not count for the unit's stars; `sec` places them in the sections of the
+     November test (choose, form, box, order, punct). ---------- */
+  {"id": "U7", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: choose (jobs)", "explain": "Every job has its work and clothes: an engineer designs buildings, a teacher teaches, a police officer wears a blue uniform, a tour guide shows tourists around.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "An ___ designs new buildings.", "options": ["engineer", "nurse", "doctor", "police officer"], "answer": 0, "hint": "Buildings start with a plan."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "A ___ teaches students at school.", "options": ["teacher", "pilot", "farmer", "mechanic"], "answer": 0, "hint": "At school."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "A police officer wears a blue ___ and a cap.", "options": ["uniform", "ruler", "glue", "leaf"], "answer": 0, "hint": "Special work clothes."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "The ___ showed the tourists around the city.", "options": ["tour guide", "mechanic", "pilot", "carpenter"], "answer": 0, "hint": "A person who works with tourists."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Hana is a teacher. She feels ___ when her students get good marks.", "options": ["happy", "cold", "tired", "loud"], "answer": 0, "hint": "A good feeling."}
+    ] },
+  {"id": "U8", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "Jobs and what people do.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nMy mother is a (1) . She helps sick people in the hospital. My father is an (2) . He designs new buildings. My uncle is a (3) . He puts out fires. My aunt is a tour (4) .", "left": ["(1)", "(2)", "(3)", "(4)"], "right": ["nurse", "engineer", "firefighter", "guide", "pilot"], "answer": [0, 1, 2, 3], "hint": "Hospital, buildings, fires, tourists."}
+    ] },
+  {"id": "V8", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: choose (amazing jobs)", "explain": "Amr is a wildlife photographer; Sama tells stories with her puppets; Noha is a mentor.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Amr is a wildlife ___ who loves taking pictures.", "options": ["photographer", "actor", "singer", "mentor"], "answer": 0, "hint": "He takes pictures."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Sama loves ___ stories using her puppets.", "options": ["telling", "shouting", "washing", "sleeping"], "answer": 0, "hint": "She shares stories with children."}
+    ] },
+  {"id": "V9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (superlatives)", "explain": "To compare three or more things, add -est with the: tall → the tallest; big → the biggest; heavy → the heaviest; nice → the nicest.",
+    "variants": [
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "This tree is the ___ (tall) one in the park.", "options": ["tallest", "taller", "tall"], "answer": 0, "hint": "One of many trees: add -est."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "She has the ___ (short) hair in the group.", "options": ["shortest", "shorter", "short"], "answer": 0, "hint": "In a group: add -est."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "My bag is the ___ (heavy) bag in the class.", "options": ["heaviest", "heavyest", "heavier"], "answer": 0, "hint": "y changes to i, then -est."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "This is the ___ (nice) puppet show.", "options": ["nicest", "niceest", "nicer"], "answer": 0, "hint": "nice ends in e: add -st."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "August is the ___ (hot) month of the year.", "options": ["hottest", "hotest", "hotter"], "answer": 0, "hint": "hot: double the last letter, then -est."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The Nile is the ___ (long) river in Egypt.", "options": ["longest", "longer", "long"], "answer": 0, "hint": "Of all the rivers: add -est."}
+    ] },
+  {"id": "V10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\nwhy does sama like her job", "options": ["Why does Sama like her job?", "Why does Sama like her job.", "why does sama like her job?", "Why does sama like her job?"], "answer": 0, "hint": "A question with a name."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nali bought omar a gift", "options": ["Ali bought Omar a gift.", "ali bought Omar a gift.", "Ali bought omar a gift.", "Ali bought Omar a gift?"], "answer": 0, "hint": "Two names."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nwhere do you live", "options": ["Where do you live?", "Where do you live.", "where do you live?", "Where Do you live?"], "answer": 0, "hint": "It asks something."}
+    ] },
+  {"id": "W9", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: choose (The Last House)", "explain": "Sami was a skilled carpenter; the king gave him a gift.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Sami was a skilled ___. He built houses from wood.", "options": ["carpenter", "doctor", "pilot", "farmer"], "answer": 0, "hint": "He works with wood."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Ali is an engineer. He ___ new buildings.", "options": ["builds", "washes", "cleans", "paints"], "answer": 0, "hint": "Engineers make buildings."}
+    ] },
+  {"id": "W10", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nsami was a skilled carpenter", "options": ["Sami was a skilled carpenter.", "sami was a skilled carpenter.", "Sami was a skilled carpenter?", "Sami Was a skilled carpenter."], "answer": 0, "hint": "Sami is a name."}
+    ] },
+  {"id": "X5", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: choose (firefighters)", "explain": "A firefighter puts out fires and saves people.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "A ___ puts out fires and saves people.", "options": ["firefighter", "nurse", "engineer", "police officer"], "answer": 0, "hint": "Fires."}
+    ] },
+  {"id": "Y4", "lesson": 5, "bonus": true, "guide": true, "concept": "November paper: choose (origami tools)", "explain": "Scissors cut paper, glue sticks paper, a ruler measures it.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Use ___ to stick small pieces of paper.", "options": ["glue", "scissors", "water", "a ruler"], "answer": 0, "hint": "It makes paper stay together."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Use a ___ to measure the paper before cutting.", "options": ["ruler", "marker", "jacket", "glue"], "answer": 0, "hint": "It has numbers on it."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Use ___ to cut the paper.", "options": ["scissors", "glue", "water", "tape"], "answer": 0, "hint": "It has two sharp blades."}
     ] }
+
 ];
 })();

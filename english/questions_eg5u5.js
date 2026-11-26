@@ -273,6 +273,51 @@ window.IDEAS = [
       { type: 'mc', mode: 'boss', level: 'medium', q: 'Why should we use mineral resources wisely?', options: ['They take a long time to form', 'They are everywhere', 'They form in a few days', 'They are not useful'], answer: 0 },
       { type: 'mc', mode: 'boss', level: 'medium', q: 'How do people use mineral resources in daily life?', options: ['To make buildings, cars and jewelry', 'To drink', 'To breathe', 'To make clouds'], answer: 0 },
       { type: 'tf', mode: 'boss', level: 'medium', q: 'The “My Gold” poster shows what is valuable in your life, like family and friends.', answer: 0 }
+    ] },
+  /* ---------- November school-paper practice (26 Nov 2026): items shaped like the English directorate's November 2026/2027 papers
+     (the owner's photos). Outside guide: bonus + guide, so they do not count for the unit's stars; `sec` places them in the sections of the
+     November test (choose, form, box, order, punct). ---------- */
+  {"id": "T7", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: choose (natural resources)", "explain": "Egypt’s natural resources: the Nile (water), oil and natural gas (fuel), fertile land and minerals.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Egypt has oil and natural ___ to make fuel.", "options": ["gas", "water", "air", "land"], "answer": 0, "hint": "Oil and natural …"},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The ___ is a water resource in Egypt.", "options": ["Nile River", "desert", "wind", "fossil fuel"], "answer": 0, "hint": "Water."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Farmers ___ food in the fertile land along the Nile.", "options": ["grow", "drink", "use", "help"], "answer": 0, "hint": "Crops come from the land."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "The Nile River gives us water for ___ and drinking.", "options": ["farming", "cooking", "fishing", "working"], "answer": 0, "hint": "Water for the crops."}
+    ] },
+  {"id": "T8", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "Egypt’s resources: water from the Nile, gas and oil under the ground, minerals in the desert.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nEgypt has many natural (1) . The Nile gives us (2) for drinking and farming. Under the ground, there is oil and natural (3) . In the desert, we can find (4) like gold.", "left": ["(1)", "(2)", "(3)", "(4)"], "right": ["resources", "water", "gas", "minerals", "crops"], "answer": [0, 1, 2, 3], "hint": "Gifts of nature; what the Nile gives; fuel; gold is one of them."}
+    ] },
+  {"id": "T9", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nthe nile is an important natural resource", "options": ["The Nile is an important natural resource.", "The nile is an important natural resource.", "the Nile is an important natural resource.", "The Nile is an important natural resource?"], "answer": 0, "hint": "The Nile is the name of a river."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\nwhat can we find under the ground", "options": ["What can we find under the ground?", "What can we find under the ground.", "what can we find under the ground?", "What Can we find under the ground?"], "answer": 0, "hint": "It asks something."}
+    ] },
+  {"id": "U8", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: choose (minerals)", "explain": "Minerals are crystals and metals like gold, copper and iron.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "___ are crystals and metals, like gold or copper.", "options": ["Minerals", "Crops", "Nature", "Water"], "answer": 0, "hint": "Gold is one of them."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "In the desert, there are minerals like gold and ___.", "options": ["copper", "bread", "wood", "water"], "answer": 0, "hint": "A metal."}
+    ] },
+  {"id": "U9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (comparatives)", "explain": "Short adjectives: -er + than (fast → faster, big → bigger, noisy → noisier). Long adjectives: more … than. good → better.",
+    "variants": [
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The airplane is ___ (fast) than the train.", "options": ["faster", "fastest", "more fast"], "answer": 0, "hint": "Two things: add -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "This white ball is ___ (big) than that orange ball.", "options": ["bigger", "biger", "biggest"], "answer": 0, "hint": "big: double the last letter, then -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "Airplanes are ___ (noisy) than ships.", "options": ["noisier", "noisyer", "more noisy"], "answer": 0, "hint": "y changes to i, then -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Zainab is ___ (young) than Marwa.", "options": ["younger", "youngest", "more young"], "answer": 0, "hint": "Two girls: add -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Mountains are higher ___ (the) hills.", "options": ["than", "the", "then"], "answer": 0, "hint": "We compare with this word."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "Gold is ___ (expensive) than iron.", "options": ["more expensive", "expensiver", "most expensive"], "answer": 0, "hint": "A long adjective."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "hard", "q": "This copper pot is ___ (good) than that one.", "options": ["better", "gooder", "best"], "answer": 0, "hint": "good has a special form."}
+    ] },
+  {"id": "U10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
+    "variants": [
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["Gold", "is", "more expensive", "than", "copper."], "hint": "Start with Gold."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["The Nile River", "flooded", "every", "year."], "hint": "Start with The Nile River."}
+    ] },
+  {"id": "V7", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: choose (Just Watch!)", "explain": "The big ship got stuck; the little digger helped it move.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "The big ship got ___ and could not move.", "options": ["stuck", "safe", "found", "climbed"], "answer": 0, "hint": "It could not move."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "I can’t open the door because I am ___ behind it.", "options": ["stuck", "safe", "climbed", "found"], "answer": 0, "hint": "I cannot get out."}
     ] }
+
 ];
 })();

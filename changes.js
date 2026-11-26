@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-26', title: 'English November tests like the school paper',
+    items: [
+      { text: 'Grades 3, 4 and 5 English November tests now follow the directorate\'s paper: choose, correct form, complete from the box, word order, punctuate' },
+      { text: 'New paper-style practice items in Grade 3 units 4-5, Grade 4 units 3-5, Grade 5 units 3-5', links: [{ label: 'Grade 3 test', href: 'quiz.html#exam=eg3nov', ch: 'eg3u4' }] }
+    ] },
   { date: '2026-11-26', title: 'November test like the school models · Grade 5 Science',
     items: [
       { text: 'The November Science test now follows the directorate\'s model papers: 3 questions, 17 marks (Complete, Who am I, Give reasons, Mention · Choose, scientific terms · True/False, Explain or Calculate, What happens if)' },

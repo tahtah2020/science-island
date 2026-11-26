@@ -222,6 +222,71 @@ window.IDEAS = [
       { type: 'order', mode: 'boss', level: 'hard', q: 'Put Omar’s feelings in story order.', items: ['proud', 'nervous', 'happy', 'worried'], answer: [1, 3, 0, 2], hint: 'Before the match → when it started → after the goal → when the team won.' },
       { type: 'match', mode: 'boss', level: 'hard', q: 'Match the verb to its past.', left: ['is', 'feel', 'win', 'score'], right: ['was', 'felt', 'won', 'scored'], answer: [0, 1, 2, 3], hint: 'Only one of them adds -d.' },
       { type: 'build', style: 'sentence', mode: 'boss', level: 'hard', q: 'Put the words in order.', parts: ['He was happy', 'when', 'his team', 'won the game.'], extra: ['win'], hint: 'Start with He was happy.' }
+    ] },
+  /* ---------- November school-paper practice (26 Nov 2026): items shaped like the English directorate's November 2026/2027 papers
+     (the owner's photos). Outside guide: bonus + guide, so they do not count for the unit's stars; `sec` places them in the sections of the
+     November test (choose, form, box, order, punct). ---------- */
+  {"id": "N9", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: choose (feelings and past verbs)", "explain": "We use felt for feelings in the past. The past of go is went, of hear is heard.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "I ___ happy when I saw my friend.", "options": ["felt", "fell", "feel"], "answer": 0, "hint": "It is about a feeling, in the past."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We ___ a cat cry in the garden.", "options": ["heard", "hear", "hearing"], "answer": 0, "hint": "It happened before: the past of hear."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Mona was ___ because she lost her ball.", "options": ["sad", "proud", "excited"], "answer": 0, "hint": "How do you feel when you lose something?"},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "They ___ to the zoo last Friday.", "options": ["went", "go", "going"], "answer": 0, "hint": "Last Friday is in the past."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Adam was ___ because the night was very dark.", "options": ["scared", "proud", "happy"], "answer": 0, "hint": "How do you feel in the dark?"}
+    ] },
+  {"id": "N10", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
+    "variants": [
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["We", "felt", "happy", "and", "proud."], "hint": "Start with We."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["Omar", "fell", "and", "hurt", "his", "leg."], "hint": "Start with Omar. What happened first?"},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["The", "dog", "jumped", "high."], "hint": "Start with The."}
+    ] },
+  {"id": "O8", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: choose (then, but, and; past -ed)", "explain": "then = after that, but = something different happens, and = adds more. Regular verbs add -ed in the past.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Sara fell down, ___ she didn’t cry.", "options": ["but", "and", "then"], "answer": 0, "hint": "The second part is a surprise."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "We played in the park, ___ we went home.", "options": ["then", "but", "when"], "answer": 0, "hint": "What happened after that?"},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We ___ our room yesterday.", "options": ["cleaned", "clean", "cleaning"], "answer": 0, "hint": "Yesterday is in the past: add -ed."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The boy ___ his friend last week.", "options": ["helped", "help", "helping"], "answer": 0, "hint": "Last week is in the past: add -ed."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "I like apples ___ bananas.", "options": ["and", "but", "then"], "answer": 0, "hint": "It adds one more thing."}
+    ] },
+  {"id": "O9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
+    "variants": [
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["Ali", "heard", "a", "dog", "cry."], "hint": "Start with Ali."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["His", "friend", "came", "to", "help."], "hint": "Start with His."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["The", "box", "was", "so", "small."], "hint": "Start with The."}
+    ] },
+  {"id": "O10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: punctuate (capital letters and full stops)", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\ni like to play with my friends", "options": ["I like to play with my friends.", "i like to play with my friends.", "I like to play with my friends?"], "answer": 0, "hint": "I is always a capital letter."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nsara helped the little cat", "options": ["Sara helped the little cat.", "sara helped the little cat.", "Sara helped the little cat?"], "answer": 0, "hint": "Sara is a name."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nwe went to the park", "options": ["We went to the park.", "we went to the park.", "We went to the park?"], "answer": 0, "hint": "Look at the first word."}
+    ] },
+  {"id": "O11", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "heard = the past of hear. We feel happy when we help.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nOne day, Ali and I were in the park. We (1) a little cat cry. It was stuck in a tree. We helped it come down. We were (2) because we saved the cat.", "left": ["(1)", "(2)"], "right": ["heard", "happy", "shy"], "answer": [0, 1], "hint": "What did they do with their ears? How did they feel after helping?"}
+    ] },
+  {"id": "P8", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: choose (a big win)", "explain": "when tells us the time something happens; but shows something different.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Omar scored a ___ and his team won.", "options": ["goal", "mistake", "fence"], "answer": 0, "hint": "In football you score this."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "___ we won the match, we felt proud.", "options": ["When", "But", "Then"], "answer": 0, "hint": "It tells us the time."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "He was tired, ___ he didn’t stop running.", "options": ["but", "when", "after"], "answer": 0, "hint": "He did something you don’t expect."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "We felt ___ after we won the match.", "options": ["proud", "angry", "scared"], "answer": 0, "hint": "How do you feel when you win?"},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "The dog was happy, so it ___ its tail.", "options": ["wagged", "fixed", "crossed"], "answer": 0, "hint": "What does a happy dog do with its tail?"}
+    ] },
+  {"id": "P9", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
+    "variants": [
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["He", "was", "happy", "when", "his", "team", "won."], "hint": "Start with He."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["My", "team", "won", "the", "game."], "hint": "Start with My."}
+    ] },
+  {"id": "P10", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: punctuate (questions)", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\ndid omar score a goal", "options": ["Did Omar score a goal?", "Did Omar score a goal.", "did omar score a goal?"], "answer": 0, "hint": "It asks something. Omar is a name."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nwho won the match", "options": ["Who won the match?", "Who won the match.", "who won the match?"], "answer": 0, "hint": "It is a question."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\nhe was tired because he slept late", "options": ["He was tired because he slept late.", "he was tired because he slept late.", "He was tired because he slept late?"], "answer": 0, "hint": "It tells us something; it does not ask."}
+    ] },
+  {"id": "P11", "lesson": 3, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "scored = got a goal; proud = happy about what you did.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "easy", "q": "Complete the text with the words from the box.\nOmar played in his first football match. He (1) a goal. When his team won, he felt very (2) .", "left": ["(1)", "(2)"], "right": ["scored", "proud", "angry"], "answer": [0, 1], "hint": "What do players do with a goal? How do you feel after a big win?"}
     ] }
+
 ];
 })();

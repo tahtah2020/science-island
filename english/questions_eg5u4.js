@@ -235,6 +235,67 @@ window.IDEAS = [
       { type: 'mc', mode: 'boss', level: 'medium', q: 'Good writers use a lot of description so that readers can…', options: ['see the story in their minds', 'stop reading', 'count the words', 'skip the ending'], answer: 0 },
       { type: 'build', style: 'sentence', mode: 'boss', level: 'hard', q: 'Put the cards in order.', parts: ['The new city', 'helps reduce', 'crowding in Cairo.'], extra: ['barn', 'quiet'] },
       { type: 'tf', mode: 'boss', level: 'medium', q: 'In a first-person narrative, the ending tells how the story finishes.', answer: 0 }
+    ] },
+  /* ---------- November school-paper practice (26 Nov 2026): items shaped like the English directorate's November 2026/2027 papers
+     (the owner's photos). Outside guide: bonus + guide, so they do not count for the unit's stars; `sec` places them in the sections of the
+     November test (choose, form, box, order, punct). ---------- */
+  {"id": "P7", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: choose (places in the community)", "explain": "theme park = rides; bakery = bread and cakes; coffee shop = coffee; club = sports; supermarket = food for the week.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "At the ___, you can go on rides.", "options": ["theme park", "bakery", "supermarket", "restaurant"], "answer": 0, "hint": "Rides and fun."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "You can buy bread and cakes at the ___.", "options": ["bakery", "club", "theme park", "hospital"], "answer": 0, "hint": "Fresh bread."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "People relax and drink coffee at the ___.", "options": ["coffee shop", "bakery", "barn", "supermarket"], "answer": 0, "hint": "Coffee."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The ___ is a fun place to play sports.", "options": ["club", "bakery", "restaurant", "supermarket"], "answer": 0, "hint": "Sports and friends."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "We buy food for the whole week at the ___.", "options": ["supermarket", "theme park", "club", "barn"], "answer": 0, "hint": "A big shop for food."}
+    ] },
+  {"id": "P8", "lesson": 1, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "Places for food and drink.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nHana’s family loves going out. On Saturdays, they buy fresh bread from the (1) . Then they go to the (2) to buy food for the week. In the evening, her father drinks coffee at the (3) .", "left": ["(1)", "(2)", "(3)"], "right": ["bakery", "supermarket", "coffee shop", "theme park"], "answer": [0, 1, 2], "hint": "Bread, food for the week, coffee."}
+    ] },
+  {"id": "Q8", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: choose (village life and time words)", "explain": "barn = a home for cows and sheep; fields = land for crops; cottage = a small house. at + time, on + day, in + month, year or part of the day.",
+    "variants": [
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Farmers keep cows and sheep in the ___.", "options": ["barn", "cottage", "market", "club"], "answer": 0, "hint": "A farm building for animals."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Farmers grow crops in the ___.", "options": ["fields", "barn", "cottage", "club"], "answer": 0, "hint": "Green land."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "Our neighbors are very ___ and always help us.", "options": ["friendly", "unkind", "busy", "noisy"], "answer": 0, "hint": "Nice to other people."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "medium", "q": "People who live and work together in one place are a ___.", "options": ["community", "market", "barn", "field"], "answer": 0, "hint": "We all live in the same …"},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "The party is ___ Friday.", "options": ["on", "at", "in", "with"], "answer": 0, "hint": "Before a day."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "Let’s meet ___ 3 p.m.", "options": ["at", "in", "on", "with"], "answer": 0, "hint": "Before a clock time."},
+      {"sec": "choose", "type": "mc", "mode": "normal", "level": "easy", "q": "I like to relax ___ the evening.", "options": ["in", "on", "at", "with"], "answer": 0, "hint": "Before a part of the day."}
+    ] },
+  {"id": "Q9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (prepositions of time)", "explain": "at + a time (at 7 a.m., at noon), on + a day (on Friday), in + a month, a year or a part of the day (in May, in 2022, in the evening).",
+    "variants": [
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The bakery opens ___ (on) 7 a.m.", "options": ["at", "on", "in"], "answer": 0, "hint": "Before a clock time."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "My birthday is ___ (at) May.", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a month."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "We visit our grandparents ___ (in) Fridays.", "options": ["on", "in", "at"], "answer": 0, "hint": "Before a day."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "I do my homework ___ (at) the evening.", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a part of the day."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "We went to Aswan ___ (at) 2022.", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a year."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The restaurant closes ___ (on) 10 p.m.", "options": ["at", "on", "in"], "answer": 0, "hint": "Before a clock time."}
+    ] },
+  {"id": "Q10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "A village: a cottage, a barn, fields and a market.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nMy uncle lives in a quiet village. He has a small (1) near the river. Every morning, he takes the cows out of the (2) . He grows wheat in the green (3) . On Fridays, he sells vegetables at the (4) .", "left": ["(1)", "(2)", "(3)", "(4)"], "right": ["cottage", "barn", "fields", "market", "club"], "answer": [0, 1, 2, 3], "hint": "A small house, a home for cows, land for crops, a place to sell."}
+    ] },
+  {"id": "Q11", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
+    "variants": [
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["There", "is", "a small", "market", "in", "the square."], "hint": "Start with There."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "easy", "q": "Put the words in the correct order to make a sentence.", "parts": ["Farmers", "grow", "crops", "in", "the fields."], "hint": "Start with Farmers."}
+    ] },
+  {"id": "S5", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
+    "variants": [
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["Egypt", "builds", "new", "cities", "everywhere."], "hint": "Start with Egypt."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["It", "is made", "of", "strong glass", "and", "steel."], "hint": "Start with It."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "medium", "q": "Put the words in the correct order to make a sentence.", "parts": ["The Iconic Tower", "is", "385", "meters", "high."], "hint": "Start with The Iconic Tower."},
+      {"sec": "order", "type": "build", "style": "sentence", "mode": "normal", "level": "hard", "q": "Put the words in the correct order to make a sentence.", "parts": ["The new city", "is designed", "to be", "smart."], "hint": "Start with The new city."}
+    ] },
+  {"id": "S6", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "The Iconic Tower: the tallest building in Africa.",
+    "variants": [
+      {"sec": "box", "type": "match", "mode": "normal", "level": "medium", "q": "Complete the text with the words from the box.\nThe Iconic Tower is the tallest building in Africa. It is 385 meters (1) and has 80 floors. It is made of strong glass and (2) . The tower is very (3) and many visitors come to see it.", "left": ["(1)", "(2)", "(3)"], "right": ["high", "steel", "famous", "paper"], "answer": [0, 1, 2], "hint": "How tall? What is it made of? Many people know it."}
+    ] },
+  {"id": "S7", "lesson": 4, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
+    "variants": [
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nthe city has the tallest building in africa", "options": ["The city has the tallest building in Africa.", "the city has the tallest building in Africa.", "The city has the tallest building in africa.", "The city has the tallest building in Africa?"], "answer": 0, "hint": "Africa is the name of a place."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "medium", "q": "Write it correctly:\ndo you live in a village", "options": ["Do you live in a village?", "Do you live in a village.", "do you live in a village?", "Do You live in a village?"], "answer": 0, "hint": "It asks something."},
+      {"sec": "punct", "type": "mc", "mode": "normal", "level": "easy", "q": "Write it correctly:\nmy birthday is in march", "options": ["My birthday is in March.", "my birthday is in March.", "My birthday is in march.", "My birthday is in March?"], "answer": 0, "hint": "Months start with a capital letter."}
     ] }
+
 ];
 })();

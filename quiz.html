@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261126a{{{"></script>
-<script src="chapters.js?v=20261126a{{{"></script>
-<script src="common.js?v=20261126a{{{"></script>
+<script src="firebase-config.js?v=20261126c{{{"></script>
+<script src="chapters.js?v=20261126c{{{"></script>
+<script src="common.js?v=20261126c{{{"></script>
 <script>
 (() => {
 'use strict';
@@ -629,7 +629,8 @@ function header(q, idx, total, results) {
   /* where the question comes from: the lesson of the book (units only), so the owner and the child know which lesson it covers */
   const SC = (q.ch && SI.chapterById(q.ch)) || CH;
   if (q.lesson && SC && SC.id && SI.isUnits(SC) && (SC.lessons || []).length > 1) { const nm = (AR ? SC.lessonsAr : SC.lessons) || SC.lessons || [], lb = mk('span', 'badge lesson', `${T('Lesson', 'الدرس')} ${q.lesson}${nm[q.lesson - 1] ? ' · ' + nm[q.lesson - 1] : ''}`); b.appendChild(lb); }
-  if (q.exam) b.appendChild(mk('span', 'badge exam', `${T('Q', 'س')}${q.exam.q} (${q.exam.part}) · ${q.exam.marks === 1 ? T('1 mark', 'درجة واحدة') : T(`${q.exam.marks} marks`, 'درجتان')}`));
+  if (q.exam && q.exam.sec) b.appendChild(mk('span', 'badge exam', `${q.exam.q}. ${q.exam.part} · ${T('1 mark', 'درجة واحدة')}`));
+  else if (q.exam) b.appendChild(mk('span', 'badge exam', `${T('Q', 'س')}${q.exam.q} (${q.exam.part}) · ${q.exam.marks === 1 ? T('1 mark', 'درجة واحدة') : T(`${q.exam.marks} marks`, 'درجتان')}`));
   const p = $('#progress'); p.innerHTML = '';
   for (let i = 0; i < total; i++) p.appendChild(mk('i', results[i] === true ? 'ok' : results[i] === false ? 'no' : i === idx ? 'now' : ''));
   $('#countPill').textContent = `${idx + 1} / ${total}`;
@@ -1564,14 +1565,55 @@ function buildPaper(pool, caps, last, layout) {
   }
   return paper;
 }
+/* A test shaped like the school's printed paper (owner, 26 Nov 2026, from the directorate's November English papers): chapters.js gives the test
+   `layouts` = a list of paper models, each a list of sections { sec, n }. Items are the phrasings tagged `sec` (on the phrasing or its idea):
+   choose (choose the correct answer), form (the correct form of the word between brackets), box (complete the text with the words from the box:
+   a `match` whose left side is (1), (2)…; in the paper every blank becomes its own 1-mark question), order (put the words in order), punct
+   (punctuate). Every item is 1 mark, one try; a section goes easy → hard. */
+const SEC_HEAD = {
+  choose: ['Choose the correct answer', 'اختر الإجابة الصحيحة'], form: ['Read and write the correct form of the word between brackets', 'اكتب الصيغة الصحيحة للكلمة بين القوسين'],
+  box: ['Read and complete the text with the words from the box', 'أكمل القطعة بكلمات من المربع'], order: ['Put the words in the correct order to make a sentence', 'رتّب الكلمات لتكوّن جملة'],
+  punct: ['Punctuate the following', 'ضع علامات الترقيم الصحيحة'] };
+function buildSecPaper(pool, EX, last) {
+  const LV = { easy: 0, medium: 1, hard: 2 }, lv = v => (LV[v.level] == null ? 1 : LV[v.level]) + (v.mode === 'boss' ? .5 : 0);
+  const layouts = EX.layouts.filter(L => L.every(s => pool.some(I => I.variants.some(v => (v.sec || I.sec) === s.sec))));
+  const L = (layouts.length ? layouts : EX.layouts)[Math.floor(Math.random() * (layouts.length || EX.layouts.length))];
+  const usedIdea = {}, perCh = {}, paper = [];
+  L.forEach((s, si) => {
+    const cands = shuffle(pool.flatMap(I => I.variants.map((v, vi) => ({ I, v, vi })).filter(c => (c.v.sec || I.sec) === s.sec)));
+    const got = [];
+    while (got.length < s.n && cands.length) {
+      cands.sort((x, y) => ((usedIdea[x.I.ch + x.I.id] || 0) - (usedIdea[y.I.ch + y.I.id] || 0)) || ((perCh[x.I.ch] || 0) - (perCh[y.I.ch] || 0)) || ((last[x.I.id] === x.vi) - (last[y.I.id] === y.vi)));
+      const c = cands.shift(); got.push(c); usedIdea[c.I.ch + c.I.id] = (usedIdea[c.I.ch + c.I.id] || 0) + 1; perCh[c.I.ch] = (perCh[c.I.ch] || 0) + 1;
+    }
+    got.sort((x, y) => lv(x.v) - lv(y.v));
+    const head = s.title || SEC_HEAD[s.sec] || [s.sec, s.sec], items = [];
+    const base = c => ({ id: c.I.id, ch: c.I.ch, lesson: c.I.lesson, concept: c.I.concept, explain: c.v.explain || c.I.explain, vi: c.vi });
+    got.forEach(c => {
+      if (c.v.type === 'match' && s.sec === 'box') {   // one 1-mark question per blank, with the whole text and the box above it
+        const words = c.v.right, box = '[ ' + words.join(' – ') + ' ]', body = c.v.q.replace(/^Complete the text[^\n]*\n/, '');
+        c.v.left.forEach((lab, k) => {
+          let text = body; c.v.left.forEach((l2, j) => { text = text.split(l2).join(j === k ? '___' : l2 + ' ……'); });
+          items.push(Object.assign(base(c), { type: 'fill', level: c.v.level, q: box + '\n' + text, options: words.slice(), answer: c.v.answer[k], hint: c.v.hint }));
+        });
+      } else items.push(Object.assign(base(c), c.v, c.v.explain ? { explain: c.v.explain } : {}));
+    });
+    items.forEach((q, k) => Object.assign(q, { mode: 'normal', oneTry: true, exam: { q: si + 1, part: T(head[0], head[1]), marks: 1, first: k === 0, sec: s.sec, of: items.length } }));
+    paper.push(items);
+  });
+  return paper;
+}
 async function playExam(paper) {
   const flat = paper.flat(), dots = [], perQ = paper.map(() => 0), perCh = {}, wrong = [];
   const qMarks = paper.map(qs => qs.reduce((n, q) => n + q.exam.marks, 0));
   let marks = 0;
   for (let i = 0; i < flat.length; i++) {
     const q = flat[i], full = q.exam.marks;
-    if (q.exam.part === 'A') { sfx.tick(); const qm = qMarks[q.exam.q - 1]; await banner(T(`Question ${q.exam.q}`, `السؤال ${q.exam.q}`), T(`${qm} marks`, `${qm} درجات`)); }
-    if (q.exam.label) say(`${T(`Question ${q.exam.q} (${q.exam.part}) `, `السؤال ${q.exam.q} (${q.exam.part === 'A' ? 'أ' : 'ب'}) `)}<b>${T(q.exam.label[0], q.exam.label[1])}</b>`, i === 0 ? 'point' : 'think'); else
+    if (q.exam.sec) {
+      if (q.exam.first) { sfx.tick(); await banner(`${q.exam.q}. ${q.exam.part}`, T(`${q.exam.of} marks`, `${q.exam.of} درجات`)); }
+    } else if (q.exam.part === 'A') { sfx.tick(); const qm = qMarks[q.exam.q - 1]; await banner(T(`Question ${q.exam.q}`, `السؤال ${q.exam.q}`), T(`${qm} marks`, `${qm} درجات`)); }
+    if (q.exam.sec) say(i === 0 ? T('Read every question carefully. Good luck!', G('اقرأ كل سؤال كويس. بالتوفيق!', 'اقري كل سؤال كويس. بالتوفيق!')) : `${q.exam.q}. ${esc(q.exam.part)}`, i === 0 ? 'point' : 'think');
+    else if (q.exam.label) say(`${T(`Question ${q.exam.q} (${q.exam.part}) `, `السؤال ${q.exam.q} (${q.exam.part === 'A' ? 'أ' : 'ب'}) `)}<b>${T(q.exam.label[0], q.exam.label[1])}</b>`, i === 0 ? 'point' : 'think'); else
     say(i === 0 ? T('Read every question carefully. Good luck!', G('اقرأ كل سؤال كويس. بالتوفيق!', 'اقري كل سؤال كويس. بالتوفيق!'))
       : q.exam.part === 'A' ? T(`Question ${q.exam.q}, part (A): one mark.`, `السؤال ${q.exam.q}، الجزء (أ): درجة واحدة.`)
       : T('Part (B): two marks. Take your time.', G('الجزء (ب): درجتان. خد وقتك.', 'الجزء (ب): درجتان. خدي وقتك.')), i === 0 ? 'point' : 'think');
@@ -1657,10 +1699,14 @@ async function examMain() {
   }
   window.IDEAS = pool;
   const last = ((SI.prof().exams || {})[EX.id] || {}).lastVar || {};
-  const paper = buildPaper(pool, caps, last, EX.layout), total = paper.flat().reduce((n, q) => n + q.exam.marks, 0);
-  if (total < (EX.layout === 'school' ? 17 : 20)) throw new Error('Not enough questions for a full paper.');
+  const paper = EX.layouts ? buildSecPaper(pool, EX, last) : buildPaper(pool, caps, last, EX.layout), total = paper.flat().reduce((n, q) => n + q.exam.marks, 0);
+  if (total < (EX.layouts ? 5 : EX.layout === 'school' ? 17 : 20)) throw new Error('Not enough questions for a full paper.');
   const prev = (SI.prof().exams || {})[EX.id];
-  await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
+  if (EX.layouts) await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
+    T(`Just like the school paper: <b>${paper.length} questions</b>, <b>${total} marks</b>. Every item is 1 mark with <b>one try</b>. Every time you come back, Reesho writes a new paper!`,
+      G(`زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!`, `زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!`))
+    + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || total}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
+  else await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
     (EX.layout === 'school' ? T('Like the school’s model papers: 3 questions, <b>17 marks</b>. Part (A) is short (1 mark) and part (B) is worth 2 marks. You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
       G('زي نماذج امتحان المدرسة: ٣ أسئلة، <b>١٧ درجة</b>. الجزء (أ) قصير بدرجة، والجزء (ب) بدرجتين، وليك <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', 'زي نماذج امتحان المدرسة: ٣ أسئلة، <b>١٧ درجة</b>. الجزء (أ) قصير بدرجة، والجزء (ب) بدرجتين، وليكي <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')) :
     T('4 questions, 5 marks each: <b>20 marks</b>. Part (A) is short and gets <b>one try</b>. Part (B) is worth 2 marks. Every time you come back, Reesho writes a new paper!',
@@ -1770,7 +1816,7 @@ else if (SI.requirePlayer() && ((/^#preview/.test(location.hash) && SI.isOwner()
     notice(T('Not ready yet', 'لسه مش جاهز'), T('The questions could not be loaded. Check your connection and try again.', 'مقدرناش نحمّل الأسئلة. اتأكد من النت وجرّب تاني.'), `<a class="btn primary" href="chapters.html">${SI.chWords()}</a><button class="btn" type="button" onclick="location.reload()">${T('Try again', 'جرّب تاني')}</button>`);
   });
 }
-window.__quiz = { addScore: n => addScore(n), get banked() { return banked; }, ask: q => ask(q), termOpts, DIAGRAMS, variantOf, mysteryBox, notice, buildPaper, answerText, examResults, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
+window.__quiz = { addScore: n => addScore(n), get banked() { return banked; }, ask: q => ask(q), termOpts, DIAGRAMS, variantOf, mysteryBox, notice, buildPaper, buildSecPaper, answerText, examResults, results: (kind, res, total, extra, sc) => { if (sc != null) score = sc; return results(kind, res, total, extra); } };
 })();
 </script>
 </body>
