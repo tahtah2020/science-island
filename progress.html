@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261126x{{{">
+<link rel="stylesheet" href="common.css?v=20261126y{{{">
 <style>
 /* Owner's progress board: the whole plan (every subject, Grade 1 to Prep 3, first term) in one table.
    Each cell = one subject in one grade: units published out of the term's units, for the Languages track and the Arabic track.
@@ -54,6 +54,12 @@ dialog::backdrop{background:rgba(31,61,87,.45)}
 .u.no{background:var(--nobg);color:#8aa0b0;border:2px dashed var(--no);cursor:default}
 .hint{margin:0;font-weight:700;color:var(--ink);font-size:13.5px}
 @media (max-width:520px){ .big .v{font-size:24px} }
+.nv{display:flex;flex-direction:column;gap:4px;min-height:62px;padding:7px 8px;border-radius:12px;border:2px solid var(--line);background:#fff;font-weight:800;font-size:12.5px;color:var(--ink);text-align:start;width:100%;box-sizing:border-box}
+button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;width:100%;min-height:62px;padding:7px 8px;border-radius:12px;border:2px solid var(--line);background:#fff;cursor:pointer;font-weight:800;font-size:12.5px;color:var(--ink)}
+.nv.ok{background:var(--okbg);border-color:#bfe3cf}.nv.miss{background:#fde3dc;border-color:#f3b4a3}.nv.none{background:var(--nobg);border-style:dashed;color:#8aa0b0;align-items:center;justify-content:center}
+.nv .tl{display:flex;justify-content:space-between;gap:6px}.nv .tl b{font-weight:900}
+.nv .tl b.y{color:var(--ok)}.nv .tl b.w{color:#a86b00}.nv .tl b.n{color:#c0392b}
+.nv small{font-size:11.5px;color:#6b8394;font-weight:700}
 </style>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -88,14 +94,26 @@ dialog::backdrop{background:rgba(31,61,87,.45)}
         <span><i class="sq" style="background:var(--nobg);border:2px dashed var(--no)"></i>لم تبدأ</span>
       </div>
     </section>
+    <section class="box" id="novBox">
+      <h1>امتحانات شهر نوفمبر</h1>
+      <p class="lead">الصف الرابع والخامس والسادس الابتدائي، لمسار اللغات وللمسار العربي. الخانة الخضراء تعني أن الامتحان منشور وكل وحداته جاهزة في هذا المسار. اضغط الخانة لتفتح الامتحان.</p>
+      <section class="big" id="novBig" style="margin-top:10px"></section>
+      <div class="scroll" style="margin-top:10px"><table class="m" id="nov"></table></div>
+      <div class="key">
+        <span><i class="sq" style="background:var(--ok)"></i>الامتحان جاهز</span>
+        <span><i class="sq" style="background:var(--wip)"></i>الامتحان موجود وبعض وحداته ناقصة</span>
+        <span><i class="sq" style="background:#fde3dc;border:2px solid #f3b4a3"></i>لا يوجد امتحان</span>
+        <span><i class="sq" style="background:var(--nobg);border:2px dashed var(--no)"></i>المادة غير موجودة على الموقع لهذا الصف</span>
+      </div>
+    </section>
   </main>
 </div>
 
 <dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
 
-<script src="firebase-config.js?v=20261126x{{{"></script>
-<script src="chapters.js?v=20261126x{{{"></script>
-<script src="common.js?v=20261126x{{{"></script>
+<script src="firebase-config.js?v=20261126y{{{"></script>
+<script src="chapters.js?v=20261126y{{{"></script>
+<script src="common.js?v=20261126y{{{"></script>
 <script>
 (() => {
   /* Units in the first term of a subject and grade, when chapters.js does not list all of them yet: 'grade.subject': number.
@@ -145,6 +163,49 @@ dialog::backdrop{background:rgba(31,61,87,.45)}
     return `<tr><th class="g">${name}${any ? '' : '<small>لم نبدأ بعد</small>'}</th>${cells}</tr>`;
   }).join('');
   document.getElementById('m').innerHTML = head + body;
+
+  /* ---------- November monthly tests (owner, 26 Nov 2026): grades 4, 5, 6, both tracks ----------
+     A cell = one subject in one grade. Its test is the window.EXAMS entry of that grade and subject whose id or title says November.
+     Per track: ✓ when every part's unit is ready and has a questions file in that track; ! when the test exists but a part is not ready;
+     ✗ when there is no test. NOV_SUBJECTS = the subjects of the school's November tests. */
+  const NOV_GRADES = [['g4', 'الرابع الابتدائي'], ['g5', 'الخامس الابتدائي'], ['g6', 'السادس الابتدائي']];
+  const NOV_SUBJECTS = ['arabic', 'english', 'math', 'science', 'studies'];
+  const isNov = e => !e.off && (/nov/i.test(e.id) || /November/i.test(e.title || ''));
+  function novCell(g, sid) {
+    const s = SUBJ.find(x => x.id === sid) || { id: sid, titleAr: sid };
+    const units = CH.filter(c => gr(c) === g && sub(c) === sid);
+    const ex = (window.EXAMS || []).find(e => isNov(e) && (e.grade || 'g5') === g && (e.subject || 'science') === sid);
+    const tracks = [['lang', 'لغات'], ['ar', 'عربي']].map(([tk, label]) => {
+      if (!ex) return { tk, label, st: 'n' };
+      const parts = ex.parts.filter(p => p.max == null).map(p => { const c = CH.find(x => x.id === p.ch); return { p, c, ok: !!(c && c.ready && fileOf(c, s, tk)) }; });
+      const ok = parts.filter(x => x.ok).length;
+      return { tk, label, st: ok === parts.length ? 'y' : 'w', ok, of: parts.length, miss: parts.filter(x => !x.ok).map(x => x.c ? (x.c.n || x.p.ch) : x.p.ch) };
+    });
+    return { s, units, ex, tracks };
+  }
+  const novSum = { lang: [0, 0], ar: [0, 0] };
+  NOV_GRADES.forEach(([g]) => NOV_SUBJECTS.forEach(sid => { const d = novCell(g, sid); d.tracks.forEach(x => { novSum[x.tk][1]++; if (x.st === 'y') novSum[x.tk][0]++; }); }));
+  document.getElementById('novBig').innerHTML = [['lang', 'مسار اللغات'], ['ar', 'المسار العربي']].map(([tk, n]) =>
+    `<div class="s"><div class="k">${n}: امتحانات نوفمبر الجاهزة</div><div class="v">${novSum[tk][0]} <small>من ${novSum[tk][1]} (${pct(...novSum[tk])}%)</small></div><div class="bar"><i style="width:${pct(...novSum[tk])}%"></i></div></div>`).join('');
+  const sIcon = sid => { const s = SUBJ.find(x => x.id === sid); return s ? `${s.icon || ''} ${s.titleAr}` : sid; };
+  document.getElementById('nov').innerHTML = `<tr><th></th>${NOV_SUBJECTS.map(sid => `<th>${sIcon(sid)}</th>`).join('')}</tr>` + NOV_GRADES.map(([g, name]) => `<tr><th class="g">${name}</th>${NOV_SUBJECTS.map(sid => {
+    const d = novCell(g, sid);
+    if (!d.ex && !d.units.length) return `<td><div class="nv none">المادة غير موجودة على الموقع</div></td>`;
+    const all = d.tracks.every(x => x.st === 'y'), cls = !d.ex ? 'miss' : all ? 'ok' : '';
+    const lines = d.tracks.map(x => `<span class="tl">${x.label}<b class="${x.st}">${x.st === 'y' ? '✓ جاهز' : x.st === 'w' ? `! ${x.ok}/${x.of}` : '✗ لا يوجد'}</b></span>${x.st === 'w' ? `<small>وحدات غير جاهزة: ${x.miss.join('، ')}</small>` : ''}`).join('');
+    const note = d.ex ? `<small>${d.ex.parts.filter(p => p.max == null).map(p => { const c = CH.find(x => x.id === p.ch); return (c ? (c.n || p.ch) : p.ch) + (p.lessons ? ` (د ${p.lessons.join('،')})` : ''); }).join(' + ')}</small>` : `<small>الوحدات الجاهزة على الموقع: ${d.units.filter(c => c.ready).length}</small>`;
+    return `<td>${d.ex ? `<button class="nv ${cls}" data-ex="${d.ex.id}" data-g="${g}" data-s="${sid}">${lines}${note}</button>` : `<div class="nv ${cls}">${lines}${note}</div>`}</td>`;
+  }).join('')}</tr>`).join('');
+  document.getElementById('nov').addEventListener('click', e => {
+    const b = e.target.closest('button.nv'); if (!b) return;
+    const s = SUBJ.find(x => x.id === b.dataset.s) || {}, tk = shared(s) ? 'lang' : confirm('افتح الامتحان بمسار اللغات؟\nموافق = لغات، إلغاء = المسار العربي') ? 'lang' : 'ar';
+    const want = { name: 'Admin', grade: b.dataset.g, track: tk };
+    const all = SI.players ? SI.players() : {};
+    const id = Object.keys(all).find(k => all[k].name === want.name && all[k].grade === want.grade && all[k].track === want.track);
+    if (id && SI.usePlayer) SI.usePlayer(id); else SI.addPlayer(want);
+    if (SI.setSubject) SI.setSubject(b.dataset.s);
+    location.href = `quiz.html#exam=${b.dataset.ex}`;
+  });
 
   // a cell: the unit numbers of each track, each one opens the unit
   const dlg = document.getElementById('dlg');
