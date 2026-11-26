@@ -263,12 +263,12 @@ window.IDEAS = [
     ] },
   {"id": "Q9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (prepositions of time)", "explain": "at + a time (at 7 a.m., at noon), on + a day (on Friday), in + a month, a year or a part of the day (in May, in 2022, in the evening).",
     "variants": [
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The bakery opens ___ (on) 7 a.m.", "options": ["at", "on", "in"], "answer": 0, "hint": "Before a clock time."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "My birthday is ___ (at) May.", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a month."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "We visit our grandparents ___ (in) Fridays.", "options": ["on", "in", "at"], "answer": 0, "hint": "Before a day."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "I do my homework ___ (at) the evening.", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a part of the day."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "We went to Aswan ___ (at) 2022.", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a year."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The restaurant closes ___ (on) 10 p.m.", "options": ["at", "on", "in"], "answer": 0, "hint": "Before a clock time."}
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The bakery opens ___ (on) 7 a.m.", "explain": "at: we use at before a clock time (at 7 a.m.).", "options": ["at", "on", "in"], "answer": 0, "hint": "Before a clock time."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "My birthday is ___ (at) May.", "explain": "in: we use in before a month (in May).", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a month."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "We visit our grandparents ___ (in) Fridays.", "explain": "on: we use on before a day (on Fridays).", "options": ["on", "in", "at"], "answer": 0, "hint": "Before a day."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "I do my homework ___ (at) the evening.", "explain": "in: we say in the morning, in the afternoon, in the evening.", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a part of the day."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "We went to Aswan ___ (at) 2022.", "explain": "in: we use in before a year (in 2022).", "options": ["in", "at", "on"], "answer": 0, "hint": "Before a year."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The restaurant closes ___ (on) 10 p.m.", "explain": "at: we use at before a clock time (at 10 p.m.).", "options": ["at", "on", "in"], "answer": 0, "hint": "Before a clock time."}
     ] },
   {"id": "Q10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "A village: a cottage, a barn, fields and a market.",
     "variants": [

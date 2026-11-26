@@ -274,11 +274,11 @@ window.IDEAS = [
     ] },
   {"id": "Q8", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (prepositions of place)", "explain": "in, on, under, next to, between: between = in the middle of two things.",
     "variants": [
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The park is ___ (next) the school and the hospital.", "options": ["between", "next to", "under"], "answer": 0, "hint": "It is in the middle of two places."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The chair is ___ (next) the two beds.", "options": ["between", "next to", "on"], "answer": 0, "hint": "In the middle of two beds."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "My shoes are ___ (in) the bed. They are near it, on the floor.", "options": ["next to", "in", "between"], "answer": 0, "hint": "Near something."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The cat is sleeping ___ (on) the table. We can’t see it from the top.", "options": ["under", "on", "between"], "answer": 0, "hint": "Below the table."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The book is ___ (under) the desk. You can see it on top.", "options": ["on", "under", "between"], "answer": 0, "hint": "On top of the desk."}
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The park is ___ (next) the school and the hospital.", "explain": "between: the park is in the middle of two places (the school and the hospital).", "options": ["between", "next to", "under"], "answer": 0, "hint": "It is in the middle of two places."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The chair is ___ (next) the two beds.", "explain": "between: the chair is in the middle of two beds.", "options": ["between", "next to", "on"], "answer": 0, "hint": "In the middle of two beds."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "My shoes are ___ (in) the bed. They are beside it, on the floor.", "explain": "next to: the shoes are beside the bed, on the floor. in = inside something; between = in the middle of two things.", "options": ["next to", "in", "between"], "answer": 0, "hint": "Near something."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "The cat is sleeping ___ (on) the table. We can’t see it from the top.", "explain": "under: the cat is below the table, so we can’t see it from the top.", "options": ["under", "on", "between"], "answer": 0, "hint": "Below the table."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The book is ___ (under) the desk. You can see it on top.", "explain": "on: the book is on top of the desk.", "options": ["on", "under", "between"], "answer": 0, "hint": "On top of the desk."}
     ] },
   {"id": "Q9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "Places in our city.",
     "variants": [

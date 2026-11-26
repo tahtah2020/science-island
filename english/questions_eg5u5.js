@@ -300,13 +300,13 @@ window.IDEAS = [
     ] },
   {"id": "U9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (comparatives)", "explain": "Short adjectives: -er + than (fast → faster, big → bigger, noisy → noisier). Long adjectives: more … than. good → better.",
     "variants": [
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The airplane is ___ (fast) than the train.", "options": ["faster", "fastest", "more fast"], "answer": 0, "hint": "Two things: add -er."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "This white ball is ___ (big) than that orange ball.", "options": ["bigger", "biger", "biggest"], "answer": 0, "hint": "big: double the last letter, then -er."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "Airplanes are ___ (noisy) than ships.", "options": ["noisier", "noisyer", "more noisy"], "answer": 0, "hint": "y changes to i, then -er."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Zainab is ___ (young) than Marwa.", "options": ["younger", "youngest", "more young"], "answer": 0, "hint": "Two girls: add -er."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Mountains are higher ___ (the) hills.", "options": ["than", "the", "then"], "answer": 0, "hint": "We compare with this word."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "Gold is ___ (expensive) than iron.", "options": ["more expensive", "expensiver", "most expensive"], "answer": 0, "hint": "A long adjective."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "hard", "q": "This copper pot is ___ (good) than that one.", "options": ["better", "gooder", "best"], "answer": 0, "hint": "good has a special form."}
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The airplane is ___ (fast) than the train.", "explain": "faster: two things, so fast + er + than.", "options": ["faster", "fastest", "more fast"], "answer": 0, "hint": "Two things: add -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "This white ball is ___ (big) than that orange ball.", "explain": "bigger: big doubles the g: bigger.", "options": ["bigger", "biger", "biggest"], "answer": 0, "hint": "big: double the last letter, then -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "Airplanes are ___ (noisy) than ships.", "explain": "noisier: noisy ends in y, so y → i + er.", "options": ["noisier", "noisyer", "more noisy"], "answer": 0, "hint": "y changes to i, then -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Zainab is ___ (young) than Marwa.", "explain": "younger: two girls, so young + er + than.", "options": ["younger", "youngest", "more young"], "answer": 0, "hint": "Two girls: add -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Mountains are higher ___ (the) hills.", "explain": "than: we use than after a comparative (higher than).", "options": ["than", "the", "then"], "answer": 0, "hint": "We compare with this word."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "Gold is ___ (expensive) than iron.", "explain": "more expensive: expensive is a long word, so we use more + expensive.", "options": ["more expensive", "expensiver", "most expensive"], "answer": 0, "hint": "A long adjective."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "hard", "q": "This copper pot is ___ (good) than that one.", "explain": "better: good is irregular: good → better → best.", "options": ["better", "gooder", "best"], "answer": 0, "hint": "good has a special form."}
     ] },
   {"id": "U10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: put the words in order", "explain": "A sentence starts with a capital letter and ends with a full stop.",
     "variants": [

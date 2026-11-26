@@ -302,12 +302,12 @@ window.IDEAS = [
     ] },
   {"id": "V9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (superlatives)", "explain": "To compare three or more things, add -est with the: tall → the tallest; big → the biggest; heavy → the heaviest; nice → the nicest.",
     "variants": [
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "This tree is the ___ (tall) one in the park.", "options": ["tallest", "taller", "tall"], "answer": 0, "hint": "One of many trees: add -est."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "She has the ___ (short) hair in the group.", "options": ["shortest", "shorter", "short"], "answer": 0, "hint": "In a group: add -est."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "My bag is the ___ (heavy) bag in the class.", "options": ["heaviest", "heavyest", "heavier"], "answer": 0, "hint": "y changes to i, then -est."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "This is the ___ (nice) puppet show.", "options": ["nicest", "niceest", "nicer"], "answer": 0, "hint": "nice ends in e: add -st."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "August is the ___ (hot) month of the year.", "options": ["hottest", "hotest", "hotter"], "answer": 0, "hint": "hot: double the last letter, then -est."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The Nile is the ___ (long) river in Egypt.", "options": ["longest", "longer", "long"], "answer": 0, "hint": "Of all the rivers: add -est."}
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "This tree is the ___ (tall) one in the park.", "explain": "tallest: one tree of many, so the + tall + est.", "options": ["tallest", "taller", "tall"], "answer": 0, "hint": "One of many trees: add -est."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "She has the ___ (short) hair in the group.", "explain": "shortest: one girl of the whole group, so the + short + est.", "options": ["shortest", "shorter", "short"], "answer": 0, "hint": "In a group: add -est."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "My bag is the ___ (heavy) bag in the class.", "explain": "heaviest: heavy ends in y, so y → i + est.", "options": ["heaviest", "heavyest", "heavier"], "answer": 0, "hint": "y changes to i, then -est."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "This is the ___ (nice) puppet show.", "explain": "nicest: nice ends in e, so we add only st.", "options": ["nicest", "niceest", "nicer"], "answer": 0, "hint": "nice ends in e: add -st."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "August is the ___ (hot) month of the year.", "explain": "hottest: hot ends in one vowel + one consonant, so we double the t: hottest.", "options": ["hottest", "hotest", "hotter"], "answer": 0, "hint": "hot: double the last letter, then -est."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "The Nile is the ___ (long) river in Egypt.", "explain": "longest: one river of all the rivers in Egypt, so the + long + est.", "options": ["longest", "longer", "long"], "answer": 0, "hint": "Of all the rivers: add -est."}
     ] },
   {"id": "V10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: punctuate", "explain": "A sentence starts with a capital letter. Names of people, places, days and months start with a capital letter, and I is always a capital. A question ends with a question mark (?); other sentences end with a full stop (.).",
     "variants": [

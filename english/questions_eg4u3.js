@@ -289,11 +289,11 @@ window.IDEAS = [
     ] },
   {"id": "L9", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: the correct form (comparatives)", "explain": "Short adjectives add -er + than to compare two things: tall → taller. Double the last letter in big → bigger; y → ier: heavy → heavier.",
     "variants": [
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "A giraffe is ___ (tall) than a horse.", "options": ["taller", "tallest", "tall"], "answer": 0, "hint": "Compare two animals: add -er."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "A lion is ___ (big) than a cat.", "options": ["bigger", "biger", "biggest"], "answer": 0, "hint": "big: double the last letter, then -er."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Trains are faster ___ (that) bikes.", "options": ["than", "that", "then"], "answer": 0, "hint": "We compare with this word."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "An elephant is ___ (heavy) than a monkey.", "options": ["heavier", "heavyer", "heaviest"], "answer": 0, "hint": "y changes to i, then -er."},
-      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "My bag is ___ (small) than your bag.", "options": ["smaller", "smallest", "small"], "answer": 0, "hint": "Two bags: add -er."}
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "A giraffe is ___ (tall) than a horse.", "explain": "taller: two animals, so tall + er + than.", "options": ["taller", "tallest", "tall"], "answer": 0, "hint": "Compare two animals: add -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "A lion is ___ (big) than a cat.", "explain": "bigger: big ends in one vowel + one consonant, so we double the g: bigger.", "options": ["bigger", "biger", "biggest"], "answer": 0, "hint": "big: double the last letter, then -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "Trains are faster ___ (that) bikes.", "explain": "than: we use than after a comparative (faster than).", "options": ["than", "that", "then"], "answer": 0, "hint": "We compare with this word."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "medium", "q": "An elephant is ___ (heavy) than a monkey.", "explain": "heavier: heavy ends in y, so y → i + er.", "options": ["heavier", "heavyer", "heaviest"], "answer": 0, "hint": "y changes to i, then -er."},
+      {"sec": "form", "type": "fill", "mode": "normal", "level": "easy", "q": "My bag is ___ (small) than your bag.", "explain": "smaller: two bags, so small + er + than.", "options": ["smaller", "smallest", "small"], "answer": 0, "hint": "Two bags: add -er."}
     ] },
   {"id": "L10", "lesson": 2, "bonus": true, "guide": true, "concept": "November paper: complete the text from the box", "explain": "owners, vets and exercise: how we take care of animals.",
     "variants": [
