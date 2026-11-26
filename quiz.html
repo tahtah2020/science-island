@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261126t133414"></script>
-<script src="chapters.js?v=20261126t133414"></script>
-<script src="common.js?v=20261126t133414"></script>
+<script src="firebase-config.js?v=20261126t141355"></script>
+<script src="chapters.js?v=20261126t141355"></script>
+<script src="common.js?v=20261126t141355"></script>
 <script>
 (() => {
 'use strict';
@@ -1557,7 +1557,16 @@ const G4_SCI_LAYOUT = [
    { part: 'B', m: 1, want: 1, t: c => ['multi', 'order'].includes(c.v.type) || c.b === 'compare', l: ['Answer:', 'أجب عما يأتي:'] }, { part: 'B', m: 1, want: 1, t: c => c.b === 'say' || c.b === 'compare' || c.v.type === 'multi', l: ['Answer:', 'أجب عما يأتي:'] },
    { part: 'B', m: 1, want: 2, t: c => c.b === 'say' || c.b === 'story' || c.v.type === 'multi', l: ['Answer:', 'أجب عما يأتي:'] }]
 ];
-const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT };
+/* layout 'g4math' (owner, 26 Nov 2026, from the «سندباد» November review for Grade 4 Math, «اختبار لمراجعة منهج شهر نوفمبر» 1 and 2):
+   Q1 «اختر الإجابة الصحيحة من بين الإجابات المعطاة» 10 items, Q2 «أكمل الجمل التالية» 10 number items, Q3 «أجب عما يلي» 5 problems (2 marks each,
+   word problems and drawn shapes first) = 30 marks. The items spread over the units of the test; difficulty rises slowly inside each question. */
+const g4slots = (n, wants, t, l, m, part) => Array.from({ length: n }, (_, i) => ({ part, m, want: wants[i], t, l }));
+const G4_MATH_LAYOUT = [
+  g4slots(10, [0, 0, 0, 0, 1, 1, 1, 1, 1, 1], c => c.v.type === 'mc', ['Choose the correct answer:', 'اختر الإجابة الصحيحة من بين الإجابات المعطاة:'], 1, 'A'),
+  g4slots(10, [0, 0, 0, 1, 1, 1, 1, 1, 1, 1], c => (c.v.type === 'num' && !c.v.fig) || c.v.type === 'fill', ['Complete:', 'أكمل الجمل التالية:'], 1, 'B'),
+  g4slots(5, [1, 1, 1, 2, 2], c => c.v.type === 'num' && (!!c.v.fig || (c.v.q || '').length > 70), ['Answer:', 'أجب عما يلي:'], 2, 'B')
+];
+const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT, g4math: G4_MATH_LAYOUT };
 function buildPaper(pool, caps, last, layout) {
   const cands = [], used = new Set(), perCh = {};
   pool.forEach(I => I.variants.forEach((v, vi) => { const a = EXAM_A(v), b = EXAM_B(v); if (a || b) cands.push({ I, v, vi, a, b }); }));
@@ -1580,10 +1589,10 @@ function buildPaper(pool, caps, last, layout) {
   const paper = [];
   if (PAPER_LAYOUTS[layout]) {
     PAPER_LAYOUTS[layout].forEach((slots, qi) => paper.push(slots.map(s => {
-      const anyOf = layout === 'g3math' ? (c => s.part === 'A' ? c.v.type === 'mc' : c.v.type === 'num') : (c => s.part === 'A' ? c.a : (c.b || c.v.type === 'term'));
+      const anyOf = (layout === 'g3math' || layout === 'g4math') ? (c => s.part === 'A' ? c.v.type === 'mc' : c.v.type === 'num') : (c => s.part === 'A' ? c.a : (c.b || c.v.type === 'term'));
       const c = take(c => s.t(c), s.want, 1) || take(c => s.t(c), s.want) || take(anyOf, s.want, 1) || take(anyOf, s.want) || take(c => c.a || c.b, s.want);
       const q = make(c, qi + 1, s.part, s.m || (s.part === 'A' ? 1 : 2));
-      if (q) { q.exam.label = s.l; if (layout === 'g3math') q.exam.plain = true; }
+      if (q) { q.exam.label = s.l; if (layout === 'g3math' || layout === 'g4math') q.exam.plain = true; }
       return q;
     }).filter(Boolean)));
     return paper;
@@ -1758,7 +1767,9 @@ async function examMain() {
       G(`زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!`, `زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!`))
     + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || total}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
   else await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
-    (EX.layout === 'g4sci' ? T('Like the November review papers: 3 questions, <b>15 marks</b>, each with part (A) and part (B). Every item is 1 mark and you get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
+    (EX.layout === 'g4math' ? T('Like the November review tests: 3 questions, <b>30 marks</b>. Question 1: choose (10 items), question 2: complete (10 items), question 3: answer (5 problems, 2 marks each). You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
+      G('زي اختبارات مراجعة نوفمبر: ٣ أسئلة، <b>٣٠ درجة</b>. السؤال الأول: اختر (١٠ بنود)، والثاني: أكمل (١٠ بنود)، والثالث: أجب (٥ مسائل، كل مسألة بدرجتين). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي اختبارات مراجعة نوفمبر: ٣ أسئلة، <b>٣٠ درجة</b>. السؤال الأول: اختاري (١٠ بنود)، والثاني: أكملي (١٠ بنود)، والثالث: أجيبي (٥ مسائل، كل مسألة بدرجتين). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!')) :
+    EX.layout === 'g4sci' ? T('Like the November review papers: 3 questions, <b>15 marks</b>, each with part (A) and part (B). Every item is 1 mark and you get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
       G('زي نماذج مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليك <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', 'زي نماذج مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليكي <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')) :
     EX.layout === 'g3math' ? G('زي نماذج امتحان نوفمبر: سؤالين، <b>١٥ درجة</b>. السؤال الأول «اختر» (٣ بنود، كل بند درجة ونص)، والسؤال الثاني «أجب» (٤ مسائل). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي نماذج امتحان نوفمبر: سؤالين، <b>١٥ درجة</b>. السؤال الأول «اختاري» (٣ بنود، كل بند درجة ونص)، والسؤال الثاني «أجيبي» (٤ مسائل). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!') :
     EX.layout === 'school' ? T('Like the school’s model papers: 3 questions, <b>17 marks</b>. Part (A) is short (1 mark) and part (B) is worth 2 marks. You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',

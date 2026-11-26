@@ -557,3 +557,7 @@ Every results panel (kit games `game_kit.js` `results()`, `quiz.html` `results()
 - From the owner's «سندباد» November review (6 tests): parts `g4c4` (light), `g4c5` (sound), `g4c3` lesson 4 (plant parts: max 1, chance .5). Both tracks.
 - `layout: 'g4sci'`, `of: 15` (quiz.html `G4_SCI_LAYOUT`): Q1 (A) choose ×2 · (B) what happens ×3; Q2 (A) complete ×2 · (B) give reasons ×3; Q3 (A) ✓/✗ ×2 (the papers' «صوّب ما تحته خط», owner rule: no fix items) · (B) answer ×3; every item 1 mark. Arabic badge shows (أ)/(ب).
 - New guide ideas (EN + AR, hints): ch4 `I30 I31 J30 J31 K30 M30 M31 N30`, ch5 `Q30 U30 V30 V31`. Answers follow the review's model answers (e.g. moving an object from the torch towards the wall makes its shadow smaller; white paper warms more slowly than black).
+
+## Grade 4 Math November test `mg4nov` (26 Nov 2026)
+- From the owner's «سندباد» November review for Grade 4 Math (reviews to unit 7; the two «اختبار لمراجعة منهج شهر نوفمبر» papers). Parts `mg4u4`–`mg4u7`, both tracks.
+- `layout: 'g4math'`, `of: 30` (quiz.html `G4_MATH_LAYOUT`, built with `g4slots`): Q1 choose ×10 (mc), Q2 complete ×10 (number items without a drawing, or fill), Q3 answer ×5 (number items with a drawing or a long word problem, 2 marks); `exam.plain`. No new questions were needed: the units' banks cover the review's items.

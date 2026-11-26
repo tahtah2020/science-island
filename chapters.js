@@ -783,6 +783,10 @@ window.EXAMS = [
     parts: [{ ch: 'eg4u3' }, { ch: 'eg4u4' }, { ch: 'eg4u5' }],
     layouts: [[{ sec: 'choose', n: 4 }, { sec: 'form', n: 3 }, { sec: 'punct', n: 2 }],
               [{ sec: 'choose', n: 4 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] },
+  /* mg4nov (owner, 26 Nov 2026): Grade 4 Math November test from the «سندباد» November review (scope: unit 4 «المساحة والمحيط» to unit 7 «عمليتا الضرب والقسمة»);
+     layout 'g4math' = the review's «اختبار لمراجعة منهج شهر نوفمبر»: choose ×10, complete ×10, answer ×5 (2 marks) = 30 marks */
+  { id: 'mg4nov', subject: 'math', grade: 'g4', minParts: 1, layout: 'g4math', of: 30, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'mg4u4' }, { ch: 'mg4u5' }, { ch: 'mg4u6' }, { ch: 'mg4u7' }] },
   /* g4nov (owner, 26 Nov 2026): Grade 4 Science November test from the «سندباد» November review tests: chapter 4 (light) and chapter 5 (sound),
      and once in about half the papers the plant parts (chapter 3 lesson 4); layout 'g4sci' = 3 questions × (A) 2 + (B) 3 items = 15 marks */
   { id: 'g4nov', grade: 'g4', minParts: 1, layout: 'g4sci', of: 15, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
