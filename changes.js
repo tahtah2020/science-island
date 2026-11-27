@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'Hints on every question of Science G4 chapter 4',
+    items: [
+      { text: 'g4c4: a hint on all 95 questions, Arabic and English' }
+    ] },
   { date: '2026-11-27', title: 'Hints on the hardest questions (from statistics)',
     items: [
       { text: 'Hints added: eg4u1 C5 A3, g4c3 A1 F5, g4c4 I4 I5, sg5u1 A9' },
