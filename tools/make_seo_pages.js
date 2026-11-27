@@ -26,14 +26,14 @@ const W = load('chapters.js');
 const SUBJECTS = W.SUBJECTS || [];
 const CHAPTERS = W.CHAPTERS || [];
 const GRADES = { g1: 'الصف الأول الابتدائي', g2: 'الصف الثاني الابتدائي', g3: 'الصف الثالث الابتدائي', g4: 'الصف الرابع الابتدائي', g5: 'الصف الخامس الابتدائي', g6: 'الصف السادس الابتدائي', p1: 'الصف الأول الإعدادي', p2: 'الصف الثاني الإعدادي', p3: 'الصف الثالث الإعدادي' };
-const GRADE_ORDER = ['g4', 'g5', 'g6', 'p1', 'p2'];
+const GRADE_ORDER = ['g3', 'g4', 'g5', 'g6', 'p1', 'p2'];
 const UNIT_GRADES = { p1: true, p2: true };
 const subj = c => c.subject || 'science';
 const grade = c => c.grade || 'g5';
 /* people search "علوم الصف الخامس" (no «ال»), so titles use the subject the way a search is written */
 const SUBJ_SEARCH = { science: 'علوم', math: 'رياضيات', studies: 'دراسات اجتماعية', arabic: 'لغة عربية', english: 'لغة إنجليزية' };
 const subjAr = id => SUBJ_SEARCH[id] || ((SUBJECTS.find(s => s.id === id) || {}).titleAr) || id;
-const isUnits = c => !!UNIT_GRADES[grade(c)] || ['math', 'studies', 'english'].includes(subj(c));
+const isUnits = c => !!UNIT_GRADES[grade(c)] || ['math', 'studies', 'english', 'arabic'].includes(subj(c));
 const unitWord = c => (isUnits(c) ? 'الوحدة' : 'الفصل');
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -317,7 +317,7 @@ ${it.options ? '<ol>' + it.options.map(o => `<li>${esc(o)}</li>`).join('') + '</
 <div class="ans">الإجابة: ${esc(it.a)}</div>
 ${it.why ? `<p class="why">${esc(it.why)}</p>` : ''}
 </section>`).join('\n');
-function writeBigPage({ slug, title, desc, h1, lead, bc, items, extra, about, priority }) {
+function writeBigPage({ slug, title, desc, h1, lead, bc, items, extra, about, priority, faq }) {
   const url = `/lessons/${slug}.html`;
   const body = `${crumbs(bc)}
 <h1>${esc(h1)}</h1>
@@ -331,7 +331,7 @@ ${extra || ''}`;
     { '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG,
     breadcrumbSchema(bc),
     { '@type': 'WebPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY, about, ...EDU },
-    { '@type': 'FAQPage', mainEntity: items.map(it => ({ '@type': 'Question', name: it.q, acceptedAnswer: { '@type': 'Answer', text: it.a + (it.why ? ' — ' + it.why : '') } })) }
+    { '@type': 'FAQPage', mainEntity: (faq || []).concat(items).map(it => ({ '@type': 'Question', name: it.q, acceptedAnswer: { '@type': 'Answer', text: it.a + (it.why ? ' — ' + it.why : '') } })) }
   ];
   fs.writeFileSync(path.join(out, slug + '.html'), shell({ title, desc, url, body, schema }));
   pages.push({ url, priority: priority || '0.8' });
@@ -363,27 +363,97 @@ for (const hub of Object.values(hubs)) {
 }
 
 /* one monthly-review page per monthly test */
-for (const e of (W.EXAMS || []).filter(x => !x.off)) {
+/* SEO-only November reviews for grades with no November test in the app yet (scope = the chapters after the October test, in book order) */
+const SEO_ONLY_EXAMS = [
+  { id: 'g6nov', subject: 'science', grade: 'g6', titleAr: 'امتحان شهر نوفمبر', parts: [{ ch: 'g6c5' }, { ch: 'g6c6' }], guessed: true }
+];
+const NOV = {};               // grade -> [{ s, url, name, covered: [text], items }]
+const examLessons = {};       // chapter id -> [{ url, name, lessons: Set|null }] (links from lesson pages)
+for (const e of (W.EXAMS || []).filter(x => !x.off).concat(SEO_ONLY_EXAMS.filter(x => !(W.EXAMS || []).some(y => (y.subject || 'science') === x.subject && y.grade === x.grade && /نوفمبر/.test(y.titleAr))))) {
   const s = e.subject || 'science', g = e.grade || 'g5';
   if (s === 'english') continue;
   const hub = hubs[s + '-' + g]; if (!hub) continue;
   const parts = (e.parts || []).filter(p => ideasByCh[p.ch]);
-  const items = gatherItems(parts, MAX_BIG);
+  const isNov = /نوفمبر/.test(e.titleAr);
+  const items = gatherItems(parts, isNov ? 20 : MAX_BIG);
   if (items.length < 8) { skipped.push(`exam ${e.id}: only ${items.length} usable questions`); continue; }
   const gradeAr = GRADES[g], subAr = subjAr(s), key = s + '-' + g;
   const label = /أكتوبر/.test(e.titleAr) ? 'مراجعة شهر أكتوبر' : 'مراجعة ' + e.titleAr;
-  const name = `${label} ${subAr} ${gradeAr}`;
-  const title = `${name} ترم أول 2027 بالإجابات | متفوّق`;
-  const desc = `${name} (المنهج المصري، الترم الأول): أسئلة تدريبية بالإجابات على المقرر، ثم العب واختبر نفسك قبل امتحان الشهر.`;
+  const coveredTxt = parts.map(p => { const ch = CHAPTERS.find(x => x.id === p.ch); const ls = (ch.lessonsAr || []).filter((_, i) => !p.lessons || p.lessons.includes(i + 1)); return `${unitWord(ch)} «${ch.titleAr}»${p.lessons ? ' (' + ls.join('، ') + ')' : ''}`; });
   const covered = parts.map(p => { const ch = CHAPTERS.find(x => x.id === p.ch); const ls = (ch.lessonsAr || []).filter((_, i) => !p.lessons || p.lessons.includes(i + 1)); return `<li>${unitWord(ch)} «${esc(ch.titleAr)}»: ${ls.map(esc).join('، ')}</li>`; }).join('');
-  const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], [`${subAr} ${gradeAr}`, `/lessons/${key}.html`], [label, null]];
+  let name, title, desc, h1, lead, faq = [];
+  if (isNov) {
+    /* people search «امتحان شهر نوفمبر رياضيات الصف الثالث الابتدائي» / «اختبار نوفمبر …»: put those words first */
+    name = `امتحان شهر نوفمبر ${subAr} ${gradeAr}`;
+    title = `${name} 2026 بالإجابات | متفوّق`;
+    const shortTxt = parts.map(p => '«' + CHAPTERS.find(x => x.id === p.ch).titleAr + '»').join(' و');
+    desc = `مراجعة امتحان شهر نوفمبر ${subAr} ${gradeAr} 2026 الترم الأول: ${items.length} سؤالًا بالإجابات على ${shortTxt}، واختبر نفسك مجانًا.`;
+    h1 = `${name} 2026 بالإجابات – مراجعة`;
+    lead = `مراجعة شاملة بالإجابات قبل امتحان (اختبار) شهر نوفمبر في ${esc(subAr)} ${esc(gradeAr)}، الترم الأول 2026/2027. الأسئلة من إعدادنا وليست الامتحان الرسمي، ${e.guessed ? 'والمقرر هنا هو ما يلي امتحان أكتوبر حسب ترتيب الكتاب، ' : ''}والمقرر الرسمي تحدده مدرستك.`;
+    faq = [{ q: `ما مقرر امتحان شهر نوفمبر ${subAr} ${gradeAr}؟`, a: (e.guessed ? 'حسب ترتيب الكتاب بعد مقرر أكتوبر: ' : 'تغطي هذه المراجعة: ') + coveredTxt.join('، ') + '. والمقرر الرسمي تحدده مدرستك.' }];
+  } else {
+    name = `${label} ${subAr} ${gradeAr}`;
+    title = `${name} ترم أول 2027 بالإجابات | متفوّق`;
+    desc = `${name} (المنهج المصري، الترم الأول): أسئلة تدريبية بالإجابات على المقرر، ثم العب واختبر نفسك قبل امتحان الشهر.`;
+    h1 = `${name} – ترم أول`;
+    lead = `مراجعة تدريبية بالإجابات للمقرر في ${esc(subAr)} ${esc(gradeAr)}. هذه أسئلة من إعدادنا وليست الامتحان الرسمي، والمقرر الرسمي تحدده مدرستك.`;
+  }
+  const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], ...(isNov ? [[`امتحانات نوفمبر ${gradeAr}`, `/lessons/november-${g}.html`]] : [[`${subAr} ${gradeAr}`, `/lessons/${key}.html`]]), [isNov ? `امتحان نوفمبر ${subAr}` : label, null]];
   const url = writeBigPage({
-    slug: `${key}-review-${e.id}`, title, desc, h1: `${name} – ترم أول`, bc, items,
-    lead: `مراجعة تدريبية بالإجابات للمقرر في ${esc(subAr)} ${esc(gradeAr)}. هذه أسئلة من إعدادنا وليست الامتحان الرسمي، والمقرر الرسمي تحدده مدرستك.`,
-    extra: `<h2>ما تغطيه هذه المراجعة</h2>\n<ul class="links">${covered}</ul>`,
-    about: `${label} - ${subAr} - ${gradeAr}`, priority: '0.9'
+    slug: `${key}-review-${e.id}`, title, desc, h1, bc, items, faq,
+    lead,
+    extra: `<h2>${isNov ? `مقرر امتحان شهر نوفمبر ${esc(subAr)} ${esc(gradeAr)}` : 'ما تغطيه هذه المراجعة'}</h2>\n<ul class="links">${covered}</ul>` +
+      (isNov ? `\n<p><a href="/lessons/november-${g}.html">امتحانات شهر نوفمبر ${esc(gradeAr)} في كل المواد</a> · <a href="/lessons/${key}.html">كل دروس ${esc(subAr)} ${esc(gradeAr)}</a></p>` : ''),
+    about: `${isNov ? 'امتحان شهر نوفمبر' : label} - ${subAr} - ${gradeAr}`, priority: '0.9'
   });
-  hub.exams.push({ url, name: `${label} – ${subAr} ${gradeAr}` });
+  hub.exams.push({ url, name: isNov ? `${name} 2026 بالإجابات` : `${label} – ${subAr} ${gradeAr}` });
+  if (isNov) {
+    (NOV[g] = NOV[g] || []).push({ s, url, name, covered, faq, items });
+    for (const p of parts) (examLessons[p.ch] = examLessons[p.ch] || []).push({ url, name: `مراجعة ${name} بالإجابات`, lessons: p.lessons ? new Set(p.lessons) : null });
+  }
+}
+
+/* November hub per grade + one page for all grades: «امتحانات شهر نوفمبر الصف الثالث الابتدائي» */
+const SUBJ_ORDER = ['arabic', 'math', 'science', 'studies'];
+const novGrades = GRADE_ORDER.filter(g => NOV[g]);
+for (const g of novGrades) {
+  const list = NOV[g].sort((a, b) => SUBJ_ORDER.indexOf(a.s) - SUBJ_ORDER.indexOf(b.s));
+  const gradeAr = GRADES[g], url = `/lessons/november-${g}.html`;
+  const subs = list.map(x => subjAr(x.s));
+  const title = `امتحانات شهر نوفمبر ${gradeAr} 2026 بالإجابات – ${subs.join(' و')} | متفوّق`;
+  const desc = `مراجعة امتحانات شهر نوفمبر ${gradeAr} الترم الأول 2026/2027: ${subs.join(' و')}، أسئلة بالإجابات على مقرر كل مادة واختبار تفاعلي مجاني.`;
+  const bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], ['امتحانات نوفمبر', '/lessons/november.html'], [gradeAr, null]];
+  const sample = list.flatMap(x => x.items.slice(0, 3));
+  const body = `${crumbs(bc)}
+<h1>امتحانات شهر نوفمبر ${esc(gradeAr)} 2026 بالإجابات</h1>
+<p class="lead">اختر المادة لتجد مراجعة اختبار شهر نوفمبر بالإجابات حسب مقرر الترم الأول. الأسئلة من إعدادنا وليست الامتحان الرسمي، والمقرر الرسمي تحدده مدرستك.</p>
+<ul class="grid">${list.map(x => `<li><a href="${x.url}">امتحان نوفمبر ${esc(subjAr(x.s))}</a></li>`).join('')}</ul>
+${list.map(x => `<h2>${esc(x.name)}</h2>\n<ul class="links">${x.covered}</ul>\n<p><a href="${x.url}">${x.items.length} سؤالًا بالإجابات: ${esc(x.name)}</a></p>`).join('\n')}
+<a class="cta" href="/index.html">اختبر نفسك قبل امتحان نوفمبر مع ريشو</a>
+<h2>نماذج من الأسئلة</h2>
+${renderQs(sample)}
+<p><a href="/lessons/november.html">امتحانات شهر نوفمبر لكل الصفوف</a></p>`;
+  const faqAll = list.flatMap(x => x.faq).concat(sample);
+  const schema = [{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG, breadcrumbSchema(bc),
+    { '@type': 'CollectionPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY, about: `امتحان شهر نوفمبر - ${gradeAr}`, ...EDU, educationalLevel: gradeAr },
+    { '@type': 'FAQPage', mainEntity: faqAll.map(it => ({ '@type': 'Question', name: it.q, acceptedAnswer: { '@type': 'Answer', text: it.a + (it.why ? ' — ' + it.why : '') } })) }];
+  fs.writeFileSync(path.join(out, `november-${g}.html`), shell({ title, desc, url, body, schema }));
+  pages.push({ url, priority: '0.9' });
+}
+if (novGrades.length) {
+  const url = '/lessons/november.html', bc = [['الرئيسية', '/'], ['الدروس', '/lessons/'], ['امتحانات نوفمبر', null]];
+  const names = novGrades.map(g => GRADES[g].replace('الصف ', '').replace(' الابتدائي', '').replace(' الإعدادي', ''));
+  const title = `امتحانات شهر نوفمبر 2026 للصف ${names.join(' و')} الابتدائي بالإجابات | متفوّق`;
+  const desc = `مراجعة امتحانات شهر نوفمبر 2026 الترم الأول بالإجابات للصف ${names.join(' و')} الابتدائي: رياضيات وعلوم ولغة عربية ودراسات، مع اختبار تفاعلي مجاني.`;
+  const body = `${crumbs(bc)}
+<h1>امتحانات شهر نوفمبر 2026 بالإجابات – المرحلة الابتدائية</h1>
+<p class="lead">مراجعات اختبار شهر نوفمبر للترم الأول 2026/2027 مرتبة حسب الصف والمادة، بأسئلة من إعدادنا وإجاباتها.</p>
+${novGrades.map(g => `<h2><a href="/lessons/november-${g}.html">امتحانات شهر نوفمبر ${esc(GRADES[g])}</a></h2>\n<ul class="links">${NOV[g].map(x => `<li><a href="${x.url}">${esc(x.name)} 2026 بالإجابات</a></li>`).join('')}</ul>`).join('\n')}
+<a class="cta" href="/index.html">ابدأ المراجعة باللعب</a>`;
+  const schema = [{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG, breadcrumbSchema(bc),
+    { '@type': 'CollectionPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' }, dateModified: TODAY }];
+  fs.writeFileSync(path.join(out, 'november.html'), shell({ title, desc, url, body, schema }));
+  pages.push({ url, priority: '0.9' });
 }
 
 /* previous / next links inside each unit, written after all lessons of the unit exist */
@@ -391,7 +461,8 @@ for (const hub of Object.values(hubs)) {
   for (const unit of hub.units) {
     for (const l of unit.lessons) {
       const file = path.join(out, l.url.split('/').pop());
-      const nav = `${unit.page ? `<p><a href="${unit.page.url}">${esc(unit.page.name)}</a></p>\n` : ''}<h2>دروس ${unitWord(unit.c)} «${esc(unit.c.titleAr)}»</h2>\n<ul class="links">${unit.lessons.map(x => `<li>${x.n === l.n ? '<strong>' + esc(x.name) + '</strong>' : `<a href="${x.url}">${esc(x.name)}</a>`}</li>`).join('')}</ul>\n<p><a href="/lessons/${hub.s}-${hub.g}.html">كل دروس ${esc(subjAr(hub.s))} ${esc(GRADES[hub.g])}</a></p>`;
+      const novL = (examLessons[unit.c.id] || []).filter(x => !x.lessons || x.lessons.has(l.n));
+      const nav = `${novL.map(x => `<p><a href="${x.url}"><strong>${esc(x.name)}</strong></a></p>\n`).join('')}${unit.page ? `<p><a href="${unit.page.url}">${esc(unit.page.name)}</a></p>\n` : ''}<h2>دروس ${unitWord(unit.c)} «${esc(unit.c.titleAr)}»</h2>\n<ul class="links">${unit.lessons.map(x => `<li>${x.n === l.n ? '<strong>' + esc(x.name) + '</strong>' : `<a href="${x.url}">${esc(x.name)}</a>`}</li>`).join('')}</ul>\n<p><a href="/lessons/${hub.s}-${hub.g}.html">كل دروس ${esc(subjAr(hub.s))} ${esc(GRADES[hub.g])}</a></p>`;
       fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('<!--LESSON_NAV-->', nav));
     }
   }
@@ -419,12 +490,13 @@ for (const k of hubKeys) {
 {
   const url = '/lessons/', bc = [['الرئيسية', '/'], ['الدروس', null]];
   const title = 'أسئلة وألعاب لكل دروس المنهج المصري: علوم ورياضيات ودراسات | متفوّق';
-  const desc = 'اختر صفك ومادتك لتجد أسئلة تدريبية بالإجابات على كل درس في المنهج المصري من الصف الرابع الابتدائي إلى الثاني الإعدادي.';
+  const desc = 'اختر صفك ومادتك لتجد أسئلة تدريبية بالإجابات على كل درس في المنهج المصري من الصف الثالث الابتدائي إلى الثاني الإعدادي.';
   const byGrade = GRADE_ORDER.map(g => {
     const ks = hubKeys.filter(k => hubs[k].g === g); if (!ks.length) return '';
     return `<h2>${esc(GRADES[g])}</h2>\n<ul class="grid">${ks.map(k => `<li><a href="/lessons/${k}.html">${esc(subjAr(hubs[k].s))} – ${esc(GRADES[g])}</a></li>`).join('')}</ul>`;
   }).join('\n');
-  const body = `${crumbs(bc)}\n<h1>أسئلة وألعاب لكل دروس المنهج المصري</h1>\n<p class="lead">متفوّق موقع للتعلم باللعب. اختر صفك ومادتك لتصل إلى أسئلة كل درس بالإجابات.</p>\n${byGrade}`;
+  const novBox = novGrades.length ? `<h2>امتحانات شهر نوفمبر 2026 بالإجابات</h2>\n<ul class="grid">${novGrades.map(g => `<li><a href="/lessons/november-${g}.html">امتحانات نوفمبر ${esc(GRADES[g])}</a></li>`).join('')}</ul>\n` : '';
+  const body = `${crumbs(bc)}\n<h1>أسئلة وألعاب لكل دروس المنهج المصري</h1>\n<p class="lead">متفوّق موقع للتعلم باللعب. اختر صفك ومادتك لتصل إلى أسئلة كل درس بالإجابات.</p>\n${novBox}${byGrade}`;
   const schema = [{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'متفوّق · Motafawek', inLanguage: 'ar', publisher: { '@id': SITE + '/#org' } }, ORG, breadcrumbSchema(bc),
     { '@type': 'CollectionPage', '@id': SITE + url, url: SITE + url, name: title, description: desc, inLanguage: 'ar-EG', isPartOf: { '@id': SITE + '/#site' } }];
   fs.writeFileSync(path.join(out, 'index.html'), shell({ title, desc, url, body, schema }));
@@ -439,7 +511,11 @@ fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), `<?xml version="1.0" encoding="
 /* llms.txt: a plain summary for AI assistants */
 fs.writeFileSync(path.join(ROOT, 'llms.txt'), `# متفوّق · Motafawek
 
-> موقع للتعلم باللعب لطلاب المنهج المصري من الصف الرابع الابتدائي إلى الثاني الإعدادي: ألعاب وأسئلة تفاعلية في العلوم والرياضيات والدراسات الاجتماعية، مع ريشو البغبغان.
+> موقع للتعلم باللعب لطلاب المنهج المصري من الصف الثالث الابتدائي إلى الثاني الإعدادي: ألعاب وأسئلة تفاعلية في العلوم والرياضيات والدراسات الاجتماعية، مع ريشو البغبغان.
+
+## امتحانات شهر نوفمبر 2026 بالإجابات
+- [امتحانات نوفمبر لكل الصفوف](${SITE}/lessons/november.html)
+${novGrades.map(g => `- [امتحانات شهر نوفمبر ${GRADES[g]}](${SITE}/lessons/november-${g}.html)`).join('\n')}
 
 ## الدروس والأسئلة التدريبية بالإجابات
 - [كل الدروس](${SITE}/lessons/)
@@ -461,7 +537,12 @@ fs.writeFileSync(path.join(ROOT, 'llms-full.txt'), `# متفوّق · Motafawek:
 {
   const f = path.join(ROOT, 'index.html'), h = fs.readFileSync(f, 'utf8');
   const block = `<!--SEO_LINKS-->
-    <h3>أسئلة بالإجابات على كل درس</h3>
+${novGrades.length ? `    <h3>امتحانات شهر نوفمبر 2026 بالإجابات</h3>
+    <ul>
+      <li><a href="/lessons/november.html">امتحانات شهر نوفمبر لكل الصفوف</a></li>
+${novGrades.map(g => `      <li><a href="/lessons/november-${g}.html">امتحانات شهر نوفمبر ${esc(GRADES[g])}</a></li>`).join('\n')}
+    </ul>
+` : ''}    <h3>أسئلة بالإجابات على كل درس</h3>
     <ul>
       <li><a href="/lessons/">كل الدروس والأسئلة التدريبية بالإجابات</a></li>
 ${hubKeys.map(k => `      <li><a href="/lessons/${k}.html">${esc(subjAr(hubs[k].s))} ${esc(GRADES[hubs[k].g])}</a></li>`).join('\n')}

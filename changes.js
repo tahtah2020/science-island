@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'سيو امتحانات شهر نوفمبر',
+    items: [
+      { text: 'صفحات «امتحان شهر نوفمبر» بالإجابات للصفوف الثالث إلى السادس الابتدائي، وصفحة لكل صف تجمع مواده، وصفحة عامة لامتحانات نوفمبر' },
+      { text: 'روابط داخلية لها من الصفحة الرئيسية وفهرس الدروس وصفحات الدروس، وإضافتها إلى خريطة الموقع', links: [{ label: 'امتحانات نوفمبر', href: 'lessons/november.html' }] }
+    ] },
   { date: '2026-11-26', title: 'Grade 4 Math November test',
     items: [
       { text: 'New test mg4nov «امتحان شهر نوفمبر» for Grade 4 Math (both tracks): units 4 to 7, shaped like the «سندباد» «اختبار لمراجعة منهج شهر نوفمبر»: choose 10, complete 10, answer 5 problems (2 marks each) = 30 marks', links: [{ label: 'Grade 4 Math November test', href: 'quiz.html#exam=mg4nov', ch: 'mg4u4' }] }
