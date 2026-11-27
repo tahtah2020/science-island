@@ -1,0 +1,23 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": "arabic/assets/a3_adam_invites.webp",
+ "size": [
+  768,
+  768
+ ],
+ "style": "Style: flat cartoon children's-book illustration exactly like the drawing style of image 0: thick dark outlines, soft warm colours, simple clean shapes. Square picture. Absolutely no text, no letters, no numbers, no writing, no calligraphy, no symbols anywhere in the picture.",
+ "images": [
+  {
+   "file": "i5_parchment_r",
+   "seed": 511,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, people, school yard or composition. New picture with NO people, NO faces, NO animals' faces: old writing materials from long ago on a low wooden table: a bundle of long dried palm-leaf stalks, a sheet of blank pale parchment, a reed pen and a small clay inkwell, with a simple clay oil lamp beside them. No bones. Behind, a simple mud-brick wall with a small window showing palm trees. Everything is blank, nothing is written."
+  },
+  {
+   "file": "i5_mushaf",
+   "seed": 512,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, people, school yard or composition. New picture with NO people, NO faces, NO animals' faces: a closed thick holy book with a dark green cover decorated only with a golden geometric star pattern (no letters, no writing), resting on a carved wooden folding book stand (rahl) on a soft patterned carpet, beside a window with soft morning light and a green plant. Calm and respectful mood."
+  }
+ ]
+}
