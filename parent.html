@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261127t131524">
+<link rel="stylesheet" href="common.css?v=20261127t133002">
 <style>
 /* Parent page «متابعة ولي الأمر» (26 Nov 2026): the parent types the child's recovery code (or opens the WhatsApp link the child sent)
    and sees, read only: activity of the last 14 days, monthly tests, every quiz and game, the questions the child got wrong with the
@@ -89,9 +89,9 @@ details summary{cursor:pointer;font-weight:900;color:#23799f;margin-top:4px}
   </section>
   <div id="report" hidden></div>
 </main>
-<script src="firebase-config.js?v=20261127t131524"></script>
-<script src="chapters.js?v=20261127t131524"></script>
-<script src="common.js?v=20261127t131524"></script>
+<script src="firebase-config.js?v=20261127t133002"></script>
+<script src="chapters.js?v=20261127t133002"></script>
+<script src="common.js?v=20261127t133002"></script>
 <script>
 (() => {
 const $ = s => document.querySelector(s), esc = SI.esc;
@@ -182,6 +182,7 @@ async function open(raw) {
     err.hidden = false; return;
   }
   SI.ga('parent_view', { grade: f.grade, track: f.track });
+  if (SI.ownerPing) SI.ownerPing('parent_view', { name: (f.prof && f.prof.nm && f.prof.nm.n) || f.name, grade: f.grade, key: code });
   render(f, code).catch(e => { console.error(e); err.textContent = 'حصلت مشكلة في عرض التقرير. جرّب تاني.'; err.hidden = false; });
 }
 
@@ -261,7 +262,7 @@ async function render(f, code) {
 
   $('#keep').onclick = () => { const L = saved().filter(s => s.code !== code); L.unshift({ code, name: (P.nm && P.nm.n) || f.name }); keep(L); showSaved(); $('#keep').textContent = '✓ اتحفظ'; };
   $('#reload').onclick = () => open(code);
-  const sk = $('#sendKid'); if (sk) sk.onclick = () => { SI.whatsapp(`يلّا نراجع الأسئلة اللي غلط${girl ? 'تي' : 'ت'} فيها على متفوّق 💪\n${kidLink}`); SI.ga('parent_send_kid', {}); };
+  const sk = $('#sendKid'); if (sk) sk.onclick = () => { SI.whatsapp(`يلّا نراجع الأسئلة اللي غلط${girl ? 'تي' : 'ت'} فيها على متفوّق 💪\n${kidLink}`); SI.ga('parent_send_kid', {}); if (SI.ownerPing) SI.ownerPing('parent_send_kid', { name: (P.nm && P.nm.n) || f.name, grade: f.grade, key: code }); };
   $('#report').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 

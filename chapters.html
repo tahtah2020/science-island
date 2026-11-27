@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261127t131524">
+<link rel="stylesheet" href="common.css?v=20261127t133002">
 <style>
 .wrap{max-width:980px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .intro{display:flex;align-items:center;gap:12px}
@@ -17,6 +17,7 @@
 .lvl{display:flex;flex-direction:column;gap:5px}
 .lvl .t{display:flex;justify-content:space-between;gap:8px;font-weight:900;font-size:14.5px}
 .lvl .t span:last-child{flex:none;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.pbox .wa.big{flex-basis:100%;flex-direction:column;align-items:center;gap:2px;padding:12px 16px;border-radius:18px;font-size:16px;animation:waPulse 1.6s ease-in-out infinite}.pbox .wa.big small{font-size:13px;font-weight:700;opacity:.95}@keyframes waPulse{50%{transform:scale(1.03)}}@media (prefers-reduced-motion:reduce){.pbox .wa.big{animation:none}}
 .pbox{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.pbox:empty{display:none}.pbox a,.pbox button{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border:0;border-radius:999px;font:800 13.5px "Nunito","Cairo",system-ui,sans-serif;text-decoration:none;cursor:pointer;box-shadow:0 2px 6px rgba(31,61,87,.14)}.pbox .mis{background:#fde3dc;color:#9a3412}.pbox .wa{background:#25d366;color:#fff}
 .lvl small{font-weight:800;color:var(--ink);font-size:12.5px}
 .sect{margin:4px 2px 0;font-size:15px;font-weight:900;color:var(--ink);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
@@ -159,9 +160,9 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
   </main>
 </div>
 <noscript>Please turn on JavaScript to play.</noscript>
-<script src="firebase-config.js?v=20261127t131524"></script>
-<script src="chapters.js?v=20261127t131524"></script>
-<script src="common.js?v=20261127t131524"></script>
+<script src="firebase-config.js?v=20261127t133002"></script>
+<script src="chapters.js?v=20261127t133002"></script>
+<script src="common.js?v=20261127t133002"></script>
 <script>
 (() => {
   'use strict';
@@ -186,11 +187,23 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
 
   SI.sync.chip($('#codeBox'));   // the child's recovery code (appears once the progress is saved online)
   /* parent follow-up (26 Nov 2026): «راجع أخطائي» with the number of open mistakes in this subject, and the WhatsApp report for the parent */
+  /* the paper's total for this player: the Languages-track override (ex.lang) and section papers (layouts: 1 mark per item) */
+  function exOf(ex) {
+    const X = ex.lang && ((SI.player() || {}).track || 'lang') !== 'ar' ? Object.assign({}, ex, ex.lang) : ex;
+    return X.of || (X.layouts && X.layouts[0] ? X.layouts[0].reduce((n, s) => n + (s.n || 0), 0) : 0);
+  }
   function parentBox() {
     const box = $('#parentBox'); if (!box || !SI.openMisses || !SI.parentReport) return; box.innerHTML = '';   // an old cached common.js has no parent functions: skip, never stop the page
     const sj = SI.subjectId(), n = SI.openMisses(null, c => SI.chGrade(c) === SI.grade() && SI.chSubject(c) === sj && SI.qFile(c)).length;
     if (n) { const a = document.createElement('a'); a.className = 'mis'; a.href = `quiz.html#mistakes&s=${sj}`; a.innerHTML = `📝 ${SI.T('Practise my mistakes', SI.G('راجع أخطائي', 'راجعي أخطائي'))} <b>${n}</b>`; box.appendChild(a); }
-    if (SI.sync.code()) { const b = document.createElement('button'); b.type = 'button'; b.className = 'wa'; b.innerHTML = `🟢 ${SI.T('Send my report to my parent', SI.G('ابعت تقريري لبابا أو ماما', 'ابعتي تقريري لبابا أو ماما'))}`; b.onclick = () => { SI.sfx.tick(); SI.parentReport(); }; box.appendChild(b); }
+    /* a big card after a monthly test until the child sends the result to the parent (owner, 27 Nov 2026), kept 3 days */
+    let last = null; try { last = JSON.parse(localStorage.getItem('si.lastExam.' + (SI.player() || {}).id)); } catch (e) {}
+    if (last && last.line && Date.now() - last.t < 3 * 864e5 && SI.sync.code()) {
+      const c = document.createElement('button'); c.type = 'button'; c.className = 'wa big';
+      c.innerHTML = `<span>🟢 ${SI.T('Send your test result to your parent', SI.G('ابعت نتيجة امتحانك لبابا أو ماما', 'ابعتي نتيجة امتحانك لبابا أو ماما'))}</span><small>${SI.esc ? SI.esc(last.line) : last.line.replace(/</g, '&lt;')}</small>`;
+      c.onclick = () => { SI.sfx.tick(); SI.parentReport(last.line); parentBox(); }; box.appendChild(c);
+    }
+    if (SI.sync.code()) { const b = document.createElement('button'); b.type = 'button'; b.className = 'wa'; b.innerHTML = `🟢 ${SI.T('Send my report to my parent', SI.G('ابعت تقريري لبابا أو ماما', 'ابعتي تقريري لبابا أو ماما'))}`; b.onclick = () => { SI.sfx.tick(); SI.parentReport(); parentBox(); }; box.appendChild(b); }
   }
   try { parentBox(); } catch (e) { console.warn(e); } document.addEventListener('si-sync', () => { try { parentBox(); } catch (e) {} });
   const lv = SI.levelInfo(SI.xp());
@@ -273,7 +286,7 @@ html[dir=rtl] .subj button{padding:7px 9px 7px 15px}
     a.className = 'ch exam'; a.href = `quiz.html#exam=${ex.id}`;
     a.setAttribute('aria-label', `${hall}: ${title}`);
     a.innerHTML = `<span class="tile" aria-hidden="true">${ex.icon || '📝'}</span><span class="tx"><span class="k">${hall}</span><b>${esc(title)}</b>
-      <span class="meta"><span>${names} · ${ex.of ? T(`${ex.of} marks`, `${ex.of} درجة`) : ex.layout === 'school' ? T('17 marks', '١٧ درجة') : T('20 marks', '٢٠ درجة')}</span>${E && E.plays ? `<span class="best">${T('Best', 'أعلى درجة')}: ${E.best} / ${E.of || ex.of || (ex.layout === 'school' ? 17 : 20)}</span>` : `<span class="soon">${T('New', 'جديد')}</span>`}</span></span>
+      <span class="meta"><span>${names} · ${exOf(ex) ? T(`${exOf(ex)} marks`, `${exOf(ex)} درجة`) : ex.layout === 'school' ? T('17 marks', '١٧ درجة') : T('20 marks', '٢٠ درجة')}</span>${E && E.plays ? `<span class="best">${T('Best', 'أعلى درجة')}: ${E.best} / ${E.of || ex.of || (ex.layout === 'school' ? 17 : 20)}</span>` : `<span class="soon">${T('New', 'جديد')}</span>`}</span></span>
       <span class="go" aria-hidden="true">›</span>`;
     a.onclick = () => SI.sfx.tick();
     $('#exams').appendChild(a);

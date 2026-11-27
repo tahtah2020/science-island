@@ -2,7 +2,15 @@
    Secrets in Cloudflare (Workers & Pages → motafawek → Settings → Variables and Secrets):
      TG_TOKEN  = the bot token from BotFather
      TG_CHAT   = the owner's chat id (open /api/notify?setup=1 after sending the bot any message: it shows the id)
-   The page calls POST /api/notify {name} after a photo reaches Firestore. One alert per visitor per minute (Cache API). */
+   The page calls POST /api/notify {name} after a photo reaches Firestore. One alert per visitor per minute (Cache API).
+   27 Nov 2026: also {kind, name, grade, info} when the parent service or a certificate is used (owner wants an alert each time);
+   the throttle is per visitor AND kind. */
+const KINDS = {
+  parent_share: (n, g, i) => `🟢 ${n} أرسل تقريره لولي الأمر على واتساب${g}${i ? '\n' + i : ''}`,
+  parent_view: (n, g) => `👨‍👩‍👧 ولي أمر ${n} فتح صفحة المتابعة${g}`,
+  parent_send_kid: (n, g) => `🔁 ولي أمر ${n} أرسل له رابط مراجعة أخطائه${g}`,
+  certificate: (n, g, i) => `🏅 ${n} حمّل أو شارك شهادة تقدير${g}${i ? '\n' + i : ''}`
+};
 const json = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'content-type': 'application/json; charset=utf-8' } });
 
 export async function onRequestGet({ request, env }) {
@@ -18,11 +26,15 @@ export async function onRequestGet({ request, env }) {
 
 export async function onRequestPost({ request, env }) {
   if (!env.TG_TOKEN || !env.TG_CHAT) return json({ ok: false, why: 'not set' });
-  const ip = request.headers.get('cf-connecting-ip') || 'x', cache = caches.default, key = new Request('https://throttle.motafawek/notify/' + ip);
+  let body = {}; try { body = await request.json(); } catch (e) {}
+  const clean = (v, n) => String(v || '').replace(/[<>&]/g, '').slice(0, n);
+  const kind = KINDS[body.kind] ? body.kind : 'photo', name = clean(body.name, 14) || 'طالب';
+  const ip = request.headers.get('cf-connecting-ip') || 'x', cache = caches.default, key = new Request('https://throttle.motafawek/notify/' + kind + '/' + ip);
   if (await cache.match(key)) return json({ ok: false, why: 'wait' });
   await cache.put(key, new Response('1', { headers: { 'cache-control': 'max-age=60' } }));
-  let name = ''; try { name = String((await request.json()).name || '').replace(/[<>&]/g, '').slice(0, 14); } catch (e) {}
-  const text = `📷 صورة جديدة من ${name || 'طالب'} بانتظار موافقتك\nhttps://motafawek.com/admin.html`;
+  const GR = { g3: 'الصف الثالث', g4: 'الصف الرابع', g5: 'الصف الخامس', g6: 'الصف السادس', p1: 'الأول الإعدادي', p2: 'الثاني الإعدادي' };
+  const g = GR[body.grade] ? ' (' + GR[body.grade] + ')' : '';
+  const text = kind === 'photo' ? `📷 صورة جديدة من ${name} بانتظار موافقتك\nhttps://motafawek.com/admin.html` : KINDS[kind](name, g, clean(body.info, 120));
   const r = await fetch(`https://api.telegram.org/bot${env.TG_TOKEN}/sendMessage`, {
     method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ chat_id: env.TG_CHAT, text, disable_web_page_preview: true })

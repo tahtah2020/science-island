@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261127t131524"></script>
-<script src="chapters.js?v=20261127t131524"></script>
-<script src="common.js?v=20261127t131524"></script>
+<script src="firebase-config.js?v=20261127t133002"></script>
+<script src="chapters.js?v=20261127t133002"></script>
+<script src="common.js?v=20261127t133002"></script>
 <script>
 (() => {
 'use strict';
@@ -1759,15 +1759,18 @@ function examResults(EX, res, total) {
     return `<li><div class="r"><span>${esc(SI.chTitle(c))}: <b>${m.got} / ${m.of}</b></span>${weak ? `<a href="map.html" data-ch="${id}">${T('Practise ▸', 'اتمرّن ◂')}</a>` : ''}</div><div class="bar"><i style="width:${Math.round(m.got / m.of * 100)}%"></i></div></li>`;
   }).join('');
   const miss = res.wrong.map(q => `<li>${esc(q.q)}<b>✓ ${esc(answerText(q))}</b></li>`).join('');
+  /* owner, 27 Nov 2026: make «send to my parent» easy to see: the button sits right under the mark, and the units page shows a big card until it is sent */
+  const exLine = `📝 ${EX.titleAr} (${(SI.subjectById(SI.chSubject(EX)) || {}).titleAr || ''}): ${res.marks} من ${total}`;
+  try { const pl = SI.player(); if (pl && SI.sync.code()) localStorage.setItem('si.lastExam.' + pl.id, JSON.stringify({ t: Date.now(), line: exLine })); } catch (e) {}
   const o = mk('div', 'overlay', `<div class="panel sheet">
     <h2>${esc(T(EX.title, EX.titleAr))}</h2>
     <div class="mark" aria-label="${T(`${res.marks} out of ${total}`, `${res.marks} من ${total}`)}">${res.marks}<small> / ${total}</small></div>
     <span class="grade${pct >= .75 ? ' top' : ''}">${grade}</span>
     <div class="qm">${res.perQ.map((m, i) => `<span><small>${T('Question', 'السؤال')} ${i + 1}</small>${m} / ${(res.qMarks || [])[i] || 5}</span>`).join('')}</div>
+    ${(SI.parentBtn || (() => ''))(exLine)}
     ${levelBlock(gain)}
     <h3>${SI.isUnits() ? T('Marks by unit', 'الدرجات حسب الوحدة') : T('Marks by chapter', 'الدرجات حسب الفصل')}</h3><ul class="byc">${byCh}</ul>
     ${miss ? `<h3>${T('Look again at these', 'راجع دول تاني')}</h3><ul class="miss">${miss}</ul>` : `<p style="text-align:center">${T('A perfect paper! 🎉', 'ورقة من غير ولا غلطة! 🎉')}</p>`}
-    ${(SI.parentBtn || (() => ''))(`📝 ${EX.titleAr} (${(SI.subjectById(SI.chSubject(EX)) || {}).titleAr || ''}): ${res.marks} من ${total}`)}
     <div class="row acts">
       ${res.wrong.length ? `<a class="btn primary" href="quiz.html#mistakes">${T('Practise my mistakes', G('راجع أخطائي', 'راجعي أخطائي'))} (${res.wrong.length})</a>` : ''}
       <button class="btn${res.wrong.length ? '' : ' primary'}" type="button" id="again">${T('New paper', 'ورقة جديدة')}</button>

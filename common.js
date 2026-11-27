@@ -325,6 +325,17 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   }
   const SITE = 'https://motafawek.com/';
   const parentLink = code => `${SITE}parent.html#c=${code}`;
+  /* owner alert on Telegram (owner, 27 Nov 2026: tell me every time someone uses the parent service or a certificate).
+     functions/api/notify.js sends it; live site only, never for the owner's own devices (trackingOff), once per kind+key per tab session. */
+  function ownerPing(kind, o) {
+    try {
+      if (!/motafawek\.com$/.test(location.hostname) || trackingOff()) return;
+      o = o || {}; const p = player() || {}, k = 'si.ping.' + kind + '.' + (o.key || '');
+      try { if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, '1'); } catch (e) {}
+      fetch('/api/notify', { method: 'POST', headers: { 'content-type': 'application/json' }, keepalive: true,
+        body: JSON.stringify({ kind, name: o.name || (prof().nm && prof().nm.n) || p.name || '', grade: o.grade || p.grade || '', info: o.info || '' }) }).catch(() => {});
+    } catch (e) {}
+  }
   function whatsapp(text) { const u = 'https://wa.me/?text=' + encodeURIComponent(text); try { window.open(u, '_blank', 'noopener'); } catch (e) { location.href = u; } }
   /* «أرسل تقريري لولي الأمر»: a ready WhatsApp message with the child's latest results and the parent page link (needs the recovery code) */
   function parentReport(extra) {
@@ -337,6 +348,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     lines.push(girl ? 'تابع نشاطها ونتائجها والأسئلة اللي غلطت فيها من هنا:' : 'تابع نشاطه ونتائجه والأسئلة اللي غلط فيها من هنا:', parentLink(code));
     whatsapp(lines.join('\n'));
     ga('parent_share', { from: pageFile() });
+    ownerPing('parent_share', { info: extra, key: extra });
+    try { localStorage.removeItem('si.lastExam.' + p.id); } catch (e) {}
     return true;
   }
   /* the button for a results panel: parentBtn(extraLine) in the panel, then wireParent(panel) */
@@ -1766,13 +1779,15 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
       } catch (e) { pic.textContent = T('Sorry, the certificate could not be made. Try again.', 'معلش، مقدرناش نجهّز الشهادة. حاول تاني.'); }
     }
     o.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { if (lang !== b.dataset.l) { lang = b.dataset.l; make(); } });
-    bd.onclick = () => { if (land) { download(land, nm('print-' + lang)); ga('certificate', { method: 'download', level: certLevel(pct), pct, lang }); } };
+    const certPing = () => { const cc = ch || chapterById(prof().cur) || {}; ownerPing('certificate', { key: cc.id || '', info: `${certLevel(pct) === 'gold' ? 'ذهبية «ممتاز»' : 'فضية «جيد جدًّا»'} ${pct}% · ${cc.titleAr || cc.title || ''}` }); };
+    bd.onclick = () => { if (land) { download(land, nm('print-' + lang)); ga('certificate', { method: 'download', level: certLevel(pct), pct, lang }); certPing(); } };
     bs.onclick = async () => {
       if (!sq) return; const file = new File([sq], nm('share-' + lang), { type: 'image/png' }); let method = 'download';
       try {
         if (navigator.canShare && navigator.canShare({ files: [file] })) { method = 'native_image'; await navigator.share({ files: [file], text: shareText({ ch }) + ' ' + SHARE_URL }); }
         else download(sq, nm('share-' + lang));
         ga('certificate', { method, level: certLevel(pct), pct, lang });
+        certPing();
       } catch (e) { if (!e || e.name !== 'AbortError') download(sq, nm('share-' + lang)); }
     };
     make();
@@ -1784,7 +1799,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
     subjects, subjectById, chSubject, subjectId, subject, setSubject, subjectName, contentAr, qFile,
     grade, gradeName, chGrade, isUnits, chWord, chWords, questName, chapters, allChapters, chapterById, chapterId, chapter, setChapter, requireChapter, chProf, updateChProf, chapterStars, chReady, applyTheme, loadQuestions, loadIdeas, exams, examById, examParts, examScope, checkName, renamePlayer, nameChip, nameDialog, LEVELS, levelInfo, xp, addXP, bankXP, repeatRate, GEM_XP, gems, wardrobe, buyItem, wearItem, today, dailyState, completeDaily,
     weekKey, weekEndsIn, weekXP, countBoss, badges, isMuted, setMuted, sfx, voice, speak, LB, sync, rate, tg, esc, NAME: 'Reesho', isAr, T, chTitle, applyLang, isOwner, setOwner, ga,
-    noteAnswer, openMisses, parentLink, parentReport, parentBtn, wireParent, whatsapp,
+    noteAnswer, openMisses, parentLink, parentReport, parentBtn, wireParent, whatsapp, ownerPing,
     gender, G, setGender, share, shareText, shareCard, shareBtn, wireShare, certLevel, certCanvas, certDialog, certBtn, wireCert, visit, greet, bye, VOICE_TEXT, navMenu, NET_DAYS, NET_STRINGS, inNet, checkNet, freeNet, fishState, fishLine };
   try { checkNet(); } catch (e) {}
   applyLang();

@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'تنبيه لصاحب الموقع وزر ولي الأمر أوضح',
+    items: [
+      { text: 'بعد الامتحان يظهر زر «ابعت نتيجتك لبابا أو ماما» تحت الدرجة مباشرة، وفي صفحة الوحدات كارت كبير حتى يُرسل التقرير' }
+    ] },
   { date: '2026-11-27', title: 'امتحان نوفمبر: رياضيات الصف السادس لغات',
     items: [
       { text: 'امتحان نوفمبر لرياضيات الصف السادس (مسار اللغات) من نماذج المعاصر: اختر ٣ وأجب ٤ — ١٥ درجة', links: [{ label: 'Start the test', href: 'quiz.html#exam=mg6nov', ch: 'mg6e' }] }

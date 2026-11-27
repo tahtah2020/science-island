@@ -592,3 +592,8 @@ Every results panel (kit games `game_kit.js` `results()`, `quiz.html` `results()
 - Paper = `layouts` (sec engine): complete ×5, choose ×5, true/false ×5, term ×3, why ×3 (build), answer ×4 (results / relation / prove / whose work), 1 mark each = 25.
 - «صوّب ما تحته خط» became true/false and choose items (no fix items). The blank map (unit 1) is not asked. The review's «الدعوة الهجرية» is a misprint for «الدعوة الجهرية».
 - The generator script is not kept; edit the bank file directly.
+
+## Owner alerts and the parent button (27 Nov 2026)
+- `SI.ownerPing(kind, {name, grade, info, key})` → POST `/api/notify` (Cloudflare Pages Function `functions/api/notify.js`, same Telegram bot as the photo alert). Kinds: `parent_share` (child sent the report on WhatsApp), `parent_view` (parent opened parent.html), `parent_send_kid` (parent sent the mistakes link), `certificate` (download or share). Live site only, never for the owner (`trackingOff`), once per kind+key per tab session; the function throttles per visitor and kind (60 s).
+- After a monthly test the «send to my parent» button sits right under the mark, and chapters.html shows a big pulsing card (`si.lastExam.<player id>`, 3 days) until the report is sent.
+- chapters.html test card shows the right total (`exOf`: the Languages-track `lang` override, and section papers count 1 mark per item).
