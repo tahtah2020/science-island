@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'Grade 6 Science November test: Languages track',
+    items: [
+      { text: 'g6nov for the Languages track now follows the El-Moasser November models: chapters 5 to 7 only, 3 questions of 5 marks (complete, give reasons, function; scientific term, what happens if; true or false, what is meant by) = 15 marks; the Arabic track keeps its paper (chapters 4-7)' },
+      { text: 'Exam parts can be limited to one track (part.track) and a test can have its own paper for the Languages track (exam.lang)' },
+      { text: '34 new phrasings in 4 ideas from the models (starch and iodine, stomata and the plastic bag, coloured water, energy in the food chain), English and Arabic, each with a hint', links: [{ label: 'Grade 6 Science November test', href: 'quiz.html#exam=g6nov', ch: 'g6c5' }] }
+    ] },
   { date: '2026-11-27', title: 'Grade 6 Science November test',
     items: [
       { text: 'New test g6nov «امتحان شهر نوفمبر» for Grade 6 Science (both tracks): chapters 4 to 7 (+ the breathing chest item in about half the papers), shaped like the «سندباد» November review tests: 3 questions, each (A) 2 short items and (B) 3 longer items = 15 marks' },

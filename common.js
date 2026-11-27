@@ -159,7 +159,8 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   const exams = () => (window.EXAMS || []).filter(e => !e.off && (e.grade || 'g5') === grade() && chSubject(e) === subjectId());   // this grade's tests in the chosen subject
   /* a test opens for its own grade only (the owner may open every grade's test) */
   const examById = id => { const e = id ? (window.EXAMS || []).find(x => x.id === id && !x.off) : exams()[0]; return e && ((e.grade || 'g5') === grade() || isOwner()) ? e : null; };
-  const examParts = ex => ((ex && ex.parts) || []).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && qFile(p.c));
+  /* a part with track: 'ar' or 'lang' is used only for players of that track (the two tracks' monthly scopes can differ) */
+  const examParts = ex => ((ex && ex.parts) || []).filter(p => !p.track || p.track === (((player() || {}).track) || 'lang')).map(p => Object.assign({}, p, { c: chapterById(p.ch) })).filter(p => p.c && qFile(p.c));
   /* what a test covers, for its card and its first page: "Chapters 1, 2, 3", or "Unit 1 · Lessons 1 to 3" for a test on part of one unit.
      Chapters the test only touches (max) are not named. */
   function examScope(ex, parts) {

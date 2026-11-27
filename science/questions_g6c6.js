@@ -188,6 +188,32 @@ window.IDEAS = [
       { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if the roots of a plant are put in coloured water for a few hours?", parts: ["The water paths of the stem and the leaves", "take the colour of the water,", "because the roots absorb it and it moves up"], extra: ["the flower", "loses its colour"], hint: "Where does the water go after the roots?" },
       { type: "build", style: "why", mode: "normal", level: "easy", q: "A wilted plant goes back to normal after it is watered.", parts: ["Because the water moves", "to all parts of the plant", "through the stem"], extra: ["because the leaves", "fall off"], hint: "How does water reach the leaves?" },
       { type: "mc", mode: "normal", level: "easy", q: "What is the importance of the stem in a plant?", options: ["It is a passage that carries water from the roots to the other parts of the plant", "It makes the seeds", "It absorbs water from the soil"], answer: 0, hint: "Water travels up it." }
+    ] },
+  /* ---------- November 2026 review (El-Moasser November models (languages track), owner 27 Nov 2026): items the bank lacked; guide: true ---------- */
+  { id: 'E32', lesson: 1, bonus: true, guide: true, concept: "Stomata, transpiration and the plastic bag",
+    explain: "Stomata are small pores, mostly on the lower surface of leaves; they are exits for water vapour. Transpiration is the process by which a plant loses water as vapour to the air; it adds water vapour to the air, so plants take part in the water cycle. Plants do not use all the water they absorb; they get rid of the extra as vapour through the stomata. A plant in a closed plastic bag in the sun shows water drops on the inside of the bag.",
+    variants: [
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "Stomata are found in the plant’s leaves.", parts: ["To help get rid of", "the extra water", "as water vapour"], extra: ["to absorb", "the soil"], hint: "What leaves through them?" },
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "Plants do not use all the water they absorb from the soil.", parts: ["Because the plant gets rid of the extra water", "as water vapour", "through the stomata"], extra: ["because the roots", "are too small"], hint: "Think of transpiration." },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens to the water vapour in the air when a plant carries out transpiration?", parts: ["The amount of water vapour", "in the air", "increases"], extra: ["decreases", "to zero"], hint: "Where does the plant’s water vapour go?" },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if you cover a green plant with a clear plastic bag tied around the stem and leave it in the sun for hours?", parts: ["Water drops form", "on the inside surface", "of the bag"], extra: ["the bag", "turns green"], hint: "Where does the transpired water go?" },
+      { type: "term", mode: "normal", level: "easy", q: "The process by which a plant loses water as vapour to the air.", answer: "Transpiration", choices: ["Photosynthesis", "Respiration", "Absorption"], hint: "It happens through the stomata." },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "Plants are not involved in the water cycle in nature.", answer: 1, hint: "Transpiration adds vapour to the air." }
+    ] },
+  { id: 'E33', lesson: 1, bonus: true, guide: true, concept: "Stomata, transpiration and the plastic bag — definitions",
+    explain: "Stomata are small pores, mostly on the lower surface of leaves; they are exits for water vapour. Transpiration is the process by which a plant loses water as vapour to the air; it adds water vapour to the air, so plants take part in the water cycle. Plants do not use all the water they absorb; they get rid of the extra as vapour through the stomata. A plant in a closed plastic bag in the sun shows water drops on the inside of the bag.",
+    variants: [
+      { type: "build", style: "define", mode: "normal", level: "easy", q: "What is meant by stomata?", parts: ["Small pores found mostly on the lower surface of leaves", "that act as exits", "for water vapour"], extra: ["on the roots", "to absorb water"], hint: "Where is water vapour let out?" },
+      { type: "build", style: "define", mode: "normal", level: "easy", q: "What is meant by transpiration?", parts: ["The process by which a plant loses water", "as vapour", "to the air"], extra: ["absorbs", "sunlight"], hint: "Water leaves as …" }
+    ] },
+  { id: 'F32', lesson: 2, bonus: true, guide: true, concept: "Coloured water and the water path",
+    explain: "Water moves inside the plant through the water paths: roots → stem → leaves. In red coloured water, the parts in the root, the stem and the veins of the leaves turn red, because the water carries the colour from the root to the stem then to the leaves. A wilted plant recovers after watering.",
+    variants: [
+      { type: "order", mode: "normal", level: "easy", q: "Arrange the path of water in a plant.", items: ["Leaves", "Roots", "Stem"], answer: [1, 2, 0], hint: "It starts in the soil." },
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "The plant’s leaves turn red after placing it in red coloured water.", parts: ["Because the water moves inside the plant from the root to the stem", "then to the leaves,", "so the coloured water reaches the leaves"], extra: ["because the leaves", "like red"], hint: "Follow the water." },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if you leave a plant in red coloured water for a few hours?", parts: ["Parts in the root, the stem", "and the veins of the leaves", "turn red"], extra: ["the flowers", "turn blue"], hint: "Where does the water go?" },
+      { type: "build", style: "whatif", mode: "normal", level: "easy", q: "What happens if a wilted plant is watered?", parts: ["The plant’s leaves", "recover", "after a while"], extra: ["dry", "faster"], hint: "Water reaches the leaves through the stem." },
+      { type: "fill", mode: "normal", level: "easy", q: "Water moves inside plants through ___.", options: ["water paths", "stomata", "flowers"], answer: 0, hint: "Like small pipes." }
     ] }
 ];
 })();

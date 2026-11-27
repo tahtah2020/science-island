@@ -793,8 +793,10 @@ window.EXAMS = [
   /* g6nov (owner, 27 Nov 2026): Grade 6 Science November test from the «سندباد» November review (6 tests): chapters 4 (circulation and excretion),
      5 (photosynthesis), 6 (water in the plant), 7 (food chains), and in about half the papers the breathing chest item (chapter 2 lesson 1);
      layout 'g6sci' = 3 questions × (A) 2 + (B) 3 items = 15 marks. Both tracks (the chapters have English and Arabic files). */
-  { id: 'g6nov', grade: 'g6', minParts: 1, layout: 'g6sci', of: 15, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
-    parts: [{ ch: 'g6c4' }, { ch: 'g6c5' }, { ch: 'g6c6' }, { ch: 'g6c7' }, { ch: 'g6c2', lessons: [1], max: 1, chance: 0.5 }] },
+  /* Languages track (owner, 27 Nov 2026, El-Moasser models): chapters 5-7 only, paper 'g6sciEn' (3 × 5 marks); `lang` overrides the paper for that track,
+     part `track` limits a part to one track */
+  { id: 'g6nov', grade: 'g6', minParts: 1, layout: 'g6sci', of: 15, lang: { layout: 'g6sciEn', of: 15 }, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'g6c4', track: 'ar' }, { ch: 'g6c5' }, { ch: 'g6c6' }, { ch: 'g6c7' }, { ch: 'g6c2', lessons: [1], max: 1, chance: 0.5, track: 'ar' }] },
   /* sg4nov (owner, 27 Nov 2026): Grade 4 Social Studies November test from the «سندباد» November review: unit 2 «مدينتنا وحياتنا اليومية» (all 5 lessons);
      layout 'g4studies' = complete ×4, choose ×4, true/false ×4 (1 mark), explain why ×2, answer ×2 (2 marks) = 20 marks. One Arabic book for both tracks. */
   { id: 'sg4nov', subject: 'studies', grade: 'g4', minParts: 1, layout: 'g4studies', of: 20, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',

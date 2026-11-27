@@ -162,6 +162,25 @@ window.IDEAS = [
       { type: "mc", mode: "normal", level: "medium", q: "Compare plants and herbivores by food and place in the food chain.", options: ["Plants make their own food and are at the start; herbivores eat plants and are at the second level", "Plants eat herbivores and are at the end", "Herbivores make their own food and are at the start"], answer: 0, hint: "Who makes food?" },
       { type: "mc", mode: "normal", level: "medium", q: "Compare the hawk and the rabbit by type and how they get food.", options: ["Hawk: carnivore, eats animals; rabbit: herbivore, eats plants", "Hawk: herbivore; rabbit: carnivore", "Both are producers"], answer: 0, hint: "What does a hawk hunt?" },
       { type: "mc", mode: "normal", level: "easy", q: "Compare the rabbit and the lion by the kind of food each eats.", options: ["The rabbit eats plants and grass; the lion eats animals", "The rabbit eats animals; the lion eats grass", "Both eat grass"], answer: 0, hint: "Carrots or meat?" }
+    ] },
+  /* ---------- November 2026 review (El-Moasser November models (languages track), owner 27 Nov 2026): items the bank lacked; guide: true ---------- */
+  { id: 'P32', lesson: 1, bonus: true, guide: true, concept: "Energy in the food chain",
+    explain: "In a food chain energy passes from the plant to the herbivore, then to the carnivore, until the end of the chain; arrows show the direction of energy flow. Most food chains start with green plants. Herbivores are animals that eat plants to get energy; snakes and lions are carnivores because they eat animals. The organism that eats a grasshopper is a carnivore. If plants disappeared, herbivores would find no food and die, and the food chain would break. All animals depend on plants directly or indirectly for energy.",
+    variants: [
+      { type: "fill", mode: "normal", level: "medium", q: "In a food chain, the organism that eats the grasshopper is a ___.", options: ["carnivore", "herbivore", "producer"], answer: 0, hint: "A grasshopper is an animal." },
+      { type: "build", style: "why", mode: "normal", level: "easy", q: "Arrows are used in food chain drawings.", parts: ["To show", "the direction", "of energy flow"], extra: ["to make", "the drawing nice"], hint: "What moves along the chain?" },
+      { type: "build", style: "why", mode: "normal", level: "easy", q: "Snakes and lions are classified as carnivores.", parts: ["Because they feed", "on animals", "to get energy"], extra: ["on grass", "and leaves"], hint: "What do they eat?" },
+      { type: "build", style: "whatif", mode: "normal", level: "hard", q: "What happens to the food chain if plants disappeared from an ecosystem?", parts: ["Herbivores will not find food and will die,", "so the food chain", "will be broken"], extra: ["carnivores", "grow bigger"], hint: "Who eats plants?" },
+      { type: "mc", mode: "normal", level: "easy", q: "Energy is transferred in a food chain from:", options: ["plant to consumer (herbivore)", "consumer (herbivore) to plant", "consumer (carnivore) to plant", "consumer (predator) to consumer (herbivore)"], answer: 0, hint: "Follow the arrow from the producer." },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "Energy is transferred from a plant to the herbivore.", answer: 0, hint: "Who eats whom?" },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "Most food chains start with green plants.", answer: 0, hint: "Who makes food first?" },
+      { type: "mc", mode: "normal", level: "medium", q: "Cross out the odd word: grasshoppers – rabbits – lions – sheep.", options: ["Lions", "Grasshoppers", "Rabbits", "Sheep"], answer: 0, hint: "Three eat plants." },
+      { type: "order", mode: "normal", level: "medium", q: "Arrange this food chain to show the energy flow: snake – green plant – falcon – mouse.", items: ["Snake", "Green plant", "Falcon", "Mouse"], answer: [1, 3, 0, 2], hint: "Start with the producer." }
+    ] },
+  { id: 'P33', lesson: 1, bonus: true, guide: true, concept: "Energy in the food chain — definitions",
+    explain: "In a food chain energy passes from the plant to the herbivore, then to the carnivore, until the end of the chain; arrows show the direction of energy flow. Most food chains start with green plants. Herbivores are animals that eat plants to get energy; snakes and lions are carnivores because they eat animals. The organism that eats a grasshopper is a carnivore. If plants disappeared, herbivores would find no food and die, and the food chain would break. All animals depend on plants directly or indirectly for energy.",
+    variants: [
+      { type: "build", style: "define", mode: "normal", level: "easy", q: "What is meant by herbivores?", parts: ["Animals that eat plants", "to get", "energy"], extra: ["eat", "meat"], hint: "Like the rabbit." }
     ] }
 ];
 })();

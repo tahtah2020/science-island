@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261127t121115"></script>
-<script src="chapters.js?v=20261127t121115"></script>
-<script src="common.js?v=20261127t121115"></script>
+<script src="firebase-config.js?v=20261127t121708"></script>
+<script src="chapters.js?v=20261127t121708"></script>
+<script src="common.js?v=20261127t121708"></script>
 <script>
 (() => {
 'use strict';
@@ -1585,7 +1585,19 @@ const G6_SCI_LAYOUT = [
   [...g4slots(2, [0, 1], c => c.v.type === 'mc' && c.a && !/قارن|Compare/.test(c.v.q || ''), ['Choose the correct answer:', 'اختر الإجابة الصحيحة:'], 1, 'A'), ...g4slots(3, [1, 1, 1], c => c.b === 'whatif' || /^(ماذا يحدث|What happens)/.test(c.v.q || ''), ['What happens in these cases?', 'ماذا يحدث في الحالات الآتية؟'], 1, 'B')],
   [...g4slots(2, [0, 1], c => c.v.type === 'tf', ['Put ✓ or ✗:', 'ضع علامة (✓) أو (✗) أمام العبارات الآتية:'], 1, 'A'), ...g4slots(3, [1, 1, 1], c => ['order', 'multi', 'match', 'table'].includes(c.v.type) || c.b === 'say' || c.b === 'compare' || /قارن|Compare/.test(c.v.q || ''), ['Answer:', 'أجب عما يأتي:'], 1, 'B')]
 ];
-const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT, g4math: G4_MATH_LAYOUT, g4studies: G4_STUDIES_LAYOUT, g6sci: G6_SCI_LAYOUT };
+/* layout 'g6sciEn' (owner, 27 Nov 2026, El-Moasser «November Monthly Test» models for Grade 6 Science, Languages track, chapters 5-7):
+   three questions of 5 marks. Q1 (A) complete 1 · (B) give reasons 2 × 1.5 · (C) function / importance / what happens 1;
+   Q2 (A) scientific term or choose 1 · (B) what happens if ×2 (2 each); Q3 (A) ✓ or ✗ 1 · (B) what is meant by ×2 (2 each) = 15 marks. */
+const G6_SCI_EN_LAYOUT = [
+  [{ part: 'A', m: 1, want: 0, t: c => c.v.type === 'fill', l: ['Complete the following sentence:', 'أكمل العبارة الآتية:'] },
+   ...g4slots(2, [0, 1], c => c.b === 'why', ['Give reasons for:', 'علل لما يأتي:'], 1.5, 'B'),
+   { part: 'C', m: 1, want: 1, t: c => /function|importance|ما وظيفة|ما أهمية/i.test(c.v.q || '') || c.v.style === 'function', l: ['What is the function / importance of…?', 'ما وظيفة / أهمية…؟'] }],
+  [{ part: 'A', m: 1, want: 0, t: c => c.v.type === 'term' || (c.v.type === 'mc' && c.a && !/Compare|odd|قارن|الشاذة/i.test(c.v.q || '')), l: ['Write the scientific term / choose:', 'اكتب المصطلح العلمي / اختر:'] },
+   ...g4slots(2, [1, 1], c => c.b === 'whatif' || /^(What happens|ماذا يحدث)/.test(c.v.q || ''), ['What happens if…?', 'ماذا يحدث إذا…؟'], 2, 'B')],
+  [{ part: 'A', m: 1, want: 0, t: c => c.v.type === 'tf', l: ['Put (✓) or (✗):', 'ضع علامة (✓) أو (✗):'] },
+   ...g4slots(2, [0, 1], c => c.v.style === 'define' || /What is meant|ما المقصود/.test(c.v.q || '') || c.v.type === 'order' || /odd|الشاذة|Compare|قارن/i.test(c.v.q || ''), ['What is meant by…? / Arrange / Compare:', 'ما المقصود بـ…؟ / رتب / قارن:'], 2, 'B')]
+];
+const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT, g4math: G4_MATH_LAYOUT, g4studies: G4_STUDIES_LAYOUT, g6sci: G6_SCI_LAYOUT, g6sciEn: G6_SCI_EN_LAYOUT };
 function buildPaper(pool, caps, last, layout) {
   const cands = [], used = new Set(), perCh = {};
   pool.forEach(I => I.variants.forEach((v, vi) => { const a = EXAM_A(v), b = EXAM_B(v); if (a || b) cands.push({ I, v, vi, a, b }); }));
@@ -1761,8 +1773,9 @@ let EXAM_ID = '';
 async function examMain() {
   bankRate = 15;
   const me = SI.player();
-  const EX = SI.examById((/^#exam=([\w-]+)/.exec(location.hash) || [])[1]);
+  let EX = SI.examById((/^#exam=([\w-]+)/.exec(location.hash) || [])[1]);
   if (!EX) { location.href = SI.CHAPTERS_PAGE; return; }
+  if (EX.lang && (me.track || 'lang') !== 'ar') EX = Object.assign({}, EX, EX.lang);   // the Languages track's own paper shape (layout, of)
   EXAM_ID = EX.id;
   document.querySelectorAll('a[href="map.html"]').forEach(a => { a.href = SI.CHAPTERS_PAGE; const l = SI.isUnits() ? T('Back to the units', 'رجوع للوحدات') : T('Back to the chapters', 'رجوع للفصول'); a.title = l; if (a.hasAttribute('aria-label')) a.setAttribute('aria-label', l); });
   $('.logo').textContent = EX.icon || '📝';
@@ -1788,7 +1801,9 @@ async function examMain() {
       G(`زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!`, `زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!`))
     + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || total}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
   else await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
-    (EX.layout === 'g6sci' ? T('Like the November review tests: 3 questions, <b>15 marks</b>, each with part (A) and part (B). Every item is 1 mark and you get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
+    (EX.layout === 'g6sciEn' ? T('Like the November model tests: 3 questions, <b>15 marks</b> (5 each): short items (A), longer answers (B) and (C). You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
+      G('زي نماذج امتحان نوفمبر: ٣ أسئلة، <b>١٥ درجة</b> (كل سؤال ٥). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي نماذج امتحان نوفمبر: ٣ أسئلة، <b>١٥ درجة</b> (كل سؤال ٥). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!')) :
+    EX.layout === 'g6sci' ? T('Like the November review tests: 3 questions, <b>15 marks</b>, each with part (A) and part (B). Every item is 1 mark and you get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
       G('زي اختبارات مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليك <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', 'زي اختبارات مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليكي <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')) :
     EX.layout === 'g4studies' ? G('زي مراجعة نوفمبر: ٥ أسئلة، <b>٢٠ درجة</b>: أكمل، واختر، وصح أو خطأ (كل بند بدرجة)، ثم بم تفسر، وأجب (كل بند بدرجتين). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي مراجعة نوفمبر: ٥ أسئلة، <b>٢٠ درجة</b>: أكملي، واختاري، وصح أو خطأ (كل بند بدرجة)، ثم بم تفسرين، وأجيبي (كل بند بدرجتين). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!') :
     EX.layout === 'g4math' ? T('Like the November review tests: 3 questions, <b>30 marks</b>. Question 1: choose (10 items), question 2: complete (10 items), question 3: answer (5 problems, 2 marks each). You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',

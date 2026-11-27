@@ -189,7 +189,11 @@ window.IDEAS = [
       { type: "build", style: "say", mode: "normal", level: "medium", q: "What is the proof that a plant makes its own food?", parts: ["Starch forms in the parts of the leaf in the light,", "which is shown when iodine", "turns dark blue on them"], extra: ["the leaf", "turns red"], hint: "Remember the iodine test." },
       { type: "mc", mode: "normal", level: "easy", q: "Name the liquid used to remove the green colour from a leaf.", options: ["Ethanol", "Iodine", "Water", "Vinegar"], answer: 0, hint: "It must not be heated over a flame." },
       { type: "multi", mode: "normal", level: "medium", q: "Which of these does the plant produce in photosynthesis? Choose all correct answers.", options: ["Oxygen", "Sugar", "Starch", "Carbon dioxide"], answer: [0, 1, 2], hint: "The plant takes in one of them." },
-      { type: "term", mode: "normal", level: "medium", q: "The form in which the plant stores its food (sugar) in the leaves and needs it to grow.", answer: "Starch", choices: ["Oxygen", "Iodine", "Ethanol"], hint: "Iodine turns it dark blue." },
+      { type: "term", mode: "normal", level: "medium", q: "The form in which the plant stores its food (sugar) in the leaves and needs it to grow.", answer: "Starch", choices: ["Oxygen", "Iodine", "Ethanol"], hint: "Iodine turns it dark blue." }
+    ] },
+  { id: 'C33', lesson: 1, bonus: true, guide: true, concept: "Photosynthesis and the starch test — definitions",
+    explain: "Photosynthesis is the life process in which the plant makes its food using sunlight, water and carbon dioxide; it makes starch and gives out oxygen. In the starch test the leaf is put in ethanol to remove its green colour; ethanol is not heated directly over a flame because it catches fire easily. Iodine turns dark blue on parts of the leaf that were in the light, the proof that the plant made starch. A part covered with aluminium foil gets no light, makes no starch and the iodine does not change colour. A plant kept without sunlight gets yellow leaves and may die because it cannot make its food.",
+    variants: [
       { type: "build", style: "define", mode: "normal", level: "easy", q: "What is photosynthesis?", parts: ["A life process in which the plant makes its food", "in the presence of sunlight, water", "and carbon dioxide"], extra: ["in the dark", "with oxygen only"], hint: "Light + water + a gas." }
     ] },
   { id: 'G30', lesson: 2, bonus: true, guide: true, concept: "Gas exchange: day and night",
@@ -209,6 +213,22 @@ window.IDEAS = [
       { type: "mc", mode: "normal", level: "medium", q: "Compare the upper and lower surfaces of a leaf by the number of stomata.", options: ["The upper surface has fewer stomata; the lower surface has more", "The upper surface has more stomata; the lower surface has fewer", "Both have none"], answer: 0, hint: "Most stomata are underneath." },
       { type: "mc", mode: "normal", level: "easy", q: "Plants take in more ___ from the air in the day.", options: ["carbon dioxide", "oxygen", "nitrogen"], answer: 0, hint: "Photosynthesis uses it." },
       { type: "term", mode: "normal", level: "easy", q: "The gas that plants make and living things depend on to keep breathing.", answer: "Oxygen", choices: ["Carbon dioxide", "Nitrogen", "Water vapour"], hint: "We breathe it in." }
+    ] },
+  /* ---------- November 2026 review (El-Moasser November models (languages track), owner 27 Nov 2026): items the bank lacked; guide: true ---------- */
+  { id: 'C32', lesson: 1, bonus: true, guide: true, concept: "Starch, leaves and iodine",
+    explain: "Sugar made in photosynthesis is stored as starch in the green leaves; the plant needs starch to grow. Iodine solution is used to detect starch in green leaves. Hot water makes a leaf softer before the starch test. Leaves absorb sunlight, let carbon dioxide in from the air and store starch. In the light plants absorb carbon dioxide and release oxygen.",
+    variants: [
+      { type: "fill", mode: "normal", level: "easy", q: "Sugar, the food made in photosynthesis, is stored as ___ in the green leaves.", options: ["starch", "oxygen", "water"], answer: 0, hint: "Iodine turns it dark blue." },
+      { type: "fill", mode: "normal", level: "easy", q: "In sunlight, plants absorb ___ gas during photosynthesis.", options: ["carbon dioxide", "oxygen", "nitrogen"], answer: 0, hint: "The gas we breathe out." },
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "The green plant stores starch in its leaves.", parts: ["Because", "the plant needs starch", "to grow"], extra: ["to make", "the leaves red"], hint: "Why does a plant need food?" },
+      { type: "mc", mode: "normal", level: "easy", q: "What is the function of iodine solution?", options: ["To detect starch in the green leaves", "To remove the green colour", "To make the leaf softer"], answer: 0, hint: "It turns dark blue with starch." },
+      { type: "mc", mode: "normal", level: "medium", q: "What is the importance of the leaves of a green plant?", options: ["They absorb sunlight, let carbon dioxide in from the air and store starch", "They absorb water from the soil", "They hold the plant in the soil"], answer: 0, hint: "Where does photosynthesis happen?" },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "Hot water makes the plant leaf softer.", answer: 0, hint: "Think of the first step of the starch test." },
+      { type: "mc", mode: "normal", level: "medium", q: "Cross out the odd word: carbon dioxide – sunlight – water – starch.", options: ["Starch", "Carbon dioxide", "Sunlight", "Water"], answer: 0, hint: "Three are needed for photosynthesis; one is made by it." },
+      { type: "mc", mode: "normal", level: "medium", q: "What is the function of a gas detector tube?", options: ["To check the amount of oxygen and carbon dioxide used and produced in photosynthesis", "To measure the temperature of the leaf", "To colour the water red"], answer: 0, hint: "It detects gases." },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if green plants stop photosynthesis at night?", parts: ["The plant", "continues", "to breathe"], extra: ["the plant", "dies at once"], hint: "Which process does not need light?" },
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "Planting more trees in the streets.", parts: ["Because plants make oxygen in photosynthesis", "which all living things need", "for breathing"], extra: ["to make", "more shade only"], hint: "Which gas do trees give?" },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "Animals release oxygen gas when they breathe out.", answer: 1, hint: "Which gas do we breathe out?" }
     ] }
 ];
 })();
