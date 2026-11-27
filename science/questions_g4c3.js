@@ -54,11 +54,11 @@ window.IDEAS = [
   { id: 'A1', lesson: 2, concept: 'Seed leaves',
     explain: 'After you sow seeds and wait for a while, sprouts come out. Seed leaves (cotyledons) are the first leaves you see after the sprout comes out. Plants like sunflowers and balsam have two seed leaves.',
     variants: [
-      { type: 'term', mode: 'normal', level: 'medium', q: 'The first leaves you see after the sprout comes out.', answer: 'Seed leaves' },
-      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'When a plant sprouts, what are the first leaves called?', options: ['Seed leaves', 'True leaves', 'Buds', 'Roots'], answer: 0 },
-      { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'Plants like sunflowers and balsam have ___ seed leaves.', options: ['two', 'five', 'ten'], answer: 0 },
-      { type: 'tap', diagram: 'seedlingLeaves', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap a seed leaf.', answer: 'seedleaf' },
-      { type: 'tf', mode: 'normal', level: 'medium', q: 'Seed leaves come out after true leaves.', answer: 1, explain: 'Seed leaves are the first leaves you see after the sprout comes out. True leaves come out after them.' }
+      { type: 'term', mode: 'normal', level: 'medium', q: 'The first leaves you see after the sprout comes out.', answer: 'Seed leaves', hint: 'Think of what you see first when the sprout comes out of the seed.' },
+      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'When a plant sprouts, what are the first leaves called?', options: ['Seed leaves', 'True leaves', 'Buds', 'Roots'], answer: 0, hint: 'They come before the true leaves.' },
+      { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'Plants like sunflowers and balsam have ___ seed leaves.', options: ['two', 'five', 'ten'], answer: 0, hint: 'Look at a young sunflower and count its first small leaves.' },
+      { type: 'tap', diagram: 'seedlingLeaves', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap a seed leaf.', answer: 'seedleaf', hint: 'Look for the small round leaves low on the stem.' },
+      { type: 'tf', mode: 'normal', level: 'medium', q: 'Seed leaves come out after true leaves.', answer: 1, explain: 'Seed leaves are the first leaves you see after the sprout comes out. True leaves come out after them.', hint: 'Which leaves do you see first after the sprout comes out?' }
     ] },
   { id: 'A2', lesson: 2, concept: 'True leaves',
     explain: 'True leaves are the leaves that come out after the seed leaves. They often have a different shape and color from the seed leaves. The number of leaves will increase little by little.',
@@ -135,10 +135,10 @@ window.IDEAS = [
   { id: 'F5', lesson: 3, boss: true, concept: 'From seed to seed',
     explain: 'Sow seeds → the sprout comes out → stems and leaves grow → buds form → the flower blooms → the fruit is made → new seeds are made. The fava bean grows the same way: seed, sprout, leafy plant, flowers, then pods with new seeds.',
     variants: [
-      { type: 'order', mode: 'boss', level: 'hard', q: 'The seeds were sown. Put what happens next in order.', items: ['Buds form', 'The sprout comes out', 'The fruit is made', 'The flower blooms', 'Stems and leaves grow', 'New seeds are made'], answer: [1, 4, 0, 3, 2, 5] },
-      { type: 'order', mode: 'boss', level: 'hard', q: 'How does a fava bean grow from a seed? Put the pictures in the correct order.', items: ['A plant with flowers', 'A seed', 'A plant with pods (fruits)', 'A sprout with its first leaves', 'A plant with many leaves'], answer: [1, 3, 4, 0, 2] },
-      { type: 'mc', style: 'story', mode: 'boss', level: 'hard', q: 'Youssef’s sunflower bloomed, and then the flower withered. He says: “Nothing is left of my flower.” What do you tell him?', options: ['The base part swells up and becomes a fruit, and new seeds are made inside it', 'You are right: after a flower blooms, it just withers and nothing remains', 'The flower will turn back into a bud', 'The fruit was already inside the bud before the flower bloomed'], answer: 0 },
-      { type: 'table', mode: 'boss', level: 'hard', q: 'Does it happen before the flower blooms, or after it?', cols: ['Before the flower blooms', 'After the flower blooms'], items: ['The sprout comes out', 'Buds form', 'The fruit is made', 'New seeds are made'], answer: [0, 0, 1, 1] }
+      { type: 'order', mode: 'boss', level: 'hard', q: 'The seeds were sown. Put what happens next in order.', items: ['Buds form', 'The sprout comes out', 'The fruit is made', 'The flower blooms', 'Stems and leaves grow', 'New seeds are made'], answer: [1, 4, 0, 3, 2, 5], hint: 'Start with what comes out of the seed first, and end with new seeds.' },
+      { type: 'order', mode: 'boss', level: 'hard', q: 'How does a fava bean grow from a seed? Put the pictures in the correct order.', items: ['A plant with flowers', 'A seed', 'A plant with pods (fruits)', 'A sprout with its first leaves', 'A plant with many leaves'], answer: [1, 3, 4, 0, 2], hint: 'Start with the seed.' },
+      { type: 'mc', style: 'story', mode: 'boss', level: 'hard', q: 'Youssef’s sunflower bloomed, and then the flower withered. He says: “Nothing is left of my flower.” What do you tell him?', options: ['The base part swells up and becomes a fruit, and new seeds are made inside it', 'You are right: after a flower blooms, it just withers and nothing remains', 'The flower will turn back into a bud', 'The fruit was already inside the bud before the flower bloomed'], answer: 0, hint: 'Think: where do new seeds come from?' },
+      { type: 'table', mode: 'boss', level: 'hard', q: 'Does it happen before the flower blooms, or after it?', cols: ['Before the flower blooms', 'After the flower blooms'], items: ['The sprout comes out', 'Buds form', 'The fruit is made', 'New seeds are made'], answer: [0, 0, 1, 1], hint: 'The flower comes after the buds and before the fruit.' }
     ] },
 
   /* ---------- 3-4 The Plant Body ---------- */

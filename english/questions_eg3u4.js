@@ -56,8 +56,8 @@ window.IDEAS = [
     explain: 'Linking words make the story clear and easy to follow: First, Then, After that, Finally. In the story: Then, they quickly followed the sound. Finally, the cat jumped free.',
     variants: [
       { type: 'mc', mode: 'normal', level: 'easy', q: 'Which one is a linking word?', options: ['Then', 'cat', 'garden'], answer: 0, hint: 'It tells you what happens next.' },
-      { type: 'fill', mode: 'normal', level: 'easy', q: '___, they quickly followed the sound.', options: ['Then', 'Finally', 'First'], answer: 0, hint: 'It happened after they heard the cat.' },
-      { type: 'fill', mode: 'normal', level: 'medium', q: '___, the cat jumped free and licked their hands.', options: ['Finally', 'First', 'Then'], answer: 0, hint: 'It is the end of the story.' },
+      { type: 'fill', mode: 'normal', level: 'easy', q: 'The friends heard a cat. ___, they quickly followed the sound.', options: ['Then', 'Finally', 'First'], answer: 0, hint: 'It happened after they heard the cat.' },
+      { type: 'fill', mode: 'normal', level: 'medium', q: 'The end of the story: ___, the cat jumped free and licked their hands.', options: ['Finally', 'First', 'Then'], answer: 0, hint: 'It is the end of the story.' },
       { type: 'multi', mode: 'normal', level: 'medium', q: 'Choose all the linking words.', options: ['First', 'After that', 'Finally', 'fence'], answer: [0, 1, 2], hint: 'Look at the Tip box: First, Then, After that, Finally.' }
     ] },
   { id: 'N5', lesson: 1, concept: 'Past simple: irregular verbs (p 71)',

@@ -44,18 +44,18 @@ window.IDEAS = [
   { id: 'I4', lesson: 1, concept: 'A light relay with mirrors',
     explain: 'Activity: bounce the sunlight with a mirror to hit a target in the shade. Sprinkle some powder or spray some water mist where the light passes: you will see the path of light faintly. Use a second and third mirror to bounce the light even further.',
     variants: [
-      { type: 'mc', mode: 'normal', level: 'medium', q: 'How can we see the path of the light faintly?', options: ['Sprinkle some powder or spray some water mist where the light passes', 'Close our eyes', 'Cover the mirror with paper'], answer: 0 },
-      { type: 'tf', mode: 'normal', level: 'medium', q: 'If you use two mirrors, you can send the reflected light to a different direction.', answer: 0 },
-      { type: 'tap', diagram: 'mirrorRelay', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap the target in the shade that the light reaches.', answer: 'target' },
-      { type: 'mc', mode: 'normal', level: 'medium', q: 'What do we use to bounce the light even further?', options: ['A second and third mirror', 'A magnifying glass', 'A thermometer'], answer: 0 }
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'How can we see the path of the light faintly?', options: ['Sprinkle some powder or spray some water mist where the light passes', 'Close our eyes', 'Cover the mirror with paper'], answer: 0, hint: 'Tiny bits in the air make the light show.' },
+      { type: 'tf', mode: 'normal', level: 'medium', q: 'If you use two mirrors, you can send the reflected light to a different direction.', answer: 0, hint: 'A mirror bounces light. What can a second mirror do?' },
+      { type: 'tap', diagram: 'mirrorRelay', mode: 'timed', seconds: 15, level: 'easy', q: 'Tap the target in the shade that the light reaches.', answer: 'target', hint: 'Follow the light from the mirror to the shade.' },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'What do we use to bounce the light even further?', options: ['A second and third mirror', 'A magnifying glass', 'A thermometer'], answer: 0, hint: 'Which tool bounces light?' }
     ] },
   { id: 'I5', lesson: 1, boss: true, concept: 'Mirrors and safety',
     explain: 'Caution when using mirrors: if sunlight gets in your eyes, it will hurt them. Do not shine the reflected sunlight at people’s faces or classroom windows.',
     variants: [
-      { type: 'multi', mode: 'boss', level: 'hard', q: 'Choose all the correct answers explaining how sunlight travels.', options: ['Sunlight always has the property of traveling straight', 'If you use two mirrors, you can send the reflected light to a different direction', 'When sunlight bounces off a mirror, it starts to travel in a curve'], answer: [0, 1] },
-      { type: 'mc', style: 'odd', mode: 'boss', level: 'hard', q: 'Choose the INCORRECT way to use a mirror.', options: ['Shine the reflected sunlight at a friend’s face', 'Bounce the sunlight to a target in the shade', 'Use a second mirror to send the light further'], answer: 0 },
-      { type: 'match', mode: 'boss', level: 'hard', q: 'Match each word to its meaning.', left: ['Light source', 'Reflection'], right: ['An object that emits its own light', 'Light hits an object and bounces back'], answer: [0, 1] },
-      { type: 'mc', style: 'story', mode: 'boss', level: 'hard', q: 'Omar wants to send sunlight into a dark room behind a wall. What should he do?', options: ['Bounce the light with one mirror, then with a second mirror into the room', 'Wait for the light to bend around the wall', 'Point the mirror at the sky'], answer: 0 }
+      { type: 'multi', mode: 'boss', level: 'hard', q: 'Choose all the correct answers explaining how sunlight travels.', options: ['Sunlight always has the property of traveling straight', 'If you use two mirrors, you can send the reflected light to a different direction', 'When sunlight bounces off a mirror, it starts to travel in a curve'], answer: [0, 1], hint: 'Does light bend, or does it go straight?' },
+      { type: 'mc', style: 'odd', mode: 'boss', level: 'hard', q: 'Choose the INCORRECT way to use a mirror.', options: ['Shine the reflected sunlight at a friend’s face', 'Bounce the sunlight to a target in the shade', 'Use a second mirror to send the light further'], answer: 0, hint: 'Which one could hurt someone’s eyes?' },
+      { type: 'match', mode: 'boss', level: 'hard', q: 'Match each word to its meaning.', left: ['Light source', 'Reflection'], right: ['An object that emits its own light', 'Light hits an object and bounces back'], answer: [0, 1], hint: 'Read each meaning slowly, then find its word.' },
+      { type: 'mc', style: 'story', mode: 'boss', level: 'hard', q: 'Omar wants to send sunlight into a dark room behind a wall. What should he do?', options: ['Bounce the light with one mirror, then with a second mirror into the room', 'Wait for the light to bend around the wall', 'Point the mirror at the sky'], answer: 0, hint: 'Light cannot bend around a wall.' }
     ] },
 
   /* ---------- 4-2 Gathering Light ---------- */

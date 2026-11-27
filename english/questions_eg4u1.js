@@ -35,12 +35,12 @@ window.IDEAS = [
   { id: 'A3', lesson: 1, concept: 'Which sense do we use?',
     explain: 'We use our senses in different situations: we see a huge tree with our eyes (sight), smell a flower with our nose, hear a loud noise with our ears, and touch things to find them in a bag.',
     variants: [
-      { type: 'mc', mode: 'normal', level: 'easy', q: 'There is a huge tree. Which sense do you use to see it?', options: ['Sight', 'Hearing', 'Smell'], answer: 0 },
-      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'There is a flower. Which sense do you use to know how it smells?', options: ['Smell', 'Taste', 'Hearing'], answer: 0 },
-      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'There is a loud noise. Which sense do you use?', options: ['Hearing', 'Smell', 'Touch'], answer: 0 },
-      { type: 'mc', mode: 'normal', level: 'medium', q: 'You are trying to find something in your bag. Which sense helps you most?', options: ['Touch', 'Taste', 'Hearing'], answer: 0 },
-      { type: 'mc', style: 'story', mode: 'normal', level: 'medium', q: 'Sami can hear birds singing in the school garden. Which sense is he using?', options: ['Hearing', 'Sight', 'Smell', 'Touch'], answer: 0 },
-      { type: 'multi', mode: 'normal', level: 'medium', q: 'What does Salma use in the school garden? Choose all the correct answers.', options: ['Smell the flowers', 'See the colorful butterflies', 'Hear birds singing', 'Taste soup'], answer: [0, 1] }
+      { type: 'mc', mode: 'normal', level: 'easy', q: 'There is a huge tree. Which sense do you use to see it?', options: ['Sight', 'Hearing', 'Smell'], answer: 0, hint: 'Which part of your body do you use?' },
+      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'There is a flower. Which sense do you use to know how it smells?', options: ['Smell', 'Taste', 'Hearing'], answer: 0, hint: 'Which part of your body do you use?' },
+      { type: 'mc', mode: 'timed', seconds: 15, level: 'easy', q: 'There is a loud noise. Which sense do you use?', options: ['Hearing', 'Smell', 'Touch'], answer: 0, hint: 'Which part of your body do you use?' },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'You are trying to find something in your bag. Which sense helps you most?', options: ['Touch', 'Taste', 'Hearing'], answer: 0, hint: 'Which part of your body do you use?' },
+      { type: 'mc', style: 'story', mode: 'normal', level: 'medium', q: 'Sami can hear birds singing in the school garden. Which sense is he using?', options: ['Hearing', 'Sight', 'Smell', 'Touch'], answer: 0, hint: 'Which part of your body do you use?' },
+      { type: 'multi', mode: 'normal', level: 'medium', q: 'What does Salma use in the school garden? Choose all the correct answers.', options: ['Smell the flowers', 'See the colorful butterflies', 'Hear birds singing', 'Taste soup'], answer: [0, 1], hint: 'Think of the garden: flowers, butterflies and birds.' }
     ] },
   { id: 'A4', lesson: 1, concept: 'Senses help us understand the world and stay safe',
     explain: 'Senses help us understand the world around us. Senses also help us stay safe: if we smell smoke, we know there is a fire.',
@@ -166,11 +166,11 @@ window.IDEAS = [
   { id: 'C5', lesson: 3, concept: 'Goha’s clever answer',
     explain: 'Goha took out a few coins from his pocket. He shook them in his hand, and they made a jingling sound. “If you want money for the smell of your soup, then you can take the sound of my coins.”',
     variants: [
-      { type: 'mc', mode: 'normal', level: 'medium', q: 'How was Goha clever in solving the problem?', options: ['He paid for the smell with the sound of his coins', 'He ran away from the owner', 'He cooked his own soup', 'He gave the owner all his money'], answer: 0 },
-      { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'Goha shook his coins and they made a ___ sound.', options: ['jingling', 'sad', 'quiet'], answer: 0 },
-      { type: 'tf', mode: 'normal', level: 'hard', q: 'Goha paid the owner a few coins for the smell of the soup.', answer: 1 },
-      { type: 'mc', mode: 'normal', level: 'medium', q: 'What did Goha say the owner could take?', options: ['The sound of his coins', 'His coins', 'His hat', 'His lunch'], answer: 0 },
-      { type: 'build', style: 'why', mode: 'normal', level: 'hard', q: 'The owner laughed at Goha’s answer.', parts: ['Because Goha’s answer', 'was clever'], extra: ['was greedy', 'was loud'] }
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'How was Goha clever in solving the problem?', options: ['He paid for the smell with the sound of his coins', 'He ran away from the owner', 'He cooked his own soup', 'He gave the owner all his money'], answer: 0, hint: 'Goha shook his coins. Did he give them away?' },
+      { type: 'fill', mode: 'timed', seconds: 15, level: 'easy', q: 'Goha shook his coins and they made a ___ sound.', options: ['jingling', 'sad', 'quiet'], answer: 0, hint: 'It is the light, ringing sound coins make.' },
+      { type: 'tf', mode: 'normal', level: 'medium', q: 'Goha gave some of his coins to the owner.', answer: 1, hint: 'Read again: Goha only shook the coins in his hand. Did they leave his hand?' },
+      { type: 'mc', mode: 'normal', level: 'medium', q: 'What did Goha say the owner could take?', options: ['The sound of his coins', 'His coins', 'His hat', 'His lunch'], answer: 0, hint: 'Goha kept his coins. What could the owner only hear?' },
+      { type: 'build', style: 'why', mode: 'normal', level: 'medium', q: 'The owner laughed at Goha’s answer.', parts: ['Because Goha’s answer', 'was clever'], extra: ['was greedy', 'was loud'], hint: 'Think: was Goha greedy, or did he find a smart answer?' }
     ] },
   { id: 'C6', lesson: 3, concept: 'The owner shares the soup',
     explain: 'The owner laughed at Goha’s clever answer. “Come inside,” he said. “Let’s share this soup. Good food tastes better when shared with others!”',
