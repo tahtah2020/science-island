@@ -738,6 +738,12 @@ window.CHAPTERS = [
     lessons: ['Algebraic expressions', 'Exponents and order of operations', 'Equations', 'Inequalities', 'Dependent and independent variables', 'Data and statistical questions', 'Histograms, box plots, median and range'],
     lessonsAr: ['المقادير والتعبيرات الجبرية', 'الأسس وترتيب العمليات', 'المعادلات', 'المتباينات', 'المتغيرات التابعة والمستقلة', 'البيانات والأسئلة الإحصائية', 'المدرج التكراري والمخطط الصندوقي والوسيط والمدى'],
     questionsAr: 'math/questions_mg6b_ar.js' },
+  /* Math Grade 6 November bank, Languages track (27 Nov 2026): the owner's El-Moasser «November Monthly Tests» (3 models), unit 3 lesson 4 to unit 5 lesson 4.
+     examOnly, English file only (the Arabic track uses mg6b). */
+  { id: 'mg6e', subject: 'math', grade: 'g6', n: 3, examOnly: true, topics: true, title: 'Math: November syllabus', titleAr: 'الرياضيات: منهج نوفمبر', icon: '🔢', tint: '#ffe6cc', ready: true,
+    lessons: ['Exponents and order of operations', 'Algebraic expressions', 'Equations', 'Inequalities', 'Dependent and independent variables'],
+    lessonsAr: ['الأسس وترتيب العمليات', 'المقادير الجبرية', 'المعادلات', 'المتباينات', 'المتغيرات التابعة والمستقلة'],
+    questions: 'math/questions_mg6e.js' },
   /* Social Studies Grade 6 November bank (27 Nov 2026): unit 2 (Islamic history) is not built yet, so the November test has its own bank from the
      owner's «سندباد» November review (examOnly; one Arabic book for both tracks). Topics, not book lessons (topics: true). */
   { id: 'sg6b', subject: 'studies', grade: 'g6', n: 2, examOnly: true, topics: true, title: 'Social Studies: November syllabus', titleAr: 'الدراسات: منهج نوفمبر', icon: '🕌', tint: '#f3e6cc', ready: true,
@@ -804,7 +810,8 @@ window.EXAMS = [
               [{ sec: 'choose', n: 4 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] },
   /* mg6nov (owner, 27 Nov 2026): Grade 6 Math November test (units 3-6) from the «سندباد» November review: «اختبارات مراجعة منهج شهر نوفمبر» shape,
      choose ×10, complete ×10, answer ×5 = 25 marks; bank mg6b (Arabic track only until units 3-6 are built) */
-  { id: 'mg6nov', subject: 'math', grade: 'g6', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝', parts: [{ ch: 'mg6b' }],
+  { id: 'mg6nov', subject: 'math', grade: 'g6', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝', lang: { layouts: null, layout: 'g6mathEn', of: 15 },
+    parts: [{ ch: 'mg6b', track: 'ar' }, { ch: 'mg6e', track: 'lang' }],
     layouts: [[{ sec: 'choose', n: 10, title: ['Choose the correct answer', 'اختر الإجابة الصحيحة من بين الإجابات المعطاة'] },
                { sec: 'complete', n: 10, title: ['Complete', 'أكمل الجمل التالية'] },
                { sec: 'answer', n: 5, title: ['Answer the following', 'أجب عما يلي'] }]] },

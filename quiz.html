@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261127t130813"></script>
-<script src="chapters.js?v=20261127t130813"></script>
-<script src="common.js?v=20261127t130813"></script>
+<script src="firebase-config.js?v=20261127t131524"></script>
+<script src="chapters.js?v=20261127t131524"></script>
+<script src="common.js?v=20261127t131524"></script>
 <script>
 (() => {
 'use strict';
@@ -1597,7 +1597,18 @@ const G6_SCI_EN_LAYOUT = [
   [{ part: 'A', m: 1, want: 0, t: c => c.v.type === 'tf', l: ['Put (✓) or (✗):', 'ضع علامة (✓) أو (✗):'] },
    ...g4slots(2, [0, 1], c => c.v.style === 'define' || /What is meant|ما المقصود/.test(c.v.q || '') || c.v.type === 'order' || /odd|الشاذة|Compare|قارن/i.test(c.v.q || ''), ['What is meant by…? / Arrange / Compare:', 'ما المقصود بـ…؟ / رتب / قارن:'], 2, 'B')]
 ];
-const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT, g4math: G4_MATH_LAYOUT, g4studies: G4_STUDIES_LAYOUT, g6sci: G6_SCI_LAYOUT, g6sciEn: G6_SCI_EN_LAYOUT };
+/* layout 'g6mathEn' (owner, 27 Nov 2026, El-Moasser «November Monthly Tests» Grade 6 Math, Languages track): first group choose ×3 (1.5 each),
+   second group answer ×4 (2.5, 2.5, 2.5, 3) = 15 marks. Bank mg6e (sec choose / answer, lesson = topic). */
+const G6_MATH_EN_LAYOUT = [
+  [{ part: 'A', m: 1.5, want: 0, t: c => c.v.sec === 'choose' && c.I.lesson <= 2, l: ['Choose the correct answer from those given:', 'اختر الإجابة الصحيحة:'] },
+   { part: 'A', m: 1.5, want: 1, t: c => c.v.sec === 'choose' && [2, 3, 4].includes(c.I.lesson), l: ['Choose the correct answer from those given:', 'اختر الإجابة الصحيحة:'] },
+   { part: 'A', m: 1.5, want: 1, t: c => c.v.sec === 'choose' && c.I.lesson === 5, l: ['Choose the correct answer from those given:', 'اختر الإجابة الصحيحة:'] }],
+  [{ part: 'B', m: 2.5, want: 2, t: c => c.v.sec === 'answer' && c.I.lesson <= 2 && c.v.type === 'num', l: ['Answer the following questions:', 'أجب عن الأسئلة الآتية:'] },
+   { part: 'B', m: 2.5, want: 2, t: c => c.v.sec === 'answer' && (c.I.id === 'T2' || c.I.lesson === 4), l: ['Answer the following questions:', 'أجب عن الأسئلة الآتية:'] },
+   { part: 'B', m: 2.5, want: 1, t: c => c.v.sec === 'answer' && (c.I.lesson === 3 || c.I.id === 'W2'), l: ['Answer the following questions:', 'أجب عن الأسئلة الآتية:'] },
+   { part: 'B', m: 3, want: 2, t: c => c.v.sec === 'answer' && c.I.id === 'W3', l: ['Answer the following questions:', 'أجب عن الأسئلة الآتية:'] }]
+];
+const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT, g4math: G4_MATH_LAYOUT, g4studies: G4_STUDIES_LAYOUT, g6sci: G6_SCI_LAYOUT, g6sciEn: G6_SCI_EN_LAYOUT, g6mathEn: G6_MATH_EN_LAYOUT };
 function buildPaper(pool, caps, last, layout) {
   const cands = [], used = new Set(), perCh = {};
   pool.forEach(I => I.variants.forEach((v, vi) => { const a = EXAM_A(v), b = EXAM_B(v); if (a || b) cands.push({ I, v, vi, a, b }); }));
@@ -1623,7 +1634,7 @@ function buildPaper(pool, caps, last, layout) {
       const anyOf = (layout === 'g3math' || layout === 'g4math') ? (c => s.part === 'A' ? c.v.type === 'mc' : c.v.type === 'num') : (c => s.part === 'A' ? c.a : (c.b || c.v.type === 'term'));
       const c = take(c => s.t(c), s.want, 1) || take(c => s.t(c), s.want) || take(anyOf, s.want, 1) || take(anyOf, s.want) || take(c => c.a || c.b, s.want);
       const q = make(c, qi + 1, s.part, s.m || (s.part === 'A' ? 1 : 2));
-      if (q) { q.exam.label = s.l; if (['g3math', 'g4math', 'g4studies'].includes(layout)) q.exam.plain = true; }
+      if (q) { q.exam.label = s.l; if (['g3math', 'g4math', 'g4studies', 'g6mathEn'].includes(layout)) q.exam.plain = true; }
       return q;
     }).filter(Boolean)));
     return paper;
@@ -1803,6 +1814,8 @@ async function examMain() {
   else await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
     (EX.layout === 'g6sciEn' ? T('Like the November model tests: 3 questions, <b>15 marks</b> (5 each): short items (A), longer answers (B) and (C). You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
       G('زي نماذج امتحان نوفمبر: ٣ أسئلة، <b>١٥ درجة</b> (كل سؤال ٥). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي نماذج امتحان نوفمبر: ٣ أسئلة، <b>١٥ درجة</b> (كل سؤال ٥). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!')) :
+    EX.layout === 'g6mathEn' ? T('Like the November model tests: 2 groups, <b>15 marks</b>. First group: choose (3 items, 1.5 marks each). Second group: answer (4 problems, 2.5 or 3 marks). You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
+      'زي نماذج امتحان نوفمبر: مجموعتين، <b>١٥ درجة</b>. الأولى «اختر» (٣ بنود، كل بند درجة ونص)، والثانية «أجب» (٤ مسائل). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!') :
     EX.layout === 'g6sci' ? T('Like the November review tests: 3 questions, <b>15 marks</b>, each with part (A) and part (B). Every item is 1 mark and you get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
       G('زي اختبارات مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليك <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', 'زي اختبارات مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليكي <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')) :
     EX.layout === 'g4studies' ? G('زي مراجعة نوفمبر: ٥ أسئلة، <b>٢٠ درجة</b>: أكمل، واختر، وصح أو خطأ (كل بند بدرجة)، ثم بم تفسر، وأجب (كل بند بدرجتين). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي مراجعة نوفمبر: ٥ أسئلة، <b>٢٠ درجة</b>: أكملي، واختاري، وصح أو خطأ (كل بند بدرجة)، ثم بم تفسرين، وأجيبي (كل بند بدرجتين). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!') :
