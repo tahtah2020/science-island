@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'Statistics: correct subject on every event',
+    items: [
+      { text: 'GA events now carry the chapter\'s own subject, not the chosen tab' }
+    ] },
   { date: '2026-11-27', title: 'تنبيه لصاحب الموقع وزر ولي الأمر أوضح',
     items: [
       { text: 'بعد الامتحان يظهر زر «ابعت نتيجتك لبابا أو ماما» تحت الدرجة مباشرة، وفي صفحة الوحدات كارت كبير حتى يُرسل التقرير' }

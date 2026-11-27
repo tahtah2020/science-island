@@ -1171,7 +1171,7 @@ html[dir=rtl] .timer span{right:auto;left:8px}`;
   /* what every hit says about the player (no name) */
   function gaContext() {
     const p = player() || {}, c = chapterById(prof().cur);
-    return { grade: p.grade || 'none', track: p.track || 'none', gender: p.g || 'none', subject: p.grade ? subjectId() : 'none',
+    return { grade: p.grade || 'none', track: p.track || 'none', gender: p.g || 'none', subject: p.grade ? (c ? chSubject(c) : subjectId()) : 'none',   // the chapter's own subject (the chosen tab could differ)
       chapter: (c && c.id) || 'none', players_on_device: String(Object.keys(players()).length) };
   }
   const GA_ON = (() => { try { return !!GA_ID && location.protocol === 'https:' && !/^(localhost|127\.)/.test(location.hostname) && !trackingOff(); } catch (e) { return false; } })();
