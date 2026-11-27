@@ -3,6 +3,12 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'Grade 6 Math November test',
+    items: [
+      { text: 'New test mg6nov «امتحان شهر نوفمبر» for Grade 6 Math (Arabic track): units 3 to 6 (algebraic expressions, exponents and order of operations, equations, inequalities, dependent and independent variables, data, histograms and box plots), shaped like the «سندباد» «اختبارات مراجعة منهج شهر نوفمبر»: choose 10, complete 10, answer 5 = 25 marks' },
+      { text: 'Units 3-6 are not on the site yet, so the test has its own bank mg6b (136 questions in 15 ideas from the review and its model answers, each with a hint)' },
+      { text: 'Progress page: a November test whose bank is a test-only bank now shows as ready', links: [{ label: 'Grade 6 Math November test', href: 'quiz.html#exam=mg6nov', ch: 'mg6u2' }] }
+    ] },
   { date: '2026-11-27', title: 'Grade 6 Science November test: Languages track',
     items: [
       { text: 'g6nov for the Languages track now follows the El-Moasser November models: chapters 5 to 7 only, 3 questions of 5 marks (complete, give reasons, function; scientific term, what happens if; true or false, what is meant by) = 15 marks; the Arabic track keeps its paper (chapters 4-7)' },
