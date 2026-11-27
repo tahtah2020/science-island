@@ -1,0 +1,35 @@
+{
+ "model": "flux-2-klein-4b",
+ "ref": "arabic/assets/a3_adam_invites.webp",
+ "size": [
+  768,
+  768
+ ],
+ "style": "Style: flat cartoon children's-book illustration exactly like the drawing style of image 0: thick dark outlines, soft warm colours, simple clean shapes. Square picture. Absolutely no text, no letters, no numbers, no writing, no calligraphy, no symbols anywhere in the picture.",
+ "images": [
+  {
+   "file": "i5_letter_seal",
+   "seed": 501,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, people, school yard or composition. New picture with NO people, NO faces, NO animals' faces: an old rolled parchment letter tied with a thin red cord and closed with a round plain red wax seal (the seal is smooth and empty, no marks), lying on a simple wooden desk beside a reed pen and a small clay inkwell. Through an arched window behind, golden desert sand dunes and a few palm trees under a blue sky."
+  },
+  {
+   "file": "i5_iftar",
+   "seed": 502,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, people, school yard or composition. New picture with NO people, NO faces, NO animals' faces: a cosy Egyptian family table ready at sunset: a plate of dates, glasses of water, a bowl of soup, a round bread basket and a glowing coloured metal Ramadan lantern (fanous). Behind the table a big window shows an orange sunset sky over plain flat-roofed beige Cairo buildings and one tall minaret. Nobody is in the picture."
+  },
+  {
+   "file": "i5_library",
+   "seed": 503,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, people, school yard or composition. New picture with NO people, NO faces, NO animals' faces: a bright cosy school library corner: tall wooden shelves full of colourful books with plain spines (no titles), a small wooden table with an open notebook with blank pages, a pencil and a desk lamp, a green plant in a pot. Warm daylight. Nobody is in the picture."
+  },
+  {
+   "file": "i5_parchment",
+   "seed": 504,
+   "n": 2,
+   "prompt": "Use image 0 ONLY for the drawing style. Do NOT copy its children, people, school yard or composition. New picture with NO people, NO faces, NO animals' faces: old writing tools from long ago on a low wooden table: a few strips of dried palm leaf, flat pale bone pieces, a sheet of blank parchment, a reed pen and a small clay inkwell, with a simple oil lamp beside them. Behind, a simple mud-brick wall with a small window showing palm trees. Everything is blank, nothing is written."
+  }
+ ]
+}
