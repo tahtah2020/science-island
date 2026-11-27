@@ -738,6 +738,12 @@ window.CHAPTERS = [
     lessons: ['Algebraic expressions', 'Exponents and order of operations', 'Equations', 'Inequalities', 'Dependent and independent variables', 'Data and statistical questions', 'Histograms, box plots, median and range'],
     lessonsAr: ['المقادير والتعبيرات الجبرية', 'الأسس وترتيب العمليات', 'المعادلات', 'المتباينات', 'المتغيرات التابعة والمستقلة', 'البيانات والأسئلة الإحصائية', 'المدرج التكراري والمخطط الصندوقي والوسيط والمدى'],
     questionsAr: 'math/questions_mg6b_ar.js' },
+  /* Social Studies Grade 6 November bank (27 Nov 2026): unit 2 (Islamic history) is not built yet, so the November test has its own bank from the
+     owner's «سندباد» November review (examOnly; one Arabic book for both tracks). Topics, not book lessons (topics: true). */
+  { id: 'sg6b', subject: 'studies', grade: 'g6', n: 2, examOnly: true, topics: true, title: 'Social Studies: November syllabus', titleAr: 'الدراسات: منهج نوفمبر', icon: '🕌', tint: '#f3e6cc', ready: true,
+    lessons: ['Arabs before Islam and the Prophet\'s early life', 'The call to Islam and the Hijra', 'The state in Madinah and the battles', 'The Rightly Guided Caliphs', 'The Umayyad and Abbasid states'],
+    lessonsAr: ['العرب قبل الإسلام ونشأة النبي ﷺ', 'الدعوة الإسلامية والهجرة', 'الدولة في المدينة والغزوات', 'الخلفاء الراشدون', 'الدولة الأموية والدولة العباسية'],
+    questionsAr: 'studies/questions_sg6b_ar.js' },
   /* Islamic Education, Grade 5 (27 Nov 2026): only the November test. examOnly = a question bank for window.EXAMS, never listed as a unit
      (SI.chapters() skips it; no map, no quest). Its `lessons` are topics; the badge shows the topic name without a lesson number (topics: true). */
   { id: 'ig5b', subject: 'islamic', grade: 'g5', n: 1, examOnly: true, topics: true, title: 'Islamic Education', titleAr: 'التربية الدينية الإسلامية', icon: '🕌', tint: '#dff3ea', ready: true,
@@ -802,6 +808,15 @@ window.EXAMS = [
     layouts: [[{ sec: 'choose', n: 10, title: ['Choose the correct answer', 'اختر الإجابة الصحيحة من بين الإجابات المعطاة'] },
                { sec: 'complete', n: 10, title: ['Complete', 'أكمل الجمل التالية'] },
                { sec: 'answer', n: 5, title: ['Answer the following', 'أجب عما يلي'] }]] },
+  /* sg6nov (owner, 27 Nov 2026): Grade 6 Social Studies November test from the «سندباد» November review (Islamic history: the Prophet ﷺ to the Abbasids),
+     complete ×5, choose ×5, true/false ×5, term ×3, why ×3, answer ×4 = 25 marks; bank sg6b (both tracks study the Arabic book) */
+  { id: 'sg6nov', subject: 'studies', grade: 'g6', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝', parts: [{ ch: 'sg6b' }],
+    layouts: [[{ sec: 'complete', n: 5, title: ['Complete', 'أكمل العبارات الآتية بكلمات مناسبة'] },
+               { sec: 'choose', n: 5, title: ['Choose the correct answer', 'اختر الإجابة الصحيحة مما بين القوسين'] },
+               { sec: 'tf', n: 5, title: ['True or false', 'اكتب (صواب) أو (خطأ)'] },
+               { sec: 'term', n: 3, title: ['What does each statement refer to?', 'اكتب ما تشير إليه كل عبارة'] },
+               { sec: 'why', n: 3, title: ['Give reasons', 'بم تفسر؟'] },
+               { sec: 'answer', n: 4, title: ['Answer the following', 'أجب عما يأتي'] }]] },
   /* g6nov (owner, 27 Nov 2026): Grade 6 Science November test from the «سندباد» November review (6 tests): chapters 4 (circulation and excretion),
      5 (photosynthesis), 6 (water in the plant), 7 (food chains), and in about half the papers the breathing chest item (chapter 2 lesson 1);
      layout 'g6sci' = 3 questions × (A) 2 + (B) 3 items = 15 marks. Both tracks (the chapters have English and Arabic files). */

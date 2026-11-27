@@ -586,3 +586,9 @@ Every results panel (kit games `game_kit.js` `results()`, `quiz.html` `results()
 - Units 3-6 of Grade 6 Math are not built yet, so the test draws from an exam-only bank `mg6b` (`examOnly`, `topics`, Arabic file `math/questions_mg6b_ar.js`, ids K-R) written from the owner's «سندباد» November review (unit tests 1-7 and the two «اختبارات مراجعة منهج شهر نوفمبر», with model answers). Arabic track only: the Languages track needs an English file (send the English models).
 - Paper = `layouts` (sec engine): choose ×10, complete ×10, answer ×5, 1 mark each = 25. Drawing items (graphs, number lines, histograms, box plots to draw) are not asked.
 - progress.html November board looks up test parts in `ALLCH` (exam-only banks are not units).
+
+## Grade 6 Social Studies November test `sg6nov` (27 Nov 2026)
+- Unit 2 (Islamic history: the Prophet ﷺ to the Abbasids) is not built yet, so the test draws from an exam-only bank `sg6b` (`examOnly`, `topics`, Arabic file `studies/questions_sg6b_ar.js`, ids K-P by topic) written from the owner's «سندباد» November review with its model answers. One Arabic book serves both tracks.
+- Paper = `layouts` (sec engine): complete ×5, choose ×5, true/false ×5, term ×3, why ×3 (build), answer ×4 (results / relation / prove / whose work), 1 mark each = 25.
+- «صوّب ما تحته خط» became true/false and choose items (no fix items). The blank map (unit 1) is not asked. The review's «الدعوة الهجرية» is a misprint for «الدعوة الجهرية».
+- The generator script is not kept; edit the bank file directly.

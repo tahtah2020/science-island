@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'اختبار شهر نوفمبر: دراسات الصف السادس',
+    items: [
+      { text: 'امتحان نوفمبر للدراسات الاجتماعية (التاريخ الإسلامي) من مراجعة سندباد: أكمل، اختر، صواب أو خطأ، ما تشير إليه، بم تفسر، أجب — ٢٥ درجة', links: [{ label: 'ادخل الامتحان', href: 'quiz.html#exam=sg6nov', ch: 'sg6b' }] }
+    ] },
   { date: '2026-11-27', title: 'Grade 6 Math November test',
     items: [
       { text: 'New test mg6nov «امتحان شهر نوفمبر» for Grade 6 Math (Arabic track): units 3 to 6 (algebraic expressions, exponents and order of operations, equations, inequalities, dependent and independent variables, data, histograms and box plots), shaped like the «سندباد» «اختبارات مراجعة منهج شهر نوفمبر»: choose 10, complete 10, answer 5 = 25 marks' },
