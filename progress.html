@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="common.css?v=20261127t103527">
+<link rel="stylesheet" href="common.css?v=20261127t104818">
 <style>
 /* Owner's progress board: the whole plan (every subject, Grade 1 to Prep 3, first term) in one table.
    Each cell = one subject in one grade: units published out of the term's units, for the Languages track and the Arabic track.
@@ -111,9 +111,9 @@ button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap
 
 <dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
 
-<script src="firebase-config.js?v=20261127t103527"></script>
-<script src="chapters.js?v=20261127t103527"></script>
-<script src="common.js?v=20261127t103527"></script>
+<script src="firebase-config.js?v=20261127t104818"></script>
+<script src="chapters.js?v=20261127t104818"></script>
+<script src="common.js?v=20261127t104818"></script>
 <script>
 (() => {
   /* Units in the first term of a subject and grade, when chapters.js does not list all of them yet: 'grade.subject': number.
@@ -122,7 +122,7 @@ button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap
 
   const GRADES = [['g1', 'الأول الابتدائي'], ['g2', 'الثاني الابتدائي'], ['g3', 'الثالث الابتدائي'], ['g4', 'الرابع الابتدائي'], ['g5', 'الخامس الابتدائي'], ['g6', 'السادس الابتدائي'],
                   ['p1', 'الأول الإعدادي'], ['p2', 'الثاني الإعدادي'], ['p3', 'الثالث الإعدادي']];
-  const SUBJ = window.SUBJECTS || [], CH = window.CHAPTERS || [];
+  const SUBJ = window.SUBJECTS || [], ALLCH = window.CHAPTERS || [], CH = ALLCH.filter(c => !c.examOnly);   // examOnly = a test's question bank, not a unit
   const sub = c => c.subject || 'science', gr = c => c.grade || 'g5';
   const lng = s => s.lang || { lang: 'en', ar: 'ar' };
   const shared = s => lng(s).lang === lng(s).ar;          // one book for both tracks
@@ -169,7 +169,7 @@ button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap
      Per track: ✓ when every part's unit is ready and has a questions file in that track; ! when the test exists but a part is not ready;
      ✗ when there is no test. NOV_SUBJECTS = the subjects of the school's November tests. */
   const NOV_GRADES = [['g3', 'الثالث الابتدائي'], ['g4', 'الرابع الابتدائي'], ['g5', 'الخامس الابتدائي'], ['g6', 'السادس الابتدائي']];
-  const NOV_SUBJECTS = ['arabic', 'english', 'math', 'science', 'studies'];
+  const NOV_SUBJECTS = ['arabic', 'english', 'math', 'science', 'studies', 'islamic'];
   const isNov = e => !e.off && (/nov/i.test(e.id) || /November/i.test(e.title || ''));
   function novCell(g, sid) {
     const s = SUBJ.find(x => x.id === sid) || { id: sid, titleAr: sid };
@@ -177,7 +177,7 @@ button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap
     const ex = (window.EXAMS || []).find(e => isNov(e) && (e.grade || 'g5') === g && (e.subject || 'science') === sid);
     const tracks = [['lang', 'لغات'], ['ar', 'عربي']].map(([tk, label]) => {
       if (!ex) return { tk, label, st: 'n' };
-      const parts = ex.parts.filter(p => p.max == null).map(p => { const c = CH.find(x => x.id === p.ch); return { p, c, ok: !!(c && c.ready && fileOf(c, s, tk)) }; });
+      const parts = ex.parts.filter(p => p.max == null).map(p => { const c = ALLCH.find(x => x.id === p.ch); return { p, c, ok: !!(c && c.ready && fileOf(c, s, tk)) }; });
       const ok = parts.filter(x => x.ok).length;
       return { tk, label, st: ok === parts.length ? 'y' : 'w', ok, of: parts.length, miss: parts.filter(x => !x.ok).map(x => x.c ? (x.c.n || x.p.ch) : x.p.ch) };
     });
@@ -193,7 +193,7 @@ button.nv{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap
     if (!d.ex && !d.units.length) return `<td><div class="nv none">المادة غير موجودة على الموقع</div></td>`;
     const all = d.tracks.every(x => x.st === 'y'), cls = !d.ex ? 'miss' : all ? 'ok' : '';
     const lines = d.tracks.map(x => `<span class="tl">${x.label}<b class="${x.st}">${x.st === 'y' ? '✓ جاهز' : x.st === 'w' ? `! ${x.ok}/${x.of}` : '✗ لا يوجد'}</b></span>${x.st === 'w' ? `<small>وحدات غير جاهزة: ${x.miss.join('، ')}</small>` : ''}`).join('');
-    const note = d.ex ? `<small>${d.ex.parts.filter(p => p.max == null).map(p => { const c = CH.find(x => x.id === p.ch); return (c ? (c.n || p.ch) : p.ch) + (p.lessons ? ` (د ${p.lessons.join('،')})` : ''); }).join(' + ')}</small>` : `<small>الوحدات الجاهزة على الموقع: ${d.units.filter(c => c.ready).length}</small>`;
+    const note = d.ex ? `<small>${d.ex.parts.filter(p => p.max == null).map(p => { const c = ALLCH.find(x => x.id === p.ch); return (c ? (c.n || p.ch) : p.ch) + (p.lessons ? ` (د ${p.lessons.join('،')})` : ''); }).join(' + ')}</small>` : `<small>الوحدات الجاهزة على الموقع: ${d.units.filter(c => c.ready).length}</small>`;
     return `<td>${d.ex ? `<button class="nv ${cls}" data-ex="${d.ex.id}" data-g="${g}" data-s="${sid}">${lines}${note}</button>` : `<div class="nv ${cls}">${lines}${note}</div>`}</td>`;
   }).join('')}</tr>`).join('');
   document.getElementById('nov').addEventListener('click', e => {

@@ -221,6 +221,7 @@ for (const c of CHAPTERS) {
   let IDEAS;
   try { IDEAS = load(c.questionsAr).IDEAS || []; } catch (e) { skipped.push(c.id + ' (' + e.message + ')'); continue; }
   ideasByCh[c.id] = IDEAS;
+  if (c.examOnly) continue;   // a monthly test's own question bank (Islamic G5): used by the test page only, no unit or lesson pages
   const lessons = c.lessonsAr || [];
   const g = grade(c), s = subj(c);
   const key = s + '-' + g;

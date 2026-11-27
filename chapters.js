@@ -31,7 +31,8 @@ window.SUBJECTS = [
   { id: 'studies', title: 'Social Studies', titleAr: 'الدراسات الاجتماعية', icon: '🌍', tint: '#e2f4dc', dir: 'studies', lang: { lang: 'ar', ar: 'ar' }, grades: ['g4', 'g5', 'g6', 'p1', 'p2', 'p3'] },
   { id: 'arabic', title: 'Arabic', titleAr: 'اللغة العربية', icon: '📖', tint: '#fbe3e3', dir: 'arabic', lang: { lang: 'ar', ar: 'ar' }, grades: ['g3'] },
   { id: 'english', title: 'English', titleAr: 'اللغة الإنجليزية', icon: '🔤', tint: '#efe3fb', dir: 'english', lang: { lang: 'en', ar: 'en' } },
-  { id: 'discover', title: 'Discover', titleAr: 'اكتشف', icon: '🧭', tint: '#fff3c4', dir: 'discover', grades: ['g1', 'g2', 'g3'] }
+  { id: 'discover', title: 'Discover', titleAr: 'اكتشف', icon: '🧭', tint: '#fff3c4', dir: 'discover', grades: ['g1', 'g2', 'g3'] },
+  { id: 'islamic', title: 'Islamic Education', titleAr: 'التربية الدينية الإسلامية', icon: '🕌', tint: '#dff3ea', dir: 'islamic', lang: { lang: 'ar', ar: 'ar' }, grades: ['g5'] },   // 27 Nov 2026: November test only (exam-only question bank, no unit yet)
 ];
 
 window.CHAPTERS = [
@@ -730,7 +731,13 @@ window.CHAPTERS = [
     game: { href: 'english-everglades.html', name: "Everglades Journey", nameAr: "رحلة الإيفرجليدز", icon: '🐊', hint: 'Go with Billie Wind into the Everglades, learn from the animals of the swamp, then race the Speed Round!', hintAr: 'روح مع بيلي ويند للإيفرجليدز، واتعلم من حيوانات المستنقع، وبعدين جرّب جولة السرعة!' },
     map: { img: 'english/assets/map_eg5u6.svg', stops: [[25, 82, 'right'], [62, 70, 'left'], [34, 53, 'right'], [65, 37, 'left'], [46, 16, 'below']] },
     cover: 'english/assets/map_eg5u6.svg', quizBg: 'english/assets/bg_eg5u6.svg',
-}
+},
+  /* Islamic Education, Grade 5 (27 Nov 2026): only the November test. examOnly = a question bank for window.EXAMS, never listed as a unit
+     (SI.chapters() skips it; no map, no quest). Its `lessons` are topics; the badge shows the topic name without a lesson number (topics: true). */
+  { id: 'ig5b', subject: 'islamic', grade: 'g5', n: 1, examOnly: true, topics: true, title: 'Islamic Education', titleAr: 'التربية الدينية الإسلامية', icon: '🕌', tint: '#dff3ea', ready: true,
+    lessons: ['Surat Al-Qiyamah', 'The Holy Quran', 'Places of articulation', 'Fasting', 'The Prophet’s letters to kings', 'Zaid ibn Thabit', 'Knowledge'],
+    lessonsAr: ['سورة القيامة', 'القرآن الكريم', 'مخارج الحروف', 'الصيام', 'رسائل النبي إلى الملوك', 'زيد بن ثابت رضي الله عنه', 'العلم وفضله'],
+    questionsAr: 'islamic/questions_ig5b_ar.js', art: 'islamic/i5_art.js' },
 ];
 
 /* Monthly tests ("Reesho's Exam Hall", quiz.html#exam=ID): one paper of 20 marks drawn from several chapters at once.
@@ -803,7 +810,11 @@ window.EXAMS = [
   { id: 'eg3nov', subject: 'english', grade: 'g3', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
     parts: [{ ch: 'eg3u4' }, { ch: 'eg3u5' }],
     layouts: [[{ sec: 'choose', n: 5 }, { sec: 'order', n: 3 }, { sec: 'punct', n: 2 }],
-              [{ sec: 'choose', n: 5 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] }
+              [{ sec: 'choose', n: 5 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] },
+  /* Islamic Education Grade 5 November (27 Nov 2026), from the owner's review booklet (أ/ إسلام خميس): 4 sections, 20 marks, every item 1 mark */
+  { id: 'ig5nov', subject: 'islamic', grade: 'g5', minParts: 1, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝', parts: [{ ch: 'ig5b' }],
+    layouts: [[{ sec: 'verse', n: 4 }, { sec: 'hadith', n: 3 }, { sec: 'tf', n: 6 }, { sec: 'choose', n: 7 }],
+              [{ sec: 'verse', n: 3 }, { sec: 'hadith', n: 3 }, { sec: 'tf', n: 7 }, { sec: 'choose', n: 7 }]] },
 ];
 
 /* Adventures: story games beside the units (owner, Oct 2026). Each one shows as a big card on chapters.html (for its subject and grade,

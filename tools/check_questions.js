@@ -63,7 +63,7 @@ const TAPS = { litmus: ['lmA', 'lmB', 'lmC'], dishes: ['dsA', 'dsB'], tubes: ['t
   dress10: ['dDress', 'dCloset', 'dPlayground', 'dCompetition', 'dDrawings', 'dMedal', 'dSign', 'dLetter', 'dAnnounce', 'dWinner'],
   chars4: ['cWanda', 'cPeggy', 'cMaddie', 'cMason'],
   pens3: [], screens2: [],
-  a3Photo: [], a3Count: [], a3Face: [], photo: [], prepBox: [], livingRoom: [], prepScene: [], bigNum: [], footprints: [],
+  i5Photo: [], a3Photo: [], a3Count: [], a3Face: [], photo: [], prepBox: [], livingRoom: [], prepScene: [], bigNum: [], footprints: [],
   helping6: ['plant', 'help', 'collect', 'clean', 'volunteer', 'feed'],
   fvWords: ['wVan', 'wFactory', 'wVest', 'wForest', 'wFrog', 'wFlag', 'wViolin', 'wView'],
   nileLife: ['crocodile', 'weeds', 'insect', 'fish', 'bird', 'river'],

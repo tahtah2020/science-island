@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261127t103527"></script>
-<script src="chapters.js?v=20261127t103527"></script>
-<script src="common.js?v=20261127t103527"></script>
+<script src="firebase-config.js?v=20261127t104818"></script>
+<script src="chapters.js?v=20261127t104818"></script>
+<script src="common.js?v=20261127t104818"></script>
 <script>
 (() => {
 'use strict';
@@ -628,7 +628,7 @@ function header(q, idx, total, results) {
   if (q.src === 'bonus') b.appendChild(mk('span', 'badge bonus', T('Bonus', 'إضافي')));
   /* where the question comes from: the lesson of the book (units only), so the owner and the child know which lesson it covers */
   const SC = (q.ch && SI.chapterById(q.ch)) || CH;
-  if (q.lesson && SC && SC.id && SI.isUnits(SC) && (SC.lessons || []).length > 1) { const nm = (AR ? SC.lessonsAr : SC.lessons) || SC.lessons || [], lb = mk('span', 'badge lesson', `${T('Lesson', 'الدرس')} ${q.lesson}${nm[q.lesson - 1] ? ' · ' + nm[q.lesson - 1] : ''}`); b.appendChild(lb); }
+  if (q.lesson && SC && SC.id && (SI.isUnits(SC) || SC.topics) && (SC.lessons || []).length > 1) { const nm = (AR ? SC.lessonsAr : SC.lessons) || SC.lessons || [], lb = mk('span', 'badge lesson', SC.topics && nm[q.lesson - 1] ? nm[q.lesson - 1] : `${T('Lesson', 'الدرس')} ${q.lesson}${nm[q.lesson - 1] ? ' · ' + nm[q.lesson - 1] : ''}`);   /* topics: a test bank names the topic only */ b.appendChild(lb); }
   if (q.exam && q.exam.sec) b.appendChild(mk('span', 'badge exam', `${q.exam.q}. ${q.exam.part} · ${T('1 mark', 'درجة واحدة')}`));
   else if (q.exam) b.appendChild(mk('span', 'badge exam', `${T('Q', 'س')}${q.exam.q}${q.exam.plain ? '' : ` (${AR && !q.exam.sec ? (q.exam.part === 'A' ? 'أ' : 'ب') : q.exam.part})`} · ${q.exam.marks === 1 ? T('1 mark', 'درجة واحدة') : q.exam.marks === 2 ? T('2 marks', 'درجتان') : T(`${q.exam.marks} marks`, `${arMarks(q.exam.marks)} درجة`)}`));
   const p = $('#progress'); p.innerHTML = '';
@@ -1617,7 +1617,9 @@ const SEC_HEAD = {
   punct: ['Punctuate the following', 'ضع علامات الترقيم الصحيحة'],
   listen: ['Listening: read the text, then answer', 'الاستماع: اقرأ النص، ثم أجب'], read: ['Reading: read the paragraph, then answer', 'القراءة: اقرأ الفقرة، ثم أجب'],
   poem: ['The poem: choose the correct answer', 'النشيد: اختر الإجابة الصحيحة'], style: ['Grammar: choose the correct answer', 'الأساليب والتراكيب: اختر الإجابة الصحيحة'],
-  spell: ['Spelling: choose the correct answer', 'الإملاء: اختر الإجابة الصحيحة'] };
+  spell: ['Spelling: choose the correct answer', 'الإملاء: اختر الإجابة الصحيحة'],
+  verse: ['The Holy Quran: complete the verses', 'القرآن الكريم: أكمل الآيات الكريمة'], hadith: ['The Hadith: complete', 'الحديث الشريف: أكمل الأحاديث'],
+  tf: ['Put (✓) or (✗)', 'ضع علامة (✓) أمام العبارة الصحيحة وعلامة (✗) أمام الخاطئة'] };
 /* a section { sec, n, same: true } takes n items from ONE idea (one reading text) in their written order; { ids: ['D1', …] } also takes the
    mc / tf / fill phrasings of those ideas (e.g. the unit's own poem questions). */
 function buildSecPaper(pool, EX, last) {
