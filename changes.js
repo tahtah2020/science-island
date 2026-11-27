@@ -3,6 +3,10 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'التربية الدينية: إصلاح صور امتحان نوفمبر',
+    items: [
+      { text: 'صور أسئلة امتحان نوفمبر للتربية الدينية (الصف الخامس) أصبحت مدمجة في ملف الرسوم، فلا تظهر مكسورة', links: [{ label: 'امتحان نوفمبر', href: 'quiz.html#exam=ig5nov', ch: 'ig5b' }] }
+    ] },
   { date: '2026-11-27', title: 'التربية الدينية الإسلامية: امتحان شهر نوفمبر للصف الخامس',
     items: [
       { text: 'مادة جديدة للصف الخامس: التربية الدينية الإسلامية (امتحان نوفمبر فقط)' },
