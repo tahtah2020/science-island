@@ -570,3 +570,8 @@ Every results panel (kit games `game_kit.js` `results()`, `quiz.html` `results()
 ## Grade 4 Math November test `mg4nov` (26 Nov 2026)
 - From the owner's «سندباد» November review for Grade 4 Math (reviews to unit 7; the two «اختبار لمراجعة منهج شهر نوفمبر» papers). Parts `mg4u4`–`mg4u7`, both tracks.
 - `layout: 'g4math'`, `of: 30` (quiz.html `G4_MATH_LAYOUT`, built with `g4slots`): Q1 choose ×10 (mc), Q2 complete ×10 (number items without a drawing, or fill), Q3 answer ×5 (number items with a drawing or a long word problem, 2 marks); `exam.plain`. No new questions were needed: the units' banks cover the review's items.
+
+## Grade 4 Social Studies November test `sg4nov` (27 Nov 2026)
+- From the owner's «سندباد» November review (unit 2 «مدينتنا وحياتنا اليومية», with model answers). Part `sg4u2` (all 5 lessons); one Arabic book for both tracks.
+- `layout: 'g4studies'`, `of: 20` (quiz.html `G4_STUDIES_LAYOUT`): complete ×4, choose ×4 (no «قارن/العلاقة» items), true/false ×4 (1 mark); «بم تفسر» ×2 and «أجب» ×2 (what happens / results / relation / compare / term, 2 marks); `exam.plain`. The review's «صوّب ما تحته خط» and blank-map items are not asked.
+- New guide ideas in `studies/questions_sg4u2_ar.js`: `E30 E31 F30 F31 F32 G30 H30 I30` (79 phrasings, hints). Answers follow the review's model answers; «أجب بنفسك» / «ماذا يحدث» answers were written from the lesson text.

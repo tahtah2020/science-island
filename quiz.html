@@ -416,9 +416,9 @@ html[dir=rtl] .helpline{text-transform:none;letter-spacing:0}
   </main>
 </div>
 
-<script src="firebase-config.js?v=20261127t111454"></script>
-<script src="chapters.js?v=20261127t111454"></script>
-<script src="common.js?v=20261127t111454"></script>
+<script src="firebase-config.js?v=20261127t115055"></script>
+<script src="chapters.js?v=20261127t115055"></script>
+<script src="common.js?v=20261127t115055"></script>
 <script>
 (() => {
 'use strict';
@@ -1566,7 +1566,18 @@ const G4_MATH_LAYOUT = [
   g4slots(10, [0, 0, 0, 1, 1, 1, 1, 1, 1, 1], c => (c.v.type === 'num' && !c.v.fig) || c.v.type === 'fill', ['Complete:', 'أكمل الجمل التالية:'], 1, 'B'),
   g4slots(5, [1, 1, 1, 2, 2], c => c.v.type === 'num' && (!!c.v.fig || (c.v.q || '').length > 70), ['Answer:', 'أجب عما يلي:'], 2, 'B')
 ];
-const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT, g4math: G4_MATH_LAYOUT };
+/* layout 'g4studies' (owner, 27 Nov 2026, from the «سندباد» November review for Grade 4 Social Studies, unit 2 «مدينتنا وحياتنا اليومية»):
+   Q1 «أكمل العبارات الآتية» ×4, Q2 «اختر الإجابة الصحيحة مما بين القوسين» ×4, Q3 «اكتب صح أو خطأ» ×4 (1 mark each),
+   Q4 «بم تفسر؟» ×2, Q5 «أجب: ماذا يحدث إذا / ما النتائج / ما العلاقة / قارن / ما المقصود» ×2 (2 marks each) = 20 marks.
+   The review's «صوّب ما تحته خط» is not asked (owner rule); its facts are in the ✓/✗ items. */
+const G4_STUDIES_LAYOUT = [
+  g4slots(4, [0, 0, 1, 1], c => c.v.type === 'fill', ['Complete:', 'أكمل العبارات الآتية:'], 1, 'A'),
+  g4slots(4, [0, 0, 1, 1], c => c.v.type === 'mc' && c.b !== 'story' && !/العلاقة|قارن/.test(c.v.q || ''), ['Choose the correct answer:', 'اختر الإجابة الصحيحة مما بين القوسين:'], 1, 'A'),
+  g4slots(4, [0, 0, 1, 1], c => c.v.type === 'tf', ['Write true or false:', 'اكتب «صح» أو «خطأ»:'], 1, 'A'),
+  g4slots(2, [1, 1], c => c.b === 'why', ['Explain why:', 'بم تفسر؟'], 2, 'B'),
+  g4slots(2, [1, 2], c => c.b === 'whatif' || c.v.type === 'term' || c.v.type === 'multi' || /العلاقة|قارن|المقصود/.test(c.v.q || ''), ['Answer:', 'أجب عما يأتي:'], 2, 'B')
+];
+const PAPER_LAYOUTS = { school: SCHOOL_LAYOUT, g3math: G3_MATH_LAYOUT, g4sci: G4_SCI_LAYOUT, g4math: G4_MATH_LAYOUT, g4studies: G4_STUDIES_LAYOUT };
 function buildPaper(pool, caps, last, layout) {
   const cands = [], used = new Set(), perCh = {};
   pool.forEach(I => I.variants.forEach((v, vi) => { const a = EXAM_A(v), b = EXAM_B(v); if (a || b) cands.push({ I, v, vi, a, b }); }));
@@ -1592,7 +1603,7 @@ function buildPaper(pool, caps, last, layout) {
       const anyOf = (layout === 'g3math' || layout === 'g4math') ? (c => s.part === 'A' ? c.v.type === 'mc' : c.v.type === 'num') : (c => s.part === 'A' ? c.a : (c.b || c.v.type === 'term'));
       const c = take(c => s.t(c), s.want, 1) || take(c => s.t(c), s.want) || take(anyOf, s.want, 1) || take(anyOf, s.want) || take(c => c.a || c.b, s.want);
       const q = make(c, qi + 1, s.part, s.m || (s.part === 'A' ? 1 : 2));
-      if (q) { q.exam.label = s.l; if (layout === 'g3math' || layout === 'g4math') q.exam.plain = true; }
+      if (q) { q.exam.label = s.l; if (['g3math', 'g4math', 'g4studies'].includes(layout)) q.exam.plain = true; }
       return q;
     }).filter(Boolean)));
     return paper;
@@ -1769,7 +1780,8 @@ async function examMain() {
       G(`زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!`, `زي ورقة المدرسة بالظبط: <b>${paper.length} أسئلة</b> و<b>${total} درجة</b>. كل بند بدرجة وليه <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!`))
     + (prev && prev.plays ? `<br>${T('Your best mark', 'أعلى درجة ليك')}: <b>${prev.best} / ${prev.of || total}</b>` : ''), T('Start the test', 'ابدأ الامتحان'));
   else await intro(hall, `${title} · ${SI.examScope(EX, parts)}`,
-    (EX.layout === 'g4math' ? T('Like the November review tests: 3 questions, <b>30 marks</b>. Question 1: choose (10 items), question 2: complete (10 items), question 3: answer (5 problems, 2 marks each). You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
+    (EX.layout === 'g4studies' ? G('زي مراجعة نوفمبر: ٥ أسئلة، <b>٢٠ درجة</b>: أكمل، واختر، وصح أو خطأ (كل بند بدرجة)، ثم بم تفسر، وأجب (كل بند بدرجتين). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي مراجعة نوفمبر: ٥ أسئلة، <b>٢٠ درجة</b>: أكملي، واختاري، وصح أو خطأ (كل بند بدرجة)، ثم بم تفسرين، وأجيبي (كل بند بدرجتين). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!') :
+    EX.layout === 'g4math' ? T('Like the November review tests: 3 questions, <b>30 marks</b>. Question 1: choose (10 items), question 2: complete (10 items), question 3: answer (5 problems, 2 marks each). You get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
       G('زي اختبارات مراجعة نوفمبر: ٣ أسئلة، <b>٣٠ درجة</b>. السؤال الأول: اختر (١٠ بنود)، والثاني: أكمل (١٠ بنود)، والثالث: أجب (٥ مسائل، كل مسألة بدرجتين). وليك <b>محاولة واحدة</b>، وكل مرة ترجع ريشو بيكتب لك ورقة جديدة!', 'زي اختبارات مراجعة نوفمبر: ٣ أسئلة، <b>٣٠ درجة</b>. السؤال الأول: اختاري (١٠ بنود)، والثاني: أكملي (١٠ بنود)، والثالث: أجيبي (٥ مسائل، كل مسألة بدرجتين). وليكي <b>محاولة واحدة</b>، وكل مرة ترجعي ريشو بيكتب لك ورقة جديدة!')) :
     EX.layout === 'g4sci' ? T('Like the November review papers: 3 questions, <b>15 marks</b>, each with part (A) and part (B). Every item is 1 mark and you get <b>one try</b>. Every time you come back, Reesho writes a new paper!',
       G('زي نماذج مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليك <b>محاولة واحدة</b>. وكل مرة ترجع، ريشو بيكتب لك ورقة جديدة!', 'زي نماذج مراجعة نوفمبر: ٣ أسئلة، <b>١٥ درجة</b>، وكل سؤال له جزء (أ) وجزء (ب). كل بند بدرجة وليكي <b>محاولة واحدة</b>. وكل مرة ترجعي، ريشو بيكتب لك ورقة جديدة!')) :

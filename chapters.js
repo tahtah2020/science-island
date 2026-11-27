@@ -790,6 +790,10 @@ window.EXAMS = [
     parts: [{ ch: 'eg4u3' }, { ch: 'eg4u4' }, { ch: 'eg4u5' }],
     layouts: [[{ sec: 'choose', n: 4 }, { sec: 'form', n: 3 }, { sec: 'punct', n: 2 }],
               [{ sec: 'choose', n: 4 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] },
+  /* sg4nov (owner, 27 Nov 2026): Grade 4 Social Studies November test from the «سندباد» November review: unit 2 «مدينتنا وحياتنا اليومية» (all 5 lessons);
+     layout 'g4studies' = complete ×4, choose ×4, true/false ×4 (1 mark), explain why ×2, answer ×2 (2 marks) = 20 marks. One Arabic book for both tracks. */
+  { id: 'sg4nov', subject: 'studies', grade: 'g4', minParts: 1, layout: 'g4studies', of: 20, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'sg4u2' }] },
   /* mg4nov (owner, 26 Nov 2026): Grade 4 Math November test from the «سندباد» November review (scope: unit 4 «المساحة والمحيط» to unit 7 «عمليتا الضرب والقسمة»);
      layout 'g4math' = the review's «اختبار لمراجعة منهج شهر نوفمبر»: choose ×10, complete ×10, answer ×5 (2 marks) = 30 marks */
   { id: 'mg4nov', subject: 'math', grade: 'g4', minParts: 1, layout: 'g4math', of: 30, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',

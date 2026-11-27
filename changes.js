@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'Grade 4 Social Studies November test',
+    items: [
+      { text: 'New test sg4nov «امتحان شهر نوفمبر» for Grade 4 Social Studies (one book, both tracks): unit 2 «مدينتنا وحياتنا اليومية», shaped like the «سندباد» November review: complete 4, choose 4, true or false 4 (1 mark), explain why 2, answer 2 (2 marks) = 20 marks' },
+      { text: '79 new guide phrasings in 8 ideas from the review (Red Sea and desert cities, Suez «city of steadfastness», Rod El-Farag axis, «100 Million Healthy Lives», El-Gabal El-Asfar station, Akhetaten, future cities, governorates and capitals), each with a hint', links: [{ label: 'Grade 4 Studies November test', href: 'quiz.html#exam=sg4nov', ch: 'sg4u2' }] }
+    ] },
   { date: '2026-11-27', title: 'التربية الدينية: إصلاح صور امتحان نوفمبر',
     items: [
       { text: 'صور أسئلة امتحان نوفمبر للتربية الدينية (الصف الخامس) أصبحت مدمجة في ملف الرسوم، فلا تظهر مكسورة', links: [{ label: 'امتحان نوفمبر', href: 'quiz.html#exam=ig5nov', ch: 'ig5b' }] }
