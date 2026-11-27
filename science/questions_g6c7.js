@@ -139,6 +139,29 @@ window.IDEAS = [
       match('Match each word to its meaning.', ['Oxygen', 'Carbon dioxide', 'Transpiration'], ['Released by plants and used by animals to breathe', 'Breathed out by animals and used by plants for photosynthesis', 'Plants releasing part of their water into the air'], { ...BOSS, hint: 'Two are gases and one is a process.' }),
       order('Put the journey of water in order.', ['Water falls as rain', 'Water evaporates from rivers and lakes', 'Clouds form in the atmosphere'], [1, 2, 0], { ...BOSS, hint: 'Start with the water that goes up.' }),
       build('why', 'Why do plants keep the air suitable for animals to breathe?', ['Plants release oxygen', 'through photosynthesis', 'and animals use it to breathe'], ['Plants release carbon dioxide', 'animals do not need air'], { ...BOSS, hint: 'Think of the gas that plants give back to the air.' })
+    ] },
+  /* ---------- November 2026 review («سندباد» مراجعة شهر نوفمبر, 6 tests, owner 27 Nov 2026): items the bank lacked; guide: true ---------- */
+  { id: 'P30', lesson: 1, bonus: true, guide: true, concept: "Producers and consumers in a food chain",
+    explain: "A food chain is the path that shows how energy and food pass from one living thing to another between the eater and the eaten. The Sun is the main source of energy: it gives energy to producers (plants), which make their own food by photosynthesis and start every food chain. Herbivores (like rabbits, gazelles and locusts) eat plants; carnivores (like lions and hawks) eat other animals.",
+    variants: [
+      { type: "fill", mode: "normal", level: "easy", q: "The main source of energy in most food chains is ___.", options: ["sunlight", "water", "soil"], answer: 0, hint: "It shines in the sky." },
+      { type: "fill", mode: "normal", level: "easy", q: "Living things that eat plants are called ___.", options: ["herbivores", "carnivores", "producers"], answer: 0, hint: "Like rabbits." },
+      { type: "fill", mode: "normal", level: "easy", q: "Locusts and rabbits are ___.", options: ["herbivores", "carnivores", "producers"], answer: 0, hint: "What do they eat?" },
+      { type: "mc", mode: "normal", level: "easy", q: "The living thing that makes its own food is:", options: ["a plant", "a lion", "a mouse", "a cat"], answer: 0, hint: "It uses sunlight." },
+      { type: "mc", mode: "normal", level: "easy", q: "The eater–eaten relationship between living things is called:", options: ["the food chain", "the water cycle", "the rock cycle", "the weather"], answer: 0, hint: "Like links of a chain." },
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "Plants are essential in food chains.", parts: ["Because they are producers that make their own food by photosynthesis", "and they are the main source of energy", "for all the consumers"], extra: ["because they", "eat animals"], hint: "Who starts every food chain?" },
+      { type: "term", mode: "normal", level: "easy", q: "Animals that eat other animals.", answer: "Carnivores", choices: ["Herbivores", "Producers", "Plants"], hint: "Like the lion." },
+      { type: "mc", mode: "normal", level: "medium", q: "What is the main role of the Sun in keeping food chains going?", options: ["It is the source of energy for producers, which start every food chain", "It eats the plants", "It makes the animals sleep"], answer: 0, hint: "Plants need it to make food." },
+      { type: "build", style: "define", mode: "normal", level: "easy", q: "What is a food chain?", parts: ["A path that shows how energy and food pass", "from one living thing to another", "between the eater and the eaten"], extra: ["a chain of", "rocks"], hint: "Who eats whom?" }
+    ] },
+  { id: 'P31', lesson: 1, bonus: true, guide: true, concept: "Building and comparing food chains",
+    explain: "A food chain starts with a producer and the arrows show the direction of energy: grass → locust → frog → snake → owl; grass → gazelle → lion. Plants make their food and are at the start of the chain; herbivores eat plants and are at the second level. A hawk is a carnivore that eats animals; a rabbit is a herbivore that eats plants.",
+    variants: [
+      { type: "order", mode: "normal", level: "medium", q: "Put these living things in a correct food chain showing the direction of energy.", items: ["Snake", "Grass", "Owl", "Frog", "Locust"], answer: [1, 4, 3, 0, 2], hint: "Start with the producer." },
+      { type: "order", mode: "normal", level: "easy", q: "Make a food chain from: lion, grass, gazelle.", items: ["Lion", "Grass", "Gazelle"], answer: [1, 2, 0], hint: "Who eats grass?" },
+      { type: "mc", mode: "normal", level: "medium", q: "Compare plants and herbivores by food and place in the food chain.", options: ["Plants make their own food and are at the start; herbivores eat plants and are at the second level", "Plants eat herbivores and are at the end", "Herbivores make their own food and are at the start"], answer: 0, hint: "Who makes food?" },
+      { type: "mc", mode: "normal", level: "medium", q: "Compare the hawk and the rabbit by type and how they get food.", options: ["Hawk: carnivore, eats animals; rabbit: herbivore, eats plants", "Hawk: herbivore; rabbit: carnivore", "Both are producers"], answer: 0, hint: "What does a hawk hunt?" },
+      { type: "mc", mode: "normal", level: "easy", q: "Compare the rabbit and the lion by the kind of food each eats.", options: ["The rabbit eats plants and grass; the lion eats animals", "The rabbit eats animals; the lion eats grass", "Both eat grass"], answer: 0, hint: "Carrots or meat?" }
     ] }
 ];
 })();

@@ -166,6 +166,28 @@ window.IDEAS = [
     variants: [
       mc('Which gas do the green plants along the Nile take in from the air in photosynthesis?', ['Carbon dioxide', 'Oxygen', 'Water vapor'], { hint: 'It is the gas that humans breathe out.' }),
       fill('The green plants along the Nile act as a natural air ___ that keeps the air in Egypt clean.', ['purifier', 'conditioner', 'heater'], { hint: 'They clean the air by taking in carbon dioxide.' })
+    ] },
+  /* ---------- November 2026 review («سندباد» مراجعة شهر نوفمبر, 6 tests, owner 27 Nov 2026): items the bank lacked; guide: true ---------- */
+  { id: 'E30', lesson: 1, bonus: true, guide: true, concept: "Transpiration and the stomata",
+    explain: "Transpiration is the process in which water inside the plant turns into water vapour and leaves into the air, mostly through the stomata on the leaves. The stomata are mostly on the lower surface of the leaf. Transpiration helps form clouds and rain. Water droplets inside a bag over a plant come from transpiration.",
+    variants: [
+      { type: "mc", mode: "normal", level: "easy", q: "Transpiration happens mainly through the:", options: ["stomata", "roots", "stems", "flowers"], answer: 0, hint: "Tiny pores on the leaves." },
+      { type: "mc", mode: "normal", level: "easy", q: "Which of these is about transpiration?", options: ["Water vapour leaves the plant", "Water moves to all parts of the plant", "Water is absorbed from the soil", "The plant makes starch"], answer: 0, hint: "Trans-piration = water going out." },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "The stomata are mostly on the upper surface of the leaves.", answer: 1, hint: "Which surface has more stomata?" },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "Part of the water absorbed by the roots goes out into the air through the stem.", answer: 1, hint: "Where are the stomata?" },
+      { type: "term", mode: "normal", level: "easy", q: "The process in which water inside the plant turns into vapour and goes out into the air.", answer: "Transpiration", choices: ["Photosynthesis", "Breathing", "Excretion"], hint: "It happens through the stomata." },
+      { type: "mc", mode: "normal", level: "medium", q: "Through which process does a green plant help form clouds and rain?", options: ["Transpiration", "Photosynthesis", "Absorption", "Germination"], answer: 0, hint: "It puts water vapour into the air." },
+      { type: "mc", mode: "normal", level: "medium", q: "What is the role of the stomata in the life of a plant?", options: ["Gas exchange and getting rid of extra water as vapour (transpiration)", "Absorbing water from the soil", "Holding the plant in the soil"], answer: 0, hint: "They are openings on the leaf." }
+    ] },
+  { id: 'F30', lesson: 2, bonus: true, guide: true, concept: "The path of water",
+    explain: "The roots absorb water and salts from the soil and hold the plant in the soil. The stem is like a passage that carries water from the roots to the other parts of the plant. In the coloured-water experiment, the parts that carry water (the water paths) in the stem and leaves take the colour. A wilted plant recovers after watering because water moves to all its parts through the stem.",
+    variants: [
+      { type: "mc", mode: "normal", level: "easy", q: "The part of the plant that absorbs water and minerals is:", options: ["the roots", "the leaves", "the stem", "the flower"], answer: 0, hint: "It is under the soil." },
+      { type: "tf", mode: "timed", seconds: 12, level: "easy", q: "The roots absorb water and salts and hold the plant in the soil.", answer: 0, hint: "What do roots do?" },
+      { type: "mc", mode: "normal", level: "medium", q: "When a plant is put in coloured water, the parts that take the colour are the ___ for carrying water.", options: ["paths", "stomata", "bark", "holes"], answer: 0, hint: "Water travels along them." },
+      { type: "build", style: "whatif", mode: "normal", level: "medium", q: "What happens if the roots of a plant are put in coloured water for a few hours?", parts: ["The water paths of the stem and the leaves", "take the colour of the water,", "because the roots absorb it and it moves up"], extra: ["the flower", "loses its colour"], hint: "Where does the water go after the roots?" },
+      { type: "build", style: "why", mode: "normal", level: "easy", q: "A wilted plant goes back to normal after it is watered.", parts: ["Because the water moves", "to all parts of the plant", "through the stem"], extra: ["because the leaves", "fall off"], hint: "How does water reach the leaves?" },
+      { type: "mc", mode: "normal", level: "easy", q: "What is the importance of the stem in a plant?", options: ["It is a passage that carries water from the roots to the other parts of the plant", "It makes the seeds", "It absorbs water from the soil"], answer: 0, hint: "Water travels up it." }
     ] }
 ];
 })();

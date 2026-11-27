@@ -150,5 +150,12 @@ window.IDEAS = [
       { type: 'mc', style: 'story', mode: 'boss', level: 'hard', q: 'Ali runs fast in the playground and breathes quickly. The oxygen he takes in must reach the muscles of his legs. What carries it there?', options: ['The blood, by the work of the heart', 'The windpipe', 'The bones of his legs'], answer: 0 },
       { type: 'table', mode: 'boss', level: 'hard', q: 'Compare between oxygen and carbon dioxide in the lungs.', cols: ['Oxygen', 'Carbon dioxide'], items: ['Is taken from the air into the blood', 'Is let out from the blood into the air', 'Is carried to the whole body', 'Increases in the air we breathe out'], answer: [0, 1, 0, 1] },
       { type: 'fix', mode: 'boss', level: 'hard', q: 'The oxygen taken into the blood is carried to the whole body by the work of the lungs.', wrong: 'lungs', answer: 'heart' }
+    ] },
+  /* ---------- November 2026 review («سندباد» مراجعة شهر نوفمبر, 6 tests, owner 27 Nov 2026): items the bank lacked; guide: true ---------- */
+  { id: 'R30', lesson: 1, bonus: true, guide: true, concept: "Why the chest moves when we breathe",
+    explain: "The chest moves up and down while breathing because the rib muscles contract and relax: the chest widens when we breathe in and narrows when we breathe out. Oxygen is the gas we need for breathing.",
+    variants: [
+      { type: "build", style: "why", mode: "normal", level: "medium", q: "The chest moves up and down during breathing.", parts: ["Because the rib muscles contract and relax,", "so the chest widens when we breathe in", "and narrows when we breathe out"], extra: ["because the heart", "beats faster"], hint: "Which muscles move the ribs?" },
+      { type: "fill", mode: "normal", level: "easy", q: "The gas we need for breathing is ___.", options: ["oxygen", "carbon dioxide", "nitrogen"], answer: 0, hint: "We take it in with every breath." }
     ] }
 ];

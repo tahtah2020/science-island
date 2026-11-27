@@ -575,3 +575,8 @@ Every results panel (kit games `game_kit.js` `results()`, `quiz.html` `results()
 - From the owner's «سندباد» November review (unit 2 «مدينتنا وحياتنا اليومية», with model answers). Part `sg4u2` (all 5 lessons); one Arabic book for both tracks.
 - `layout: 'g4studies'`, `of: 20` (quiz.html `G4_STUDIES_LAYOUT`): complete ×4, choose ×4 (no «قارن/العلاقة» items), true/false ×4 (1 mark); «بم تفسر» ×2 and «أجب» ×2 (what happens / results / relation / compare / term, 2 marks); `exam.plain`. The review's «صوّب ما تحته خط» and blank-map items are not asked.
 - New guide ideas in `studies/questions_sg4u2_ar.js`: `E30 E31 F30 F31 F32 G30 H30 I30` (79 phrasings, hints). Answers follow the review's model answers; «أجب بنفسك» / «ماذا يحدث» answers were written from the lesson text.
+
+## Grade 6 Science November test `g6nov` (27 Nov 2026)
+- From the owner's «سندباد» November review (6 tests with model answers): parts `g6c4`–`g6c7`, `g6c2` lesson 1 (max 1, chance .5). Both tracks.
+- `layout: 'g6sci'`, `of: 15` (quiz.html `G6_SCI_LAYOUT`): Q1 (A) complete ×2 · (B) give reasons ×3; Q2 (A) choose ×2 · (B) what happens ×3 (whatif builds or mc items starting «ماذا يحدث»); Q3 (A) ✓/✗ ×2 · (B) answer ×3 (order, multi, match, compare); every item 1 mark. «صوّب ما تحته خط» and picture labelling are not asked.
+- New guide ideas (EN + AR, hints): ch2 `R30`, ch4 `H30 K30`, ch5 `C30 G30`, ch6 `E30 F30`, ch7 `P30 P31` (73 phrasings). Answers follow the review's model answers.

@@ -3,6 +3,11 @@
    Preview links: quiz.html#preview=ID.n&lang=ar|en  ·  game stages: arm.html#stage2 / #stage3, seasons.html#stage2 / #stage3
    A link can name its chapter (ch: 'ch2'); without it the chapter chosen in the list on admin.html is used. */
 window.CHANGES = [
+  { date: '2026-11-27', title: 'Grade 6 Science November test',
+    items: [
+      { text: 'New test g6nov «امتحان شهر نوفمبر» for Grade 6 Science (both tracks): chapters 4 to 7 (+ the breathing chest item in about half the papers), shaped like the «سندباد» November review tests: 3 questions, each (A) 2 short items and (B) 3 longer items = 15 marks' },
+      { text: '73 new guide phrasings in 9 ideas from the review (pulse and exercise, kidneys and bladder, starch test and ethanol, gas exchange day and night, stomata, transpiration, coloured water, food chains), English and Arabic, each with a hint', links: [{ label: 'Grade 6 Science November test', href: 'quiz.html#exam=g6nov', ch: 'g6c4' }] }
+    ] },
   { date: '2026-11-27', title: 'Grade 4 Social Studies November test',
     items: [
       { text: 'New test sg4nov «امتحان شهر نوفمبر» for Grade 4 Social Studies (one book, both tracks): unit 2 «مدينتنا وحياتنا اليومية», shaped like the «سندباد» November review: complete 4, choose 4, true or false 4 (1 mark), explain why 2, answer 2 (2 marks) = 20 marks' },

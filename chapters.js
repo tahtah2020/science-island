@@ -790,6 +790,11 @@ window.EXAMS = [
     parts: [{ ch: 'eg4u3' }, { ch: 'eg4u4' }, { ch: 'eg4u5' }],
     layouts: [[{ sec: 'choose', n: 4 }, { sec: 'form', n: 3 }, { sec: 'punct', n: 2 }],
               [{ sec: 'choose', n: 4 }, { sec: 'box', n: 1 }, { sec: 'punct', n: 2 }]] },
+  /* g6nov (owner, 27 Nov 2026): Grade 6 Science November test from the «سندباد» November review (6 tests): chapters 4 (circulation and excretion),
+     5 (photosynthesis), 6 (water in the plant), 7 (food chains), and in about half the papers the breathing chest item (chapter 2 lesson 1);
+     layout 'g6sci' = 3 questions × (A) 2 + (B) 3 items = 15 marks. Both tracks (the chapters have English and Arabic files). */
+  { id: 'g6nov', grade: 'g6', minParts: 1, layout: 'g6sci', of: 15, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
+    parts: [{ ch: 'g6c4' }, { ch: 'g6c5' }, { ch: 'g6c6' }, { ch: 'g6c7' }, { ch: 'g6c2', lessons: [1], max: 1, chance: 0.5 }] },
   /* sg4nov (owner, 27 Nov 2026): Grade 4 Social Studies November test from the «سندباد» November review: unit 2 «مدينتنا وحياتنا اليومية» (all 5 lessons);
      layout 'g4studies' = complete ×4, choose ×4, true/false ×4 (1 mark), explain why ×2, answer ×2 (2 marks) = 20 marks. One Arabic book for both tracks. */
   { id: 'sg4nov', subject: 'studies', grade: 'g4', minParts: 1, layout: 'g4studies', of: 20, title: 'November Monthly Test', titleAr: 'امتحان شهر نوفمبر', icon: '📝',
